@@ -415,9 +415,8 @@ TEST(BRepGraphInc_PopulateRegressionTest, Compact_PreservesAssemblyUidAndIncomin
   const BRepGraphInc::ProductRelations& aProductRelations =
     aGraph.Topo().Products().Relations(aResult.Product);
   ASSERT_EQ(aProductRelations.OccurrenceRefIds.Size(), 1u);
-  const BRepGraph_OccurrenceRefId anOccurrenceRefId =
-    aProductRelations.OccurrenceRefIds.Value(0);
-  const BRepGraph_RefUID anOccurrenceRefUID = aGraph.UIDs().Of(anOccurrenceRefId);
+  const BRepGraph_OccurrenceRefId anOccurrenceRefId  = aProductRelations.OccurrenceRefIds.Value(0);
+  const BRepGraph_RefUID          anOccurrenceRefUID = aGraph.UIDs().Of(anOccurrenceRefId);
   ASSERT_TRUE(anOccurrenceRefUID.IsValid());
 
   const BRepGraphInc::OccurrenceRef& anOccurrenceRef =
@@ -456,8 +455,7 @@ TEST(BRepGraphInc_PopulateRegressionTest, Compact_PreservesAssemblyUidAndIncomin
   ASSERT_EQ(aGraph.RootProductIds().Size(), 1u);
   EXPECT_EQ(aGraph.RootProductIds().Value(0), aProductAfter);
 
-  const BRepGraph_OccurrenceId anOccurrenceAfter(
-    aGraph.UIDs().NodeIdFrom(aOccurrenceUID));
+  const BRepGraph_OccurrenceId anOccurrenceAfter(aGraph.UIDs().NodeIdFrom(aOccurrenceUID));
   ASSERT_TRUE(anOccurrenceAfter.IsValid(aGraph.Topo().Occurrences().Nb()));
   EXPECT_FALSE(anOccurrenceAfter.IsRemoved(aGraph));
 
@@ -465,8 +463,7 @@ TEST(BRepGraphInc_PopulateRegressionTest, Compact_PreservesAssemblyUidAndIncomin
   ASSERT_TRUE(aTopologyRootAfter.IsValid());
   EXPECT_EQ(aGraph.Shapes().FindNode(aMovedRoot), aTopologyRootAfter);
 
-  const BRepGraph_RefId anOccurrenceRefAfterBase =
-    aGraph.UIDs().RefIdFrom(anOccurrenceRefUID);
+  const BRepGraph_RefId anOccurrenceRefAfterBase = aGraph.UIDs().RefIdFrom(anOccurrenceRefUID);
   ASSERT_EQ(anOccurrenceRefAfterBase.RefKind, BRepGraph_RefId::Kind::Occurrence);
   const BRepGraph_OccurrenceRefId anOccurrenceRefAfter(anOccurrenceRefAfterBase);
   ASSERT_TRUE(anOccurrenceRefAfter.IsValid(aGraph.Refs().Occurrences().Nb()));
@@ -575,9 +572,10 @@ TEST(BRepGraphInc_PopulateRegressionTest, Perform_ReplacesGraphThroughClearSeman
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   TopoDS_Vertex aVertex;
   BRep_Builder().MakeVertex(aVertex, gp_Pnt(42.0, 0.0, 0.0), Precision::Confusion());
-  ASSERT_TRUE(aGraph.Supplements().Attach(BRepGraph_NodeId(BRepGraph_SolidId::Start()),
-                                          BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape,
-                                          aVertex)
+  ASSERT_TRUE(aGraph.Supplements()
+                .Attach(BRepGraph_NodeId(BRepGraph_SolidId::Start()),
+                        BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape,
+                        aVertex)
                 .IsValid());
 
   const BRepGraph_EdgeId      anEdgeId = BRepGraph_EdgeId::Start();

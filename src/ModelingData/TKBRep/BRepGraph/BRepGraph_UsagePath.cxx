@@ -43,9 +43,9 @@ size_t BRepGraph_UsagePath::HashCode() const
     return opencascade::hash(aSize);
   }
 
-  const Step&   aFirst  = mySteps.First();
-  const Step&   aMiddle = mySteps.Value(aSize / 2);
-  const Step&   aLast   = mySteps.Last();
+  const Step&  aFirst    = mySteps.First();
+  const Step&  aMiddle   = mySteps.Value(aSize / 2);
+  const Step&  aLast     = mySteps.Last();
   const size_t aValues[] = {aSize,
                             static_cast<size_t>(aFirst.Node.NodeKind),
                             static_cast<size_t>(aFirst.Node.Index),

@@ -292,10 +292,7 @@ BRepGraph_ItemStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNode)
   }
 
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-  return BRepGraph_ItemStamp(aUID,
-                             aDef->OwnGen,
-                             aStorage.Generation(),
-                             aStorage.RuntimeIdentity());
+  return BRepGraph_ItemStamp(aUID, aDef->OwnGen, aStorage.Generation(), aStorage.RuntimeIdentity());
 }
 
 //=================================================================================================

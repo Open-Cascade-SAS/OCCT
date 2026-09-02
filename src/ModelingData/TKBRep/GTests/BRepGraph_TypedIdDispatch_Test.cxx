@@ -55,7 +55,7 @@ TEST(BRepGraph_TypedIdDispatchTest, VisitRepId_ConvertsToMatchingTypedId)
 
   bool      isFaceTriangulation = false;
   const int anIdx               = BRepGraph_RepId::Visit(aRepId, [&](const auto theTypedId) -> int {
-    using TypeId = std::remove_cv_t<decltype(theTypedId)>;
+    using TypeId        = std::remove_cv_t<decltype(theTypedId)>;
     isFaceTriangulation = std::is_same_v<TypeId, BRepGraph_FaceTriangulationRepId>;
     return theTypedId.Index;
   });

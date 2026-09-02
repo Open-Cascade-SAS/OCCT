@@ -200,8 +200,8 @@ public:
     //! @param[in] theRef   edge occurrence carrying Location
     //! @return curve adaptor, or empty adaptor if no 3D curve exists
     [[nodiscard]] Standard_EXPORT static GeomAdaptor_TransformedCurve CurveAdaptor(
-      const BRepGraph&  theGraph,
-      const EdgeUsage&  theRef);
+      const BRepGraph& theGraph,
+      const EdgeUsage& theRef);
 
     //! Returns an edge occurrence curve on a related face occurrence.
     //! A PCurve is selected through the edge-face coedge relation; unrelated
@@ -377,10 +377,9 @@ public:
     //! @param[in] theCoEdge typed coedge definition identifier
     //! @param[in] theFace   face context to test
     //! @return true if the coedge occurs in the face
-    [[nodiscard]] Standard_EXPORT static bool IsInFaceContext(
-      const BRepGraph&         theGraph,
-      const BRepGraph_CoEdgeId theCoEdge,
-      const BRepGraph_FaceId   theFace);
+    [[nodiscard]] Standard_EXPORT static bool IsInFaceContext(const BRepGraph&         theGraph,
+                                                              const BRepGraph_CoEdgeId theCoEdge,
+                                                              const BRepGraph_FaceId   theFace);
 
     //! Returns the seam-pair coedge for closed/seam edges.
     //! @param[in] theGraph  source graph

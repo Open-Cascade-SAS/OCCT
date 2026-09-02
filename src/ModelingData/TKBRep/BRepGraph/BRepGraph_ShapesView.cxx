@@ -975,7 +975,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
     return aResult;
   }
 
-  const uint32_t     anOldCount                = countForKind(theGraph, theShape.ShapeType());
+  const uint32_t anOldCount                = countForKind(theGraph, theShape.ShapeType());
   const bool     isRootLocationStoredInRef = shouldStoreRootLocationInRef(theOptions, theParent);
   const TopoDS_Shape aPopulateShape =
     isRootLocationStoredInRef ? shapeWithoutOwnLocation(theShape) : theShape;

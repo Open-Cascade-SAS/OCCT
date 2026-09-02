@@ -40,7 +40,7 @@ public:
   //! @param[in] theCopy core source-to-target item mapping
   //! @param[in] theSupplementCopy supplemental source-to-target UID mapping
   Standard_EXPORT virtual void CopySupplementalTo(
-    const BRepGraph_CopyRemap&          theCopy,
+    const BRepGraph_CopyRemap&         theCopy,
     const BRepGraphSupInc_CopyContext& theSupplementCopy) const = 0;
 
   //! Supplemental layers are copied exclusively through CopySupplementalTo().

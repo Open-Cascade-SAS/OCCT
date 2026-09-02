@@ -120,8 +120,8 @@ void expectVerticesTransformed(const BRepGraph& theSource,
 
 void expectUVNodeTransformed(const occ::handle<Poly_Triangulation>& theTri,
                              const int                              theNode,
-                             const gp_Pnt2d&                       theSourceUV,
-                             const gp_GTrsf2d&                     theUVTrsf)
+                             const gp_Pnt2d&                        theSourceUV,
+                             const gp_GTrsf2d&                      theUVTrsf)
 {
   gp_Pnt2d anExpected = theSourceUV;
   theUVTrsf.Transforms(anExpected.ChangeCoord());
@@ -327,20 +327,19 @@ TEST(BRepGraph_TransformTest, TransformNode_ProductKind_LocationOnlyComposesRoot
 
   const BRepGraph_ProductId aProductId = BRepGraph_ProductId::Start();
   const BRepGraph_NodeId    aProductNode(aProductId);
-  const gp_Pnt              anOriginalVertex =
-    BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId::Start());
+  const gp_Pnt anOriginalVertex = BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId::Start());
 
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(12.0, 3.0, -4.0));
 
   BRepGraph              aResult;
-  const BRepGraph_NodeId aCopiedNode = BRepGraph_Transform::TransformNode(
-    aGraph,
-    aResult,
-    aProductNode,
-    aTrsf,
-    BRepGraph_Copy::GeomPolicy::Share,
-    BRepGraph_Copy::MeshPolicy::Drop);
+  const BRepGraph_NodeId aCopiedNode =
+    BRepGraph_Transform::TransformNode(aGraph,
+                                       aResult,
+                                       aProductNode,
+                                       aTrsf,
+                                       BRepGraph_Copy::GeomPolicy::Share,
+                                       BRepGraph_Copy::MeshPolicy::Drop);
   ASSERT_TRUE(aCopiedNode.IsValid());
   EXPECT_EQ(aCopiedNode.NodeKind, BRepGraph_NodeId::Kind::Product);
 
@@ -349,9 +348,9 @@ TEST(BRepGraph_TransformTest, TransformNode_ProductKind_LocationOnlyComposesRoot
     aResult.Topo().Products().Relations(aCopiedProductId);
   ASSERT_FALSE(aProductRelations.OccurrenceRefIds.IsEmpty());
 
-  const BRepGraph_OccurrenceRefId       aRootRefId = aProductRelations.OccurrenceRefIds.First();
-  const BRepGraphInc::OccurrenceRef&    aRootRef = aResult.Refs().Occurrences().Entry(aRootRefId);
-  const gp_Trsf                         aRootTrsf = aRootRef.LocalLocation.Transformation();
+  const BRepGraph_OccurrenceRefId    aRootRefId = aProductRelations.OccurrenceRefIds.First();
+  const BRepGraphInc::OccurrenceRef& aRootRef   = aResult.Refs().Occurrences().Entry(aRootRefId);
+  const gp_Trsf                      aRootTrsf  = aRootRef.LocalLocation.Transformation();
   EXPECT_NEAR(aRootTrsf.Value(1, 4), 12.0, Precision::Confusion());
   EXPECT_NEAR(aRootTrsf.Value(2, 4), 3.0, Precision::Confusion());
   EXPECT_NEAR(aRootTrsf.Value(3, 4), -4.0, Precision::Confusion());

@@ -738,8 +738,8 @@ BRepGraph_NodeId BRepGraph_Transform::TransformNode(const BRepGraph&            
   }
 
   const bool isProductNode = theNodeId.NodeKind == BRepGraph_NodeId::Kind::Product;
-  const bool useGeomModif = !isProductNode || (theGeomPolicy == BRepGraph_Copy::GeomPolicy::Copy)
-                            || isNegative || isScaled;
+  const bool useGeomModif =
+    !isProductNode || (theGeomPolicy == BRepGraph_Copy::GeomPolicy::Copy) || isNegative || isScaled;
 
   // GeomPolicy::Drop is invalid when geometry-level modification is required.
   if (useGeomModif && theGeomPolicy == BRepGraph_Copy::GeomPolicy::Drop)

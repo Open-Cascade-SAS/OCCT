@@ -106,16 +106,14 @@ public:
     double       ExplicitV          = 0.0;
     Tolerance    Tolerance;
     CacheMode    Caching = CacheMode::Default;
-
   };
 
   //! @brief Requirements imposed by a chart consumer.
   struct Requirements
   {
-    bool RequireFiniteUVDomain          = true;
-    bool RequireClosedUVLoops           = true;
+    bool RequireFiniteUVDomain         = true;
+    bool RequireClosedUVLoops          = true;
     bool RequireMaterializableTopology = false;
-
   };
 
   //! @brief Integer tile translation in the UV covering space.
@@ -144,7 +142,7 @@ public:
     double    Period     = 0.0;
     double    OtherFirst = 0.0;
     double    OtherLast  = 0.0;
-    int32_t   PairIndex   = -1;
+    int32_t   PairIndex  = -1;
   };
 
   //! @brief One ordered real or virtual occurrence in a chart loop.
@@ -155,7 +153,7 @@ public:
     uint32_t                        VirtualCutIndex = 0;
     UVLift                          Lift;
     BRepGraphInc::ParityOrientation Orientation;
-    int32_t                         PairIndex = -1;
+    int32_t                         PairIndex  = -1;
     double                          ParamFirst = 0.0;
     double                          ParamLast  = 0.0;
     gp_Pnt2d                        UVFirst;
@@ -165,9 +163,9 @@ public:
   //! @brief One intrinsic boundary component viewed in a chart.
   struct Loop
   {
-    BRepGraph_WireId SourceWire;
+    BRepGraph_WireId                      SourceWire;
     NCollection_LinearVector<BoundaryUse> Boundary;
-    bool IsClosed = false;
+    bool                                  IsClosed = false;
   };
 
   //! @brief Immutable transient chart result.
@@ -214,29 +212,26 @@ public:
              || Status == BRepGraph_CacheChart::Status::NotPeriodic;
     }
 
-    [[nodiscard]] bool IsMaterializable() const noexcept
-    {
-      return IsUsable() && !Loops.IsEmpty();
-    }
+    [[nodiscard]] bool IsMaterializable() const noexcept { return IsUsable() && !Loops.IsEmpty(); }
 
     DEFINE_STANDARD_RTTIEXT(Result, Standard_Transient)
 
   protected:
-    BRepGraph_CacheChart::Status          Status = BRepGraph_CacheChart::Status::Unsupported;
-    BRepGraph_FaceId                      Face;
-    occ::handle<Geom_Surface>             Surface;
-    bool                                  UPeriodic = false;
-    bool                                  VPeriodic = false;
-    double                                UPeriod = 0.0;
-    double                                VPeriod = 0.0;
-    double                                UFirst = 0.0;
-    double                                ULast = 0.0;
-    double                                VFirst = 0.0;
-    double                                VLast = 0.0;
-    NCollection_LinearVector<Cut>         Cuts;
-    NCollection_LinearVector<Transition>  Transitions;
-    NCollection_LinearVector<Loop>        Loops;
-    TCollection_AsciiString               Diagnostic;
+    BRepGraph_CacheChart::Status         Status = BRepGraph_CacheChart::Status::Unsupported;
+    BRepGraph_FaceId                     Face;
+    occ::handle<Geom_Surface>            Surface;
+    bool                                 UPeriodic = false;
+    bool                                 VPeriodic = false;
+    double                               UPeriod   = 0.0;
+    double                               VPeriod   = 0.0;
+    double                               UFirst    = 0.0;
+    double                               ULast     = 0.0;
+    double                               VFirst    = 0.0;
+    double                               VLast     = 0.0;
+    NCollection_LinearVector<Cut>        Cuts;
+    NCollection_LinearVector<Transition> Transitions;
+    NCollection_LinearVector<Loop>       Loops;
+    TCollection_AsciiString              Diagnostic;
   };
 
 public:
@@ -286,9 +281,9 @@ public:
 private:
   struct Entry : public NodeEntry
   {
-    Policy                 PolicyValue;
-    Requirements           RequirementsValue;
-    occ::handle<Result>    Chart;
+    Policy              PolicyValue;
+    Requirements        RequirementsValue;
+    occ::handle<Result> Chart;
   };
 
   using FaceEntries = NCollection_LinearVector<Entry>;
@@ -310,7 +305,7 @@ private:
   //! Limit policy variants per face while allowing the cache to cover all faces.
   static constexpr size_t THE_MAX_ENTRIES_PER_FACE = 8;
 
-  mutable std::shared_mutex                           myMutex;
+  mutable std::shared_mutex                          myMutex;
   NCollection_DataMap<BRepGraph_FaceId, FaceEntries> myEntriesByFace;
 };
 

@@ -84,9 +84,9 @@ bool BRepGraph_Cache::NodeEntry::bind(const BRepGraph_Cache& theCache,
                                       const GenKind          theKind) noexcept
 {
   uint32_t   aGeneration = 0;
-  const bool isValid = theKind == GenKind::Own       ? theCache.NodeOwnGen(theNode, aGeneration)
-                       : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
-                                                     : false;
+  const bool isValid     = theKind == GenKind::Own ? theCache.NodeOwnGen(theNode, aGeneration)
+                           : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
+                                                         : false;
   if (!isValid)
   {
     Reset();
@@ -111,9 +111,9 @@ bool BRepGraph_Cache::NodeEntry::isFresh(const BRepGraph_Cache& theCache,
   }
 
   uint32_t   aGeneration = 0;
-  const bool isValid = theKind == GenKind::Own       ? theCache.NodeOwnGen(theNode, aGeneration)
-                       : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
-                                                     : false;
+  const bool isValid     = theKind == GenKind::Own ? theCache.NodeOwnGen(theNode, aGeneration)
+                           : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
+                                                         : false;
   return isValid && aGeneration == myGeneration;
 }
 

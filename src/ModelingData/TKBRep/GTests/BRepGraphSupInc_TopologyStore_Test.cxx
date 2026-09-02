@@ -1,6 +1,19 @@
 // Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
 
 #include <gtest/gtest.h>
 
@@ -24,7 +37,7 @@ namespace
 {
 TopoDS_Vertex makeVertex(const gp_Pnt& thePoint)
 {
-  BRep_Builder aBuilder;
+  BRep_Builder  aBuilder;
   TopoDS_Vertex aVertex;
   aBuilder.MakeVertex(aVertex, thePoint, 1.0e-7);
   return aVertex;
@@ -51,12 +64,16 @@ int vertexCount(const TopoDS_Shape& theShape)
 
 TEST(BRepGraphSupInc_TopologyStoreTest, AttachPreservesOwnerOrderAndShape)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
-  const BRepGraphSupInc_TopologyId aFirst = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(1, 0, 0)));
-  const BRepGraphSupInc_TopologyId aSecond = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(2, 0, 0)));
+  const BRepGraphSupInc_TopologyId aFirst =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt(1, 0, 0)));
+  const BRepGraphSupInc_TopologyId aSecond =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt(2, 0, 0)));
   ASSERT_TRUE(aFirst.IsValid());
   ASSERT_TRUE(aSecond.IsValid());
   const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anItems =
@@ -76,19 +93,24 @@ TEST(BRepGraphSupInc_TopologyStoreTest, AttachPreservesOwnerOrderAndShape)
 
 TEST(BRepGraphSupInc_TopologyStoreTest, RejectsIncompatibleAttachmentKind)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aVertex = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  EXPECT_FALSE(aGraph.Supplements().Attach(
-    aVertex, BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape, makeVertex(gp_Pnt())).IsValid());
+  EXPECT_FALSE(
+    aGraph.Supplements()
+      .Attach(aVertex, BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape, makeVertex(gp_Pnt()))
+      .IsValid());
 }
 
 TEST(BRepGraphSupInc_TopologyStoreTest, NodeRemovalAndReplacementMaintainAttachments)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId aFirst = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  BRepGraph                aGraph;
+  const BRepGraph_VertexId aFirst  = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
   const BRepGraph_VertexId aSecond = aGraph.Editor().Vertices().Add(gp_Pnt(1, 0, 0), 1.0e-7);
-  ASSERT_TRUE(aGraph.Supplements().Attach(
-    aFirst, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt())).IsValid());
+  ASSERT_TRUE(aGraph.Supplements()
+                .Attach(aFirst,
+                        BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                        makeVertex(gp_Pnt()))
+                .IsValid());
   aGraph.Editor().Gen().ReplaceNode(aFirst, aSecond);
   EXPECT_EQ(aGraph.Supplements().Attachments(aFirst).Size(), 0);
   EXPECT_EQ(aGraph.Supplements().Attachments(aSecond).Size(), 1);
@@ -98,10 +120,12 @@ TEST(BRepGraphSupInc_TopologyStoreTest, NodeRemovalAndReplacementMaintainAttachm
 
 TEST(BRepGraphSupInc_TopologyStoreTest, SameOwnerReplacementPreservesAttachments)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId anAttachment = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt()));
+  BRepGraph                        aGraph;
+  const BRepGraph_VertexId         anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId anAttachment =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt()));
   ASSERT_TRUE(anAttachment.IsValid());
 
   aGraph.Supplements().ReplaceOwnerAttachments(anOwner, anOwner);
@@ -117,10 +141,12 @@ TEST(BRepGraphSupInc_TopologyStoreTest, SameOwnerReplacementPreservesAttachments
 
 TEST(BRepGraphSupInc_TopologyStoreTest, DirectShapeFollowsAttachmentLifecycle)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId anAttachment = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt()));
+  BRepGraph                        aGraph;
+  const BRepGraph_VertexId         anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId anAttachment =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt()));
   ASSERT_TRUE(anAttachment.IsValid());
   const BRepGraphSupInc::TopologyDef* aDefinition = aGraph.Supplements().Attachment(anAttachment);
   ASSERT_NE(aDefinition, nullptr);
@@ -133,15 +159,17 @@ TEST(BRepGraphSupInc_TopologyStoreTest, DirectShapeFollowsAttachmentLifecycle)
 
 TEST(BRepGraphSupInc_TopologyStoreTest, RemovalDispatchesTopologyEndpointNotification)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId anAttachment = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt()));
+  BRepGraph                        aGraph;
+  const BRepGraph_VertexId         anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId anAttachment =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt()));
   ASSERT_TRUE(anAttachment.IsValid());
   const BRepGraphSupInc_TopologyStore* aTopology = topologyStore(aGraph);
   ASSERT_NE(aTopology, nullptr);
-  const BRepGraphSupInc_Endpoint anEndpoint = BRepGraphSupInc_Endpoint::Supplemental(
-    aTopology->ItemUID(anAttachment));
+  const BRepGraphSupInc_Endpoint anEndpoint =
+    BRepGraphSupInc_Endpoint::Supplemental(aTopology->ItemUID(anAttachment));
   const occ::handle<BRepGraph_LayerSupplement> aLayer =
     aGraph.LayerSupplementRegistry().Ensure<BRepGraph_LayerSupplement>();
   ASSERT_NE(aLayer->Add(BRepGraphSupInc_Endpoint::Core(BRepGraph_ItemId(anOwner)),
@@ -154,19 +182,21 @@ TEST(BRepGraphSupInc_TopologyStoreTest, RemovalDispatchesTopologyEndpointNotific
 
 TEST(BRepGraphSupInc_TopologyStoreTest, IncompatibleReplacementDispatchesTopologyRemoval)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aVertex = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
   const BRepGraph_VertexId anEndVertex =
     aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
-  const BRepGraph_EdgeId anEdge = aGraph.Editor().Edges().Add(
-    aVertex, anEndVertex, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
-  const BRepGraphSupInc_TopologyId anAttachment = aGraph.Supplements().Attach(
-    aVertex, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt()));
+  const BRepGraph_EdgeId anEdge =
+    aGraph.Editor().Edges().Add(aVertex, anEndVertex, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
+  const BRepGraphSupInc_TopologyId anAttachment =
+    aGraph.Supplements().Attach(aVertex,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt()));
   ASSERT_TRUE(anAttachment.IsValid());
   const BRepGraphSupInc_TopologyStore* aTopology = topologyStore(aGraph);
   ASSERT_NE(aTopology, nullptr);
-  const BRepGraphSupInc_Endpoint anEndpoint = BRepGraphSupInc_Endpoint::Supplemental(
-    aTopology->ItemUID(anAttachment));
+  const BRepGraphSupInc_Endpoint anEndpoint =
+    BRepGraphSupInc_Endpoint::Supplemental(aTopology->ItemUID(anAttachment));
   const occ::handle<BRepGraph_LayerSupplement> aLayer =
     aGraph.LayerSupplementRegistry().Ensure<BRepGraph_LayerSupplement>();
   ASSERT_NE(aLayer->Add(BRepGraphSupInc_Endpoint::Core(BRepGraph_ItemId(aVertex)),
@@ -183,19 +213,23 @@ TEST(BRepGraphSupInc_TopologyStoreTest, IncompatibleReplacementDispatchesTopolog
 
 TEST(BRepGraphSupInc_TopologyStoreTest, GraphClearDoesNotReuseAttachmentUIDCounter)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId aFirstAttachment = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt()));
+  BRepGraph                        aGraph;
+  const BRepGraph_VertexId         anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId aFirstAttachment =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt()));
   ASSERT_TRUE(aFirstAttachment.IsValid());
   const BRepGraphSupInc_TopologyStore* aTopology = topologyStore(aGraph);
   ASSERT_NE(aTopology, nullptr);
   const BRepGraphSupInc_ItemUID aFirstUID = aTopology->ItemUID(aFirstAttachment);
 
   aGraph.Clear();
-  const BRepGraph_VertexId aNewOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId aSecondAttachment = aGraph.Supplements().Attach(
-    aNewOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(1, 0, 0)));
+  const BRepGraph_VertexId         aNewOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId aSecondAttachment =
+    aGraph.Supplements().Attach(aNewOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt(1, 0, 0)));
   ASSERT_TRUE(aSecondAttachment.IsValid());
   const BRepGraphSupInc_ItemUID aSecondUID = aTopology->ItemUID(aSecondAttachment);
   EXPECT_NE(aSecondUID, aFirstUID);
@@ -204,12 +238,16 @@ TEST(BRepGraphSupInc_TopologyStoreTest, GraphClearDoesNotReuseAttachmentUIDCount
 
 TEST(BRepGraphSupInc_TopologyStoreTest, CompactRetainsDirectShape)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId aRemoved = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(1, 0, 0)));
-  const BRepGraphSupInc_TopologyId aRetained = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(2, 0, 0)));
+  BRepGraph                        aGraph;
+  const BRepGraph_VertexId         anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId aRemoved =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt(1, 0, 0)));
+  const BRepGraphSupInc_TopologyId aRetained =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt(2, 0, 0)));
   ASSERT_TRUE(aRemoved.IsValid());
   ASSERT_TRUE(aRetained.IsValid());
   ASSERT_TRUE(aGraph.Supplements().RemoveAttachment(aRemoved));
@@ -223,19 +261,24 @@ TEST(BRepGraphSupInc_TopologyStoreTest, CompactRetainsDirectShape)
   const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttachments =
     aGraph.Supplements().Attachments(anOwner);
   ASSERT_EQ(anAttachments.Size(), 1u);
-  const BRepGraphSupInc::TopologyDef* anAttachment = aGraph.Supplements().Attachment(anAttachments.First());
+  const BRepGraphSupInc::TopologyDef* anAttachment =
+    aGraph.Supplements().Attachment(anAttachments.First());
   ASSERT_NE(anAttachment, nullptr);
   EXPECT_EQ(anAttachment->Shape.ShapeType(), TopAbs_VERTEX);
 }
 
 TEST(BRepGraphSupInc_TopologyStoreTest, GraphCompactCompactsSoftRemovedAttachments)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId aRemoved = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(1, 0, 0)));
-  const BRepGraphSupInc_TopologyId aRetained = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(2, 0, 0)));
+  BRepGraph                        aGraph;
+  const BRepGraph_VertexId         anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId aRemoved =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt(1, 0, 0)));
+  const BRepGraphSupInc_TopologyId aRetained =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt(2, 0, 0)));
   ASSERT_TRUE(aRemoved.IsValid());
   ASSERT_TRUE(aRetained.IsValid());
   const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
@@ -260,10 +303,12 @@ TEST(BRepGraphSupInc_TopologyStoreTest, GraphCompactCompactsSoftRemovedAttachmen
 
 TEST(BRepGraphSupInc_TopologyStoreTest, RuntimeUIDLookupReturnsGenericAndTypedIDs)
 {
-  BRepGraph aGraph;
-  const BRepGraph_VertexId anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraphSupInc_TopologyId anAttachment = aGraph.Supplements().Attach(
-    anOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt()));
+  BRepGraph                        aGraph;
+  const BRepGraph_VertexId         anOwner = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraphSupInc_TopologyId anAttachment =
+    aGraph.Supplements().Attach(anOwner,
+                                BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                                makeVertex(gp_Pnt()));
   ASSERT_TRUE(anAttachment.IsValid());
   const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
     occ::down_cast<BRepGraphSupInc_TopologyStore>(
@@ -271,12 +316,12 @@ TEST(BRepGraphSupInc_TopologyStoreTest, RuntimeUIDLookupReturnsGenericAndTypedID
   ASSERT_FALSE(aTopology.IsNull());
   const BRepGraphSupInc_ItemUID anUID = aTopology->ItemUID(anAttachment);
 
-  const occ::handle<BRepGraphSupInc_Store> aStore = aTopology;
-  const BRepGraphSupInc_DefinitionId aDefinition = aStore->FindDefinitionByUID(anUID);
+  const occ::handle<BRepGraphSupInc_Store> aStore      = aTopology;
+  const BRepGraphSupInc_DefinitionId       aDefinition = aStore->FindDefinitionByUID(anUID);
   ASSERT_TRUE(aDefinition.IsValid());
   EXPECT_EQ(aDefinition,
-            (BRepGraphSupInc_DefinitionId{
-              BRepGraphSupInc_TopologyStore::THE_TOPOLOGY_KIND, anAttachment.Index}));
+            (BRepGraphSupInc_DefinitionId{BRepGraphSupInc_TopologyStore::THE_TOPOLOGY_KIND,
+                                          anAttachment.Index}));
   EXPECT_EQ(aTopology->FindByUID(anUID), anAttachment);
 
   const BRepGraphSupInc_ItemUID aWrongStoreUID{0, anUID.Kind, anUID.Counter};
@@ -295,19 +340,21 @@ TEST(BRepGraphSupInc_TopologyStoreTest, RuntimeUIDLookupReturnsGenericAndTypedID
 
 TEST(BRepGraphSupInc_TopologyStoreTest, AttachmentInvalidatesOwnerAndAncestorShapes)
 {
-  BRepGraph aGraph;
+  BRepGraph                aGraph;
   const BRepGraph_VertexId aStart = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  const BRepGraph_VertexId anEnd = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
-  const BRepGraph_EdgeId anEdge = aGraph.Editor().Edges().Add(
-    aStart, anEnd, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
+  const BRepGraph_VertexId anEnd  = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_EdgeId   anEdge =
+    aGraph.Editor().Edges().Add(aStart, anEnd, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
   NCollection_LinearVector<BRepGraph_NodeId> aChildren;
   aChildren.Append(anEdge);
   const BRepGraph_CompoundId aCompound = aGraph.Editor().Compounds().Add(aChildren.ToArray1());
 
   EXPECT_EQ(vertexCount(aGraph.Shapes().Shape(anEdge)), 2);
   EXPECT_EQ(vertexCount(aGraph.Shapes().Shape(aCompound)), 2);
-  const BRepGraphSupInc_TopologyId anAttachment = aGraph.Supplements().Attach(
-    anEdge, BRepGraphSupInc::TopologyAttachmentKind::EdgeInternalVertex, makeVertex(gp_Pnt(0.5, 0.0, 0.0)));
+  const BRepGraphSupInc_TopologyId anAttachment =
+    aGraph.Supplements().Attach(anEdge,
+                                BRepGraphSupInc::TopologyAttachmentKind::EdgeInternalVertex,
+                                makeVertex(gp_Pnt(0.5, 0.0, 0.0)));
   ASSERT_TRUE(anAttachment.IsValid());
   EXPECT_EQ(vertexCount(aGraph.Shapes().Shape(anEdge)), 3);
   EXPECT_EQ(vertexCount(aGraph.Shapes().Shape(aCompound)), 3);
@@ -321,10 +368,10 @@ TEST(BRepGraphSupInc_TopologyStoreTest, AttachmentInvalidatesOwnerAndAncestorSha
 
 TEST(BRepGraphSupInc_TopologyStoreTest, ShapesViewRoutesSupplementWithoutCoreAppend)
 {
-  BRepGraph aGraph;
+  BRepGraph               aGraph;
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
-  TopoDS_Edge anEdge;
-  BRep_Builder aBuilder;
+  TopoDS_Edge             anEdge;
+  BRep_Builder            aBuilder;
   aBuilder.MakeEdge(anEdge);
   const BRepGraph::ShapesView::Result aResult = aGraph.Shapes().Add(anEdge, aShell);
   ASSERT_TRUE(aResult.IsOk());
@@ -334,16 +381,19 @@ TEST(BRepGraphSupInc_TopologyStoreTest, ShapesViewRoutesSupplementWithoutCoreApp
 
 TEST(BRepGraphSupInc_TopologyStoreTest, CopyPreservesDirectShapeThroughStorage)
 {
-  BRepGraph aSource;
+  BRepGraph                aSource;
   const BRepGraph_VertexId aSourceOwner = aSource.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
-  ASSERT_TRUE(aSource.Supplements().Attach(
-    aSourceOwner, BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape, makeVertex(gp_Pnt(1, 0, 0))).IsValid());
+  ASSERT_TRUE(aSource.Supplements()
+                .Attach(aSourceOwner,
+                        BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                        makeVertex(gp_Pnt(1, 0, 0)))
+                .IsValid());
 
   BRepGraph anIdentityTarget;
   ASSERT_TRUE(BRepGraph_Copy::Perform(aSource,
-                                       anIdentityTarget,
-                                       BRepGraph_Copy::GeomPolicy::Drop,
-                                       BRepGraph_Copy::MeshPolicy::Drop));
+                                      anIdentityTarget,
+                                      BRepGraph_Copy::GeomPolicy::Drop,
+                                      BRepGraph_Copy::MeshPolicy::Drop));
   const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anIdentityAttachments =
     anIdentityTarget.Supplements().Attachments(aSourceOwner);
   ASSERT_EQ(anIdentityAttachments.Size(), 1u);
@@ -355,10 +405,10 @@ TEST(BRepGraphSupInc_TopologyStoreTest, CopyPreservesDirectShapeThroughStorage)
   BRepGraph anAppendTarget;
   (void)anAppendTarget.Editor().Vertices().Add(gp_Pnt(-1, 0, 0), 1.0e-7);
   ASSERT_TRUE(BRepGraph_Copy::Perform(aSource,
-                                       anAppendTarget,
-                                       BRepGraph_Copy::GeomPolicy::Drop,
-                                       BRepGraph_Copy::MeshPolicy::Drop));
-  const BRepGraph_VertexId anAppendedOwner(1);
+                                      anAppendTarget,
+                                      BRepGraph_Copy::GeomPolicy::Drop,
+                                      BRepGraph_Copy::MeshPolicy::Drop));
+  const BRepGraph_VertexId                                    anAppendedOwner(1);
   const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAppendedAttachments =
     anAppendTarget.Supplements().Attachments(anAppendedOwner);
   ASSERT_EQ(anAppendedAttachments.Size(), 1u);

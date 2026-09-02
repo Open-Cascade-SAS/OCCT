@@ -105,8 +105,7 @@ inline size_t addSurfaceVertex(SurfaceBoundary& theBoundary,
   return theBoundary.Vertices.Size() - 1;
 }
 
-inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve,
-                                 const double                   theTolerance)
+inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve, const double theTolerance)
 {
   if (theCurve.IsNull())
   {

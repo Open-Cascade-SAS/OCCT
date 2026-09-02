@@ -201,10 +201,10 @@ BRepGraph_Deduplicate::Result BRepGraph_Deduplicate::Perform(BRepGraph&     theG
 
     // Deduplicate curves by comparing Handle pointers on EdgeDefs.
     NCollection_DataMap<occ::handle<Geom_Curve>, BRepGraph_EdgeId, GeomHash_CurveHasher>
-                                                            aCurveToCanonicalEdge(
-                                                              aCurveHasher,
-                                                              std::max<size_t>(1, static_cast<size_t>(theGraph.Topo().Edges().Nb()) * 2),
-                                                              aTmpAlloc);
+      aCurveToCanonicalEdge(
+        aCurveHasher,
+        std::max<size_t>(1, static_cast<size_t>(theGraph.Topo().Edges().Nb()) * 2),
+        aTmpAlloc);
     NCollection_DataMap<BRepGraph_EdgeId, BRepGraph_EdgeId> aCurveRewriteMap(
       std::max<size_t>(1, theGraph.Topo().Edges().Nb()),
       aTmpAlloc);

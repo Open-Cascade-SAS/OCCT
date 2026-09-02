@@ -93,7 +93,7 @@ void incrementOwnerCount(NCollection_LinearVector<uint32_t>& theOwnerCounts, con
 
 template <typename RefIdT>
 uint32_t ownerCountOf(const NCollection_LinearVector<uint32_t>& theOwnerCounts,
-                      const RefIdT                             theRefId)
+                      const RefIdT                              theRefId)
 {
   return theRefId.IsValid() && theRefId.Index < theOwnerCounts.Size()
            ? theOwnerCounts[theRefId.Index]
@@ -790,8 +790,7 @@ void checkGeometryReferences(const BRepGraph&                                   
       continue;
     }
 
-    const Geom2dAdaptor_Curve aPCurve =
-      BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCoEdgeId);
+    const Geom2dAdaptor_Curve aPCurve = BRepGraph_Tool::CoEdge::PCurveAdaptor(theGraph, aCoEdgeId);
     if (!aPCurve.IsInitialized() || aPCurve.Curve().IsNull())
     {
       theIssues.Append(
@@ -1714,8 +1713,8 @@ BRepGraph_Validate::Result BRepGraph_Validate::Perform(const BRepGraph& theGraph
   {
     const BRepGraph::RefsView& aRefs            = theGraph.Refs();
     auto                       appendOwnerIssue = [&](const BRepGraph_NodeId         theNode,
-                                                      const uint32_t                 theOwnerCount,
-                                                      const TCollection_AsciiString& theKind) {
+                                const uint32_t                 theOwnerCount,
+                                const TCollection_AsciiString& theKind) {
       if (theOwnerCount == 0)
       {
         TCollection_AsciiString aDesc("Orphan ");

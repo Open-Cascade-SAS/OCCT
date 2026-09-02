@@ -84,10 +84,9 @@ BRepGraph_RevisionHash BRepGraph_RevisionMerkleHasher::LeafHash(
   return anInput.Hash();
 }
 
-BRepGraph_RevisionHash BRepGraph_RevisionMerkleHasher::BranchHash(
-  const size_t     theDepth,
-  const ChildHash* theChildren,
-  const size_t     theNbChildren)
+BRepGraph_RevisionHash BRepGraph_RevisionMerkleHasher::BranchHash(const size_t     theDepth,
+                                                                  const ChildHash* theChildren,
+                                                                  const size_t     theNbChildren)
 {
   HashInput anInput;
   anInput.AppendUInt32(0x4d42524eu); // MBRN

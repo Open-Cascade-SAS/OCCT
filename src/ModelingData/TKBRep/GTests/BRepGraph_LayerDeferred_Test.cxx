@@ -78,10 +78,8 @@ TEST(BRepGraph_LayerDeferredTest, OnNodeReplacedMergesOverlappingRepresentations
 
   occ::handle<BRepGraph_LayerDeferred> aLayer = new BRepGraph_LayerDeferred();
 
-  const Representation aShared =
-    makeRepresentation(RepresentationKind::Geometry, "surface", 42);
-  const Representation anOldOnly =
-    makeRepresentation(RepresentationKind::Mesh, "triangulation", 7);
+  const Representation aShared   = makeRepresentation(RepresentationKind::Geometry, "surface", 42);
+  const Representation anOldOnly = makeRepresentation(RepresentationKind::Mesh, "triangulation", 7);
   const Representation aNewOnly =
     makeRepresentation(RepresentationKind::Topology, "face-topology", 9);
 

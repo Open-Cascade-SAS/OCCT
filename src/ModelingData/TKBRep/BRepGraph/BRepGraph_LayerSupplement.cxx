@@ -74,7 +74,8 @@ uint32_t BRepGraph_LayerSupplement::Add(const BRepGraphSupInc_Endpoint& theSourc
 
 //=================================================================================================
 
-const BRepGraph_LayerSupplement::Reference* BRepGraph_LayerSupplement::Find(const uint32_t theUID) const
+const BRepGraph_LayerSupplement::Reference* BRepGraph_LayerSupplement::Find(
+  const uint32_t theUID) const
 {
   return theUID == 0 ? nullptr : myReferences.Seek(theUID);
 }
@@ -120,7 +121,7 @@ void BRepGraph_LayerSupplement::OnItemRemoved(const BRepGraph_ItemId theItem) no
 //=================================================================================================
 
 void BRepGraph_LayerSupplement::OnNodeReplaced(const BRepGraph_NodeId theOldNode,
-                                                const BRepGraph_NodeId theNewNode) noexcept
+                                               const BRepGraph_NodeId theNewNode) noexcept
 {
   if (!theOldNode.IsValid() || !theNewNode.IsValid() || theOldNode.NodeKind != theNewNode.NodeKind)
   {
@@ -131,8 +132,8 @@ void BRepGraph_LayerSupplement::OnNodeReplaced(const BRepGraph_NodeId theOldNode
     BRepGraphSupInc_Endpoint::Core(BRepGraph_ItemId(theOldNode));
   const BRepGraphSupInc_Endpoint aNewEndpoint =
     BRepGraphSupInc_Endpoint::Core(BRepGraph_ItemId(theNewNode));
-  const NCollection_LinearVector<uint32_t> aUIDs = Related(anOldEndpoint);
-  bool                                      isChanged = false;
+  const NCollection_LinearVector<uint32_t> aUIDs     = Related(anOldEndpoint);
+  bool                                     isChanged = false;
   for (const uint32_t aUID : aUIDs)
   {
     Reference* aReference = myReferences.ChangeSeek(aUID);
@@ -181,13 +182,14 @@ void BRepGraph_LayerSupplement::OnSupplementRemoved(const BRepGraphSupInc_ItemUI
 //=================================================================================================
 
 void BRepGraph_LayerSupplement::CopySupplementalTo(
-  const BRepGraph_CopyRemap&          theCopy,
+  const BRepGraph_CopyRemap&         theCopy,
   const BRepGraphSupInc_CopyContext& theSupplementCopy) const
 {
   occ::handle<BRepGraph_LayerSupplement> aTarget;
-  for (NCollection_FlatDataMap<uint32_t, Reference>::Iterator anIt(myReferences); anIt.More(); anIt.Next())
+  for (NCollection_FlatDataMap<uint32_t, Reference>::Iterator anIt(myReferences); anIt.More();
+       anIt.Next())
   {
-    const Reference& aReference = anIt.Value();
+    const Reference&               aReference = anIt.Value();
     const BRepGraphSupInc_Endpoint aSource =
       remapEndpoint(aReference.Source, theCopy, theSupplementCopy);
     const BRepGraphSupInc_Endpoint aTargetEndpoint =
@@ -235,15 +237,13 @@ bool BRepGraph_LayerSupplement::isValidEndpoint(const BRepGraphSupInc_Endpoint& 
   }
   switch (theEndpoint.ItemDomain())
   {
-    case BRepGraphSupInc_Endpoint::Domain::CoreItem:
-    {
+    case BRepGraphSupInc_Endpoint::Domain::CoreItem: {
       const BRepGraph_ItemId* aCoreItem = theEndpoint.CoreItem();
       return aCoreItem != nullptr
              && (aCoreItem->IsNode() ? !aCoreItem->NodeId().IsRemoved(Graph())
                                      : !aCoreItem->RefId().IsRemoved(Graph()));
     }
-    case BRepGraphSupInc_Endpoint::Domain::SupplementalItem:
-    {
+    case BRepGraphSupInc_Endpoint::Domain::SupplementalItem: {
       const BRepGraphSupInc_ItemUID* aSupplementalItem = theEndpoint.SupplementalItem();
       return aSupplementalItem != nullptr && Graph().Supplements().Has(*aSupplementalItem);
     }
@@ -256,7 +256,7 @@ bool BRepGraph_LayerSupplement::isValidEndpoint(const BRepGraphSupInc_Endpoint& 
 //=================================================================================================
 
 void BRepGraph_LayerSupplement::addIndex(const BRepGraphSupInc_Endpoint& theEndpoint,
-                                         const uint32_t                   theUID)
+                                         const uint32_t                  theUID)
 {
   NCollection_LinearVector<uint32_t>* aUIDs = myEndpointToUIDs.ChangeSeek(theEndpoint);
   if (aUIDs == nullptr)
@@ -271,7 +271,7 @@ void BRepGraph_LayerSupplement::addIndex(const BRepGraphSupInc_Endpoint& theEndp
 //=================================================================================================
 
 void BRepGraph_LayerSupplement::removeIndex(const BRepGraphSupInc_Endpoint& theEndpoint,
-                                            const uint32_t                   theUID) noexcept
+                                            const uint32_t                  theUID) noexcept
 {
   NCollection_LinearVector<uint32_t>* aUIDs = myEndpointToUIDs.ChangeSeek(theEndpoint);
   if (aUIDs == nullptr)
@@ -301,8 +301,8 @@ void BRepGraph_LayerSupplement::removeByEndpoint(
   {
     return;
   }
-  const NCollection_LinearVector<uint32_t> aUIDs = Related(theEndpoint);
-  bool                                      isChanged = false;
+  const NCollection_LinearVector<uint32_t> aUIDs     = Related(theEndpoint);
+  bool                                     isChanged = false;
   for (const uint32_t aUID : aUIDs)
   {
     const Reference* aReference = Find(aUID);
@@ -329,15 +329,16 @@ void BRepGraph_LayerSupplement::removeByEndpoint(
 //=================================================================================================
 
 BRepGraphSupInc_Endpoint BRepGraph_LayerSupplement::remapEndpoint(
-  const BRepGraphSupInc_Endpoint& theEndpoint,
-  const BRepGraph_CopyRemap&      theCopy,
+  const BRepGraphSupInc_Endpoint&    theEndpoint,
+  const BRepGraph_CopyRemap&         theCopy,
   const BRepGraphSupInc_CopyContext& theSupplementCopy)
 {
   if (theEndpoint.ItemDomain() == BRepGraphSupInc_Endpoint::Domain::CoreItem)
   {
     const BRepGraph_ItemId* aCoreItem = theEndpoint.CoreItem();
-    return aCoreItem != nullptr ? BRepGraphSupInc_Endpoint::Core(theCopy.TargetItemOrInvalid(*aCoreItem))
-                                : BRepGraphSupInc_Endpoint();
+    return aCoreItem != nullptr
+             ? BRepGraphSupInc_Endpoint::Core(theCopy.TargetItemOrInvalid(*aCoreItem))
+             : BRepGraphSupInc_Endpoint();
   }
   if (theEndpoint.ItemDomain() == BRepGraphSupInc_Endpoint::Domain::SupplementalItem)
   {
@@ -347,7 +348,8 @@ BRepGraphSupInc_Endpoint BRepGraph_LayerSupplement::remapEndpoint(
       return BRepGraphSupInc_Endpoint();
     }
     BRepGraphSupInc_ItemUID aTarget = theSupplementCopy.TargetUID(*aSupplementalItem);
-    if (!aTarget.IsValid() && theSupplementCopy.CopyMode() == BRepGraphSupInc_CopyContext::Mode::Compact
+    if (!aTarget.IsValid()
+        && theSupplementCopy.CopyMode() == BRepGraphSupInc_CopyContext::Mode::Compact
         && theCopy.TargetGraph().Supplements().Has(*aSupplementalItem))
     {
       aTarget = *aSupplementalItem;

@@ -179,8 +179,7 @@ private:
   [[nodiscard]] bool bindRegistry(const uint32_t theStoreId) noexcept
   {
     uint32_t anExpectedId = 0;
-    return theStoreId != 0
-           && myStoreId.compare_exchange_strong(anExpectedId, theStoreId);
+    return theStoreId != 0 && myStoreId.compare_exchange_strong(anExpectedId, theStoreId);
   }
 
   void unbindRegistry(const uint32_t theStoreId) noexcept

@@ -1681,17 +1681,17 @@ BRepGraph_NodeId BRepGraph_Copy::CopyNode(const BRepGraph&       theSourceGraph,
 
     const bool             isSelfCopy = &theSourceGraph == &theTargetGraph;
     const BRepGraph_NodeId aMapped    = isSelfCopy ? copyNodeInPlace(aCandidate,
-                                                                     aCandidate,
-                                                                     theNodeId,
-                                                                     theGeomPolicy,
-                                                                     theMeshPolicy,
-                                                                     theCachePolicy)
+                                                                  aCandidate,
+                                                                  theNodeId,
+                                                                  theGeomPolicy,
+                                                                  theMeshPolicy,
+                                                                  theCachePolicy)
                                                    : copyNodeInPlace(theSourceGraph,
-                                                                     aCandidate,
-                                                                     theNodeId,
-                                                                     theGeomPolicy,
-                                                                     theMeshPolicy,
-                                                                     theCachePolicy);
+                                                                  aCandidate,
+                                                                  theNodeId,
+                                                                  theGeomPolicy,
+                                                                  theMeshPolicy,
+                                                                  theCachePolicy);
     if (!aMapped.IsValid())
     {
       return BRepGraph_NodeId();

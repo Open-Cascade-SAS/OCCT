@@ -311,7 +311,7 @@ private:
   NCollection_FlatDataMap<BRepGraph_UID, uint32_t>                   myFaceChangeIndices;
   NCollection_FlatDataMap<BRepGraph_RefUID, uint32_t>                myWireRefChangeIndices;
   NCollection_LinearVector<occ::handle<BRepGraph_RevisionComponent>> myComponents;
-  NCollection_FlatDataMap<Standard_GUID, uint32_t>                    myComponentIndices;
+  NCollection_FlatDataMap<Standard_GUID, uint32_t>                   myComponentIndices;
   NCollection_FlatMap<Standard_GUID>                                 myChangedComponentGUIDs;
   NCollection_LinearVector<UIDRange>                                 myAllocatedRanges;
   BRepGraph_RevisionStatus::Diagnostics                              myDiagnostics;

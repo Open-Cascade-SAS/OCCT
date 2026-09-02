@@ -36,8 +36,7 @@
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
-    static const NCollection_BitDynamicArray& Removed(                                             \
-      const BRepGraphInc_Storage& theStorage)                                                      \
+    static const NCollection_BitDynamicArray& Removed(const BRepGraphInc_Storage& theStorage)      \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
@@ -45,8 +44,7 @@
     {                                                                                              \
       return theStorage.F.OwnedFlags;                                                              \
     }                                                                                              \
-    static const NCollection_BitDynamicArray& Owned(                                               \
-      const BRepGraphInc_Storage& theStorage)                                                      \
+    static const NCollection_BitDynamicArray& Owned(const BRepGraphInc_Storage& theStorage)        \
     {                                                                                              \
       return theStorage.F.OwnedFlags;                                                              \
     }                                                                                              \
@@ -54,8 +52,7 @@
     {                                                                                              \
       return theStorage.F.GuardFlags;                                                              \
     }                                                                                              \
-    static const NCollection_BitDynamicArray& Guard(                                               \
-      const BRepGraphInc_Storage& theStorage)                                                      \
+    static const NCollection_BitDynamicArray& Guard(const BRepGraphInc_Storage& theStorage)        \
     {                                                                                              \
       return theStorage.F.GuardFlags;                                                              \
     }                                                                                              \
@@ -113,8 +110,7 @@ OCCT_BG_DEF_PLANES(BRepGraph_OccurrenceId, myOccurrences)
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
-    static const NCollection_BitDynamicArray& Removed(                                             \
-      const BRepGraphInc_Storage& theStorage)                                                      \
+    static const NCollection_BitDynamicArray& Removed(const BRepGraphInc_Storage& theStorage)      \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
@@ -122,8 +118,7 @@ OCCT_BG_DEF_PLANES(BRepGraph_OccurrenceId, myOccurrences)
     {                                                                                              \
       return theStorage.F.OwnedFlags;                                                              \
     }                                                                                              \
-    static const NCollection_BitDynamicArray& Owned(                                               \
-      const BRepGraphInc_Storage& theStorage)                                                      \
+    static const NCollection_BitDynamicArray& Owned(const BRepGraphInc_Storage& theStorage)        \
     {                                                                                              \
       return theStorage.F.OwnedFlags;                                                              \
     }                                                                                              \
@@ -131,8 +126,7 @@ OCCT_BG_DEF_PLANES(BRepGraph_OccurrenceId, myOccurrences)
     {                                                                                              \
       return theStorage.F.GuardFlags;                                                              \
     }                                                                                              \
-    static const NCollection_BitDynamicArray& Guard(                                               \
-      const BRepGraphInc_Storage& theStorage)                                                      \
+    static const NCollection_BitDynamicArray& Guard(const BRepGraphInc_Storage& theStorage)        \
     {                                                                                              \
       return theStorage.F.GuardFlags;                                                              \
     }                                                                                              \
@@ -170,8 +164,7 @@ OCCT_BG_REF_PLANES(BRepGraph_OccurrenceRefId, myOccurrenceRefs)
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
-    static const NCollection_BitDynamicArray& Removed(                                             \
-      const BRepGraphInc_Storage& theStorage)                                                      \
+    static const NCollection_BitDynamicArray& Removed(const BRepGraphInc_Storage& theStorage)      \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \

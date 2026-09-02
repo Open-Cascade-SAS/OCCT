@@ -1358,7 +1358,8 @@ TEST(BRepGraph_AssemblyTest, Add_CompoundParent_AppendsAsChild)
     static_cast<uint32_t>(aGraph.Topo().Compounds().Relations(aCompoundId).ChildRefIds.Size());
 
   TopoDS_Shape aFace;
-  for (TopExp_Explorer anExp(BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape(), TopAbs_FACE); anExp.More();)
+  for (TopExp_Explorer anExp(BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape(), TopAbs_FACE);
+       anExp.More();)
   {
     aFace = anExp.Current();
     break;

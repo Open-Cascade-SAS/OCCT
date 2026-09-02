@@ -279,7 +279,6 @@ TEST(BRepGraph_RefIdTest, RefDomain_Stamp_IfSupported)
   }
 
   EXPECT_TRUE(aStamp.IsRefStamp());
-
 }
 
 TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_CountsDoNotExceedInlineStorage)

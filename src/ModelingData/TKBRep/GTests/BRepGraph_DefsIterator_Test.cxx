@@ -159,8 +159,8 @@ TEST(BRepGraph_DefsIteratorTestStandalone, VertexOfEdge_EnumeratesBoundaryVertic
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes2 =
     aGraph.Shapes().Add(wrapEdgeInFace(makeEdgeWithInternalVertex()));
 
-  bool   aFoundSplitVertex = false;
-  uint32_t aCount          = 0;
+  bool     aFoundSplitVertex = false;
+  uint32_t aCount            = 0;
   for (BRepGraph_DefsVertexOfEdge anIt(aGraph, BRepGraph_EdgeId::Start()); anIt.More(); anIt.Next())
   {
     ++aCount;

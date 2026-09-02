@@ -197,7 +197,7 @@ TEST(GeomHash_MeshHasherTest, HashToleranceAffectsNumericFields)
 
 TEST(GeomHash_MeshAppenderTest, TriangulationHashesCompletePersistentContent)
 {
-  const GeomHash_MeshAppender<> aHasher;
+  const GeomHash_MeshAppender<>   aHasher;
   occ::handle<Poly_Triangulation> aBase = new Poly_Triangulation(3, 1, true, true);
   aBase->SetNode(1, gp_Pnt(0.0, 0.0, 0.0));
   aBase->SetNode(2, gp_Pnt(1.0, 0.0, 0.0));
@@ -213,8 +213,8 @@ TEST(GeomHash_MeshAppenderTest, TriangulationHashesCompletePersistentContent)
   aBase->SetMeshPurpose(Poly_MeshPurpose_Calculation);
   aBase->Parameters(new Poly_TriangulationParameters(0.01, 0.2, 0.001));
 
-  const uint64_t aBaseHash = aHasher(aBase);
-  const auto expectChange = [&](const occ::handle<Poly_Triangulation>& theChanged) {
+  const uint64_t aBaseHash    = aHasher(aBase);
+  const auto     expectChange = [&](const occ::handle<Poly_Triangulation>& theChanged) {
     EXPECT_NE(aBaseHash, aHasher(theChanged));
   };
 
@@ -266,14 +266,12 @@ TEST(GeomHash_MeshAppenderTest, PolygonHashesCompletePersistentContent)
   aChanged2d->ChangeNodes().SetValue(2, gp_Pnt2d(2.0, 0.0));
   EXPECT_NE(aHasher(aPolygon2d), aHasher(aChanged2d));
 
-  occ::handle<Poly_PolygonOnTriangulation> aPolygonOnTri =
-    new Poly_PolygonOnTriangulation(2, true);
+  occ::handle<Poly_PolygonOnTriangulation> aPolygonOnTri = new Poly_PolygonOnTriangulation(2, true);
   aPolygonOnTri->SetNode(1, 1);
   aPolygonOnTri->SetNode(2, 2);
   aPolygonOnTri->SetParameter(1, 0.0);
   aPolygonOnTri->SetParameter(2, 1.0);
-  occ::handle<Poly_PolygonOnTriangulation> aChangedOnTri =
-    new Poly_PolygonOnTriangulation(2, true);
+  occ::handle<Poly_PolygonOnTriangulation> aChangedOnTri = new Poly_PolygonOnTriangulation(2, true);
   aChangedOnTri->SetNode(1, 1);
   aChangedOnTri->SetNode(2, 2);
   aChangedOnTri->SetParameter(1, 0.0);

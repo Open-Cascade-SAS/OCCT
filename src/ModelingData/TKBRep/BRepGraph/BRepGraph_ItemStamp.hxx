@@ -44,12 +44,12 @@ struct BRepGraph_ItemStamp
     Reference = 2
   };
 
-  BRepGraph_UID    myNodeUID;     //!< Definition-node identity for node-domain stamps.
-  BRepGraph_RefUID myRefUID;      //!< Reference-entry identity for reference-domain stamps.
-  uint32_t         myMutationGen; //!< OwnGen counter when the stamp was recorded.
-  uint32_t         myGeneration;  //!< Graph BRepGraph::Clear() generation when recorded.
+  BRepGraph_UID    myNodeUID;         //!< Definition-node identity for node-domain stamps.
+  BRepGraph_RefUID myRefUID;          //!< Reference-entry identity for reference-domain stamps.
+  uint32_t         myMutationGen;     //!< OwnGen counter when the stamp was recorded.
+  uint32_t         myGeneration;      //!< Graph BRepGraph::Clear() generation when recorded.
   Standard_GUID    myRuntimeIdentity; //!< Process-local graph branch identity.
-  Domain           myDomain;      //!< Active identity domain.
+  Domain           myDomain;          //!< Active identity domain.
 
   //! Default constructor. Creates an invalid stamp (invalid UID, zero counters).
   BRepGraph_ItemStamp()

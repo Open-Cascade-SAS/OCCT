@@ -73,10 +73,10 @@ TEST(BRepGraph_CopyRemapTest, ExplicitMappingResolvesMappedItemsAndUIDs)
   BRepGraph aSource = makeBoxGraph();
   BRepGraph aTarget = makeBoxGraph();
 
-  const BRepGraph_ItemId aSourceFace = item(BRepGraph_FaceId::Start());
-  const BRepGraph_ItemId aTargetFace = item(BRepGraph_FaceId(1));
-  const BRepGraph_ItemId aSourceEdge = item(BRepGraph_EdgeId::Start());
-  const BRepGraph_ItemId aTargetEdge = item(BRepGraph_EdgeId::Start());
+  const BRepGraph_ItemId aSourceFace    = item(BRepGraph_FaceId::Start());
+  const BRepGraph_ItemId aTargetFace    = item(BRepGraph_FaceId(1));
+  const BRepGraph_ItemId aSourceEdge    = item(BRepGraph_EdgeId::Start());
+  const BRepGraph_ItemId aTargetEdge    = item(BRepGraph_EdgeId::Start());
   const BRepGraph_ItemId anUnmappedFace = item(BRepGraph_FaceId(2));
   ASSERT_TRUE(aSourceFace.IsValid());
   ASSERT_TRUE(aTargetFace.IsValid());
@@ -89,10 +89,7 @@ TEST(BRepGraph_CopyRemapTest, ExplicitMappingResolvesMappedItemsAndUIDs)
   anItemMap.Bind(aSourceFace, aTargetFace);
   anItemMap.Bind(aSourceEdge, aTargetEdge);
 
-  const BRepGraph_CopyRemap aRemap(aSource,
-                                   aTarget,
-                                   anItemMap,
-                                   BRepGraph_CopyRemap::Mode::Compact);
+  const BRepGraph_CopyRemap aRemap(aSource, aTarget, anItemMap, BRepGraph_CopyRemap::Mode::Compact);
 
   EXPECT_EQ(aRemap.CopyMode(), BRepGraph_CopyRemap::Mode::Compact);
   EXPECT_TRUE(aRemap.IsCompact());
@@ -115,7 +112,7 @@ TEST(BRepGraph_CopyRemapTest, SubtreeMatchRejectsDivergentNodesWithEqualCounters
   BRepGraph aSource = makeBoxGraph();
   BRepGraph aTarget = makeBoxGraph();
 
-  const BRepGraph_FaceId aFace = BRepGraph_FaceId::Start();
+  const BRepGraph_FaceId       aFace      = BRepGraph_FaceId::Start();
   const BRepGraphInc::BaseDef* aSourceDef = aSource.Topo().Gen().TopoEntity(aFace);
   const BRepGraphInc::BaseDef* aTargetDef = aTarget.Topo().Gen().TopoEntity(aFace);
   ASSERT_NE(aSourceDef, nullptr);

@@ -695,7 +695,8 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_FaceNotYetMeshed_RecordedGenerationZero)
 
   EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
             nullptr)
-    << "PolygonOnTri must be stale when face has never been meshed (stored generation=0 vs default=0)";
+    << "PolygonOnTri must be stale when face has never been meshed (stored generation=0 vs "
+       "default=0)";
 
   writeFaceMesh(aGraph, aFaceId);
 

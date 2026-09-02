@@ -386,13 +386,13 @@ public:
       size_t anIndex = anOldSize;
       while (anIndex < theSize)
       {
-        Page& aPage = changePage(pageIndex(anIndex));
-        const size_t aPageEnd = anIndex + std::min(theSize - anIndex,
-                                                   myPageSize - pageOffset(anIndex));
+        Page&        aPage = changePage(pageIndex(anIndex));
+        const size_t aPageEnd =
+          anIndex + std::min(theSize - anIndex, myPageSize - pageOffset(anIndex));
         for (; anIndex < aPageEnd; ++anIndex)
         {
           aPage.Values.ChangeAt(pageOffset(anIndex)) = theValue;
-          mySize                                      = anIndex + 1;
+          mySize                                     = anIndex + 1;
         }
       }
       return;

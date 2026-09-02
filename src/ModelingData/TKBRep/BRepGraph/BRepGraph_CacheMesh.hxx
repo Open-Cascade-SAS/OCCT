@@ -288,8 +288,8 @@ public:
   [[nodiscard]] Standard_EXPORT EdgeMeshEntry& ChangeEdgeMesh(const BRepGraph_EdgeId theEdge);
   Standard_EXPORT void                         ClearEdgeMesh(const BRepGraph_EdgeId theEdge);
 
-  [[nodiscard]] Standard_EXPORT bool HasFaceMesh(const SlotId           theSlot,
-                                                 const BRepGraph_FaceId theFace) const;
+  [[nodiscard]] Standard_EXPORT bool                 HasFaceMesh(const SlotId           theSlot,
+                                                                 const BRepGraph_FaceId theFace) const;
   [[nodiscard]] Standard_EXPORT const FaceMeshEntry* FindFaceMesh(
     const SlotId           theSlot,
     const BRepGraph_FaceId theFace) const;
@@ -297,15 +297,15 @@ public:
                                                               const BRepGraph_FaceId theFace);
   Standard_EXPORT void ClearFaceMesh(const SlotId theSlot, const BRepGraph_FaceId theFace);
 
-  [[nodiscard]] Standard_EXPORT bool HasCoEdgeMesh(const SlotId             theSlot,
-                                                   const BRepGraph_CoEdgeId theCoEdge) const;
+  [[nodiscard]] Standard_EXPORT bool             HasCoEdgeMesh(const SlotId             theSlot,
+                                                               const BRepGraph_CoEdgeId theCoEdge) const;
   [[nodiscard]] Standard_EXPORT CoEdgeMeshEntry& ChangeCoEdgeMesh(
     const SlotId             theSlot,
     const BRepGraph_CoEdgeId theCoEdge);
   Standard_EXPORT void ClearCoEdgeMesh(const SlotId theSlot, const BRepGraph_CoEdgeId theCoEdge);
 
-  [[nodiscard]] Standard_EXPORT bool HasEdgeMesh(const SlotId           theSlot,
-                                                 const BRepGraph_EdgeId theEdge) const;
+  [[nodiscard]] Standard_EXPORT bool                 HasEdgeMesh(const SlotId           theSlot,
+                                                                 const BRepGraph_EdgeId theEdge) const;
   [[nodiscard]] Standard_EXPORT const EdgeMeshEntry* FindEdgeMesh(
     const SlotId           theSlot,
     const BRepGraph_EdgeId theEdge) const;

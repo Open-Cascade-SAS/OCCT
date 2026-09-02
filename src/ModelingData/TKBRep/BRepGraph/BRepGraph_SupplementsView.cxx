@@ -65,7 +65,8 @@ bool BRepGraph::SupplementsView::Remove(const BRepGraphSupInc_ItemUID& theUID)
   if (!aStore.IsNull() && aStore->ID() == BRepGraphSupInc_TopologyStore::GetID())
   {
     const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
-      occ::down_cast<BRepGraphSupInc_TopologyStore>(FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+      occ::down_cast<BRepGraphSupInc_TopologyStore>(
+        FindStore(BRepGraphSupInc_TopologyStore::GetID()));
     return aTopology.IsNull() ? false : RemoveAttachment(aTopology->FindByUID(theUID));
   }
   if (!storage().Remove(theUID))
@@ -79,9 +80,9 @@ bool BRepGraph::SupplementsView::Remove(const BRepGraphSupInc_ItemUID& theUID)
 //=================================================================================================
 
 BRepGraphSupInc_TopologyId BRepGraph::SupplementsView::Attach(
-  const BRepGraph_NodeId theOwner,
+  const BRepGraph_NodeId                        theOwner,
   const BRepGraphSupInc::TopologyAttachmentKind theKind,
-  const TopoDS_Shape& theShape)
+  const TopoDS_Shape&                           theShape)
 {
   if (!theOwner.IsValid() || theShape.IsNull() || myGraph->Topo().Gen().IsRemoved(theOwner))
   {
@@ -100,8 +101,9 @@ BRepGraphSupInc_TopologyId BRepGraph::SupplementsView::Attach(
 const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& BRepGraph::SupplementsView::Attachments(
   const BRepGraph_NodeId theOwner) const
 {
-  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology = occ::down_cast<BRepGraphSupInc_TopologyStore>(
-    FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
+    occ::down_cast<BRepGraphSupInc_TopologyStore>(
+      FindStore(BRepGraphSupInc_TopologyStore::GetID()));
   static const NCollection_LinearVector<BRepGraphSupInc_TopologyId> THE_EMPTY;
   return aTopology.IsNull() ? THE_EMPTY : aTopology->AttachedTo(theOwner);
 }
@@ -111,8 +113,9 @@ const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& BRepGraph::Supplemen
 const BRepGraphSupInc::TopologyDef* BRepGraph::SupplementsView::Attachment(
   const BRepGraphSupInc_TopologyId theID) const
 {
-  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology = occ::down_cast<BRepGraphSupInc_TopologyStore>(
-    FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
+    occ::down_cast<BRepGraphSupInc_TopologyStore>(
+      FindStore(BRepGraphSupInc_TopologyStore::GetID()));
   return aTopology.IsNull() ? nullptr : aTopology->Find(theID);
 }
 
@@ -133,9 +136,10 @@ bool BRepGraph::SupplementsView::RemoveAttachment(const BRepGraphSupInc_Topology
   {
     return false;
   }
-  const BRepGraph_NodeId anOwner = anAttachment->Owner;
-  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology = occ::down_cast<BRepGraphSupInc_TopologyStore>(
-    FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+  const BRepGraph_NodeId                           anOwner = anAttachment->Owner;
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
+    occ::down_cast<BRepGraphSupInc_TopologyStore>(
+      FindStore(BRepGraphSupInc_TopologyStore::GetID()));
   const BRepGraphSupInc_ItemUID anAttachmentUID = aTopology->ItemUID(theID);
   if (!storage().RemoveTopology(theID))
   {
@@ -150,8 +154,9 @@ bool BRepGraph::SupplementsView::RemoveAttachment(const BRepGraphSupInc_Topology
 
 void BRepGraph::SupplementsView::RemoveOwnerAttachments(const BRepGraph_NodeId theOwner)
 {
-  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology = occ::down_cast<BRepGraphSupInc_TopologyStore>(
-    FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
+    occ::down_cast<BRepGraphSupInc_TopologyStore>(
+      FindStore(BRepGraphSupInc_TopologyStore::GetID()));
   if (!aTopology.IsNull())
   {
     const NCollection_LinearVector<BRepGraphSupInc_TopologyId> anAttachments =
@@ -178,7 +183,7 @@ void BRepGraph::SupplementsView::RemoveOwnerAttachments(const BRepGraph_NodeId t
 //=================================================================================================
 
 void BRepGraph::SupplementsView::ReplaceOwnerAttachments(const BRepGraph_NodeId theOldOwner,
-                                                           const BRepGraph_NodeId theNewOwner)
+                                                         const BRepGraph_NodeId theNewOwner)
 {
   const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
     occ::down_cast<BRepGraphSupInc_TopologyStore>(

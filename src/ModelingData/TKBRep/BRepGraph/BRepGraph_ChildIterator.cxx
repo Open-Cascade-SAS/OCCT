@@ -208,10 +208,10 @@ void BRepGraph_ChildIterator::seek()
         return;
       }
       myCurrent    = ValueType{aCoEdge.ChildEdgeId,
-                               BRepGraph_RefId(),
-                               0,
-                               aCoEdge.Orientation,
-                               LinkKind::Structural};
+                            BRepGraph_RefId(),
+                            0,
+                            aCoEdge.Orientation,
+                            LinkKind::Structural};
       myHasCurrent = true;
       return;
     }

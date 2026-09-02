@@ -185,12 +185,12 @@ BRepGraph_Compact::Result BRepGraph_Compact::Perform(BRepGraph& theGraph, const 
   aResult.NbRemovedProducts    = aCounts.NbProducts - anActiveCounts.NbProducts;
   aResult.NbRemovedOccurrences = aCounts.NbOccurrences - anActiveCounts.NbOccurrences;
   aResult.NbRemovedRefs        = (aCounts.NbShellRefs - anActiveCounts.NbShellRefs)
-                                 + (aCounts.NbFaceRefs - anActiveCounts.NbFaceRefs)
-                                 + (aCounts.NbWireRefs - anActiveCounts.NbWireRefs)
-                                 + (aCounts.NbVertexRefs - anActiveCounts.NbVertexRefs)
-                                 + (aCounts.NbSolidRefs - anActiveCounts.NbSolidRefs)
-                                 + (aCounts.NbChildRefs - anActiveCounts.NbChildRefs)
-                                 + (aCounts.NbOccurrenceRefs - anActiveCounts.NbOccurrenceRefs);
+                          + (aCounts.NbFaceRefs - anActiveCounts.NbFaceRefs)
+                          + (aCounts.NbWireRefs - anActiveCounts.NbWireRefs)
+                          + (aCounts.NbVertexRefs - anActiveCounts.NbVertexRefs)
+                          + (aCounts.NbSolidRefs - anActiveCounts.NbSolidRefs)
+                          + (aCounts.NbChildRefs - anActiveCounts.NbChildRefs)
+                          + (aCounts.NbOccurrenceRefs - anActiveCounts.NbOccurrenceRefs);
   aResult.NbRemovedReps =
     (aCounts.NbFaceSurfaceReps - anActiveCounts.NbFaceSurfaceReps)
     + (aCounts.NbEdgeCurve3DReps - anActiveCounts.NbEdgeCurve3DReps)

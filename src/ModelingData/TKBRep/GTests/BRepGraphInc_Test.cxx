@@ -272,17 +272,16 @@ TEST(BRepGraphIncTest, Storage_SetNextUidCounterRejectsInvalidSentinel)
 
   EXPECT_THROW(aStorage.SetNextNodeUIDCounter(BRepGraph_NodeId::Kind::Vertex, 0u),
                Standard_OutOfRange);
-  EXPECT_THROW(aStorage.SetNextRefUIDCounter(BRepGraph_RefId::Kind::Face, 0u),
-               Standard_OutOfRange);
+  EXPECT_THROW(aStorage.SetNextRefUIDCounter(BRepGraph_RefId::Kind::Face, 0u), Standard_OutOfRange);
 }
 
 TEST(BRepGraphIncTest, Storage_NodeUidAllocationRejectsExhaustedCounter)
 {
   constexpr uint32_t THE_EXHAUSTED_COUNTER = std::numeric_limits<uint32_t>::max();
 
-  BRepGraphInc_Storage        aStorage;
-  const BRepGraph_VertexId    aFirstVertex  = aStorage.AppendVertex();
-  const BRepGraph_VertexId    aSecondVertex = aStorage.AppendVertex();
+  BRepGraphInc_Storage         aStorage;
+  const BRepGraph_VertexId     aFirstVertex  = aStorage.AppendVertex();
+  const BRepGraph_VertexId     aSecondVertex = aStorage.AppendVertex();
   const BRepGraph_NodeId::Kind aKind         = BRepGraph_NodeId::Kind::Vertex;
 
   aStorage.SetNextNodeUIDCounter(aKind, THE_EXHAUSTED_COUNTER - 1u);
@@ -300,10 +299,10 @@ TEST(BRepGraphIncTest, Storage_RefUidAllocationRejectsExhaustedCounter)
 {
   constexpr uint32_t THE_EXHAUSTED_COUNTER = std::numeric_limits<uint32_t>::max();
 
-  BRepGraphInc_Storage       aStorage;
-  const BRepGraph_FaceRefId  aFirstRef  = aStorage.AppendFaceRef();
-  const BRepGraph_FaceRefId  aSecondRef = aStorage.AppendFaceRef();
-  const BRepGraph_RefId::Kind aKind     = BRepGraph_RefId::Kind::Face;
+  BRepGraphInc_Storage        aStorage;
+  const BRepGraph_FaceRefId   aFirstRef  = aStorage.AppendFaceRef();
+  const BRepGraph_FaceRefId   aSecondRef = aStorage.AppendFaceRef();
+  const BRepGraph_RefId::Kind aKind      = BRepGraph_RefId::Kind::Face;
 
   aStorage.SetNextRefUIDCounter(aKind, THE_EXHAUSTED_COUNTER - 1u);
   const BRepGraph_RefUID aUid = aStorage.AllocateRefUID(aFirstRef);
@@ -1129,7 +1128,7 @@ static uint32_t countDirectChildren(const TopoDS_Shape&      theShape,
 
 TEST(BRepGraphIncTest, Populate_RegistersSupplementEdgeVerticesIntoTopologyStore)
 {
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
@@ -1159,7 +1158,7 @@ TEST(BRepGraphIncTest, Populate_RegistersSupplementEdgeVerticesIntoTopologyStore
 
 TEST(BRepGraphIncTest, Reconstruct_ReplaysSupplementEdgeVerticesFromTopologyStore)
 {
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
@@ -1229,7 +1228,7 @@ TEST(BRepGraphIncTest, Reconstruct_WithoutTopologyStore_DropsSupplementEdgeVerti
 
 TEST(BRepGraphIncTest, Reconstruct_EdgeNode_ReplaysSupplementEdgeVerticesFromTopologyStore)
 {
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
@@ -1254,7 +1253,7 @@ TEST(BRepGraphIncTest, Reconstruct_EdgeNode_ReplaysSupplementEdgeVerticesFromTop
 
 TEST(BRepGraphIncTest, Reconstruct_WireNode_ReplaysSupplementEdgeVerticesFromTopologyStore)
 {
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
@@ -1288,7 +1287,7 @@ TEST(BRepGraphIncTest, Reconstruct_WireNode_ReplaysSupplementEdgeVerticesFromTop
 
 TEST(BRepGraphIncTest, Reconstruct_FaceNode_ReplaysSupplementFaceVerticesFromTopologyStore)
 {
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
@@ -1337,7 +1336,7 @@ TEST(BRepGraphIncTest, Populate_ShellRoutesInternalFaceToSupplement)
   aBB.Add(aShell, makeIncPlainFace().Oriented(TopAbs_FORWARD));
   aBB.Add(aShell, makeIncPlainFace().Oriented(TopAbs_INTERNAL));
 
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   ASSERT_NO_THROW({ std::ignore = BRepGraphInc_Populate::Perform(aGraph, aShell, false); });
@@ -1369,7 +1368,7 @@ TEST(BRepGraphIncTest, Populate_SolidRoutesInternalShellToSupplement)
   aBB.Add(aSolid, makeIncPlainShell().Oriented(TopAbs_FORWARD));
   aBB.Add(aSolid, makeIncPlainShell().Oriented(TopAbs_INTERNAL));
 
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   ASSERT_NO_THROW({ std::ignore = BRepGraphInc_Populate::Perform(aGraph, aSolid, false); });
@@ -1401,7 +1400,7 @@ TEST(BRepGraphIncTest, Populate_CompSolidRoutesInternalSolidToSupplement)
   aBB.Add(aCompSolid, makeIncPlainSolid().Oriented(TopAbs_FORWARD));
   aBB.Add(aCompSolid, makeIncPlainSolid().Oriented(TopAbs_INTERNAL));
 
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   ASSERT_NO_THROW({ std::ignore = BRepGraphInc_Populate::Perform(aGraph, aCompSolid, false); });
@@ -1434,7 +1433,7 @@ TEST(BRepGraphIncTest, Populate_SolidInvalidOrderChildRoutesToSupplement)
   aBB.MakeSolid(aSolid);
   aBB.Add(aSolid, makeIncEdgeWithInternalVertex().Oriented(TopAbs_FORWARD));
 
-  BRepGraph aGraph;
+  BRepGraph                                                         aGraph;
   [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
     aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   std::ignore = BRepGraphInc_Populate::Perform(aGraph, aSolid, false);
@@ -2337,8 +2336,8 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_ToleranceCoincidentEndp
   BRepGraphInc_Storage   aStorage;
   const BRepGraph_WireId aWireId = aStorage.AppendWire();
 
-  constexpr int    THE_NB_EDGES = 160;
-  constexpr double THE_TOLERANCE = 1.0e-4;
+  constexpr int                                THE_NB_EDGES  = 160;
+  constexpr double                             THE_TOLERANCE = 1.0e-4;
   NCollection_LinearVector<BRepGraph_CoEdgeId> anExpected;
   NCollection_LinearVector<BRepGraph_CoEdgeId> aReversed;
   anExpected.Reserve(THE_NB_EDGES);
@@ -2346,8 +2345,8 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_ToleranceCoincidentEndp
 
   for (int anEdgeIdx = 0; anEdgeIdx < THE_NB_EDGES; ++anEdgeIdx)
   {
-    const double aStartX = static_cast<double>(anEdgeIdx);
-    const double anEndX  = static_cast<double>(anEdgeIdx + 1);
+    const double             aStartX = static_cast<double>(anEdgeIdx);
+    const double             anEndX  = static_cast<double>(anEdgeIdx + 1);
     const BRepGraph_VertexId aStartVertex =
       addStorageVertex(aStorage, gp_Pnt(aStartX, 0.0, 0.0), THE_TOLERANCE);
     const BRepGraph_VertexId anEndVertex =
@@ -2412,18 +2411,17 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_DisconnectedCyclesStres
   BRepGraphInc_Storage   aStorage;
   const BRepGraph_WireId aWireId = aStorage.AppendWire();
 
-  constexpr int THE_NB_CYCLES = 160;
+  constexpr int                                THE_NB_CYCLES = 160;
   NCollection_LinearVector<BRepGraph_CoEdgeId> aExpected;
   aExpected.Reserve(THE_NB_CYCLES * 2);
   for (int aCycleIdx = 0; aCycleIdx < THE_NB_CYCLES; ++aCycleIdx)
   {
-    const double aX = static_cast<double>(aCycleIdx) * 10.0;
-    const BRepGraph_VertexId aVertexA =
-      addStorageVertex(aStorage, gp_Pnt(aX, 0.0, 0.0), 1.0e-7);
+    const double             aX       = static_cast<double>(aCycleIdx) * 10.0;
+    const BRepGraph_VertexId aVertexA = addStorageVertex(aStorage, gp_Pnt(aX, 0.0, 0.0), 1.0e-7);
     const BRepGraph_VertexId aVertexB =
       addStorageVertex(aStorage, gp_Pnt(aX + 1.0, 0.0, 0.0), 1.0e-7);
-    const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
-    const BRepGraph_EdgeId anEdgeBA = addStorageEdge(aStorage, aVertexB, aVertexA);
+    const BRepGraph_EdgeId   anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+    const BRepGraph_EdgeId   anEdgeBA = addStorageEdge(aStorage, aVertexB, aVertexA);
     const BRepGraph_CoEdgeId aCoEdgeAB =
       aStorage.CreateCoEdgeUse(aWireId, anEdgeAB, BRepGraph_FaceId(), TopAbs_FORWARD);
     const BRepGraph_CoEdgeId aCoEdgeBA =

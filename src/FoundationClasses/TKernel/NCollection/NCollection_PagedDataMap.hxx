@@ -276,6 +276,7 @@ public:
   {
     initialize(capacityFor(theInitialCapacity));
   }
+
   [[nodiscard]] size_t Size() const noexcept { return mySize; }
 
   [[nodiscard]] bool IsEmpty() const noexcept { return mySize == 0; }
@@ -468,15 +469,14 @@ private:
       }
     }
 
-    BucketState                     myState = BucketState::Empty;
+    BucketState myState = BucketState::Empty;
     alignas(KeyValue) unsigned char myStorage[sizeof(KeyValue)];
   };
 
   static constexpr size_t THE_MIN_CAPACITY = 8;
   static constexpr size_t THE_PAGE_SIZE    = 64;
   static constexpr size_t THE_NOT_FOUND    = std::numeric_limits<size_t>::max();
-  static constexpr size_t THE_MAX_CAPACITY = size_t(1)
-                                                 << (std::numeric_limits<size_t>::digits - 1);
+  static constexpr size_t THE_MAX_CAPACITY = size_t(1) << (std::numeric_limits<size_t>::digits - 1);
 
   static size_t loadLimit(const size_t theCapacity, const size_t theTenths) noexcept
   {

@@ -135,9 +135,7 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
 
 //=================================================================================================
 
-ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve,
-                                 double                 theUMin,
-                                 double                 theUMax)
+ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin, double theUMax)
     : myEvaluator(std::monostate{}),
       myAdaptorRef(&theCurve)
 {

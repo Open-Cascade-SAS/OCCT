@@ -1747,8 +1747,7 @@ void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
 
   // Copy sparse reverse maps (node -> compound/occurrence child refs).
   myNodeToCompounds.Clear();
-  for (auto anIt = theSource.myNodeToCompounds.cbegin();
-       anIt != theSource.myNodeToCompounds.cend();
+  for (auto anIt = theSource.myNodeToCompounds.cbegin(); anIt != theSource.myNodeToCompounds.cend();
        ++anIt)
   {
     myNodeToCompounds.Bind(anIt.Key(), anIt.Value());
@@ -2712,7 +2711,7 @@ void BRepGraphInc_Storage::RebindVertexEdge(const BRepGraph_VertexId    theOldVe
 
   BRepGraphInc::EdgeDef& anEdge     = ChangeEdge(theEdge);
   auto                   refTargets = [&](const BRepGraph_VertexRefId theRefId,
-                                          const BRepGraph_VertexId    theVertex) -> bool {
+                        const BRepGraph_VertexId    theVertex) -> bool {
     if (!theRefId.IsValid(NbVertexRefs()) || theRefId == theExcludingRef || IsRemoved(theRefId))
     {
       return false;
@@ -2774,7 +2773,7 @@ void BRepGraphInc_Storage::RebindVertexRef(const BRepGraph_VertexRefId theRefId,
 
   const BRepGraphInc::EdgeDef& anEdge     = Edge(anEdgeId);
   auto                         refTargets = [&](const BRepGraph_VertexRefId theOtherRef,
-                                                const BRepGraph_VertexId    theVertex) -> bool {
+                        const BRepGraph_VertexId    theVertex) -> bool {
     if (!theOtherRef.IsValid(NbVertexRefs()) || theOtherRef == theRefId || IsRemoved(theOtherRef))
     {
       return false;

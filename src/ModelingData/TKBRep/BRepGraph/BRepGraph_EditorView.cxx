@@ -358,8 +358,8 @@ bool projectCoEdgeSplitParameter(const BRepGraph&            theGraph,
 
   ExtremaPC_Curve          aProjector(*aCurveOnSurface, aFirst, aLast);
   const ExtremaPC::Result& aResult   = aProjector.PerformWithEndpoints(theSplitPoint,
-                                                                       Precision::Confusion(),
-                                                                       ExtremaPC::SearchMode::Min);
+                                                                     Precision::Confusion(),
+                                                                     ExtremaPC::SearchMode::Min);
   const size_t             aMinIndex = aResult.MinIndex();
   if (aMinIndex == ExtremaPC::Result::INVALID_INDEX)
   {
@@ -2583,8 +2583,8 @@ void BRepGraph::EditorView::GenOps::RemoveNode(const BRepGraph_NodeId theNode)
       const BRepGraphInc::EdgeDef& anEdge   = aStorage.Edge(anEdgeId);
       const BRepGraph_VertexId     aStartVtx =
         anEdge.StartVertexRefId.IsValid(aStorage.NbVertexRefs())
-          ? aStorage.VertexRef(anEdge.StartVertexRefId).ChildVertexId
-          : BRepGraph_VertexId();
+              ? aStorage.VertexRef(anEdge.StartVertexRefId).ChildVertexId
+              : BRepGraph_VertexId();
       const BRepGraph_VertexId anEndVtx =
         anEdge.EndVertexRefId.IsValid(aStorage.NbVertexRefs())
           ? aStorage.VertexRef(anEdge.EndVertexRefId).ChildVertexId
@@ -2853,11 +2853,11 @@ void BRepGraph::EditorView::GenOps::ReplaceNode(const BRepGraph_NodeId theNode,
       NCollection_LocalArray<BRepGraph_EdgeId, 16>   anEdgeIds(static_cast<uint32_t>(aNbCoEdges));
       for (size_t aCoEdgeIdx = 0; aCoEdgeIdx < aNbCoEdges; ++aCoEdgeIdx)
       {
-        const BRepGraph_CoEdgeId aCoEdgeId                 = aCoEdges.Value(aCoEdgeIdx);
-        aCoEdgeIds[static_cast<uint32_t>(aCoEdgeIdx)]      = aCoEdgeId;
-        anEdgeIds[static_cast<uint32_t>(aCoEdgeIdx)] = aCoEdgeId.IsValid(aStorage.NbCoEdges())
-                                                         ? aStorage.CoEdge(aCoEdgeId).ChildEdgeId
-                                                         : BRepGraph_EdgeId();
+        const BRepGraph_CoEdgeId aCoEdgeId            = aCoEdges.Value(aCoEdgeIdx);
+        aCoEdgeIds[static_cast<uint32_t>(aCoEdgeIdx)] = aCoEdgeId;
+        anEdgeIds[static_cast<uint32_t>(aCoEdgeIdx)]  = aCoEdgeId.IsValid(aStorage.NbCoEdges())
+                                                          ? aStorage.CoEdge(aCoEdgeId).ChildEdgeId
+                                                          : BRepGraph_EdgeId();
       }
       for (size_t aCoEdgeIdx = 0; aCoEdgeIdx < aNbCoEdges; ++aCoEdgeIdx)
       {
@@ -4576,9 +4576,9 @@ bool BRepGraph::EditorView::EdgeOps::Split(const BRepGraph_EdgeId   theEdgeEntit
     // Step 1: allocate SubA-CE + SubB-CE per original with full representation.
     NCollection_FlatDataMap<BRepGraph_CoEdgeId, uint32_t> aIdxOf;
     NCollection_LinearVector<BRepGraph_CoEdgeId>          aNewACoEdgeIds(aNbOrigCoEdges,
-                                                                         BRepGraph_CoEdgeId());
+                                                                BRepGraph_CoEdgeId());
     NCollection_LinearVector<BRepGraph_CoEdgeId>          aNewBCoEdgeIds(aNbOrigCoEdges,
-                                                                         BRepGraph_CoEdgeId());
+                                                                BRepGraph_CoEdgeId());
     const double                                          aSplitRatio =
       (theSplitParam - aOrigParamFirst) / (aOrigParamLast - aOrigParamFirst);
     const auto aCopyCoEdgeCurveUse =
@@ -6644,10 +6644,10 @@ NCollection_Array1<BRepGraph_OccurrenceRefId> BRepGraph::EditorView::ProductOps:
   {
     BRepGraph_OccurrenceRefId anOccRefId;
     BRepGraph_OccurrenceId    anOccId = Append(theParentProduct,
-                                               theChildProducts.At(anIdx),
-                                               thePlacements.At(anIdx),
-                                               BRepGraph_OccurrenceId(),
-                                               &anOccRefId);
+                                            theChildProducts.At(anIdx),
+                                            thePlacements.At(anIdx),
+                                            BRepGraph_OccurrenceId(),
+                                            &anOccRefId);
     if (!anOccId.IsValid())
     {
       return NCollection_Array1<BRepGraph_OccurrenceRefId>();

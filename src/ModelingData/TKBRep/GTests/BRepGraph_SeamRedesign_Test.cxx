@@ -366,7 +366,7 @@ TEST(BRepGraph_SeamRedesignTest, NbDistinctEdges_CacheRefreshesAfterWireMutation
   BRepGraph_CoEdgeId aCoEdgeToRemove;
   for (BRepGraph_WireIterator aWireIt(aGraph); aWireIt.More(); aWireIt.Next())
   {
-    const BRepGraph_WireId aCandidate = aWireIt.CurrentId();
+    const BRepGraph_WireId  aCandidate = aWireIt.CurrentId();
     BRepGraph_CoEdgesOfWire aCoEdgeIt(aGraph, aCandidate);
     if (aCoEdgeIt.More())
     {

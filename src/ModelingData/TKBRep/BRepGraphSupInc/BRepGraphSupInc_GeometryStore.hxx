@@ -60,6 +60,7 @@ public:
   //! Test whether no allocated geometry records remain.
   //! @return true when all geometry vectors are empty
   [[nodiscard]] bool IsEmpty() const override;
+
 protected:
   //! Soft-remove an active geometry definition by runtime UID.
   //! @param[in] theUID runtime item identifier to remove

@@ -167,10 +167,9 @@ struct std::hash<BRepGraphInc::Instance<TypedIdT>>
   size_t operator()(const BRepGraphInc::Instance<TypedIdT>& theInstance) const noexcept
   {
     const BRepGraph_NodeId anId(theInstance.DefId);
-    const uint64_t aCombination[] = {
-      (static_cast<uint64_t>(anId.NodeKind) << 32) | anId.Index,
-      static_cast<uint64_t>(theInstance.Location.HashCode()),
-      static_cast<uint64_t>(theInstance.Orientation)};
+    const uint64_t aCombination[] = {(static_cast<uint64_t>(anId.NodeKind) << 32) | anId.Index,
+                                     static_cast<uint64_t>(theInstance.Location.HashCode()),
+                                     static_cast<uint64_t>(theInstance.Orientation)};
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }
 };
@@ -182,10 +181,9 @@ struct std::hash<BRepGraphInc::ReferenceInstance<TypedRefIdT>>
   size_t operator()(const BRepGraphInc::ReferenceInstance<TypedRefIdT>& theInstance) const noexcept
   {
     const BRepGraph_RefId anId(theInstance.RefId);
-    const uint64_t aCombination[] = {
-      (static_cast<uint64_t>(anId.RefKind) << 32) | anId.Index,
-      static_cast<uint64_t>(theInstance.Location.HashCode()),
-      static_cast<uint64_t>(theInstance.Orientation)};
+    const uint64_t aCombination[] = {(static_cast<uint64_t>(anId.RefKind) << 32) | anId.Index,
+                                     static_cast<uint64_t>(theInstance.Location.HashCode()),
+                                     static_cast<uint64_t>(theInstance.Orientation)};
     return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }
 };

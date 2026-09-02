@@ -41,7 +41,7 @@ namespace
 {
 BRepGraph buildBoxGraph()
 {
-  BRepGraph aGraph;
+  BRepGraph                                            aGraph;
   [[maybe_unused]] const BRepGraph::ShapesView::Result aRes =
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   return aGraph;

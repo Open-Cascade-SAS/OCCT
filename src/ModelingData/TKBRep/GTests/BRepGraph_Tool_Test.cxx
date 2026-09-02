@@ -147,7 +147,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Wire_FaceOf_SkipsRemovedParentWireRefs)
   ASSERT_TRUE(aSecondRef.IsValid());
   EXPECT_EQ(BRepGraph_Tool::Wire::FaceOf(myBoxGraph, aWireId), aFirstFace);
 
-  BRepGraph_WireRefId aFirstRef;
+  BRepGraph_WireRefId                aFirstRef;
   const BRepGraphInc::FaceRelations& aFirstRelations =
     myBoxGraph.Topo().Faces().Relations(aFirstFace);
   for (const BRepGraph_WireRefId& aRefId : aFirstRelations.WireRefIds)
@@ -176,7 +176,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Wire_IsOuter_FirstWireOfBoxFaceIsOuter)
 
 TEST_F(BRepGraph_QuerySurfaceTest, WireRef_ContextPreservesParentFaceAndOuterRole)
 {
-  const BRepGraph_FaceId aFirstFace(0);
+  const BRepGraph_FaceId    aFirstFace(0);
   const BRepGraph_WireRefId anOuterRef = BRepGraph_Tool::Face::OuterWireRef(myBoxGraph, aFirstFace);
   ASSERT_TRUE(anOuterRef.IsValid());
   EXPECT_EQ(BRepGraph_Tool::Wire::FaceOf(myBoxGraph, anOuterRef), aFirstFace);
@@ -197,7 +197,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, WireRef_ContextPreservesParentFaceAndOuterRol
   }
   ASSERT_TRUE(aSecondFace.IsValid());
 
-  const BRepGraph_WireId aSharedWire = myBoxGraph.Refs().Wires().Entry(anOuterRef).ChildWireId;
+  const BRepGraph_WireId    aSharedWire = myBoxGraph.Refs().Wires().Entry(anOuterRef).ChildWireId;
   const BRepGraph_WireRefId aSecondRef =
     myBoxGraph.Editor().Faces().Append(aSecondFace, aSharedWire, TopAbs_REVERSED);
   ASSERT_TRUE(aSecondRef.IsValid());
@@ -207,7 +207,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, WireRef_ContextPreservesParentFaceAndOuterRol
 
 TEST_F(BRepGraph_QuerySurfaceTest, Edge_CurveOnSurfaceMatchesReversedWireOccurrence)
 {
-  const BRepGraph_FaceId aFace(0);
+  const BRepGraph_FaceId    aFace(0);
   const BRepGraph_WireRefId aWireRef = BRepGraph_Tool::Face::OuterWireRef(myBoxGraph, aFace);
   ASSERT_TRUE(aWireRef.IsValid());
   const BRepGraph_WireId aWire = myBoxGraph.Refs().Wires().Entry(aWireRef).ChildWireId;
@@ -218,19 +218,17 @@ TEST_F(BRepGraph_QuerySurfaceTest, Edge_CurveOnSurfaceMatchesReversedWireOccurre
   const BRepGraph_Tool::EdgeUsage anEdgeUsage{
     BRepGraph_Tool::CoEdge::EdgeOf(myBoxGraph, aCoEdge),
     TopLoc_Location(),
-    TopAbs::Compose(TopAbs_REVERSED,
-                    BRepGraph_Tool::CoEdge::Orientation(myBoxGraph, aCoEdge))};
+    TopAbs::Compose(TopAbs_REVERSED, BRepGraph_Tool::CoEdge::Orientation(myBoxGraph, aCoEdge))};
   const BRepGraph_Tool::FaceUsage aFaceUsage{aFace, TopLoc_Location(), TopAbs_FORWARD};
 
-  EXPECT_TRUE(BRepGraph_Tool::Edge::CurveOnSurface(myBoxGraph, anEdgeUsage, aFaceUsage)
-                .IsCurveOnSurface());
+  EXPECT_TRUE(
+    BRepGraph_Tool::Edge::CurveOnSurface(myBoxGraph, anEdgeUsage, aFaceUsage).IsCurveOnSurface());
 }
 
 TEST_F(BRepGraph_QuerySurfaceTest, Edge_CurveOnSurfaceAcceptsSecondSharedWireParent)
 {
-  const BRepGraph_FaceId aFirstFace(0);
-  const BRepGraph_WireRefId aFirstRef =
-    BRepGraph_Tool::Face::OuterWireRef(myBoxGraph, aFirstFace);
+  const BRepGraph_FaceId    aFirstFace(0);
+  const BRepGraph_WireRefId aFirstRef = BRepGraph_Tool::Face::OuterWireRef(myBoxGraph, aFirstFace);
   ASSERT_TRUE(aFirstRef.IsValid());
   const BRepGraph_WireId aWire = myBoxGraph.Refs().Wires().Entry(aFirstRef).ChildWireId;
   ASSERT_FALSE(myBoxGraph.Topo().Wires().Relations(aWire).CoEdgeIds.IsEmpty());
@@ -242,13 +240,15 @@ TEST_F(BRepGraph_QuerySurfaceTest, Edge_CurveOnSurfaceAcceptsSecondSharedWirePar
   myBoxGraph.Editor().CoEdges().ClearPCurve(aCoEdge);
 
   const BRepGraphInc::CoEdgeInstance aUsage{
-    aCoEdge, TopLoc_Location(), BRepGraph_Tool::CoEdge::Orientation(myBoxGraph, aCoEdge)};
+    aCoEdge,
+    TopLoc_Location(),
+    BRepGraph_Tool::CoEdge::Orientation(myBoxGraph, aCoEdge)};
   EXPECT_TRUE(BRepGraph_Tool::CoEdge::IsInFaceContext(myBoxGraph, aCoEdge, aFirstFace));
   EXPECT_TRUE(BRepGraph_Tool::CoEdge::IsInFaceContext(myBoxGraph, aCoEdge, aSecondFace));
-  EXPECT_TRUE(BRepGraph_Tool::CoEdge::PCurveAdaptorInFace(myBoxGraph, aCoEdge, aFirstFace)
-                .IsInitialized());
-  EXPECT_TRUE(BRepGraph_Tool::CoEdge::PCurveAdaptorInFace(myBoxGraph, aCoEdge, aSecondFace)
-                .IsInitialized());
+  EXPECT_TRUE(
+    BRepGraph_Tool::CoEdge::PCurveAdaptorInFace(myBoxGraph, aCoEdge, aFirstFace).IsInitialized());
+  EXPECT_TRUE(
+    BRepGraph_Tool::CoEdge::PCurveAdaptorInFace(myBoxGraph, aCoEdge, aSecondFace).IsInitialized());
   EXPECT_FALSE(BRepGraph_Tool::Edge::CurveOnSurface(myBoxGraph, aUsage, aFirstFace).IsNull());
   EXPECT_FALSE(BRepGraph_Tool::Edge::CurveOnSurface(myBoxGraph, aUsage, aSecondFace).IsNull());
 }
@@ -292,7 +292,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Face_OuterWire_PeriodicFacesHaveCachedOuterWi
     ASSERT_GT(theGraph.Topo().Faces().Nb(), 0u);
     for (BRepGraph_FaceIterator aFaceIt(theGraph); aFaceIt.More(); aFaceIt.Next())
     {
-      const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
+      const BRepGraph_FaceId aFaceId    = aFaceIt.CurrentId();
       const BRepGraph_WireId aFirstWire = BRepGraph_Tool::Face::OuterWire(theGraph, aFaceId);
       ASSERT_TRUE(aFirstWire.IsValid()) << "Face " << aFaceId.Index << " has no outer wire";
       EXPECT_TRUE(BRepGraph_Tool::Wire::IsOuter(theGraph, aFirstWire))
@@ -305,7 +305,7 @@ TEST_F(BRepGraph_QuerySurfaceTest, Face_OuterWire_PeriodicFacesHaveCachedOuterWi
 
   checkOuterWires(myCylGraph);
 
-  BRepGraph aSphereGraph;
+  BRepGraph                                            aSphereGraph;
   [[maybe_unused]] const BRepGraph::ShapesView::Result aRes =
     aSphereGraph.Shapes().Add(BRepPrimAPI_MakeSphere(10.0).Shape());
   ASSERT_FALSE(aSphereGraph.IsEmpty());
@@ -443,8 +443,8 @@ TEST_F(BRepGraph_QuerySurfaceTest, Edge_CurveOnSurface_UsesPlanarFallbackWithout
     BRepGraph_Tool::Edge::CurveOnSurface(myBoxGraph, aUsage, aFaceId);
   ASSERT_FALSE(aStored.IsNull());
 
-  const double aFirst = aStored->FirstParameter();
-  const double aLast  = aStored->LastParameter();
+  const double aFirst       = aStored->FirstParameter();
+  const double aLast        = aStored->LastParameter();
   const gp_Pnt aStoredFirst = aStored->Value(aFirst);
   const gp_Pnt aStoredLast  = aStored->Value(aLast);
 
@@ -475,9 +475,9 @@ TEST(BRepGraph_ToolTest, CoEdge_PlanarFallbackRejectsEqualRange)
   const BRepGraph_EdgeId         anEdge =
     aBuilder.Edges().Add(aVertex, aVertex, aCircle, 0.0, 0.0, Precision::Confusion());
   const BRepGraph_FaceId   aFace   = aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
-                                                          BRepGraph_WireId(),
-                                                          NCollection_Array1<BRepGraph_WireId>(),
-                                                          Precision::Confusion());
+                                                      BRepGraph_WireId(),
+                                                      NCollection_Array1<BRepGraph_WireId>(),
+                                                      Precision::Confusion());
   const BRepGraph_CoEdgeId aCoEdge = aBuilder.CoEdges().Add(anEdge, TopAbs_FORWARD);
   aBuilder.CoEdges().SetFaceId(aCoEdge, aFace, false);
 
@@ -496,15 +496,15 @@ TEST(BRepGraph_ToolTest, CoEdge_StoredPCurveRejectsReversedRange)
   aPoles.SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
   aPoles.SetValue(2, gp_Pnt(1.0, 0.0, 0.0));
   const BRepGraph_EdgeId   anEdge = aBuilder.Edges().Add(aFirst,
-                                                         aLast,
-                                                         new Geom_BezierCurve(aPoles),
-                                                         0.0,
-                                                         1.0,
-                                                         Precision::Confusion());
+                                                       aLast,
+                                                       new Geom_BezierCurve(aPoles),
+                                                       0.0,
+                                                       1.0,
+                                                       Precision::Confusion());
   const BRepGraph_FaceId   aFace  = aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
-                                                         BRepGraph_WireId(),
-                                                         NCollection_Array1<BRepGraph_WireId>(),
-                                                         Precision::Confusion());
+                                                      BRepGraph_WireId(),
+                                                      NCollection_Array1<BRepGraph_WireId>(),
+                                                      Precision::Confusion());
   const BRepGraph_CoEdgeId aCoEdge =
     aBuilder.CoEdges().Add(anEdge,
                            aFace,
@@ -530,9 +530,9 @@ TEST(BRepGraph_ToolTest, CoEdge_PlanarFallbackRejectsRangeOutsideTrimmedCurve)
   const BRepGraph_EdgeId anEdge =
     aBuilder.Edges().Add(aFirst, aLast, aCurve, 0.0, 1.0, Precision::Confusion());
   const BRepGraph_FaceId   aFace   = aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
-                                                          BRepGraph_WireId(),
-                                                          NCollection_Array1<BRepGraph_WireId>(),
-                                                          Precision::Confusion());
+                                                      BRepGraph_WireId(),
+                                                      NCollection_Array1<BRepGraph_WireId>(),
+                                                      Precision::Confusion());
   const BRepGraph_CoEdgeId aCoEdge = aBuilder.CoEdges().Add(anEdge, TopAbs_FORWARD);
   aBuilder.CoEdges().SetFaceId(aCoEdge, aFace, false);
 
@@ -552,9 +552,9 @@ TEST(BRepGraph_ToolTest, CoEdge_PlanarFallbackRejectsRangeOutsideBoundedCurve)
   const BRepGraph_EdgeId              anEdge =
     aBuilder.Edges().Add(aFirst, aLast, aCurve, -1.0, 2.0, Precision::Confusion());
   const BRepGraph_FaceId   aFace   = aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
-                                                          BRepGraph_WireId(),
-                                                          NCollection_Array1<BRepGraph_WireId>(),
-                                                          Precision::Confusion());
+                                                      BRepGraph_WireId(),
+                                                      NCollection_Array1<BRepGraph_WireId>(),
+                                                      Precision::Confusion());
   const BRepGraph_CoEdgeId aCoEdge = aBuilder.CoEdges().Add(anEdge, TopAbs_FORWARD);
   aBuilder.CoEdges().SetFaceId(aCoEdge, aFace, false);
 
@@ -571,9 +571,9 @@ TEST(BRepGraph_ToolTest, CoEdge_PlanarFallbackAcceptsShiftedPeriodicRange)
   const BRepGraph_EdgeId         anEdge =
     aBuilder.Edges().Add(aVertex, aVertex, aCircle, 2.0 * M_PI, 4.0 * M_PI, Precision::Confusion());
   const BRepGraph_FaceId   aFace   = aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
-                                                          BRepGraph_WireId(),
-                                                          NCollection_Array1<BRepGraph_WireId>(),
-                                                          Precision::Confusion());
+                                                      BRepGraph_WireId(),
+                                                      NCollection_Array1<BRepGraph_WireId>(),
+                                                      Precision::Confusion());
   const BRepGraph_CoEdgeId aCoEdge = aBuilder.CoEdges().Add(anEdge, TopAbs_FORWARD);
   aBuilder.CoEdges().SetFaceId(aCoEdge, aFace, false);
 
@@ -590,15 +590,15 @@ TEST(BRepGraph_ToolTest, CoEdge_PlanarFallbackRejectsReversedPeriodicRange)
   const BRepGraph_VertexId aVertex =
     aBuilder.Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), Precision::Confusion());
   const BRepGraph_EdgeId   anEdge  = aBuilder.Edges().Add(aVertex,
-                                                          aVertex,
-                                                          new Geom_Circle(gp_Ax2(), 1.0),
-                                                          2.0 * M_PI,
-                                                          0.0,
-                                                          Precision::Confusion());
+                                                       aVertex,
+                                                       new Geom_Circle(gp_Ax2(), 1.0),
+                                                       2.0 * M_PI,
+                                                       0.0,
+                                                       Precision::Confusion());
   const BRepGraph_FaceId   aFace   = aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
-                                                          BRepGraph_WireId(),
-                                                          NCollection_Array1<BRepGraph_WireId>(),
-                                                          Precision::Confusion());
+                                                      BRepGraph_WireId(),
+                                                      NCollection_Array1<BRepGraph_WireId>(),
+                                                      Precision::Confusion());
   const BRepGraph_CoEdgeId aCoEdge = aBuilder.CoEdges().Add(anEdge, TopAbs_FORWARD);
   aBuilder.CoEdges().SetFaceId(aCoEdge, aFace, false);
 
@@ -677,65 +677,64 @@ TEST_F(BRepGraph_QuerySurfaceTest, DerivedStateQueriesAreConcurrentReadSafe)
   constexpr int THE_NB_THREADS    = 8;
   constexpr int THE_NB_ITERATIONS = 128;
 
-  std::atomic<bool> aStart{false};
-  std::atomic<int>  aFailures{0};
+  std::atomic<bool>        aStart{false};
+  std::atomic<int>         aFailures{0};
   std::vector<std::thread> aThreads;
   aThreads.reserve(THE_NB_THREADS);
 
   for (int aThread = 0; aThread < THE_NB_THREADS; ++aThread)
   {
-    aThreads.emplace_back(
-      [&]() {
-        while (!aStart.load(std::memory_order_acquire))
+    aThreads.emplace_back([&]() {
+      while (!aStart.load(std::memory_order_acquire))
+      {
+        std::this_thread::yield();
+      }
+
+      for (int anIter = 0; anIter < THE_NB_ITERATIONS; ++anIter)
+      {
+        for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
+             anEdgeId.IsValid(aGraph.Topo().Edges().Nb());
+             ++anEdgeId)
         {
-          std::this_thread::yield();
+          if (BRepGraph_Tool::Edge::IsClosed(aGraph, anEdgeId)
+              || BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeId))
+          {
+            aFailures.fetch_add(1, std::memory_order_relaxed);
+          }
         }
 
-        for (int anIter = 0; anIter < THE_NB_ITERATIONS; ++anIter)
+        for (BRepGraph_CoEdgeId aCoEdgeId = BRepGraph_CoEdgeId::Start();
+             aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb());
+             ++aCoEdgeId)
         {
-          for (BRepGraph_EdgeId anEdgeId = BRepGraph_EdgeId::Start();
-               anEdgeId.IsValid(aGraph.Topo().Edges().Nb());
-               ++anEdgeId)
+          if (!BRepGraph_Tool::CoEdge::SameRange(aGraph, aCoEdgeId)
+              || !BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId))
           {
-            if (BRepGraph_Tool::Edge::IsClosed(aGraph, anEdgeId)
-                || BRepGraph_Tool::Edge::Degenerated(aGraph, anEdgeId))
-            {
-              aFailures.fetch_add(1, std::memory_order_relaxed);
-            }
-          }
-
-          for (BRepGraph_CoEdgeId aCoEdgeId = BRepGraph_CoEdgeId::Start();
-               aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb());
-               ++aCoEdgeId)
-          {
-            if (!BRepGraph_Tool::CoEdge::SameRange(aGraph, aCoEdgeId)
-                || !BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId))
-            {
-              aFailures.fetch_add(1, std::memory_order_relaxed);
-            }
-          }
-
-          for (BRepGraph_WireId aWireId = BRepGraph_WireId::Start();
-               aWireId.IsValid(aGraph.Topo().Wires().Nb());
-               ++aWireId)
-          {
-            if (!BRepGraph_Tool::Wire::IsClosed(aGraph, aWireId))
-            {
-              aFailures.fetch_add(1, std::memory_order_relaxed);
-            }
-          }
-
-          for (BRepGraph_ShellId aShellId = BRepGraph_ShellId::Start();
-               aShellId.IsValid(aGraph.Topo().Shells().Nb());
-               ++aShellId)
-          {
-            if (!BRepGraph_Tool::Shell::IsClosed(aGraph, aShellId))
-            {
-              aFailures.fetch_add(1, std::memory_order_relaxed);
-            }
+            aFailures.fetch_add(1, std::memory_order_relaxed);
           }
         }
-      });
+
+        for (BRepGraph_WireId aWireId = BRepGraph_WireId::Start();
+             aWireId.IsValid(aGraph.Topo().Wires().Nb());
+             ++aWireId)
+        {
+          if (!BRepGraph_Tool::Wire::IsClosed(aGraph, aWireId))
+          {
+            aFailures.fetch_add(1, std::memory_order_relaxed);
+          }
+        }
+
+        for (BRepGraph_ShellId aShellId = BRepGraph_ShellId::Start();
+             aShellId.IsValid(aGraph.Topo().Shells().Nb());
+             ++aShellId)
+        {
+          if (!BRepGraph_Tool::Shell::IsClosed(aGraph, aShellId))
+          {
+            aFailures.fetch_add(1, std::memory_order_relaxed);
+          }
+        }
+      }
+    });
   }
 
   aStart.store(true, std::memory_order_release);

@@ -483,12 +483,12 @@ const BRepGraph_Revision::HashState& BRepGraph_Revision::ensureHashState() const
     aState->CoreSemantic              = aHashes.Semantic;
     aState->CoreStorage               = aHashes.Storage;
     aState->Index                     = aHashes.HashIndex;
-    aState->Semantic = myComponents.IsEmpty()
-                         ? aState->CoreSemantic
-                         : combineComponentHashes(aState->CoreSemantic, myComponents, false);
-    aState->Storage  = myComponents.IsEmpty()
-                         ? aState->CoreStorage
-                         : combineComponentHashes(aState->CoreStorage, myComponents, true);
+    aState->Semantic                  = myComponents.IsEmpty()
+                                          ? aState->CoreSemantic
+                                          : combineComponentHashes(aState->CoreSemantic, myComponents, false);
+    aState->Storage                   = myComponents.IsEmpty()
+                                          ? aState->CoreStorage
+                                          : combineComponentHashes(aState->CoreStorage, myComponents, true);
     std::atomic_store(&myHashState, std::shared_ptr<const HashState>(std::move(aState)));
   });
 
@@ -1061,9 +1061,9 @@ bool BRepGraph_Revision::ResolveWireLocal(const uint32_t theIndex, WireChange& t
     return false;
   }
   const BRepGraph_WireId aWire(theIndex);
-  theChange.Kind    = myCoreGraph->Topo().Gen().IsActive(aWire) ? VertexChange::Operation::Create
-                                                                : VertexChange::Operation::Remove;
-  theChange.LocalId = aWire;
+  theChange.Kind       = myCoreGraph->Topo().Gen().IsActive(aWire) ? VertexChange::Operation::Create
+                                                                   : VertexChange::Operation::Remove;
+  theChange.LocalId    = aWire;
   theChange.Definition = myCoreGraph->Topo().Wires().Definition(aWire);
   theChange.UID        = BRepGraph_UID(BRepGraph_NodeId::Kind::Wire, theChange.Definition.UID);
   for (const BRepGraph_CoEdgeId aCoEdge : myCoreGraph->Topo().Wires().Relations(aWire).CoEdgeIds)
@@ -1098,9 +1098,9 @@ bool BRepGraph_Revision::ResolveFaceLocal(const uint32_t theIndex, FaceChange& t
     return false;
   }
   const BRepGraph_FaceId aFace(theIndex);
-  theChange.Kind    = myCoreGraph->Topo().Gen().IsActive(aFace) ? VertexChange::Operation::Create
-                                                                : VertexChange::Operation::Remove;
-  theChange.LocalId = aFace;
+  theChange.Kind       = myCoreGraph->Topo().Gen().IsActive(aFace) ? VertexChange::Operation::Create
+                                                                   : VertexChange::Operation::Remove;
+  theChange.LocalId    = aFace;
   theChange.Definition = myCoreGraph->Topo().Faces().Definition(aFace);
   theChange.UID        = BRepGraph_UID(BRepGraph_NodeId::Kind::Face, theChange.Definition.UID);
   for (const BRepGraph_WireRefId aRef : myCoreGraph->Topo().Faces().Relations(aFace).WireRefIds)
@@ -1241,13 +1241,11 @@ occ::handle<BRepGraph_Revision> BRepGraph_Revision::FromNativeChanges(
   {
     std::unique_ptr<BRepGraph> aResultGraph(
       new BRepGraph(theBaseRevision->CoreGraph().incStorage(), false));
-    const bool hasStructuralChange = hasStructuralChanges(theChanges)
-                                     || hasStructuralChanges(theEdgeChanges)
-                                     || hasStructuralChanges(theVertexRefChanges)
-                                     || hasStructuralChanges(theCoEdgeChanges)
-                                     || hasStructuralChanges(theWireChanges)
-                                     || hasStructuralChanges(theFaceChanges)
-                                     || hasStructuralChanges(theWireRefChanges);
+    const bool hasStructuralChange =
+      hasStructuralChanges(theChanges) || hasStructuralChanges(theEdgeChanges)
+      || hasStructuralChanges(theVertexRefChanges) || hasStructuralChanges(theCoEdgeChanges)
+      || hasStructuralChanges(theWireChanges) || hasStructuralChanges(theFaceChanges)
+      || hasStructuralChanges(theWireRefChanges);
     // A valid immutable base remains relation-valid after modification-only sparse edits:
     // these APIs change values, representations, orientations, or the order of an unchanged
     // membership set. Creations and removals still require the complete relation audit.

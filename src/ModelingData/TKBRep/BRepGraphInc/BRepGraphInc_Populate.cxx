@@ -1055,10 +1055,10 @@ struct OrderedExtractedEdge
   uint32_t EdgeIndex = 0;
 };
 
-uint32_t findExtractedEdgeByExplorerEdge(const ExtractedWire&         theWireData,
+uint32_t findExtractedEdgeByExplorerEdge(const ExtractedWire&               theWireData,
                                          const NCollection_BitDynamicArray& theUsed,
-                                         const TopoDS_Edge&           theExplorerEdge,
-                                         const bool                   theMatchOrientation)
+                                         const TopoDS_Edge&                 theExplorerEdge,
+                                         const bool                         theMatchOrientation)
 {
   const uint32_t aNbEdges = static_cast<uint32_t>(theWireData.Edges.Size());
   for (uint32_t anIdx = 0; anIdx < aNbEdges; ++anIdx)
@@ -1511,9 +1511,9 @@ BRepGraph_NodeId traverseCompSolid(BuildContext&           theBuild,
 {
   const TopLoc_Location  aDefinitionLocation = theParentLocation * theCompSolid.Location();
   const BRepGraph_NodeId anExisting          = findExistingNode(theBuild,
-                                                                theCompSolid,
-                                                                BRepGraph_NodeId::Kind::CompSolid,
-                                                                aDefinitionLocation);
+                                                       theCompSolid,
+                                                       BRepGraph_NodeId::Kind::CompSolid,
+                                                       aDefinitionLocation);
   if (anExisting.IsValid())
   {
     return anExisting;

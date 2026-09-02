@@ -399,14 +399,12 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
   myGraph.Editor().BeginDeferredInvalidation();
   myGraph.Editor().Occurrences().Mut(anOccId).MarkDirty();
 
-  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen,
-            aProductSubtreeGenBefore);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen, aProductSubtreeGenBefore);
   EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).OwnGen, aProductOwnGenBefore);
 
   myGraph.Editor().EndDeferredInvalidation();
 
-  EXPECT_GT(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen,
-            aProductSubtreeGenBefore);
+  EXPECT_GT(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen, aProductSubtreeGenBefore);
   EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).OwnGen, aProductOwnGenBefore);
 }
 

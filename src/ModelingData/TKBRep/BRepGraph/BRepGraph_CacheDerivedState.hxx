@@ -273,7 +273,7 @@ private:
       FlagDistinctComputed = 1 << 2,
     };
 
-    std::atomic<uint8_t> Packed{FlagNone};
+    std::atomic<uint8_t>  Packed{FlagNone};
     std::atomic<uint32_t> DistinctEdges{0};
 
     WireEntry() = default;
@@ -316,8 +316,7 @@ private:
 
     void SetClosed(const bool theVal)
     {
-      uint8_t aFlags = Packed.load(std::memory_order_acquire)
-                     & ~(FlagClosureComputed | FlagClosed);
+      uint8_t aFlags = Packed.load(std::memory_order_acquire) & ~(FlagClosureComputed | FlagClosed);
       aFlags |= FlagClosureComputed;
       if (theVal)
       {
@@ -378,7 +377,7 @@ private:
     FaceEntry(const FaceEntry& theOther)
         : NodeEntry(theOther),
           Packed(theOther.Packed.load(std::memory_order_relaxed)),
-           OuterWireRefId(theOther.OuterWireRefId)
+          OuterWireRefId(theOther.OuterWireRefId)
     {
     }
 

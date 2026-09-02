@@ -45,7 +45,7 @@ struct NonDefaultPagedValue
   {
   }
 
-  NonDefaultPagedValue(const NonDefaultPagedValue&) = default;
+  NonDefaultPagedValue(const NonDefaultPagedValue&)            = default;
   NonDefaultPagedValue& operator=(const NonDefaultPagedValue&) = delete;
 
   size_t Number;
@@ -88,7 +88,7 @@ struct StatefulPagedHasher
   {
   }
 
-  StatefulPagedHasher(const StatefulPagedHasher&) = default;
+  StatefulPagedHasher(const StatefulPagedHasher&)            = default;
   StatefulPagedHasher& operator=(const StatefulPagedHasher&) = delete;
 
   size_t operator()(const size_t theKey) const noexcept { return theKey ^ Seed; }
@@ -120,8 +120,8 @@ struct PersistentRadixTestHasher
     for (size_t anIndex = 0; anIndex < theNbChildren; ++anIndex)
     {
       const auto& [aSlot, aChildHash] = theChildren[anIndex];
-      aHash = (aHash ^ aSlot) * 1099511628211ULL;
-      aHash = (aHash ^ aChildHash) * 1099511628211ULL;
+      aHash                           = (aHash ^ aSlot) * 1099511628211ULL;
+      aHash                           = (aHash ^ aChildHash) * 1099511628211ULL;
     }
     return aHash;
   }
@@ -164,14 +164,12 @@ struct NonDefaultRadixHasher
 using NonDefaultRadixMap =
   NCollection_PersistentRadixMap<uint64_t, NonDefaultRadixValue, uint64_t, NonDefaultRadixHasher>;
 
-static_assert(
-  std::is_constructible<NCollection_PagedArray<int>::Iterator,
-                        const NCollection_PagedArray<int>&>::value,
-  "legacy paged-array iterator must accept a const container");
-static_assert(
-  std::is_constructible<NCollection_PagedDataMap<int, int>::Iterator,
-                        const NCollection_PagedDataMap<int, int>&>::value,
-  "legacy paged-map iterator must accept a const container");
+static_assert(std::is_constructible<NCollection_PagedArray<int>::Iterator,
+                                    const NCollection_PagedArray<int>&>::value,
+              "legacy paged-array iterator must accept a const container");
+static_assert(std::is_constructible<NCollection_PagedDataMap<int, int>::Iterator,
+                                    const NCollection_PagedDataMap<int, int>&>::value,
+              "legacy paged-map iterator must accept a const container");
 } // namespace
 
 TEST(NCollection_PersistentRadixMapTest, BuildUpdatesAndSnapshotsAreCanonical)
@@ -270,7 +268,7 @@ TEST(NCollection_PersistentRadixMapTest, IteratorsFollowCanonicalKeyOrder)
 
 TEST(NCollection_PersistentRadixMapTest, RemovalCollapsesBranchToSingleChild)
 {
-  const PersistentRadixTestMap aMap = PersistentRadixTestMap().Insert(1, 10).Insert(2, 20);
+  const PersistentRadixTestMap aMap      = PersistentRadixTestMap().Insert(1, 10).Insert(2, 20);
   const PersistentRadixTestMap aReduced  = aMap.Remove(2);
   const PersistentRadixTestMap aExpected = PersistentRadixTestMap().Insert(1, 10);
 

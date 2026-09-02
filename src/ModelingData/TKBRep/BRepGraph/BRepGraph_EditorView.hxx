@@ -202,36 +202,36 @@ public:
     //! compound live-graph edits that must validate every split before the
     //! first topology mutation.
     [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId   theEdgeEntity,
-                                                 const BRepGraph_VertexId theSplitVertex,
-                                                 const double             theSplitParam) const;
+                                                const BRepGraph_VertexId theSplitVertex,
+                                                const double             theSplitParam) const;
 
     //! Validate a split with an exact PCurve parameter for one coedge use.
     //! The exact parameter is checked against the stored PCurve range and its
     //! point-on-surface distance; all other coedge uses use the normal 3D
     //! projection preflight.
     [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId   theEdgeEntity,
-                                                 const BRepGraph_VertexId theSplitVertex,
-                                                 const double             theSplitParam,
-                                                 const BRepGraph_CoEdgeId theExactCoEdge,
-                                                 const double             theExactPCurveParam) const;
+                                                const BRepGraph_VertexId theSplitVertex,
+                                                const double             theSplitParam,
+                                                const BRepGraph_CoEdgeId theExactCoEdge,
+                                                const double             theExactPCurveParam) const;
 
     //! Validate a split against a point which has not been added to the graph
     //! yet. This overload is intended for compound live edits: all geometric
     //! split events can be checked before their supplemental vertex
     //! definitions are created.
     [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId theEdgeEntity,
-                                                 const gp_Pnt&          theSplitPoint,
-                                                 const double            theSplitTolerance,
-                                                 const double            theSplitParam) const;
+                                                const gp_Pnt&          theSplitPoint,
+                                                const double           theSplitTolerance,
+                                                const double           theSplitParam) const;
 
     //! Validate a split against a point not yet added to the graph while
     //! retaining an exact PCurve parameter for one coedge use.
-    [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId theEdgeEntity,
-                                                 const gp_Pnt&          theSplitPoint,
-                                                 const double            theSplitTolerance,
-                                                 const double            theSplitParam,
-                                                 const BRepGraph_CoEdgeId theExactCoEdge,
-                                                 const double             theExactPCurveParam) const;
+    [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId   theEdgeEntity,
+                                                const gp_Pnt&            theSplitPoint,
+                                                const double             theSplitTolerance,
+                                                const double             theSplitParam,
+                                                const BRepGraph_CoEdgeId theExactCoEdge,
+                                                const double             theExactPCurveParam) const;
 
     //! Detach one exact edge-owned vertex ref from an edge definition.
     //! Supports only the persisted boundary slots (StartVertexRefId /
@@ -483,18 +483,18 @@ public:
     //! Description of one replacement within a multi-wire transaction.
     struct CoEdgeRunReplacement
     {
-      BRepGraph_WireId                         WireId;
+      BRepGraph_WireId                             WireId;
       NCollection_LinearVector<BRepGraph_CoEdgeId> OldCoEdgeIds;
-      BRepGraph_CoEdgeId                       NewCoEdgeId;
+      BRepGraph_CoEdgeId                           NewCoEdgeId;
     };
 
     //! Description of a replacement used for allocation-free prevalidation.
     struct CoEdgeRunPrecheck
     {
-      BRepGraph_WireId                         WireId;
+      BRepGraph_WireId                             WireId;
       NCollection_LinearVector<BRepGraph_CoEdgeId> OldCoEdgeIds;
-      BRepGraph_VertexId                       ReplacementStartVertex;
-      BRepGraph_VertexId                       ReplacementEndVertex;
+      BRepGraph_VertexId                           ReplacementStartVertex;
+      BRepGraph_VertexId                           ReplacementEndVertex;
     };
 
     //! Status returned by wire coedge-order prechecks.

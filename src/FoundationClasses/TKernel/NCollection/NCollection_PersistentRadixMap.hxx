@@ -186,7 +186,7 @@ private:
     [[nodiscard]] const Child& ChildAt(const size_t theIndex) const
     {
       return std::holds_alternative<Child>(Content) ? std::get<Child>(Content)
-                                                     : std::get<Children>(Content).Value(theIndex);
+                                                    : std::get<Children>(Content).Value(theIndex);
     }
 
     [[nodiscard]] size_t ChildIndex(const uint8_t theSlot) const
@@ -196,7 +196,7 @@ private:
         return std::get<Child>(Content).Slot < theSlot ? 1 : 0;
       }
       const Children& aChildren = std::get<Children>(Content);
-      const auto anIt = std::lower_bound(
+      const auto      anIt      = std::lower_bound(
         aChildren.begin(),
         aChildren.end(),
         theSlot,
@@ -464,11 +464,10 @@ private:
 
     const uint8_t aSlot       = keySlot(theKey, theDepth);
     const size_t  aChildIndex = theNode == nullptr ? 0 : theNode->ChildIndex(aSlot);
-    const bool hasChild = theNode != nullptr && aChildIndex < theNode->NbChildren()
+    const bool    hasChild    = theNode != nullptr && aChildIndex < theNode->NbChildren()
                           && theNode->ChildAt(aChildIndex).Slot == aSlot;
-    const NodePtr anOldChild =
-      hasChild ? theNode->ChildAt(aChildIndex).NodeValue : NodePtr();
-    const NodePtr aNewChild = insert(anOldChild, theKey, theValue, theDepth + 1);
+    const NodePtr anOldChild = hasChild ? theNode->ChildAt(aChildIndex).NodeValue : NodePtr();
+    const NodePtr aNewChild  = insert(anOldChild, theKey, theValue, theDepth + 1);
     if (aNewChild == anOldChild)
     {
       return theNode;
@@ -503,7 +502,6 @@ private:
                                           anEntry.Value,
                                           TheHashPolicy::LeafHash(anEntry.Key, anEntry.Value));
     }
-
 
     const uint8_t aFirstSlot = keySlot(theEntries.Value(theFirst).Key, theDepth);
     if (aFirstSlot == keySlot(theEntries.Value(theLast - 1).Key, theDepth))

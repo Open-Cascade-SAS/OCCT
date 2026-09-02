@@ -41,8 +41,7 @@ TEST(Standard_SHA256Test, PublishedVectors)
                3,
                "ba7816bf8f01cfea414140de5dae2223"
                "b00361a396177a9cb410ff61f20015ad");
-  static constexpr char THE_LONG[] =
-    "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+  static constexpr char THE_LONG[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
   expectDigest(THE_LONG,
                std::strlen(THE_LONG),
                "248d6a61d20638b8e5c026930c3e6039"

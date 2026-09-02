@@ -66,10 +66,7 @@ class RevisionHashStream
 public:
   using result_type = BRepGraph_RevisionHash;
 
-  explicit RevisionHashStream(const uint64_t theDomain)
-  {
-    AppendUInt64(theDomain);
-  }
+  explicit RevisionHashStream(const uint64_t theDomain) { AppendUInt64(theDomain); }
 
   void AppendBytes(const void* theData, size_t theSize)
   {
@@ -306,7 +303,7 @@ public:
       return std::nullopt;
     }
 
-    BRepGraph_RevisionHash          aResult;
+    BRepGraph_RevisionHash         aResult;
     const std::array<uint8_t, 32>& aBytes = aDigest.Bytes();
     for (size_t aWordIndex = 0; aWordIndex < 4; ++aWordIndex)
     {
@@ -1067,7 +1064,7 @@ BRepGraph_RevisionHash::Hasher::Result BRepGraph_RevisionHash::Hasher::Update(
     {
       const BRepGraph_RevisionHash aHash = Node(theResultGraph, aResultNode);
       aSemantic                          = aSemantic.Insert(aSemanticKey, aHash);
-      aStorage = aStorage.Insert(merkleKey(MerkleNamespace::StorageNode,
+      aStorage                           = aStorage.Insert(merkleKey(MerkleNamespace::StorageNode,
                                            static_cast<uint8_t>(aResultNode.NodeKind),
                                            aResultNode.Index),
                                  physicalNodeHash(theResultGraph, aResultNode, aHash));

@@ -65,12 +65,12 @@ struct BRepGraph_Data
   NCollection_LinearVector<BRepGraph_CacheRegistry*> myExternalCacheRegistries;
 
   //! Stable top-level views. Nested views store graph-data context only.
-  BRepGraph::TopoView   myTopoView{nullptr};
-  BRepGraph::UIDsView   myUIDsView{nullptr};
-  BRepGraph::RefsView   myRefsView{nullptr};
-  BRepGraph::ShapesView myShapesView{nullptr};
-  BRepGraph::EditorView myEditorView{nullptr};
-  BRepGraph::MeshView   myMeshView{nullptr};
+  BRepGraph::TopoView        myTopoView{nullptr};
+  BRepGraph::UIDsView        myUIDsView{nullptr};
+  BRepGraph::RefsView        myRefsView{nullptr};
+  BRepGraph::ShapesView      myShapesView{nullptr};
+  BRepGraph::EditorView      myEditorView{nullptr};
+  BRepGraph::MeshView        myMeshView{nullptr};
   BRepGraph::SupplementsView mySupplementsView{nullptr};
 };
 

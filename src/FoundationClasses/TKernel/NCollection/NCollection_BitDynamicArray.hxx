@@ -151,7 +151,7 @@ private:
       return;
     }
 
-    const BlockType aTailMask = (BlockType(1) << aTailBits) - BlockType(1);
+    const BlockType aTailMask  = (BlockType(1) << aTailBits) - BlockType(1);
     const size_t    aLastBlock = myBlocks.Size() - 1;
     const BlockType aValue     = myBlocks.Value(aLastBlock);
     if ((aValue & ~aTailMask) != 0)

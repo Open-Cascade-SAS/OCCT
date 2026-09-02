@@ -83,21 +83,13 @@ TEST(BRepGraph_LayerParametricTest, MeshQualityValueSelectsQualityLadderValue)
 
   EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::VeryCoarse, 1u, 2u, 3u, 4u, 5u),
             1u);
-  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::Coarse, 1u, 2u, 3u, 4u, 5u),
-            2u);
-  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::Medium, 1u, 2u, 3u, 4u, 5u),
-            3u);
-  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::Fine, 1u, 2u, 3u, 4u, 5u),
-            4u);
-  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::VeryFine, 1u, 2u, 3u, 4u, 5u),
-            5u);
-  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(static_cast<Quality>(255),
-                                                        1u,
-                                                        2u,
-                                                        3u,
-                                                        4u,
-                                                        5u),
-            3u);
+  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::Coarse, 1u, 2u, 3u, 4u, 5u), 2u);
+  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::Medium, 1u, 2u, 3u, 4u, 5u), 3u);
+  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::Fine, 1u, 2u, 3u, 4u, 5u), 4u);
+  EXPECT_EQ(BRepGraph_LayerParametric::MeshQualityValue(Quality::VeryFine, 1u, 2u, 3u, 4u, 5u), 5u);
+  EXPECT_EQ(
+    BRepGraph_LayerParametric::MeshQualityValue(static_cast<Quality>(255), 1u, 2u, 3u, 4u, 5u),
+    3u);
 }
 
 TEST(BRepGraph_LayerParametricTest, GraphHelpersRequireAttachmentAndCreateLockLayer)

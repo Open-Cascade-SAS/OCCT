@@ -26,13 +26,13 @@ class BRepGraph_LayerSupplement : public BRepGraph_LayerSupplementBase
 public:
   struct Reference
   {
-    BRepGraphSupInc_Endpoint   Source;
-    BRepGraphSupInc_Endpoint   Target;
-    Standard_GUID              Role;
+    BRepGraphSupInc_Endpoint Source;
+    BRepGraphSupInc_Endpoint Target;
+    Standard_GUID            Role;
   };
 
-  [[nodiscard]] Standard_EXPORT static const Standard_GUID& GetID();
-  [[nodiscard]] Standard_EXPORT const Standard_GUID& ID() const override;
+  [[nodiscard]] Standard_EXPORT static const Standard_GUID&    GetID();
+  [[nodiscard]] Standard_EXPORT const Standard_GUID&           ID() const override;
   [[nodiscard]] Standard_EXPORT const TCollection_AsciiString& Name() const override;
 
   //! Add one validated directional association.
@@ -59,14 +59,16 @@ public:
   //! @param[in] theUID layer-local reference UID
   //! @return true when a reference was removed
   Standard_EXPORT bool Remove(const uint32_t theUID);
+
   [[nodiscard]] uint32_t Count() const { return static_cast<uint32_t>(myReferences.Size()); }
 
   Standard_EXPORT void OnItemRemoved(const BRepGraph_ItemId theItem) noexcept override;
   Standard_EXPORT void OnNodeReplaced(const BRepGraph_NodeId theOldNode,
                                       const BRepGraph_NodeId theNewNode) noexcept override;
   Standard_EXPORT void OnSupplementRemoved(const BRepGraphSupInc_ItemUID& theUID) noexcept override;
-  Standard_EXPORT void CopySupplementalTo(const BRepGraph_CopyRemap&          theCopy,
-                                          const BRepGraphSupInc_CopyContext& theSupplementCopy) const override;
+  Standard_EXPORT void CopySupplementalTo(
+    const BRepGraph_CopyRemap&         theCopy,
+    const BRepGraphSupInc_CopyContext& theSupplementCopy) const override;
   Standard_EXPORT void InvalidateAll() noexcept override;
   Standard_EXPORT void Clear() noexcept override;
 
@@ -74,20 +76,19 @@ public:
 
 private:
   [[nodiscard]] bool isValidEndpoint(const BRepGraphSupInc_Endpoint& theEndpoint) const;
-  void addIndex(const BRepGraphSupInc_Endpoint& theEndpoint, const uint32_t theUID);
+  void               addIndex(const BRepGraphSupInc_Endpoint& theEndpoint, const uint32_t theUID);
   void removeIndex(const BRepGraphSupInc_Endpoint& theEndpoint, const uint32_t theUID) noexcept;
   void removeByEndpoint(const BRepGraphSupInc_Endpoint& theEndpoint) noexcept;
   [[nodiscard]] static BRepGraphSupInc_Endpoint remapEndpoint(
-    const BRepGraphSupInc_Endpoint& theEndpoint,
-    const BRepGraph_CopyRemap&      theCopy,
+    const BRepGraphSupInc_Endpoint&    theEndpoint,
+    const BRepGraph_CopyRemap&         theCopy,
     const BRepGraphSupInc_CopyContext& theSupplementCopy);
 
 private:
   //! Each reference is identified by its key in this map.
   NCollection_FlatDataMap<uint32_t, Reference> myReferences;
-  NCollection_DataMap<BRepGraphSupInc_Endpoint,
-                      NCollection_LinearVector<uint32_t>>
-    myEndpointToUIDs;
+  NCollection_DataMap<BRepGraphSupInc_Endpoint, NCollection_LinearVector<uint32_t>>
+                                     myEndpointToUIDs;
   NCollection_LinearVector<uint32_t> myEmptyUIDs;
   uint32_t                           myNextUID = 1;
 };

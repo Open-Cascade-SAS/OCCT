@@ -37,21 +37,21 @@ namespace
 class BRepGraph_CacheChart_MutableResult : public BRepGraph_CacheChart::Result
 {
 public:
-  using Result::Status;
+  using Result::Cuts;
+  using Result::Diagnostic;
   using Result::Face;
+  using Result::Loops;
+  using Result::Status;
   using Result::Surface;
-  using Result::UPeriodic;
-  using Result::VPeriodic;
-  using Result::UPeriod;
-  using Result::VPeriod;
+  using Result::Transitions;
   using Result::UFirst;
   using Result::ULast;
+  using Result::UPeriod;
+  using Result::UPeriodic;
   using Result::VFirst;
   using Result::VLast;
-  using Result::Cuts;
-  using Result::Transitions;
-  using Result::Loops;
-  using Result::Diagnostic;
+  using Result::VPeriod;
+  using Result::VPeriodic;
 };
 
 const Standard_GUID& theGUID()
@@ -76,8 +76,7 @@ bool isSameTolerance(const BRepGraph_CacheChart::Tolerance& theLeft,
          && doubleBits(theLeft.ToleranceV) == doubleBits(theRight.ToleranceV)
          && doubleBits(theLeft.CurveParameterTolerance)
               == doubleBits(theRight.CurveParameterTolerance)
-         && doubleBits(theLeft.SingularityTolerance)
-              == doubleBits(theRight.SingularityTolerance);
+         && doubleBits(theLeft.SingularityTolerance) == doubleBits(theRight.SingularityTolerance);
 }
 
 bool isSamePolicy(const BRepGraph_CacheChart::Policy& theLeft,
@@ -151,7 +150,7 @@ bool readPeriodicInfo(const occ::handle<Geom_Surface>& theSurface, PeriodicInfo&
 bool isPeriodicDelta(const double theDelta,
                      const double thePeriod,
                      const double theTolerance,
-                     int32_t&      theIndex) noexcept
+                     int32_t&     theIndex) noexcept
 {
   if (thePeriod <= 0.0 || !isFinite(theDelta))
   {
@@ -173,12 +172,12 @@ bool isPeriodicDelta(const double theDelta,
   return true;
 }
 
-bool pointDelta(const gp_Pnt2d&       theLeft,
-                const gp_Pnt2d&       theRight,
-                const PeriodicInfo&   thePeriodic,
+bool pointDelta(const gp_Pnt2d&                        theLeft,
+                const gp_Pnt2d&                        theRight,
+                const PeriodicInfo&                    thePeriodic,
                 const BRepGraph_CacheChart::Tolerance& theTolerance,
-                BRepGraph_CacheChart::UVLift&     theLift,
-                gp_Pnt2d&             theShift) noexcept
+                BRepGraph_CacheChart::UVLift&          theLift,
+                gp_Pnt2d&                              theShift) noexcept
 {
   const double aDeltaU = theRight.X() - theLeft.X();
   const double aDeltaV = theRight.Y() - theLeft.Y();
@@ -229,21 +228,21 @@ struct CurveData
   bool                      IsReversed = false;
 };
 
-bool readCurveData(const BRepGraph&               theGraph,
-                   const BRepGraph_CoEdgeId       theCoEdge,
-                   const bool                     theWireReversed,
+bool readCurveData(const BRepGraph&                       theGraph,
+                   const BRepGraph_CoEdgeId               theCoEdge,
+                   const bool                             theWireReversed,
                    const BRepGraph_CacheChart::Tolerance& theTolerance,
-                   CurveData&                     theData)
+                   CurveData&                             theData)
 {
-  theData = CurveData();
-  const BRepGraphInc::CoEdgeDef& aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
-  const occ::handle<Geom2d_Curve>& aCurve = BRepGraph_Tool::CoEdge::PCurve(theGraph, theCoEdge);
+  theData                                  = CurveData();
+  const BRepGraphInc::CoEdgeDef&   aCoEdge = theGraph.Topo().CoEdges().Definition(theCoEdge);
+  const occ::handle<Geom2d_Curve>& aCurve  = BRepGraph_Tool::CoEdge::PCurve(theGraph, theCoEdge);
   if (!aCurve.IsNull())
   {
     const std::pair<double, double> aRange = BRepGraph_Tool::CoEdge::Range(theGraph, theCoEdge);
-    theData.Curve = aCurve;
-    theData.First = aRange.first;
-    theData.Last  = aRange.second;
+    theData.Curve                          = aCurve;
+    theData.First                          = aRange.first;
+    theData.Last                           = aRange.second;
     if (!isFinite(theData.First) || !isFinite(theData.Last)
         || std::abs(theData.Last - theData.First) <= theTolerance.CurveParameterTolerance)
     {
@@ -277,9 +276,9 @@ bool readCurveData(const BRepGraph&               theGraph,
   return true;
 }
 
-bool sameModuloPeriods(const gp_Pnt2d&     theLeft,
-                       const gp_Pnt2d&     theRight,
-                       const PeriodicInfo& thePeriodic,
+bool sameModuloPeriods(const gp_Pnt2d&                        theLeft,
+                       const gp_Pnt2d&                        theRight,
+                       const PeriodicInfo&                    thePeriodic,
                        const BRepGraph_CacheChart::Tolerance& theTolerance) noexcept
 {
   const double aDeltaU = theRight.X() - theLeft.X();
@@ -311,22 +310,17 @@ bool sameModuloPeriods(const gp_Pnt2d&     theLeft,
   return true;
 }
 
-bool findTransition(const CurveData&                  theLeft,
-                    const CurveData&                  theRight,
-                    const PeriodicInfo&                thePeriodic,
-                    const BRepGraph_CacheChart::Tolerance&   theTolerance,
-                    BRepGraph_CacheChart::UVLift&                 theLift,
-                    gp_Pnt2d&                          theShift,
-                    bool&                              theReversedMatch) noexcept
+bool findTransition(const CurveData&                       theLeft,
+                    const CurveData&                       theRight,
+                    const PeriodicInfo&                    thePeriodic,
+                    const BRepGraph_CacheChart::Tolerance& theTolerance,
+                    BRepGraph_CacheChart::UVLift&          theLift,
+                    gp_Pnt2d&                              theShift,
+                    bool&                                  theReversedMatch) noexcept
 {
   BRepGraph_CacheChart::UVLift aLift;
-  gp_Pnt2d         aShift;
-  if (pointDelta(theLeft.FirstPoint,
-                 theRight.FirstPoint,
-                 thePeriodic,
-                 theTolerance,
-                 aLift,
-                 aShift)
+  gp_Pnt2d                     aShift;
+  if (pointDelta(theLeft.FirstPoint, theRight.FirstPoint, thePeriodic, theTolerance, aLift, aShift)
       && pointDelta(theLeft.LastPoint,
                     theRight.LastPoint,
                     thePeriodic,
@@ -339,12 +333,7 @@ bool findTransition(const CurveData&                  theLeft,
     return true;
   }
 
-  if (pointDelta(theLeft.FirstPoint,
-                 theRight.LastPoint,
-                 thePeriodic,
-                 theTolerance,
-                 aLift,
-                 aShift)
+  if (pointDelta(theLeft.FirstPoint, theRight.LastPoint, thePeriodic, theTolerance, aLift, aShift)
       && pointDelta(theLeft.LastPoint,
                     theRight.FirstPoint,
                     thePeriodic,
@@ -360,10 +349,10 @@ bool findTransition(const CurveData&                  theLeft,
 }
 
 double coordinateFirst(const BRepGraph_CacheChart_MutableResult& theResult,
-                       const BRepGraph_CacheChart::Policy& thePolicy,
-                       const BRepGraph_CacheChart::Direction theDirection)
+                       const BRepGraph_CacheChart::Policy&       thePolicy,
+                       const BRepGraph_CacheChart::Direction     theDirection)
 {
-  const bool isU = theDirection == BRepGraph_CacheChart::Direction::U;
+  const bool   isU     = theDirection == BRepGraph_CacheChart::Direction::U;
   const double aFirst  = isU ? theResult.UFirst : theResult.VFirst;
   const double aLast   = isU ? theResult.ULast : theResult.VLast;
   const double aPeriod = isU ? theResult.UPeriod : theResult.VPeriod;
@@ -385,12 +374,12 @@ double coordinateFirst(const BRepGraph_CacheChart_MutableResult& theResult,
 }
 
 int countCutCrossings(const BRepGraph_CacheChart_MutableResult& theResult,
-                      const BRepGraph_CacheChart::Direction theDirection,
-                      const double theCut)
+                      const BRepGraph_CacheChart::Direction     theDirection,
+                      const double                              theCut)
 {
-  const bool isU = theDirection == BRepGraph_CacheChart::Direction::U;
+  const bool   isU     = theDirection == BRepGraph_CacheChart::Direction::U;
   const double aPeriod = isU ? theResult.UPeriod : theResult.VPeriod;
-  int aCount = 0;
+  int          aCount  = 0;
   for (const BRepGraph_CacheChart::Loop& aLoop : theResult.Loops)
   {
     for (const BRepGraph_CacheChart::BoundaryUse& aUse : aLoop.Boundary)
@@ -405,8 +394,8 @@ int countCutCrossings(const BRepGraph_CacheChart_MutableResult& theResult,
       {
         continue;
       }
-      const double aMin = std::min(aFirst, aLast);
-      const double aMax = std::max(aFirst, aLast);
+      const double aMin  = std::min(aFirst, aLast);
+      const double aMax  = std::max(aFirst, aLast);
       const double aSpan = aMax - aMin;
       double       anOffset;
       const double aDelta = theCut - aMin;
@@ -434,11 +423,11 @@ int countCutCrossings(const BRepGraph_CacheChart_MutableResult& theResult,
   return aCount;
 }
 
-void appendCut(BRepGraph_CacheChart_MutableResult& theResult,
-               const BRepGraph_CacheChart::Policy& thePolicy,
+void appendCut(BRepGraph_CacheChart_MutableResult&   theResult,
+               const BRepGraph_CacheChart::Policy&   thePolicy,
                const BRepGraph_CacheChart::Direction theDirection)
 {
-  const bool isU = theDirection == BRepGraph_CacheChart::Direction::U;
+  const bool   isU     = theDirection == BRepGraph_CacheChart::Direction::U;
   const double aPeriod = isU ? theResult.UPeriod : theResult.VPeriod;
   if (aPeriod <= 0.0)
   {
@@ -475,19 +464,19 @@ void appendCut(BRepGraph_CacheChart_MutableResult& theResult,
   theResult.Cuts.Append(aCut);
 }
 
-void appendChartBoundary(BRepGraph_CacheChart::Loop&          theLoop,
+void appendChartBoundary(BRepGraph_CacheChart::Loop&              theLoop,
                          const BRepGraph_CacheChart::BoundaryKind theKind,
-                         const uint32_t                 theVirtualCutIndex,
-                         const int32_t                  thePairIndex,
-                         const gp_Pnt2d&                theFirst,
-                         const gp_Pnt2d&                theLast)
+                         const uint32_t                           theVirtualCutIndex,
+                         const int32_t                            thePairIndex,
+                         const gp_Pnt2d&                          theFirst,
+                         const gp_Pnt2d&                          theLast)
 {
   BRepGraph_CacheChart::BoundaryUse& aUse = theLoop.Boundary.Appended();
-  aUse.Kind            = theKind;
-  aUse.VirtualCutIndex = theVirtualCutIndex;
-  aUse.PairIndex       = thePairIndex;
-  aUse.UVFirst         = theFirst;
-  aUse.UVLast          = theLast;
+  aUse.Kind                               = theKind;
+  aUse.VirtualCutIndex                    = theVirtualCutIndex;
+  aUse.PairIndex                          = thePairIndex;
+  aUse.UVFirst                            = theFirst;
+  aUse.UVLast                             = theLast;
 }
 
 bool isSingularUSection(const occ::handle<Geom_Surface>& theSurface,
@@ -505,13 +494,12 @@ bool isSingularUSection(const occ::handle<Geom_Surface>& theSurface,
   return aFirst.Distance(aOther) <= theTolerance;
 }
 
-bool appendCompleteSurfaceChart(BRepGraph_CacheChart_MutableResult& theResult,
-                                const PeriodicInfo&            thePeriodic,
+bool appendCompleteSurfaceChart(BRepGraph_CacheChart_MutableResult&    theResult,
+                                const PeriodicInfo&                    thePeriodic,
                                 const BRepGraph_CacheChart::Tolerance& theTolerance)
 {
-  if ((!thePeriodic.UPeriodic && !thePeriodic.VPeriodic)
-      || !isFinite(theResult.UFirst) || !isFinite(theResult.ULast)
-      || !isFinite(theResult.VFirst) || !isFinite(theResult.VLast))
+  if ((!thePeriodic.UPeriodic && !thePeriodic.VPeriodic) || !isFinite(theResult.UFirst)
+      || !isFinite(theResult.ULast) || !isFinite(theResult.VFirst) || !isFinite(theResult.VLast))
   {
     return false;
   }
@@ -535,29 +523,27 @@ bool appendCompleteSurfaceChart(BRepGraph_CacheChart_MutableResult& theResult,
                                                      theTolerance.Tolerance3d);
 
   BRepGraph_CacheChart::Loop& aLoop = theResult.Loops.Appended();
-  const int32_t aUTransition = thePeriodic.UPeriodic
-                                 ? static_cast<int32_t>(theResult.Transitions.Size())
-                                 : -1;
+  const int32_t               aUTransition =
+    thePeriodic.UPeriodic ? static_cast<int32_t>(theResult.Transitions.Size()) : -1;
   if (thePeriodic.UPeriodic)
   {
     BRepGraph_CacheChart::Transition& aTransition = theResult.Transitions.Appended();
-    aTransition.Direction    = BRepGraph_CacheChart::Direction::U;
-    aTransition.Period       = theResult.UPeriod;
-    aTransition.CutParameter = theResult.UFirst;
+    aTransition.Direction                         = BRepGraph_CacheChart::Direction::U;
+    aTransition.Period                            = theResult.UPeriod;
+    aTransition.CutParameter                      = theResult.UFirst;
     aTransition.Shift.SetCoord(theResult.UPeriod, 0.0);
     aTransition.PositiveSide = 0;
     aTransition.NegativeSide = 2;
   }
 
-  const int32_t aVTransition = thePeriodic.VPeriodic
-                                 ? static_cast<int32_t>(theResult.Transitions.Size())
-                                 : -1;
+  const int32_t aVTransition =
+    thePeriodic.VPeriodic ? static_cast<int32_t>(theResult.Transitions.Size()) : -1;
   if (thePeriodic.VPeriodic)
   {
     BRepGraph_CacheChart::Transition& aTransition = theResult.Transitions.Appended();
-    aTransition.Direction    = BRepGraph_CacheChart::Direction::V;
-    aTransition.Period       = theResult.VPeriod;
-    aTransition.CutParameter = theResult.VFirst;
+    aTransition.Direction                         = BRepGraph_CacheChart::Direction::V;
+    aTransition.Period                            = theResult.VPeriod;
+    aTransition.CutParameter                      = theResult.VFirst;
     aTransition.Shift.SetCoord(0.0, theResult.VPeriod);
     aTransition.PositiveSide = 3;
     aTransition.NegativeSide = 1;
@@ -568,13 +554,15 @@ bool appendCompleteSurfaceChart(BRepGraph_CacheChart_MutableResult& theResult,
                           : BRepGraph_CacheChart::BoundaryKind::ParametricBoundary;
   const BRepGraph_CacheChart::BoundaryKind aRightKind = aLeftKind;
   const BRepGraph_CacheChart::BoundaryKind aLowerKind =
-    aLowerSingular ? BRepGraph_CacheChart::BoundaryKind::SingularBoundary
-                   : (thePeriodic.VPeriodic ? BRepGraph_CacheChart::BoundaryKind::VirtualCut
-                                            : BRepGraph_CacheChart::BoundaryKind::ParametricBoundary);
+    aLowerSingular
+      ? BRepGraph_CacheChart::BoundaryKind::SingularBoundary
+      : (thePeriodic.VPeriodic ? BRepGraph_CacheChart::BoundaryKind::VirtualCut
+                               : BRepGraph_CacheChart::BoundaryKind::ParametricBoundary);
   const BRepGraph_CacheChart::BoundaryKind anUpperKind =
-    anUpperSingular ? BRepGraph_CacheChart::BoundaryKind::SingularBoundary
-                    : (thePeriodic.VPeriodic ? BRepGraph_CacheChart::BoundaryKind::VirtualCut
-                                             : BRepGraph_CacheChart::BoundaryKind::ParametricBoundary);
+    anUpperSingular
+      ? BRepGraph_CacheChart::BoundaryKind::SingularBoundary
+      : (thePeriodic.VPeriodic ? BRepGraph_CacheChart::BoundaryKind::VirtualCut
+                               : BRepGraph_CacheChart::BoundaryKind::ParametricBoundary);
 
   appendChartBoundary(aLoop, aLeftKind, 0, aUTransition, aLowerLeft, aUpperLeft);
   appendChartBoundary(aLoop, anUpperKind, 1, aVTransition, aUpperLeft, aUpperRight);
@@ -584,15 +572,14 @@ bool appendCompleteSurfaceChart(BRepGraph_CacheChart_MutableResult& theResult,
   return true;
 }
 
-occ::handle<BRepGraph_CacheChart::Result> failure(const BRepGraph_FaceId       theFace,
-                                             const BRepGraph_CacheChart::Status theStatus,
-                                             const char*                  theDiagnostic)
+occ::handle<BRepGraph_CacheChart::Result> failure(const BRepGraph_FaceId             theFace,
+                                                  const BRepGraph_CacheChart::Status theStatus,
+                                                  const char*                        theDiagnostic)
 {
-  occ::handle<BRepGraph_CacheChart_MutableResult> aResult =
-    new BRepGraph_CacheChart_MutableResult;
-  aResult->Face       = theFace;
-  aResult->Status     = theStatus;
-  aResult->Diagnostic = theDiagnostic;
+  occ::handle<BRepGraph_CacheChart_MutableResult> aResult = new BRepGraph_CacheChart_MutableResult;
+  aResult->Face                                           = theFace;
+  aResult->Status                                         = theStatus;
+  aResult->Diagnostic                                     = theDiagnostic;
   return aResult;
 }
 
@@ -601,28 +588,32 @@ occ::handle<BRepGraph_CacheChart::Result> failure(const BRepGraph_FaceId       t
 //=================================================================================================
 
 occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
-  const BRepGraph& theGraph,
+  const BRepGraph&       theGraph,
   const BRepGraph_FaceId theFace)
 {
-  return Build(theGraph, theFace, BRepGraph_CacheChart::Policy(), BRepGraph_CacheChart::Requirements());
+  return Build(theGraph,
+               theFace,
+               BRepGraph_CacheChart::Policy(),
+               BRepGraph_CacheChart::Requirements());
 }
 
 //=================================================================================================
 
 occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
-  const BRepGraph&                   theGraph,
-  const BRepGraph_FaceId             theFace,
+  const BRepGraph&                          theGraph,
+  const BRepGraph_FaceId                    theFace,
   const BRepGraph_CacheChart::Policy&       thePolicy,
   const BRepGraph_CacheChart::Requirements& theRequirements)
 {
   if (!theFace.IsValid(theGraph.Topo().Faces().Nb()) || theFace.IsRemoved(theGraph))
   {
-    return failure(theFace, BRepGraph_CacheChart::Status::MissingBoundary, "Invalid or removed face");
+    return failure(theFace,
+                   BRepGraph_CacheChart::Status::MissingBoundary,
+                   "Invalid or removed face");
   }
 
-  occ::handle<BRepGraph_CacheChart_MutableResult> aResult =
-    new BRepGraph_CacheChart_MutableResult;
-  aResult->Face    = theFace;
+  occ::handle<BRepGraph_CacheChart_MutableResult> aResult = new BRepGraph_CacheChart_MutableResult;
+  aResult->Face                                           = theFace;
   aResult->Surface = theGraph.Topo().Faces().Surface(theFace);
   if (aResult->Surface.IsNull())
   {
@@ -644,16 +635,12 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
   aResult->VPeriodic = aPeriodic.VPeriodic;
   aResult->UPeriod   = aPeriodic.UPeriod;
   aResult->VPeriod   = aPeriodic.VPeriod;
-  aResult->Surface->Bounds(aResult->UFirst,
-                           aResult->ULast,
-                           aResult->VFirst,
-                           aResult->VLast);
+  aResult->Surface->Bounds(aResult->UFirst, aResult->ULast, aResult->VFirst, aResult->VLast);
 
   const bool hasFiniteSurfaceBounds = isFinite(aResult->UFirst) && isFinite(aResult->ULast)
                                       && isFinite(aResult->VFirst) && isFinite(aResult->VLast);
 
-  if (theRequirements.RequireFiniteUVDomain && !hasFiniteSurfaceBounds
-      && !hasPersistentWires)
+  if (theRequirements.RequireFiniteUVDomain && !hasFiniteSurfaceBounds && !hasPersistentWires)
   {
     aResult->Status     = BRepGraph_CacheChart::Status::UnboundedDomain;
     aResult->Diagnostic = "Supporting surface does not provide finite chart bounds";
@@ -686,8 +673,8 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
     const BRepGraphInc::WireRef& aWireRef = theGraph.Refs().Wires().Entry(aWireIt.CurrentId());
     const BRepGraph_WireId       aWireId  = aWireRef.ChildWireId;
     BRepGraph_CacheChart::Loop&  aLoop    = aResult->Loops.Appended();
-    aLoop.SourceWire                         = aWireId;
-    const bool aWireReversed                 = aWireRef.Orientation.IsReversed;
+    aLoop.SourceWire                      = aWireId;
+    const bool aWireReversed              = aWireRef.Orientation.IsReversed;
 
     for (BRepGraph_CoEdgesOfWire aCoEdgeIt(theGraph, aWireId); aCoEdgeIt.More(); aCoEdgeIt.Next())
     {
@@ -700,12 +687,12 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
         return aResult;
       }
       BRepGraph_CacheChart::BoundaryUse& aUse = aLoop.Boundary.Appended();
-      aUse.SourceCoEdge               = aCoEdge;
-      aUse.Orientation.IsReversed     = aCurve.IsReversed;
-      aUse.ParamFirst                 = aCurve.First;
-      aUse.ParamLast                  = aCurve.Last;
-      aUse.UVFirst                    = aCurve.FirstPoint;
-      aUse.UVLast                     = aCurve.LastPoint;
+      aUse.SourceCoEdge                       = aCoEdge;
+      aUse.Orientation.IsReversed             = aCurve.IsReversed;
+      aUse.ParamFirst                         = aCurve.First;
+      aUse.ParamLast                          = aCurve.Last;
+      aUse.UVFirst                            = aCurve.FirstPoint;
+      aUse.UVLast                             = aCurve.LastPoint;
       aBoundaryBounds.Add(aCurve.UVBounds);
     }
 
@@ -759,8 +746,8 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
         }
 
         BRepGraph_CacheChart::UVLift aLift;
-        gp_Pnt2d         aShift;
-        bool             isReversedMatch = false;
+        gp_Pnt2d                     aShift;
+        bool                         isReversedMatch = false;
         if (!findTransition(aLeftCurve,
                             aRightCurve,
                             aPeriodic,
@@ -774,13 +761,13 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
 
         const int32_t aTransitionIndex = static_cast<int32_t>(aResult->Transitions.Size());
         BRepGraph_CacheChart::Transition& aTransition = aResult->Transitions.Appended();
-        aTransition.Direction = std::abs(aLift.UPeriodIndex) != 0
-                                  ? BRepGraph_CacheChart::Direction::U
-                                  : BRepGraph_CacheChart::Direction::V;
-        aTransition.Period = aTransition.Direction == BRepGraph_CacheChart::Direction::U
-                               ? aPeriodic.UPeriod
-                               : aPeriodic.VPeriod;
-        aTransition.Shift = aShift;
+        aTransition.Direction                         = std::abs(aLift.UPeriodIndex) != 0
+                                                          ? BRepGraph_CacheChart::Direction::U
+                                                          : BRepGraph_CacheChart::Direction::V;
+        aTransition.Period       = aTransition.Direction == BRepGraph_CacheChart::Direction::U
+                                     ? aPeriodic.UPeriod
+                                     : aPeriodic.VPeriod;
+        aTransition.Shift        = aShift;
         aTransition.PositiveSide = static_cast<int32_t>(anIndex);
         aTransition.NegativeSide = static_cast<int32_t>(anOtherIndex);
         aTransition.CutParameter = aTransition.Direction == BRepGraph_CacheChart::Direction::U
@@ -837,8 +824,8 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
   }
 
   if (theRequirements.RequireFiniteUVDomain
-      && (!isFinite(aResult->UFirst) || !isFinite(aResult->ULast)
-          || !isFinite(aResult->VFirst) || !isFinite(aResult->VLast)))
+      && (!isFinite(aResult->UFirst) || !isFinite(aResult->ULast) || !isFinite(aResult->VFirst)
+          || !isFinite(aResult->VLast)))
   {
     aResult->Status     = BRepGraph_CacheChart::Status::UnboundedDomain;
     aResult->Diagnostic = "Persistent boundaries do not provide finite chart bounds";
@@ -913,7 +900,7 @@ void BRepGraph_CacheChart::CopyFreshTo(const BRepGraph_CopyRemap&) const
 uint32_t BRepGraph_CacheChart::NbEntries() const
 {
   std::shared_lock<std::shared_mutex> aLock(myMutex);
-  uint32_t aNbEntries = 0;
+  uint32_t                            aNbEntries = 0;
   for (auto anIt = myEntriesByFace.cbegin(); anIt != myEntriesByFace.cend(); ++anIt)
   {
     aNbEntries += static_cast<uint32_t>(anIt->Size());
@@ -936,8 +923,7 @@ const BRepGraph_CacheChart::Entry* BRepGraph_CacheChart::findFreshLocked(
   for (const Entry& anEntry : *anEntries)
   {
     if (!isSamePolicy(anEntry.PolicyValue, thePolicy, false)
-        || !isSameRequirements(anEntry.RequirementsValue, theRequirements)
-        || anEntry.Chart.IsNull()
+        || !isSameRequirements(anEntry.RequirementsValue, theRequirements) || anEntry.Chart.IsNull()
         || !anEntry.IsFreshSubtree(*this, BRepGraph_NodeId(theFace)))
     {
       continue;
@@ -1016,8 +1002,7 @@ void BRepGraph_CacheChart::trimFaceEntriesLocked(FaceEntries& theEntries)
 
 //=================================================================================================
 
-occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Get(
-  const BRepGraph_FaceId theFace)
+occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Get(const BRepGraph_FaceId theFace)
 {
   return Get(theFace, BRepGraph_CacheChart::Policy(), BRepGraph_CacheChart::Requirements());
 }
@@ -1094,10 +1079,10 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Get(
   }
   trimFaceEntriesLocked(*anEntries);
 
-  Entry& anEntry           = anEntries->Appended();
+  Entry& anEntry            = anEntries->Appended();
   anEntry.PolicyValue       = thePolicy;
   anEntry.RequirementsValue = theRequirements;
-  anEntry.Chart            = aResult;
+  anEntry.Chart             = aResult;
   if (!anEntry.BindSubtreeGen(*this, BRepGraph_NodeId(theFace)))
   {
     anEntries->EraseLast();

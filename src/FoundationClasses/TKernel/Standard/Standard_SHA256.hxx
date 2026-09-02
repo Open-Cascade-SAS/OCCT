@@ -76,7 +76,7 @@ private:
 
   std::array<uint32_t, 8> myState;
   std::array<uint8_t, 64> myBuffer{};
-  uint64_t                myByteCount = 0;
+  uint64_t                myByteCount  = 0;
   size_t                  myBufferSize = 0;
 };
 

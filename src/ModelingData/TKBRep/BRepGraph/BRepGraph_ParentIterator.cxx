@@ -87,10 +87,10 @@ bool BRepGraph_ParentIterator::setParent(const BRepGraph_NodeId theParent,
         ? TopAbs_FORWARD
         : aRefs.Gen().Orientation(theExpectedRef);
     myCurrent    = ValueType{theParent,
-                             theExpectedRef,
-                             static_cast<uint32_t>(aStep),
-                             anOrientation,
-                             LinkKind::Reference};
+                          theExpectedRef,
+                          static_cast<uint32_t>(aStep),
+                          anOrientation,
+                          LinkKind::Reference};
     myHasCurrent = true;
     return true;
   }
@@ -109,10 +109,10 @@ bool BRepGraph_ParentIterator::setParent(const BRepGraph_NodeId theParent,
         if (BRepGraph_NodeId(aChildren.Value(aStep)) == myChild)
         {
           myCurrent    = ValueType{theParent,
-                                   BRepGraph_RefId(),
-                                   static_cast<uint32_t>(aStep),
-                                   TopAbs_FORWARD,
-                                   LinkKind::Structural};
+                                BRepGraph_RefId(),
+                                static_cast<uint32_t>(aStep),
+                                TopAbs_FORWARD,
+                                LinkKind::Structural};
           myHasCurrent = true;
           return true;
         }

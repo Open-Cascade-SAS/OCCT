@@ -64,12 +64,12 @@ TEST(BRepGraph_ItemStampBasicTest, EqualInvalidStampsHaveEqualHashes)
 TEST(BRepGraph_ItemStampBasicTest, HashIgnoresInactiveIdentityDomain)
 {
   const Standard_GUID aRuntimeIdentity("70fda65f-94ce-49fa-9393-df73ed98bb45");
-  BRepGraph_ItemStamp  aFirst(BRepGraph_UID(BRepGraph_NodeId::Kind::Face, 1),
+  BRepGraph_ItemStamp aFirst(BRepGraph_UID(BRepGraph_NodeId::Kind::Face, 1),
                              42,
                              7,
                              aRuntimeIdentity);
-  BRepGraph_ItemStamp  aSecond = aFirst;
-  aSecond.myRefUID = BRepGraph_RefUID(BRepGraph_RefId::Kind::Shell, 9);
+  BRepGraph_ItemStamp aSecond = aFirst;
+  aSecond.myRefUID            = BRepGraph_RefUID(BRepGraph_RefId::Kind::Shell, 9);
 
   ASSERT_EQ(aFirst, aSecond);
   EXPECT_EQ(aFirst.HashValue(), aSecond.HashValue());

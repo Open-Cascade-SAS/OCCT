@@ -38,9 +38,9 @@ struct SupplementStores
   const BRepGraphSupInc_TopologyStore* Topology = nullptr;
 };
 
-static void replaySupplementAttachments(const SupplementStores*  theSupplement,
-                                         const BRepGraph_NodeId  theOwner,
-                                         TopoDS_Shape&           theOwnerShape)
+static void replaySupplementAttachments(const SupplementStores* theSupplement,
+                                        const BRepGraph_NodeId  theOwner,
+                                        TopoDS_Shape&           theOwnerShape)
 {
   if (theSupplement == nullptr || theSupplement->Topology == nullptr || theOwnerShape.IsNull())
   {
@@ -71,11 +71,11 @@ static void replaySupplementAttachments(const SupplementStores*  theSupplement,
 
 //=================================================================================================
 
-static TopoDS_Shape reconstructVertexWithCache(const BRepGraphInc_Storage&          theStorage,
-                                                const SupplementStores*              theSupplement,
-                                               BRep_Builder&                        theBuilder,
-                                               BRepGraphInc_Reconstruct::Cache&     theCache,
-                                               const BRepGraph_VertexId             theVertexId)
+static TopoDS_Shape reconstructVertexWithCache(const BRepGraphInc_Storage&      theStorage,
+                                               const SupplementStores*          theSupplement,
+                                               BRep_Builder&                    theBuilder,
+                                               BRepGraphInc_Reconstruct::Cache& theCache,
+                                               const BRepGraph_VertexId         theVertexId)
 {
   if (!theVertexId.IsValid())
   {
@@ -99,12 +99,12 @@ static TopoDS_Shape reconstructVertexWithCache(const BRepGraphInc_Storage&      
 
 //=================================================================================================
 
-static TopoDS_Edge reconstructEdgeWithCache(BRepGraph&                           theGraph,
-                                             const BRepGraphInc_Storage&          theStorage,
-                                             const SupplementStores*              theSupplement,
-                                            BRep_Builder&                        theBuilder,
-                                            BRepGraphInc_Reconstruct::Cache&     theCache,
-                                            const BRepGraph_EdgeId               theEdgeId)
+static TopoDS_Edge reconstructEdgeWithCache(BRepGraph&                       theGraph,
+                                            const BRepGraphInc_Storage&      theStorage,
+                                            const SupplementStores*          theSupplement,
+                                            BRep_Builder&                    theBuilder,
+                                            BRepGraphInc_Reconstruct::Cache& theCache,
+                                            const BRepGraph_EdgeId           theEdgeId)
 {
   const BRepGraph_NodeId anEdgeNodeId = theEdgeId;
   const TopoDS_Shape*    aCached      = theCache.Seek(anEdgeNodeId);
@@ -174,12 +174,12 @@ static TopoDS_Edge reconstructEdgeWithCache(BRepGraph&                          
 
   if (anEdge.StartVertexRefId.IsValid())
   {
-    const BRepGraphInc::VertexRef& aStartRef = theStorage.VertexRef(anEdge.StartVertexRefId);
-    TopoDS_Shape aStartVertex                = reconstructVertexWithCache(theStorage,
-                                                                          theSupplement,
-                                                                          theBuilder,
-                                                                          theCache,
-                                                                          aStartRef.ChildVertexId);
+    const BRepGraphInc::VertexRef& aStartRef    = theStorage.VertexRef(anEdge.StartVertexRefId);
+    TopoDS_Shape                   aStartVertex = reconstructVertexWithCache(theStorage,
+                                                           theSupplement,
+                                                           theBuilder,
+                                                           theCache,
+                                                           aStartRef.ChildVertexId);
     if (!aStartVertex.IsNull())
     {
       aStartVertex.Orientation(TopAbs_FORWARD);
@@ -190,10 +190,10 @@ static TopoDS_Edge reconstructEdgeWithCache(BRepGraph&                          
   {
     const BRepGraphInc::VertexRef& anEndRef    = theStorage.VertexRef(anEdge.EndVertexRefId);
     TopoDS_Shape                   anEndVertex = reconstructVertexWithCache(theStorage,
-                                                                            theSupplement,
-                                                                            theBuilder,
-                                                                            theCache,
-                                                                            anEndRef.ChildVertexId);
+                                                          theSupplement,
+                                                          theBuilder,
+                                                          theCache,
+                                                          anEndRef.ChildVertexId);
     if (!anEndVertex.IsNull())
     {
       anEndVertex.Orientation(TopAbs_REVERSED);
@@ -472,7 +472,7 @@ static void installCoEdgePolygonOnTriangulation(
 
 static void processCoEdgeForFace(BRepGraph&                             theGraph,
                                  const BRepGraphInc_Storage&            theStorage,
-                                  const SupplementStores*                 theSupplement,
+                                 const SupplementStores*                theSupplement,
                                  BRep_Builder&                          theBuilder,
                                  BRepGraphInc_Reconstruct::Cache&       theCache,
                                  TopoDS_Wire&                           theWire,
@@ -541,7 +541,7 @@ static void processCoEdgeForFace(BRepGraph&                             theGraph
 static TopoDS_Wire reconstructWireForFace(
   BRepGraph&                             theGraph,
   const BRepGraphInc_Storage&            theStorage,
-  const SupplementStores*                 theSupplement,
+  const SupplementStores*                theSupplement,
   BRep_Builder&                          theBuilder,
   BRepGraphInc_Reconstruct::Cache&       theCache,
   const BRepGraph_WireId                 theWireId,
@@ -690,11 +690,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::Node(BRepGraph&             theGraph,
     return TopoDS_Shape();
   }
 
-  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  const BRepGraphInc_Storage&                      aStorage = theGraph.incStorage();
   const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
     occ::down_cast<BRepGraphSupInc_TopologyStore>(
       theGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()));
-  const SupplementStores aSupplementStores{aTopology.get()};
+  const SupplementStores  aSupplementStores{aTopology.get()};
   const SupplementStores* aSupplement = aTopology.IsNull() ? nullptr : &aSupplementStores;
 
   Cache::TempScope aTempScope(theCache);
@@ -1011,11 +1011,11 @@ TopoDS_Shape BRepGraphInc_Reconstruct::FaceWithCache(BRepGraph&             theG
                                                      const BRepGraph_FaceId theFaceId,
                                                      Cache&                 theCache)
 {
-  const BRepGraphInc_Storage& aStorage = theGraph.incStorage();
+  const BRepGraphInc_Storage&                      aStorage = theGraph.incStorage();
   const occ::handle<BRepGraphSupInc_TopologyStore> aTopology =
     occ::down_cast<BRepGraphSupInc_TopologyStore>(
       theGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()));
-  const SupplementStores aSupplementStores{aTopology.get()};
+  const SupplementStores  aSupplementStores{aTopology.get()};
   const SupplementStores* aSupplement = aTopology.IsNull() ? nullptr : &aSupplementStores;
 
   if (!theFaceId.IsValid(aStorage.NbFaces()))

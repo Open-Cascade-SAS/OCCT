@@ -447,15 +447,14 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
 
 TEST(BRepGraph_ValidateTest, SplitEdge_ProjectsNonlinearPCurveRange)
 {
-  BRepGraph aGraph;
+  BRepGraph              aGraph;
   BRepGraph::EditorView& aBuilder = aGraph.Editor();
 
   NCollection_LinearVector<BRepGraph_WireId> anInnerWires;
-  const BRepGraph_FaceId aFace =
-    aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
-                         BRepGraph_WireId(),
-                         anInnerWires.ToArray1(),
-                         Precision::Confusion());
+  const BRepGraph_FaceId                     aFace = aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
+                                                      BRepGraph_WireId(),
+                                                      anInnerWires.ToArray1(),
+                                                      Precision::Confusion());
   ASSERT_TRUE(aFace.IsValid());
 
   const gp_Pnt aP0(0.0, 0.0, 0.0);
@@ -469,13 +468,12 @@ TEST(BRepGraph_ValidateTest, SplitEdge_ProjectsNonlinearPCurveRange)
   ASSERT_TRUE(aV1.IsValid());
   ASSERT_TRUE(aV2.IsValid());
 
-  const BRepGraph_EdgeId anEdge =
-    aBuilder.Edges().Add(aV0,
-                         aV2,
-                         new Geom_Line(aP0, gp_Dir(1.0, 0.0, 0.0)),
-                         0.0,
-                         2.0,
-                         Precision::Confusion());
+  const BRepGraph_EdgeId anEdge = aBuilder.Edges().Add(aV0,
+                                                       aV2,
+                                                       new Geom_Line(aP0, gp_Dir(1.0, 0.0, 0.0)),
+                                                       0.0,
+                                                       2.0,
+                                                       Precision::Confusion());
   ASSERT_TRUE(anEdge.IsValid());
 
   NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
@@ -506,7 +504,7 @@ TEST(BRepGraph_ValidateTest, SplitEdge_ProjectsNonlinearPCurveRange)
   ASSERT_EQ(aSubACoEdges.Size(), 1);
   ASSERT_EQ(aSubBCoEdges.Size(), 1);
 
-  const double aExpectedPCurveSplit = 0.5 * (3.0 - std::sqrt(5.0));
+  const double                    aExpectedPCurveSplit = 0.5 * (3.0 - std::sqrt(5.0));
   const std::pair<double, double> aSubARange =
     BRepGraph_Tool::CoEdge::Range(aGraph, aSubACoEdges.Value(0));
   const std::pair<double, double> aSubBRange =
@@ -848,7 +846,7 @@ TEST(BRepGraph_ValidateTest, CompoundCycle_DirectSelfChild_DetectedByAudit)
   BRepGraph aGraph;
   aGraph.Clear();
   NCollection_LinearVector<BRepGraph_NodeId> anEmptyChildren;
-  const BRepGraph_CompoundId aCompound =
+  const BRepGraph_CompoundId                 aCompound =
     aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
   ASSERT_TRUE(aCompound.IsValid());
 
@@ -867,21 +865,17 @@ TEST(BRepGraph_ValidateTest, CompoundCycle_TransitiveChildChain_DetectedByAudit)
   BRepGraph aGraph;
   aGraph.Clear();
   NCollection_LinearVector<BRepGraph_NodeId> anEmptyChildren;
-  const BRepGraph_CompoundId aCompoundA =
+  const BRepGraph_CompoundId                 aCompoundA =
     aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
   const BRepGraph_CompoundId aCompoundB =
     aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
   ASSERT_TRUE(aCompoundA.IsValid());
   ASSERT_TRUE(aCompoundB.IsValid());
 
-  ASSERT_TRUE(aGraph.Editor()
-                .Compounds()
-                .Append(aCompoundA, BRepGraph_NodeId(aCompoundB))
-                .IsValid());
-  ASSERT_TRUE(aGraph.Editor()
-                .Compounds()
-                .Append(aCompoundB, BRepGraph_NodeId(aCompoundA))
-                .IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Compounds().Append(aCompoundA, BRepGraph_NodeId(aCompoundB)).IsValid());
+  ASSERT_TRUE(
+    aGraph.Editor().Compounds().Append(aCompoundB, BRepGraph_NodeId(aCompoundA)).IsValid());
 
   const BRepGraph_Validate::Result aAuditResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
@@ -1172,20 +1166,20 @@ TEST(BRepGraph_ValidateTest, Synthetic_Cylinder_AuditClean)
   auto& aCoEdgeOps = aGraph.Editor().CoEdges();
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aBotWireCEs;
-  const BRepGraph_CoEdgeId aBotCapCE = aCoEdgeOps.Add(aEBot, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId                     aBotCapCE = aCoEdgeOps.Add(aEBot, TopAbs_FORWARD);
   aBotWireCEs.Append(aBotCapCE);
   const BRepGraph_WireId aWBot = aGraph.Editor().Wires().Add(aBotWireCEs.ToArray1());
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aTopWireCEs;
-  const BRepGraph_CoEdgeId aTopCapCE = aCoEdgeOps.Add(aETop, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId                     aTopCapCE = aCoEdgeOps.Add(aETop, TopAbs_FORWARD);
   aTopWireCEs.Append(aTopCapCE);
   const BRepGraph_WireId aWTop = aGraph.Editor().Wires().Add(aTopWireCEs.ToArray1());
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aLatWireCEs;
-  const BRepGraph_CoEdgeId aLatBotCE     = aCoEdgeOps.Add(aEBot, TopAbs_FORWARD);
-  const BRepGraph_CoEdgeId aLatSeamFwdCE = aCoEdgeOps.Add(aESeam, TopAbs_FORWARD);
-  const BRepGraph_CoEdgeId aLatTopCE     = aCoEdgeOps.Add(aETop, TopAbs_REVERSED);
-  const BRepGraph_CoEdgeId aLatSeamRevCE = aCoEdgeOps.Add(aESeam, TopAbs_REVERSED);
+  const BRepGraph_CoEdgeId                     aLatBotCE = aCoEdgeOps.Add(aEBot, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aLatSeamFwdCE                 = aCoEdgeOps.Add(aESeam, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aLatTopCE                     = aCoEdgeOps.Add(aETop, TopAbs_REVERSED);
+  const BRepGraph_CoEdgeId aLatSeamRevCE                 = aCoEdgeOps.Add(aESeam, TopAbs_REVERSED);
   aLatWireCEs.Append(aLatBotCE);
   aLatWireCEs.Append(aLatSeamFwdCE);
   aLatWireCEs.Append(aLatTopCE);
@@ -1253,8 +1247,8 @@ TEST(BRepGraph_ValidateTest, Synthetic_Sphere_AuditClean)
 
   auto&                                        aCoEdgeOps = aGraph.Editor().CoEdges();
   NCollection_LinearVector<BRepGraph_CoEdgeId> aWireCEs;
-  const BRepGraph_CoEdgeId aSeamFwdCE = aCoEdgeOps.Add(aESeam, TopAbs_FORWARD);
-  const BRepGraph_CoEdgeId aSeamRevCE = aCoEdgeOps.Add(aESeam, TopAbs_REVERSED);
+  const BRepGraph_CoEdgeId                     aSeamFwdCE = aCoEdgeOps.Add(aESeam, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId                     aSeamRevCE = aCoEdgeOps.Add(aESeam, TopAbs_REVERSED);
   aWireCEs.Append(aSeamFwdCE);
   aWireCEs.Append(aSeamRevCE);
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aWireCEs.ToArray1());

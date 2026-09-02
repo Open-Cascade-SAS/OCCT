@@ -311,12 +311,19 @@ public:
   }
 
   bool Attached() const noexcept { return IsAttached(); }
-  int  AttachedCount() const noexcept { return myAttachedCount; }
-  int  DetachedCount() const noexcept { return myDetachedCount; }
-  int  ClearCount() const noexcept { return myClearCount; }
+
+  int AttachedCount() const noexcept { return myAttachedCount; }
+
+  int DetachedCount() const noexcept { return myDetachedCount; }
+
+  int ClearCount() const noexcept { return myClearCount; }
+
   const BRepGraph* CallbackGraph() const noexcept { return myCallbackGraph; }
+
   bool RegisteredCacheWasAttached() const noexcept { return myRegisteredCacheWasAttached; }
+
   void SetReRegisterOnDetach(const bool theValue) noexcept { myToReRegister = theValue; }
+
   void SetCacheToRegisterOnDetach(const occ::handle<LifecycleTestCache>& theCache)
   {
     myCacheToRegister = theCache;
@@ -355,14 +362,14 @@ protected:
   }
 
 private:
-  Standard_GUID            myID;
-  BRepGraph_CacheRegistry* myRegistry      = nullptr;
-  const BRepGraph*         myCallbackGraph = nullptr;
-  int                      myAttachedCount = 0;
-  int                      myDetachedCount = 0;
-  int                      myClearCount    = 0;
-  bool                     myToReRegister = false;
-  bool                     myRegisteredCacheWasAttached = false;
+  Standard_GUID                   myID;
+  BRepGraph_CacheRegistry*        myRegistry                   = nullptr;
+  const BRepGraph*                myCallbackGraph              = nullptr;
+  int                             myAttachedCount              = 0;
+  int                             myDetachedCount              = 0;
+  int                             myClearCount                 = 0;
+  bool                            myToReRegister               = false;
+  bool                            myRegisteredCacheWasAttached = false;
   occ::handle<LifecycleTestCache> myCacheToRegister;
 };
 
@@ -379,12 +386,12 @@ static BRepGraph makeBoxGraph()
 
 TEST(BRepGraph_CacheRegistryTest, Register_SameGUID_SameSlot)
 {
-  const Standard_GUID                aGUID("a1b2c3d4-1111-2222-3333-444455556666");
+  const Standard_GUID          aGUID("a1b2c3d4-1111-2222-3333-444455556666");
   const occ::handle<TestCache> aKind1 = new TestCache(aGUID, "SameGUID");
   const occ::handle<TestCache> aKind2 = new TestCache(aGUID, "SameGUID");
-  BRepGraph_CacheRegistry            aRegistry;
-  const uint32_t                     aSlot1 = aRegistry.RegisterCache(aKind1);
-  const uint32_t                     aSlot2 = aRegistry.RegisterCache(aKind2);
+  BRepGraph_CacheRegistry      aRegistry;
+  const uint32_t               aSlot1 = aRegistry.RegisterCache(aKind1);
+  const uint32_t               aSlot2 = aRegistry.RegisterCache(aKind2);
   EXPECT_EQ(aSlot1, aSlot2);
   EXPECT_FALSE(aKind2->Attached());
 }
@@ -403,10 +410,10 @@ TEST(BRepGraph_CacheRegistryTest, Register_DifferentGUID_DifferentSlot)
 
 TEST(BRepGraph_CacheRegistryTest, Register_AttachedCallbackCanQueryRegistryAndRunsOnce)
 {
-  BRepGraph aGraph;
-  BRepGraph_CacheRegistry& aRegistry = aGraph.CacheRegistry();
-  const occ::handle<LifecycleTestCache> aCache = new LifecycleTestCache(
-    Standard_GUID("ab46f199-ee43-4dbf-a80d-c82e39a6b65a"), &aRegistry);
+  BRepGraph                             aGraph;
+  BRepGraph_CacheRegistry&              aRegistry = aGraph.CacheRegistry();
+  const occ::handle<LifecycleTestCache> aCache =
+    new LifecycleTestCache(Standard_GUID("ab46f199-ee43-4dbf-a80d-c82e39a6b65a"), &aRegistry);
 
   aRegistry.RegisterCache(aCache);
 
@@ -420,10 +427,10 @@ TEST(BRepGraph_CacheRegistryTest, Register_AttachedCallbackCanQueryRegistryAndRu
 
 TEST(BRepGraph_CacheRegistryTest, Register_DetachedNotifiesOnlyAfterAttach)
 {
-  BRepGraph aGraph;
-  BRepGraph_CacheRegistry aRegistry;
-  const occ::handle<LifecycleTestCache> aCache = new LifecycleTestCache(
-    Standard_GUID("46650490-84af-4915-bf3a-01da3bfd9c46"), &aRegistry);
+  BRepGraph                             aGraph;
+  BRepGraph_CacheRegistry               aRegistry;
+  const occ::handle<LifecycleTestCache> aCache =
+    new LifecycleTestCache(Standard_GUID("46650490-84af-4915-bf3a-01da3bfd9c46"), &aRegistry);
 
   aRegistry.RegisterCache(aCache);
   EXPECT_EQ(aCache->AttachedCount(), 0);
@@ -436,10 +443,10 @@ TEST(BRepGraph_CacheRegistryTest, Register_DetachedNotifiesOnlyAfterAttach)
 
 TEST(BRepGraph_CacheRegistryTest, Detach_CallbackCanQueryRegistryAndIsIdempotent)
 {
-  BRepGraph aGraph;
-  BRepGraph_CacheRegistry aRegistry(aGraph);
-  const occ::handle<LifecycleTestCache> aCache = new LifecycleTestCache(
-    Standard_GUID("16aaadcc-87e4-44cb-a6ea-2cf8db56af1b"), &aRegistry);
+  BRepGraph                             aGraph;
+  BRepGraph_CacheRegistry               aRegistry(aGraph);
+  const occ::handle<LifecycleTestCache> aCache =
+    new LifecycleTestCache(Standard_GUID("16aaadcc-87e4-44cb-a6ea-2cf8db56af1b"), &aRegistry);
   aRegistry.RegisterCache(aCache);
 
   aRegistry.Detach();
@@ -454,12 +461,12 @@ TEST(BRepGraph_CacheRegistryTest, Detach_CallbackCanQueryRegistryAndIsIdempotent
 
 TEST(BRepGraph_CacheRegistryTest, Detach_ReentrantRegistrationRemainsDetached)
 {
-  BRepGraph aGraph;
-  BRepGraph_CacheRegistry aRegistry(aGraph);
-  const occ::handle<LifecycleTestCache> aFirst = new LifecycleTestCache(
-    Standard_GUID("2a803c5f-3f37-46af-9731-aa5d1fce39e5"), &aRegistry);
-  const occ::handle<LifecycleTestCache> aSecond = new LifecycleTestCache(
-    Standard_GUID("ca24a971-65cf-437a-85f4-197261c8cffd"), &aRegistry);
+  BRepGraph                             aGraph;
+  BRepGraph_CacheRegistry               aRegistry(aGraph);
+  const occ::handle<LifecycleTestCache> aFirst =
+    new LifecycleTestCache(Standard_GUID("2a803c5f-3f37-46af-9731-aa5d1fce39e5"), &aRegistry);
+  const occ::handle<LifecycleTestCache> aSecond =
+    new LifecycleTestCache(Standard_GUID("ca24a971-65cf-437a-85f4-197261c8cffd"), &aRegistry);
   aFirst->SetCacheToRegisterOnDetach(aSecond);
   aRegistry.RegisterCache(aFirst);
 
@@ -476,10 +483,10 @@ TEST(BRepGraph_CacheRegistryTest, Detach_ReentrantRegistrationRemainsDetached)
 
 TEST(BRepGraph_CacheRegistryTest, Register_ReplacementTransitionsEachCacheOnce)
 {
-  BRepGraph aGraph;
-  BRepGraph_CacheRegistry& aRegistry = aGraph.CacheRegistry();
-  const Standard_GUID aGUID("312bb54d-7910-45f1-8ba7-ae412fae84bd");
-  const occ::handle<LifecycleTestCache> aFirst = new LifecycleTestCache(aGUID, &aRegistry);
+  BRepGraph                             aGraph;
+  BRepGraph_CacheRegistry&              aRegistry = aGraph.CacheRegistry();
+  const Standard_GUID                   aGUID("312bb54d-7910-45f1-8ba7-ae412fae84bd");
+  const occ::handle<LifecycleTestCache> aFirst  = new LifecycleTestCache(aGUID, &aRegistry);
   const occ::handle<LifecycleTestCache> aSecond = new LifecycleTestCache(aGUID, &aRegistry);
 
   aRegistry.RegisterCache(aFirst);
@@ -497,10 +504,10 @@ TEST(BRepGraph_CacheRegistryTest, GraphDestructionNotifiesLifecycleExactlyOnce)
 {
   occ::handle<LifecycleTestCache> aCache;
   {
-    BRepGraph aGraph;
+    BRepGraph                aGraph;
     BRepGraph_CacheRegistry& aRegistry = aGraph.CacheRegistry();
-    aCache = new LifecycleTestCache(
-      Standard_GUID("45ee2fbf-c9a4-4ad8-88d4-79ab0ee78de7"), &aRegistry);
+    aCache =
+      new LifecycleTestCache(Standard_GUID("45ee2fbf-c9a4-4ad8-88d4-79ab0ee78de7"), &aRegistry);
     aRegistry.RegisterCache(aCache);
     ASSERT_EQ(aCache->AttachedCount(), 1);
   }
@@ -512,10 +519,10 @@ TEST(BRepGraph_CacheRegistryTest, GraphDestructionNotifiesLifecycleExactlyOnce)
 
 TEST(BRepGraph_CacheRegistryTest, UnregisterAllowsReentrantRegistrationFromDetachCallback)
 {
-  BRepGraph aGraph;
-  BRepGraph_CacheRegistry& aRegistry = aGraph.CacheRegistry();
-  const occ::handle<LifecycleTestCache> aCache = new LifecycleTestCache(
-    Standard_GUID("8f9674ae-8fdb-48b3-8535-090f8fce1d93"), &aRegistry);
+  BRepGraph                             aGraph;
+  BRepGraph_CacheRegistry&              aRegistry = aGraph.CacheRegistry();
+  const occ::handle<LifecycleTestCache> aCache =
+    new LifecycleTestCache(Standard_GUID("8f9674ae-8fdb-48b3-8535-090f8fce1d93"), &aRegistry);
   aRegistry.RegisterCache(aCache);
   aCache->SetReRegisterOnDetach(true);
 
@@ -563,10 +570,10 @@ TEST(BRepGraph_CacheRegistryTest, Ensure_IsConcurrentCreationSafe)
   constexpr int THE_NB_THREADS    = 8;
   constexpr int THE_NB_ITERATIONS = 64;
 
-  BRepGraph aGraph;
-  std::atomic<int>  aReadyCount{0};
-  std::atomic<bool> toStart{false};
-  std::atomic<int>  aFailureCount{0};
+  BRepGraph                                aGraph;
+  std::atomic<int>                         aReadyCount{0};
+  std::atomic<bool>                        toStart{false};
+  std::atomic<int>                         aFailureCount{0};
   std::vector<occ::handle<EntryTestCache>> aResults(static_cast<size_t>(THE_NB_THREADS));
   std::vector<std::thread>                 aThreads;
   aThreads.reserve(static_cast<size_t>(THE_NB_THREADS));
@@ -638,8 +645,7 @@ TEST(BRepGraph_CacheRegistryTest, Ensure_ConcurrentLookupSeesPublishedAttachment
   });
 
   const auto anAttachDeadline = std::chrono::steady_clock::now() + std::chrono::seconds(1);
-  while (!BlockingEnsureCache::IsEntered()
-         && std::chrono::steady_clock::now() < anAttachDeadline)
+  while (!BlockingEnsureCache::IsEntered() && std::chrono::steady_clock::now() < anAttachDeadline)
   {
     std::this_thread::yield();
   }
@@ -695,8 +701,8 @@ TEST(BRepGraph_CacheRegistryTest, SameCache_CannotUseDifferentRegistries)
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_AttachDetachPreservesHandleOwnership)
 {
-  BRepGraph aGraph = makeBoxGraph();
-  BRepGraph_CacheRegistry aRegistry;
+  BRepGraph                         aGraph = makeBoxGraph();
+  BRepGraph_CacheRegistry           aRegistry;
   const occ::handle<EntryTestCache> aCache = new EntryTestCache;
 
   EXPECT_FALSE(aRegistry.IsAttached());
@@ -714,11 +720,11 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_AttachDetachPreservesHandleOw
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistriesSameGraphHaveIndependentOwnership)
 {
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph               aGraph = makeBoxGraph();
   BRepGraph_CacheRegistry aFirstRegistry(aGraph);
   BRepGraph_CacheRegistry aSecondRegistry;
   aSecondRegistry.Attach(aGraph);
-  const occ::handle<EntryTestCache> aFirstCache = new EntryTestCache;
+  const occ::handle<EntryTestCache> aFirstCache  = new EntryTestCache;
   const occ::handle<EntryTestCache> aSecondCache = new EntryTestCache;
 
   aFirstRegistry.RegisterCache(aFirstCache);
@@ -730,8 +736,8 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistriesSameGraphHaveIndependentOwne
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_ReattachRebindsRegisteredCaches)
 {
-  BRepGraph aGraph = makeBoxGraph();
-  BRepGraph_CacheRegistry aRegistry;
+  BRepGraph                         aGraph = makeBoxGraph();
+  BRepGraph_CacheRegistry           aRegistry;
   const occ::handle<EntryTestCache> aCache = new EntryTestCache;
 
   aRegistry.Attach(aGraph);
@@ -750,8 +756,8 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_ReattachRebindsRegisteredCach
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_GraphClearClearsRegisteredCaches)
 {
-  BRepGraph aGraph = makeBoxGraph();
-  BRepGraph_CacheRegistry aRegistry(aGraph);
+  BRepGraph                         aGraph = makeBoxGraph();
+  BRepGraph_CacheRegistry           aRegistry(aGraph);
   const occ::handle<EntryTestCache> aCache = new EntryTestCache;
   aRegistry.RegisterCache(aCache);
   ASSERT_TRUE(aCache->SetNodeOwn(BRepGraph_NodeId(BRepGraph_EdgeId::Start()), 8));
@@ -764,7 +770,7 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_GraphClearClearsRegisteredCac
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_GraphDestructionDetachesRegistry)
 {
-  BRepGraph_CacheRegistry aRegistry;
+  BRepGraph_CacheRegistry     aRegistry;
   occ::handle<EntryTestCache> aCache;
   {
     BRepGraph aGraph = makeBoxGraph();
@@ -782,7 +788,7 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_GraphDestructionDetachesRegis
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_GraphMoveRebindsRegistry)
 {
   BRepGraph_CacheRegistry aRegistry;
-  BRepGraph aGraph = makeBoxGraph();
+  BRepGraph               aGraph = makeBoxGraph();
   aRegistry.Attach(aGraph);
   const occ::handle<EntryTestCache> aCache = new EntryTestCache;
   aRegistry.RegisterCache(aCache);
@@ -797,8 +803,8 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_GraphMoveRebindsRegistry)
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_MoveAssignmentDetachesDestinationGraph)
 {
-  BRepGraph aDestinationGraph = makeBoxGraph();
-  BRepGraph aSourceGraph      = makeBoxGraph();
+  BRepGraph               aDestinationGraph = makeBoxGraph();
+  BRepGraph               aSourceGraph      = makeBoxGraph();
   BRepGraph_CacheRegistry aDestinationRegistry(aDestinationGraph);
   BRepGraph_CacheRegistry aSourceRegistry(aSourceGraph);
 
@@ -820,7 +826,7 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_MoveAssignmentDetachesDestina
 
 TEST(BRepGraph_CacheRegistryTest, Ensure_UsesEachRegistryLocalSlot)
 {
-  BRepGraph aPrefixedGraph;
+  BRepGraph                          aPrefixedGraph;
   const occ::handle<BRepGraph_Cache> aPrefix =
     new TestCache(Standard_GUID("bf6aa7e4-3c38-43dd-98ef-623134d80001"), "Prefix");
   ASSERT_EQ(aPrefixedGraph.CacheRegistry().RegisterCache(aPrefix), 0u);
@@ -832,7 +838,7 @@ TEST(BRepGraph_CacheRegistryTest, Ensure_UsesEachRegistryLocalSlot)
   ASSERT_TRUE(aPrefixedGraph.CacheRegistry().FindSlot(EntryTestCache::GetID(), aPrefixedSlot));
   EXPECT_EQ(aPrefixedSlot, 1u);
 
-  BRepGraph aPlainGraph;
+  BRepGraph                         aPlainGraph;
   const occ::handle<EntryTestCache> aPlainCache =
     aPlainGraph.CacheRegistry().Ensure<EntryTestCache>();
   ASSERT_FALSE(aPlainCache.IsNull());
@@ -846,7 +852,7 @@ TEST(BRepGraph_CacheRegistryTest, Ensure_UsesEachRegistryLocalSlot)
 
 TEST(BRepGraph_CacheRegistryTest, Find_FollowsSlotCompactionAfterUnregister)
 {
-  BRepGraph aGraph;
+  BRepGraph                          aGraph;
   const occ::handle<BRepGraph_Cache> aPrefix =
     new TestCache(Standard_GUID("bf6aa7e4-3c38-43dd-98ef-623134d80002"), "Prefix");
   ASSERT_EQ(aGraph.CacheRegistry().RegisterCache(aPrefix), 0u);

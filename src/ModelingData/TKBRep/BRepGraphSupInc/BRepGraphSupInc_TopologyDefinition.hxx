@@ -1,6 +1,19 @@
 // Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
 
 #ifndef _BRepGraphSupInc_TopologyDefinition_HeaderFile
 #define _BRepGraphSupInc_TopologyDefinition_HeaderFile
@@ -27,6 +40,7 @@ struct BRepGraphSupInc_TopologyId
   //! Return true when this is not the invalid-index sentinel.
   //! @return true when the ID has an index value
   [[nodiscard]] bool IsValid() const noexcept { return Index != THE_INVALID_INDEX; }
+
   //! Compare dense index values.
   //! @param[in] theOther ID to compare
   //! @return true when both IDs have the same index
@@ -34,6 +48,7 @@ struct BRepGraphSupInc_TopologyId
   {
     return Index == theOther.Index;
   }
+
   //! Compare dense index values for inequality.
   //! @param[in] theOther ID to compare
   //! @return true when the IDs have different indices
@@ -70,13 +85,13 @@ enum class TopologyAttachmentKind : uint32_t
 struct TopologyDef : public BaseDef
 {
   //! Owning core topology node; the attachment lifetime follows this node's ownership operations.
-  BRepGraph_NodeId        Owner;
+  BRepGraph_NodeId Owner;
   //! Non-null supplemental topological shape.
-  TopoDS_Shape            Shape;
+  TopoDS_Shape Shape;
   //! Semantic role that constrains the permitted owner node kind.
-  TopologyAttachmentKind  Kind      = TopologyAttachmentKind::GenericSupplementShape;
+  TopologyAttachmentKind Kind = TopologyAttachmentKind::GenericSupplementShape;
   //! True after soft removal; removed records are skipped and later discarded by compaction.
-  bool                    IsRemoved = false;
+  bool IsRemoved = false;
 };
 } // namespace BRepGraphSupInc
 

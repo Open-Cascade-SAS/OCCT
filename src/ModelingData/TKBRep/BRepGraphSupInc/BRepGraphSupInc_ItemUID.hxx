@@ -34,10 +34,7 @@ struct BRepGraphSupInc_ItemUID
 
   //! Return true when all UID components have valid nonzero values.
   //! This does not verify that the item remains active in a particular storage instance.
-  [[nodiscard]] bool IsValid() const noexcept
-  {
-    return StoreId != 0 && Kind != 0 && Counter != 0;
-  }
+  [[nodiscard]] bool IsValid() const noexcept { return StoreId != 0 && Kind != 0 && Counter != 0; }
 
   //! Return true when this UID has valid component values.
   explicit operator bool() const noexcept { return IsValid(); }

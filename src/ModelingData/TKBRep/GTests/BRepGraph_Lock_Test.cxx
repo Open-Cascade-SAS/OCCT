@@ -407,8 +407,8 @@ TEST(BRepGraph_LockTest, ScopedOwnerEditAllowsDescendantMutationUnderProductOwne
   ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_FALSE(aGraph.RootProductIds().IsEmpty());
 
-  const BRepGraph_ProductId aProductId = aGraph.RootProductIds().First();
-  const BRepGraph_EdgeId    anEdgeId   = BRepGraph_EdgeId::Start();
+  const BRepGraph_ProductId        aProductId = aGraph.RootProductIds().First();
+  const BRepGraph_EdgeId           anEdgeId   = BRepGraph_EdgeId::Start();
   occ::handle<BRepGraph_LayerLock> aLayer = aGraph.LayerRegistry().Ensure<BRepGraph_LayerLock>();
 
   ASSERT_TRUE(aLayer->SetOwner(BRepGraph_ItemId(aProductId), testOwnerId(), false));
@@ -427,9 +427,7 @@ TEST(BRepGraph_LockTest, ScopedOwnerEditAllowsDescendantMutationUnderProductOwne
                Standard_ProgramError);
 
   {
-    BRepGraph_LayerLock::ScopedOwnerEdit anEdit(*aLayer,
-                                                BRepGraph_ItemId(anEdgeId),
-                                                testOwnerId());
+    BRepGraph_LayerLock::ScopedOwnerEdit anEdit(*aLayer, BRepGraph_ItemId(anEdgeId), testOwnerId());
     EXPECT_FALSE(isOwned(aGraph, anEdgeId));
     EXPECT_NO_THROW(aGraph.Editor().Edges().SetCurve(anEdgeId, aCurve, aFirst, aLast));
   }

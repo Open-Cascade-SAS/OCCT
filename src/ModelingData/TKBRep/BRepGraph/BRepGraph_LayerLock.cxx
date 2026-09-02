@@ -137,7 +137,7 @@ bool BRepGraph_LayerLock::FindOwnerRoot(const BRepGraph_ItemId theItem,
     if (aDirectId != nullptr)
     {
       theRootItem = theItem;
-      theOwnerId = *aDirectId;
+      theOwnerId  = *aDirectId;
       return true;
     }
 

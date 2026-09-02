@@ -346,7 +346,8 @@ public:
   //! @param[in] theNbItems number of expected deferred items
   Standard_EXPORT void ReserveDeferredItems(const size_t theNbItems);
 
-  //! Begin bulk deferred registration. Generation updates are postponed until EndBulkRegistration().
+  //! Begin bulk deferred registration. Generation updates are postponed until
+  //! EndBulkRegistration().
   Standard_EXPORT void BeginBulkRegistration();
 
   //! Finish bulk deferred registration and publish one generation update if anything changed.

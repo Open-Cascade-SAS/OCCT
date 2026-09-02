@@ -48,8 +48,8 @@ public:
   //! Find an active supplemental definition by runtime UID.
   //! @param[in] theUID runtime item identifier to query
   //! @return store-local dense definition ID, or an invalid ID
-  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_DefinitionId FindDefinitionByUID(
-    const BRepGraphSupInc_ItemUID& theUID) const;
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_DefinitionId
+    FindDefinitionByUID(const BRepGraphSupInc_ItemUID& theUID) const;
 
   //! Return true when an active supplemental definition exists.
   [[nodiscard]] Standard_EXPORT bool Has(const BRepGraphSupInc_ItemUID& theUID) const;
@@ -58,14 +58,14 @@ public:
   Standard_EXPORT bool Remove(const BRepGraphSupInc_ItemUID& theUID);
 
   //! Attach a non-null shape to an active compatible core owner.
-  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_TopologyId Attach(
-    const BRepGraph_NodeId theOwner,
-    const BRepGraphSupInc::TopologyAttachmentKind theKind,
-    const TopoDS_Shape& theShape);
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_TopologyId
+    Attach(const BRepGraph_NodeId                        theOwner,
+           const BRepGraphSupInc::TopologyAttachmentKind theKind,
+           const TopoDS_Shape&                           theShape);
 
   //! Return topology attachment ids in owner insertion order.
   [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraphSupInc_TopologyId>&
-    Attachments(const BRepGraph_NodeId theOwner) const;
+                                      Attachments(const BRepGraph_NodeId theOwner) const;
 
   //! Return active topology attachment data.
   [[nodiscard]] Standard_EXPORT const BRepGraphSupInc::TopologyDef* Attachment(
@@ -83,7 +83,7 @@ public:
 
   //! Move same-kind owner attachments or remove them for an incompatible replacement.
   Standard_EXPORT void ReplaceOwnerAttachments(const BRepGraph_NodeId theOldOwner,
-                                                const BRepGraph_NodeId theNewOwner);
+                                               const BRepGraph_NodeId theNewOwner);
 
   //! Compact all supplemental stores while preserving active-process UIDs.
   Standard_EXPORT void Compact();

@@ -463,11 +463,11 @@ bool BRepGraph_ParentExplorer::nextParentFrame(StackFrame& theChild, StackFrame&
 
   const BRepGraph_ParentIterator::ValueType& aTransition = anIt.Current();
   theChild.NextParentPosition                            = anIt.CurrentPosition();
-  theParent = StackFrame{aTransition.Parent,
+  theParent                                              = StackFrame{aTransition.Parent,
                          BRepGraph_ParentIterator::Position(),
                          aTransition.Link == BRepGraph_ParentIterator::LinkKind::Reference
-                           ? static_cast<int>(aTransition.StepIndex)
-                           : -1,
+                                                                        ? static_cast<int>(aTransition.StepIndex)
+                                                                        : -1,
                          aTransition.Ref};
   return true;
 }

@@ -47,11 +47,11 @@ BRepGraph_CacheRegistry::BRepGraph_CacheRegistry(BRepGraph_CacheRegistry&& theOt
 {
   {
     std::unique_lock<std::shared_mutex> aLock(theOther.myMutex);
-    myCaches             = std::move(theOther.myCaches);
-    myGuidToSlot         = std::move(theOther.myGuidToSlot);
+    myCaches     = std::move(theOther.myCaches);
+    myGuidToSlot = std::move(theOther.myGuidToSlot);
     myGraph.store(theOther.myGraph.exchange(nullptr, std::memory_order_acq_rel),
                   std::memory_order_release);
-    myIsExternal         = theOther.myIsExternal;
+    myIsExternal          = theOther.myIsExternal;
     theOther.myIsExternal = false;
     for (const occ::handle<BRepGraph_Cache>& aCache : myCaches)
     {
@@ -82,11 +82,11 @@ BRepGraph_CacheRegistry& BRepGraph_CacheRegistry::operator=(
     std::unique_lock<std::shared_mutex> anOtherLock(theOther.myMutex, std::defer_lock);
     std::lock(aThisLock, anOtherLock);
 
-    myCaches              = std::move(theOther.myCaches);
-    myGuidToSlot          = std::move(theOther.myGuidToSlot);
+    myCaches     = std::move(theOther.myCaches);
+    myGuidToSlot = std::move(theOther.myGuidToSlot);
     myGraph.store(theOther.myGraph.exchange(nullptr, std::memory_order_acq_rel),
                   std::memory_order_release);
-    myIsExternal         = theOther.myIsExternal;
+    myIsExternal          = theOther.myIsExternal;
     theOther.myIsExternal = false;
     for (const occ::handle<BRepGraph_Cache>& aCache : myCaches)
     {
@@ -112,7 +112,7 @@ void BRepGraph_CacheRegistry::Attach(BRepGraph& theGraph)
                                  "BRepGraph_CacheRegistry::Attach() - graph registry is internal");
   {
     std::shared_lock<std::shared_mutex> aLock(myMutex);
-    BRepGraph* aGraph = myGraph.load(std::memory_order_acquire);
+    BRepGraph*                          aGraph = myGraph.load(std::memory_order_acquire);
     if (aGraph == &theGraph)
     {
       return;
@@ -232,12 +232,12 @@ void BRepGraph_CacheRegistry::Detach() noexcept
   NCollection_LinearVector<occ::handle<BRepGraph_Cache>> aCaches;
   {
     std::unique_lock<std::shared_mutex> aLock(myMutex);
-    aGraph     = myGraph.load(std::memory_order_acquire);
+    aGraph = myGraph.load(std::memory_order_acquire);
     if (aGraph == nullptr || myIsDetaching)
     {
       return;
     }
-    isExternal = myIsExternal;
+    isExternal    = myIsExternal;
     myIsDetaching = true;
     aCaches       = myCaches;
   }
@@ -467,7 +467,7 @@ void BRepGraph_CacheRegistry::releaseIfUnregistered(
   bool isRegistered = false;
   {
     std::shared_lock<std::shared_mutex> aLock(myMutex);
-    const uint32_t* aSlot = myGuidToSlot.Seek(theCache->ID());
+    const uint32_t*                     aSlot = myGuidToSlot.Seek(theCache->ID());
     isRegistered = aSlot != nullptr && static_cast<size_t>(*aSlot) < myCaches.Size()
                    && myCaches.Value(static_cast<size_t>(*aSlot)).get() == theCache.get();
   }
@@ -520,7 +520,7 @@ void BRepGraph_CacheRegistry::CopyFreshCachesTo(
   BRepGraph&                                                         theTargetGraph,
   const NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>& theItemRemap,
   const BRepGraph_CopyRemap::Mode                                    theMode,
-  const BRepGraph_CopyRemap::FreshnessPolicy theFreshnessPolicy) const
+  const BRepGraph_CopyRemap::FreshnessPolicy                         theFreshnessPolicy) const
 {
   BRepGraph* aSourceGraph = nullptr;
   {
@@ -597,8 +597,7 @@ occ::handle<BRepGraph_Cache> BRepGraph_CacheRegistry::findCacheLocked(
 
 //=================================================================================================
 
-occ::handle<BRepGraph_Cache> BRepGraph_CacheRegistry::findCache(
-  const Standard_GUID& theGUID) const
+occ::handle<BRepGraph_Cache> BRepGraph_CacheRegistry::findCache(const Standard_GUID& theGUID) const
 {
   std::shared_lock<std::shared_mutex> aLock(myMutex);
   return findCacheLocked(theGUID);
@@ -618,17 +617,14 @@ occ::handle<BRepGraph_Cache> BRepGraph_CacheRegistry::cacheAt(const uint32_t the
 
 //=================================================================================================
 
-uint32_t BRepGraph_CacheRegistry::registerCacheLocked(
-  const occ::handle<BRepGraph_Cache>& theCache,
-  occ::handle<BRepGraph_Cache>&       theRemoved,
-  bool&                               theToAttach)
+uint32_t BRepGraph_CacheRegistry::registerCacheLocked(const occ::handle<BRepGraph_Cache>& theCache,
+                                                      occ::handle<BRepGraph_Cache>& theRemoved,
+                                                      bool&                         theToAttach)
 {
   Standard_ProgramError_Raise_if(theCache.IsNull(),
                                  "BRepGraph_CacheRegistry::RegisterCache() - null cache");
-  const BRepGraph_CacheRegistry* aRegistry =
-    theCache->myRegistry.load(std::memory_order_acquire);
-  Standard_ProgramError_Raise_if(
-    aRegistry != nullptr && aRegistry != this,
+  const BRepGraph_CacheRegistry* aRegistry = theCache->myRegistry.load(std::memory_order_acquire);
+  Standard_ProgramError_Raise_if(aRegistry != nullptr && aRegistry != this,
                                  "BRepGraph_CacheRegistry::RegisterCache() - cache is attached "
                                  "to another registry");
 

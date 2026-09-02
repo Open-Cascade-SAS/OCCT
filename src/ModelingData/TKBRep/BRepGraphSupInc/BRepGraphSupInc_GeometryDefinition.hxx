@@ -37,6 +37,7 @@ struct BRepGraphSupInc_GeometryId
   //! Return true when this is not the invalid-index sentinel.
   //! @return true when the ID has an index value
   [[nodiscard]] bool IsValid() const noexcept { return Index != THE_INVALID_INDEX; }
+
   //! Compare dense index values.
   //! @param[in] theOther ID to compare
   //! @return true when both IDs have the same index
@@ -44,6 +45,7 @@ struct BRepGraphSupInc_GeometryId
   {
     return Index == theOther.Index;
   }
+
   //! Compare dense index values for inequality.
   //! @param[in] theOther ID to compare
   //! @return true when the IDs have different indices
@@ -75,7 +77,7 @@ struct Curve3dDef : public BaseDef
   //! Referenced 3D curve.
   occ::handle<Geom_Curve> Curve;
   //! True after soft removal; removed records are skipped and later discarded by compaction.
-  bool                    IsRemoved = false;
+  bool IsRemoved = false;
 };
 
 //! Reusable 2D curve definition.
@@ -84,7 +86,7 @@ struct Curve2dDef : public BaseDef
   //! Referenced parametric curve.
   occ::handle<Geom2d_Curve> Curve;
   //! True after soft removal; removed records are skipped and later discarded by compaction.
-  bool                      IsRemoved = false;
+  bool IsRemoved = false;
 };
 
 //! Reusable surface definition.
@@ -93,7 +95,7 @@ struct SurfaceDef : public BaseDef
   //! Referenced surface.
   occ::handle<Geom_Surface> Surface;
   //! True after soft removal; removed records are skipped and later discarded by compaction.
-  bool                      IsRemoved = false;
+  bool IsRemoved = false;
 };
 } // namespace BRepGraphSupInc
 

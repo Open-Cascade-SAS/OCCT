@@ -470,23 +470,23 @@ inline bool buildToleranceVertexClasses(const BRepGraphInc_Storage&             
   {
     const CoEdgeEndpointData& aData       = theData.At(anIdx);
     const size_t              aStartIndex = addOrUpdateVertexClass(theStorage,
-                                                                   aData.StartVertex,
-                                                                   aData.StartTolerance,
-                                                                   aVertexToClass,
-                                                                   aVertices,
-                                                                   aTolerances,
-                                                                   aParents,
-                                                                   aRanks,
-                                                                   aNbVertices);
+                                                      aData.StartVertex,
+                                                      aData.StartTolerance,
+                                                      aVertexToClass,
+                                                      aVertices,
+                                                      aTolerances,
+                                                      aParents,
+                                                      aRanks,
+                                                      aNbVertices);
     const size_t              anEndIndex  = addOrUpdateVertexClass(theStorage,
-                                                                   aData.EndVertex,
-                                                                   aData.EndTolerance,
-                                                                   aVertexToClass,
-                                                                   aVertices,
-                                                                   aTolerances,
-                                                                   aParents,
-                                                                   aRanks,
-                                                                   aNbVertices);
+                                                     aData.EndVertex,
+                                                     aData.EndTolerance,
+                                                     aVertexToClass,
+                                                     aVertices,
+                                                     aTolerances,
+                                                     aParents,
+                                                     aRanks,
+                                                     aNbVertices);
     if (aStartIndex >= aNbMaxVertices || anEndIndex >= aNbMaxVertices)
     {
       return false;
@@ -568,7 +568,7 @@ inline void buildBestEffortRunsByClasses(const NCollection_Array1<BRepGraph_CoEd
     return;
   }
 
-  const size_t          aNbInput = theInput.Size();
+  const size_t                aNbInput = theInput.Size();
   NCollection_BitDynamicArray aUsed;
   aUsed.Resize(aNbInput);
 

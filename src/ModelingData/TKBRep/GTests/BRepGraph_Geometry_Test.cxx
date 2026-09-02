@@ -723,7 +723,7 @@ TEST(BRepGraph_GeometryTest, CoEdgeSameParameter_UsesPlanarFallbackWithoutStored
   ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
   ASSERT_TRUE(BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId));
 
-  const BRepGraph_FaceId aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCoEdgeId);
+  const BRepGraph_FaceId        aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCoEdgeId);
   const occ::handle<Geom_Plane> aPlane =
     occ::down_cast<Geom_Plane>(BRepGraph_Tool::Face::Surface(aGraph, aFaceId));
   ASSERT_FALSE(aPlane.IsNull());
@@ -768,7 +768,8 @@ TEST(BRepGraph_GeometryTest, CoEdgeSameParameter_UsesParentWireFaceWhenFaceIdMis
     const BRepGraph_FaceId aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCandidateCoEdge);
     const occ::handle<Geom_Plane> aPlane =
       occ::down_cast<Geom_Plane>(BRepGraph_Tool::Face::Surface(aGraph, aFaceId));
-    if (!aPlane.IsNull() && !BRepGraph_Tool::Edge::Curve(aGraph, aCandidateDef.ChildEdgeId).IsNull())
+    if (!aPlane.IsNull()
+        && !BRepGraph_Tool::Edge::Curve(aGraph, aCandidateDef.ChildEdgeId).IsNull())
     {
       aCoEdgeId = aCandidateCoEdge;
       anEdgeId  = aCandidateDef.ChildEdgeId;
@@ -779,9 +780,8 @@ TEST(BRepGraph_GeometryTest, CoEdgeSameParameter_UsesParentWireFaceWhenFaceIdMis
   ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
   ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
 
-  const BRepGraphInc::CoEdgeDef& aCoEdge =
-    aGraph.Topo().CoEdges().Definition(aCoEdgeId);
-  const BRepGraph_FaceId aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCoEdgeId);
+  const BRepGraphInc::CoEdgeDef& aCoEdge = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+  const BRepGraph_FaceId         aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCoEdgeId);
   ASSERT_EQ(BRepGraph_Tool::Wire::FaceOf(aGraph, aCoEdge.ParentWireId), aFaceId);
   ASSERT_TRUE(BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId));
 
@@ -820,9 +820,9 @@ TEST(BRepGraph_GeometryTest, AuditValidationUsesParentWireFaceForPlanarPCurveFal
   BRepGraph_FaceId   aFaceId;
   for (BRepGraph_CoEdgeIterator aCoEdgeIt(aGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
   {
-    const BRepGraph_CoEdgeId aCandidateCoEdge = aCoEdgeIt.CurrentId();
-    const BRepGraphInc::CoEdgeDef& aCandidateDef = aCoEdgeIt.Current();
-    const BRepGraph_FaceId   aCandidateFace =
+    const BRepGraph_CoEdgeId       aCandidateCoEdge = aCoEdgeIt.CurrentId();
+    const BRepGraphInc::CoEdgeDef& aCandidateDef    = aCoEdgeIt.Current();
+    const BRepGraph_FaceId         aCandidateFace =
       BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCandidateCoEdge);
     if (!occ::down_cast<Geom_Plane>(BRepGraph_Tool::Face::Surface(aGraph, aCandidateFace)).IsNull()
         && aCandidateDef.ChildEdgeId.IsValid(aGraph.Topo().Edges().Nb()))
@@ -856,13 +856,16 @@ TEST(BRepGraph_GeometryTest, AuditValidationUsesParentWireFaceForPlanarPCurveFal
   }
   ASSERT_TRUE(anUnrelatedFace.IsValid(aGraph.Topo().Faces().Nb()));
   const BRepGraph_Tool::EdgeUsage anEdgeUsage{
-    anEdgeId, TopLoc_Location(), BRepGraph_Tool::CoEdge::Orientation(aGraph, aCoEdgeId)};
-  const BRepGraph_Tool::FaceUsage aFaceUsage{aFaceId, TopLoc_Location(), TopAbs_FORWARD};
+    anEdgeId,
+    TopLoc_Location(),
+    BRepGraph_Tool::CoEdge::Orientation(aGraph, aCoEdgeId)};
+  const BRepGraph_Tool::FaceUsage    aFaceUsage{aFaceId, TopLoc_Location(), TopAbs_FORWARD};
   const GeomAdaptor_TransformedCurve aCurveOnSurface =
     BRepGraph_Tool::Edge::CurveOnSurface(aGraph, anEdgeUsage, aFaceUsage);
   EXPECT_TRUE(aCurveOnSurface.IsCurveOnSurface());
-  const BRepGraph_Tool::FaceUsage anUnrelatedFaceUsage{
-    anUnrelatedFace, TopLoc_Location(), TopAbs_FORWARD};
+  const BRepGraph_Tool::FaceUsage    anUnrelatedFaceUsage{anUnrelatedFace,
+                                                       TopLoc_Location(),
+                                                       TopAbs_FORWARD};
   const GeomAdaptor_TransformedCurve anUnrelatedCurveOnSurface =
     BRepGraph_Tool::Edge::CurveOnSurface(aGraph, anEdgeUsage, anUnrelatedFaceUsage);
   EXPECT_FALSE(anUnrelatedCurveOnSurface.IsCurveOnSurface());
@@ -1059,11 +1062,10 @@ TEST(BRepGraph_GeometryTest, DerivedStateCopyFreshRejectsDivergentTargetWithEqua
   const BRepGraph_EdgeId anEdge = BRepGraph_EdgeId::Start();
 
   EXPECT_TRUE(BRepGraph_Tool::Edge::IsClosed(aSource, anEdge));
-  aSource.CacheRegistry().CopyFreshCachesTo(
-    aTarget,
-    BRepGraph_CopyRemap::MappingKind::Identity,
-    BRepGraph_CopyRemap::Mode::Copy,
-    BRepGraph_CopyRemap::FreshnessPolicy::MatchTarget);
+  aSource.CacheRegistry().CopyFreshCachesTo(aTarget,
+                                            BRepGraph_CopyRemap::MappingKind::Identity,
+                                            BRepGraph_CopyRemap::Mode::Copy,
+                                            BRepGraph_CopyRemap::FreshnessPolicy::MatchTarget);
 
   EXPECT_FALSE(BRepGraph_Tool::Edge::IsClosed(aTarget, anEdge));
 }
@@ -1189,9 +1191,9 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurveCoEdgeId_UsesWireFaceWhenCoEdgeFaceId
       continue;
     }
 
-    const BRepGraph_FaceId        aFace        = aCoEdge.FaceId;
-    const BRepGraph_EdgeId        anEdge       = aCoEdge.ChildEdgeId;
-    const TopAbs_Orientation      anOrientation = aCoEdge.Orientation;
+    const BRepGraph_FaceId   aFace         = aCoEdge.FaceId;
+    const BRepGraph_EdgeId   anEdge        = aCoEdge.ChildEdgeId;
+    const TopAbs_Orientation anOrientation = aCoEdge.Orientation;
     aGraph.Editor().CoEdges().SetFaceId(aCoEdgeId, BRepGraph_FaceId(), false);
 
     ASSERT_FALSE(aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceId.IsValid());

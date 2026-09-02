@@ -60,7 +60,7 @@ public:
 
     //! Move scoped owner edit.
     //! @param[in,out] theOther source scope
-    Standard_EXPORT                  ScopedOwnerEdit(ScopedOwnerEdit&& theOther) noexcept;
+    Standard_EXPORT ScopedOwnerEdit(ScopedOwnerEdit&& theOther) noexcept;
 
     //! Move scoped owner edit.
     //! @param[in,out] theOther source scope
@@ -195,10 +195,7 @@ public:
 
   //! Check whether at least one root owner entry exists.
   //! @return true if at least one root owner entry exists.
-  [[nodiscard]] bool HasOwners() const
-  {
-    return !myNodeOwners.IsEmpty() || !myRefOwners.IsEmpty();
-  }
+  [[nodiscard]] bool HasOwners() const { return !myNodeOwners.IsEmpty() || !myRefOwners.IsEmpty(); }
 
   //! Reserve owner map buckets for bulk registration.
   //! @param[in] theNbOwners expected number of owner roots
@@ -296,8 +293,8 @@ private:
 
   NCollection_FlatDataMap<BRepGraph_ItemId, Standard_GUID> myNodeOwners;
   NCollection_FlatDataMap<BRepGraph_ItemId, Standard_GUID> myRefOwners;
-  uint32_t                                                  myBulkOwnerUpdateDepth = 0;
-  bool                                                      myHasBulkOwnerChanges  = false;
+  uint32_t                                                 myBulkOwnerUpdateDepth = 0;
+  bool                                                     myHasBulkOwnerChanges  = false;
 };
 
 #endif // _BRepGraph_LayerLock_HeaderFile

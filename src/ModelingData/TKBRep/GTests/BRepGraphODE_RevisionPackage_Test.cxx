@@ -120,8 +120,8 @@ TEST(BRepGraph_RevisionTest, EdgeEditPreservesDurableEndpointsAndRelations)
   EXPECT_EQ(anEdgeDiff.CreatedUIDs.First(), anEdgeUID);
   EXPECT_EQ(anEdgeDiff.CreatedRefUIDs.Size(), 2u);
 
-  const std::filesystem::path           anPackagePath = makePackageTestPath("edge");
-  BRepGraphODE_RevisionPackage::Options anPackageOptions;
+  const std::filesystem::path                anPackagePath = makePackageTestPath("edge");
+  BRepGraphODE_RevisionPackage::Options      anPackageOptions;
   const BRepGraphODE_RevisionPackage::Result anPackageWrite =
     BRepGraphODE_RevisionPackage::Write(*anEdgeCommit.Revision,
                                         asOSDPath(anPackagePath),
@@ -256,8 +256,8 @@ TEST(BRepGraph_RevisionTest, FreeCoEdgeEditPreservesUsageIdentity)
   EXPECT_EQ(aCoEdgeDiff.UsageLinkChanges.First().LinkUID, aCoEdgeUID);
   EXPECT_EQ(aCoEdgeDiff.UsageLinkChanges.First().Kind, BRepGraph_RevisionDiff::ChangeKind::Created);
 
-  const std::filesystem::path           anPackagePath = makePackageTestPath("coedge");
-  BRepGraphODE_RevisionPackage::Options anPackageOptions;
+  const std::filesystem::path                anPackagePath = makePackageTestPath("coedge");
+  BRepGraphODE_RevisionPackage::Options      anPackageOptions;
   const BRepGraphODE_RevisionPackage::Result anPackageWrite =
     BRepGraphODE_RevisionPackage::Write(*aCoEdgeCommit.Revision,
                                         asOSDPath(anPackagePath),
@@ -448,8 +448,8 @@ TEST(BRepGraph_RevisionTest, PackageRoundTripsCompleteNativeRevision)
   const BRepGraph_Transaction::CommitResult aCommit = anEdit.Commit();
   ASSERT_TRUE(aCommit.IsOk());
 
-  const std::filesystem::path           aPath = makePackageTestPath("native-revision");
-  BRepGraphODE_RevisionPackage::Options anOptions;
+  const std::filesystem::path                aPath = makePackageTestPath("native-revision");
+  BRepGraphODE_RevisionPackage::Options      anOptions;
   const BRepGraphODE_RevisionPackage::Result aWrite =
     BRepGraphODE_RevisionPackage::Write(*aCommit.Revision, asOSDPath(aPath), anOptions);
   ASSERT_TRUE(aWrite.IsOk()) << (aWrite.Diagnostics.IsEmpty()
@@ -788,8 +788,8 @@ TEST(BRepGraph_RevisionTest, TopologyOnlyWireFaceEditPreservesOrderedMembership)
   EXPECT_FALSE(aBoundCoEdgeRemoval.RemoveCoEdge(aCoEdgeUIDs.First()));
   aBoundCoEdgeRemoval.Abort();
 
-  const std::filesystem::path           anPackagePath = makePackageTestPath("wire-face");
-  BRepGraphODE_RevisionPackage::Options anPackageOptions;
+  const std::filesystem::path                anPackagePath = makePackageTestPath("wire-face");
+  BRepGraphODE_RevisionPackage::Options      anPackageOptions;
   const BRepGraphODE_RevisionPackage::Result anPackageWrite =
     BRepGraphODE_RevisionPackage::Write(*aTopologyCommit.Revision,
                                         asOSDPath(anPackagePath),

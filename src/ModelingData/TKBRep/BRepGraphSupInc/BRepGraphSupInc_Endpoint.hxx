@@ -113,22 +113,20 @@ public:
     const Domain aDomain = ItemDomain();
     switch (aDomain)
     {
-      case Domain::CoreItem:
-      {
-        const BRepGraph_ItemId& anItem = *CoreItem();
-        const uint32_t aCombination[] = {static_cast<uint32_t>(aDomain),
-                                         static_cast<uint32_t>(anItem.ItemDomain()),
-                                         static_cast<uint32_t>(anItem.RawKind()),
-                                         anItem.Index()};
+      case Domain::CoreItem: {
+        const BRepGraph_ItemId& anItem         = *CoreItem();
+        const uint32_t          aCombination[] = {static_cast<uint32_t>(aDomain),
+                                                  static_cast<uint32_t>(anItem.ItemDomain()),
+                                                  static_cast<uint32_t>(anItem.RawKind()),
+                                                  anItem.Index()};
         return opencascade::hashBytes(aCombination, sizeof(aCombination));
       }
-      case Domain::SupplementalItem:
-      {
-        const BRepGraphSupInc_ItemUID& anItem = *SupplementalItem();
-        const uint32_t aCombination[] = {static_cast<uint32_t>(aDomain),
-                                         anItem.StoreId,
-                                         anItem.Kind,
-                                         anItem.Counter};
+      case Domain::SupplementalItem: {
+        const BRepGraphSupInc_ItemUID& anItem         = *SupplementalItem();
+        const uint32_t                 aCombination[] = {static_cast<uint32_t>(aDomain),
+                                                         anItem.StoreId,
+                                                         anItem.Kind,
+                                                         anItem.Counter};
         return opencascade::hashBytes(aCombination, sizeof(aCombination));
       }
       case Domain::None:

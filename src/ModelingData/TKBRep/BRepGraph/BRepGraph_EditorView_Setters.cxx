@@ -803,7 +803,7 @@ void BRepGraph::EditorView::CoEdgeOps::SetChildEdgeId(
 
 void BRepGraph::EditorView::CoEdgeOps::SetFaceId(const BRepGraph_CoEdgeId theCoEdge,
                                                  const BRepGraph_FaceId   theFace,
-                                                 const bool theResetFaceScopedReps)
+                                                 const bool               theResetFaceScopedReps)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   myGraph->Editor().requireUnlocked(theCoEdge, "BRepGraph::EditorView: locked item");
@@ -1272,8 +1272,7 @@ void BRepGraph::EditorView::CoEdgeOps::SetPersistentPolygon2D(
 
 //=================================================================================================
 
-void BRepGraph::EditorView::CoEdgeOps::ClearPersistentPolygon2D(
-  const BRepGraph_CoEdgeId theCoEdge)
+void BRepGraph::EditorView::CoEdgeOps::ClearPersistentPolygon2D(const BRepGraph_CoEdgeId theCoEdge)
 {
   SetPersistentPolygon2D(theCoEdge, occ::handle<Poly_Polygon2D>());
 }

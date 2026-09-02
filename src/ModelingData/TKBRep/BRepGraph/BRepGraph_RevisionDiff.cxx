@@ -209,7 +209,8 @@ void appendComponentChanges(const BRepGraph_Revision& theBaseRevision,
       }
     };
   NCollection_FlatDataMap<Standard_GUID, occ::handle<BRepGraph_RevisionComponent>> aBaseComponents;
-  NCollection_FlatDataMap<Standard_GUID, occ::handle<BRepGraph_RevisionComponent>> aResultComponents;
+  NCollection_FlatDataMap<Standard_GUID, occ::handle<BRepGraph_RevisionComponent>>
+    aResultComponents;
   for (const occ::handle<BRepGraph_RevisionComponent>& aComponent : theBaseRevision.Components())
   {
     aBaseComponents.Bind(aComponent->Descriptor().StableGUID, aComponent);
