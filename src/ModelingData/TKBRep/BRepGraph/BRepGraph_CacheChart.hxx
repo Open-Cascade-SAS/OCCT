@@ -104,7 +104,7 @@ public:
     Direction    PreferredDirection = Direction::U;
     double       ExplicitU          = 0.0;
     double       ExplicitV          = 0.0;
-    Tolerance    Tolerance;
+    Tolerance    Tolerances;
     CacheMode    Caching = CacheMode::Default;
   };
 
@@ -126,23 +126,23 @@ public:
   //! @brief A periodic transition between two chart-local sides.
   struct Transition
   {
-    Direction Direction    = Direction::U;
-    double    Period       = 0.0;
-    double    CutParameter = 0.0;
+    Direction PeriodicDirection = Direction::U;
+    double    Period            = 0.0;
+    double    CutParameter      = 0.0;
     gp_Pnt2d  Shift;
-    int32_t   PositiveSide = -1;
-    int32_t   NegativeSide = -1;
+    int32_t   PositiveSide      = -1;
+    int32_t   NegativeSide      = -1;
   };
 
   //! @brief A selected transient coordinate-aligned cut.
   struct Cut
   {
-    Direction Direction  = Direction::U;
-    double    Parameter  = 0.0;
-    double    Period     = 0.0;
-    double    OtherFirst = 0.0;
-    double    OtherLast  = 0.0;
-    int32_t   PairIndex  = -1;
+    Direction PeriodicDirection = Direction::U;
+    double    Parameter         = 0.0;
+    double    Period            = 0.0;
+    double    OtherFirst        = 0.0;
+    double    OtherLast         = 0.0;
+    int32_t   PairIndex         = -1;
   };
 
   //! @brief One ordered real or virtual occurrence in a chart loop.

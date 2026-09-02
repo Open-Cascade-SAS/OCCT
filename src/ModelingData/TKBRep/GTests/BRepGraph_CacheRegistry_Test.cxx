@@ -683,6 +683,7 @@ TEST(BRepGraph_CacheRegistryTest, Ensure_ConcurrentLookupSeesPublishedAttachment
   EXPECT_TRUE(aLookupResultFuture.get());
 }
 
+#ifndef No_Exception
 TEST(BRepGraph_CacheRegistryTest, SameCache_CannotUseDifferentRegistries)
 {
   const occ::handle<BRepGraph_Cache> aShared =
@@ -698,6 +699,7 @@ TEST(BRepGraph_CacheRegistryTest, SameCache_CannotUseDifferentRegistries)
   EXPECT_EQ(aSlot1, 0u);
   EXPECT_THROW(aRegistry2.RegisterCache(aShared), Standard_ProgramError);
 }
+#endif
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_AttachDetachPreservesHandleOwnership)
 {
@@ -731,7 +733,9 @@ TEST(BRepGraph_CacheRegistryTest, ExternalRegistriesSameGraphHaveIndependentOwne
   aSecondRegistry.RegisterCache(aSecondCache);
   EXPECT_TRUE(aFirstCache->Attached());
   EXPECT_TRUE(aSecondCache->Attached());
+#ifndef No_Exception
   EXPECT_THROW(aSecondRegistry.RegisterCache(aFirstCache), Standard_ProgramError);
+#endif
 }
 
 TEST(BRepGraph_CacheRegistryTest, ExternalRegistry_ReattachRebindsRegisteredCaches)

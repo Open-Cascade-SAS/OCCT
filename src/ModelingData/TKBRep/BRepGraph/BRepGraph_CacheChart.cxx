@@ -88,7 +88,7 @@ bool isSamePolicy(const BRepGraph_CacheChart::Policy& theLeft,
          && (theToIgnoreExplicitCut
              || (doubleBits(theLeft.ExplicitU) == doubleBits(theRight.ExplicitU)
                  && doubleBits(theLeft.ExplicitV) == doubleBits(theRight.ExplicitV)))
-         && isSameTolerance(theLeft.Tolerance, theRight.Tolerance)
+         && isSameTolerance(theLeft.Tolerances, theRight.Tolerances)
          && theLeft.Caching == theRight.Caching;
 }
 
@@ -447,7 +447,7 @@ void appendCut(BRepGraph_CacheChart_MutableResult&   theResult,
   }
 
   BRepGraph_CacheChart::Cut aCut;
-  aCut.Direction = theDirection;
+  aCut.PeriodicDirection = theDirection;
   aCut.Parameter = aParameter;
   aCut.Period    = aPeriod;
   if (isU)
@@ -528,7 +528,7 @@ bool appendCompleteSurfaceChart(BRepGraph_CacheChart_MutableResult&    theResult
   if (thePeriodic.UPeriodic)
   {
     BRepGraph_CacheChart::Transition& aTransition = theResult.Transitions.Appended();
-    aTransition.Direction                         = BRepGraph_CacheChart::Direction::U;
+    aTransition.PeriodicDirection                 = BRepGraph_CacheChart::Direction::U;
     aTransition.Period                            = theResult.UPeriod;
     aTransition.CutParameter                      = theResult.UFirst;
     aTransition.Shift.SetCoord(theResult.UPeriod, 0.0);
@@ -541,7 +541,7 @@ bool appendCompleteSurfaceChart(BRepGraph_CacheChart_MutableResult&    theResult
   if (thePeriodic.VPeriodic)
   {
     BRepGraph_CacheChart::Transition& aTransition = theResult.Transitions.Appended();
-    aTransition.Direction                         = BRepGraph_CacheChart::Direction::V;
+    aTransition.PeriodicDirection                 = BRepGraph_CacheChart::Direction::V;
     aTransition.Period                            = theResult.VPeriod;
     aTransition.CutParameter                      = theResult.VFirst;
     aTransition.Shift.SetCoord(0.0, theResult.VPeriod);
@@ -649,7 +649,7 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
 
   if (!hasPersistentWires)
   {
-    if (!appendCompleteSurfaceChart(*aResult, aPeriodic, thePolicy.Tolerance))
+    if (!appendCompleteSurfaceChart(*aResult, aPeriodic, thePolicy.Tolerances))
     {
       aResult->Status     = BRepGraph_CacheChart::Status::MissingBoundary;
       aResult->Diagnostic = "Face without wires is not a supported complete finite surface";
@@ -680,7 +680,7 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
     {
       const BRepGraph_CoEdgeId aCoEdge = aCoEdgeIt.CurrentId();
       CurveData                aCurve;
-      if (!readCurveData(theGraph, aCoEdge, aWireReversed, thePolicy.Tolerance, aCurve))
+      if (!readCurveData(theGraph, aCoEdge, aWireReversed, thePolicy.Tolerances, aCurve))
       {
         aResult->Status     = BRepGraph_CacheChart::Status::MissingGeometry;
         aResult->Diagnostic = "Boundary coedge has no valid pcurve or range";
@@ -734,12 +734,12 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
         if (!readCurveData(theGraph,
                            aLeft.SourceCoEdge,
                            aWireReversed,
-                           thePolicy.Tolerance,
+                           thePolicy.Tolerances,
                            aLeftCurve)
             || !readCurveData(theGraph,
                               aRight.SourceCoEdge,
                               aWireReversed,
-                              thePolicy.Tolerance,
+                              thePolicy.Tolerances,
                               aRightCurve))
         {
           continue;
@@ -751,7 +751,7 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
         if (!findTransition(aLeftCurve,
                             aRightCurve,
                             aPeriodic,
-                            thePolicy.Tolerance,
+                            thePolicy.Tolerances,
                             aLift,
                             aShift,
                             isReversedMatch))
@@ -761,18 +761,19 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
 
         const int32_t aTransitionIndex = static_cast<int32_t>(aResult->Transitions.Size());
         BRepGraph_CacheChart::Transition& aTransition = aResult->Transitions.Appended();
-        aTransition.Direction                         = std::abs(aLift.UPeriodIndex) != 0
+        aTransition.PeriodicDirection                 = std::abs(aLift.UPeriodIndex) != 0
                                                           ? BRepGraph_CacheChart::Direction::U
                                                           : BRepGraph_CacheChart::Direction::V;
-        aTransition.Period       = aTransition.Direction == BRepGraph_CacheChart::Direction::U
-                                     ? aPeriodic.UPeriod
-                                     : aPeriodic.VPeriod;
+        aTransition.Period =
+          aTransition.PeriodicDirection == BRepGraph_CacheChart::Direction::U ? aPeriodic.UPeriod
+                                                                               : aPeriodic.VPeriod;
         aTransition.Shift        = aShift;
         aTransition.PositiveSide = static_cast<int32_t>(anIndex);
         aTransition.NegativeSide = static_cast<int32_t>(anOtherIndex);
-        aTransition.CutParameter = aTransition.Direction == BRepGraph_CacheChart::Direction::U
-                                     ? std::min(aLeft.UVFirst.X(), aRight.UVFirst.X())
-                                     : std::min(aLeft.UVFirst.Y(), aRight.UVFirst.Y());
+        aTransition.CutParameter =
+          aTransition.PeriodicDirection == BRepGraph_CacheChart::Direction::U
+            ? std::min(aLeft.UVFirst.X(), aRight.UVFirst.X())
+            : std::min(aLeft.UVFirst.Y(), aRight.UVFirst.Y());
 
         aLeft.Kind       = BRepGraph_CacheChart::BoundaryKind::VirtualCut;
         aRight.Kind      = BRepGraph_CacheChart::BoundaryKind::VirtualCut;
@@ -788,7 +789,7 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
     aLoop.IsClosed = sameModuloPeriods(aLoop.Boundary.Last().UVLast,
                                        aLoop.Boundary.First().UVFirst,
                                        aPeriodic,
-                                       thePolicy.Tolerance);
+                                       thePolicy.Tolerances);
     if (theRequirements.RequireClosedUVLoops && !aLoop.IsClosed)
     {
       aResult->Status     = BRepGraph_CacheChart::Status::InvalidBoundary;

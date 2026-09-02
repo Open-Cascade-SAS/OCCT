@@ -95,12 +95,14 @@ TEST(BRepGraph_LayerParametricTest, MeshQualityValueSelectsQualityLadderValue)
 TEST(BRepGraph_LayerParametricTest, GraphHelpersRequireAttachmentAndCreateLockLayer)
 {
   occ::handle<TestParametricLayer> aLayer = new TestParametricLayer();
+#ifndef No_Exception
   EXPECT_THROW(
     {
       BRepGraph* aGraph = aLayer->ExposedGraphForMutation();
       (void)aGraph;
     },
     Standard_ProgramError);
+#endif
 
   BRepGraph aGraph;
   aGraph.Clear();

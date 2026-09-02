@@ -168,7 +168,7 @@ TEST(BRepGraph_CacheChartTest, CacheBoundsPolicyVariantsPerFace)
   for (int anIndex = 0; anIndex < 16; ++anIndex)
   {
     BRepGraph_CacheChart::Policy aPolicy;
-    aPolicy.Tolerance.ToleranceU = 1.0e-9 * static_cast<double>(anIndex + 1);
+    aPolicy.Tolerances.ToleranceU = 1.0e-9 * static_cast<double>(anIndex + 1);
     EXPECT_FALSE(aCache->Get(aFace, aPolicy).IsNull());
   }
   EXPECT_LE(aCache->NbEntries(), 8u);
@@ -194,7 +194,7 @@ TEST(BRepGraph_CacheChartTest, CacheBoundsVariantsIndependentlyForEachFace)
     for (int aVariant = 1; aVariant < 8; ++aVariant)
     {
       BRepGraph_CacheChart::Policy aPolicy;
-      aPolicy.Tolerance.ToleranceU = 1.0e-9 * static_cast<double>(aVariant + 1);
+      aPolicy.Tolerances.ToleranceU = 1.0e-9 * static_cast<double>(aVariant + 1);
       EXPECT_FALSE(aCache->Get(aFaces.Value(aFaceIndex), aPolicy).IsNull());
     }
   }
@@ -204,7 +204,7 @@ TEST(BRepGraph_CacheChartTest, CacheBoundsVariantsIndependentlyForEachFace)
   EXPECT_EQ(aCache->Get(aFaces.Value(1)), aSecondFace);
 
   BRepGraph_CacheChart::Policy anAdditionalPolicy;
-  anAdditionalPolicy.Tolerance.ToleranceU = 9.0e-9;
+  anAdditionalPolicy.Tolerances.ToleranceU = 9.0e-9;
   EXPECT_FALSE(aCache->Get(aFaces.Value(0), anAdditionalPolicy).IsNull());
   EXPECT_EQ(aCache->NbEntries(), 16u);
   EXPECT_EQ(aCache->Get(aFaces.Value(1)), aSecondFace);

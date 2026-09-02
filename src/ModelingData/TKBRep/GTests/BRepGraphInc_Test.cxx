@@ -308,6 +308,7 @@ TEST(BRepGraphIncTest, Storage_AppendAccess_UsesTypedIds)
   EXPECT_FALSE(aStorage.FaceRef(aFaceRefId).Orientation.IsReversed);
 }
 
+#ifndef No_Exception
 TEST(BRepGraphIncTest, Storage_SetNextUidCounterRejectsInvalidSentinel)
 {
   BRepGraphInc_Storage aStorage;
@@ -356,6 +357,7 @@ TEST(BRepGraphIncTest, Storage_RefUidAllocationRejectsExhaustedCounter)
   EXPECT_EQ(aStorage.FaceRef(aSecondRef).UID, 0u);
   EXPECT_EQ(aStorage.NextRefUIDCounter(aKind), THE_EXHAUSTED_COUNTER);
 }
+#endif
 
 TEST(BRepGraphIncTest, Storage_GenericIdDispatch_UsesTypedHelpers)
 {

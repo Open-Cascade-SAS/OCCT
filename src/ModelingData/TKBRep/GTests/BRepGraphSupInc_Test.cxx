@@ -532,7 +532,9 @@ TEST(BRepGraphSupIncTest, Stores_RegistryLifecycleAndIdentity)
   EXPECT_EQ(aGeometryUID.StoreId, aGeometry->StoreId());
   EXPECT_TRUE(aGraph.Supplements().Has(aGeometryUID));
   EXPECT_FALSE(aGraph.Supplements().UnregisterStore(BRepGraphSupInc_GeometryStore::GetID()));
+#ifndef No_Exception
   EXPECT_THROW(aGeometry->Add(occ::handle<Geom_Curve>()), Standard_NullObject);
+#endif
 
   aGraph.Clear();
   EXPECT_FALSE(aGraph.Supplements().FindStore(BRepGraphSupInc_GeometryStore::GetID()).IsNull());
