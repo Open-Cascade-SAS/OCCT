@@ -249,12 +249,12 @@ private:
   //! @return true when an active definition was removed
   Standard_EXPORT bool Remove(const BRepGraphSupInc_SurfaceId theID);
 
-  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_Curve3dId findCurve3dByUID(
-    const BRepGraphSupInc_ItemUID& theUID) const;
-  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_Curve2dId findCurve2dByUID(
-    const BRepGraphSupInc_ItemUID& theUID) const;
-  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_SurfaceId findSurfaceByUID(
-    const BRepGraphSupInc_ItemUID& theUID) const;
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_Curve3dId
+    findCurve3dByUID(const BRepGraphSupInc_ItemUID& theUID) const;
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_Curve2dId
+    findCurve2dByUID(const BRepGraphSupInc_ItemUID& theUID) const;
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_SurfaceId
+    findSurfaceByUID(const BRepGraphSupInc_ItemUID& theUID) const;
 
   [[nodiscard]] uint32_t allocateCounter(const Kind theKind);
   void bindCurve3d(const occ::handle<Geom_Curve>& theCurve, const BRepGraphSupInc_Curve3dId theID);

@@ -644,42 +644,42 @@ private:
   //! Resolve one persistent vertex record from the retained core graph.
   [[nodiscard]] bool ResolveVertex(const BRepGraph_UID& theUID, VertexChange& theChange) const;
   [[nodiscard]] Standard_EXPORT bool ResolveVertexLocal(const uint32_t theIndex,
-                                                        VertexChange&   theChange) const;
+                                                        VertexChange&  theChange) const;
   [[nodiscard]] bool ResolveEdge(const BRepGraph_UID& theUID, EdgeChange& theChange) const;
   [[nodiscard]] Standard_EXPORT bool ResolveEdgeLocal(const uint32_t theIndex,
-                                                      EdgeChange&     theChange) const;
-  [[nodiscard]] bool ResolveVertexRef(const BRepGraph_RefUID& theUID,
-                                      VertexRefChange&        theChange) const;
+                                                      EdgeChange&    theChange) const;
+  [[nodiscard]] bool                 ResolveVertexRef(const BRepGraph_RefUID& theUID,
+                                                      VertexRefChange&        theChange) const;
   [[nodiscard]] Standard_EXPORT bool ResolveVertexRefLocal(const uint32_t   theIndex,
                                                            VertexRefChange& theChange) const;
   [[nodiscard]] bool ResolveCoEdge(const BRepGraph_UID& theUID, CoEdgeChange& theChange) const;
   [[nodiscard]] Standard_EXPORT bool ResolveCoEdgeLocal(const uint32_t theIndex,
-                                                        CoEdgeChange&   theChange) const;
+                                                        CoEdgeChange&  theChange) const;
   [[nodiscard]] bool ResolveWire(const BRepGraph_UID& theUID, WireChange& theChange) const;
   [[nodiscard]] Standard_EXPORT bool ResolveWireLocal(const uint32_t theIndex,
-                                                      WireChange&     theChange) const;
+                                                      WireChange&    theChange) const;
   [[nodiscard]] bool ResolveFace(const BRepGraph_UID& theUID, FaceChange& theChange) const;
   [[nodiscard]] Standard_EXPORT bool ResolveFaceLocal(const uint32_t theIndex,
-                                                      FaceChange&     theChange) const;
+                                                      FaceChange&    theChange) const;
   [[nodiscard]] bool ResolveWireRef(const BRepGraph_RefUID& theUID, WireRefChange& theChange) const;
   [[nodiscard]] Standard_EXPORT bool ResolveWireRefLocal(const uint32_t theIndex,
                                                          WireRefChange& theChange) const;
 
   //! Return native record counts and durable allocation counters.
   [[nodiscard]] Standard_EXPORT uint32_t VertexCount() const noexcept;
-  [[nodiscard]] uint32_t NextVertexCounter() const noexcept;
+  [[nodiscard]] uint32_t                 NextVertexCounter() const noexcept;
   [[nodiscard]] Standard_EXPORT uint32_t EdgeCount() const noexcept;
-  [[nodiscard]] uint32_t NextEdgeCounter() const noexcept;
+  [[nodiscard]] uint32_t                 NextEdgeCounter() const noexcept;
   [[nodiscard]] Standard_EXPORT uint32_t VertexRefCount() const noexcept;
-  [[nodiscard]] uint32_t NextVertexRefCounter() const noexcept;
+  [[nodiscard]] uint32_t                 NextVertexRefCounter() const noexcept;
   [[nodiscard]] Standard_EXPORT uint32_t CoEdgeCount() const noexcept;
-  [[nodiscard]] uint32_t NextCoEdgeCounter() const noexcept;
+  [[nodiscard]] uint32_t                 NextCoEdgeCounter() const noexcept;
   [[nodiscard]] Standard_EXPORT uint32_t WireCount() const noexcept;
-  [[nodiscard]] uint32_t NextWireCounter() const noexcept;
+  [[nodiscard]] uint32_t                 NextWireCounter() const noexcept;
   [[nodiscard]] Standard_EXPORT uint32_t FaceCount() const noexcept;
-  [[nodiscard]] uint32_t NextFaceCounter() const noexcept;
+  [[nodiscard]] uint32_t                 NextFaceCounter() const noexcept;
   [[nodiscard]] Standard_EXPORT uint32_t WireRefCount() const noexcept;
-  [[nodiscard]] uint32_t NextWireRefCounter() const noexcept;
+  [[nodiscard]] uint32_t                 NextWireRefCounter() const noexcept;
 
   std::shared_ptr<const BRepGraph>         myCoreGraph;
   mutable std::unique_ptr<BRepGraph>       myCachedGraph;

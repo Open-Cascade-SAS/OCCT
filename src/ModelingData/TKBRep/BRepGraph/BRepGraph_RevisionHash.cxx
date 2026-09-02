@@ -60,9 +60,9 @@ public:
 };
 
 using RevisionMerkle = NCollection_PersistentRadixMap<uint64_t,
-                                                       BRepGraph_RevisionHash,
-                                                       BRepGraph_RevisionHash,
-                                                       RevisionMerkleHasher>;
+                                                      BRepGraph_RevisionHash,
+                                                      BRepGraph_RevisionHash,
+                                                      RevisionMerkleHasher>;
 
 constexpr uint32_t THE_MERKLE_FORMAT_VERSION = 1;
 constexpr size_t   THE_MERKLE_MAX_INPUT_SIZE =
@@ -119,9 +119,8 @@ BRepGraph_RevisionHash RevisionMerkleHasher::EmptyHash()
   return anInput.Hash();
 }
 
-BRepGraph_RevisionHash RevisionMerkleHasher::LeafHash(
-  const uint64_t                theKey,
-  const BRepGraph_RevisionHash& theValue)
+BRepGraph_RevisionHash RevisionMerkleHasher::LeafHash(const uint64_t                theKey,
+                                                      const BRepGraph_RevisionHash& theValue)
 {
   MerkleHashInput anInput;
   anInput.AppendUInt32(0x4d4c4546u); // MLEF
@@ -747,7 +746,7 @@ uint64_t merkleKey(const MerkleNamespace theNamespace,
 }
 
 template <typename TheDefinition>
-void addNodeLeaves(const BRepGraph&                                           theGraph,
+void addNodeLeaves(const BRepGraph&                                 theGraph,
                    NCollection_LinearVector<RevisionMerkle::Entry>& theSemantic,
                    NCollection_LinearVector<RevisionMerkle::Entry>& theStorage)
 {
@@ -773,8 +772,8 @@ void addNodeLeaves(const BRepGraph&                                           th
 }
 
 template <typename TheRefId>
-void addReferenceLeaves(const BRepGraph&                                           theGraph,
-                        const uint32_t                                             theCount,
+void addReferenceLeaves(const BRepGraph&                                 theGraph,
+                        const uint32_t                                   theCount,
                         NCollection_LinearVector<RevisionMerkle::Entry>& theSemantic,
                         NCollection_LinearVector<RevisionMerkle::Entry>& theStorage)
 {
