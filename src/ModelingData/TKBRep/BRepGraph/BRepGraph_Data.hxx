@@ -17,12 +17,15 @@
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_CacheRegistry.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
+#include <BRepGraph_LayerSupplementRegistry.hxx>
 #include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_SupplementsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraphInc_Storage.hxx>
+#include <BRepGraphSupInc_Storage.hxx>
 
 #include <atomic>
 
@@ -34,15 +37,32 @@ class BRepGraph;
 //! Access via myIncStorage.Edges, myIncStorage.Faces, etc.
 struct BRepGraph_Data
 {
+  BRepGraph_Data() = default;
+
+  //! Construct graph data as a page-sharing fork of persistent core storage.
+  explicit BRepGraph_Data(const BRepGraphInc_Storage& theStorage)
+      : myIncStorage(theStorage)
+  {
+  }
+
   //! Incidence-table storage - sole source of truth for all topology data,
   //! original shapes, TShape->NodeId mapping, UIDs, and UID reverse indexes.
   BRepGraphInc_Storage myIncStorage;
 
+  //! Optional supplemental definitions and their registered typed stores.
+  BRepGraphSupInc_Storage mySupplementStorage;
+
   //! Registered graph layers.
   BRepGraph_LayerRegistry myLayerRegistry;
 
+  //! Dedicated registry for layers that reference supplemental stores.
+  BRepGraph_LayerSupplementRegistry myLayerSupplementRegistry;
+
   //! Registered transient cache services.
   BRepGraph_CacheRegistry myCacheRegistry;
+
+  //! External cache registries attached to this graph.
+  NCollection_LinearVector<BRepGraph_CacheRegistry*> myExternalCacheRegistries;
 
   //! Stable top-level views. Nested views store graph-data context only.
   BRepGraph::TopoView   myTopoView{nullptr};
@@ -51,6 +71,7 @@ struct BRepGraph_Data
   BRepGraph::ShapesView myShapesView{nullptr};
   BRepGraph::EditorView myEditorView{nullptr};
   BRepGraph::MeshView   myMeshView{nullptr};
+  BRepGraph::SupplementsView mySupplementsView{nullptr};
 };
 
 #endif // _BRepGraph_Data_HeaderFile

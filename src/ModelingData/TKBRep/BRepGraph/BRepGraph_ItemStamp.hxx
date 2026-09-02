@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepGraph_VersionStamp_HeaderFile
-#define _BRepGraph_VersionStamp_HeaderFile
+#ifndef _BRepGraph_ItemStamp_HeaderFile
+#define _BRepGraph_ItemStamp_HeaderFile
 
 #include <BRepGraph_ItemUID.hxx>
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_UID.hxx>
 #include <Standard_GUID.hxx>
-
 #include <cstdint>
 
-//! @brief Snapshot of a graph item identity and its freshness generation.
+//! @brief Record of a graph item identity and its freshness generation.
 //!
 //! Combines a persistent node or reference UID with OwnGen (own-data mutation counter)
 //! and graph Generation (BRepGraph::Clear() cycle). It is intended for custom cache and
@@ -29,13 +28,13 @@
 //!
 //! Usage pattern:
 //! @code
-//!   BRepGraph_VersionStamp aStamp = aGraph.UIDs().StampOf(aFaceId);
+//!   BRepGraph_ItemStamp aStamp = aGraph.UIDs().StampOf(aFaceId);
 //!   // ... later, after mutations ...
 //!   if (aGraph.UIDs().IsStale(aStamp))
 //!     recomputeDerivedData();
 //! @endcode
 //!
-struct BRepGraph_VersionStamp
+struct BRepGraph_ItemStamp
 {
   //! Identity domain encoded in this stamp.
   enum class Domain : uint8_t
@@ -47,12 +46,13 @@ struct BRepGraph_VersionStamp
 
   BRepGraph_UID    myNodeUID;     //!< Definition-node identity for node-domain stamps.
   BRepGraph_RefUID myRefUID;      //!< Reference-entry identity for reference-domain stamps.
-  uint32_t         myMutationGen; //!< OwnGen counter at snapshot time.
-  uint32_t         myGeneration;  //!< Graph BRepGraph::Clear() generation at snapshot time.
+  uint32_t         myMutationGen; //!< OwnGen counter when the stamp was recorded.
+  uint32_t         myGeneration;  //!< Graph BRepGraph::Clear() generation when recorded.
+  Standard_GUID    myRuntimeIdentity; //!< Process-local graph branch identity.
   Domain           myDomain;      //!< Active identity domain.
 
   //! Default constructor. Creates an invalid stamp (invalid UID, zero counters).
-  BRepGraph_VersionStamp()
+  BRepGraph_ItemStamp()
       : myMutationGen(0),
         myGeneration(0),
         myDomain(Domain::None)
@@ -63,12 +63,14 @@ struct BRepGraph_VersionStamp
   //! @param[in] theUID         persistent definition-node identity
   //! @param[in] theMutationGen OwnGen counter (own-data mutation counter)
   //! @param[in] theGeneration  graph BRepGraph::Clear() generation
-  BRepGraph_VersionStamp(const BRepGraph_UID& theUID,
-                         const uint32_t       theMutationGen,
-                         const uint32_t       theGeneration)
+  BRepGraph_ItemStamp(const BRepGraph_UID& theUID,
+                      const uint32_t       theMutationGen,
+                      const uint32_t       theGeneration,
+                      const Standard_GUID& theRuntimeIdentity)
       : myNodeUID(theUID),
         myMutationGen(theMutationGen),
         myGeneration(theGeneration),
+        myRuntimeIdentity(theRuntimeIdentity),
         myDomain(Domain::Node)
   {
   }
@@ -77,12 +79,14 @@ struct BRepGraph_VersionStamp
   //! @param[in] theRefUID      persistent reference identity
   //! @param[in] theMutationGen OwnGen counter (own-data mutation counter)
   //! @param[in] theGeneration  graph BRepGraph::Clear() generation
-  BRepGraph_VersionStamp(const BRepGraph_RefUID& theRefUID,
-                         const uint32_t          theMutationGen,
-                         const uint32_t          theGeneration)
+  BRepGraph_ItemStamp(const BRepGraph_RefUID& theRefUID,
+                      const uint32_t          theMutationGen,
+                      const uint32_t          theGeneration,
+                      const Standard_GUID&    theRuntimeIdentity)
       : myRefUID(theRefUID),
         myMutationGen(theMutationGen),
         myGeneration(theGeneration),
+        myRuntimeIdentity(theRuntimeIdentity),
         myDomain(Domain::Reference)
   {
   }
@@ -135,39 +139,31 @@ struct BRepGraph_VersionStamp
     return BRepGraph_ItemUID();
   }
 
-  //! Full equality: same domain, UID, OwnGen, and Generation.
+  //! Full equality within the same runtime graph branch.
   //! Two invalid stamps are equal.
-  Standard_EXPORT bool operator==(const BRepGraph_VersionStamp& theOther) const;
+  Standard_EXPORT bool operator==(const BRepGraph_ItemStamp& theOther) const;
 
-  bool operator!=(const BRepGraph_VersionStamp& theOther) const { return !(*this == theOther); }
+  bool operator!=(const BRepGraph_ItemStamp& theOther) const { return !(*this == theOther); }
 
-  //! Check if two stamps refer to the same graph item regardless of version.
+  //! Check if two stamps refer to the same graph item regardless of freshness.
   //! Compares active UID only, ignoring OwnGen and Generation.
   //! @param[in] theOther stamp to compare with
   //! @return true if both stamps have the same domain and UID
-  [[nodiscard]] Standard_EXPORT bool IsSameItem(const BRepGraph_VersionStamp& theOther) const;
-
-  //! Derive a deterministic Standard_GUID from this stamp.
-  //! The graph GUID is incorporated into the hash, making per-node GUIDs
-  //! globally unique across different graph instances.
-  //! One-way: cannot reconstruct stamp fields from the resulting GUID.
-  //! @param[in] theGraphGUID the owning graph's identity GUID
-  //! @return deterministic Standard_GUID derived from stamp + graph GUID
-  [[nodiscard]] Standard_EXPORT Standard_GUID ToGUID(const Standard_GUID& theGraphGUID) const;
+  [[nodiscard]] Standard_EXPORT bool IsSameItem(const BRepGraph_ItemStamp& theOther) const;
 
   //! Compute hash value consistent with operator==.
-  //! @return hash combining active UID, domain, OwnGen, and Generation
-  [[nodiscard]] Standard_EXPORT size_t HashValue() const;
+  //! @return hash consistent with full equality
+  [[nodiscard]] Standard_EXPORT size_t HashValue() const noexcept;
 };
 
 //! std::hash specialization for NCollection_DefaultHasher support.
 template <>
-struct std::hash<BRepGraph_VersionStamp>
+struct std::hash<BRepGraph_ItemStamp>
 {
-  size_t operator()(const BRepGraph_VersionStamp& theStamp) const noexcept
+  size_t operator()(const BRepGraph_ItemStamp& theStamp) const noexcept
   {
     return theStamp.HashValue();
   }
 };
 
-#endif // _BRepGraph_VersionStamp_HeaderFile
+#endif // _BRepGraph_ItemStamp_HeaderFile

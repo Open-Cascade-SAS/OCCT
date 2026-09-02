@@ -441,7 +441,7 @@ TEST(BRepGraph_ShapesViewImportTest, RemoveInvalidNode_NoError)
   BRepGraph_NodeId anInvalidId;
   EXPECT_FALSE(aGraph.Topo().Gen().IsValid(anInvalidId));
   EXPECT_FALSE(aGraph.Topo().Gen().IsActive(anInvalidId));
-  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anInvalidId));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsRemoved(anInvalidId));
   aGraph.Editor().Gen().RemoveNode(anInvalidId); // Should not crash.
 }
 

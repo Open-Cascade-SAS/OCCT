@@ -15,10 +15,13 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_Data.hxx>
+#include <BRepGraph_CacheRegistry.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <Standard_ProgramError.hxx>
+
+#include <thread>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_Cache, Standard_Transient)
 
@@ -81,9 +84,9 @@ bool BRepGraph_Cache::NodeEntry::bind(const BRepGraph_Cache& theCache,
                                       const GenKind          theKind) noexcept
 {
   uint32_t   aGeneration = 0;
-  const bool isValid     = theKind == GenKind::Own ? theCache.NodeOwnGen(theNode, aGeneration)
-                           : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
-                                                         : false;
+  const bool isValid = theKind == GenKind::Own       ? theCache.NodeOwnGen(theNode, aGeneration)
+                       : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
+                                                     : false;
   if (!isValid)
   {
     Reset();
@@ -108,9 +111,9 @@ bool BRepGraph_Cache::NodeEntry::isFresh(const BRepGraph_Cache& theCache,
   }
 
   uint32_t   aGeneration = 0;
-  const bool isValid     = theKind == GenKind::Own ? theCache.NodeOwnGen(theNode, aGeneration)
-                           : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
-                                                         : false;
+  const bool isValid = theKind == GenKind::Own       ? theCache.NodeOwnGen(theNode, aGeneration)
+                       : theKind == GenKind::Subtree ? theCache.NodeSubtreeGen(theNode, aGeneration)
+                                                     : false;
   return isValid && aGeneration == myGeneration;
 }
 
@@ -120,7 +123,6 @@ void BRepGraph_Cache::RefEntry::Reset() noexcept
 {
   myRef        = BRepGraph_RefId();
   myGeneration = 0;
-  myIsBound    = false;
 }
 
 //=================================================================================================
@@ -137,7 +139,6 @@ bool BRepGraph_Cache::RefEntry::BindOwnGen(const BRepGraph_Cache& theCache,
 
   myRef        = theRef;
   myGeneration = aGeneration;
-  myIsBound    = true;
   return true;
 }
 
@@ -146,7 +147,7 @@ bool BRepGraph_Cache::RefEntry::BindOwnGen(const BRepGraph_Cache& theCache,
 bool BRepGraph_Cache::RefEntry::IsFreshOwn(const BRepGraph_Cache& theCache,
                                            const BRepGraph_RefId  theRef) const noexcept
 {
-  if (!myIsBound || myRef != theRef)
+  if (!myRef.IsValid() || myRef != theRef)
   {
     return false;
   }
@@ -168,7 +169,6 @@ void BRepGraph_Cache::ItemEntry::Reset() noexcept
 {
   myItem       = BRepGraph_ItemId();
   myGeneration = 0;
-  myIsBound    = false;
 }
 
 //=================================================================================================
@@ -185,7 +185,6 @@ bool BRepGraph_Cache::ItemEntry::BindOwnGen(const BRepGraph_Cache& theCache,
 
   myItem       = theItem;
   myGeneration = aGeneration;
-  myIsBound    = true;
   return true;
 }
 
@@ -194,7 +193,7 @@ bool BRepGraph_Cache::ItemEntry::BindOwnGen(const BRepGraph_Cache& theCache,
 bool BRepGraph_Cache::ItemEntry::IsFreshOwn(const BRepGraph_Cache& theCache,
                                             const BRepGraph_ItemId theItem) const noexcept
 {
-  if (!myIsBound || myItem != theItem)
+  if (!myItem.IsValid() || myItem != theItem)
   {
     return false;
   }
@@ -222,11 +221,37 @@ void BRepGraph_Cache::CopyFreshTo(const BRepGraph_CopyRemap&) const {}
 
 const BRepGraph& BRepGraph_Cache::Graph() const
 {
-  if (myGraph == nullptr)
+  const BRepGraph* aGraph = AttachedGraph();
+  if (aGraph == nullptr)
   {
     throw Standard_ProgramError("BRepGraph_Cache: cache is detached from graph");
   }
-  return *myGraph;
+  return *aGraph;
+}
+
+//=================================================================================================
+
+BRepGraph* BRepGraph_Cache::AttachedGraph() const noexcept
+{
+  LifecycleState aState = myLifecycleState.load(std::memory_order_acquire);
+  while (aState == LifecycleState::Attaching)
+  {
+    std::this_thread::yield();
+    aState = myLifecycleState.load(std::memory_order_acquire);
+  }
+  if (aState == LifecycleState::Detached)
+  {
+    return nullptr;
+  }
+  BRepGraph_CacheRegistry* aRegistry = myRegistry.load(std::memory_order_acquire);
+  return aRegistry == nullptr ? nullptr : aRegistry->AttachedGraph();
+}
+
+//=================================================================================================
+
+bool BRepGraph_Cache::IsAttached() const noexcept
+{
+  return AttachedGraph() != nullptr;
 }
 
 //=================================================================================================
@@ -242,12 +267,13 @@ void BRepGraph_Cache::OnDetached() noexcept {}
 bool BRepGraph_Cache::NodeSubtreeGen(const BRepGraph_NodeId theNode,
                                      uint32_t&              theGen) const noexcept
 {
-  if (myGraph == nullptr)
+  const BRepGraph* aGraph = AttachedGraph();
+  if (aGraph == nullptr)
   {
     return false;
   }
-  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
-  if (aDef == nullptr || theNode.IsRemoved(*myGraph))
+  const BRepGraphInc::BaseDef* aDef = aGraph->topoEntity(theNode);
+  if (aDef == nullptr || theNode.IsRemoved(*aGraph))
   {
     return false;
   }
@@ -259,12 +285,13 @@ bool BRepGraph_Cache::NodeSubtreeGen(const BRepGraph_NodeId theNode,
 
 bool BRepGraph_Cache::NodeOwnGen(const BRepGraph_NodeId theNode, uint32_t& theGen) const noexcept
 {
-  if (myGraph == nullptr)
+  const BRepGraph* aGraph = AttachedGraph();
+  if (aGraph == nullptr)
   {
     return false;
   }
-  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
-  if (aDef == nullptr || theNode.IsRemoved(*myGraph))
+  const BRepGraphInc::BaseDef* aDef = aGraph->topoEntity(theNode);
+  if (aDef == nullptr || theNode.IsRemoved(*aGraph))
   {
     return false;
   }
@@ -276,16 +303,17 @@ bool BRepGraph_Cache::NodeOwnGen(const BRepGraph_NodeId theNode, uint32_t& theGe
 
 bool BRepGraph_Cache::RefOwnGen(const BRepGraph_RefId theRef, uint32_t& theGen) const noexcept
 {
-  if (myGraph == nullptr)
+  const BRepGraph* aGraph = AttachedGraph();
+  if (aGraph == nullptr)
   {
     return false;
   }
-  if (theRef.IsRemoved(*myGraph))
+  if (theRef.IsRemoved(*aGraph))
   {
     return false;
   }
-  // Ref version is the parent node's OwnGen.
-  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  // Reference freshness uses the parent node OwnGen.
+  const BRepGraphInc_Storage& aStorage = aGraph->myData->myIncStorage;
   BRepGraph_NodeId            aParent;
   switch (theRef.RefKind)
   {
@@ -376,7 +404,7 @@ bool BRepGraph_Cache::RefOwnGen(const BRepGraph_RefId theRef, uint32_t& theGen) 
   {
     return false;
   }
-  const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(aParent);
+  const BRepGraphInc::BaseDef* aDef = aGraph->topoEntity(aParent);
   if (aDef == nullptr)
   {
     return false;
@@ -411,21 +439,22 @@ bool BRepGraph_Cache::ItemOwnGen(const BRepGraph_ItemId theItem, uint32_t& theGe
 bool BRepGraph_Cache::ResolveActiveRefChild(const BRepGraph_RefId theRef,
                                             BRepGraph_NodeId&     theNode) const noexcept
 {
-  theNode = BRepGraph_NodeId();
-  if (myGraph == nullptr)
+  theNode                 = BRepGraph_NodeId();
+  const BRepGraph* aGraph = AttachedGraph();
+  if (aGraph == nullptr)
   {
     return false;
   }
 
-  const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRef);
-  if (aRef == nullptr || theRef.IsRemoved(*myGraph))
+  const BRepGraphInc::BaseRef* aRef = aGraph->refEntity(theRef);
+  if (aRef == nullptr || theRef.IsRemoved(*aGraph))
   {
     return false;
   }
 
-  const BRepGraph_NodeId       aNode = myGraph->Refs().Gen().ChildNode(theRef);
-  const BRepGraphInc::BaseDef* aDef  = myGraph->topoEntity(aNode);
-  if (aDef == nullptr || aNode.IsRemoved(*myGraph))
+  const BRepGraph_NodeId       aNode = aGraph->Refs().Gen().ChildNode(theRef);
+  const BRepGraphInc::BaseDef* aDef  = aGraph->topoEntity(aNode);
+  if (aDef == nullptr || aNode.IsRemoved(*aGraph))
   {
     return false;
   }
@@ -453,47 +482,71 @@ bool BRepGraph_Cache::ResolveActiveFaceRef(const BRepGraph_FaceRefId theRef,
 
 //=================================================================================================
 
-void BRepGraph_Cache::attachGraph(BRepGraph* theGraph) noexcept
+void BRepGraph_Cache::attachGraph(BRepGraph_CacheRegistry* theRegistry) noexcept
 {
-  if (myGraph == theGraph)
-  {
-    return;
-  }
-  if (myGraph != nullptr)
-  {
-    detachGraph();
-  }
-  myGraph = theGraph;
-  if (myGraph != nullptr)
-  {
-    OnAttached();
-  }
+  myRegistry.store(theRegistry, std::memory_order_release);
 }
 
 //=================================================================================================
 
-void BRepGraph_Cache::rebindGraph(BRepGraph* theGraph) noexcept
+void BRepGraph_Cache::beginAttach() noexcept
 {
-  if (myGraph == theGraph)
+  myWasCleared.store(false, std::memory_order_release);
+  myLifecycleState.store(LifecycleState::Attaching, std::memory_order_release);
+}
+
+//=================================================================================================
+
+void BRepGraph_Cache::notifyAttached() noexcept
+{
+  LifecycleState anExpectedState = LifecycleState::Attaching;
+  if (!myLifecycleState.compare_exchange_strong(anExpectedState,
+                                                LifecycleState::Attached,
+                                                std::memory_order_acq_rel))
   {
     return;
   }
-  myGraph = theGraph;
-  if (myGraph != nullptr)
-  {
-    OnAttached();
-  }
+  OnAttached();
+}
+
+//=================================================================================================
+
+void BRepGraph_Cache::rebindRegistry(BRepGraph_CacheRegistry* theRegistry) noexcept
+{
+  myRegistry.store(theRegistry, std::memory_order_release);
 }
 
 //=================================================================================================
 
 void BRepGraph_Cache::detachGraph() noexcept
 {
-  if (myGraph == nullptr)
+  if (myWasCleared.exchange(true, std::memory_order_acq_rel))
   {
     return;
   }
+  myLifecycleState.store(LifecycleState::Detaching, std::memory_order_release);
   Clear();
   OnDetached();
-  myGraph = nullptr;
+  LifecycleState aState = LifecycleState::Detaching;
+  myLifecycleState.compare_exchange_strong(aState,
+                                           LifecycleState::Detached,
+                                           std::memory_order_acq_rel);
+}
+
+//=================================================================================================
+
+void BRepGraph_Cache::clearForRelease() noexcept
+{
+  if (!myWasCleared.exchange(true, std::memory_order_acq_rel))
+  {
+    Clear();
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph_Cache::releaseRegistry() noexcept
+{
+  myLifecycleState.store(LifecycleState::Detached, std::memory_order_release);
+  myRegistry.store(nullptr, std::memory_order_release);
 }

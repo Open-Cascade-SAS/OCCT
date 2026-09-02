@@ -116,54 +116,65 @@ const Standard_GUID& BRepGraph_LayerLock::ID() const
 bool BRepGraph_LayerLock::FindOwnerId(const BRepGraph_ItemId theItem,
                                       Standard_GUID&         theOwnerId) const
 {
+  BRepGraph_ItemId aRootItem;
+  return FindOwnerRoot(theItem, aRootItem, theOwnerId);
+}
+
+//=================================================================================================
+
+bool BRepGraph_LayerLock::FindOwnerRoot(const BRepGraph_ItemId theItem,
+                                        BRepGraph_ItemId&      theRootItem,
+                                        Standard_GUID&         theOwnerId) const
+{
   if (!theItem.IsValid())
   {
     return false;
   }
 
-  // Refs: check direct entry, then traverse via parent node.
   if (theItem.ItemDomain() == BRepGraph_ItemId::Domain::Reference)
   {
     const Standard_GUID* aDirectId = myRefOwners.Seek(theItem);
     if (aDirectId != nullptr)
     {
+      theRootItem = theItem;
       theOwnerId = *aDirectId;
       return true;
     }
-    BRepGraph_ItemId aRootItem;
-    if (findRootRefId(theItem.RefId(), aRootItem))
-    {
-      const OwnerMap* aMap =
-        aRootItem.ItemDomain() == BRepGraph_ItemId::Domain::Node ? &myNodeOwners : &myRefOwners;
-      const Standard_GUID* anOwnerId = aMap->Seek(aRootItem);
-      if (anOwnerId != nullptr)
-      {
-        theOwnerId = *anOwnerId;
-        return true;
-      }
-    }
-    return false;
+
+    const BRepGraph_NodeId aParentNode = parentNodeId(theItem.RefId());
+    return aParentNode.IsValid()
+             ? FindOwnerRoot(BRepGraph_ItemId(aParentNode), theRootItem, theOwnerId)
+             : false;
   }
 
-  // Nodes: check direct entry, then traverse upward.
   if (theItem.ItemDomain() == BRepGraph_ItemId::Domain::Node)
   {
     const Standard_GUID* aDirectId = myNodeOwners.Seek(theItem);
     if (aDirectId != nullptr)
     {
-      theOwnerId = *aDirectId;
+      theRootItem = theItem;
+      theOwnerId  = *aDirectId;
       return true;
     }
-    BRepGraph_ItemId aRootItem;
-    if (findRootNodeId(theItem.NodeId(), aRootItem))
+
+    BRepGraph* aGraph = AttachedGraph();
+    if (aGraph == nullptr)
     {
-      const Standard_GUID* anOwnerId = myNodeOwners.Seek(aRootItem);
-      if (anOwnerId != nullptr)
+      return false;
+    }
+
+    for (auto [anId, aLoc, anOri] : BRepGraph_ParentExplorer(*aGraph, theItem.NodeId()))
+    {
+      const BRepGraph_ItemId anAncestorItem(anId);
+      const Standard_GUID*   anAncestorOwnerId = myNodeOwners.Seek(anAncestorItem);
+      if (anAncestorOwnerId != nullptr)
       {
-        theOwnerId = *anOwnerId;
+        theRootItem = anAncestorItem;
+        theOwnerId  = *anAncestorOwnerId;
         return true;
       }
     }
+
     return false;
   }
 
@@ -202,8 +213,8 @@ bool BRepGraph_LayerLock::HasOwner(const BRepGraph_ItemId theItem) const
 
 void BRepGraph_LayerLock::ReserveOwners(const size_t theNbOwners)
 {
-  myNodeOwners.Reserve(static_cast<size_t>(myNodeOwners.Extent()) + theNbOwners);
-  myRefOwners.Reserve(static_cast<size_t>(myRefOwners.Extent()) + theNbOwners);
+  myNodeOwners.Reserve(myNodeOwners.Size() + theNbOwners);
+  myRefOwners.Reserve(myRefOwners.Size() + theNbOwners);
 }
 
 //=================================================================================================
@@ -218,7 +229,7 @@ void BRepGraph_LayerLock::SetOwner(const BRepGraph_ItemId theItem, const Standar
 
 bool BRepGraph_LayerLock::SetOwner(const BRepGraph_ItemId theItem,
                                    const Standard_GUID&   theOwnerId,
-                                   const bool             theToUpdateRevision)
+                                   const bool             theToUpdateGeneration)
 {
   if (!theItem.IsValid())
   {
@@ -237,7 +248,7 @@ bool BRepGraph_LayerLock::SetOwner(const BRepGraph_ItemId theItem,
     {
       // Same GUID: idempotent re-registration. Ensure bit is set.
       setItemOwned(theItem, true);
-      if (theToUpdateRevision)
+      if (theToUpdateGeneration)
       {
         touch();
       }
@@ -253,7 +264,7 @@ bool BRepGraph_LayerLock::SetOwner(const BRepGraph_ItemId theItem,
     if (anAncestorOwnerId == theOwnerId)
     {
       setItemOwned(theItem, true);
-      if (theToUpdateRevision)
+      if (theToUpdateGeneration)
       {
         touch();
       }
@@ -269,7 +280,7 @@ bool BRepGraph_LayerLock::SetOwner(const BRepGraph_ItemId theItem,
     {
       for (BRepGraph_ChildExplorer anExp(*aGraph, theItem.NodeId()); anExp.More(); anExp.Next())
       {
-        const BRepGraph_ItemId aChildItem(anExp.Current().DefId);
+        const BRepGraph_ItemId aChildItem(anExp.CurrentNode());
         if (const Standard_GUID* aChildOwner = myNodeOwners.Seek(aChildItem))
         {
           if (*aChildOwner != theOwnerId)
@@ -318,7 +329,7 @@ bool BRepGraph_LayerLock::SetOwner(const BRepGraph_ItemId theItem,
     expandOwnership(theItem.NodeId(), true);
   }
 
-  if (theToUpdateRevision)
+  if (theToUpdateGeneration)
   {
     touch();
   }
@@ -329,6 +340,34 @@ bool BRepGraph_LayerLock::SetOwner(const BRepGraph_ItemId theItem,
 
 void BRepGraph_LayerLock::TouchOwners()
 {
+  touch();
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerLock::BeginBulkOwnerUpdate()
+{
+  if (myBulkOwnerUpdateDepth == 0)
+  {
+    myHasBulkOwnerChanges = false;
+  }
+  ++myBulkOwnerUpdateDepth;
+}
+
+//=================================================================================================
+
+void BRepGraph_LayerLock::EndBulkOwnerUpdate()
+{
+  Standard_ASSERT_RAISE(myBulkOwnerUpdateDepth > 0,
+                        "BRepGraph_LayerLock::EndBulkOwnerUpdate without matching begin");
+  --myBulkOwnerUpdateDepth;
+  if (myBulkOwnerUpdateDepth != 0 || !myHasBulkOwnerChanges)
+  {
+    return;
+  }
+
+  myHasBulkOwnerChanges = false;
+  rebuildOwnedFlagsFromRoots();
   touch();
 }
 
@@ -350,7 +389,6 @@ void BRepGraph_LayerLock::UnsetOwner(const BRepGraph_ItemId theItem)
     {
       setItemOwned(theItem, false);
       expandOwnership(theItem.NodeId(), false);
-      rebuildOwnedFlagsFromRoots();
     }
   }
   else if (theItem.ItemDomain() == BRepGraph_ItemId::Domain::Reference)
@@ -359,13 +397,20 @@ void BRepGraph_LayerLock::UnsetOwner(const BRepGraph_ItemId theItem)
     if (wasRemoved)
     {
       setItemOwned(theItem, false);
-      rebuildOwnedFlagsFromRoots();
     }
   }
 
   if (wasRemoved)
   {
-    touch();
+    if (myBulkOwnerUpdateDepth != 0)
+    {
+      myHasBulkOwnerChanges = true;
+    }
+    else
+    {
+      rebuildOwnedFlagsFromRoots();
+      touch();
+    }
   }
 }
 
@@ -450,7 +495,7 @@ void BRepGraph_LayerLock::CopyTo(const BRepGraph_CopyRemap& theCopy) const
 
   occ::handle<BRepGraph_LayerLock> aTarget =
     theCopy.TargetGraph().LayerRegistry().Ensure<BRepGraph_LayerLock>();
-  aTarget->ReserveOwners(static_cast<size_t>(myNodeOwners.Extent() + myRefOwners.Extent()));
+  aTarget->ReserveOwners(myNodeOwners.Size() + myRefOwners.Size());
   bool hasCopied = false;
 
   // Copy node root entries.
@@ -566,7 +611,7 @@ void BRepGraph_LayerLock::expandOwnership(const BRepGraph_NodeId theRoot, const 
   for (BRepGraph_ChildExplorer anExp(*aGraph, theRoot); anExp.More(); anExp.Next())
   {
     // Set/clear bit on child node and on the relation ref used to reach it.
-    setItemOwned(BRepGraph_ItemId(anExp.Current().DefId), theIsOwned);
+    setItemOwned(BRepGraph_ItemId(anExp.CurrentNode()), theIsOwned);
     const BRepGraph_RefId aRef = anExp.CurrentRef();
     if (aRef.IsValid())
     {

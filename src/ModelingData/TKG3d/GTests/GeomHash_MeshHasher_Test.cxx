@@ -16,12 +16,14 @@
 #include <GeomHash_Polygon2DHasher.hxx>
 #include <GeomHash_Polygon3DHasher.hxx>
 #include <GeomHash_PolygonOnTriHasher.hxx>
+#include <GeomHash_MeshAppender.hxx>
 #include <GeomHash_TriangulationHasher.hxx>
 #include <NCollection_Array1.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Poly_TriangulationParameters.hxx>
 #include <Poly_Triangle.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -191,4 +193,90 @@ TEST(GeomHash_MeshHasherTest, HashToleranceAffectsNumericFields)
   const GeomHash_Polygon2DHasher aCoarseHasher(0.1, 0.1);
 
   EXPECT_NE(aFineHasher(aPoly), aCoarseHasher(aPoly));
+}
+
+TEST(GeomHash_MeshAppenderTest, TriangulationHashesCompletePersistentContent)
+{
+  const GeomHash_MeshAppender<> aHasher;
+  occ::handle<Poly_Triangulation> aBase = new Poly_Triangulation(3, 1, true, true);
+  aBase->SetNode(1, gp_Pnt(0.0, 0.0, 0.0));
+  aBase->SetNode(2, gp_Pnt(1.0, 0.0, 0.0));
+  aBase->SetNode(3, gp_Pnt(0.0, 1.0, 0.0));
+  aBase->SetUVNode(1, gp_Pnt2d(0.0, 0.0));
+  aBase->SetUVNode(2, gp_Pnt2d(1.0, 0.0));
+  aBase->SetUVNode(3, gp_Pnt2d(0.0, 1.0));
+  aBase->SetNormal(1, gp::DZ());
+  aBase->SetNormal(2, gp::DZ());
+  aBase->SetNormal(3, gp::DZ());
+  aBase->SetTriangle(1, Poly_Triangle(1, 2, 3));
+  aBase->Deflection(0.01);
+  aBase->SetMeshPurpose(Poly_MeshPurpose_Calculation);
+  aBase->Parameters(new Poly_TriangulationParameters(0.01, 0.2, 0.001));
+
+  const uint64_t aBaseHash = aHasher(aBase);
+  const auto expectChange = [&](const occ::handle<Poly_Triangulation>& theChanged) {
+    EXPECT_NE(aBaseHash, aHasher(theChanged));
+  };
+
+  occ::handle<Poly_Triangulation> aChanged = aBase->Copy();
+  aChanged->SetNode(3, gp_Pnt(0.0, 2.0, 0.0));
+  expectChange(aChanged);
+
+  aChanged = aBase->Copy();
+  aChanged->SetUVNode(3, gp_Pnt2d(0.0, 2.0));
+  expectChange(aChanged);
+
+  aChanged = aBase->Copy();
+  aChanged->SetNormal(3, gp::DY());
+  expectChange(aChanged);
+
+  aChanged = aBase->Copy();
+  aChanged->SetTriangle(1, Poly_Triangle(1, 3, 2));
+  expectChange(aChanged);
+
+  aChanged = aBase->Copy();
+  aChanged->Deflection(0.02);
+  expectChange(aChanged);
+
+  aChanged = aBase->Copy();
+  aChanged->SetMeshPurpose(Poly_MeshPurpose_Presentation);
+  expectChange(aChanged);
+
+  aChanged = aBase->Copy();
+  aChanged->Parameters(new Poly_TriangulationParameters(0.02, 0.2, 0.001));
+  expectChange(aChanged);
+}
+
+TEST(GeomHash_MeshAppenderTest, PolygonHashesCompletePersistentContent)
+{
+  const GeomHash_MeshAppender<> aHasher;
+
+  occ::handle<Poly_Polygon3D> aPolygon3d = new Poly_Polygon3D(2, true);
+  aPolygon3d->ChangeNodes().SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
+  aPolygon3d->ChangeNodes().SetValue(2, gp_Pnt(1.0, 0.0, 0.0));
+  aPolygon3d->ChangeParameters().SetValue(1, 0.0);
+  aPolygon3d->ChangeParameters().SetValue(2, 1.0);
+  occ::handle<Poly_Polygon3D> aChanged3d =
+    new Poly_Polygon3D(aPolygon3d->Nodes(), aPolygon3d->Parameters());
+  aChanged3d->ChangeParameters().SetValue(2, 2.0);
+  EXPECT_NE(aHasher(aPolygon3d), aHasher(aChanged3d));
+
+  occ::handle<Poly_Polygon2D> aPolygon2d = makePolygon2D(0.01);
+  occ::handle<Poly_Polygon2D> aChanged2d = makePolygon2D(0.01);
+  aChanged2d->ChangeNodes().SetValue(2, gp_Pnt2d(2.0, 0.0));
+  EXPECT_NE(aHasher(aPolygon2d), aHasher(aChanged2d));
+
+  occ::handle<Poly_PolygonOnTriangulation> aPolygonOnTri =
+    new Poly_PolygonOnTriangulation(2, true);
+  aPolygonOnTri->SetNode(1, 1);
+  aPolygonOnTri->SetNode(2, 2);
+  aPolygonOnTri->SetParameter(1, 0.0);
+  aPolygonOnTri->SetParameter(2, 1.0);
+  occ::handle<Poly_PolygonOnTriangulation> aChangedOnTri =
+    new Poly_PolygonOnTriangulation(2, true);
+  aChangedOnTri->SetNode(1, 1);
+  aChangedOnTri->SetNode(2, 2);
+  aChangedOnTri->SetParameter(1, 0.0);
+  aChangedOnTri->SetParameter(2, 2.0);
+  EXPECT_NE(aHasher(aPolygonOnTri), aHasher(aChangedOnTri));
 }

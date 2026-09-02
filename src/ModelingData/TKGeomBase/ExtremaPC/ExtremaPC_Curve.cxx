@@ -125,6 +125,28 @@ ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_TransformedCurve& theCurve)
 
 //=================================================================================================
 
+ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
+    : myEvaluator(std::monostate{}),
+      myAdaptorRef(&theCurve)
+{
+  const ExtremaPC::Domain1D aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
+  myEvaluator = ExtremaPC_OtherCurve(theCurve, aDomain);
+}
+
+//=================================================================================================
+
+ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve,
+                                 double                 theUMin,
+                                 double                 theUMax)
+    : myEvaluator(std::monostate{}),
+      myAdaptorRef(&theCurve)
+{
+  const ExtremaPC::Domain1D aDomain(theUMin, theUMax);
+  myEvaluator = ExtremaPC_OtherCurve(theCurve, aDomain);
+}
+
+//=================================================================================================
+
 ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_TransformedCurve& theCurve,
                                  double                              theUMin,
                                  double                              theUMax)

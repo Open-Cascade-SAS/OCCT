@@ -23,9 +23,8 @@
 //! this algorithm rebuilds the graph with dense index arrays, eliminating
 //! all removed nodes and reassigning indices to be contiguous.
 //!
-//! Strategy: rebuild-and-swap. A fresh BRepGraph is constructed from
-//! non-removed nodes with remapped indices, then move-assigned into
-//! the input graph.
+//! The implementation may either compact storage in place or rebuild-and-swap;
+//! the public contract is that active nodes and references become dense.
 class BRepGraph_Compact
 {
 public:
@@ -34,33 +33,52 @@ public:
   //! Configuration for compaction.
   struct Options
   {
-    enum class CachePolicy
+    enum class ValidationPolicy
     {
-      Drop,     //!< Keep registered cache services but clear transient entries.
-      CopyFresh //!< Copy fresh, remappable transient entries into the compacted graph.
+      Lightweight, //!< Run normal graph-integrity validation before swapping rebuilt storage.
+      Audit        //!< Include audit-only graph checks such as assembly cycle detection.
     };
 
-    bool        HistoryMode = true;              //!< Record index remapping in history.
-    CachePolicy CacheMode   = CachePolicy::Drop; //!< Runtime cache migration policy.
+    ValidationPolicy ValidationMode = ValidationPolicy::Lightweight; //!< Pre-swap validation mode.
+  };
+
+  enum class Status
+  {
+    Done,
+    NoChange,
+    InvalidGraph,
+    CandidateValidationFailed,
+    MigrationFailed
   };
 
   //! Result counters for diagnostics.
   struct Result
   {
-    uint32_t NbRemovedVertices   = 0;
-    uint32_t NbRemovedEdges      = 0;
-    uint32_t NbRemovedWires      = 0;
-    uint32_t NbRemovedFaces      = 0;
-    uint32_t NbRemovedShells     = 0;
-    uint32_t NbRemovedSolids     = 0;
-    uint32_t NbRemovedCompounds  = 0;
-    uint32_t NbRemovedCompSolids = 0;
-    uint32_t NbRemovedSurfaces   = 0;
-    uint32_t NbRemovedCurves     = 0;
-    uint32_t NbNodesBefore       = 0;
-    uint32_t NbNodesAfter        = 0;
+    Status   StatusCode           = Status::InvalidGraph;
+    uint32_t NbRemovedVertices    = 0;
+    uint32_t NbRemovedEdges       = 0;
+    uint32_t NbRemovedCoEdges     = 0;
+    uint32_t NbRemovedWires       = 0;
+    uint32_t NbRemovedFaces       = 0;
+    uint32_t NbRemovedShells      = 0;
+    uint32_t NbRemovedSolids      = 0;
+    uint32_t NbRemovedCompounds   = 0;
+    uint32_t NbRemovedCompSolids  = 0;
+    uint32_t NbRemovedProducts    = 0;
+    uint32_t NbRemovedOccurrences = 0;
+    uint32_t NbRemovedRefs        = 0;
+    uint32_t NbRemovedReps        = 0;
+    uint32_t NbRemovedSurfaces    = 0;
+    uint32_t NbRemovedCurves      = 0;
+    uint32_t NbNodesBefore        = 0;
+    uint32_t NbNodesAfter         = 0;
     uint32_t NbUnmappedActiveDefs =
       0; //!< Active defs not present in any remap (orphans + drop-outs).
+
+    [[nodiscard]] bool IsDone() const noexcept
+    {
+      return StatusCode == Status::Done || StatusCode == Status::NoChange;
+    }
   };
 
   //! Run compaction with default options.

@@ -272,35 +272,39 @@ const Standard_GUID& BRepGraph::UIDsView::GraphGUID() const
 
 //=================================================================================================
 
-BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNode) const
+BRepGraph_ItemStamp BRepGraph::UIDsView::StampOf(const BRepGraph_NodeId theNode) const
 {
   if (!theNode.IsValid())
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(theNode);
   if (aDef == nullptr || theNode.IsRemoved(*myGraph))
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   const BRepGraph_UID aUID(theNode.NodeKind, aDef->UID);
   if (!aUID.IsValid())
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
-  return BRepGraph_VersionStamp(aUID, aDef->OwnGen, myGraph->myData->myIncStorage.Generation());
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  return BRepGraph_ItemStamp(aUID,
+                             aDef->OwnGen,
+                             aStorage.Generation(),
+                             aStorage.RuntimeIdentity());
 }
 
 //=================================================================================================
 
-BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RefId theRefId) const
+BRepGraph_ItemStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RefId theRefId) const
 {
   if (!theRefId.IsValid())
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -308,37 +312,40 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RefId theRef
   const BRepGraph_NodeId aParentNodeId = resolveRefParentNodeId(aStorage, theRefId);
   if (!aParentNodeId.IsValid() || theRefId.IsRemoved(*myGraph))
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   const BRepGraphInc::BaseDef* aParentDef = myGraph->topoEntity(aParentNodeId);
   if (aParentDef == nullptr || aParentNodeId.IsRemoved(*myGraph))
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   const BRepGraphInc::BaseRef* aRef = myGraph->refEntity(theRefId);
   if (aRef == nullptr)
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   const BRepGraph_RefUID aRefUID(theRefId.RefKind, aRef->UID);
   if (!aRefUID.IsValid())
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
-  return BRepGraph_VersionStamp(aRefUID, aParentDef->OwnGen, aStorage.Generation());
+  return BRepGraph_ItemStamp(aRefUID,
+                             aParentDef->OwnGen,
+                             aStorage.Generation(),
+                             aStorage.RuntimeIdentity());
 }
 
 //=================================================================================================
 
-BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRepId) const
+BRepGraph_ItemStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRepId) const
 {
   if (!theRepId.IsValid())
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
@@ -349,7 +356,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRep
       const BRepGraph_EdgeCurve3DRepId aId(theRepId.Index);
       if (!aId.IsValid(aStorage.NbEdgeCurves3D()) || aStorage.IsRemoved(aId))
       {
-        return BRepGraph_VersionStamp();
+        return BRepGraph_ItemStamp();
       }
       aParentId = BRepGraph_NodeId(aStorage.EdgeCurve3DRep(aId).ParentEdgeId);
       break;
@@ -358,7 +365,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRep
       const BRepGraph_EdgePolygon3DRepId aId(theRepId.Index);
       if (!aId.IsValid(aStorage.NbEdgePolygons3D()) || aStorage.IsRemoved(aId))
       {
-        return BRepGraph_VersionStamp();
+        return BRepGraph_ItemStamp();
       }
       aParentId = BRepGraph_NodeId(aStorage.EdgePolygon3DRep(aId).ParentEdgeId);
       break;
@@ -367,7 +374,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRep
       const BRepGraph_CoEdgeCurve2DRepId aId(theRepId.Index);
       if (!aId.IsValid(aStorage.NbCoEdgeCurves2D()) || aStorage.IsRemoved(aId))
       {
-        return BRepGraph_VersionStamp();
+        return BRepGraph_ItemStamp();
       }
       aParentId = BRepGraph_NodeId(aStorage.CoEdgeCurve2DRep(aId).ParentCoEdgeId);
       break;
@@ -376,7 +383,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRep
       const BRepGraph_CoEdgePolygon2DRepId aId(theRepId.Index);
       if (!aId.IsValid(aStorage.NbCoEdgePolygons2D()) || aStorage.IsRemoved(aId))
       {
-        return BRepGraph_VersionStamp();
+        return BRepGraph_ItemStamp();
       }
       aParentId = BRepGraph_NodeId(aStorage.CoEdgePolygon2DRep(aId).ParentCoEdgeId);
       break;
@@ -385,7 +392,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRep
       const BRepGraph_CoEdgePolygonOnTriRepId aId(theRepId.Index);
       if (!aId.IsValid(aStorage.NbCoEdgePolygonsOnTri()) || aStorage.IsRemoved(aId))
       {
-        return BRepGraph_VersionStamp();
+        return BRepGraph_ItemStamp();
       }
       aParentId = BRepGraph_NodeId(aStorage.CoEdgePolygonOnTriRep(aId).ParentCoEdgeId);
       break;
@@ -394,7 +401,7 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRep
       const BRepGraph_FaceSurfaceRepId aId(theRepId.Index);
       if (!aId.IsValid(aStorage.NbFaceSurfaces()) || aStorage.IsRemoved(aId))
       {
-        return BRepGraph_VersionStamp();
+        return BRepGraph_ItemStamp();
       }
       aParentId = BRepGraph_NodeId(aStorage.FaceSurfaceRep(aId).ParentFaceId);
       break;
@@ -403,33 +410,34 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_RepId theRep
       const BRepGraph_FaceTriangulationRepId aId(theRepId.Index);
       if (!aId.IsValid(aStorage.NbFaceTriangulations()) || aStorage.IsRemoved(aId))
       {
-        return BRepGraph_VersionStamp();
+        return BRepGraph_ItemStamp();
       }
       aParentId = BRepGraph_NodeId(aStorage.FaceTriangulationRep(aId).ParentFaceId);
       break;
     }
     default:
-      return BRepGraph_VersionStamp();
+      return BRepGraph_ItemStamp();
   }
 
   const BRepGraphInc::BaseDef* aDef = myGraph->topoEntity(aParentId);
   if (aDef == nullptr || aParentId.IsRemoved(*myGraph))
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
-  return BRepGraph_VersionStamp(myGraph->UIDs().Of(aParentId),
-                                aDef->OwnGen,
-                                myGraph->myData->myIncStorage.Generation());
+  return BRepGraph_ItemStamp(myGraph->UIDs().Of(aParentId),
+                             aDef->OwnGen,
+                             myGraph->myData->myIncStorage.Generation(),
+                             myGraph->myData->myIncStorage.RuntimeIdentity());
 }
 
 //=================================================================================================
 
-BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_ItemId theItem) const
+BRepGraph_ItemStamp BRepGraph::UIDsView::StampOf(const BRepGraph_ItemId theItem) const
 {
   if (!theItem.IsValid())
   {
-    return BRepGraph_VersionStamp();
+    return BRepGraph_ItemStamp();
   }
 
   switch (theItem.ItemDomain())
@@ -439,21 +447,22 @@ BRepGraph_VersionStamp BRepGraph::UIDsView::StampOf(const BRepGraph_ItemId theIt
     case BRepGraph_ItemId::Domain::Reference:
       return StampOf(theItem.RefId());
     case BRepGraph_ItemId::Domain::None:
-      return BRepGraph_VersionStamp();
+      return BRepGraph_ItemStamp();
   }
-  return BRepGraph_VersionStamp();
+  return BRepGraph_ItemStamp();
 }
 
 //=================================================================================================
 
-bool BRepGraph::UIDsView::IsStale(const BRepGraph_VersionStamp& theStamp) const
+bool BRepGraph::UIDsView::IsStale(const BRepGraph_ItemStamp& theStamp) const
 {
   if (!theStamp.IsValid())
   {
     return true;
   }
 
-  if (theStamp.myGeneration != myGraph->myData->myIncStorage.Generation())
+  if (theStamp.myRuntimeIdentity != myGraph->myData->myIncStorage.RuntimeIdentity()
+      || theStamp.myGeneration != myGraph->myData->myIncStorage.Generation())
   {
     return true;
   }

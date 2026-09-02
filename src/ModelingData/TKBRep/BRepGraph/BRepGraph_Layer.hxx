@@ -19,6 +19,7 @@
 #include <BRepGraph_ItemId.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
+#include <BRepGraph_RevisionComponent.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_FlatDataMap.hxx>
@@ -30,6 +31,7 @@
 #include <memory>
 
 class BRepGraph_LayerRegistry;
+class BRepGraph_LayerSupplementRegistry;
 
 //! @brief Abstract base class for named attribute layers.
 //!
@@ -71,6 +73,18 @@ public:
   //! Layer identity (unique within a graph).
   [[nodiscard]] virtual const TCollection_AsciiString& Name() const = 0;
 
+  //! Describe how this layer participates in immutable revisions.
+  //! The default retention is unspecified, so revision creation rejects an
+  //! unintegrated layer instead of silently omitting its data.
+  [[nodiscard]] Standard_EXPORT virtual BRepGraph_RevisionComponent::ComponentDescriptor
+    RevisionDescriptor() const;
+
+  //! Capture detached immutable revision for this persistent layer.
+  //! Transient layers return a null handle.
+  [[nodiscard]] Standard_EXPORT virtual occ::handle<BRepGraph_RevisionComponent> CaptureRevision(
+    const BRepGraph&                       theGraph,
+    BRepGraph_RevisionStatus::Diagnostics& theDiagnostics) const;
+
   //! Called when a node is soft-removed without a replacement.
   //! @param[in] theNode the removed node
   //!            Layers should discard or archive data associated with it.
@@ -82,7 +96,7 @@ public:
   //! This is a non-virtual convenience entry point; typed callbacks remain the
   //! extension points for derived layers.
   //! @param[in] theItem the removed definition or reference
-  Standard_EXPORT void OnItemRemoved(const BRepGraph_ItemId theItem) noexcept;
+  Standard_EXPORT virtual void OnItemRemoved(const BRepGraph_ItemId theItem) noexcept;
 
   //! Called when a node is soft-removed and replaced by another node.
   //! @param[in] theOldNode the removed node
@@ -180,16 +194,16 @@ public:
     return 1 << static_cast<int>(theKind);
   }
 
-  //! Monotonic revision counter incremented by touch() on every observable
-  //! state change. Consumers compare stored revisions to detect staleness in O(1).
+  //! Monotonic generation counter incremented by touch() on every observable
+  //! layer change. Consumers compare stored generations to detect staleness in O(1).
   //! Derived layers MUST call touch() from their mutators.
-  [[nodiscard]] uint64_t Revision() const noexcept { return myRevision; }
+  [[nodiscard]] uint64_t Generation() const noexcept { return myGeneration; }
 
 protected:
   Standard_EXPORT BRepGraph_Layer();
 
-  //! Bump the revision counter.
-  void touch() noexcept { ++myRevision; }
+  //! Bump the generation counter.
+  void touch() noexcept { ++myGeneration; }
 
   //! True while this layer is registered in a live graph registry.
   [[nodiscard]] bool IsAttached() const noexcept { return myGraph != nullptr; }
@@ -199,6 +213,40 @@ protected:
 
   //! Attached mutable graph for graph-owned service layers. Returns null if detached.
   [[nodiscard]] BRepGraph* AttachedGraph() const noexcept { return myGraph; }
+
+  //! Return the target generic node only when it remains a node of the same kind.
+  [[nodiscard]] static BRepGraph_NodeId RemappedItem(const BRepGraph_CopyRemap& theCopy,
+                                                     const BRepGraph_NodeId     theId)
+  {
+    if (!theId.IsValid())
+    {
+      return BRepGraph_NodeId();
+    }
+    const BRepGraph_ItemId aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
+    if (!aMapped.IsNode())
+    {
+      return BRepGraph_NodeId();
+    }
+    const BRepGraph_NodeId aNode = aMapped.NodeId();
+    return aNode.NodeKind == theId.NodeKind ? aNode : BRepGraph_NodeId();
+  }
+
+  //! Return the target generic reference only when it remains a ref of the same kind.
+  [[nodiscard]] static BRepGraph_RefId RemappedItem(const BRepGraph_CopyRemap& theCopy,
+                                                    const BRepGraph_RefId      theId)
+  {
+    if (!theId.IsValid())
+    {
+      return BRepGraph_RefId();
+    }
+    const BRepGraph_ItemId aMapped = theCopy.TargetItem(BRepGraph_ItemId(theId));
+    if (!aMapped.IsReference())
+    {
+      return BRepGraph_RefId();
+    }
+    const BRepGraph_RefId aRef = aMapped.RefId();
+    return aRef.RefKind == theId.RefKind ? aRef : BRepGraph_RefId();
+  }
 
   template <BRepGraph_NodeId::Kind TheKind>
   [[nodiscard]] static BRepGraph_NodeId::Typed<TheKind> RemappedItem(
@@ -242,12 +290,17 @@ protected:
 
 private:
   friend class ::BRepGraph_LayerRegistry;
+  friend class ::BRepGraph_LayerSupplementRegistry;
 
   Standard_EXPORT void attachGraph(BRepGraph* theGraph) noexcept;
+
+  //! Update graph owner after wrapper relocation without lifecycle callbacks.
+  void relocateGraph(BRepGraph* theGraph) noexcept { myGraph = theGraph; }
+
   Standard_EXPORT void detachContext() noexcept;
 
-  BRepGraph* myGraph    = nullptr;
-  uint64_t   myRevision = 0;
+  BRepGraph* myGraph      = nullptr;
+  uint64_t   myGeneration = 0;
 
 public:
   DEFINE_STANDARD_RTTIEXT(BRepGraph_Layer, Standard_Transient)

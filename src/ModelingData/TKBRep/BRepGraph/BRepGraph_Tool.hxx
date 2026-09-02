@@ -48,6 +48,7 @@ class BRepGraph_Tool
 {
 public:
   using VertexUsage = BRepGraphInc::VertexInstance;
+  using EdgeUsage   = BRepGraphInc::EdgeInstance;
   using CoEdgeUsage = BRepGraphInc::CoEdgeInstance;
   using FaceUsage   = BRepGraphInc::FaceInstance;
   using WireUsage   = BRepGraphInc::WireInstance;
@@ -194,8 +195,28 @@ public:
       const BRepGraph&       theGraph,
       const BRepGraph_EdgeId theEdge);
 
+    //! Returns the transformed 3D curve adaptor for an edge occurrence.
+    //! @param[in] theGraph source graph
+    //! @param[in] theRef   edge occurrence carrying Location
+    //! @return curve adaptor, or empty adaptor if no 3D curve exists
+    [[nodiscard]] Standard_EXPORT static GeomAdaptor_TransformedCurve CurveAdaptor(
+      const BRepGraph&  theGraph,
+      const EdgeUsage&  theRef);
+
+    //! Returns an edge occurrence curve on a related face occurrence.
+    //! A PCurve is selected through the edge-face coedge relation; unrelated
+    //! edge and face occurrences return an empty adaptor.
+    //! @param[in] theGraph source graph
+    //! @param[in] theEdge  edge occurrence
+    //! @param[in] theFace  related face occurrence
+    //! @return transformed curve-on-surface adaptor, or empty adaptor
+    [[nodiscard]] Standard_EXPORT static GeomAdaptor_TransformedCurve CurveOnSurface(
+      const BRepGraph& theGraph,
+      const EdgeUsage& theEdge,
+      const FaceUsage& theFace);
+
     //! Returns the 3D curve adaptor via CoEdgeUsage (applies edge-in-wire Location in Trsf).
-    //! Falls back to CurveOnSurface when no 3D curve exists.
+    //! Falls back to CurveOnSurface when no 3D curve exists and the coedge stores an active face.
     //! @param[in] theGraph source graph
     //! @param[in] theRef   coedge incidence reference carrying Location
     //! @return curve adaptor with Location applied
@@ -291,11 +312,13 @@ public:
                                                            const BRepGraph_EdgeId theEdge,
                                                            const BRepGraph_FaceId theFace);
 
-    //! Returns a CurveOnSurface adaptor built from a CoEdgeUsage and face.
+    //! Returns a CurveOnSurface adaptor built from a CoEdgeUsage and its face context.
+    //! The supplied face must be the coedge's active face context; unrelated faces return null.
+    //! Uses a stored PCurve when available, or a transient planar PCurve on plane faces.
     //! @param[in] theGraph source graph
     //! @param[in] theRef   coedge incidence reference
     //! @param[in] theFace  typed face definition identifier
-    //! @return adaptor handle, or null if PCurve or surface is missing
+    //! @return adaptor handle, or null if no PCurve source or surface is available
     [[nodiscard]] Standard_EXPORT static occ::handle<Adaptor3d_CurveOnSurface> CurveOnSurface(
       const BRepGraph&       theGraph,
       const CoEdgeUsage&     theRef,
@@ -337,6 +360,27 @@ public:
     [[nodiscard]] Standard_EXPORT static BRepGraph_FaceId FaceOf(
       const BRepGraph&         theGraph,
       const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns the active face context for this coedge.
+    //! Stored CoEdgeDef::FaceId is used first. When it is absent or removed, the owning
+    //! wire's face is used if it is active. Explicit out-of-bounds face ids are not recovered.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @return active face context, or invalid for free-wire/coedge-without-context
+    [[nodiscard]] Standard_EXPORT static BRepGraph_FaceId FaceContextOf(
+      const BRepGraph&         theGraph,
+      const BRepGraph_CoEdgeId theCoEdge);
+
+    //! Returns whether the coedge belongs to the specified active face context.
+    //! This checks every active parent occurrence when the coedge has no explicit face.
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @param[in] theFace   face context to test
+    //! @return true if the coedge occurs in the face
+    [[nodiscard]] Standard_EXPORT static bool IsInFaceContext(
+      const BRepGraph&         theGraph,
+      const BRepGraph_CoEdgeId theCoEdge,
+      const BRepGraph_FaceId   theFace);
 
     //! Returns the seam-pair coedge for closed/seam edges.
     //! @param[in] theGraph  source graph
@@ -381,9 +425,11 @@ public:
 
     //! Returns a PCurve adaptor by coedge identifier.
     //! If the coedge has a stored PCurve (Curve2DRepIdx >= 0), returns it directly.
-    //! Otherwise, for planar face surfaces, computes the PCurve on-the-fly by projecting
-    //! the edge's 3D curve onto the plane (CurveOnPlane), mirroring the behavior of
-    //! BRep_Tool::CurveOnSurface for planar faces without stored PCurves.
+    //! Otherwise, resolves the coedge's active face context (including its parent wire) and,
+    //! for planar surfaces, computes the PCurve on-the-fly by projecting the edge's 3D curve
+    //! onto the plane (CurveOnPlane), mirroring BRep_Tool::CurveOnSurface without stored PCurves.
+    //! A stored PCurve applicable to the face but having malformed bounds is rejected;
+    //! planar fallback is used only when no applicable stored representation exists.
     //! @param[in] theGraph  source graph
     //! @param[in] theCoEdge typed coedge definition identifier
     //! @return 2D curve adaptor, or empty adaptor if no PCurve and surface is not planar
@@ -399,7 +445,19 @@ public:
       const BRepGraph&   theGraph,
       const CoEdgeUsage& theRef);
 
+    //! Returns the coedge PCurve in an exact face context.
+    //! This delegates face validation and planar fallback to Edge::CurveOnSurface().
+    //! @param[in] theGraph  source graph
+    //! @param[in] theCoEdge typed coedge definition identifier
+    //! @param[in] theFace   exact active face context
+    //! @return 2D curve adaptor, or empty adaptor when unavailable in this face
+    [[nodiscard]] Standard_EXPORT static Geom2dAdaptor_Curve PCurveAdaptorInFace(
+      const BRepGraph&         theGraph,
+      const BRepGraph_CoEdgeId theCoEdge,
+      const BRepGraph_FaceId   theFace);
+
     //! Returns the UV endpoints from a CoEdge as (UV1, UV2).
+    //! Uses a stored PCurve when available; otherwise planar faces are projected on-the-fly.
     //! @param[in] theGraph  source graph
     //! @param[in] theCoEdge typed coedge definition identifier
     //! @return pair of 2D points at parameter first and last
@@ -461,6 +519,19 @@ public:
 
     //! Returns the outer wire definition id by face reference identifier.
     [[nodiscard]] Standard_EXPORT static BRepGraph_WireId OuterWire(
+      const BRepGraph&          theGraph,
+      const BRepGraph_FaceRefId theFaceRef);
+
+    //! Returns the outer wire reference of a face.
+    //! @param[in] theGraph source graph
+    //! @param[in] theFace  typed face definition identifier
+    //! @return outer wire reference id, or invalid if the face has no outer wire
+    [[nodiscard]] Standard_EXPORT static BRepGraph_WireRefId OuterWireRef(
+      const BRepGraph&       theGraph,
+      const BRepGraph_FaceId theFace);
+
+    //! Returns the outer wire reference by face reference identifier.
+    [[nodiscard]] Standard_EXPORT static BRepGraph_WireRefId OuterWireRef(
       const BRepGraph&          theGraph,
       const BRepGraph_FaceRefId theFaceRef);
 
@@ -623,7 +694,7 @@ public:
     [[nodiscard]] Standard_EXPORT static BRepGraph_FaceId FaceOf(const BRepGraph&       theGraph,
                                                                  const BRepGraph_WireId theWire);
 
-    //! Returns the first owning face for the referenced wire.
+    //! Returns the parent face of the referenced wire.
     [[nodiscard]] Standard_EXPORT static BRepGraph_FaceId FaceOf(
       const BRepGraph&          theGraph,
       const BRepGraph_WireRefId theWireRef);
@@ -637,7 +708,7 @@ public:
     [[nodiscard]] Standard_EXPORT static bool IsOuter(const BRepGraph&       theGraph,
                                                       const BRepGraph_WireId theWire);
 
-    //! Returns true if the referenced wire is the outer wire of its owning face.
+    //! Returns true if the referenced wire is the outer wire of its parent face.
     [[nodiscard]] Standard_EXPORT static bool IsOuter(const BRepGraph&          theGraph,
                                                       const BRepGraph_WireRefId theWireRef);
   };

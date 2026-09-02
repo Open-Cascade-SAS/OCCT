@@ -31,11 +31,11 @@
 #include <BRepGraphInc_Reconstruct.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_SupplementsView.hxx>
 #include <BRepGraph_Compact.hxx>
 #include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_EditorView.hxx>
-#include <BRepGraph_LayerTopoSupplement.hxx>
-#include <BRepGraph_LayerRegistry.hxx>
+#include <BRepGraphSupInc_TopologyStore.hxx>
 #include <BRepGraph_Validate.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGProp.hxx>
@@ -61,6 +61,7 @@
 #include <TopoDS_Wire.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <Standard_ProgramError.hxx>
 #include <gp_Pln.hxx>
 
@@ -68,6 +69,7 @@
 
 #include <gtest/gtest.h>
 
+#include <limits>
 #include <type_traits>
 #include <tuple>
 
@@ -262,6 +264,56 @@ TEST(BRepGraphIncTest, Storage_AppendAccess_UsesTypedIds)
   aStorage.ChangeFaceRef(aFaceRefId).Orientation = TopAbs_FORWARD;
   EXPECT_EQ(aStorage.FaceRef(aFaceRefId).Orientation, TopAbs_FORWARD);
   EXPECT_FALSE(aStorage.FaceRef(aFaceRefId).Orientation.IsReversed);
+}
+
+TEST(BRepGraphIncTest, Storage_SetNextUidCounterRejectsInvalidSentinel)
+{
+  BRepGraphInc_Storage aStorage;
+
+  EXPECT_THROW(aStorage.SetNextNodeUIDCounter(BRepGraph_NodeId::Kind::Vertex, 0u),
+               Standard_OutOfRange);
+  EXPECT_THROW(aStorage.SetNextRefUIDCounter(BRepGraph_RefId::Kind::Face, 0u),
+               Standard_OutOfRange);
+}
+
+TEST(BRepGraphIncTest, Storage_NodeUidAllocationRejectsExhaustedCounter)
+{
+  constexpr uint32_t THE_EXHAUSTED_COUNTER = std::numeric_limits<uint32_t>::max();
+
+  BRepGraphInc_Storage        aStorage;
+  const BRepGraph_VertexId    aFirstVertex  = aStorage.AppendVertex();
+  const BRepGraph_VertexId    aSecondVertex = aStorage.AppendVertex();
+  const BRepGraph_NodeId::Kind aKind         = BRepGraph_NodeId::Kind::Vertex;
+
+  aStorage.SetNextNodeUIDCounter(aKind, THE_EXHAUSTED_COUNTER - 1u);
+  const BRepGraph_UID aUid = aStorage.AllocateNodeUID(aFirstVertex);
+  EXPECT_EQ(aUid.Counter, THE_EXHAUSTED_COUNTER - 1u);
+  EXPECT_EQ(aStorage.Vertex(aFirstVertex).UID, THE_EXHAUSTED_COUNTER - 1u);
+  EXPECT_EQ(aStorage.NextNodeUIDCounter(aKind), THE_EXHAUSTED_COUNTER);
+
+  EXPECT_THROW(aStorage.AllocateNodeUID(aSecondVertex), Standard_OutOfRange);
+  EXPECT_EQ(aStorage.Vertex(aSecondVertex).UID, 0u);
+  EXPECT_EQ(aStorage.NextNodeUIDCounter(aKind), THE_EXHAUSTED_COUNTER);
+}
+
+TEST(BRepGraphIncTest, Storage_RefUidAllocationRejectsExhaustedCounter)
+{
+  constexpr uint32_t THE_EXHAUSTED_COUNTER = std::numeric_limits<uint32_t>::max();
+
+  BRepGraphInc_Storage       aStorage;
+  const BRepGraph_FaceRefId  aFirstRef  = aStorage.AppendFaceRef();
+  const BRepGraph_FaceRefId  aSecondRef = aStorage.AppendFaceRef();
+  const BRepGraph_RefId::Kind aKind     = BRepGraph_RefId::Kind::Face;
+
+  aStorage.SetNextRefUIDCounter(aKind, THE_EXHAUSTED_COUNTER - 1u);
+  const BRepGraph_RefUID aUid = aStorage.AllocateRefUID(aFirstRef);
+  EXPECT_EQ(aUid.Counter, THE_EXHAUSTED_COUNTER - 1u);
+  EXPECT_EQ(aStorage.FaceRef(aFirstRef).UID, THE_EXHAUSTED_COUNTER - 1u);
+  EXPECT_EQ(aStorage.NextRefUIDCounter(aKind), THE_EXHAUSTED_COUNTER);
+
+  EXPECT_THROW(aStorage.AllocateRefUID(aSecondRef), Standard_OutOfRange);
+  EXPECT_EQ(aStorage.FaceRef(aSecondRef).UID, 0u);
+  EXPECT_EQ(aStorage.NextRefUIDCounter(aKind), THE_EXHAUSTED_COUNTER);
 }
 
 TEST(BRepGraphIncTest, Storage_GenericIdDispatch_UsesTypedHelpers)
@@ -961,7 +1013,7 @@ TEST(BRepGraphIncTest, Cylinder_RoundTrip_BRepDump)
 }
 
 // Supplemental edge/face topology is no longer stored in BRepGraphInc_Storage.
-// Live preservation is covered by BRepGraph_LayerTopoSupplement tests.
+// Live preservation is covered by BRepGraphSupInc_TopologyStore tests.
 
 static TopoDS_Edge makeIncEdgeWithInternalVertex()
 {
@@ -1075,11 +1127,11 @@ static uint32_t countDirectChildren(const TopoDS_Shape&      theShape,
   return aCount;
 }
 
-TEST(BRepGraphIncTest, Populate_RegistersSupplementEdgeVerticesIntoLayer)
+TEST(BRepGraphIncTest, Populate_RegistersSupplementEdgeVerticesIntoTopologyStore)
 {
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
   std::ignore = BRepGraphInc_Populate::Perform(aGraph,
                                                wrapIncEdgeInFace(makeIncEdgeWithInternalVertex()),
@@ -1093,20 +1145,23 @@ TEST(BRepGraphIncTest, Populate_RegistersSupplementEdgeVerticesIntoLayer)
   }
   ASSERT_TRUE(aEdgeId.IsValid());
 
-  const NCollection_LinearVector<uint64_t>& anAttached = aSupplement->AttachedTo(aEdgeId);
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttached =
+    aGraph.Supplements().Attachments(aEdgeId);
   ASSERT_EQ(anAttached.Size(), 1);
-  const BRepGraph_LayerTopoSupplement::Entry* anEntry = aSupplement->FindByUid(anAttached.First());
+  const BRepGraphSupInc::TopologyDef* anEntry = aGraph.Supplements().Attachment(anAttached.First());
   ASSERT_NE(anEntry, nullptr);
-  EXPECT_EQ(anEntry->Kind, BRepGraph_LayerTopoSupplement::AttachmentKind::EdgeInternalVertex);
-  EXPECT_EQ(anEntry->Shape.ShapeType(), TopAbs_VERTEX);
-  EXPECT_EQ(anEntry->Shape.Orientation(), TopAbs_INTERNAL);
+  EXPECT_EQ(anEntry->Kind, BRepGraphSupInc::TopologyAttachmentKind::EdgeInternalVertex);
+  const TopoDS_Shape* anAttachmentShape = aGraph.Supplements().AttachmentShape(*anEntry);
+  ASSERT_NE(anAttachmentShape, nullptr);
+  EXPECT_EQ(anAttachmentShape->ShapeType(), TopAbs_VERTEX);
+  EXPECT_EQ(anAttachmentShape->Orientation(), TopAbs_INTERNAL);
 }
 
-TEST(BRepGraphIncTest, Reconstruct_ReplaysSupplementEdgeVerticesFromLayer)
+TEST(BRepGraphIncTest, Reconstruct_ReplaysSupplementEdgeVerticesFromTopologyStore)
 {
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
   std::ignore = BRepGraphInc_Populate::Perform(aGraph,
                                                wrapIncEdgeInFace(makeIncEdgeWithInternalVertex()),
@@ -1131,9 +1186,9 @@ TEST(BRepGraphIncTest, Reconstruct_ReplaysSupplementEdgeVerticesFromLayer)
   EXPECT_TRUE(aFoundInternal);
 }
 
-TEST(BRepGraphIncTest, Reconstruct_WithoutSupplementLayer_DropsSupplementEdgeVerticesButKeepsCore)
+TEST(BRepGraphIncTest, Reconstruct_WithoutTopologyStore_DropsSupplementEdgeVerticesButKeepsCore)
 {
-  // No supplement layer registered - internal vertices should be dropped.
+  // No topology store registered - internal vertices should be dropped.
   BRepGraph aGraph;
   std::ignore = BRepGraphInc_Populate::Perform(aGraph,
                                                wrapIncEdgeInFace(makeIncEdgeWithInternalVertex()),
@@ -1172,11 +1227,11 @@ TEST(BRepGraphIncTest, Reconstruct_WithoutSupplementLayer_DropsSupplementEdgeVer
   EXPECT_EQ(aFoundInternal, 0);
 }
 
-TEST(BRepGraphIncTest, Reconstruct_EdgeNode_ReplaysSupplementEdgeVerticesFromLayer)
+TEST(BRepGraphIncTest, Reconstruct_EdgeNode_ReplaysSupplementEdgeVerticesFromTopologyStore)
 {
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
   std::ignore = BRepGraphInc_Populate::Perform(aGraph, makeIncEdgeWithInternalVertex(), false);
   ASSERT_FALSE(aGraph.IsEmpty());
@@ -1197,11 +1252,11 @@ TEST(BRepGraphIncTest, Reconstruct_EdgeNode_ReplaysSupplementEdgeVerticesFromLay
   EXPECT_EQ(aFoundInternal, 1);
 }
 
-TEST(BRepGraphIncTest, Reconstruct_WireNode_ReplaysSupplementEdgeVerticesFromLayer)
+TEST(BRepGraphIncTest, Reconstruct_WireNode_ReplaysSupplementEdgeVerticesFromTopologyStore)
 {
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
   BRep_Builder aBB;
   TopoDS_Wire  aWire;
@@ -1231,24 +1286,26 @@ TEST(BRepGraphIncTest, Reconstruct_WireNode_ReplaysSupplementEdgeVerticesFromLay
   EXPECT_EQ(aFoundInternal, 1);
 }
 
-TEST(BRepGraphIncTest, Reconstruct_FaceNode_ReplaysSupplementFaceVerticesFromLayer)
+TEST(BRepGraphIncTest, Reconstruct_FaceNode_ReplaysSupplementFaceVerticesFromTopologyStore)
 {
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
 
   std::ignore = BRepGraphInc_Populate::Perform(aGraph, makeIncFaceWithDirectVertex(), false);
   ASSERT_FALSE(aGraph.IsEmpty());
   ASSERT_GT(aGraph.Topo().Faces().Nb(), 0);
 
-  const NCollection_LinearVector<uint64_t>& anAttached =
-    aSupplement->AttachedTo(BRepGraph_FaceId::Start());
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttached =
+    aGraph.Supplements().Attachments(BRepGraph_FaceId::Start());
   ASSERT_EQ(anAttached.Size(), 1);
-  const BRepGraph_LayerTopoSupplement::Entry* anEntry = aSupplement->FindByUid(anAttached.First());
+  const BRepGraphSupInc::TopologyDef* anEntry = aGraph.Supplements().Attachment(anAttached.First());
   ASSERT_NE(anEntry, nullptr);
-  EXPECT_EQ(anEntry->Kind, BRepGraph_LayerTopoSupplement::AttachmentKind::FaceDirectVertex);
-  EXPECT_EQ(anEntry->Shape.ShapeType(), TopAbs_VERTEX);
-  EXPECT_EQ(anEntry->Shape.Orientation(), TopAbs_INTERNAL);
+  EXPECT_EQ(anEntry->Kind, BRepGraphSupInc::TopologyAttachmentKind::FaceDirectVertex);
+  const TopoDS_Shape* anAttachmentShape = aGraph.Supplements().AttachmentShape(*anEntry);
+  ASSERT_NE(anAttachmentShape, nullptr);
+  EXPECT_EQ(anAttachmentShape->ShapeType(), TopAbs_VERTEX);
+  EXPECT_EQ(anAttachmentShape->Orientation(), TopAbs_INTERNAL);
 
   const TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aGraph, BRepGraph_FaceId::Start());
   ASSERT_FALSE(aRecon.IsNull());
@@ -1280,21 +1337,23 @@ TEST(BRepGraphIncTest, Populate_ShellRoutesInternalFaceToSupplement)
   aBB.Add(aShell, makeIncPlainFace().Oriented(TopAbs_FORWARD));
   aBB.Add(aShell, makeIncPlainFace().Oriented(TopAbs_INTERNAL));
 
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   ASSERT_NO_THROW({ std::ignore = BRepGraphInc_Populate::Perform(aGraph, aShell, false); });
   ASSERT_EQ(aGraph.Topo().Shells().Nb(), 1);
   EXPECT_EQ(aGraph.Topo().Shells().Relations(BRepGraph_ShellId::Start()).FaceRefIds.Size(), 1);
 
-  const NCollection_LinearVector<uint64_t>& anAttached =
-    aSupplement->AttachedTo(BRepGraph_ShellId::Start());
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttached =
+    aGraph.Supplements().Attachments(BRepGraph_ShellId::Start());
   ASSERT_EQ(anAttached.Size(), 1);
-  const BRepGraph_LayerTopoSupplement::Entry* anEntry = aSupplement->FindByUid(anAttached.First());
+  const BRepGraphSupInc::TopologyDef* anEntry = aGraph.Supplements().Attachment(anAttached.First());
   ASSERT_NE(anEntry, nullptr);
-  EXPECT_EQ(anEntry->Kind, BRepGraph_LayerTopoSupplement::AttachmentKind::ShellAuxShape);
-  EXPECT_EQ(anEntry->Shape.ShapeType(), TopAbs_FACE);
-  EXPECT_EQ(anEntry->Shape.Orientation(), TopAbs_INTERNAL);
+  EXPECT_EQ(anEntry->Kind, BRepGraphSupInc::TopologyAttachmentKind::ShellAuxShape);
+  const TopoDS_Shape* anAttachmentShape = aGraph.Supplements().AttachmentShape(*anEntry);
+  ASSERT_NE(anAttachmentShape, nullptr);
+  EXPECT_EQ(anAttachmentShape->ShapeType(), TopAbs_FACE);
+  EXPECT_EQ(anAttachmentShape->Orientation(), TopAbs_INTERNAL);
 
   const TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aGraph, BRepGraph_ShellId::Start());
   ASSERT_FALSE(aRecon.IsNull());
@@ -1310,21 +1369,23 @@ TEST(BRepGraphIncTest, Populate_SolidRoutesInternalShellToSupplement)
   aBB.Add(aSolid, makeIncPlainShell().Oriented(TopAbs_FORWARD));
   aBB.Add(aSolid, makeIncPlainShell().Oriented(TopAbs_INTERNAL));
 
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   ASSERT_NO_THROW({ std::ignore = BRepGraphInc_Populate::Perform(aGraph, aSolid, false); });
   ASSERT_EQ(aGraph.Topo().Solids().Nb(), 1);
   EXPECT_EQ(aGraph.Topo().Solids().Relations(BRepGraph_SolidId::Start()).ShellRefIds.Size(), 1);
 
-  const NCollection_LinearVector<uint64_t>& anAttached =
-    aSupplement->AttachedTo(BRepGraph_SolidId::Start());
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttached =
+    aGraph.Supplements().Attachments(BRepGraph_SolidId::Start());
   ASSERT_EQ(anAttached.Size(), 1);
-  const BRepGraph_LayerTopoSupplement::Entry* anEntry = aSupplement->FindByUid(anAttached.First());
+  const BRepGraphSupInc::TopologyDef* anEntry = aGraph.Supplements().Attachment(anAttached.First());
   ASSERT_NE(anEntry, nullptr);
-  EXPECT_EQ(anEntry->Kind, BRepGraph_LayerTopoSupplement::AttachmentKind::SolidAuxShape);
-  EXPECT_EQ(anEntry->Shape.ShapeType(), TopAbs_SHELL);
-  EXPECT_EQ(anEntry->Shape.Orientation(), TopAbs_INTERNAL);
+  EXPECT_EQ(anEntry->Kind, BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape);
+  const TopoDS_Shape* anAttachmentShape = aGraph.Supplements().AttachmentShape(*anEntry);
+  ASSERT_NE(anAttachmentShape, nullptr);
+  EXPECT_EQ(anAttachmentShape->ShapeType(), TopAbs_SHELL);
+  EXPECT_EQ(anAttachmentShape->Orientation(), TopAbs_INTERNAL);
 
   const TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aGraph, BRepGraph_SolidId::Start());
   ASSERT_FALSE(aRecon.IsNull());
@@ -1340,22 +1401,24 @@ TEST(BRepGraphIncTest, Populate_CompSolidRoutesInternalSolidToSupplement)
   aBB.Add(aCompSolid, makeIncPlainSolid().Oriented(TopAbs_FORWARD));
   aBB.Add(aCompSolid, makeIncPlainSolid().Oriented(TopAbs_INTERNAL));
 
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   ASSERT_NO_THROW({ std::ignore = BRepGraphInc_Populate::Perform(aGraph, aCompSolid, false); });
   ASSERT_EQ(aGraph.Topo().CompSolids().Nb(), 1);
   EXPECT_EQ(aGraph.Topo().CompSolids().Relations(BRepGraph_CompSolidId::Start()).SolidRefIds.Size(),
             1);
 
-  const NCollection_LinearVector<uint64_t>& anAttached =
-    aSupplement->AttachedTo(BRepGraph_CompSolidId::Start());
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttached =
+    aGraph.Supplements().Attachments(BRepGraph_CompSolidId::Start());
   ASSERT_EQ(anAttached.Size(), 1);
-  const BRepGraph_LayerTopoSupplement::Entry* anEntry = aSupplement->FindByUid(anAttached.First());
+  const BRepGraphSupInc::TopologyDef* anEntry = aGraph.Supplements().Attachment(anAttached.First());
   ASSERT_NE(anEntry, nullptr);
-  EXPECT_EQ(anEntry->Kind, BRepGraph_LayerTopoSupplement::AttachmentKind::CompSolidAuxShape);
-  EXPECT_EQ(anEntry->Shape.ShapeType(), TopAbs_SOLID);
-  EXPECT_EQ(anEntry->Shape.Orientation(), TopAbs_INTERNAL);
+  EXPECT_EQ(anEntry->Kind, BRepGraphSupInc::TopologyAttachmentKind::CompSolidAuxShape);
+  const TopoDS_Shape* anAttachmentShape = aGraph.Supplements().AttachmentShape(*anEntry);
+  ASSERT_NE(anAttachmentShape, nullptr);
+  EXPECT_EQ(anAttachmentShape->ShapeType(), TopAbs_SOLID);
+  EXPECT_EQ(anAttachmentShape->Orientation(), TopAbs_INTERNAL);
 
   const TopoDS_Shape aRecon =
     BRepGraphInc_Reconstruct::Node(aGraph, BRepGraph_CompSolidId::Start());
@@ -1371,18 +1434,21 @@ TEST(BRepGraphIncTest, Populate_SolidInvalidOrderChildRoutesToSupplement)
   aBB.MakeSolid(aSolid);
   aBB.Add(aSolid, makeIncEdgeWithInternalVertex().Oriented(TopAbs_FORWARD));
 
-  BRepGraph                                  aGraph;
-  occ::handle<BRepGraph_LayerTopoSupplement> aSupplement =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
+  BRepGraph aGraph;
+  [[maybe_unused]] const occ::handle<BRepGraphSupInc_TopologyStore> aSupplement =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
   std::ignore = BRepGraphInc_Populate::Perform(aGraph, aSolid, false);
   ASSERT_EQ(aGraph.Topo().Solids().Nb(), 1);
   EXPECT_EQ(aGraph.Topo().Solids().Relations(BRepGraph_SolidId::Start()).ShellRefIds.Size(), 0);
-  ASSERT_EQ(aSupplement->AttachedTo(BRepGraph_SolidId::Start()).Size(), 1);
-  const BRepGraph_LayerTopoSupplement::Entry* anEntry =
-    aSupplement->FindByUid(aSupplement->AttachedTo(BRepGraph_SolidId::Start()).First());
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttached =
+    aGraph.Supplements().Attachments(BRepGraph_SolidId::Start());
+  ASSERT_EQ(anAttached.Size(), 1);
+  const BRepGraphSupInc::TopologyDef* anEntry = aGraph.Supplements().Attachment(anAttached.First());
   ASSERT_NE(anEntry, nullptr);
-  EXPECT_EQ(anEntry->Kind, BRepGraph_LayerTopoSupplement::AttachmentKind::SolidAuxShape);
-  EXPECT_EQ(anEntry->Shape.ShapeType(), TopAbs_EDGE);
+  EXPECT_EQ(anEntry->Kind, BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape);
+  const TopoDS_Shape* anAttachmentShape = aGraph.Supplements().AttachmentShape(*anEntry);
+  ASSERT_NE(anAttachmentShape, nullptr);
+  EXPECT_EQ(anAttachmentShape->ShapeType(), TopAbs_EDGE);
 
   const TopoDS_Shape aRecon = BRepGraphInc_Reconstruct::Node(aGraph, BRepGraph_SolidId::Start());
   EXPECT_EQ(countDirectChildren(aRecon, TopAbs_EDGE, TopAbs_FORWARD), 1);
@@ -2266,6 +2332,49 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_UsesVertexTolerance)
   EXPECT_EQ(aCoEdges.Value(1), aCoEdgeCD);
 }
 
+TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_ToleranceCoincidentEndpointStress)
+{
+  BRepGraphInc_Storage   aStorage;
+  const BRepGraph_WireId aWireId = aStorage.AppendWire();
+
+  constexpr int    THE_NB_EDGES = 160;
+  constexpr double THE_TOLERANCE = 1.0e-4;
+  NCollection_LinearVector<BRepGraph_CoEdgeId> anExpected;
+  NCollection_LinearVector<BRepGraph_CoEdgeId> aReversed;
+  anExpected.Reserve(THE_NB_EDGES);
+  aReversed.Reserve(THE_NB_EDGES);
+
+  for (int anEdgeIdx = 0; anEdgeIdx < THE_NB_EDGES; ++anEdgeIdx)
+  {
+    const double aStartX = static_cast<double>(anEdgeIdx);
+    const double anEndX  = static_cast<double>(anEdgeIdx + 1);
+    const BRepGraph_VertexId aStartVertex =
+      addStorageVertex(aStorage, gp_Pnt(aStartX, 0.0, 0.0), THE_TOLERANCE);
+    const BRepGraph_VertexId anEndVertex =
+      addStorageVertex(aStorage, gp_Pnt(anEndX, 0.0, 0.0), THE_TOLERANCE);
+    const BRepGraph_EdgeId anEdge = addStorageEdge(aStorage, aStartVertex, anEndVertex);
+    anExpected.Append(
+      aStorage.CreateCoEdgeUse(aWireId, anEdge, BRepGraph_FaceId(), TopAbs_FORWARD));
+  }
+
+  for (size_t anIdx = anExpected.Size(); anIdx > 0; --anIdx)
+  {
+    aReversed.Append(anExpected.Value(anIdx - 1));
+  }
+  aStorage.SetWireCoEdges(aWireId, aReversed.ToArray1());
+
+  EXPECT_EQ(aStorage.CanonicalizeWireCoEdgeOrderStatus(aWireId),
+            BRepGraphInc_Storage::WireCoEdgeOrderStatus::ToleranceOrdered);
+
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.WireRelations(aWireId).CoEdgeIds;
+  ASSERT_EQ(aCoEdges.Size(), anExpected.Size());
+  for (size_t anIdx = 0; anIdx < anExpected.Size(); ++anIdx)
+  {
+    EXPECT_EQ(aCoEdges.Value(anIdx), anExpected.Value(anIdx));
+  }
+}
+
 TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_PartialPreservesDisconnectedRuns)
 {
   BRepGraphInc_Storage   aStorage;
@@ -2296,6 +2405,43 @@ TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_PartialPreservesDisconn
   EXPECT_EQ(aCoEdges.Value(0), aCoEdgeAB);
   EXPECT_EQ(aCoEdges.Value(1), aCoEdgeBC);
   EXPECT_EQ(aCoEdges.Value(2), aCoEdgeXY);
+}
+
+TEST(BRepGraphIncTest, CanonicalizeWireCoEdgeOrderStatus_DisconnectedCyclesStress)
+{
+  BRepGraphInc_Storage   aStorage;
+  const BRepGraph_WireId aWireId = aStorage.AppendWire();
+
+  constexpr int THE_NB_CYCLES = 160;
+  NCollection_LinearVector<BRepGraph_CoEdgeId> aExpected;
+  aExpected.Reserve(THE_NB_CYCLES * 2);
+  for (int aCycleIdx = 0; aCycleIdx < THE_NB_CYCLES; ++aCycleIdx)
+  {
+    const double aX = static_cast<double>(aCycleIdx) * 10.0;
+    const BRepGraph_VertexId aVertexA =
+      addStorageVertex(aStorage, gp_Pnt(aX, 0.0, 0.0), 1.0e-7);
+    const BRepGraph_VertexId aVertexB =
+      addStorageVertex(aStorage, gp_Pnt(aX + 1.0, 0.0, 0.0), 1.0e-7);
+    const BRepGraph_EdgeId anEdgeAB = addStorageEdge(aStorage, aVertexA, aVertexB);
+    const BRepGraph_EdgeId anEdgeBA = addStorageEdge(aStorage, aVertexB, aVertexA);
+    const BRepGraph_CoEdgeId aCoEdgeAB =
+      aStorage.CreateCoEdgeUse(aWireId, anEdgeAB, BRepGraph_FaceId(), TopAbs_FORWARD);
+    const BRepGraph_CoEdgeId aCoEdgeBA =
+      aStorage.CreateCoEdgeUse(aWireId, anEdgeBA, BRepGraph_FaceId(), TopAbs_FORWARD);
+    aExpected.Append(aCoEdgeAB);
+    aExpected.Append(aCoEdgeBA);
+  }
+
+  EXPECT_EQ(aStorage.CanonicalizeWireCoEdgeOrderStatus(aWireId),
+            BRepGraphInc_Storage::WireCoEdgeOrderStatus::Partial);
+
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+    aStorage.WireRelations(aWireId).CoEdgeIds;
+  ASSERT_EQ(aCoEdges.Size(), aExpected.Size());
+  for (size_t anIdx = 0; anIdx < aExpected.Size(); ++anIdx)
+  {
+    EXPECT_EQ(aCoEdges.Value(anIdx), aExpected.Value(anIdx));
+  }
 }
 
 // ============================================================
@@ -2752,11 +2898,8 @@ TEST(BRepGraphIncTest, Relations_FaceSupplementVertex_NoPersistedRefUpdate)
   std::ignore = aGraph.Editor().Vertices().Add(gp_Pnt(7, 7, 7), 1.e-7);
 
   EXPECT_TRUE(aGraph.ValidateRelations());
-  const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aLayer.IsNull());
-  // No vertex attached via Perform -> supplement layer is empty for this face.
-  EXPECT_EQ(aLayer->AttachedTo(BRepGraph_NodeId(BRepGraph_FaceId::Start())).Size(), 0);
+  // No vertex is attached through ShapesView, so no topology store is needed.
+  EXPECT_EQ(aGraph.Supplements().Attachments(BRepGraph_FaceId::Start()).Size(), 0);
 }
 
 TEST(BRepGraphIncTest, Relations_RemoveRef_UnbindsByKind)

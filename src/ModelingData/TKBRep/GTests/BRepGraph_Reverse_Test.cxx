@@ -16,8 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
-#include <BRepGraph_LayerRegistry.hxx>
-#include <BRepGraph_LayerTopoSupplement.hxx>
+#include <BRepGraph_SupplementsView.hxx>
 #include <BRepGraph_ParentExplorer.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -42,10 +41,7 @@ namespace
 {
 BRepGraph buildBoxGraph()
 {
-  BRepGraph                                        aGraph;
-  const occ::handle<BRepGraph_LayerTopoSupplement> aRegisteredLayer =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
-  EXPECT_FALSE(aRegisteredLayer.IsNull());
+  BRepGraph aGraph;
   [[maybe_unused]] const BRepGraph::ShapesView::Result aRes =
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
   return aGraph;
@@ -316,7 +312,7 @@ TEST(BRepGraph_ReverseTest, Edge_RoundTripRestoresOriginal)
   EXPECT_EQ(aGraph.Topo().Edges().Definition(anEdge).EndVertexRefId, aEnd);
 }
 
-TEST(BRepGraph_ReverseTest, LayerTopoSupplement_AddVertexToFaceGoesToSupplementLayer)
+TEST(BRepGraph_ReverseTest, SupplementsView_AddVertexToFaceHasNoAttachment)
 {
   BRepGraph              aGraph = buildBoxGraph();
   const BRepGraph_FaceId aFaceId(0);
@@ -325,63 +321,33 @@ TEST(BRepGraph_ReverseTest, LayerTopoSupplement_AddVertexToFaceGoesToSupplementL
   const BRepGraph_VertexId aVertex = aGraph.Editor().Vertices().Add(gp_Pnt(0.5, 0.5, 0.5), 1.0e-7);
   ASSERT_TRUE(aVertex.IsValid());
 
-  // Faces().AddVertex() removed; use Shapes().Add(vertexShape, faceNode) instead.
-  // const BRepGraph_VertexRefId aRefId =
-  //   aGraph.Editor().Faces().AddVertex(aFaceId, aVertex, TopAbs_INTERNAL);
-  // EXPECT_FALSE(aRefId.IsValid());
-
-  const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
-    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aLayer.IsNull());
-  const NCollection_LinearVector<uint64_t>& anAttached =
-    aLayer->AttachedTo(BRepGraph_NodeId(aFaceId));
-  // No vertex added -> no supplement attachments.
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& anAttached =
+    aGraph.Supplements().Attachments(aFaceId);
   ASSERT_EQ(anAttached.Size(), 0u);
-  // Skip removal test since no attachments exist.
 }
 
-TEST(BRepGraph_ReverseTest, LayerTopoSupplement_ShellStartsWithoutSupplementAttachments)
+TEST(BRepGraph_ReverseTest, SupplementsView_ShellStartsWithoutAttachments)
 {
   BRepGraph aGraph = buildBoxGraph();
   ASSERT_GE(aGraph.Topo().Shells().Nb(), 1);
   const BRepGraph_ShellId aShellId(0);
-  const BRepGraph_EdgeId  anEdge(0);
-  ASSERT_TRUE(anEdge.IsValid(aGraph.Topo().Edges().Nb()));
-
-  const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
-    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  if (!aLayer.IsNull())
-  {
-    EXPECT_EQ(aLayer->AttachedTo(BRepGraph_NodeId(aShellId)).Size(), 0u);
-  }
+  EXPECT_EQ(aGraph.Supplements().Attachments(aShellId).Size(), 0u);
 }
 
-TEST(BRepGraph_ReverseTest, Relations_SupplementLayerClearedOnGraphClear)
+TEST(BRepGraph_ReverseTest, Relations_SupplementsRemainEmptyOnGraphClear)
 {
   BRepGraph aGraph = buildBoxGraph();
   ASSERT_GE(aGraph.Topo().Shells().Nb(), 1);
 
   const BRepGraph_FaceId aFaceId(0);
-
-  // Faces().AddVertex() removed; use Shapes().Add(vertexShape, faceNode) instead.
-  // [[maybe_unused]] const BRepGraph_VertexRefId aVertexRef =
-  //   aGraph.Editor().Faces().AddVertex(aFaceId, aVertex, TopAbs_INTERNAL);
-
-  const occ::handle<BRepGraph_LayerTopoSupplement> aLayerBefore =
-    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aLayerBefore.IsNull());
-  // No vertex added -> no supplement attachments before clear.
-  ASSERT_EQ(aLayerBefore->AttachedTo(BRepGraph_NodeId(aFaceId)).Size(), 0u);
+  ASSERT_EQ(aGraph.Supplements().Attachments(aFaceId).Size(), 0u);
 
   aGraph.Clear();
 
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 0);
   EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 0);
 
-  const occ::handle<BRepGraph_LayerTopoSupplement> aLayerAfter =
-    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aLayerAfter.IsNull());
-  EXPECT_EQ(aLayerAfter->AttachedTo(BRepGraph_NodeId(aFaceId)).Size(), 0u);
+  EXPECT_EQ(aGraph.Supplements().Attachments(aFaceId).Size(), 0u);
 }
 
 TEST(BRepGraph_ReverseTest, ReversedShell_GraphStoresFaceRefOrientation)

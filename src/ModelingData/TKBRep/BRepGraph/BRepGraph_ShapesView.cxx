@@ -18,7 +18,6 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_LayerHistory.hxx>
 #include <BRepGraph_Layer.hxx>
-#include <BRepGraph_LayerTopoSupplement.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraphInc_Reconstruct.hxx>
@@ -147,38 +146,25 @@ static uint64_t attachSupplementToParent(BRepGraph&             theGraph,
                                          const BRepGraph_NodeId theParent)
 {
   TopoDS_Shape aSuppShape = theShape;
+  const auto   attach     = [&](const BRepGraphSupInc::TopologyAttachmentKind theKind) {
+    const BRepGraphSupInc_TopologyId anID =
+      theGraph.Supplements().Attach(theParent, theKind, aSuppShape);
+    return anID.IsValid() ? static_cast<uint64_t>(anID.Index) + 1 : uint64_t(0);
+  };
   switch (theParent.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Compound:
-      return theGraph.Editor().Supplement().AttachToCompound(
-        BRepGraph_CompoundId(theParent),
-        aSuppShape,
-        BRepGraph_LayerTopoSupplement::AttachmentKind::CompoundAuxShape);
+      return attach(BRepGraphSupInc::TopologyAttachmentKind::CompoundAuxShape);
     case BRepGraph_NodeId::Kind::CompSolid:
-      return theGraph.Editor().Supplement().AttachToCompSolid(
-        BRepGraph_CompSolidId(theParent),
-        aSuppShape,
-        BRepGraph_LayerTopoSupplement::AttachmentKind::CompSolidAuxShape);
+      return attach(BRepGraphSupInc::TopologyAttachmentKind::CompSolidAuxShape);
     case BRepGraph_NodeId::Kind::Solid:
-      return theGraph.Editor().Supplement().AttachToSolid(
-        BRepGraph_SolidId(theParent),
-        aSuppShape,
-        BRepGraph_LayerTopoSupplement::AttachmentKind::SolidAuxShape);
+      return attach(BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape);
     case BRepGraph_NodeId::Kind::Shell:
-      return theGraph.Editor().Supplement().AttachToShell(
-        BRepGraph_ShellId(theParent),
-        aSuppShape,
-        BRepGraph_LayerTopoSupplement::AttachmentKind::ShellAuxShape);
+      return attach(BRepGraphSupInc::TopologyAttachmentKind::ShellAuxShape);
     case BRepGraph_NodeId::Kind::Face:
-      return theGraph.Editor().Supplement().AttachToFace(
-        BRepGraph_FaceId(theParent),
-        aSuppShape,
-        BRepGraph_LayerTopoSupplement::AttachmentKind::FaceDirectVertex);
+      return attach(BRepGraphSupInc::TopologyAttachmentKind::FaceDirectVertex);
     case BRepGraph_NodeId::Kind::Edge:
-      return theGraph.Editor().Supplement().AttachToEdge(
-        BRepGraph_EdgeId(theParent),
-        aSuppShape,
-        BRepGraph_LayerTopoSupplement::AttachmentKind::EdgeInternalVertex);
+      return attach(BRepGraphSupInc::TopologyAttachmentKind::EdgeInternalVertex);
     default:
       return 0;
   }
@@ -188,8 +174,8 @@ static uint64_t attachSupplementToParent(BRepGraph&             theGraph,
 
 //=================================================================================================
 
-uint32_t BRepGraph::ShapesView::snapshotCountForKind(const BRepGraph&       theGraph,
-                                                     const TopAbs_ShapeEnum theShapeType)
+uint32_t BRepGraph::ShapesView::countForKind(const BRepGraph&       theGraph,
+                                             const TopAbs_ShapeEnum theShapeType)
 {
   const BRepGraphInc_Storage& aStorage = theGraph.myData->myIncStorage;
   switch (theShapeType)
@@ -221,7 +207,7 @@ BRepGraph_NodeId BRepGraph::ShapesView::detectTopologyRoot(const BRepGraph&     
                                                            const TopAbs_ShapeEnum theShapeType,
                                                            const uint32_t theOldCountOfShapeKind)
 {
-  const uint32_t aNewCount = snapshotCountForKind(theGraph, theShapeType);
+  const uint32_t aNewCount = countForKind(theGraph, theShapeType);
   if (aNewCount <= theOldCountOfShapeKind)
   {
     return BRepGraph_NodeId();
@@ -893,7 +879,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
     return aResult;
   }
 
-  const uint32_t anOldCount = snapshotCountForKind(theGraph, theShape.ShapeType());
+  const uint32_t anOldCount = countForKind(theGraph, theShape.ShapeType());
   const bool     isRootLocationStoredInRef =
     shouldStoreRootLocationInRef(theOptions, BRepGraph_NodeId());
   const TopoDS_Shape aPopulateShape =
@@ -989,7 +975,7 @@ BRepGraph::ShapesView::Result BRepGraph::ShapesView::Add(
     return aResult;
   }
 
-  const uint32_t anOldCount                = snapshotCountForKind(theGraph, theShape.ShapeType());
+  const uint32_t     anOldCount                = countForKind(theGraph, theShape.ShapeType());
   const bool     isRootLocationStoredInRef = shouldStoreRootLocationInRef(theOptions, theParent);
   const TopoDS_Shape aPopulateShape =
     isRootLocationStoredInRef ? shapeWithoutOwnLocation(theShape) : theShape;
@@ -1260,6 +1246,20 @@ TopoDS_Shape BRepGraph::ShapesView::Original(const BRepGraph_NodeId theNode) con
 
 //=================================================================================================
 
+bool BRepGraph::ShapesView::BindOriginal(const BRepGraph_NodeId theNode,
+                                         const TopoDS_Shape&    theShape)
+{
+  if (!theNode.IsValid() || theShape.IsNull()
+      || myGraph->Topo().Gen().TopoEntity(theNode) == nullptr)
+  {
+    return false;
+  }
+  myGraph->incStorage().BindOriginal(theNode, theShape);
+  return true;
+}
+
+//=================================================================================================
+
 TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) const
 {
   if (!theRoot.IsValid() || theRoot.IsRemoved(*myGraph))
@@ -1270,6 +1270,47 @@ TopoDS_Shape BRepGraph::ShapesView::Reconstruct(const BRepGraph_NodeId theRoot) 
     makeReconstructionContext(*myGraph, myGraph->myData->myIncStorage);
   TopoDS_Shape aResult = reconstructShape(aContext, theRoot);
   return aResult;
+}
+
+//=================================================================================================
+
+struct BRepGraph::ShapesView::ReconstructionScope::Impl
+{
+  explicit Impl(BRepGraph_ReconstructionContext&& theContext)
+      : Context(std::move(theContext))
+  {
+  }
+
+  BRepGraph_ReconstructionContext Context;
+};
+
+BRepGraph::ShapesView::ReconstructionScope::ReconstructionScope(std::unique_ptr<Impl> theImpl)
+    : myImpl(std::move(theImpl))
+{
+}
+
+BRepGraph::ShapesView::ReconstructionScope::~ReconstructionScope() = default;
+
+BRepGraph::ShapesView::ReconstructionScope::ReconstructionScope(
+  ReconstructionScope&& theOther) noexcept = default;
+
+BRepGraph::ShapesView::ReconstructionScope& BRepGraph::ShapesView::ReconstructionScope::operator=(
+  ReconstructionScope&& theOther) noexcept = default;
+
+TopoDS_Shape BRepGraph::ShapesView::ReconstructionScope::Shape(const BRepGraph_NodeId theNode)
+{
+  if (myImpl == nullptr || !theNode.IsValid() || theNode.IsRemoved(*myImpl->Context.Graph))
+  {
+    return TopoDS_Shape();
+  }
+  return reconstructShape(myImpl->Context, theNode);
+}
+
+BRepGraph::ShapesView::ReconstructionScope BRepGraph::ShapesView::BeginCoherentReconstruction()
+  const
+{
+  return ReconstructionScope(std::make_unique<ReconstructionScope::Impl>(
+    makeReconstructionContext(*myGraph, myGraph->myData->myIncStorage)));
 }
 
 //=================================================================================================

@@ -152,15 +152,13 @@ static BRepGraph_NodeId componentRootOfFace(const BRepGraph&       theGraph,
                                             const BRepGraph_FaceId theFaceId)
 {
   for (BRepGraph_ParentExplorer aSolidExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Solid);
-       aSolidExp.More();
-       aSolidExp.Next())
+       aSolidExp.More();)
   {
     return aSolidExp.Current().DefId;
   }
 
   for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
-       aShellExp.More();
-       aShellExp.Next())
+       aShellExp.More();)
   {
     return aShellExp.Current().DefId;
   }

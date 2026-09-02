@@ -1076,5 +1076,5 @@ bool BRepGraph::TopoView::GenOps::IsActive(const BRepGraph_NodeId theNode) const
 
 bool BRepGraph::TopoView::GenOps::IsRemoved(const BRepGraph_NodeId theNode) const
 {
-  return !IsValid(theNode) || theNode.IsRemoved(*myGraph);
+  return IsValid(theNode) && theNode.IsRemoved(*myGraph);
 }

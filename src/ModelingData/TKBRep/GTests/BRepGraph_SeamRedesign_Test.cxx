@@ -20,6 +20,8 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepGraph.hxx>
+#include <BRepGraph_CacheDerivedState.hxx>
+#include <BRepGraph_CacheRegistry.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
@@ -213,6 +215,36 @@ TEST(BRepGraph_SeamRedesignTest, SeamPair_DerivedQuery_IsSymmetric)
   EXPECT_GT(aSeamCount, 0u) << "Sphere must have at least one seam CoEdge";
 }
 
+TEST(BRepGraph_SeamRedesignTest, SeamPair_UsesWireFaceWhenCoEdgeFaceIdsMissing)
+{
+  const TopoDS_Shape aCyl = BRepPrimAPI_MakeCylinder(5., 10.).Shape();
+  BRepGraph          aGraph;
+  registerLayers(aGraph);
+  aGraph.Clear();
+  ASSERT_TRUE(aGraph.Shapes().Add(aCyl).IsOk());
+
+  const BRepGraph_CoEdgeId aSeamCoEdge = findSeamCoEdge(aGraph);
+  ASSERT_TRUE(aSeamCoEdge.IsValid());
+  const BRepGraph_CoEdgeId aSeamPair = BRepGraph_Tool::CoEdge::SeamPair(aGraph, aSeamCoEdge);
+  ASSERT_TRUE(aSeamPair.IsValid());
+
+  const BRepGraphInc::CoEdgeDef& aSeamDef = aGraph.Topo().CoEdges().Definition(aSeamCoEdge);
+  const BRepGraph_FaceId         aFace    = aSeamDef.FaceId;
+  const BRepGraph_EdgeId         anEdge   = aSeamDef.ChildEdgeId;
+  ASSERT_TRUE(aFace.IsValid(aGraph.Topo().Faces().Nb()));
+
+  aGraph.Editor().CoEdges().SetFaceId(aSeamCoEdge, BRepGraph_FaceId(), false);
+  aGraph.Editor().CoEdges().SetFaceId(aSeamPair, BRepGraph_FaceId(), false);
+
+  ASSERT_FALSE(aGraph.Topo().CoEdges().Definition(aSeamCoEdge).FaceId.IsValid());
+  ASSERT_FALSE(aGraph.Topo().CoEdges().Definition(aSeamPair).FaceId.IsValid());
+  ASSERT_EQ(BRepGraph_Tool::CoEdge::FaceContextOf(aGraph, aSeamCoEdge), aFace);
+  ASSERT_EQ(BRepGraph_Tool::CoEdge::FaceContextOf(aGraph, aSeamPair), aFace);
+  EXPECT_EQ(BRepGraph_Tool::CoEdge::SeamPair(aGraph, aSeamCoEdge), aSeamPair);
+  EXPECT_EQ(BRepGraph_Tool::CoEdge::SeamPair(aGraph, aSeamPair), aSeamCoEdge);
+  EXPECT_TRUE(BRepGraph_Tool::Edge::IsSeamOnFace(aGraph, anEdge, aFace));
+}
+
 // Box has no seams: every CoEdge returns invalid SeamPair.
 TEST(BRepGraph_SeamRedesignTest, SeamPair_BoxHasNoSeams)
 {
@@ -318,6 +350,42 @@ TEST(BRepGraph_SeamRedesignTest, NbDistinctEdges_AccountsForSeamHalves)
   }
   EXPECT_GE(aWiresWithSeams, 1u)
     << "Cylinder must have at least one wire whose seam contributes a doubled edge";
+}
+
+TEST(BRepGraph_SeamRedesignTest, NbDistinctEdges_CacheRefreshesAfterWireMutation)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1., 1., 1.).Shape();
+  BRepGraph          aGraph;
+  registerLayers(aGraph);
+  aGraph.Clear();
+  ASSERT_TRUE(aGraph.Shapes().Add(aBox).IsOk());
+
+  EXPECT_TRUE(aGraph.CacheRegistry().Find<BRepGraph_CacheDerivedState>().IsNull());
+
+  BRepGraph_WireId   aWireId;
+  BRepGraph_CoEdgeId aCoEdgeToRemove;
+  for (BRepGraph_WireIterator aWireIt(aGraph); aWireIt.More(); aWireIt.Next())
+  {
+    const BRepGraph_WireId aCandidate = aWireIt.CurrentId();
+    BRepGraph_CoEdgesOfWire aCoEdgeIt(aGraph, aCandidate);
+    if (aCoEdgeIt.More())
+    {
+      aWireId         = aCandidate;
+      aCoEdgeToRemove = aCoEdgeIt.CurrentId();
+      break;
+    }
+  }
+  ASSERT_TRUE(aWireId.IsValid());
+  ASSERT_TRUE(aCoEdgeToRemove.IsValid());
+
+  const uint32_t aBefore = BRepGraph_Tool::Wire::NbDistinctEdges(aGraph, aWireId);
+  ASSERT_GE(aBefore, 2u);
+  EXPECT_FALSE(aGraph.CacheRegistry().Find<BRepGraph_CacheDerivedState>().IsNull());
+
+  ASSERT_TRUE(aGraph.Editor().Wires().RemoveCoEdge(aWireId, aCoEdgeToRemove));
+
+  const uint32_t anAfter = BRepGraph_Tool::Wire::NbDistinctEdges(aGraph, aWireId);
+  EXPECT_EQ(anAfter, aBefore - 1u);
 }
 
 // ============================================================

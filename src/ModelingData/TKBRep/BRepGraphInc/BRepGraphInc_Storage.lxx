@@ -11,17 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//! @name TypedStorePlanes specializations for entity and reference stores.
+//! @name TypedStorePlanes specializations for entity stores.
 //!
-//! Each store (e.g. myVertices, myEdges) is a DefStore or RefStore that owns
-//! per-entity bit-flag planes.  The specialization exposes those planes through
-//! a uniform static interface so that generic template methods (IsRemoved,
-//! SetRemoved, IsGuarded, ...) can operate on any typed ID without a virtual
-//! dispatch.
+//! Each definition store (e.g. myVertices, myEdges) owns per-entity bit-flag
+//! planes.  The specialization exposes those planes through a uniform static
+//! interface so that generic template methods (IsRemoved, SetRemoved, IsGuarded,
+//! ...) can operate on any typed ID without a virtual dispatch.
 //!
 //! Parameter T is the typed identifier (e.g. BRepGraph_VertexId).
 //! Parameter F is the member store field name (e.g. myVertices).
-#define OCCT_BG_STORE_PLANES(T, F)                                                                 \
+#define OCCT_BG_DEF_PLANES(T, F)                                                                   \
   template <>                                                                                      \
   struct BRepGraphInc_Storage::TypedStorePlanes<T>                                                 \
   {                                                                                                \
@@ -33,80 +32,128 @@
     {                                                                                              \
       return theStorage.F.NbActive;                                                                \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& theStorage)                        \
+    static NCollection_BitDynamicArray& Removed(BRepGraphInc_Storage& theStorage)                  \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
-    static const BRepGraphInc_BitFlags& Removed(const BRepGraphInc_Storage& theStorage)            \
+    static const NCollection_BitDynamicArray& Removed(                                             \
+      const BRepGraphInc_Storage& theStorage)                                                      \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& Owned(BRepGraphInc_Storage& theStorage)                          \
+    static NCollection_BitDynamicArray& Owned(BRepGraphInc_Storage& theStorage)                    \
     {                                                                                              \
       return theStorage.F.OwnedFlags;                                                              \
     }                                                                                              \
-    static const BRepGraphInc_BitFlags& Owned(const BRepGraphInc_Storage& theStorage)              \
+    static const NCollection_BitDynamicArray& Owned(                                               \
+      const BRepGraphInc_Storage& theStorage)                                                      \
     {                                                                                              \
       return theStorage.F.OwnedFlags;                                                              \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& Guard(BRepGraphInc_Storage& theStorage)                          \
+    static NCollection_BitDynamicArray& Guard(BRepGraphInc_Storage& theStorage)                    \
     {                                                                                              \
       return theStorage.F.GuardFlags;                                                              \
     }                                                                                              \
-    static const BRepGraphInc_BitFlags& Guard(const BRepGraphInc_Storage& theStorage)              \
+    static const NCollection_BitDynamicArray& Guard(                                               \
+      const BRepGraphInc_Storage& theStorage)                                                      \
     {                                                                                              \
       return theStorage.F.GuardFlags;                                                              \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& HasCompoundParent(BRepGraphInc_Storage& theStorage)              \
+    static NCollection_BitDynamicArray& HasCompoundParent(BRepGraphInc_Storage& theStorage)        \
     {                                                                                              \
       return theStorage.F.HasCompoundParentFlags;                                                  \
     }                                                                                              \
-    static const BRepGraphInc_BitFlags& HasCompoundParent(const BRepGraphInc_Storage& theStorage)  \
+    static const NCollection_BitDynamicArray& HasCompoundParent(                                   \
+      const BRepGraphInc_Storage& theStorage)                                                      \
     {                                                                                              \
       return theStorage.F.HasCompoundParentFlags;                                                  \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& HasOccurrenceParent(BRepGraphInc_Storage& theStorage)            \
+    static NCollection_BitDynamicArray& HasOccurrenceParent(BRepGraphInc_Storage& theStorage)      \
     {                                                                                              \
       return theStorage.F.HasOccurrenceParentFlags;                                                \
     }                                                                                              \
-    static const BRepGraphInc_BitFlags& HasOccurrenceParent(                                       \
+    static const NCollection_BitDynamicArray& HasOccurrenceParent(                                 \
       const BRepGraphInc_Storage& theStorage)                                                      \
     {                                                                                              \
       return theStorage.F.HasOccurrenceParentFlags;                                                \
     }                                                                                              \
   };
 
-OCCT_BG_STORE_PLANES(BRepGraph_VertexId, myVertices)
-OCCT_BG_STORE_PLANES(BRepGraph_EdgeId, myEdges)
-OCCT_BG_STORE_PLANES(BRepGraph_CoEdgeId, myCoEdges)
-OCCT_BG_STORE_PLANES(BRepGraph_WireId, myWires)
-OCCT_BG_STORE_PLANES(BRepGraph_FaceId, myFaces)
-OCCT_BG_STORE_PLANES(BRepGraph_ShellId, myShells)
-OCCT_BG_STORE_PLANES(BRepGraph_SolidId, mySolids)
-OCCT_BG_STORE_PLANES(BRepGraph_CompoundId, myCompounds)
-OCCT_BG_STORE_PLANES(BRepGraph_CompSolidId, myCompSolids)
-OCCT_BG_STORE_PLANES(BRepGraph_ProductId, myProducts)
-OCCT_BG_STORE_PLANES(BRepGraph_OccurrenceId, myOccurrences)
+OCCT_BG_DEF_PLANES(BRepGraph_VertexId, myVertices)
+OCCT_BG_DEF_PLANES(BRepGraph_EdgeId, myEdges)
+OCCT_BG_DEF_PLANES(BRepGraph_CoEdgeId, myCoEdges)
+OCCT_BG_DEF_PLANES(BRepGraph_WireId, myWires)
+OCCT_BG_DEF_PLANES(BRepGraph_FaceId, myFaces)
+OCCT_BG_DEF_PLANES(BRepGraph_ShellId, myShells)
+OCCT_BG_DEF_PLANES(BRepGraph_SolidId, mySolids)
+OCCT_BG_DEF_PLANES(BRepGraph_CompoundId, myCompounds)
+OCCT_BG_DEF_PLANES(BRepGraph_CompSolidId, myCompSolids)
+OCCT_BG_DEF_PLANES(BRepGraph_ProductId, myProducts)
+OCCT_BG_DEF_PLANES(BRepGraph_OccurrenceId, myOccurrences)
 
-OCCT_BG_STORE_PLANES(BRepGraph_VertexRefId, myVertexRefs)
-OCCT_BG_STORE_PLANES(BRepGraph_ShellRefId, myShellRefs)
-OCCT_BG_STORE_PLANES(BRepGraph_FaceRefId, myFaceRefs)
-OCCT_BG_STORE_PLANES(BRepGraph_WireRefId, myWireRefs)
-OCCT_BG_STORE_PLANES(BRepGraph_SolidRefId, mySolidRefs)
-OCCT_BG_STORE_PLANES(BRepGraph_ChildRefId, myChildRefs)
-OCCT_BG_STORE_PLANES(BRepGraph_OccurrenceRefId, myOccurrenceRefs)
+#undef OCCT_BG_DEF_PLANES
 
-#undef OCCT_BG_STORE_PLANES
+//! @name TypedStorePlanes specializations for reference stores.
+//!
+//! Reference stores have removal, ownership, and guard planes. Parent-presence flags are
+//! definition-only state, so HasCompoundParent/HasOccurrenceParent are intentionally omitted.
+#define OCCT_BG_REF_PLANES(T, F)                                                                   \
+  template <>                                                                                      \
+  struct BRepGraphInc_Storage::TypedStorePlanes<T>                                                 \
+  {                                                                                                \
+    static uint32_t Nb(const BRepGraphInc_Storage& theStorage)                                     \
+    {                                                                                              \
+      return theStorage.F.Nb();                                                                    \
+    }                                                                                              \
+    static uint32_t& NbActive(BRepGraphInc_Storage& theStorage)                                    \
+    {                                                                                              \
+      return theStorage.F.NbActive;                                                                \
+    }                                                                                              \
+    static NCollection_BitDynamicArray& Removed(BRepGraphInc_Storage& theStorage)                  \
+    {                                                                                              \
+      return theStorage.F.RemovedFlags;                                                            \
+    }                                                                                              \
+    static const NCollection_BitDynamicArray& Removed(                                             \
+      const BRepGraphInc_Storage& theStorage)                                                      \
+    {                                                                                              \
+      return theStorage.F.RemovedFlags;                                                            \
+    }                                                                                              \
+    static NCollection_BitDynamicArray& Owned(BRepGraphInc_Storage& theStorage)                    \
+    {                                                                                              \
+      return theStorage.F.OwnedFlags;                                                              \
+    }                                                                                              \
+    static const NCollection_BitDynamicArray& Owned(                                               \
+      const BRepGraphInc_Storage& theStorage)                                                      \
+    {                                                                                              \
+      return theStorage.F.OwnedFlags;                                                              \
+    }                                                                                              \
+    static NCollection_BitDynamicArray& Guard(BRepGraphInc_Storage& theStorage)                    \
+    {                                                                                              \
+      return theStorage.F.GuardFlags;                                                              \
+    }                                                                                              \
+    static const NCollection_BitDynamicArray& Guard(                                               \
+      const BRepGraphInc_Storage& theStorage)                                                      \
+    {                                                                                              \
+      return theStorage.F.GuardFlags;                                                              \
+    }                                                                                              \
+  };
+
+OCCT_BG_REF_PLANES(BRepGraph_VertexRefId, myVertexRefs)
+OCCT_BG_REF_PLANES(BRepGraph_ShellRefId, myShellRefs)
+OCCT_BG_REF_PLANES(BRepGraph_FaceRefId, myFaceRefs)
+OCCT_BG_REF_PLANES(BRepGraph_WireRefId, myWireRefs)
+OCCT_BG_REF_PLANES(BRepGraph_SolidRefId, mySolidRefs)
+OCCT_BG_REF_PLANES(BRepGraph_ChildRefId, myChildRefs)
+OCCT_BG_REF_PLANES(BRepGraph_OccurrenceRefId, myOccurrenceRefs)
+
+#undef OCCT_BG_REF_PLANES
 
 //! @name TypedStorePlanes specializations for representation-use stores.
 //!
 //! Representation stores (e.g. myFaceSurfaces, myEdgeCurves3D) track geometric
 //! or triangulation data attached to topology entities.  They have Removed
 //! flags and an NbActive counter but no Owned, Guard, HasCompoundParent, or
-//! HasOccurrenceParent planes.  Those methods are intentionally omitted --
-//! calling IsOwned/IsGuarded/HasCompoundParentTyped/HasOccurrenceParentTyped
-//! on a representation ID will produce a compile error, which is the desired
-//! behavior since representation entities have no ownership or guard lifecycle.
+//! HasOccurrenceParent planes.  Those methods are intentionally omitted.
 #define OCCT_BG_REP_PLANES(T, F)                                                                   \
   template <>                                                                                      \
   struct BRepGraphInc_Storage::TypedStorePlanes<T>                                                 \
@@ -119,11 +166,12 @@ OCCT_BG_STORE_PLANES(BRepGraph_OccurrenceRefId, myOccurrenceRefs)
     {                                                                                              \
       return theStorage.F.NbActive;                                                                \
     }                                                                                              \
-    static BRepGraphInc_BitFlags& Removed(BRepGraphInc_Storage& theStorage)                        \
+    static NCollection_BitDynamicArray& Removed(BRepGraphInc_Storage& theStorage)                  \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \
-    static const BRepGraphInc_BitFlags& Removed(const BRepGraphInc_Storage& theStorage)            \
+    static const NCollection_BitDynamicArray& Removed(                                             \
+      const BRepGraphInc_Storage& theStorage)                                                      \
     {                                                                                              \
       return theStorage.F.RemovedFlags;                                                            \
     }                                                                                              \

@@ -85,8 +85,10 @@ public:
     const BRepGraph_Copy::GeomPolicy theGeomPolicy = BRepGraph_Copy::GeomPolicy::Copy,
     const BRepGraph_Copy::MeshPolicy theMeshPolicy = BRepGraph_Copy::MeshPolicy::Drop);
 
-  //! Transform a single node sub-graph of any kind.
+  //! Transform a single node sub-graph.
   //! Topology nodes are copied and transformed by baking the transform into their definitions.
+  //! Product nodes accept location-only transforms; standalone Occurrence nodes are rejected
+  //! because their placement lives on parent OccurrenceRef entries, not in OccurrenceDef.
   //!
   //! Self-transform (theSourceGraph == theTargetGraph):
   //! Duplicates the sub-graph with new entity IDs, then transforms the copy.
@@ -96,7 +98,7 @@ public:
   //!
   //! @param[in] theSourceGraph a pre-built BRepGraph
   //! @param[in,out] theTargetGraph destination graph (may already contain data)
-  //! @param[in] theNodeId     node identifier (any kind)
+  //! @param[in] theNodeId     node identifier
   //! @param[in] theTrsf       the transformation to apply
   //! @param[in] theGeomPolicy geometry handle policy (default: Copy; Drop is invalid for topology)
   //! @param[in] theMeshPolicy mesh data policy (default: Drop)

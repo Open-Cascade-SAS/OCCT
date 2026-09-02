@@ -13,6 +13,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
+#include <BRepGraph_FilteredIterator.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -41,67 +42,67 @@ protected:
 
 TEST_F(BRepGraph_IteratorTest, FaceIterator_CountMatchesTopology)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_FaceIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
   }
-  EXPECT_EQ(aCount, 6);
+  EXPECT_EQ(aCount, 6u);
 }
 
 TEST_F(BRepGraph_IteratorTest, EdgeIterator_CountMatchesTopology)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_EdgeIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
   }
-  EXPECT_EQ(aCount, 12);
+  EXPECT_EQ(aCount, 12u);
 }
 
 TEST_F(BRepGraph_IteratorTest, VertexIterator_CountMatchesTopology)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_VertexIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
   }
-  EXPECT_EQ(aCount, 8);
+  EXPECT_EQ(aCount, 8u);
 }
 
 TEST_F(BRepGraph_IteratorTest, SolidIterator_BoxHasOneSolid)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_SolidIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
   }
-  EXPECT_EQ(aCount, 1);
+  EXPECT_EQ(aCount, 1u);
 }
 
 TEST_F(BRepGraph_IteratorTest, ShellIterator_BoxHasOneShell)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_ShellIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
   }
-  EXPECT_EQ(aCount, 1);
+  EXPECT_EQ(aCount, 1u);
 }
 
 TEST_F(BRepGraph_IteratorTest, WireIterator_BoxHasSixWires)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_WireIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
   }
-  EXPECT_EQ(aCount, 6);
+  EXPECT_EQ(aCount, 6u);
 }
 
 TEST_F(BRepGraph_IteratorTest, RootProductIterator_MatchesStoredRoots)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_RootProductIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ASSERT_LT(aCount, myGraph.RootProductIds().Size());
@@ -109,6 +110,29 @@ TEST_F(BRepGraph_IteratorTest, RootProductIterator_MatchesStoredRoots)
     ++aCount;
   }
   EXPECT_EQ(aCount, myGraph.RootProductIds().Size());
+}
+
+TEST_F(BRepGraph_IteratorTest, Count_ReturnsRemainingActiveNodes)
+{
+  myGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId(2));
+
+  BRepGraph_FaceIterator anIt(myGraph);
+  EXPECT_EQ(anIt.Count(), 5u);
+  ASSERT_TRUE(anIt.More());
+  anIt.Next();
+  EXPECT_EQ(anIt.Count(), 4u);
+
+  BRepGraph_FullFaceIterator aFullIt(myGraph);
+  EXPECT_EQ(aFullIt.Count(), 6u);
+}
+
+TEST_F(BRepGraph_IteratorTest, RootProductCount_ReturnsRemainingRoots)
+{
+  BRepGraph_RootProductIterator anIt(myGraph);
+  EXPECT_EQ(anIt.Count(), static_cast<uint32_t>(myGraph.RootProductIds().Size()));
+  ASSERT_TRUE(anIt.More());
+  anIt.Next();
+  EXPECT_EQ(anIt.Count(), 0u);
 }
 
 TEST_F(BRepGraph_IteratorTest, CurrentId_ReturnsValidTypedIds)
@@ -125,9 +149,9 @@ TEST_F(BRepGraph_IteratorTest, Current_ReturnsDefinition)
   ASSERT_TRUE(anIt.More());
   const BRepGraphInc::VertexDef& aVtx = anIt.Current();
   // Vertex should have a valid point (box vertex coordinates are finite).
-  EXPECT_TRUE(std::isfinite(aVtx.Point.X()));
-  EXPECT_TRUE(std::isfinite(aVtx.Point.Y()));
-  EXPECT_TRUE(std::isfinite(aVtx.Point.Z()));
+  EXPECT_FALSE(Precision::IsInfinite(aVtx.Point.X()));
+  EXPECT_FALSE(Precision::IsInfinite(aVtx.Point.Y()));
+  EXPECT_FALSE(Precision::IsInfinite(aVtx.Point.Z()));
 }
 
 TEST_F(BRepGraph_IteratorTest, RemovedFace_SkippedByDefaultIterator)
@@ -135,7 +159,7 @@ TEST_F(BRepGraph_IteratorTest, RemovedFace_SkippedByDefaultIterator)
   const uint32_t aNbBefore = myGraph.Topo().Faces().Nb();
   myGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId::Start());
 
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_FaceIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
@@ -148,7 +172,7 @@ TEST_F(BRepGraph_IteratorTest, FullTraverse_IncludesRemovedFace)
   const uint32_t aNbBefore = myGraph.Topo().Faces().Nb();
   myGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId::Start());
 
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_FullFaceIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
@@ -158,13 +182,57 @@ TEST_F(BRepGraph_IteratorTest, FullTraverse_IncludesRemovedFace)
 
 TEST_F(BRepGraph_IteratorTest, RangeFor_WorksCorrectly)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (const BRepGraphInc::FaceDef& aFace : BRepGraph_FaceIterator(myGraph))
   {
     std::ignore = aFace;
     ++aCount;
   }
-  EXPECT_EQ(aCount, 6);
+  EXPECT_EQ(aCount, 6u);
+}
+
+TEST_F(BRepGraph_IteratorTest, FilteredIterator_FiltersNodeIteratorByCurrentId)
+{
+  auto anIt = BRepGraph_MakeFilteredIterator(
+    BRepGraph_EdgeIterator(myGraph),
+    [](const BRepGraph_EdgeIterator& theIt) { return (theIt.CurrentId().Index % 2u) == 0u; });
+
+  EXPECT_EQ(anIt.Count(), 6u);
+
+  uint32_t aCount = 0;
+  for (; anIt.More(); anIt.Next())
+  {
+    EXPECT_EQ(anIt.CurrentId().Index % 2u, 0u);
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 6u);
+}
+
+TEST_F(BRepGraph_IteratorTest, FilteredIterator_RangeForUsesCurrent)
+{
+  auto anIt = BRepGraph_MakeFilteredIterator(
+    BRepGraph_FaceIterator(myGraph),
+    [](const BRepGraph_FaceIterator& theIt) { return theIt.CurrentId().Index < 2u; });
+
+  uint32_t aCount = 0;
+  for (const BRepGraphInc::FaceDef& aFace : anIt)
+  {
+    EXPECT_NE(aFace.UID, 0u);
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 2u);
+}
+
+TEST_F(BRepGraph_IteratorTest, FilteredIterator_WorksWithRootProductIterator)
+{
+  auto anIt = BRepGraph_MakeFilteredIterator(
+    BRepGraph_RootProductIterator(myGraph),
+    [](const BRepGraph_RootProductIterator& theIt) { return theIt.Current().IsValid(); });
+
+  ASSERT_TRUE(anIt.More());
+  EXPECT_EQ(anIt.Current(), myGraph.RootProductIds().Value(0));
+  anIt.Next();
+  EXPECT_FALSE(anIt.More());
 }
 
 TEST(BRepGraph_IteratorStandalone, EmptyGraph_IteratorIsEmpty)
@@ -178,11 +246,11 @@ TEST(BRepGraph_IteratorStandalone, EmptyGraph_IteratorIsEmpty)
 
 TEST_F(BRepGraph_IteratorTest, CoEdgeIterator_CountMatchesTopology)
 {
-  int aCount = 0;
+  uint32_t aCount = 0;
   for (BRepGraph_CoEdgeIterator anIt(myGraph); anIt.More(); anIt.Next())
   {
     ++aCount;
   }
   // A box has 6 faces x 4 edges/face = 24 coedges.
-  EXPECT_EQ(aCount, 24);
+  EXPECT_EQ(aCount, 24u);
 }

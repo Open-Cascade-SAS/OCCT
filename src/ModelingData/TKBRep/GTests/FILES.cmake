@@ -5,11 +5,14 @@ set(OCCT_TKBRep_GTests_FILES
   BRep_Tool_Test.cxx
   BRepAdaptor_CompCurve_Test.cxx
   BRepGraph_CacheRegistry_Test.cxx
+  BRepGraph_CacheChart_Test.cxx
   BRepGraph_Assembly_Test.cxx
   BRepGraph_BatchOps_Test.cxx
   BRepGraph_DefsIterator_Test.cxx
+  BRepGraphInc_Instance_Test.cxx
   BRepGraphInc_Test.cxx
   BRepGraphInc_PopulateRegression_Test.cxx
+  BRepGraphSupInc_Test.cxx
   BRepGraph_ShapesViewImport_Test.cxx
   BRepGraph_NodeId_Test.cxx
   BRepGraph_RefId_Test.cxx
@@ -31,21 +34,26 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_ChildExplorer_Test.cxx
   BRepGraph_Iterator_Test.cxx
   BRepGraph_LayerIterator_Test.cxx
+  BRepGraph_LayerDeferred_Test.cxx
+  BRepGraph_LayerParametric_Test.cxx
   BRepGraph_Lock_Test.cxx
+  BRepGraph_ParallelPolicy_Test.cxx
   BRepGraph_ParentExplorer_Test.cxx
   BRepGraph_ReverseIterator_Test.cxx
   BRepGraph_EventBus_Test.cxx
   BRepGraph_Geometry_Test.cxx
   BRepGraph_LayerHistory_Test.cxx
-  BRepGraph_LayerTopoSupplement_Test.cxx
+  BRepGraphSupInc_TopologyStore_Test.cxx
   BRepGraph_Polygon_Test.cxx
   BRepGraph_Reconstruct_Test.cxx
   BRepGraph_Sharing_Test.cxx
   BRepGraph_Test.cxx
-  BRepGraph_VersionStamp_Test.cxx
+  BRepGraph_ItemStamp_Test.cxx
   BRepGraph_Views_Test.cxx
   BRepGraph_Tool_Test.cxx
+  BRepGraph_UsagePath_Test.cxx
   BRepGraph_Compact_Test.cxx
+  BRepGraph_CopyRemap_Test.cxx
   BRepGraph_Copy_Test.cxx
   BRepGraph_Transform_Test.cxx
   BRepGraph_Validate_Test.cxx
@@ -53,6 +61,7 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_Reverse_Test.cxx
   BRepGraph_SeamRedesign_Test.cxx
   BRepGraph_SparseModel_Test.cxx
+  BRepGraph_Revision_Test.cxx
   BRepGraph_Deduplicate_Test.cxx
   BRepTools_ReShape_Test.cxx
   BRepTools_GTrsfModification_Test.cxx

@@ -23,7 +23,7 @@
 #include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraph_VersionStamp.hxx>
+#include <BRepGraph_ItemStamp.hxx>
 #include "BRepGraph_RefTestTools.hxx"
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -259,7 +259,7 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_HasFaceRefs)
   }
 }
 
-TEST(BRepGraph_RefIdTest, RefDomain_StampGUIDGeneration_IfSupported)
+TEST(BRepGraph_RefIdTest, RefDomain_Stamp_IfSupported)
 {
   BRepGraph aGraph;
   aGraph.Clear();
@@ -272,18 +272,14 @@ TEST(BRepGraph_RefIdTest, RefDomain_StampGUIDGeneration_IfSupported)
     GTEST_SKIP() << "Ref-domain entries are not populated at this phase";
   }
 
-  const BRepGraph_VersionStamp aStamp = aGraph.UIDs().StampOf(BRepGraph_FaceRefId::Start());
+  const BRepGraph_ItemStamp aStamp = aGraph.UIDs().StampOf(BRepGraph_FaceRefId::Start());
   if (!aStamp.IsValid())
   {
-    GTEST_SKIP() << "Ref-domain stamping/GUID generation not wired yet";
+    GTEST_SKIP() << "Ref-domain stamping is not wired yet";
   }
 
   EXPECT_TRUE(aStamp.IsRefStamp());
 
-  const Standard_GUID& aGraphGUID = aGraph.UIDs().GraphGUID();
-  const Standard_GUID  aGUID1     = aStamp.ToGUID(aGraphGUID);
-  const Standard_GUID  aGUID2     = aStamp.ToGUID(aGraphGUID);
-  EXPECT_EQ(aGUID1, aGUID2);
 }
 
 TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_CountsDoNotExceedInlineStorage)
@@ -316,9 +312,9 @@ TEST(BRepGraph_RefIdTest, RefsView_AfterBuild_UIDRoundtripAndParentKinds)
        aFaceRefId.IsValid(aGraph.Refs().Faces().Nb());
        ++aFaceRefId)
   {
-    const BRepGraph_RefId        aRefId = aFaceRefId;
-    const BRepGraph_RefUID       aUID   = aGraph.UIDs().Of(aRefId);
-    const BRepGraph_VersionStamp aStamp = aGraph.UIDs().StampOf(aRefId);
+    const BRepGraph_RefId     aRefId = aFaceRefId;
+    const BRepGraph_RefUID    aUID   = aGraph.UIDs().Of(aRefId);
+    const BRepGraph_ItemStamp aStamp = aGraph.UIDs().StampOf(aRefId);
     EXPECT_TRUE(aUID.IsValid());
     EXPECT_EQ(aGraph.UIDs().RefIdFrom(aUID), aRefId);
     EXPECT_TRUE(aGraph.UIDs().Has(aUID));
@@ -468,7 +464,7 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_UpdatesRefStampAndParentModifiedFlag)
 
   const BRepGraph_FaceRefId    aFaceRefId(0);
   const BRepGraphInc::FaceRef& aBeforeEntry = aGraph.Refs().Faces().Entry(aFaceRefId);
-  const BRepGraph_VersionStamp aBeforeStamp = aGraph.UIDs().StampOf(aFaceRefId);
+  const BRepGraph_ItemStamp    aBeforeStamp = aGraph.UIDs().StampOf(aFaceRefId);
   ASSERT_TRUE(aBeforeStamp.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
   const TopAbs_Orientation anBeforeOri = aBeforeEntry.Orientation;
@@ -515,8 +511,8 @@ TEST(BRepGraph_RefIdTest, MutFaceRef_MarkRemoved_PersistsAndInvalidatesStamp)
     GTEST_SKIP() << "No face references available";
   }
 
-  const BRepGraph_FaceRefId    aFaceRefId(0);
-  const BRepGraph_VersionStamp aBeforeStamp = aGraph.UIDs().StampOf(aFaceRefId);
+  const BRepGraph_FaceRefId aFaceRefId(0);
+  const BRepGraph_ItemStamp aBeforeStamp = aGraph.UIDs().StampOf(aFaceRefId);
   ASSERT_TRUE(aBeforeStamp.IsValid());
   ASSERT_TRUE(aBeforeStamp.IsRefStamp());
 

@@ -19,8 +19,10 @@
 #include <BRepGraph_Compact.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Standard_ProgramError.hxx>
 #include <gp_Trsf.hxx>
@@ -77,6 +79,13 @@ bool isOwned(const BRepGraph& theGraph, const BRepGraph_FaceId theFace)
   const occ::handle<BRepGraph_LayerLock> aLayer =
     theGraph.LayerRegistry().FindLayer<BRepGraph_LayerLock>();
   return !aLayer.IsNull() && aLayer->HasOwner(theFace);
+}
+
+bool isOwned(const BRepGraph& theGraph, const BRepGraph_EdgeId theEdge)
+{
+  const occ::handle<BRepGraph_LayerLock> aLayer =
+    theGraph.LayerRegistry().FindLayer<BRepGraph_LayerLock>();
+  return !aLayer.IsNull() && aLayer->HasOwner(theEdge);
 }
 
 bool isOwned(const BRepGraph& theGraph, const BRepGraph_VertexRefId theRef)
@@ -390,6 +399,41 @@ TEST(BRepGraph_LockTest, RemovedRootOwnerCallbackClearsDescendantOwnedFlags)
   EXPECT_FALSE(aLayer->HasOwner(aSolidId));
   EXPECT_FALSE(aLayer->HasOwner(aFaceId));
   EXPECT_FALSE(aLayer->HasOwner(aWireRefId));
+}
+
+TEST(BRepGraph_LockTest, ScopedOwnerEditAllowsDescendantMutationUnderProductOwner)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+  ASSERT_FALSE(aGraph.RootProductIds().IsEmpty());
+
+  const BRepGraph_ProductId aProductId = aGraph.RootProductIds().First();
+  const BRepGraph_EdgeId    anEdgeId   = BRepGraph_EdgeId::Start();
+  occ::handle<BRepGraph_LayerLock> aLayer = aGraph.LayerRegistry().Ensure<BRepGraph_LayerLock>();
+
+  ASSERT_TRUE(aLayer->SetOwner(BRepGraph_ItemId(aProductId), testOwnerId(), false));
+  ASSERT_TRUE(isOwned(aGraph, anEdgeId));
+
+  BRepGraph_ItemId aRootItem;
+  Standard_GUID    anOwnerId;
+  ASSERT_TRUE(aLayer->FindOwnerRoot(BRepGraph_ItemId(anEdgeId), aRootItem, anOwnerId));
+  EXPECT_EQ(aRootItem, BRepGraph_ItemId(aProductId));
+  EXPECT_EQ(anOwnerId, testOwnerId());
+
+  const occ::handle<Geom_Curve> aCurve = aGraph.Topo().Edges().Curve3D(anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
+  const auto [aFirst, aLast] = BRepGraph_Tool::Edge::Range(aGraph, anEdgeId);
+  EXPECT_THROW(aGraph.Editor().Edges().SetCurve(anEdgeId, aCurve, aFirst, aLast),
+               Standard_ProgramError);
+
+  {
+    BRepGraph_LayerLock::ScopedOwnerEdit anEdit(*aLayer,
+                                                BRepGraph_ItemId(anEdgeId),
+                                                testOwnerId());
+    EXPECT_FALSE(isOwned(aGraph, anEdgeId));
+    EXPECT_NO_THROW(aGraph.Editor().Edges().SetCurve(anEdgeId, aCurve, aFirst, aLast));
+  }
+  EXPECT_TRUE(isOwned(aGraph, anEdgeId));
 }
 
 TEST(BRepGraph_LockTest, DeferredLayerRegistersMultipleRepresentationsAndLocksItem)

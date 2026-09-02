@@ -24,6 +24,7 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
 #include <TopLoc_Location.hxx>
 
 #include <mutex>
@@ -250,6 +251,37 @@ TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_NestedGuards_FlushOnlyO
   EXPECT_GT(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
 }
 
+TEST_F(BRepGraph_DeferredInvalidationTest, DeferredScope_FlushesWhenMutationBodyThrows)
+{
+  BRepGraph_WiresOfEdge aWireIt = myGraph.Topo().Edges().WiresOf(BRepGraph_EdgeId::Start());
+  ASSERT_TRUE(aWireIt.More());
+  const BRepGraph_WireId aWireId = aWireIt.CurrentId();
+
+  EXPECT_THROW(
+    {
+      BRepGraph_DeferredScope aScope(myGraph);
+      myGraph.Editor().Edges().SetTolerance(BRepGraph_EdgeId::Start(), 0.5);
+      throw Standard_ProgramError("deferred batch failed");
+    },
+    Standard_ProgramError);
+
+  EXPECT_FALSE(myGraph.Editor().IsDeferredMode());
+  EXPECT_GT(myGraph.Topo().Edges().Definition(BRepGraph_EdgeId::Start()).OwnGen, 0u);
+  EXPECT_GT(myGraph.Topo().Wires().Definition(aWireId).SubtreeGen, 0u);
+}
+
+TEST_F(BRepGraph_DeferredInvalidationTest, ClearDuringDeferredMode_IsRejected)
+{
+  myGraph.Editor().BeginDeferredInvalidation();
+
+  EXPECT_THROW(myGraph.Clear(), Standard_ProgramError);
+  EXPECT_TRUE(myGraph.Editor().IsDeferredMode());
+  EXPECT_FALSE(myGraph.IsEmpty());
+
+  myGraph.Editor().EndDeferredInvalidation();
+  EXPECT_FALSE(myGraph.Editor().IsDeferredMode());
+}
+
 TEST_F(BRepGraph_DeferredInvalidationTest, DeferredMode_DoubleEnd_IsIdempotent)
 {
   myGraph.Editor().BeginDeferredInvalidation();
@@ -348,6 +380,34 @@ TEST_F(BRepGraph_DeferredInvalidationTest,
   EXPECT_GE(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen, aSubtreeGenBeforeFlush);
   // Parent's OwnGen is bumped by exactly 1 because ref mutations now propagate to the parent node.
   EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).OwnGen, aBaselineOwnGen + 1);
+}
+
+TEST_F(BRepGraph_DeferredInvalidationTest,
+       DeferredMode_OccurrenceDefMutation_UsesIncomingRefsForProductPropagation)
+{
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId::Start();
+  const BRepGraph_ProductId aAssemblyId = myGraph.Editor().Products().Add();
+  myGraph.Editor().Products().AppendDocumentRoot(aAssemblyId);
+  const BRepGraph_OccurrenceId anOccId =
+    myGraph.Editor().Products().Append(aAssemblyId, aPartId, TopLoc_Location());
+  ASSERT_TRUE(anOccId.IsValid());
+
+  const uint32_t aProductSubtreeGenBefore =
+    myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen;
+  const uint32_t aProductOwnGenBefore = myGraph.Topo().Products().Definition(aAssemblyId).OwnGen;
+
+  myGraph.Editor().BeginDeferredInvalidation();
+  myGraph.Editor().Occurrences().Mut(anOccId).MarkDirty();
+
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen,
+            aProductSubtreeGenBefore);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).OwnGen, aProductOwnGenBefore);
+
+  myGraph.Editor().EndDeferredInvalidation();
+
+  EXPECT_GT(myGraph.Topo().Products().Definition(aAssemblyId).SubtreeGen,
+            aProductSubtreeGenBefore);
+  EXPECT_EQ(myGraph.Topo().Products().Definition(aAssemblyId).OwnGen, aProductOwnGenBefore);
 }
 
 TEST_F(BRepGraph_DeferredInvalidationTest, CoEdgeMutation_ImmediatePropagatesToWireAndFace)

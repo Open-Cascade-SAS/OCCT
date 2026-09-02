@@ -23,9 +23,9 @@
 #include <BRepGraph_ReverseIterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_LayerHistory.hxx>
-#include <BRepGraph_LayerTopoSupplement.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_SupplementsView.hxx>
 #include <BRepGraph_UIDsView.hxx>
 
 #include <BRepGraph_Tool.hxx>
@@ -369,7 +369,7 @@ TEST_F(BRepGraph_ViewsTest, TopoView_GenValidity)
                                           myGraph.Topo().Faces().Nb());
   EXPECT_FALSE(myGraph.Topo().Gen().IsValid(anOutOfRangeFace));
   EXPECT_FALSE(myGraph.Topo().Gen().IsActive(anOutOfRangeFace));
-  EXPECT_TRUE(myGraph.Topo().Gen().IsRemoved(anOutOfRangeFace));
+  EXPECT_FALSE(myGraph.Topo().Gen().IsRemoved(anOutOfRangeFace));
 }
 
 TEST_F(BRepGraph_ViewsTest, DefsView_NbNodes_Positive)
@@ -887,9 +887,11 @@ TEST_F(BRepGraph_ViewsTest, RefsView_RefAtStep_RoundTrip)
     myGraph.Topo().Solids().Relations(aSolidId).ShellRefIds.Value(0);
   EXPECT_EQ(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(aSolidId), 0),
             BRepGraph_RefId(aShellRefId));
+  EXPECT_EQ(myGraph.Refs().Gen().StepOfRef(BRepGraph_NodeId(aSolidId), aShellRefId), 0);
 
   const BRepGraph_WireId aWireId(0);
   EXPECT_FALSE(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(aWireId), 0).IsValid());
+  EXPECT_EQ(myGraph.Refs().Gen().StepOfRef(BRepGraph_NodeId(aWireId), aShellRefId), -1);
 
   EXPECT_FALSE(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(aWireId), 100).IsValid());
 }
@@ -917,6 +919,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_OccurrenceLocalLocation)
   const BRepGraphInc::OccurrenceRef& aRefEntry = myGraph.Refs().Occurrences().Entry(aRefId);
   EXPECT_EQ(myGraph.Refs().Gen().RefAtStep(BRepGraph_NodeId(anAssembly), 0),
             BRepGraph_RefId(aRefId));
+  EXPECT_EQ(myGraph.Refs().Gen().StepOfRef(BRepGraph_NodeId(anAssembly), aRefId), 0);
   EXPECT_EQ(myGraph.Refs().Gen().ChildNode(aRefId), BRepGraph_NodeId(aRefEntry.ChildOccurrenceId));
   EXPECT_TRUE(myGraph.Refs().Gen().LocalLocation(aRefId).IsEqual(aRefEntry.LocalLocation));
   EXPECT_EQ(myGraph.Refs().Gen().Orientation(aRefId), TopAbs_FORWARD);
@@ -930,7 +933,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_InvalidAndRemoved)
   EXPECT_EQ(myGraph.Refs().Gen().Orientation(BRepGraph_RefId()), TopAbs_FORWARD);
   EXPECT_FALSE(myGraph.Refs().Gen().IsValid(BRepGraph_RefId()));
   EXPECT_FALSE(myGraph.Refs().Gen().IsActive(BRepGraph_RefId()));
-  EXPECT_TRUE(myGraph.Refs().Gen().IsRemoved(BRepGraph_RefId()));
+  EXPECT_FALSE(myGraph.Refs().Gen().IsRemoved(BRepGraph_RefId()));
 
   const NCollection_LinearVector<BRepGraph_FaceRefId>& aFaceRefs =
     myGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start());
@@ -946,7 +949,7 @@ TEST_F(BRepGraph_ViewsTest, RefsView_GenericRefHelpers_InvalidAndRemoved)
   const BRepGraph_FaceRefId anOutOfRangeFaceRef(myGraph.Refs().Faces().Nb());
   EXPECT_FALSE(myGraph.Refs().Gen().IsValid(anOutOfRangeFaceRef));
   EXPECT_FALSE(myGraph.Refs().Gen().IsActive(anOutOfRangeFaceRef));
-  EXPECT_TRUE(myGraph.Refs().Gen().IsRemoved(anOutOfRangeFaceRef));
+  EXPECT_FALSE(myGraph.Refs().Gen().IsRemoved(anOutOfRangeFaceRef));
   EXPECT_FALSE(myGraph.Refs().Gen().ChildNode(anOutOfRangeFaceRef).IsValid());
   EXPECT_TRUE(myGraph.Refs().Gen().LocalLocation(anOutOfRangeFaceRef).IsEqual(TopLoc_Location()));
   EXPECT_EQ(myGraph.Refs().Gen().Orientation(anOutOfRangeFaceRef), TopAbs_FORWARD);
@@ -1447,10 +1450,7 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_ShellAddFace_Internal_RoutedToSupplement)
     aGraph.Shapes().Add(aInternalFace, BRepGraph_NodeId(aShellId));
   ASSERT_TRUE(aAddResult.IsOk());
 
-  const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
-    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aLayer.IsNull());
-  EXPECT_GT(aLayer->AttachedTo(BRepGraph_NodeId(aShellId)).Size(), 0);
+  EXPECT_GT(aGraph.Supplements().Attachments(aShellId).Size(), 0);
 }
 
 TEST_F(BRepGraph_ViewsTest, ShapesView_CompoundAddChild_MixedOrientations_CoreRefAndSupplement)
@@ -1506,8 +1506,5 @@ TEST_F(BRepGraph_ViewsTest, ShapesView_CompoundAddChild_MixedOrientations_CoreRe
   ASSERT_TRUE(aIntResult.IsOk());
   EXPECT_FALSE(aIntResult.InsertedRef.IsValid());
 
-  const occ::handle<BRepGraph_LayerTopoSupplement> aLayer =
-    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aLayer.IsNull());
-  EXPECT_EQ(aLayer->AttachedTo(BRepGraph_NodeId(aCompoundId)).Size(), 1);
+  EXPECT_EQ(aGraph.Supplements().Attachments(aCompoundId).Size(), 1);
 }

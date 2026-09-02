@@ -15,6 +15,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_CacheRegistry.hxx>
+#include <BRepGraph_CopyRemap.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_Iterator.hxx>
@@ -94,6 +95,18 @@ void writeFaceMesh(BRepGraph& theGraph, const BRepGraph_FaceId theFaceId)
   theGraph.Mesh().Editor().Faces().SetCachedTriangulation(theFaceId, aTri);
 }
 
+void writeFaceMesh(BRepGraph&                             theGraph,
+                   const BRepGraph_CacheMesh::SlotId      theSlot,
+                   const BRepGraph_FaceId                 theFaceId,
+                   const occ::handle<Poly_Triangulation>& theTriangulation)
+{
+  occ::handle<BRepGraph_CacheMesh> aCache = theGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
+  BRepGraph_CacheMesh::FaceMeshEntry& anEntry = aCache->ChangeFaceMesh(theSlot, theFaceId);
+  anEntry.Triangulation                       = theTriangulation;
+  aCache->BindFresh(anEntry, theFaceId, theSlot);
+  aCache->BumpFaceMeshGeneration(theFaceId, theSlot);
+}
+
 void writeCoEdgeMesh(BRepGraph&               theGraph,
                      const BRepGraph_CoEdgeId theCoEdgeId,
                      const BRepGraph_FaceId   theFaceId)
@@ -113,7 +126,196 @@ void writeEdgeMesh(BRepGraph& theGraph, const BRepGraph_EdgeId theEdgeId)
   theGraph.Mesh().Editor().Edges().SetCachedPolygon3D(theEdgeId, aPoly3D);
 }
 
+class SlotMeshDriver : public BRepGraph_CacheMesh::Driver
+{
+public:
+  DEFINE_STANDARD_RTTI_INLINE(SlotMeshDriver, BRepGraph_CacheMesh::Driver)
+
+  explicit SlotMeshDriver(const size_t theHash)
+      : myHash(theHash)
+  {
+  }
+
+  const Standard_GUID& ID() const override
+  {
+    static const Standard_GUID THE_ID("ff915308-f479-4b83-a901-ce4e3469c860");
+    return THE_ID;
+  }
+
+  size_t RecipeHash() const override { return myHash; }
+
+  bool Fill(BRepGraph&                           theGraph,
+            const BRepGraph_CacheMesh::SlotId    theSlot,
+            const BRepGraph_CacheMesh::DirtySet& theDirtySet,
+            const Message_ProgressRange&) override
+  {
+    ++FillCount;
+    LastSlot      = theSlot;
+    LastFaceCount = static_cast<uint32_t>(theDirtySet.Faces.Size());
+
+    for (const BRepGraph_FaceId& aFaceId : theDirtySet.Faces)
+    {
+      const occ::handle<Poly_Triangulation> aTri = makeTrivialTriangulation();
+      writeFaceMesh(theGraph, theSlot, aFaceId, aTri);
+    }
+    return true;
+  }
+
+  occ::handle<BRepGraph_CacheMesh::Driver> Copy(const BRepGraph_CopyRemap&) const override
+  {
+    return new SlotMeshDriver(myHash);
+  }
+
+  uint32_t                    FillCount     = 0;
+  BRepGraph_CacheMesh::SlotId LastSlot      = BRepGraph_CacheMesh::DefaultDisplaySlot;
+  uint32_t                    LastFaceCount = 0;
+
+private:
+  size_t myHash = 0;
+};
+
 } // namespace
+
+TEST(BRepGraph_CacheMeshTest, UnregisterMissingSlotDoesNotCreateSlot)
+{
+  BRepGraph                              aGraph;
+  const occ::handle<BRepGraph_CacheMesh> aCache =
+    aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
+  ASSERT_FALSE(aCache.IsNull());
+
+  constexpr BRepGraph_CacheMesh::SlotId aMissingSlot = 42;
+  EXPECT_EQ(aCache->State(aMissingSlot).Generation, 1u);
+
+  aCache->UnregisterDriver(aMissingSlot);
+
+  const BRepGraph_CacheMesh::SlotState aState = aCache->State(aMissingSlot);
+  EXPECT_EQ(aState.Generation, 1u);
+  EXPECT_EQ(aState.RecipeHash, 0u);
+  EXPECT_FALSE(aState.HasDriver);
+}
+
+TEST(BRepGraph_CacheMeshTest, CopyFreshRejectsDivergentTargetWithEqualCounters)
+{
+  BRepGraph              aSource = makeBoxGraph();
+  BRepGraph              aTarget = makeBoxGraph();
+  const BRepGraph_FaceId aFaceId = firstFaceId(aSource);
+  ASSERT_TRUE(aFaceId.IsValid(aSource.Topo().Faces().Nb()));
+
+  writeFaceMesh(aSource,
+                BRepGraph_CacheMesh::DefaultDisplaySlot,
+                aFaceId,
+                makeTrivialTriangulation());
+  aSource.CacheRegistry().CopyFreshCachesTo(aTarget,
+                                            BRepGraph_CopyRemap::MappingKind::Identity,
+                                            BRepGraph_CopyRemap::Mode::Copy,
+                                            BRepGraph_CopyRemap::FreshnessPolicy::MatchTarget);
+
+  const occ::handle<BRepGraph_CacheMesh> aTargetCache =
+    aTarget.CacheRegistry().Find<BRepGraph_CacheMesh>();
+  ASSERT_FALSE(aTargetCache.IsNull());
+  EXPECT_EQ(aTargetCache->FindFaceMesh(aFaceId), nullptr);
+}
+
+TEST(BRepGraph_CacheMeshTest, FaceSlots_AreIsolatedAndActiveDisplaySlotRoutesEffectiveView)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
+  ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
+
+  const occ::handle<BRepGraph_CacheMesh> aCache =
+    aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
+  constexpr BRepGraph_CacheMesh::SlotId aDefaultSlot = BRepGraph_CacheMesh::DefaultDisplaySlot;
+  constexpr BRepGraph_CacheMesh::SlotId aPreviewSlot = 3;
+
+  const occ::handle<Poly_Triangulation> aDefaultTri = makeTrivialTriangulation();
+  const occ::handle<Poly_Triangulation> aPreviewTri = makeTrivialTriangulation();
+  writeFaceMesh(aGraph, aDefaultSlot, aFaceId, aDefaultTri);
+  writeFaceMesh(aGraph, aPreviewSlot, aFaceId, aPreviewTri);
+
+  ASSERT_NE(aCache->FindFaceMesh(aDefaultSlot, aFaceId), nullptr);
+  ASSERT_NE(aCache->FindFaceMesh(aPreviewSlot, aFaceId), nullptr);
+  EXPECT_EQ(aCache->FindFaceMesh(aDefaultSlot, aFaceId)->Triangulation, aDefaultTri);
+  EXPECT_EQ(aCache->FindFaceMesh(aPreviewSlot, aFaceId)->Triangulation, aPreviewTri);
+
+  aCache->SetActiveDisplaySlot(aDefaultSlot);
+  EXPECT_EQ(aGraph.Mesh().Effective().Faces().Triangulation(aFaceId), aDefaultTri);
+
+  aCache->SetActiveDisplaySlot(aPreviewSlot);
+  EXPECT_EQ(aGraph.Mesh().Effective().Faces().Triangulation(aFaceId), aPreviewTri);
+
+  aCache->ClearFaceMesh(aDefaultSlot, aFaceId);
+  EXPECT_EQ(aCache->FindFaceMesh(aDefaultSlot, aFaceId), nullptr);
+  ASSERT_NE(aCache->FindFaceMesh(aPreviewSlot, aFaceId), nullptr);
+  EXPECT_EQ(aGraph.Mesh().Effective().Faces().Triangulation(aFaceId), aPreviewTri);
+}
+
+TEST(BRepGraph_CacheMeshTest, Ensure_UsesPerSlotDriverAndDirtyState)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
+  ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
+
+  const occ::handle<BRepGraph_CacheMesh> aCache =
+    aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
+  constexpr BRepGraph_CacheMesh::SlotId aCoarseSlot = 1;
+  constexpr BRepGraph_CacheMesh::SlotId aFineSlot   = 5;
+
+  const occ::handle<SlotMeshDriver> aCoarseDriver = new SlotMeshDriver(0x101u);
+  const occ::handle<SlotMeshDriver> aFineDriver   = new SlotMeshDriver(0x202u);
+  aCache->RegisterDriver(aCoarseSlot, aCoarseDriver);
+  aCache->RegisterDriver(aFineSlot, aFineDriver);
+
+  EXPECT_TRUE(aCache->Needs(aGraph, BRepGraph_NodeId(aFaceId), aCoarseSlot));
+  EXPECT_TRUE(aCache->Needs(aGraph, BRepGraph_NodeId(aFaceId), aFineSlot));
+
+  ASSERT_TRUE(aCache->Ensure(aGraph, BRepGraph_NodeId(aFaceId), aCoarseSlot));
+  EXPECT_EQ(aCoarseDriver->FillCount, 1u);
+  EXPECT_EQ(aCoarseDriver->LastSlot, aCoarseSlot);
+  EXPECT_EQ(aCoarseDriver->LastFaceCount, 1u);
+  EXPECT_FALSE(aCache->Needs(aGraph, BRepGraph_NodeId(aFaceId), aCoarseSlot));
+  EXPECT_TRUE(aCache->Needs(aGraph, BRepGraph_NodeId(aFaceId), aFineSlot));
+
+  ASSERT_TRUE(aCache->Ensure(aGraph, BRepGraph_NodeId(aFaceId), aFineSlot));
+  EXPECT_EQ(aFineDriver->FillCount, 1u);
+  EXPECT_EQ(aFineDriver->LastSlot, aFineSlot);
+  EXPECT_EQ(aFineDriver->LastFaceCount, 1u);
+  EXPECT_FALSE(aCache->Needs(aGraph, BRepGraph_NodeId(aFaceId), aFineSlot));
+
+  ASSERT_NE(aCache->FindFaceMesh(aCoarseSlot, aFaceId), nullptr);
+  ASSERT_NE(aCache->FindFaceMesh(aFineSlot, aFaceId), nullptr);
+  EXPECT_NE(aCache->FindFaceMesh(aCoarseSlot, aFaceId)->Triangulation,
+            aCache->FindFaceMesh(aFineSlot, aFaceId)->Triangulation);
+}
+
+TEST(BRepGraph_CacheMeshTest, Ensure_DeduplicatesRepeatedFaceRequests)
+{
+  BRepGraph aGraph = makeBoxGraph();
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
+  ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
+
+  const occ::handle<BRepGraph_CacheMesh> aCache =
+    aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
+  const occ::handle<SlotMeshDriver> aDriver = new SlotMeshDriver(0x303u);
+  aCache->RegisterDriver(BRepGraph_CacheMesh::DefaultDisplaySlot, aDriver);
+
+  NCollection_Array1<BRepGraph_NodeId> aNodes(1, 3);
+  aNodes.SetValue(1, BRepGraph_NodeId(aFaceId));
+  aNodes.SetValue(2, BRepGraph_NodeId(aFaceId));
+  aNodes.SetValue(3, BRepGraph_NodeId(aFaceId));
+
+  ASSERT_TRUE(aCache->Ensure(aGraph, aNodes));
+  EXPECT_EQ(aDriver->FillCount, 1u);
+  EXPECT_EQ(aDriver->LastFaceCount, 1u);
+
+  ASSERT_TRUE(aCache->Ensure(aGraph, aNodes));
+  EXPECT_EQ(aDriver->FillCount, 1u) << "Fresh repeated requests must not refill cache";
+}
 
 TEST(BRepGraph_CacheMeshTest, CacheStaleAfterFaceMutation)
 {
@@ -476,7 +678,7 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_Polygon2DStaleAfterSlotRecipeChange)
     << "Polygon2D must become stale after cache clear (SlotGeneration bump)";
 }
 
-TEST(BRepGraph_CacheMeshTest, CoEdge_FaceNotYetMeshed_SnapshotZero)
+TEST(BRepGraph_CacheMeshTest, CoEdge_FaceNotYetMeshed_RecordedGenerationZero)
 {
   BRepGraph              aGraph  = makeBoxGraph();
   const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
@@ -493,13 +695,43 @@ TEST(BRepGraph_CacheMeshTest, CoEdge_FaceNotYetMeshed_SnapshotZero)
 
   EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
             nullptr)
-    << "PolygonOnTri must be stale when face has never been meshed (snapshot=0 vs default=0)";
+    << "PolygonOnTri must be stale when face has never been meshed (stored generation=0 vs default=0)";
 
   writeFaceMesh(aGraph, aFaceId);
 
   EXPECT_EQ(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygonOnTri(aCoEdgeId),
             nullptr)
     << "PolygonOnTri must remain stale after face is meshed (MeshGeneration bumped to 1)";
+}
+
+TEST(BRepGraph_CacheMeshTest, GenerationTracksEffectiveMeshChanges)
+{
+  BRepGraph                              aGraph = makeBoxGraph();
+  const occ::handle<BRepGraph_CacheMesh> aCache =
+    aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
+  const uint64_t anInitialRevision = aCache->Generation();
+  EXPECT_EQ(aCache->Generation(), anInitialRevision);
+
+  const BRepGraph_FaceId aFace = firstFaceId(aGraph);
+  ASSERT_TRUE(aFace.IsValid());
+  aGraph.Mesh().Editor().Faces().SetCachedTriangulation(aFace, makeTrivialTriangulation());
+  const uint64_t aFaceRevision = aCache->Generation();
+  EXPECT_GT(aFaceRevision, anInitialRevision);
+
+  const BRepGraph_EdgeId anEdge = firstEdgeId(aGraph);
+  ASSERT_TRUE(anEdge.IsValid());
+  writeEdgeMesh(aGraph, anEdge);
+  const uint64_t anEdgeRevision = aCache->Generation();
+  EXPECT_GT(anEdgeRevision, aFaceRevision);
+
+  aCache->SetActiveDisplaySlot(1);
+  const uint64_t aSlotRevision = aCache->Generation();
+  EXPECT_GT(aSlotRevision, anEdgeRevision);
+  aCache->SetActiveDisplaySlot(1);
+  EXPECT_EQ(aCache->Generation(), aSlotRevision);
+
+  aCache->Clear();
+  EXPECT_GT(aCache->Generation(), aSlotRevision);
 }
 
 TEST(BRepGraph_CacheMeshTest, Needs_DetectsChildDrivenFaceStaleness)
@@ -594,7 +826,7 @@ TEST(BRepGraph_CacheMeshTest, MeshGeneration_MonotonicAcrossClear)
       aFaceId);
   ASSERT_NE(aFaceEntry, nullptr);
   EXPECT_GT(aFaceEntry->MeshGeneration, aAfterEntry->FaceMeshGeneration)
-    << "Face MeshGeneration must exceed coedge snapshot after clear+rewrite";
+    << "Face MeshGeneration must exceed the stored coedge generation after clear+rewrite";
 }
 
 TEST(BRepGraph_CacheMeshTest, FaceClear_PreservesCoEdgePolygon2D)
@@ -615,4 +847,27 @@ TEST(BRepGraph_CacheMeshTest, FaceClear_PreservesCoEdgePolygon2D)
   EXPECT_NE(aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>()->FindCoEdgePolygon2D(aCoEdgeId),
             nullptr)
     << "FaceOps::Clear must not destroy coedge Polygon2D";
+}
+
+TEST(BRepGraph_CacheMeshTest, InvalidateFaceMesh_PreservesCoEdgePolygon2D)
+{
+  BRepGraph              aGraph  = makeBoxGraph();
+  const BRepGraph_FaceId aFaceId = firstFaceId(aGraph);
+  ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
+
+  const BRepGraph_CoEdgeId aCoEdgeId = firstCoEdgeOfFace(aGraph, aFaceId);
+  ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
+
+  writeCoEdgeMesh(aGraph, aCoEdgeId, aFaceId);
+  occ::handle<BRepGraph_CacheMesh> aCache = aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>();
+  ASSERT_FALSE(aCache.IsNull());
+  ASSERT_NE(aCache->FindCoEdgePolygon2D(aCoEdgeId), nullptr);
+  ASSERT_NE(aCache->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr);
+
+  aCache->InvalidateFaceMesh(aFaceId);
+
+  EXPECT_EQ(aCache->FindFaceMesh(aFaceId), nullptr);
+  EXPECT_NE(aCache->FindCoEdgePolygon2D(aCoEdgeId), nullptr)
+    << "Quality-only invalidation must keep coedge Polygon2D";
+  EXPECT_EQ(aCache->FindCoEdgePolygonOnTri(aCoEdgeId), nullptr);
 }

@@ -16,6 +16,65 @@ BRepGraph provides a stable algorithm-facing API for:
 
 The goal is to make workflows like sewing, healing, compact, and deduplicate easier to implement and optimize.
 
+## Revision and Transaction Model
+
+`BRepGraph_Revision` is an immutable model value. It retains page-shared incidence storage,
+detaches mutable geometry and mesh representations, and captures persistent supplemental
+components. A revision identifies content and does not imply ancestry; history relationships are
+owned separately or represented by an explicit `BRepGraph_RevisionDiff`.
+
+`BRepGraph_Transaction` provides two deliberately separate edit modes:
+
+- sparse edits address the supported topology subset by durable UID and preserve unchanged shared
+  storage;
+- complete-graph edits use an isolated mutable `BRepGraph` obtained through `Graph()` and support
+  the full editor, layers, representations, and supplemental stores.
+
+Selecting either mode excludes the other for that transaction. `Commit()` validates the private
+result and creates a new revision; `Abort()` discards it without changing the base revision.
+
+### Revision Hash Contract
+
+Revision identities are SHA-256 digests over canonical byte streams. The encoding is independent
+of pointer size, object addresses, host byte order, and `std::hash` implementations:
+
+- unsigned 32-bit and 64-bit values use little-endian bytes;
+- booleans use one byte containing zero or one;
+- signed integral values preserve their corresponding unsigned bit pattern;
+- floating-point values use IEEE bit patterns, normalize both signed zeros to positive zero, and
+  normalize every NaN to one canonical quiet-NaN representation;
+- optional IDs and UIDs begin with a validity byte and append kind and index or counter only when
+  valid;
+- locations append the effective 3 by 4 transformation coefficients in row-major order;
+- geometry and mesh records begin with a four-byte domain tag, an encoding version, and a presence
+  byte before their canonical persistent content;
+- variable-length content includes its element count before the elements;
+- Merkle branches include their domain, depth, child count, ordered child slots, and child hashes.
+
+Semantic hashes use durable identities and exclude physical storage layout. Storage hashes also
+include local IDs, removed slots, and allocation watermarks. Any incompatible encoding change must
+increment the relevant encoding or revision schema version rather than silently reinterpreting an
+existing digest.
+
+Runtime lookup hashes are not persistent contracts. Fixed-size composite keys use
+`opencascade::hashBytes()` over explicit scalar arrays. Variable-length ordered keys use OCCT's
+incremental FNV implementation when distribution justifies visiting their content.
+`BRepGraph_UsagePath` bounds hashing cost by hashing its size and the first, middle, and last steps,
+then leaves complete comparison to equality.
+
+## Periodic Face Charts
+
+Periodic seams are derived chart navigation, not intrinsic topology. `FaceDef` has no persistent
+`FaceDomain` classification, every persistent coedge uses a real edge, and virtual cuts exist only
+inside a transient chart result.
+
+`BRepGraph_CacheChart` owns chart policies, immutable results, on-demand construction, and a
+graph-local cache indexed by face and bounded to eight exact policy variants per face. Population
+imports or synthesizes supported explicit boundary components; selected cuts, lifted UV loops,
+transitions, and compatibility seam topology are derived when requested. Cached results are
+invalidated by face-subtree generations and are safe to discard because they can be rebuilt from
+persistent graph content.
+
 ## Recent API Changes (April 2026)
 
 - **Mutation API unified**: `BRepGraph::Access()` has been merged into `BRepGraph::Editor()`.
@@ -86,7 +145,7 @@ Queries and mutations go through accessors obtained from a `BRepGraph` instance.
 | **ShapesView** | `Shapes()` | Cached `Shape()` access (`null` for invalid/removed nodes), fresh `Reconstruct()` (`null` for invalid/removed nodes), `Original()/HasOriginal()` non-throw original lookup (`null` when absent), and FindNode/HasNode reverse lookup for active nodes |
 | **CacheRegistry** | `CacheRegistry()` | GUID-keyed registry of typed transient cache services. Supports `Find<T>()`, `Ensure<T>()`, explicit registration, unregister, bulk clear, and `BRepGraph_CacheIterator` for enumerating live cache services. |
 | **EditorView** | `Editor()` | All mutation: creation (nested `VertexOps`/`EdgeOps`/`WireOps`/`FaceOps`/... `Add(...)` / `Split(...)`), field-level `Mut*()` RAII guards (`MutEdge`, `MutFace`, `MutShell`, `MutProduct`, `MutVertexRef`, `MutSurface`, ...), structural removal (RemoveNode, RemoveSubgraph, RemoveRef with orphan pruning), SetCoEdgePCurve, ClearFaceMesh, ClearEdgePolygon3D, AppendFlattenedShape, AppendFullShape, rep creation (CreateTriangulationRep, CreatePolygon3DRep, CreatePolygonOnTriRep), ValidateMutationBoundary. EditorView absorbs the former `AccessView`: there is a single entry point for all mutation. |
-| **RefsView** | `Refs()` | Reference entry access, RefUID lookup, VersionStamp for refs |
+| **RefsView** | `Refs()` | Reference entry access, RefUID lookup, ItemStamp for refs |
 | **MeshView** | `Mesh()` | Mesh cache and persistent mesh representation queries with cache-first, persistent-fallback priority. Use the non-const mesh/editor APIs for mesh-cache writes. |
 
 `TopoView` also exposes grouped node-oriented helpers for discoverable read queries:
@@ -110,10 +169,10 @@ Use `BRepGraph_ChildExplorer` and `BRepGraph_ParentExplorer` directly for struct
 | `LayerRegistry().RegisterLayer(layer)` | Register a `BRepGraph_Layer` plugin explicitly |
 | `LayerRegistry().Find(guid)` / `LayerRegistry().Find<T>()` / `LayerRegistry().Ensure<T>()` | Lookup or create a registered layer by GUID or layer type |
 | `LayerRegistry().UnregisterLayer(guid)` | Remove a registered layer by GUID |
-| `CacheRegistry()` | Access the GUID-keyed runtime registry of transient cache families |
-| `CacheRegistry().RegisterCache(cache)` | Register a `BRepGraph_Cache` family explicitly |
-| `CacheRegistry().FindCache(guid)` / `CacheRegistry().Find<T>()` / `CacheRegistry().Ensure<T>()` | Lookup or create a registered cache family by GUID or cache type |
-| `CacheRegistry().UnregisterCache(guid)` | Remove a registered cache family by GUID |
+| `CacheRegistry()` | Access the GUID-keyed runtime registry of transient cache types |
+| `CacheRegistry().RegisterCache(cache)` | Register a `BRepGraph_Cache` explicitly |
+| `CacheRegistry().FindCache(guid)` / `CacheRegistry().Find<T>()` / `CacheRegistry().Ensure<T>()` | Lookup or create a registered cache by GUID or cache type |
+| `CacheRegistry().UnregisterCache(guid)` | Remove a registered cache by GUID |
 
 `BRepGraph_LayerHistory` is registered as a normal layer. Use
 `graph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()` when an operation should create/record
@@ -147,9 +206,9 @@ Reference entries are the typed edges of the incidence graph. Each ref kind has 
 
 `BRepGraph_RefUID` (Kind + Counter) provides persistent identity for reference entries. Counter-based and generation-aware, surviving compaction and reorder. Analogous to `BRepGraph_UID` for entities.
 
-### VersionStamp Support
+### ItemStamp Support
 
-`BRepGraph_VersionStamp` supports the ref domain: `StampOf(refId)` and `IsStale(stamp)` enable cache invalidation for ref-dependent computations.
+`BRepGraph_ItemStamp` supports the ref domain: `StampOf(refId)` and `IsStale(stamp)` enable cache invalidation for ref-dependent computations.
 
 ### Mutation Guards
 
@@ -335,7 +394,7 @@ layers are added explicitly via `LayerRegistry().RegisterLayer()`.
 - **Storage**: internal maps keyed by `BRepGraph_NodeId`, `BRepGraph_RefId`, `BRepGraph_RepId`, or `BRepGraph_ItemId`, owned by the layer
 - **Lifecycle**: typed virtual callbacks remain the extension points: `OnNodeRemoved(node)` drops data for pure deletions; `OnNodeReplaced(old, replacement)` migrates compatible data; `OnCompact(remapMap)` remaps; `OnNodeModified`/`OnNodesModified` for node mutation tracking; `OnRefRemoved`/`OnRepRemoved` for reference/representation deletion tracking; `OnRefModified`/`OnRefsModified` for reference mutation tracking (subscribed via `SubscribedRefKinds()` bitmask). `OnItemRemoved(item)` and `OnItemModified(item)` are non-virtual dispatch helpers for callers that already hold a `BRepGraph_ItemId`.
 - **Survives mutations**: yes
-- **Examples**: `BRepGraph_LayerTopoSupplement`, `BRepGraph_LayerLock`, `BRepGraph_LayerDeferred`
+- **Examples**: `BRepGraph_LayerHistory`, `BRepGraph_LayerLock`, `BRepGraph_LayerDeferred`
 
 `BRepGraph_LayerLock` stores graph-item ownership for definitions, references, and representations.
 The public ownership state is a small `IsOwned` flag on the item itself, while the typed owner ID
@@ -355,7 +414,7 @@ Typical workflow:
 
 ```cpp
 BRepGraph aGraph;
-aGraph.LayerRegistry().RegisterLayer(new BRepGraph_LayerTopoSupplement());
+aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>();
 
 double aParameter = 0.0;
 if (BRepGraphAlgo_Parameters::AddCachedPointOnCurve(aGraph, aVertexId, anEdgeId, aParameter))
@@ -364,24 +423,20 @@ if (BRepGraphAlgo_Parameters::AddCachedPointOnCurve(aGraph, aVertexId, anEdgeId,
 }
 ```
 
-`BRepGraph_LayerTopoSupplement` is the runtime-only preservation layer for
-supplemental `TopoDS` topology that should survive live
-`TopoDS -> Graph -> TopoDS` reconstruction without becoming part of persisted
-core topology.
-
-Supported supplement owners are currently `Vertex`, `Edge`, `Face`, and
-`Solid`. Shell-owned supplement is intentionally unsupported because live
-`TopoDS_Shell` reconstruction does not accept non-face children.
+`BRepGraphSupInc_TopologyStore`, accessed through `aGraph.Supplements()`,
+preserves supplemental `TopoDS` topology for live `TopoDS -> Graph -> TopoDS`
+reconstruction without adding it to persisted core topology. Populate callers
+that need this preservation explicitly ensure the store before populating.
 
 ### Cache Registry (`BRepGraph_CacheRegistry`)
 
-Graph-local registry for algorithm-computed transient services. Cache families are registered by GUID; concrete cache services own their own typed storage and validate freshness lazily against graph generation counters.
+Graph-local registry for algorithm-computed transient services. Cache types are registered by GUID; concrete cache services own their own typed storage and validate freshness lazily against graph generation counters.
 
 - **Purpose**: ephemeral computed caches (bounding boxes, UV bounds, FClass2d results)
-- **Identity**: cache families are described by `BRepGraph_Cache` with stable `Standard_GUID` identity
+- **Identity**: cache types are described by `BRepGraph_Cache` with stable `Standard_GUID` identity
 - **Storage**: owned by each concrete cache service; hot caches may use dense vectors, sparse caches may use maps
 - **Granularity**: defined by the service (for example, bbox stores node-local entries while exposing ref-aware read helpers)
-- **Freshness**: node entries usually store OwnGen or SubtreeGen; ref entries store OwnGen; layer-derived entries store source layer revision
+- **Freshness**: node entries usually store OwnGen or SubtreeGen; ref entries store OwnGen; layer-derived entries store source layer generation
 - **Thread safety**: service-local policy; hot shared services use `shared_mutex` for concurrent reads and exclusive writes
 - **Survives mutations**: yes when stale entries can be rejected by generation/revision checks; explicit `ClearAll()` drops representations while keeping services
 
@@ -405,7 +460,7 @@ Every entity (`BaseDef`) carries two generation counters:
 
 | Counter | Incremented when | Used for |
 |---------|-----------------|----------|
-| **OwnGen** | Entity's own definition fields change (tolerance, point, flags, edge list, surface, etc.) | VersionStamp persistent identity; PLM staleness detection |
+| **OwnGen** | Entity's own definition fields change (tolerance, point, flags, edge list, surface, etc.) | ItemStamp persistent identity; PLM staleness detection |
 | **SubtreeGen** | Entity's own data OR any descendant's data changes | cache registry freshness; shape cache validation |
 
 `BaseRef` and `BaseRep` carry only `OwnGen` (no subtree).
@@ -432,9 +487,9 @@ Propagation is **mutex-free** - no locks, no shape cache clears, no layer dispat
 
 Reconstructed shapes are cached in `BRepGraphInc_Storage::myCurrentShapes` as `CachedShape{Shape, StoredSubtreeGen}`. Validated lazily on read - if `StoredSubtreeGen != entity.SubtreeGen`, the shape is stale and reconstructed.
 
-### Persistent Identity (VersionStamp)
+### Persistent Identity (ItemStamp)
 
-`BRepGraph_VersionStamp` = (UID, OwnGen, Generation). `IsStale()` compares `OwnGen` - detects only direct entity changes. Parent stamps are NOT stale when children change, matching PLM-style semantics where direct parent edits and child edits are tracked separately.
+`BRepGraph_ItemStamp` = (UID, OwnGen, Generation). `IsStale()` compares `OwnGen` - detects only direct entity changes. Parent stamps are NOT stale when children change, matching PLM-style semantics where direct parent edits and child edits are tracked separately.
 
 ### History
 
@@ -518,16 +573,16 @@ if (!aResult.IsValid())
 | Category | Files |
 |----------|-------|
 | **Core** | `BRepGraph.hxx/.cxx`, `BRepGraph_Data.hxx`, `BRepGraph_NodeId.hxx`, `BRepGraph_UID.hxx`, `BRepGraph_RefId.hxx`, `BRepGraph_RefUID.hxx`, `BRepGraph_ItemId.hxx`, `BRepGraph_ItemUID.hxx` |
-| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_EditorView.hxx/.cxx` (+ `_Mut.cxx`, `_Setters.cxx`), `BRepGraph_MeshView.hxx/.cxx` |
-| **Refs** | `BRepGraph_VersionStamp.hxx/.cxx` |
+| **Views** | `BRepGraph_TopoView.hxx/.cxx`, `BRepGraph_UIDsView.hxx/.cxx`, `BRepGraph_RefsView.hxx/.cxx`, `BRepGraph_ShapesView.hxx/.cxx`, `BRepGraph_SupplementsView.hxx/.cxx`, `BRepGraph_EditorView.hxx/.cxx` (+ `_Mut.cxx`, `_Setters.cxx`), `BRepGraph_MeshView.hxx/.cxx` |
+| **Refs** | `BRepGraph_ItemStamp.hxx/.cxx` |
 | **Traversal** | `BRepGraph_ChildExplorer.hxx/.cxx`, `BRepGraph_ParentExplorer.hxx/.cxx`, `BRepGraph_RelatedIterator.hxx/.cxx`, `BRepGraph_Iterator.hxx`, `BRepGraph_RefsIterator.hxx`, `BRepGraph_DefsIterator.hxx`, `BRepGraph_ReverseIterator.hxx`, `BRepGraph_UsagePath.hxx/.cxx` |
 | **Geometry** | `BRepGraph_Tool.hxx/.cxx` |
 | **Mutation** | `BRepGraph_MutGuard.hxx`, `BRepGraph_DeferredScope.hxx` |
-| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_LayerIterator.hxx`, `BRepGraph_LayerRegistry.hxx/.cxx`, `BRepGraph_LayerLock.hxx/.cxx`, `BRepGraph_LayerDeferred.hxx/.cxx`, `BRepGraph_LayerTopoSupplement.hxx/.cxx`, `BRepGraph_LayerParametric.hxx/.cxx` |
+| **Layers** | `BRepGraph_Layer.hxx/.cxx`, `BRepGraph_LayerIterator.hxx`, `BRepGraph_LayerRegistry.hxx/.cxx`, `BRepGraph_LayerLock.hxx/.cxx`, `BRepGraph_LayerDeferred.hxx/.cxx`, `BRepGraph_LayerParametric.hxx/.cxx` |
 | **Cache** | `BRepGraph_Cache.hxx/.cxx`, `BRepGraph_CacheRegistry.hxx/.cxx`, `BRepGraph_CacheIterator.hxx`, `BRepGraph_CacheMesh.hxx/.cxx`, `BRepGraph_CacheDerivedState.hxx/.cxx` |
 | **History** | `BRepGraph_LayerHistory.hxx/.cxx` |
 | **Copy / Transform** | `BRepGraph_Copy.hxx/.cxx`, `BRepGraph_CopyRemap.hxx/.cxx`, `BRepGraph_Transform.hxx/.cxx` |
-| **Supplement** | `BRepGraph_SupplementEditor.hxx/.cxx`, `BRepGraph_SupplementIterator.hxx/.cxx` |
+| **Supplement** | `BRepGraph_SupplementsView.hxx/.cxx`, `BRepGraphSupInc_TopologyStore.hxx/.cxx` |
 | **Compaction** | `BRepGraph_Compact.hxx/.cxx` |
 | **Deduplication** | `BRepGraph_Deduplicate.hxx/.cxx` |
 | **Validation** | `BRepGraph_Validate.hxx/.cxx` |

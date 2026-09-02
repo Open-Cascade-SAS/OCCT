@@ -27,6 +27,7 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepTools_History.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <NCollection_FlatMap.hxx>
@@ -414,8 +415,10 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_RewritesAllContainingWires)
 
   const double aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
 
-  const uint32_t           aNbVerticesBefore = myGraph.Topo().Vertices().Nb();
-  const gp_Pnt             aSplitPoint(1.0, 2.0, 3.0);
+  const uint32_t                 aNbVerticesBefore = myGraph.Topo().Vertices().Nb();
+  const occ::handle<Geom_Curve>& aCurve            = BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
+  const gp_Pnt             aSplitPoint  = aCurve->Value(aSplitParam);
   const BRepGraph_VertexId aSplitVertex = myGraph.Editor().Vertices().Add(aSplitPoint, 1.0e-7);
 
   ASSERT_TRUE(aSplitVertex.IsValid());
@@ -522,8 +525,10 @@ TEST_F(BRepGraph_LayerHistoryTest, SplitEdge_IgnoresRemovedCoEdgeEntries)
   const size_t aRemovedWireNbActiveBefore =
     myGraph.Topo().Wires().Relations(aWireId).CoEdgeIds.Size();
 
+  const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
   const BRepGraph_VertexId aSplitVertex =
-    myGraph.Editor().Vertices().Add(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+    myGraph.Editor().Vertices().Add(aCurve->Value(aSplitParam), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
   BRepGraph_EdgeId aSubA;
@@ -571,8 +576,10 @@ TEST_F(BRepGraph_LayerHistoryTest, ApplyModification_SplitEdge_RecordsBothDerive
   const std::pair<double, double> anEdgeRange = BRepGraph_Tool::Edge::Range(myGraph, anEdgeId);
   const double                    aSplitParam = 0.5 * (anEdgeRange.first + anEdgeRange.second);
 
+  const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(myGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
   const BRepGraph_VertexId aSplitVertex =
-    myGraph.Editor().Vertices().Add(gp_Pnt(4.0, 5.0, 6.0), 1.0e-7);
+    myGraph.Editor().Vertices().Add(aCurve->Value(aSplitParam), 1.0e-7);
   ASSERT_TRUE(aSplitVertex.IsValid());
 
   const size_t aNbRecordsBefore =

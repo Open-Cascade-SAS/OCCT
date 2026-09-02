@@ -41,8 +41,12 @@
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
@@ -50,6 +54,8 @@
 #include <cmath>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_LinearVector.hxx>
+#include <sstream>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -88,6 +94,30 @@ bool hasErrorContaining(const BRepGraph_Validate::Result& theResult, const char*
     }
   }
   return false;
+}
+
+bool hasWarningContaining(const BRepGraph_Validate::Result& theResult, const char* theNeedle)
+{
+  for (const BRepGraph_Validate::Issue& anIssue : theResult.Issues)
+  {
+    if (anIssue.Sev == BRepGraph_Validate::Severity::Warning
+        && anIssue.Description.Search(theNeedle) >= 1)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+std::string issuesText(const BRepGraph_Validate::Result& theResult)
+{
+  std::ostringstream aStream;
+  for (const BRepGraph_Validate::Issue& anIssue : theResult.Issues)
+  {
+    aStream << "\n  " << (anIssue.Sev == BRepGraph_Validate::Severity::Error ? "error" : "warning")
+            << ": " << anIssue.Description.ToCString();
+  }
+  return aStream.str();
 }
 
 } // namespace
@@ -271,6 +301,71 @@ TEST(BRepGraph_ValidateTest, WireConnectivity_DisconnectedEdges)
   EXPECT_TRUE(aFoundConnectivity);
 }
 
+TEST(BRepGraph_ValidateTest, WireConnectivity_FaceWireNotClosed)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes = aGraph.Shapes().Add(aBox);
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  BRepGraph_WireId aTargetWire;
+  for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(aGraph.Topo().Faces().Nb()); ++aFaceId)
+  {
+    for (const BRepGraph_WireRefId& aWireRefId : aGraph.Refs().Wires().IdsOf(aFaceId))
+    {
+      const BRepGraphInc::WireRef& aWireRef = aGraph.Refs().Wires().Entry(aWireRefId);
+      if (aWireRef.ChildWireId.IsValid(aGraph.Topo().Wires().Nb())
+          && !aWireRef.ChildWireId.IsRemoved(aGraph)
+          && !coEdgesOfWire(aGraph, aWireRef.ChildWireId).IsEmpty())
+      {
+        aTargetWire = aWireRef.ChildWireId;
+        break;
+      }
+    }
+    if (aTargetWire.IsValid())
+    {
+      break;
+    }
+  }
+  ASSERT_TRUE(aTargetWire.IsValid());
+
+  const BRepGraph_CoEdgeId       aFirstCoEdgeId = coEdgesOfWire(aGraph, aTargetWire).Value(0);
+  const BRepGraphInc::CoEdgeDef& aFirstCoEdge = aGraph.Topo().CoEdges().Definition(aFirstCoEdgeId);
+  ASSERT_TRUE(aFirstCoEdge.ChildEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
+
+  const BRepGraphInc::EdgeDef& aFirstEdge =
+    aGraph.Topo().Edges().Definition(aFirstCoEdge.ChildEdgeId);
+  const BRepGraph_VertexRefId aFirstStartRefId = aFirstCoEdge.Orientation == TopAbs_FORWARD
+                                                   ? aFirstEdge.StartVertexRefId
+                                                   : aFirstEdge.EndVertexRefId;
+  ASSERT_TRUE(aFirstStartRefId.IsValid(aGraph.Refs().Vertices().Nb()));
+
+  const BRepGraph_VertexId anOriginalStart =
+    aGraph.Refs().Vertices().Entry(aFirstStartRefId).ChildVertexId;
+  bool aChangedStartVertex = false;
+  for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(aGraph.Topo().Vertices().Nb());
+       ++aVertexId)
+  {
+    if (aVertexId != anOriginalStart)
+    {
+      BRepGraph_MutGuard<BRepGraphInc::VertexRef> aMutStartRef =
+        aGraph.Editor().Vertices().MutRef(aFirstStartRefId);
+      aMutStartRef.Internal().ChildVertexId = aVertexId;
+      aChangedStartVertex                   = true;
+      break;
+    }
+  }
+  ASSERT_TRUE(aChangedStartVertex);
+
+  const BRepGraph_Validate::Result aResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_FALSE(hasErrorContaining(aResult, "Face wire is not closed")) << issuesText(aResult);
+  EXPECT_TRUE(hasWarningContaining(aResult, "Face wire is not closed")) << issuesText(aResult);
+}
+
 TEST(BRepGraph_ValidateTest, BoundsCheck_InvalidIndex)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -348,6 +443,82 @@ TEST(BRepGraph_ValidateTest, AfterSplitEdge_ProducesSubEdges)
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
   EXPECT_TRUE(anAuditResult.IsValid())
     << "Audit must remain clean after splitting a non-seam box edge";
+}
+
+TEST(BRepGraph_ValidateTest, SplitEdge_ProjectsNonlinearPCurveRange)
+{
+  BRepGraph aGraph;
+  BRepGraph::EditorView& aBuilder = aGraph.Editor();
+
+  NCollection_LinearVector<BRepGraph_WireId> anInnerWires;
+  const BRepGraph_FaceId aFace =
+    aBuilder.Faces().Add(new Geom_Plane(gp_Pln()),
+                         BRepGraph_WireId(),
+                         anInnerWires.ToArray1(),
+                         Precision::Confusion());
+  ASSERT_TRUE(aFace.IsValid());
+
+  const gp_Pnt aP0(0.0, 0.0, 0.0);
+  const gp_Pnt aP1(1.0, 0.0, 0.0);
+  const gp_Pnt aP2(2.0, 0.0, 0.0);
+
+  const BRepGraph_VertexId aV0 = aBuilder.Vertices().Add(aP0, Precision::Confusion());
+  const BRepGraph_VertexId aV1 = aBuilder.Vertices().Add(aP1, Precision::Confusion());
+  const BRepGraph_VertexId aV2 = aBuilder.Vertices().Add(aP2, Precision::Confusion());
+  ASSERT_TRUE(aV0.IsValid());
+  ASSERT_TRUE(aV1.IsValid());
+  ASSERT_TRUE(aV2.IsValid());
+
+  const BRepGraph_EdgeId anEdge =
+    aBuilder.Edges().Add(aV0,
+                         aV2,
+                         new Geom_Line(aP0, gp_Dir(1.0, 0.0, 0.0)),
+                         0.0,
+                         2.0,
+                         Precision::Confusion());
+  ASSERT_TRUE(anEdge.IsValid());
+
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
+  aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
+  aPoles.SetValue(2, gp_Pnt2d(1.5, 0.0));
+  aPoles.SetValue(3, gp_Pnt2d(2.0, 0.0));
+  const occ::handle<Geom2d_Curve> aPCurve = new Geom2d_BezierCurve(aPoles);
+
+  NCollection_LinearVector<BRepGraph_CoEdgeId> aCoEdges;
+  aCoEdges.Append(aBuilder.CoEdges().Add(anEdge, aFace, aPCurve, 0.0, 1.0, TopAbs_FORWARD));
+  ASSERT_TRUE(aCoEdges.Value(0).IsValid());
+
+  const BRepGraph_WireId aWire = aBuilder.Wires().Add(aCoEdges.ToArray1());
+  ASSERT_TRUE(aWire.IsValid());
+  ASSERT_TRUE(aBuilder.Faces().Append(aFace, aWire, TopAbs_FORWARD).IsValid());
+  ASSERT_TRUE(aGraph.ValidateRelations());
+
+  BRepGraph_EdgeId aSubA;
+  BRepGraph_EdgeId aSubB;
+  aGraph.Editor().Edges().Split(anEdge, aV1, 1.0, aSubA, aSubB);
+  ASSERT_TRUE(aSubA.IsValid());
+  ASSERT_TRUE(aSubB.IsValid());
+
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aSubACoEdges =
+    aGraph.Topo().Edges().Relations(aSubA).CoEdgeIds;
+  const NCollection_LinearVector<BRepGraph_CoEdgeId>& aSubBCoEdges =
+    aGraph.Topo().Edges().Relations(aSubB).CoEdgeIds;
+  ASSERT_EQ(aSubACoEdges.Size(), 1);
+  ASSERT_EQ(aSubBCoEdges.Size(), 1);
+
+  const double aExpectedPCurveSplit = 0.5 * (3.0 - std::sqrt(5.0));
+  const std::pair<double, double> aSubARange =
+    BRepGraph_Tool::CoEdge::Range(aGraph, aSubACoEdges.Value(0));
+  const std::pair<double, double> aSubBRange =
+    BRepGraph_Tool::CoEdge::Range(aGraph, aSubBCoEdges.Value(0));
+  EXPECT_NEAR(aSubARange.first, 0.0, Precision::PConfusion());
+  EXPECT_NEAR(aSubARange.second, aExpectedPCurveSplit, 1.0e-7);
+  EXPECT_NEAR(aSubBRange.first, aExpectedPCurveSplit, 1.0e-7);
+  EXPECT_NEAR(aSubBRange.second, 1.0, Precision::PConfusion());
+
+  const BRepGraph_Validate::Result anAuditResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_TRUE(anAuditResult.IsValid());
 }
 
 TEST(BRepGraph_ValidateTest, CorruptedPCurve_FaceIdOutOfBounds)
@@ -672,6 +843,52 @@ TEST(BRepGraph_ValidateTest, AssemblyGraph_OccurrenceChildRefersToOccurrence_Det
     << "Audit should report that OccurrenceDef.ChildNodeId cannot reference an Occurrence.";
 }
 
+TEST(BRepGraph_ValidateTest, CompoundCycle_DirectSelfChild_DetectedByAudit)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  NCollection_LinearVector<BRepGraph_NodeId> anEmptyChildren;
+  const BRepGraph_CompoundId aCompound =
+    aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
+  ASSERT_TRUE(aCompound.IsValid());
+
+  const BRepGraph_ChildRefId aSelfRef =
+    aGraph.Editor().Compounds().Append(aCompound, BRepGraph_NodeId(aCompound));
+  ASSERT_TRUE(aSelfRef.IsValid());
+
+  const BRepGraph_Validate::Result aAuditResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_FALSE(aAuditResult.IsValid());
+  EXPECT_TRUE(hasErrorContaining(aAuditResult, "Compound directly references itself"));
+}
+
+TEST(BRepGraph_ValidateTest, CompoundCycle_TransitiveChildChain_DetectedByAudit)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  NCollection_LinearVector<BRepGraph_NodeId> anEmptyChildren;
+  const BRepGraph_CompoundId aCompoundA =
+    aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
+  const BRepGraph_CompoundId aCompoundB =
+    aGraph.Editor().Compounds().Add(anEmptyChildren.ToArray1());
+  ASSERT_TRUE(aCompoundA.IsValid());
+  ASSERT_TRUE(aCompoundB.IsValid());
+
+  ASSERT_TRUE(aGraph.Editor()
+                .Compounds()
+                .Append(aCompoundA, BRepGraph_NodeId(aCompoundB))
+                .IsValid());
+  ASSERT_TRUE(aGraph.Editor()
+                .Compounds()
+                .Append(aCompoundB, BRepGraph_NodeId(aCompoundA))
+                .IsValid());
+
+  const BRepGraph_Validate::Result aAuditResult =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_FALSE(aAuditResult.IsValid());
+  EXPECT_TRUE(hasErrorContaining(aAuditResult, "Compound reaches itself through ChildRef chain"));
+}
+
 TEST(BRepGraph_ValidateTest, LightweightVsAudit_RemovedVertexReference_Differential)
 {
   // Removed-node isolation is now part of the lightweight/default contract too:
@@ -955,18 +1172,24 @@ TEST(BRepGraph_ValidateTest, Synthetic_Cylinder_AuditClean)
   auto& aCoEdgeOps = aGraph.Editor().CoEdges();
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aBotWireCEs;
-  aBotWireCEs.Append(aCoEdgeOps.Add(aEBot, TopAbs_FORWARD));
-  aBotWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_REVERSED));
+  const BRepGraph_CoEdgeId aBotCapCE = aCoEdgeOps.Add(aEBot, TopAbs_FORWARD);
+  aBotWireCEs.Append(aBotCapCE);
   const BRepGraph_WireId aWBot = aGraph.Editor().Wires().Add(aBotWireCEs.ToArray1());
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aTopWireCEs;
-  aTopWireCEs.Append(aCoEdgeOps.Add(aETop, TopAbs_FORWARD));
-  aTopWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_FORWARD));
+  const BRepGraph_CoEdgeId aTopCapCE = aCoEdgeOps.Add(aETop, TopAbs_FORWARD);
+  aTopWireCEs.Append(aTopCapCE);
   const BRepGraph_WireId aWTop = aGraph.Editor().Wires().Add(aTopWireCEs.ToArray1());
 
   NCollection_LinearVector<BRepGraph_CoEdgeId> aLatWireCEs;
-  aLatWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_FORWARD));
-  aLatWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_REVERSED));
+  const BRepGraph_CoEdgeId aLatBotCE     = aCoEdgeOps.Add(aEBot, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aLatSeamFwdCE = aCoEdgeOps.Add(aESeam, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aLatTopCE     = aCoEdgeOps.Add(aETop, TopAbs_REVERSED);
+  const BRepGraph_CoEdgeId aLatSeamRevCE = aCoEdgeOps.Add(aESeam, TopAbs_REVERSED);
+  aLatWireCEs.Append(aLatBotCE);
+  aLatWireCEs.Append(aLatSeamFwdCE);
+  aLatWireCEs.Append(aLatTopCE);
+  aLatWireCEs.Append(aLatSeamRevCE);
   const BRepGraph_WireId aWLat = aGraph.Editor().Wires().Add(aLatWireCEs.ToArray1());
 
   auto&                                      aFaceOps = aGraph.Editor().Faces();
@@ -982,6 +1205,27 @@ TEST(BRepGraph_ValidateTest, Synthetic_Cylinder_AuditClean)
   const BRepGraph_FaceId aFTop = aFaceOps.Add(aTopPlane, aWTop, aNoInner.ToArray1(), 1e-7);
   const BRepGraph_FaceId aFLat = aFaceOps.Add(aLatSurf, aWLat, aNoInner.ToArray1(), 1e-7);
 
+  aCoEdgeOps.SetFaceId(aLatBotCE, aFLat);
+  aCoEdgeOps.SetFaceId(aLatSeamFwdCE, aFLat);
+  aCoEdgeOps.SetFaceId(aLatTopCE, aFLat);
+  aCoEdgeOps.SetFaceId(aLatSeamRevCE, aFLat);
+  aCoEdgeOps.SetPCurve(aLatBotCE,
+                       new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)),
+                       0.0,
+                       2 * M_PI);
+  aCoEdgeOps.SetPCurve(aLatSeamFwdCE,
+                       new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(0.0, 1.0)),
+                       0.0,
+                       15.0);
+  aCoEdgeOps.SetPCurve(aLatTopCE,
+                       new Geom2d_Line(gp_Pnt2d(0.0, 15.0), gp_Dir2d(1.0, 0.0)),
+                       0.0,
+                       2 * M_PI);
+  aCoEdgeOps.SetPCurve(aLatSeamRevCE,
+                       new Geom2d_Line(gp_Pnt2d(2 * M_PI, 0.0), gp_Dir2d(0.0, 1.0)),
+                       0.0,
+                       15.0);
+
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   aGraph.Editor().Shells().Append(aShell, aFBot);
   aGraph.Editor().Shells().Append(aShell, aFTop);
@@ -991,7 +1235,7 @@ TEST(BRepGraph_ValidateTest, Synthetic_Cylinder_AuditClean)
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aResult.IsValid()) << "Synthetic cylinder must pass Audit";
+  EXPECT_TRUE(aResult.IsValid()) << "Synthetic cylinder must pass Audit" << issuesText(aResult);
 }
 
 TEST(BRepGraph_ValidateTest, Synthetic_Sphere_AuditClean)
@@ -1009,14 +1253,27 @@ TEST(BRepGraph_ValidateTest, Synthetic_Sphere_AuditClean)
 
   auto&                                        aCoEdgeOps = aGraph.Editor().CoEdges();
   NCollection_LinearVector<BRepGraph_CoEdgeId> aWireCEs;
-  aWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_FORWARD));
-  aWireCEs.Append(aCoEdgeOps.Add(aESeam, TopAbs_REVERSED));
+  const BRepGraph_CoEdgeId aSeamFwdCE = aCoEdgeOps.Add(aESeam, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aSeamRevCE = aCoEdgeOps.Add(aESeam, TopAbs_REVERSED);
+  aWireCEs.Append(aSeamFwdCE);
+  aWireCEs.Append(aSeamRevCE);
   const BRepGraph_WireId aWire = aGraph.Editor().Wires().Add(aWireCEs.ToArray1());
 
   auto&                                      aFaceOps = aGraph.Editor().Faces();
   NCollection_LinearVector<BRepGraph_WireId> aNoInner;
   occ::handle<Geom_SphericalSurface>         aSphere = new Geom_SphericalSurface(gp_Ax3(), 8.0);
   const BRepGraph_FaceId aFace = aFaceOps.Add(aSphere, aWire, aNoInner.ToArray1(), 1e-7);
+
+  aCoEdgeOps.SetFaceId(aSeamFwdCE, aFace);
+  aCoEdgeOps.SetFaceId(aSeamRevCE, aFace);
+  aCoEdgeOps.SetPCurve(aSeamFwdCE,
+                       new Geom2d_Line(gp_Pnt2d(0.0, -M_PI / 2.0), gp_Dir2d(0.0, 1.0)),
+                       0.0,
+                       M_PI);
+  aCoEdgeOps.SetPCurve(aSeamRevCE,
+                       new Geom2d_Line(gp_Pnt2d(2.0 * M_PI, -M_PI / 2.0), gp_Dir2d(0.0, 1.0)),
+                       0.0,
+                       M_PI);
 
   const BRepGraph_ShellId aShell = aGraph.Editor().Shells().Add();
   aGraph.Editor().Shells().Append(aShell, aFace);
@@ -1025,7 +1282,7 @@ TEST(BRepGraph_ValidateTest, Synthetic_Sphere_AuditClean)
 
   const BRepGraph_Validate::Result aResult =
     BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
-  EXPECT_TRUE(aResult.IsValid()) << "Synthetic sphere must pass Audit";
+  EXPECT_TRUE(aResult.IsValid()) << "Synthetic sphere must pass Audit" << issuesText(aResult);
 }
 
 TEST(BRepGraph_ValidateTest, Synthetic_Compound_AuditClean)

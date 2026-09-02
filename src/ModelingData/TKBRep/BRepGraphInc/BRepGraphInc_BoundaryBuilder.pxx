@@ -105,7 +105,8 @@ inline size_t addSurfaceVertex(SurfaceBoundary& theBoundary,
   return theBoundary.Vertices.Size() - 1;
 }
 
-inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve, const double theTolerance)
+inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve,
+                                 const double                   theTolerance)
 {
   if (theCurve.IsNull())
   {
@@ -113,7 +114,15 @@ inline bool isDegenerateIsoCurve(const occ::handle<Geom_Curve>& theCurve, const 
   }
 
   GeomAdaptor_Curve anAdaptor(theCurve);
-  return anAdaptor.GetType() == GeomAbs_Circle && anAdaptor.Circle().Radius() <= theTolerance;
+  if (anAdaptor.GetType() == GeomAbs_Circle)
+  {
+    return anAdaptor.Circle().Radius() <= theTolerance;
+  }
+  if (anAdaptor.GetType() == GeomAbs_Ellipse)
+  {
+    return anAdaptor.Ellipse().MajorRadius() <= theTolerance;
+  }
+  return false;
 }
 
 inline size_t addSurfaceEdge(SurfaceBoundary&               theBoundary,
@@ -147,6 +156,16 @@ inline void addSurfaceCoEdge(SurfaceBoundary&                 theBoundary,
   aCoEdge.PCurve                 = thePCurve;
   aCoEdge.First                  = theFirst;
   aCoEdge.Last                   = theLast;
+}
+
+inline occ::handle<Geom2d_Line> makeUIsoPCurve(const double theV)
+{
+  return new Geom2d_Line(gp_Pnt2d(0.0, theV), gp_Dir2d(1.0, 0.0));
+}
+
+inline occ::handle<Geom2d_Line> makeVIsoPCurve(const double theU)
+{
+  return new Geom2d_Line(gp_Pnt2d(theU, 0.0), gp_Dir2d(0.0, 1.0));
 }
 
 inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
@@ -218,7 +237,7 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
   addSurfaceCoEdge(theBoundary,
                    aBottomEdge,
                    TopAbs_FORWARD,
-                   new Geom2d_Line(gp_Pnt2d(theUMin, theVMin), gp_Dir2d(1.0, 0.0)),
+                   makeUIsoPCurve(theVMin),
                    theUMin,
                    theUMax);
 
@@ -227,7 +246,7 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
     addSurfaceCoEdge(theBoundary,
                      aRightEdge,
                      TopAbs_FORWARD,
-                     new Geom2d_Line(gp_Pnt2d(theUMax, theVMin), gp_Dir2d(0.0, 1.0)),
+                     makeVIsoPCurve(theUMax),
                      theVMin,
                      theVMax);
   }
@@ -236,7 +255,7 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
     addSurfaceCoEdge(theBoundary,
                      aLeftEdge,
                      TopAbs_FORWARD,
-                     new Geom2d_Line(gp_Pnt2d(theUMin, theVMin), gp_Dir2d(0.0, 1.0)),
+                     makeVIsoPCurve(theUMax),
                      theVMin,
                      theVMax);
   }
@@ -246,7 +265,7 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
     addSurfaceCoEdge(theBoundary,
                      aTopEdge,
                      TopAbs_REVERSED,
-                     new Geom2d_Line(gp_Pnt2d(theUMin, theVMax), gp_Dir2d(1.0, 0.0)),
+                     makeUIsoPCurve(theVMax),
                      theUMin,
                      theUMax);
   }
@@ -255,29 +274,17 @@ inline bool BuildSurfaceBoundary(SurfaceBoundary&                 theBoundary,
     addSurfaceCoEdge(theBoundary,
                      aBottomEdge,
                      TopAbs_REVERSED,
-                     new Geom2d_Line(gp_Pnt2d(theUMin, theVMax), gp_Dir2d(1.0, 0.0)),
+                     makeUIsoPCurve(theVMax),
                      theUMin,
                      theUMax);
   }
 
-  if (!isUClosed)
-  {
-    addSurfaceCoEdge(theBoundary,
-                     aLeftEdge,
-                     TopAbs_REVERSED,
-                     new Geom2d_Line(gp_Pnt2d(theUMin, theVMin), gp_Dir2d(0.0, 1.0)),
-                     theVMin,
-                     theVMax);
-  }
-  else
-  {
-    addSurfaceCoEdge(theBoundary,
-                     aLeftEdge,
-                     TopAbs_REVERSED,
-                     new Geom2d_Line(gp_Pnt2d(theUMax, theVMin), gp_Dir2d(0.0, 1.0)),
-                     theVMin,
-                     theVMax);
-  }
+  addSurfaceCoEdge(theBoundary,
+                   aLeftEdge,
+                   TopAbs_REVERSED,
+                   makeVIsoPCurve(theUMin),
+                   theVMin,
+                   theVMax);
 
   return !theBoundary.Vertices.IsEmpty() && !theBoundary.Edges.IsEmpty()
          && !theBoundary.CoEdges.IsEmpty();

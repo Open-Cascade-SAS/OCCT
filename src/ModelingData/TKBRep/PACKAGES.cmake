@@ -10,4 +10,5 @@ set(OCCT_TKBRep_LIST_OF_PACKAGES
   BinTools
   BRepGraph
   BRepGraphInc
+  BRepGraphSupInc
 )

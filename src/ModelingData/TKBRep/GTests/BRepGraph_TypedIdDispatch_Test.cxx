@@ -13,6 +13,7 @@
 
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
+#include <BRepGraphInc_RepId.hxx>
 
 #include <gtest/gtest.h>
 
@@ -46,4 +47,19 @@ TEST(BRepGraph_TypedIdDispatchTest, VisitRefId_ConvertsToMatchingTypedId)
 
   EXPECT_TRUE(isVertex);
   EXPECT_EQ(anIdx, 6);
+}
+
+TEST(BRepGraph_TypedIdDispatchTest, VisitRepId_ConvertsToMatchingTypedId)
+{
+  const BRepGraph_RepId aRepId(BRepGraph_RepId::Kind::FaceTriangulation, 8);
+
+  bool      isFaceTriangulation = false;
+  const int anIdx               = BRepGraph_RepId::Visit(aRepId, [&](const auto theTypedId) -> int {
+    using TypeId = std::remove_cv_t<decltype(theTypedId)>;
+    isFaceTriangulation = std::is_same_v<TypeId, BRepGraph_FaceTriangulationRepId>;
+    return theTypedId.Index;
+  });
+
+  EXPECT_TRUE(isFaceTriangulation);
+  EXPECT_EQ(anIdx, 8);
 }

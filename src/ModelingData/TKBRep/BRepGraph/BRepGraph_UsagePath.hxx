@@ -19,7 +19,9 @@
 #include <NCollection_LinearVector.hxx>
 
 #include <cstddef>
+#include <cstdint>
 #include <functional>
+#include <limits>
 
 //! Explicit identity of a concrete usage from traversal root to selected node.
 //!
@@ -41,9 +43,11 @@ public:
   //! distinguishable without relying on location or hashes.
   struct Step
   {
+    static constexpr uint32_t THE_INVALID_STEP_INDEX = std::numeric_limits<uint32_t>::max();
+
     BRepGraph_NodeId Node;
     BRepGraph_RefId  Ref;
-    int              StepIndex = -1;
+    uint32_t         StepIndex = THE_INVALID_STEP_INDEX;
 
     bool operator==(const Step& theOther) const
     {
@@ -95,15 +99,15 @@ public:
 
   //! Returns true if this path is equal to the other path.
   //! @param[in] theOther path to compare with
-  bool IsEqual(const BRepGraph_UsagePath& theOther) const;
+  Standard_EXPORT bool IsEqual(const BRepGraph_UsagePath& theOther) const;
 
   //! Returns true if this path is equal to the other path.
   //! @param[in] theOther path to compare with
   bool operator==(const BRepGraph_UsagePath& theOther) const { return IsEqual(theOther); }
 
   //! Returns a hash code for this path.
-  //! Uses first step, last step, and size for O(1) computation.
-  size_t HashCode() const;
+  //! Samples the path size and the first, middle, and last steps in O(1).
+  Standard_EXPORT size_t HashCode() const;
 
 private:
   NCollection_LinearVector<Step> mySteps;

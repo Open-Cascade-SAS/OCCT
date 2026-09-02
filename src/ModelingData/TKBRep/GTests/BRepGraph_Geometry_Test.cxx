@@ -16,6 +16,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_CacheDerivedState.hxx>
 #include <BRepGraph_CacheRegistry.hxx>
+#include <BRepGraph_CopyRemap.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraphInc_Definition.hxx>
@@ -28,12 +29,18 @@
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_Tool.hxx>
+#include <BRepGraph_Validate.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_Plane.hxx>
+#include <gp.hxx>
+#include <gp_Ax2.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt2d.hxx>
@@ -94,15 +101,13 @@ static BRepGraph_NodeId componentRootOfFace(const BRepGraph&       theGraph,
                                             const BRepGraph_FaceId theFaceId)
 {
   for (BRepGraph_ParentExplorer aSolidExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Solid);
-       aSolidExp.More();
-       aSolidExp.Next())
+       aSolidExp.More();)
   {
     return aSolidExp.Current().DefId;
   }
 
   for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
-       aShellExp.More();
-       aShellExp.Next())
+       aShellExp.More();)
   {
     return aShellExp.Current().DefId;
   }
@@ -690,6 +695,184 @@ TEST(BRepGraph_GeometryTest, CoEdgePCurveAdaptor_FallsBackOnPlaneWhenStoredPCurv
   EXPECT_NEAR(aPCurve.LastParameter(), aEdgeRange.second, Precision::PConfusion());
 }
 
+TEST(BRepGraph_GeometryTest, CoEdgeSameParameter_UsesPlanarFallbackWithoutStoredPCurve)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes25 =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  BRepGraph_CoEdgeId aCoEdgeId;
+  BRepGraph_EdgeId   anEdgeId;
+  for (BRepGraph_EdgeIterator anEdgeIt(aGraph); anEdgeIt.More(); anEdgeIt.Next())
+  {
+    const NCollection_LinearVector<BRepGraph_CoEdgeId>& aCoEdges =
+      aGraph.Topo().Edges().CoEdges(anEdgeIt.CurrentId());
+    if (aCoEdges.IsEmpty())
+    {
+      continue;
+    }
+
+    aCoEdgeId = aCoEdges(0);
+    anEdgeId  = anEdgeIt.CurrentId();
+    break;
+  }
+
+  ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
+  ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
+  ASSERT_TRUE(BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId));
+
+  const BRepGraph_FaceId aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCoEdgeId);
+  const occ::handle<Geom_Plane> aPlane =
+    occ::down_cast<Geom_Plane>(BRepGraph_Tool::Face::Surface(aGraph, aFaceId));
+  ASSERT_FALSE(aPlane.IsNull());
+
+  const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
+  const occ::handle<Geom_Curve> aShiftedCurve = occ::down_cast<Geom_Curve>(aCurve->Copy());
+  ASSERT_FALSE(aShiftedCurve.IsNull());
+  gp_Vec aNormalShift(aPlane->Pln().Axis().Direction());
+  aNormalShift *= 0.25;
+  aShiftedCurve->Translate(aNormalShift);
+
+  const std::pair<double, double> aRange = BRepGraph_Tool::Edge::Range(aGraph, anEdgeId);
+  aGraph.Editor().Edges().SetCurve(anEdgeId, aShiftedCurve, aRange.first, aRange.second);
+  aGraph.Editor().CoEdges().ClearPCurve(aCoEdgeId);
+
+  ASSERT_FALSE(BRepGraph_Tool::CoEdge::HasPCurve(aGraph, aCoEdgeId));
+  ASSERT_TRUE(BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeId).IsInitialized());
+  EXPECT_FALSE(BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId));
+}
+
+TEST(BRepGraph_GeometryTest, CoEdgeSameParameter_UsesParentWireFaceWhenFaceIdMissing)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  BRepGraph_CoEdgeId aCoEdgeId;
+  BRepGraph_EdgeId   anEdgeId;
+  for (BRepGraph_CoEdgeIterator aCoEdgeIt(aGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
+  {
+    const BRepGraph_CoEdgeId       aCandidateCoEdge = aCoEdgeIt.CurrentId();
+    const BRepGraphInc::CoEdgeDef& aCandidateDef    = aCoEdgeIt.Current();
+    if (!aCandidateDef.ChildEdgeId.IsValid(aGraph.Topo().Edges().Nb())
+        || aCandidateDef.ChildEdgeId.IsRemoved(aGraph))
+    {
+      continue;
+    }
+
+    const BRepGraph_FaceId aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCandidateCoEdge);
+    const occ::handle<Geom_Plane> aPlane =
+      occ::down_cast<Geom_Plane>(BRepGraph_Tool::Face::Surface(aGraph, aFaceId));
+    if (!aPlane.IsNull() && !BRepGraph_Tool::Edge::Curve(aGraph, aCandidateDef.ChildEdgeId).IsNull())
+    {
+      aCoEdgeId = aCandidateCoEdge;
+      anEdgeId  = aCandidateDef.ChildEdgeId;
+      break;
+    }
+  }
+
+  ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
+  ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
+
+  const BRepGraphInc::CoEdgeDef& aCoEdge =
+    aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+  const BRepGraph_FaceId aFaceId = BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCoEdgeId);
+  ASSERT_EQ(BRepGraph_Tool::Wire::FaceOf(aGraph, aCoEdge.ParentWireId), aFaceId);
+  ASSERT_TRUE(BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId));
+
+  const occ::handle<Geom_Plane> aPlane =
+    occ::down_cast<Geom_Plane>(BRepGraph_Tool::Face::Surface(aGraph, aFaceId));
+  ASSERT_FALSE(aPlane.IsNull());
+
+  const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
+  const occ::handle<Geom_Curve> aShiftedCurve = occ::down_cast<Geom_Curve>(aCurve->Copy());
+  ASSERT_FALSE(aShiftedCurve.IsNull());
+  gp_Vec aNormalShift(aPlane->Pln().Axis().Direction());
+  aNormalShift *= 0.25;
+  aShiftedCurve->Translate(aNormalShift);
+
+  const std::pair<double, double> aRange = BRepGraph_Tool::Edge::Range(aGraph, anEdgeId);
+  aGraph.Editor().Edges().SetCurve(anEdgeId, aShiftedCurve, aRange.first, aRange.second);
+  aGraph.Editor().CoEdges().SetFaceId(aCoEdgeId, BRepGraph_FaceId());
+
+  ASSERT_FALSE(BRepGraph_Tool::CoEdge::HasPCurve(aGraph, aCoEdgeId));
+  EXPECT_TRUE(BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeId).IsInitialized());
+  EXPECT_TRUE(BRepGraph_Tool::CoEdge::SameRange(aGraph, aCoEdgeId));
+  EXPECT_FALSE(BRepGraph_Tool::CoEdge::SameParameter(aGraph, aCoEdgeId));
+}
+
+TEST(BRepGraph_GeometryTest, AuditValidationUsesParentWireFaceForPlanarPCurveFallback)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  BRepGraph_CoEdgeId aCoEdgeId;
+  BRepGraph_EdgeId   anEdgeId;
+  BRepGraph_FaceId   aFaceId;
+  for (BRepGraph_CoEdgeIterator aCoEdgeIt(aGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
+  {
+    const BRepGraph_CoEdgeId aCandidateCoEdge = aCoEdgeIt.CurrentId();
+    const BRepGraphInc::CoEdgeDef& aCandidateDef = aCoEdgeIt.Current();
+    const BRepGraph_FaceId   aCandidateFace =
+      BRepGraph_Tool::CoEdge::FaceOf(aGraph, aCandidateCoEdge);
+    if (!occ::down_cast<Geom_Plane>(BRepGraph_Tool::Face::Surface(aGraph, aCandidateFace)).IsNull()
+        && aCandidateDef.ChildEdgeId.IsValid(aGraph.Topo().Edges().Nb()))
+    {
+      aCoEdgeId = aCandidateCoEdge;
+      anEdgeId  = aCandidateDef.ChildEdgeId;
+      aFaceId   = aCandidateFace;
+      break;
+    }
+  }
+
+  ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
+  ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
+  ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
+
+  aGraph.Editor().CoEdges().SetFaceId(aCoEdgeId, BRepGraph_FaceId());
+
+  ASSERT_FALSE(BRepGraph_Tool::CoEdge::HasPCurve(aGraph, aCoEdgeId));
+  ASSERT_TRUE(BRepGraph_Tool::CoEdge::PCurveAdaptor(aGraph, aCoEdgeId).IsInitialized());
+
+  BRepGraph_FaceId anUnrelatedFace;
+  for (BRepGraph_FaceIterator aFaceIt(aGraph); aFaceIt.More(); aFaceIt.Next())
+  {
+    const BRepGraph_FaceId aCandidateFace = aFaceIt.CurrentId();
+    if (aCandidateFace != aFaceId
+        && !BRepGraph_Tool::Edge::FindCoEdgeId(aGraph, anEdgeId, aCandidateFace).IsValid())
+    {
+      anUnrelatedFace = aCandidateFace;
+      break;
+    }
+  }
+  ASSERT_TRUE(anUnrelatedFace.IsValid(aGraph.Topo().Faces().Nb()));
+  const BRepGraph_Tool::EdgeUsage anEdgeUsage{
+    anEdgeId, TopLoc_Location(), BRepGraph_Tool::CoEdge::Orientation(aGraph, aCoEdgeId)};
+  const BRepGraph_Tool::FaceUsage aFaceUsage{aFaceId, TopLoc_Location(), TopAbs_FORWARD};
+  const GeomAdaptor_TransformedCurve aCurveOnSurface =
+    BRepGraph_Tool::Edge::CurveOnSurface(aGraph, anEdgeUsage, aFaceUsage);
+  EXPECT_TRUE(aCurveOnSurface.IsCurveOnSurface());
+  const BRepGraph_Tool::FaceUsage anUnrelatedFaceUsage{
+    anUnrelatedFace, TopLoc_Location(), TopAbs_FORWARD};
+  const GeomAdaptor_TransformedCurve anUnrelatedCurveOnSurface =
+    BRepGraph_Tool::Edge::CurveOnSurface(aGraph, anEdgeUsage, anUnrelatedFaceUsage);
+  EXPECT_FALSE(anUnrelatedCurveOnSurface.IsCurveOnSurface());
+
+  const BRepGraph_Validate::Result anAudit =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_EQ(anAudit.NbIssues(BRepGraph_Validate::Severity::Error), 0);
+  EXPECT_EQ(anAudit.NbIssues(BRepGraph_Validate::Severity::Warning), 1);
+}
+
 // ============================================================
 // Connected component grouping via ParentExplorer
 // ============================================================
@@ -860,6 +1043,31 @@ TEST(BRepGraph_GeometryTest, DerivedStateCache_LazyAndFreshAfterPCurveRangeMutat
   EXPECT_FALSE(edgeSameParameter(aGraph, anEdgeId));
 }
 
+TEST(BRepGraph_GeometryTest, DerivedStateCopyFreshRejectsDivergentTargetWithEqualCounters)
+{
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
+  BRepBuilderAPI_MakeEdge aCircleEdgeMaker(aCircle);
+  BRepBuilderAPI_MakeEdge aLineEdgeMaker(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0));
+  ASSERT_TRUE(aCircleEdgeMaker.IsDone());
+  ASSERT_TRUE(aLineEdgeMaker.IsDone());
+
+  BRepGraph aSource;
+  BRepGraph aTarget;
+  ASSERT_TRUE(aSource.Shapes().Add(aCircleEdgeMaker.Edge()).IsOk());
+  ASSERT_TRUE(aTarget.Shapes().Add(aLineEdgeMaker.Edge()).IsOk());
+  const BRepGraph_EdgeId anEdge = BRepGraph_EdgeId::Start();
+
+  EXPECT_TRUE(BRepGraph_Tool::Edge::IsClosed(aSource, anEdge));
+  aSource.CacheRegistry().CopyFreshCachesTo(
+    aTarget,
+    BRepGraph_CopyRemap::MappingKind::Identity,
+    BRepGraph_CopyRemap::Mode::Copy,
+    BRepGraph_CopyRemap::FreshnessPolicy::MatchTarget);
+
+  EXPECT_FALSE(BRepGraph_Tool::Edge::IsClosed(aTarget, anEdge));
+}
+
 // ============================================================
 // Seam edge PCurve validation tests
 // ============================================================
@@ -961,6 +1169,40 @@ TEST(BRepGraph_GeometryTest, Box_FindPCurveCoEdgeId_MatchesCoEdge)
       EXPECT_EQ(aFoundId, aCoEdgeId);
     }
   }
+}
+
+TEST(BRepGraph_GeometryTest, Box_FindPCurveCoEdgeId_UsesWireFaceWhenCoEdgeFaceIdMissing)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes34 =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  for (BRepGraph_CoEdgeIterator aCoEdgeIt(aGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
+  {
+    const BRepGraph_CoEdgeId       aCoEdgeId = aCoEdgeIt.CurrentId();
+    const BRepGraphInc::CoEdgeDef& aCoEdge   = aGraph.Topo().CoEdges().Definition(aCoEdgeId);
+    if (!aCoEdge.FaceId.IsValid(aGraph.Topo().Faces().Nb())
+        || BRepGraph_Tool::CoEdge::PCurve(aGraph, aCoEdgeId).IsNull())
+    {
+      continue;
+    }
+
+    const BRepGraph_FaceId        aFace        = aCoEdge.FaceId;
+    const BRepGraph_EdgeId        anEdge       = aCoEdge.ChildEdgeId;
+    const TopAbs_Orientation      anOrientation = aCoEdge.Orientation;
+    aGraph.Editor().CoEdges().SetFaceId(aCoEdgeId, BRepGraph_FaceId(), false);
+
+    ASSERT_FALSE(aGraph.Topo().CoEdges().Definition(aCoEdgeId).FaceId.IsValid());
+    ASSERT_EQ(BRepGraph_Tool::CoEdge::FaceContextOf(aGraph, aCoEdgeId), aFace);
+    EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdge, aFace), aCoEdgeId);
+    EXPECT_EQ(BRepGraph_Tool::Edge::FindPCurveCoEdgeId(aGraph, anEdge, aFace, anOrientation),
+              aCoEdgeId);
+    return;
+  }
+
+  FAIL() << "No box coedge with face PCurve found";
 }
 
 TEST(BRepGraph_GeometryTest, Cylinder_SeamEdge_FindPCurveCoEdgeId_DistinguishesOrientation)

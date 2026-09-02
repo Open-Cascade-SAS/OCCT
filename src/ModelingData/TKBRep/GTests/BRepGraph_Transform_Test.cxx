@@ -33,6 +33,7 @@
 #include <TopoDS_CompSolid.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <Geom_Surface.hxx>
 #include <GProp_GProps.hxx>
 #include <OSD_Timer.hxx>
 #include <Poly_Polygon2D.hxx>
@@ -44,6 +45,7 @@
 #include <Standard_Handle.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <gp_GTrsf2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
@@ -114,6 +116,18 @@ void expectVerticesTransformed(const BRepGraph& theSource,
     EXPECT_NEAR(aTrans.Y(), anExpected.Y(), Precision::Confusion()) << "vertex " << aVId.Index;
     EXPECT_NEAR(aTrans.Z(), anExpected.Z(), Precision::Confusion()) << "vertex " << aVId.Index;
   }
+}
+
+void expectUVNodeTransformed(const occ::handle<Poly_Triangulation>& theTri,
+                             const int                              theNode,
+                             const gp_Pnt2d&                       theSourceUV,
+                             const gp_GTrsf2d&                     theUVTrsf)
+{
+  gp_Pnt2d anExpected = theSourceUV;
+  theUVTrsf.Transforms(anExpected.ChangeCoord());
+  const gp_Pnt2d anActual = theTri->UVNode(theNode);
+  EXPECT_NEAR(anActual.X(), anExpected.X(), Precision::PConfusion()) << "uv node " << theNode;
+  EXPECT_NEAR(anActual.Y(), anExpected.Y(), Precision::PConfusion()) << "uv node " << theNode;
 }
 
 } // namespace
@@ -301,6 +315,76 @@ TEST(BRepGraph_TransformTest, LocationOnly_NoCopyGeom)
   EXPECT_NEAR(aTransProps.CentreOfMass().X(), aOrigProps.CentreOfMass().X() + aDx, 1.0);
 }
 
+TEST(BRepGraph_TransformTest, TransformNode_ProductKind_LocationOnlyComposesRootOccurrence)
+{
+  BRepPrimAPI_MakeBox                                  aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                            aGraph;
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(aBoxMaker.Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+  ASSERT_GE(aGraph.Topo().Products().Nb(), 1);
+  ASSERT_GE(aGraph.Topo().Vertices().Nb(), 1);
+
+  const BRepGraph_ProductId aProductId = BRepGraph_ProductId::Start();
+  const BRepGraph_NodeId    aProductNode(aProductId);
+  const gp_Pnt              anOriginalVertex =
+    BRepGraph_Tool::Vertex::Pnt(aGraph, BRepGraph_VertexId::Start());
+
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(12.0, 3.0, -4.0));
+
+  BRepGraph              aResult;
+  const BRepGraph_NodeId aCopiedNode = BRepGraph_Transform::TransformNode(
+    aGraph,
+    aResult,
+    aProductNode,
+    aTrsf,
+    BRepGraph_Copy::GeomPolicy::Share,
+    BRepGraph_Copy::MeshPolicy::Drop);
+  ASSERT_TRUE(aCopiedNode.IsValid());
+  EXPECT_EQ(aCopiedNode.NodeKind, BRepGraph_NodeId::Kind::Product);
+
+  const BRepGraph_ProductId             aCopiedProductId(aCopiedNode);
+  const BRepGraphInc::ProductRelations& aProductRelations =
+    aResult.Topo().Products().Relations(aCopiedProductId);
+  ASSERT_FALSE(aProductRelations.OccurrenceRefIds.IsEmpty());
+
+  const BRepGraph_OccurrenceRefId       aRootRefId = aProductRelations.OccurrenceRefIds.First();
+  const BRepGraphInc::OccurrenceRef&    aRootRef = aResult.Refs().Occurrences().Entry(aRootRefId);
+  const gp_Trsf                         aRootTrsf = aRootRef.LocalLocation.Transformation();
+  EXPECT_NEAR(aRootTrsf.Value(1, 4), 12.0, Precision::Confusion());
+  EXPECT_NEAR(aRootTrsf.Value(2, 4), 3.0, Precision::Confusion());
+  EXPECT_NEAR(aRootTrsf.Value(3, 4), -4.0, Precision::Confusion());
+
+  const gp_Pnt aCopiedVertex = BRepGraph_Tool::Vertex::Pnt(aResult, BRepGraph_VertexId::Start());
+  EXPECT_NEAR(aCopiedVertex.X(), anOriginalVertex.X(), Precision::Confusion());
+  EXPECT_NEAR(aCopiedVertex.Y(), anOriginalVertex.Y(), Precision::Confusion());
+  EXPECT_NEAR(aCopiedVertex.Z(), anOriginalVertex.Z(), Precision::Confusion());
+}
+
+TEST(BRepGraph_TransformTest, TransformNode_OccurrenceKindRejected)
+{
+  BRepPrimAPI_MakeBox                                  aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                            aGraph;
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(aBoxMaker.Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+  ASSERT_GE(aGraph.Topo().Occurrences().Nb(), 1);
+
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(1.0, 0.0, 0.0));
+
+  BRepGraph aResult;
+  EXPECT_FALSE(BRepGraph_Transform::TransformNode(aGraph,
+                                                  aResult,
+                                                  BRepGraph_NodeId(BRepGraph_OccurrenceId::Start()),
+                                                  aTrsf,
+                                                  BRepGraph_Copy::GeomPolicy::Share,
+                                                  BRepGraph_Copy::MeshPolicy::Drop)
+                 .IsValid());
+  EXPECT_TRUE(aResult.IsEmpty());
+}
+
 TEST(BRepGraph_TransformTest, TransformSingleFace)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -382,6 +466,59 @@ TEST(BRepGraph_TransformTest, CopyMesh_TriangulationNodesTransformed)
   EXPECT_NEAR(aNewTri->Deflection(), 0.1, Precision::Confusion());
 }
 
+TEST(BRepGraph_TransformTest, CopyMesh_TriangulationUVNodesReparametrized)
+{
+  BRepPrimAPI_MakeBox                                  aBoxMaker(10.0, 20.0, 30.0);
+  BRepGraph                                            aGraph;
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(aBoxMaker.Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+  ASSERT_GE(aGraph.Topo().Faces().Nb(), 1);
+
+  const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
+  const gp_Pnt2d         aUV1(0.25, 0.5);
+  const gp_Pnt2d         aUV2(1.0, 1.25);
+  const gp_Pnt2d         aUV3(2.0, 2.5);
+
+  occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(3, 1, true);
+  aTri->SetNode(1, gp_Pnt(1.0, 2.0, 3.0));
+  aTri->SetNode(2, gp_Pnt(4.0, 5.0, 6.0));
+  aTri->SetNode(3, gp_Pnt(7.0, 8.0, 9.0));
+  aTri->SetUVNode(1, aUV1);
+  aTri->SetUVNode(2, aUV2);
+  aTri->SetUVNode(3, aUV3);
+  aTri->SetTriangle(1, Poly_Triangle(1, 2, 3));
+  aGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTri);
+
+  gp_Trsf aTrsf;
+  aTrsf.SetScale(gp_Pnt(0.0, 0.0, 0.0), 2.0);
+
+  BRepGraph aResult;
+  ASSERT_TRUE(BRepGraph_Transform::Perform(aGraph,
+                                           aResult,
+                                           aTrsf,
+                                           BRepGraph_Copy::GeomPolicy::Copy,
+                                           BRepGraph_Copy::MeshPolicy::Copy));
+  ASSERT_FALSE(aResult.IsEmpty());
+
+  const occ::handle<Poly_Triangulation>& aCopiedTri =
+    aResult.Mesh().Persistent().Faces().Triangulation(aFaceId);
+  ASSERT_FALSE(aCopiedTri.IsNull());
+  ASSERT_TRUE(aCopiedTri->HasUVNodes());
+
+  const occ::handle<Geom_Surface>& aResultSurface = BRepGraph_Tool::Face::Surface(aResult, aFaceId);
+  ASSERT_FALSE(aResultSurface.IsNull());
+  const gp_GTrsf2d aUVTrsf = aResultSurface->ParametricTransformation(aTrsf);
+  ASSERT_NE(aUVTrsf.Form(), gp_Identity);
+
+  expectUVNodeTransformed(aCopiedTri, 1, aUV1, aUVTrsf);
+  expectUVNodeTransformed(aCopiedTri, 2, aUV2, aUVTrsf);
+  expectUVNodeTransformed(aCopiedTri, 3, aUV3, aUVTrsf);
+
+  EXPECT_NEAR(aTri->UVNode(1).X(), aUV1.X(), Precision::PConfusion());
+  EXPECT_NEAR(aTri->UVNode(1).Y(), aUV1.Y(), Precision::PConfusion());
+}
+
 TEST(BRepGraph_TransformTest, CopyMesh_False_TriangulationInvalidated)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -447,9 +584,16 @@ TEST(BRepGraph_TransformTest, MoveRef_ChildRef_ComposesLocation)
   EXPECT_NEAR(aGraph.Refs().Children().Entry(aChildRef).LocalLocation.Transformation().Value(1, 4),
               2.0 * aDx,
               Precision::Confusion());
+
+  gp_Trsf aMirror;
+  aMirror.SetMirror(gp_Pnt(0.0, 0.0, 0.0));
+  EXPECT_FALSE(BRepGraph_Transform::MoveRef(aGraph, aChildRef, aMirror));
+  EXPECT_NEAR(aGraph.Refs().Children().Entry(aChildRef).LocalLocation.Transformation().Value(1, 4),
+              2.0 * aDx,
+              Precision::Confusion());
 }
 
-TEST(BRepGraph_TransformTest, MoveRef_OccurrenceRef_ComposesLocationAndRejectsScale)
+TEST(BRepGraph_TransformTest, MoveRef_OccurrenceRef_ComposesLocationAndRejectsScaleOrMirror)
 {
   BRepPrimAPI_MakeBox                                  aBoxMaker(10.0, 20.0, 30.0);
   BRepGraph                                            aGraph;
@@ -475,6 +619,14 @@ TEST(BRepGraph_TransformTest, MoveRef_OccurrenceRef_ComposesLocationAndRejectsSc
 
   const bool aOk = BRepGraph_Transform::MoveRef(aGraph, anOccRef, aScale);
   EXPECT_FALSE(aOk);
+  EXPECT_NEAR(
+    aGraph.Refs().Occurrences().Entry(anOccRef).LocalLocation.Transformation().Value(1, 4),
+    1.0,
+    Precision::Confusion());
+
+  gp_Trsf aMirror;
+  aMirror.SetMirror(gp_Pnt(0.0, 0.0, 0.0));
+  EXPECT_FALSE(BRepGraph_Transform::MoveRef(aGraph, anOccRef, aMirror));
   EXPECT_NEAR(
     aGraph.Refs().Occurrences().Entry(anOccRef).LocalLocation.Transformation().Value(1, 4),
     1.0,

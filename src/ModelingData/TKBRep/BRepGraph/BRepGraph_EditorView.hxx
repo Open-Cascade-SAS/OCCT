@@ -17,7 +17,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_ItemId.hxx>
 #include <BRepGraph_MutGuard.hxx>
-#include <BRepGraph_SupplementEditor.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_ParityOrientation.hxx>
 #include <BRepGraphInc_Populate.hxx>
@@ -27,6 +26,7 @@
 #include <NCollection_LinearVector.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
@@ -166,21 +166,77 @@ public:
     //! Split a single edge definition at a vertex and 3D-curve parameter.
     //! Creates two new EdgeDef slots, splits all PCurve nodes at the corresponding
     //! 2D parameter, and updates every wire that contained the original edge.
+    //! Use this only when every edge use should be rewritten; face-local repair
+    //! code should split the exact coedge use instead.
     //! @param[in]  theEdgeEntity  edge to split (must not be degenerate)
     //! @param[in]  theSplitVertex vertex definition at the split point (already in graph)
     //! @param[in]  theSplitParam  parameter on the 3D curve at the split point
     //! @param[out] theSubA        sub-edge: StartVertex -> SplitVertex
     //! @param[out] theSubB        sub-edge: SplitVertex -> EndVertex
-    Standard_EXPORT void Split(const BRepGraph_EdgeId   theEdgeEntity,
+    //! @return true when the split was applied; false when the inputs or one
+    //!         of the edge's co-edge projections is not valid. The operation
+    //!         performs the complete non-mutating preflight before allocating
+    //!         replacement entities.
+    Standard_EXPORT bool Split(const BRepGraph_EdgeId   theEdgeEntity,
                                const BRepGraph_VertexId theSplitVertex,
                                const double             theSplitParam,
                                BRepGraph_EdgeId&        theSubA,
                                BRepGraph_EdgeId&        theSubB);
 
+    //! Split an edge while supplying the exact PCurve parameter for one of its
+    //! uses.  The supplied parameter is retained for that coedge; every other
+    //! use is projected from the 3D split point as in Split().  This is needed
+    //! when an analytic face-boundary intersection is more accurate in the
+    //! face's parameter space than a closest-point projection from the shared
+    //! 3D edge curve.
+    Standard_EXPORT bool Split(const BRepGraph_EdgeId   theEdgeEntity,
+                               const BRepGraph_VertexId theSplitVertex,
+                               const double             theSplitParam,
+                               const BRepGraph_CoEdgeId theExactCoEdge,
+                               const double             theExactPCurveParam,
+                               BRepGraph_EdgeId&        theSubA,
+                               BRepGraph_EdgeId&        theSubB);
+
+    //! Validate a split without changing the graph. This is the same
+    //! projection and range preflight used by Split() and is intended for
+    //! compound live-graph edits that must validate every split before the
+    //! first topology mutation.
+    [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId   theEdgeEntity,
+                                                 const BRepGraph_VertexId theSplitVertex,
+                                                 const double             theSplitParam) const;
+
+    //! Validate a split with an exact PCurve parameter for one coedge use.
+    //! The exact parameter is checked against the stored PCurve range and its
+    //! point-on-surface distance; all other coedge uses use the normal 3D
+    //! projection preflight.
+    [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId   theEdgeEntity,
+                                                 const BRepGraph_VertexId theSplitVertex,
+                                                 const double             theSplitParam,
+                                                 const BRepGraph_CoEdgeId theExactCoEdge,
+                                                 const double             theExactPCurveParam) const;
+
+    //! Validate a split against a point which has not been added to the graph
+    //! yet. This overload is intended for compound live edits: all geometric
+    //! split events can be checked before their supplemental vertex
+    //! definitions are created.
+    [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId theEdgeEntity,
+                                                 const gp_Pnt&          theSplitPoint,
+                                                 const double            theSplitTolerance,
+                                                 const double            theSplitParam) const;
+
+    //! Validate a split against a point not yet added to the graph while
+    //! retaining an exact PCurve parameter for one coedge use.
+    [[nodiscard]] Standard_EXPORT bool CanSplit(const BRepGraph_EdgeId theEdgeEntity,
+                                                 const gp_Pnt&          theSplitPoint,
+                                                 const double            theSplitTolerance,
+                                                 const double            theSplitParam,
+                                                 const BRepGraph_CoEdgeId theExactCoEdge,
+                                                 const double             theExactPCurveParam) const;
+
     //! Detach one exact edge-owned vertex ref from an edge definition.
     //! Supports only the persisted boundary slots (StartVertexRefId /
     //! EndVertexRefId). Supplemental direct-vertex usages are stored in
-    //! BRepGraph_LayerTopoSupplement and are not removed through this API.
+    //! supplemental topology attachments and are not removed through this API.
     //! @param[in] theChildEdgeId   edge definition identifier
     //! @param[in] theVertexRefId exact edge-owned vertex reference identifier
     //! @return true if the active edge-owned usage was removed
@@ -215,13 +271,13 @@ public:
     //! Set the tolerance of an edge definition and fire immediate notification.
     //! @param[in] theEdge      typed edge definition identifier
     //! @param[in] theTolerance new tolerance value
-    Standard_EXPORT void SetTolerance(const BRepGraph_EdgeId theEdge, double theTolerance);
+    Standard_EXPORT void SetTolerance(const BRepGraph_EdgeId theEdge, const double theTolerance);
 
     //! Set the tolerance of an edge definition inside a batched mutation scope.
     //! @param[in] theMut       active mutable edge guard
     //! @param[in] theTolerance new tolerance value
     Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                      double                                     theTolerance);
+                                      const double                               theTolerance);
 
     //! Set the parametric range of an edge definition.
     Standard_EXPORT void SetParamRange(const BRepGraph_EdgeId theEdge,
@@ -331,16 +387,16 @@ public:
     //! @param[in] theFirst   new first parameter value
     //! @param[in] theLast    new last parameter value
     Standard_EXPORT void SetParamRange(const BRepGraph_CoEdgeId theCoEdge,
-                                       double                   theFirst,
-                                       double                   theLast);
+                                       const double             theFirst,
+                                       const double             theLast);
 
     //! Set the parametric range of a coedge definition inside a batched mutation scope.
     //! @param[in] theMut   active mutable coedge guard
     //! @param[in] theFirst new first parameter value
     //! @param[in] theLast  new last parameter value
     Standard_EXPORT void SetParamRange(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                       double                                       theFirst,
-                                       double                                       theLast);
+                                       const double                                 theFirst,
+                                       const double                                 theLast);
 
     //! Set the orientation of a coedge definition.
     Standard_EXPORT void SetOrientation(const BRepGraph_CoEdgeId              theCoEdge,
@@ -368,6 +424,9 @@ public:
     Standard_EXPORT void SetPersistentPolygon2D(const BRepGraph_CoEdgeId           theCoEdge,
                                                 const occ::handle<Poly_Polygon2D>& thePolygon);
 
+    //! Clear the persistent 2D polygon on a coedge.
+    Standard_EXPORT void ClearPersistentPolygon2D(const BRepGraph_CoEdgeId theCoEdge);
+
     //! Set the persistent polygon-on-triangulation on a coedge.
     //! The triangulation is resolved via CoEdgeDef.FaceId -> FaceDef.TriangulationRepId.
     //! @param[in] theCoEdge       coedge definition identifier
@@ -375,6 +434,9 @@ public:
     Standard_EXPORT void SetPersistentPolygonOnTri(
       const BRepGraph_CoEdgeId                        theCoEdge,
       const occ::handle<Poly_PolygonOnTriangulation>& thePolygon);
+
+    //! Clear the persistent polygon-on-triangulation on a coedge.
+    Standard_EXPORT void ClearPersistentPolygonOnTri(const BRepGraph_CoEdgeId theCoEdge);
 
     //! Drop face-bound parametric representation (PCurve, param range, continuity, UVs)
     //! while keeping structural links - used when the owning face is removed.
@@ -392,11 +454,16 @@ public:
     Standard_EXPORT void SetChildEdgeId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
                                         const BRepGraph_EdgeId                       theEdge);
 
-    //! Rewire a coedge to a different owning face and rebind edge-to-face relations.
+    //! Rewire a coedge to a different owning face.
+    //! By default, face-scoped 2D representations are cleared because they may no longer match
+    //! the new face. Pass false only when normalizing a missing/removed face id to its already
+    //! known structural face context.
     Standard_EXPORT void SetFaceId(const BRepGraph_CoEdgeId theCoEdge,
-                                   const BRepGraph_FaceId   theFace);
+                                   const BRepGraph_FaceId   theFace,
+                                   const bool               theResetFaceScopedReps = true);
     Standard_EXPORT void SetFaceId(BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-                                   const BRepGraph_FaceId                       theFace);
+                                   const BRepGraph_FaceId                       theFace,
+                                   const bool theResetFaceScopedReps = true);
 
   private:
     friend class EditorView;
@@ -413,6 +480,23 @@ public:
   class WireOps
   {
   public:
+    //! Description of one replacement within a multi-wire transaction.
+    struct CoEdgeRunReplacement
+    {
+      BRepGraph_WireId                         WireId;
+      NCollection_LinearVector<BRepGraph_CoEdgeId> OldCoEdgeIds;
+      BRepGraph_CoEdgeId                       NewCoEdgeId;
+    };
+
+    //! Description of a replacement used for allocation-free prevalidation.
+    struct CoEdgeRunPrecheck
+    {
+      BRepGraph_WireId                         WireId;
+      NCollection_LinearVector<BRepGraph_CoEdgeId> OldCoEdgeIds;
+      BRepGraph_VertexId                       ReplacementStartVertex;
+      BRepGraph_VertexId                       ReplacementEndVertex;
+    };
+
     //! Status returned by wire coedge-order prechecks.
     enum class CoEdgeOrderStatus
     {
@@ -456,6 +540,16 @@ public:
       CheckCoEdgeOrder(const BRepGraph_WireId                        theWire,
                        const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds) const;
 
+    //! Build the canonical connected order of free CoEdges without binding
+    //! them to a wire.  This is the non-mutating counterpart of WireOps::Add
+    //! for algorithms that must prepare geometry in the final topology order.
+    //! @param[in] theCoEdgeIds candidate coedge identifiers
+    //! @param[out] theOrdered canonical definition-order identifiers
+    //! @return status describing whether the input can form a wire
+    [[nodiscard]] Standard_EXPORT CoEdgeOrderStatus
+      OrderCoEdgeIds(const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds,
+                     NCollection_LinearVector<BRepGraph_CoEdgeId>& theOrdered) const;
+
     //! Precheck appending a free CoEdge to an existing wire.
     //! @param[in] theWire     wire definition identifier
     //! @param[in] theCoEdgeId free coedge candidate
@@ -484,6 +578,16 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_WireId
       Add(const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds);
 
+    //! Append a free CoEdge candidate to an existing wire definition.
+    //! The resulting order is canonicalized with the same wire-order builder
+    //! used by Add()/SetCoEdgeOrder(); the candidate may therefore be placed
+    //! between existing entries rather than physically appended.
+    //! @param[in] theWire     wire definition identifier
+    //! @param[in] theCoEdgeId free coedge candidate
+    //! @return true if the coedge was accepted and bound to the wire
+    [[nodiscard]] Standard_EXPORT bool Append(const BRepGraph_WireId   theWire,
+                                              const BRepGraph_CoEdgeId theCoEdgeId);
+
     //! Replace one edge with another in a wire definition.
     //! Updates the CoEdge's EdgeIdx to point to the new edge, adjusts orientation
     //! if theReversed, and incrementally updates relation tables.
@@ -496,6 +600,52 @@ public:
                                      const BRepGraph_EdgeId theNewEdgeEntity,
                                      const bool             theReversed);
 
+    //! Replace one exact coedge use by two free coedges in the same wire.
+    //! The replacement coedges are bound to the wire as an atomic mutation and
+    //! the old coedge definition is retired with its owned face-scoped reps.
+    //! @param[in] theChildWireId wire definition identifier
+    //! @param[in] theOldCoEdge exact active coedge owned by the wire
+    //! @param[in] theNewFirstCoEdge first free coedge replacing the old use
+    //! @param[in] theNewSecondCoEdge second free coedge replacing the old use
+    //! @return true if the replacement was accepted and applied
+    [[nodiscard]] Standard_EXPORT bool ReplaceCoEdgeWithPair(
+      const BRepGraph_WireId   theChildWireId,
+      const BRepGraph_CoEdgeId theOldCoEdge,
+      const BRepGraph_CoEdgeId theNewFirstCoEdge,
+      const BRepGraph_CoEdgeId theNewSecondCoEdge);
+
+    //! Replace an ordered consecutive CoEdge run with one free CoEdge.
+    //! The operation is atomic with respect to graph relations: it updates the
+    //! wire order and edge-to-coedge reverse links together, then retires all
+    //! replaced CoEdges and their owned face-scoped representations. A run may
+    //! cross the stored order boundary only when the wire is closed; the result
+    //! is then rotated to preserve a connected canonical order.
+    //! @param[in] theChildWireId owning wire definition identifier
+    //! @param[in] theOldCoEdgeIds ordered active coedges to replace
+    //! @param[in] theNewCoEdge free replacement coedge
+    //! @return true if the replacement was accepted and applied
+    [[nodiscard]] Standard_EXPORT bool ReplaceCoEdgesWithOne(
+      const BRepGraph_WireId                        theChildWireId,
+      const NCollection_Array1<BRepGraph_CoEdgeId>& theOldCoEdgeIds,
+      const BRepGraph_CoEdgeId                      theNewCoEdge);
+
+    //! Replace several disjoint coedge runs as one editor transaction.
+    //! All runs are prevalidated against the unchanged graph before any wire,
+    //! reverse relation, or coedge retirement mutation is performed.
+    //! @param[in] theReplacements replacement runs with free replacement coedges
+    //! @return true if every run was accepted and applied
+    [[nodiscard]] Standard_EXPORT bool ReplaceCoEdgeRunsWithOne(
+      const NCollection_Array1<CoEdgeRunReplacement>& theReplacements);
+
+    //! Check several replacement runs without allocating graph entities.
+    //! Each replacement is represented by its oriented endpoint vertices, so
+    //! callers can validate a complete edit plan before creating its edge and
+    //! coedges.
+    //! @param[in] thePrechecks replacement run descriptions
+    //! @return true if every run can be applied together
+    [[nodiscard]] Standard_EXPORT bool CheckReplaceCoEdgeRuns(
+      const NCollection_Array1<CoEdgeRunPrecheck>& thePrechecks) const;
+
     //! Detach one exact coedge entry from a wire definition.
     //! Use BRepGraph_CoEdgesOfWire::CurrentId() when removing from a wire
     //! iterator. The method removes the exact ordered coedge entry, updates
@@ -506,6 +656,17 @@ public:
     //! @return true if the active wire-owned usage was removed
     [[nodiscard]] Standard_EXPORT bool RemoveCoEdge(const BRepGraph_WireId   theChildWireId,
                                                     const BRepGraph_CoEdgeId theCoEdgeId);
+
+    //! Detach several exact coedge entries from a wire definition as one
+    //! mutation. Use this when the final wire remains connected, but removing
+    //! any individual coedge first would create a transient disconnected order.
+    //! @param[in] theChildWireId wire definition identifier
+    //! @param[in] theCoEdgeIds exact wire-owned coedge identifiers to remove
+    //! @return true if all requested coedges were active wire-owned usages and
+    //!         the remaining wire order was accepted
+    [[nodiscard]] Standard_EXPORT bool RemoveCoEdges(
+      const BRepGraph_WireId                        theChildWireId,
+      const NCollection_Array1<BRepGraph_CoEdgeId>& theCoEdgeIds);
 
     //! Reverse the wire: flip the order of the wire's CoEdgeIds and flip each
     //! owned CoEdge's orientation. Used by healing/sewing to invert a loop.
@@ -602,13 +763,13 @@ public:
     //! Set the tolerance of a face definition and fire immediate notification.
     //! @param[in] theFace      typed face definition identifier
     //! @param[in] theTolerance new tolerance value
-    Standard_EXPORT void SetTolerance(const BRepGraph_FaceId theFace, double theTolerance);
+    Standard_EXPORT void SetTolerance(const BRepGraph_FaceId theFace, const double theTolerance);
 
     //! Set the tolerance of a face definition inside a batched mutation scope.
     //! @param[in] theMut       active mutable face guard
     //! @param[in] theTolerance new tolerance value
     Standard_EXPORT void SetTolerance(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-                                      double                                     theTolerance);
+                                      const double                               theTolerance);
 
     //! Set the surface on a face. Creates an owned FaceSurfaceRep record
     //! and an associated SurfaceRep for face geometry access.
@@ -636,14 +797,14 @@ public:
     //! Set the orientation of a face reference and fire immediate notification.
     //! @param[in] theFaceRef     typed face reference identifier
     //! @param[in] theOrientation new orientation value
-    Standard_EXPORT void SetRefOrientation(const BRepGraph_FaceRefId       theFaceRef,
-                                           BRepGraphInc::ParityOrientation theOrientation);
+    Standard_EXPORT void SetRefOrientation(const BRepGraph_FaceRefId             theFaceRef,
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Set the orientation of a face reference inside a batched mutation scope.
     //! @param[in] theMut         active mutable face reference guard
     //! @param[in] theOrientation new orientation value
     Standard_EXPORT void SetRefOrientation(BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
-                                           BRepGraphInc::ParityOrientation theOrientation);
+                                           const BRepGraphInc::ParityOrientation theOrientation);
 
     //! Rewire a face reference to a different face def (rebinds FaceToShells if parent is Shell).
     Standard_EXPORT void SetRefFaceId(const BRepGraph_FaceRefId theFaceRef,
@@ -1239,6 +1400,12 @@ public:
     //! @post ValidateRelations() passes.
     Standard_EXPORT void CleanupRemovedReferences();
 
+    //! Rebuild all reverse incidence indexes from the active definitions and
+    //! references. Use once at the end of a bulk algorithm that performs many
+    //! replace/remove operations without maintaining every derived index
+    //! incrementally.
+    Standard_EXPORT void RebuildDerivedRelations();
+
   private:
     friend class EditorView;
 
@@ -1261,6 +1428,11 @@ public:
 
   //! Return edge creation and editing operations.
   [[nodiscard]] EdgeOps& Edges() { return myEdgeOps; }
+
+  //! Return read-only edge operations for mutation-free preflight.
+  //! The const overload exposes only methods whose contract does not mutate
+  //! the graph, such as EdgeOps::CanSplit().
+  [[nodiscard]] const EdgeOps& Edges() const { return myEdgeOps; }
 
   //! Return coedge and PCurve operations.
   [[nodiscard]] CoEdgeOps& CoEdges() { return myCoEdgeOps; }
@@ -1293,10 +1465,6 @@ public:
   [[nodiscard]] GenOps& Gen() { return myGenOps; }
 
   //! Return runtime supplement attachment operations.
-  [[nodiscard]] BRepGraph_SupplementEditor Supplement()
-  {
-    return BRepGraph_SupplementEditor(*myGraph);
-  }
 
   //! Begin deferred invalidation mode.
   //! While active, markModified() only increments OwnGen + SubtreeGen and
