@@ -23,7 +23,6 @@
 #include <BRepGraph_Replace.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_RevisionHash.hxx>
-#include <BRepGraph_RevisionMerkle.hxx>
 #include <BRepGraph_Revision.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
@@ -169,36 +168,6 @@ public:
 
 } // namespace
 
-TEST(BRepGraph_RevisionMerkleTest, InsertionOrderIsCanonical)
-{
-  const BRepGraph_RevisionHash aValue1 = BRepGraph_RevisionHash::Hasher::Bytes("one", 3);
-  const BRepGraph_RevisionHash aValue2 = BRepGraph_RevisionHash::Hasher::Bytes("two", 3);
-  const BRepGraph_RevisionHash aValue3 = BRepGraph_RevisionHash::Hasher::Bytes("three", 5);
-
-  const BRepGraph_RevisionMerkle aForward = BRepGraph_RevisionMerkle()
-                                              .Insert(0x0123456789abcdefull, aValue1)
-                                              .Insert(0xfedcba9876543210ull, aValue2)
-                                              .Insert(0x0123456789abcde0ull, aValue3);
-  const BRepGraph_RevisionMerkle aReverse = BRepGraph_RevisionMerkle()
-                                              .Insert(0x0123456789abcde0ull, aValue3)
-                                              .Insert(0xfedcba9876543210ull, aValue2)
-                                              .Insert(0x0123456789abcdefull, aValue1);
-
-  EXPECT_EQ(aForward.RootHash(), aReverse.RootHash());
-  EXPECT_EQ(aForward.Size(), 3u);
-
-  const BRepGraph_RevisionMerkle anUnchanged = aForward.Insert(0x0123456789abcdefull, aValue1);
-  EXPECT_EQ(anUnchanged.RootHash(), aForward.RootHash());
-  EXPECT_EQ(anUnchanged.Size(), aForward.Size());
-
-  const BRepGraph_RevisionMerkle aHighBits = BRepGraph_RevisionMerkle()
-                                               .Insert(0x010000123456789aull, aValue1)
-                                               .Insert(0x020000123456789aull, aValue2);
-  EXPECT_EQ(aHighBits.Size(), 2u);
-  EXPECT_TRUE(aHighBits.Contains(0x010000123456789aull));
-  EXPECT_TRUE(aHighBits.Contains(0x020000123456789aull));
-}
-
 TEST(BRepGraph_RevisionHashTest, IncrementalBytesMatchContiguousBytes)
 {
   std::string aBytes(128 * 1024 + 17, '\0');
@@ -227,61 +196,6 @@ TEST(BRepGraph_RevisionHashTest, BytesUseCanonicalSHA256Encoding)
   const BRepGraph_RevisionHash aHash = BRepGraph_RevisionHash::Hasher::Bytes("abc", 3);
   EXPECT_STREQ(aHash.ToString().ToCString(),
                "3b079107702e383a89b56333530ba65c4df3ddb011647e5d3205404b07220d4c");
-}
-
-TEST(BRepGraph_RevisionMerkleTest, BulkBuildMatchesSequentialInsertionAndHandlesEmptyInput)
-{
-  NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry> anEntries;
-  anEntries.Append({0xfedcba9876543210ull, BRepGraph_RevisionHash::Hasher::Bytes("two", 3)});
-  anEntries.Append({0x0123456789abcde0ull, BRepGraph_RevisionHash::Hasher::Bytes("three", 5)});
-  anEntries.Append({0xffffffffffffffffull, BRepGraph_RevisionHash::Hasher::Bytes("last", 4)});
-  anEntries.Append({0x0123456789abcdefull, BRepGraph_RevisionHash::Hasher::Bytes("one", 3)});
-  anEntries.Append({0x0000000000000000ull, BRepGraph_RevisionHash::Hasher::Bytes("first", 5)});
-
-  BRepGraph_RevisionMerkle aSequential;
-  for (const BRepGraph_RevisionMerkle::Entry& anEntry : anEntries)
-  {
-    aSequential = aSequential.Insert(anEntry.Key, anEntry.Value);
-  }
-  BRepGraph_RevisionMerkle aBulk;
-  ASSERT_TRUE(BRepGraph_RevisionMerkle::Build(anEntries, aBulk));
-  EXPECT_EQ(aBulk.RootHash(), aSequential.RootHash());
-  EXPECT_EQ(aBulk.Size(), anEntries.Size());
-
-  const NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry> anEmptyEntries;
-  BRepGraph_RevisionMerkle                                        anEmpty;
-  ASSERT_TRUE(BRepGraph_RevisionMerkle::Build(anEmptyEntries, anEmpty));
-  EXPECT_TRUE(anEmpty.IsEmpty());
-  EXPECT_EQ(anEmpty.Size(), 0u);
-  EXPECT_EQ(anEmpty.RootHash(), BRepGraph_RevisionMerkle().RootHash());
-
-  anEntries.Append(anEntries.First());
-  const void* const aBulkRoot = aBulk.RootIdentity();
-  EXPECT_FALSE(BRepGraph_RevisionMerkle::Build(anEntries, aBulk));
-  EXPECT_EQ(aBulk.RootIdentity(), aBulkRoot);
-}
-
-TEST(BRepGraph_RevisionMerkleTest, UpdatesAndRemovalPreserveBase)
-{
-  const uint64_t               aKey           = 0x123456789abcdef0ull;
-  const BRepGraph_RevisionHash aValue         = BRepGraph_RevisionHash::Hasher::Bytes("base", 4);
-  const BRepGraph_RevisionHash anUpdatedValue = BRepGraph_RevisionHash::Hasher::Bytes("updated", 7);
-  const BRepGraph_RevisionMerkle aBase        = BRepGraph_RevisionMerkle().Insert(aKey, aValue);
-  const BRepGraph_RevisionHash   aBaseHash    = aBase.RootHash();
-
-  const BRepGraph_RevisionMerkle anUpdated = aBase.Insert(aKey, anUpdatedValue);
-  EXPECT_EQ(aBase.Size(), 1u);
-  EXPECT_EQ(anUpdated.Size(), 1u);
-  EXPECT_TRUE(aBase.Contains(aKey));
-  EXPECT_EQ(aBase.RootHash(), aBaseHash);
-  EXPECT_NE(anUpdated.RootHash(), aBaseHash);
-
-  const BRepGraph_RevisionMerkle aRemoved = anUpdated.Remove(aKey);
-  EXPECT_FALSE(aRemoved.Contains(aKey));
-  EXPECT_TRUE(aRemoved.IsEmpty());
-  EXPECT_EQ(aRemoved.Size(), 0u);
-  EXPECT_EQ(aRemoved.RootHash(), BRepGraph_RevisionMerkle().RootHash());
-  EXPECT_TRUE(anUpdated.Contains(aKey));
 }
 
 TEST(BRepGraph_RevisionHashTest, BSplinePoleChangesSemanticHash)

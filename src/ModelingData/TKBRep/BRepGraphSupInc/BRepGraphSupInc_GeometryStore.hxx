@@ -59,7 +59,7 @@ public:
     FindDefinitionByUID(const BRepGraphSupInc_ItemUID& theUID) const override;
   //! Test whether no allocated geometry records remain.
   //! @return true when all geometry vectors are empty
-  [[nodiscard]] bool IsEmpty() const override;
+  [[nodiscard]] Standard_EXPORT bool IsEmpty() const override;
 
 protected:
   //! Soft-remove an active geometry definition by runtime UID.
@@ -209,11 +209,11 @@ public:
   //! Return the number of active definitions of the requested kind.
   //! @param[in] theKind geometry kind to count
   //! @return active definition count
-  [[nodiscard]] uint32_t ActiveCount(const Kind theKind) const;
+  [[nodiscard]] Standard_EXPORT uint32_t ActiveCount(const Kind theKind) const;
   //! Return the number of allocated definitions of the requested kind, including removed records.
   //! @param[in] theKind geometry kind to count
   //! @return allocated definition count
-  [[nodiscard]] uint32_t Count(const Kind theKind) const;
+  [[nodiscard]] Standard_EXPORT uint32_t Count(const Kind theKind) const;
 
   //! Find the first active 3D curve definition at or after a dense index.
   //! @param[in] theStartIndex first dense index to inspect
@@ -249,11 +249,11 @@ private:
   //! @return true when an active definition was removed
   Standard_EXPORT bool Remove(const BRepGraphSupInc_SurfaceId theID);
 
-  [[nodiscard]] BRepGraphSupInc_Curve3dId findCurve3dByUID(
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_Curve3dId findCurve3dByUID(
     const BRepGraphSupInc_ItemUID& theUID) const;
-  [[nodiscard]] BRepGraphSupInc_Curve2dId findCurve2dByUID(
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_Curve2dId findCurve2dByUID(
     const BRepGraphSupInc_ItemUID& theUID) const;
-  [[nodiscard]] BRepGraphSupInc_SurfaceId findSurfaceByUID(
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_SurfaceId findSurfaceByUID(
     const BRepGraphSupInc_ItemUID& theUID) const;
 
   [[nodiscard]] uint32_t allocateCounter(const Kind theKind);

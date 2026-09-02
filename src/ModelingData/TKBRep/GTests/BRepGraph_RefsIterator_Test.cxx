@@ -13,7 +13,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
-#include <BRepGraph_FilteredIterator.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -122,24 +121,6 @@ TEST_F(BRepGraph_RefsIteratorTest, CurrentId_ResolvesToExpectedEntry)
 
   const BRepGraphInc::WireRef& aWireRef = myGraph.Refs().Wires().Entry(anIt.CurrentId());
   EXPECT_TRUE(aWireRef.ChildWireId.IsValid(myGraph.Topo().Wires().Nb()));
-}
-
-TEST_F(BRepGraph_RefsIteratorTest, FilteredIterator_RangeForUsesCurrentId)
-{
-  auto anIt = BRepGraph_MakeFilteredIterator(
-    BRepGraph_CoEdgesOfWire(myGraph, BRepGraph_WireId::Start()),
-    [](const BRepGraph_CoEdgesOfWire& theIt) { return (theIt.CurrentId().Index % 2u) == 0u; });
-
-  EXPECT_EQ(anIt.Count(), 2u);
-
-  uint32_t aCount = 0;
-  for (const BRepGraph_CoEdgeId aCoEdgeId : anIt)
-  {
-    EXPECT_TRUE(aCoEdgeId.IsValid(myGraph.Topo().CoEdges().Nb()));
-    EXPECT_EQ(aCoEdgeId.Index % 2u, 0u);
-    ++aCount;
-  }
-  EXPECT_EQ(aCount, 2u);
 }
 
 TEST(BRepGraph_RefsIteratorTestStandalone, VertexOfEdge_ExposesBoundaryVertexRefsOnly)

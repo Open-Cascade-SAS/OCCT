@@ -14,7 +14,6 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_DefsIterator.hxx>
-#include <BRepGraph_FilteredIterator.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
@@ -114,22 +113,6 @@ TEST_F(BRepGraph_DefsIteratorTest, EdgeOfWire_YieldsEdgeDefinitions)
   EXPECT_EQ(myGraph.Topo().CoEdges().Definition(aCoEdgeId).ChildEdgeId, anEdgeId);
   EXPECT_TRUE(anIt.Current().StartVertexRefId.IsValid());
   EXPECT_TRUE(anIt.Current().EndVertexRefId.IsValid());
-}
-
-TEST_F(BRepGraph_DefsIteratorTest, FilteredIterator_PreservesCurrentRefId)
-{
-  auto anIt = BRepGraph_MakeFilteredIterator(
-    BRepGraph_DefsEdgeOfWire(myGraph, BRepGraph_WireId::Start()),
-    [](const BRepGraph_DefsEdgeOfWire& theIt) { return (theIt.CurrentId().Index % 2u) == 0u; });
-
-  ASSERT_TRUE(anIt.More());
-  for (; anIt.More(); anIt.Next())
-  {
-    const BRepGraph_CoEdgeId aCoEdgeId = anIt.CurrentRefId();
-    EXPECT_TRUE(aCoEdgeId.IsValid(myGraph.Topo().CoEdges().Nb()));
-    EXPECT_EQ(myGraph.Topo().CoEdges().Definition(aCoEdgeId).ChildEdgeId, anIt.CurrentId());
-    EXPECT_EQ(anIt.CurrentId().Index % 2u, 0u);
-  }
 }
 
 TEST_F(BRepGraph_DefsIteratorTest, CoEdgeOfWire_YieldsCoEdgeDefinitions)

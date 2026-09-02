@@ -18,7 +18,6 @@
 #define _Adaptor3d_TopolTool_HeaderFile
 
 #include <Adaptor2d_Line2d.hxx>
-#include <Adaptor3d_FaceDomain.hxx>
 #include <Adaptor3d_HVertex.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <NCollection_Array1.hxx>
@@ -32,7 +31,7 @@ class Adaptor3d_HVertex;
 //! based on the Umin,Vmin,Umax,Vmax of an HSurface from Adaptor3d.
 //! All methods and fields may be redefined when inheriting from this class.
 //! This class is used to instantiate algorithms as Intersection, outlines,...
-class Adaptor3d_TopolTool : public Adaptor3d_FaceDomain
+class Adaptor3d_TopolTool : public Standard_Transient
 {
 
 public:
@@ -64,7 +63,7 @@ public:
 
   Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P,
                                                 const double    Tol,
-                                                const bool      ReacdreOnPeriodic = true) override;
+                                                const bool      ReacdreOnPeriodic = true);
 
   Standard_EXPORT virtual bool IsThePointOn(const gp_Pnt2d& P,
                                             const double    Tol,
@@ -105,10 +104,10 @@ public:
   Standard_EXPORT virtual void ComputeSamplePoints();
 
   //! compute the sample-points for the intersections algorithms
-  Standard_EXPORT virtual int NbSamplesU() override;
+  Standard_EXPORT virtual int NbSamplesU();
 
   //! compute the sample-points for the intersections algorithms
-  Standard_EXPORT virtual int NbSamplesV() override;
+  Standard_EXPORT virtual int NbSamplesV();
 
   //! compute the sample-points for the intersections algorithms
   Standard_EXPORT virtual int NbSamples();
@@ -155,7 +154,7 @@ public:
   //! @param[in] theV V parameter of cone's apex
   Standard_EXPORT static void GetConeApexParam(const gp_Cone& theC, double& theU, double& theV);
 
-  DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool, Adaptor3d_FaceDomain)
+  DEFINE_STANDARD_RTTIEXT(Adaptor3d_TopolTool, Standard_Transient)
 
 protected:
   occ::handle<Adaptor3d_Surface>           myS;

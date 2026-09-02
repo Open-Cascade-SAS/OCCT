@@ -13,7 +13,6 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
-#include <BRepGraph_FilteredIterator.hxx>
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -189,50 +188,6 @@ TEST_F(BRepGraph_IteratorTest, RangeFor_WorksCorrectly)
     ++aCount;
   }
   EXPECT_EQ(aCount, 6u);
-}
-
-TEST_F(BRepGraph_IteratorTest, FilteredIterator_FiltersNodeIteratorByCurrentId)
-{
-  auto anIt = BRepGraph_MakeFilteredIterator(
-    BRepGraph_EdgeIterator(myGraph),
-    [](const BRepGraph_EdgeIterator& theIt) { return (theIt.CurrentId().Index % 2u) == 0u; });
-
-  EXPECT_EQ(anIt.Count(), 6u);
-
-  uint32_t aCount = 0;
-  for (; anIt.More(); anIt.Next())
-  {
-    EXPECT_EQ(anIt.CurrentId().Index % 2u, 0u);
-    ++aCount;
-  }
-  EXPECT_EQ(aCount, 6u);
-}
-
-TEST_F(BRepGraph_IteratorTest, FilteredIterator_RangeForUsesCurrent)
-{
-  auto anIt = BRepGraph_MakeFilteredIterator(
-    BRepGraph_FaceIterator(myGraph),
-    [](const BRepGraph_FaceIterator& theIt) { return theIt.CurrentId().Index < 2u; });
-
-  uint32_t aCount = 0;
-  for (const BRepGraphInc::FaceDef& aFace : anIt)
-  {
-    EXPECT_NE(aFace.UID, 0u);
-    ++aCount;
-  }
-  EXPECT_EQ(aCount, 2u);
-}
-
-TEST_F(BRepGraph_IteratorTest, FilteredIterator_WorksWithRootProductIterator)
-{
-  auto anIt = BRepGraph_MakeFilteredIterator(
-    BRepGraph_RootProductIterator(myGraph),
-    [](const BRepGraph_RootProductIterator& theIt) { return theIt.Current().IsValid(); });
-
-  ASSERT_TRUE(anIt.More());
-  EXPECT_EQ(anIt.Current(), myGraph.RootProductIds().Value(0));
-  anIt.Next();
-  EXPECT_FALSE(anIt.More());
 }
 
 TEST(BRepGraph_IteratorStandalone, EmptyGraph_IteratorIsEmpty)

@@ -11,10 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Copyright (c) 2026 OPEN CASCADE SAS
-//
-// This file is part of Open CASCADE Technology software library.
-
 #ifndef _BRepGraphSupInc_TopologyDefinition_HeaderFile
 #define _BRepGraphSupInc_TopologyDefinition_HeaderFile
 

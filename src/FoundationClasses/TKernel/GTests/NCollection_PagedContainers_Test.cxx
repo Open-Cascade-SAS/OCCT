@@ -261,9 +261,11 @@ TEST(NCollection_PersistentRadixMapTest, IteratorsFollowCanonicalKeyOrder)
   anIterator.Reset();
   EXPECT_EQ(anIterator.Key(), 7u);
 
+#ifndef No_Exception
   PersistentRadixTestMap::Iterator anEnd;
   EXPECT_THROW((void)anEnd.Key(), Standard_NoSuchObject);
   EXPECT_THROW((void)anEnd.Value(), Standard_NoSuchObject);
+#endif
 }
 
 TEST(NCollection_PersistentRadixMapTest, RemovalCollapsesBranchToSingleChild)
@@ -406,12 +408,14 @@ TEST(NCollection_PagedArrayTest, FailedGrowthKeepsVisibleRangeConsistent)
   EXPECT_EQ(aValues.First().Number, 1u);
 }
 
+#ifndef No_Exception
 TEST(NCollection_PagedArrayTest, RejectsUnrepresentableSetIndex)
 {
   NCollection_PagedArray<size_t> aValues;
   EXPECT_THROW(aValues.SetValue(std::numeric_limits<size_t>::max(), 1), Standard_OutOfRange);
   EXPECT_TRUE(aValues.IsEmpty());
 }
+#endif
 
 TEST(NCollection_PagedArrayTest, SupportsStandardAndLegacyIteration)
 {
@@ -617,7 +621,9 @@ TEST(NCollection_PagedDataMapTest, SupportsStandardLegacyAndItemIteration)
   anIterator.Reset();
   EXPECT_EQ(anIterator.Key(), aFirstKey);
 
+#ifndef No_Exception
   NCollection_PagedDataMap<int, int>::Iterator anEnd;
   EXPECT_THROW((void)anEnd.Key(), Standard_NoSuchObject);
   EXPECT_THROW((void)anEnd.Value(), Standard_NoSuchObject);
+#endif
 }

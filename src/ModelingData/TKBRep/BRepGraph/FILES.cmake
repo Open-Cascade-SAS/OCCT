@@ -17,7 +17,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_EditorView_Mut.cxx
   BRepGraph_EditorView_Setters.cxx
   BRepGraph_DefsIterator.hxx
-  BRepGraph_FilteredIterator.hxx
   BRepGraph_ChildIterator.cxx
   BRepGraph_ChildIterator.hxx
   BRepGraph_ChildExplorer.cxx
@@ -103,8 +102,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_RevisionStatus.hxx
   BRepGraph_RevisionHash.hxx
   BRepGraph_RevisionHash.cxx
-  BRepGraph_RevisionMerkle.hxx
-  BRepGraph_RevisionMerkle.cxx
   BRepGraph_Revision.hxx
   BRepGraph_Revision.cxx
   BRepGraph_RevisionDiff.cxx

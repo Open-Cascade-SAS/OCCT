@@ -19,7 +19,6 @@
 #include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_ShapesView.hxx>
-#include <BRepGraph_RevisionMerkle.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_UIDsView.hxx>
@@ -33,6 +32,7 @@
 #include <GeomHash_MeshAppender.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <NCollection_FlatMap.hxx>
+#include <NCollection_PersistentRadixMap.hxx>
 #include <Standard_SHA256.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
@@ -44,18 +44,124 @@
 #include <cstring>
 #include <utility>
 
+namespace
+{
+class RevisionMerkleHasher
+{
+public:
+  using ChildHash = std::pair<uint8_t, BRepGraph_RevisionHash>;
+
+  [[nodiscard]] static BRepGraph_RevisionHash EmptyHash();
+  [[nodiscard]] static BRepGraph_RevisionHash LeafHash(const uint64_t                theKey,
+                                                       const BRepGraph_RevisionHash& theValue);
+  [[nodiscard]] static BRepGraph_RevisionHash BranchHash(const size_t     theDepth,
+                                                         const ChildHash* theChildren,
+                                                         const size_t     theNbChildren);
+};
+
+using RevisionMerkle = NCollection_PersistentRadixMap<uint64_t,
+                                                       BRepGraph_RevisionHash,
+                                                       BRepGraph_RevisionHash,
+                                                       RevisionMerkleHasher>;
+
+constexpr uint32_t THE_MERKLE_FORMAT_VERSION = 1;
+constexpr size_t   THE_MERKLE_MAX_INPUT_SIZE =
+  4 + 4 + 1 + 2 + 256 * (1 + sizeof(BRepGraph_RevisionHash));
+
+struct MerkleHashInput
+{
+  void AppendByte(const uint8_t theValue) { Bytes[Size++] = theValue; }
+
+  void AppendUInt16(const uint16_t theValue)
+  {
+    AppendByte(static_cast<uint8_t>(theValue));
+    AppendByte(static_cast<uint8_t>(theValue >> 8));
+  }
+
+  void AppendUInt32(const uint32_t theValue)
+  {
+    for (int aByte = 0; aByte < 4; ++aByte)
+    {
+      AppendByte(static_cast<uint8_t>(theValue >> (aByte * 8)));
+    }
+  }
+
+  void AppendUInt64(const uint64_t theValue)
+  {
+    for (int aByte = 0; aByte < 8; ++aByte)
+    {
+      AppendByte(static_cast<uint8_t>(theValue >> (aByte * 8)));
+    }
+  }
+
+  void AppendHash(const BRepGraph_RevisionHash& theHash)
+  {
+    for (const uint64_t aWord : theHash.Words)
+    {
+      AppendUInt64(aWord);
+    }
+  }
+
+  BRepGraph_RevisionHash Hash() const
+  {
+    return BRepGraph_RevisionHash::Hasher::Bytes(Bytes.data(), Size);
+  }
+
+  std::array<uint8_t, THE_MERKLE_MAX_INPUT_SIZE> Bytes;
+  size_t                                         Size = 0;
+};
+
+BRepGraph_RevisionHash RevisionMerkleHasher::EmptyHash()
+{
+  MerkleHashInput anInput;
+  anInput.AppendUInt32(0x4d454d50u); // MEMP
+  anInput.AppendUInt32(THE_MERKLE_FORMAT_VERSION);
+  return anInput.Hash();
+}
+
+BRepGraph_RevisionHash RevisionMerkleHasher::LeafHash(
+  const uint64_t                theKey,
+  const BRepGraph_RevisionHash& theValue)
+{
+  MerkleHashInput anInput;
+  anInput.AppendUInt32(0x4d4c4546u); // MLEF
+  anInput.AppendUInt32(THE_MERKLE_FORMAT_VERSION);
+  anInput.AppendUInt64(theKey);
+  anInput.AppendHash(theValue);
+  return anInput.Hash();
+}
+
+BRepGraph_RevisionHash RevisionMerkleHasher::BranchHash(const size_t     theDepth,
+                                                        const ChildHash* theChildren,
+                                                        const size_t     theNbChildren)
+{
+  MerkleHashInput anInput;
+  anInput.AppendUInt32(0x4d42524eu); // MBRN
+  anInput.AppendUInt32(THE_MERKLE_FORMAT_VERSION);
+  anInput.AppendByte(static_cast<uint8_t>(theDepth));
+  anInput.AppendUInt16(static_cast<uint16_t>(theNbChildren));
+  for (size_t anIndex = 0; anIndex < theNbChildren; ++anIndex)
+  {
+    const auto& [aSlot, aHash] = theChildren[anIndex];
+    anInput.AppendByte(aSlot);
+    anInput.AppendHash(aHash);
+  }
+  return anInput.Hash();
+}
+} // namespace
+
 //! Immutable pair of persistent Merkle indexes retained by graph revisions.
 class BRepGraph_RevisionHash::Hasher::Index
 {
 public:
-  Index(const BRepGraph_RevisionMerkle& theSemantic, const BRepGraph_RevisionMerkle& theStorage)
+  Index(const RevisionMerkle& theSemantic, const RevisionMerkle& theStorage)
       : Semantic(theSemantic),
         Storage(theStorage)
   {
   }
 
-  BRepGraph_RevisionMerkle Semantic;
-  BRepGraph_RevisionMerkle Storage;
+  RevisionMerkle Semantic;
+  RevisionMerkle Storage;
 };
 
 namespace
@@ -642,8 +748,8 @@ uint64_t merkleKey(const MerkleNamespace theNamespace,
 
 template <typename TheDefinition>
 void addNodeLeaves(const BRepGraph&                                           theGraph,
-                   NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry>& theSemantic,
-                   NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry>& theStorage)
+                   NCollection_LinearVector<RevisionMerkle::Entry>& theSemantic,
+                   NCollection_LinearVector<RevisionMerkle::Entry>& theStorage)
 {
   using Traits          = BRepGraph_IteratorDetail::NodeTraits<TheDefinition>;
   const uint32_t aCount = Traits::Count(theGraph);
@@ -669,8 +775,8 @@ void addNodeLeaves(const BRepGraph&                                           th
 template <typename TheRefId>
 void addReferenceLeaves(const BRepGraph&                                           theGraph,
                         const uint32_t                                             theCount,
-                        NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry>& theSemantic,
-                        NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry>& theStorage)
+                        NCollection_LinearVector<RevisionMerkle::Entry>& theSemantic,
+                        NCollection_LinearVector<RevisionMerkle::Entry>& theStorage)
 {
   for (uint32_t anIndex = 0; anIndex < theCount; ++anIndex)
   {
@@ -956,8 +1062,8 @@ BRepGraph_RevisionHash BRepGraph_RevisionHash::Hasher::Bytes(const void*  theDat
 BRepGraph_RevisionHash::Hasher::Result BRepGraph_RevisionHash::Hasher::Compute(
   const BRepGraph& theGraph)
 {
-  NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry> aSemanticEntries;
-  NCollection_LinearVector<BRepGraph_RevisionMerkle::Entry> aStorageEntries;
+  NCollection_LinearVector<RevisionMerkle::Entry> aSemanticEntries;
+  NCollection_LinearVector<RevisionMerkle::Entry> aStorageEntries;
 
   addNodeLeaves<BRepGraphInc::VertexDef>(theGraph, aSemanticEntries, aStorageEntries);
   addNodeLeaves<BRepGraphInc::EdgeDef>(theGraph, aSemanticEntries, aStorageEntries);
@@ -1002,16 +1108,16 @@ BRepGraph_RevisionHash::Hasher::Result BRepGraph_RevisionHash::Hasher::Compute(
 
   aSemanticEntries.Append(
     {merkleKey(MerkleNamespace::SemanticMetadata, 0, 0), semanticMetadataHash(theGraph)});
-  BRepGraph_RevisionMerkle aSemantic;
-  if (!BRepGraph_RevisionMerkle::Build(std::move(aSemanticEntries), aSemantic))
+  RevisionMerkle aSemantic;
+  if (!RevisionMerkle::Build(std::move(aSemanticEntries), aSemantic))
   {
     return {};
   }
   const BRepGraph_RevisionHash aSemanticRoot = aSemantic.RootHash();
   aStorageEntries.Append({merkleKey(MerkleNamespace::StorageMetadata, 0, 0),
                           storageMetadataHash(theGraph, theGraph.incStorage(), aSemanticRoot)});
-  BRepGraph_RevisionMerkle aStorage;
-  if (!BRepGraph_RevisionMerkle::Build(std::move(aStorageEntries), aStorage))
+  RevisionMerkle aStorage;
+  if (!RevisionMerkle::Build(std::move(aStorageEntries), aStorage))
   {
     return {};
   }
@@ -1051,8 +1157,8 @@ BRepGraph_RevisionHash::Hasher::Result BRepGraph_RevisionHash::Hasher::Update(
       aRefs.Add(aUID);
     }
   }
-  BRepGraph_RevisionMerkle aSemantic = theBaseIndex->Semantic;
-  BRepGraph_RevisionMerkle aStorage  = theBaseIndex->Storage;
+  RevisionMerkle aSemantic = theBaseIndex->Semantic;
+  RevisionMerkle aStorage  = theBaseIndex->Storage;
   for (NCollection_FlatMap<BRepGraph_UID>::Iterator anIt(aNodes); anIt.More(); anIt.Next())
   {
     const BRepGraph_UID& aUID = anIt.Key();

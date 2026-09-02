@@ -18,8 +18,6 @@
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <cstdint>
-
 //! Status and diagnostics for BRepGraph revision operations.
 class BRepGraph_RevisionStatus
 {
@@ -51,7 +49,6 @@ public:
     TCollection_AsciiString Code;
     TCollection_AsciiString Message;
     Standard_GUID           ComponentGUID;
-    uint32_t                SchemaVersion = 0;
   };
 
   using Diagnostics = NCollection_LinearVector<Diagnostic>;

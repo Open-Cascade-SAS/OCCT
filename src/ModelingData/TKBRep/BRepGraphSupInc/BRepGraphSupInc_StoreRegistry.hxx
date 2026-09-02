@@ -153,7 +153,7 @@ public:
 
   //! Return the number of currently registered stores.
   //! @return registered store count
-  [[nodiscard]] uint32_t Count() const;
+  [[nodiscard]] Standard_EXPORT uint32_t Count() const;
 
 private:
   friend class BRepGraphSupInc_Storage;
