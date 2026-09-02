@@ -393,8 +393,10 @@ TEST(BRepGraph_RevisionTest, EmptyRevisionProvidesDirectReads)
   ASSERT_FALSE(aRevision.IsNull());
   EXPECT_TRUE(aRevision->IsEmpty());
   EXPECT_TRUE(aRevision->SupportsSparseEdits());
+  EXPECT_FALSE(aRevision->HasContentHashes());
   EXPECT_EQ(aRevision->SemanticHash(),
             BRepGraph_RevisionHash::Hasher::Semantic(aRevision->Graph()));
+  EXPECT_TRUE(aRevision->HasContentHashes());
 
   EXPECT_TRUE(aRevision->Graph().IsEmpty());
   EXPECT_EQ(aRevision->NbVisibleVertices(), 0u);
@@ -410,6 +412,7 @@ TEST(BRepGraph_RevisionTest, VisibleIteratorsYieldResolvedRecordsWithoutUIDColle
   ASSERT_TRUE(aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()).IsOk());
   const occ::handle<BRepGraph_Revision> aRevision = BRepGraph_Revision::FromGraph(aGraph);
   ASSERT_FALSE(aRevision.IsNull());
+  EXPECT_FALSE(aRevision->HasContentHashes());
 
   const auto countVisible = [](auto theIterator) {
     uint32_t aCount = 0;
@@ -429,6 +432,7 @@ TEST(BRepGraph_RevisionTest, VisibleIteratorsYieldResolvedRecordsWithoutUIDColle
   EXPECT_EQ(countVisible(aRevision->VisibleWires()), aRevision->NbVisibleWires());
   EXPECT_EQ(countVisible(aRevision->VisibleFaces()), aRevision->NbVisibleFaces());
   EXPECT_EQ(countVisible(aRevision->VisibleWireRefs()), aRevision->NbVisibleWireRefs());
+  EXPECT_FALSE(aRevision->HasContentHashes());
 
   BRepGraph_Revision::VertexIterator anIterator = aRevision->VisibleVertices();
   ASSERT_TRUE(anIterator.More());

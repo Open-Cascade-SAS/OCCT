@@ -42,17 +42,17 @@ class BRepGraph;
 class BRepGraphODE_RevisionPackage;
 class BRepGraph_Transaction;
 
-//! Complete immutable value of a BRepGraph model.
+//! Immutable revision of a BRepGraph model.
 //!
 //! Each revision retains a page-sharing copy of BRepGraphInc_Storage. Revisions are
 //! isolated by page-level copy-on-write and detached mutable representations. A
 //! transaction may either collect sparse durable-identity changes or edit an
 //! isolated complete graph before committing a new revision.
 //!
-//! Revision identifies model content, not a sequence number or history node.
 //! Relationships between revisions are established by their owner or by an
-//! explicit diff; this class does not imply ancestry. SchemaVersion() describes
-//! only the persistent representation accepted by revision serialization.
+//! explicit diff; this class does not imply ancestry. Content hashes are built
+//! when requested. SchemaVersion() describes the persistent representation
+//! accepted by revision serialization.
 class BRepGraph_Revision : public Standard_Transient
 {
 public:
@@ -508,6 +508,9 @@ public:
 
   //! Return the persistent identity of the retained graph.
   [[nodiscard]] Standard_EXPORT const Standard_GUID& GraphGUID() const;
+
+  //! Return true if the content hashes have already been computed.
+  [[nodiscard]] Standard_EXPORT bool HasContentHashes() const noexcept;
 
   [[nodiscard]] Standard_EXPORT const BRepGraph_RevisionHash& SemanticHash() const;
 

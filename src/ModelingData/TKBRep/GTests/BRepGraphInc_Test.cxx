@@ -205,6 +205,48 @@ TEST(BRepGraphIncTest, ParityOrientationRejectsInternalExternal)
   EXPECT_EQ(TopAbs_Orientation(anOrientation2), TopAbs_REVERSED);
 }
 
+TEST(BRepGraphIncTest, CopiedStorageDetachesModifiedRelations)
+{
+  BRepGraphInc_Storage          aSource;
+  const BRepGraph_VertexId      aVertex   = aSource.AppendVertex();
+  const BRepGraph_CompoundId    aCompound = aSource.AppendCompound();
+  const BRepGraph_ChildRefId    aChildRef =
+    aSource.AttachChildToCompound(aCompound, BRepGraph_NodeId(aVertex));
+  ASSERT_TRUE(aChildRef.IsValid());
+
+  BRepGraphInc_Storage anIncompatibleCopy;
+  EXPECT_FALSE(anIncompatibleCopy.CopyDerivedRelationsFrom(aSource));
+
+  BRepGraphInc_Storage aCopy(aSource);
+  ASSERT_TRUE(aCopy.CopyDerivedRelationsFrom(aSource));
+
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aSourceChildren =
+    aSource.CompoundRelations(aCompound).ChildRefIds;
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aCopyChildren =
+    aCopy.CompoundRelations(aCompound).ChildRefIds;
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aSourceParents =
+    aSource.CompoundRefsOfNode(BRepGraph_NodeId(aVertex));
+  const NCollection_LinearVector<BRepGraph_ChildRefId>& aCopyParents =
+    aCopy.CompoundRefsOfNode(BRepGraph_NodeId(aVertex));
+  ASSERT_EQ(aSourceChildren.Size(), 1u);
+  ASSERT_EQ(aSourceParents.Size(), 1u);
+  EXPECT_TRUE(aSource.HasCompoundParent(BRepGraph_NodeId(aVertex)));
+  EXPECT_TRUE(aCopy.HasCompoundParent(BRepGraph_NodeId(aVertex)));
+  EXPECT_EQ(aCopyChildren.Data(), aSourceChildren.Data());
+  EXPECT_EQ(aCopyParents.Data(), aSourceParents.Data());
+
+  ASSERT_TRUE(aCopy.DetachChildFromCompound(aCompound, aChildRef));
+
+  EXPECT_EQ(aSource.CompoundRelations(aCompound).ChildRefIds.Size(), 1u);
+  EXPECT_EQ(aSource.CompoundRefsOfNode(BRepGraph_NodeId(aVertex)).Size(), 1u);
+  EXPECT_TRUE(aSource.HasCompoundParent(BRepGraph_NodeId(aVertex)));
+  EXPECT_TRUE(aCopy.CompoundRelations(aCompound).ChildRefIds.IsEmpty());
+  EXPECT_TRUE(aCopy.CompoundRefsOfNode(BRepGraph_NodeId(aVertex)).IsEmpty());
+  EXPECT_FALSE(aCopy.HasCompoundParent(BRepGraph_NodeId(aVertex)));
+  EXPECT_NE(aCopy.CompoundRelations(aCompound).ChildRefIds.Data(), aSourceChildren.Data());
+  EXPECT_NE(aCopy.CompoundRefsOfNode(BRepGraph_NodeId(aVertex)).Data(), aSourceParents.Data());
+}
+
 TEST(BRepGraphIncTest, Cylinder_EntityCounts_MatchDefCounts)
 {
   BRepPrimAPI_MakeCylinder aCylMaker(5.0, 15.0);

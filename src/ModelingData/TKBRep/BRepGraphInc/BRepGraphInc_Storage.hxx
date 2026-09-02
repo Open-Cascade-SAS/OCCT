@@ -1424,7 +1424,9 @@ public:
 
   //! Copy all forward/reverse relation vectors directly from theSource.
   //! Used by identity copy to avoid the clear+rebuild cycle.
-  Standard_EXPORT void CopyDerivedRelationsFrom(const BRepGraphInc_Storage& theSource);
+  //! @return false if source and destination topology address spaces differ
+  [[nodiscard]] Standard_EXPORT bool CopyDerivedRelationsFrom(
+    const BRepGraphInc_Storage& theSource);
 
 private:
   friend class BRepGraphInc_Populate;
@@ -1555,8 +1557,8 @@ private:
 
     DefStore() = delete;
 
-    explicit DefStore(const int theBlockSize)
-        : Entities(theBlockSize)
+    explicit DefStore(const size_t thePageSize)
+        : Entities(thePageSize)
     {
     }
 
@@ -1664,8 +1666,8 @@ private:
 
     RefStore() = delete;
 
-    explicit RefStore(const int theBlockSize)
-        : Refs(theBlockSize)
+    explicit RefStore(const size_t thePageSize)
+        : Refs(thePageSize)
     {
     }
 
@@ -1798,7 +1800,7 @@ private:
   //! Occurrence reference store.
   RefStore<BRepGraphInc::OccurrenceRef> myOccurrenceRefs;
 
-  //! Centralized relation tables parallel to entity stores.
+  //! Relation records parallel to entity stores.
   NCollection_PagedArray<BRepGraphInc::FaceRelations>       myFaceRelations;
   NCollection_PagedArray<BRepGraphInc::WireRelations>       myWireRelations;
   NCollection_PagedArray<BRepGraphInc::EdgeRelations>       myEdgeRelations;
@@ -1830,8 +1832,8 @@ private:
 
     RepStore() = delete;
 
-    explicit RepStore(const int theBlockSize)
-        : Uses(theBlockSize)
+    explicit RepStore(const size_t thePageSize)
+        : Uses(thePageSize)
     {
     }
 

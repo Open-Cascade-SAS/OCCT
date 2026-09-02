@@ -32,7 +32,6 @@
 #include <NCollection_DataMap.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_ProgramError.hxx>
-#include <Standard_NotImplemented.hxx>
 
 #include <algorithm>
 #include <atomic>
@@ -502,6 +501,13 @@ const BRepGraph_Revision::HashState& BRepGraph_Revision::ensureHashState() const
 
 //=================================================================================================
 
+bool BRepGraph_Revision::HasContentHashes() const noexcept
+{
+  return hashStateIfAvailable() != nullptr;
+}
+
+//=================================================================================================
+
 const BRepGraph_RevisionHash& BRepGraph_Revision::SemanticHash() const
 {
   return ensureHashState().Semantic;
@@ -593,19 +599,8 @@ BRepGraph_Revision::CreateResult BRepGraph_Revision::Create(const BRepGraph& the
                                               theOptions.SchemaVersion,
                                               aSupportsSparseEdits,
                                               aComponents);
-    // Revision creation is the persistence boundary.  Do not return an object
-    // that can fail unexpectedly on its first lazy hash request.
-    (void)aResult.Revision->SemanticHash();
     aResult.Status = BRepGraph_RevisionStatus::Code::Ok;
     return aResult;
-  }
-  catch (const Standard_NotImplemented& theFailure)
-  {
-    aResult.Status = BRepGraph_RevisionStatus::Code::HashFailed;
-    BRepGraph_RevisionStatus::Diagnostic aDiagnostic;
-    aDiagnostic.Code    = "UnsupportedGeometryHash";
-    aDiagnostic.Message = theFailure.what();
-    aResult.Diagnostics.Append(aDiagnostic);
   }
   catch (const Standard_Failure& theFailure)
   {
@@ -683,24 +678,14 @@ BRepGraph_Revision::CreateResult BRepGraph_Revision::FromTransactionGraph(
                                               theSchemaVersion,
                                               aSupportsSparseEdits,
                                               aComponents);
-    (void)aResult.Revision->SemanticHash();
     aResult.Status = BRepGraph_RevisionStatus::Code::Ok;
-  }
-  catch (const Standard_NotImplemented& theFailure)
-  {
-    aResult.Revision.Nullify();
-    aResult.Status = BRepGraph_RevisionStatus::Code::HashFailed;
-    BRepGraph_RevisionStatus::Diagnostic aDiagnostic;
-    aDiagnostic.Code    = "UnsupportedGeometryHash";
-    aDiagnostic.Message = theFailure.what();
-    aResult.Diagnostics.Append(aDiagnostic);
   }
   catch (const Standard_Failure& theFailure)
   {
     aResult.Revision.Nullify();
     aResult.Status = BRepGraph_RevisionStatus::Code::HashFailed;
     BRepGraph_RevisionStatus::Diagnostic aDiagnostic;
-    aDiagnostic.Code    = "RevisionHashConstruction";
+    aDiagnostic.Code    = "RevisionComponentHash";
     aDiagnostic.Message = theFailure.what();
     aResult.Diagnostics.Append(aDiagnostic);
   }
@@ -1370,24 +1355,26 @@ occ::handle<BRepGraph_Revision> BRepGraph_Revision::FromComponents(
   }
   try
   {
-    (void)theBaseRevision->SemanticHash();
     const std::shared_ptr<const HashState> aBaseHashState = theBaseRevision->hashStateIfAvailable();
-    Standard_ProgramError_Raise_if(aBaseHashState == nullptr,
-                                   "BRepGraph_Revision: base hash state is unavailable");
-    std::shared_ptr<HashState> aNewHashState = std::make_shared<HashState>(*aBaseHashState);
-    aNewHashState->Semantic =
-      theComponents.IsEmpty()
-        ? aNewHashState->CoreSemantic
-        : combineComponentHashes(aNewHashState->CoreSemantic, theComponents, false);
-    aNewHashState->Storage =
-      theComponents.IsEmpty()
-        ? aNewHashState->CoreStorage
-        : combineComponentHashes(aNewHashState->CoreStorage, theComponents, true);
+    std::shared_ptr<const HashState> aHashState;
+    if (aBaseHashState != nullptr)
+    {
+      std::shared_ptr<HashState> aNewHashState = std::make_shared<HashState>(*aBaseHashState);
+      aNewHashState->Semantic =
+        theComponents.IsEmpty()
+          ? aNewHashState->CoreSemantic
+          : combineComponentHashes(aNewHashState->CoreSemantic, theComponents, false);
+      aNewHashState->Storage =
+        theComponents.IsEmpty()
+          ? aNewHashState->CoreStorage
+          : combineComponentHashes(aNewHashState->CoreStorage, theComponents, true);
+      aHashState = std::move(aNewHashState);
+    }
     return new BRepGraph_Revision(theBaseRevision->myCoreGraph,
                                   theBaseRevision->SchemaVersion(),
                                   theBaseRevision->SupportsSparseEdits(),
                                   theComponents,
-                                  std::move(aNewHashState));
+                                  std::move(aHashState));
   }
   catch (const Standard_Failure& theFailure)
   {
@@ -1414,7 +1401,6 @@ occ::handle<BRepGraph_Revision> BRepGraph_Revision::FromCoreGraph(
   {
     occ::handle<BRepGraph_Revision> aRevision =
       new BRepGraph_Revision(std::move(theGraph), theSchemaVersion, aSupportsSparseEdits);
-    (void)aRevision->SemanticHash();
     return aRevision;
   }
   catch (const Standard_Failure&)
@@ -1497,13 +1483,12 @@ occ::handle<BRepGraph_Revision> BRepGraph_Revision::FromDecodedCore(
                                                                        theSchemaVersion,
                                                                        aSupportsSparseEdits,
                                                                        theComponents);
-    (void)aRevision->SemanticHash();
     return aRevision;
   }
   catch (const Standard_Failure& theFailure)
   {
     BRepGraph_RevisionStatus::Diagnostic aDiagnostic;
-    aDiagnostic.Code    = "DecodedRevisionHash";
+    aDiagnostic.Code    = "DecodedComponentHash";
     aDiagnostic.Message = theFailure.what();
     theDiagnostics.Append(aDiagnostic);
   }

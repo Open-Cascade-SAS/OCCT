@@ -22,6 +22,7 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
@@ -35,6 +36,7 @@
 //! The bucket table uses open addressing. A copied map shares bucket pages;
 //! insertion, replacement, and removal clone only pages containing modified
 //! buckets. Capacity growth performs an explicit rehash and is amortized.
+//! A default-constructed map allocates its first bucket table on insertion or reservation.
 //! Retained copies are safe for concurrent const access and independently
 //! synchronized updates. Concurrent mutation of the same map object requires
 //! external synchronization.
@@ -260,21 +262,30 @@ public:
 
   ConstItemsView Items() const { return ConstItemsView(*this); }
 
-  explicit NCollection_PagedDataMap(const size_t theInitialCapacity = 1)
+  explicit NCollection_PagedDataMap(const size_t theInitialCapacity = 0)
   {
-    initialize(capacityFor(theInitialCapacity));
+    if (theInitialCapacity > 0)
+    {
+      initialize(capacityFor(theInitialCapacity));
+    }
   }
 
-  NCollection_PagedDataMap(const TheHasher& theHasher, const size_t theInitialCapacity = 1)
+  NCollection_PagedDataMap(const TheHasher& theHasher, const size_t theInitialCapacity = 0)
       : myHasher(theHasher)
   {
-    initialize(capacityFor(theInitialCapacity));
+    if (theInitialCapacity > 0)
+    {
+      initialize(capacityFor(theInitialCapacity));
+    }
   }
 
-  NCollection_PagedDataMap(TheHasher&& theHasher, const size_t theInitialCapacity = 1)
+  NCollection_PagedDataMap(TheHasher&& theHasher, const size_t theInitialCapacity = 0)
       : myHasher(std::move(theHasher))
   {
-    initialize(capacityFor(theInitialCapacity));
+    if (theInitialCapacity > 0)
+    {
+      initialize(capacityFor(theInitialCapacity));
+    }
   }
 
   [[nodiscard]] size_t Size() const noexcept { return mySize; }
@@ -353,6 +364,10 @@ public:
 
   void Reserve(const size_t theCapacity)
   {
+    if (theCapacity == 0)
+    {
+      return;
+    }
     const size_t aRequired = capacityForEntries(theCapacity);
     if (aRequired > myBuckets.Size())
     {
@@ -363,12 +378,18 @@ public:
   //! Remove all entries, retaining capacity unless memory release is requested.
   void Clear(const bool theToReleaseMemory = false)
   {
-    if (mySize == 0 && myRemoved == 0
-        && (!theToReleaseMemory || myBuckets.Size() == THE_MIN_CAPACITY))
+    if (mySize == 0 && myRemoved == 0 && (!theToReleaseMemory || myBuckets.IsEmpty()))
     {
       return;
     }
-    initialize(theToReleaseMemory ? THE_MIN_CAPACITY : myBuckets.Size());
+    if (theToReleaseMemory)
+    {
+      myBuckets.Clear();
+      mySize    = 0;
+      myRemoved = 0;
+      return;
+    }
+    initialize(myBuckets.Size());
   }
 
 private:
@@ -509,7 +530,7 @@ private:
 
   void initialize(const size_t theCapacity)
   {
-    NCollection_PagedArray<Bucket> aBuckets(THE_PAGE_SIZE);
+    NCollection_PagedArray<Bucket> aBuckets(std::min(THE_PAGE_SIZE, theCapacity));
     aBuckets.Resize(theCapacity);
     myBuckets = std::move(aBuckets);
     mySize    = 0;
@@ -518,6 +539,10 @@ private:
 
   [[nodiscard]] size_t findIndex(const TheKey& theKey) const
   {
+    if (myBuckets.IsEmpty())
+    {
+      return THE_NOT_FOUND;
+    }
     const size_t aMask   = myBuckets.Size() - 1;
     size_t       anIndex = myHasher(theKey) & aMask;
     for (size_t aProbe = 0; aProbe < myBuckets.Size(); ++aProbe)
@@ -538,6 +563,11 @@ private:
 
   void ensureInsertCapacity()
   {
+    if (myBuckets.IsEmpty())
+    {
+      initialize(THE_MIN_CAPACITY);
+      return;
+    }
     const size_t aCapacity = myBuckets.Size();
     if (mySize + myRemoved + 1 > loadLimit(aCapacity, 7))
     {

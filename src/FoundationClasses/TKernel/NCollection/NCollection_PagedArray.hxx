@@ -32,7 +32,8 @@
 //!
 //! Copying the array retains one radix-tree root. Const reads address shared
 //! immutable pages directly; the first write clones the radix path and the
-//! touched page. This gives snapshots O(1) retention and bounded indexed reads.
+//! touched page. This gives retained copies O(1) construction and bounded indexed reads.
+//! Empty arrays allocate no radix nodes or value pages.
 //! The container is dense: extending its visible range initializes every
 //! intervening value and therefore costs O(number of appended values).
 //! Concurrent const access to retained copies is safe. Mutation requires an
@@ -280,8 +281,7 @@ public:
 
   //! Construct an empty array.
   explicit NCollection_PagedArray(const size_t thePageSize = 256)
-      : myRoot(std::make_shared<PageTableNode>(true)),
-        myPageSize(thePageSize == 0 ? 1 : thePageSize)
+      : myPageSize(thePageSize == 0 ? 1 : thePageSize)
   {
   }
 
@@ -426,7 +426,7 @@ public:
   //! Clear the visible array and release this array's page references.
   void Clear()
   {
-    myRoot      = std::make_shared<PageTableNode>(true);
+    myRoot.reset();
     myDepth     = 0;
     myPageCount = 0;
     mySize      = 0;
@@ -530,7 +530,11 @@ private:
 
   Page& changePage(const size_t thePageIndex)
   {
-    if (myRoot.use_count() != 1)
+    if (myRoot == nullptr)
+    {
+      myRoot = std::make_shared<PageTableNode>(true);
+    }
+    else if (myRoot.use_count() != 1)
     {
       myRoot = std::make_shared<PageTableNode>(*myRoot);
     }

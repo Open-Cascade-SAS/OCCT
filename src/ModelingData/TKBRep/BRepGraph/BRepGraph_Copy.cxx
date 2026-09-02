@@ -1370,7 +1370,10 @@ static bool copyFullGraphIdentity(const BRepGraphInc_Storage&       aSrc,
   copyUIDAndGraphIdentity(aSrc, aDst);
   copyFlagsAndActiveCountsIdentity(aSrc, aDst);
 
-  aDst.CopyDerivedRelationsFrom(aSrc);
+  if (!aDst.CopyDerivedRelationsFrom(aSrc))
+  {
+    return false;
+  }
   aDst.MarkUIDReverseIndexesDirty();
   aDst.CopyShapeBindingsFrom(aSrc);
 

@@ -53,6 +53,8 @@ public:
     {
       return Node == theOther.Node && Ref == theOther.Ref && StepIndex == theOther.StepIndex;
     }
+
+    bool operator!=(const Step& theOther) const { return !(*this == theOther); }
   };
 
 public:
@@ -104,6 +106,10 @@ public:
   //! Returns true if this path is equal to the other path.
   //! @param[in] theOther path to compare with
   bool operator==(const BRepGraph_UsagePath& theOther) const { return IsEqual(theOther); }
+
+  //! Returns true if this path differs from the other path.
+  //! @param[in] theOther path to compare with
+  bool operator!=(const BRepGraph_UsagePath& theOther) const { return !IsEqual(theOther); }
 
   //! Returns a hash code for this path.
   //! Samples the path size and the first, middle, and last steps in O(1).

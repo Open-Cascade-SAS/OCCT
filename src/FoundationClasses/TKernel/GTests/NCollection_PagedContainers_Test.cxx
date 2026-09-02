@@ -172,7 +172,7 @@ static_assert(std::is_constructible<NCollection_PagedDataMap<int, int>::Iterator
               "legacy paged-map iterator must accept a const container");
 } // namespace
 
-TEST(NCollection_PersistentRadixMapTest, BuildUpdatesAndSnapshotsAreCanonical)
+TEST(NCollection_PersistentRadixMapTest, BuildUpdatesAndRetainedCopiesAreCanonical)
 {
   NCollection_LinearVector<PersistentRadixTestMap::Entry> anEntries;
   anEntries.Append({0xFF00000000000001ULL, 30});
@@ -279,7 +279,7 @@ TEST(NCollection_PersistentRadixMapTest, RemovalCollapsesBranchToSingleChild)
   EXPECT_EQ(std::distance(aReduced.begin(), aReduced.end()), 1);
 }
 
-TEST(NCollection_PagedArrayTest, CopyOnWriteDetachesOnlyModifiedSnapshot)
+TEST(NCollection_PagedArrayTest, CopyOnWriteDetachesOnlyModifiedCopy)
 {
   NCollection_PagedArray<int> aBase(4);
   for (int anIndex = 0; anIndex < 12; ++anIndex)
@@ -298,7 +298,7 @@ TEST(NCollection_PagedArrayTest, CopyOnWriteDetachesOnlyModifiedSnapshot)
   EXPECT_EQ(aChanged.Value(13), 7);
 }
 
-TEST(NCollection_PagedArrayTest, SharedSnapshotSupportsConcurrentReadsAndIndependentUpdates)
+TEST(NCollection_PagedArrayTest, SharedCopySupportsConcurrentReadsAndIndependentUpdates)
 {
   NCollection_PagedArray<int> aValues(8);
   for (int anIndex = 0; anIndex < 128; ++anIndex)
@@ -468,7 +468,7 @@ TEST(NCollection_BitDynamicArrayTest, TailMaskAndCopyOnWriteAreStable)
   EXPECT_EQ(aChanged.Block(1), uint64_t(0x1));
 }
 
-TEST(NCollection_PagedDataMapTest, SnapshotsKeepIndependentBucketsAndValues)
+TEST(NCollection_PagedDataMapTest, CopiesKeepIndependentBucketsAndValues)
 {
   NCollection_PagedDataMap<int, int> aBase;
   for (int aKey = 0; aKey < 100; ++aKey)
@@ -524,17 +524,20 @@ TEST(NCollection_PagedDataMapTest, UnBindDestroysDetachedEntry)
   EXPECT_TRUE(aMap.Bind(1, aResource));
   aResource.reset();
 
-  NCollection_PagedDataMap<size_t, std::shared_ptr<int>> aSnapshot = aMap;
+  NCollection_PagedDataMap<size_t, std::shared_ptr<int>> aCopy = aMap;
   EXPECT_TRUE(aMap.UnBind(1));
   EXPECT_FALSE(aWeakResource.expired());
 
-  EXPECT_TRUE(aSnapshot.UnBind(1));
+  EXPECT_TRUE(aCopy.UnBind(1));
   EXPECT_TRUE(aWeakResource.expired());
 }
 
 TEST(NCollection_PagedDataMapTest, ClearFollowsCapacityRetentionConvention)
 {
   NCollection_PagedDataMap<size_t, size_t> aMap;
+  EXPECT_EQ(aMap.Capacity(), 0u);
+  aMap.Reserve(0);
+  EXPECT_EQ(aMap.Capacity(), 0u);
   aMap.Reserve(100);
   const size_t aReservedCapacity = aMap.Capacity();
   EXPECT_GT(aReservedCapacity, 100u);
@@ -547,6 +550,8 @@ TEST(NCollection_PagedDataMapTest, ClearFollowsCapacityRetentionConvention)
 
   aMap.Clear(true);
   EXPECT_TRUE(aMap.IsEmpty());
+  EXPECT_EQ(aMap.Capacity(), 0u);
+  EXPECT_TRUE(aMap.Bind(3, 30));
   EXPECT_EQ(aMap.Capacity(), 8u);
 }
 

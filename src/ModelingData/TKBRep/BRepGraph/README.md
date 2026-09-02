@@ -22,6 +22,7 @@ The goal is to make workflows like sewing, healing, compact, and deduplicate eas
 detaches mutable geometry and mesh representations, and captures persistent supplemental
 components. A revision identifies content and does not imply ancestry; history relationships are
 owned separately or represented by an explicit `BRepGraph_RevisionDiff`.
+Canonical content hashes are computed only when a hash-dependent operation requests them.
 
 `BRepGraph_Transaction` provides two deliberately separate edit modes:
 
@@ -502,14 +503,13 @@ History records lineage for downstream attribute transfer and diagnostics. Each 
 ## Memory Model
 
 BRepGraph uses storage-local containers for its incidence tables, relation
-tables, UID vectors, and caches:
+tables, UID vectors, and caches. Incidence pages are retained across graph
+copies. Relation tables detach at page granularity on their first mutation:
 
 - `BRepGraphInc_Storage` entity tables, relation tables, and UID vectors
 - UID reverse lookup maps
 
 Layers manage their own internal allocators and containers.
-
-Benefits: O(1) allocation (bump-pointer), O(1) destruction (bulk page release) for storage-owned graph data, without coupling layer lifetime to graph-owned allocator state.
 
 ## Threading Model
 

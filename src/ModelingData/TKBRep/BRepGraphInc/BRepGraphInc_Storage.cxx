@@ -45,6 +45,30 @@ namespace
 
 [[maybe_unused]] constexpr uint32_t THE_EXHAUSTED_UID_COUNTER =
   std::numeric_limits<uint32_t>::max();
+constexpr size_t THE_RELATION_PAGE_SIZE = 64;
+constexpr size_t THE_RECORD_PAGE_BYTES  = 4096;
+
+template <typename T>
+constexpr size_t recordPageSize()
+{
+  constexpr size_t aRecordsPerPage = THE_RECORD_PAGE_BYTES / sizeof(T);
+  if constexpr (aRecordsPerPage >= 256)
+  {
+    return 256;
+  }
+  else if constexpr (aRecordsPerPage >= 128)
+  {
+    return 128;
+  }
+  else if constexpr (aRecordsPerPage >= 64)
+  {
+    return 64;
+  }
+  else
+  {
+    return 32;
+  }
+}
 
 void validateNextUidCounter(const uint32_t theCounter, const char* theContext)
 {
@@ -379,50 +403,41 @@ bool coEdgeIdsAreUnique(const NCollection_LinearVector<BRepGraph_CoEdgeId>& theC
 //=================================================================================================
 
 BRepGraphInc_Storage::BRepGraphInc_Storage()
-    : myRootProductIds(8),
-      myDeferredModified(128),
-      myDeferredRefModified(128),
-      myVertices(256),
-      myEdges(256),
-      myCoEdges(256),
-      myWires(256),
-      myFaces(256),
-      myShells(256),
-      mySolids(256),
-      myCompounds(256),
-      myCompSolids(256),
-      myProducts(64),
-      myOccurrences(256),
-      myShellRefs(256),
-      myFaceRefs(256),
-      myWireRefs(256),
-      myVertexRefs(256),
-      mySolidRefs(256),
-      myChildRefs(256),
-      myOccurrenceRefs(256),
-      myFaceRelations(256),
-      myWireRelations(256),
-      myEdgeRelations(256),
-      myShellRelations(256),
-      mySolidRelations(256),
-      myCompoundRelations(256),
-      myCompSolidRelations(256),
-      myVertexRelations(256),
-      myProductRelations(64),
-      myOccurrenceRelations(64),
-      myNodeToCompounds(1),
-      myNodeToOccurrences(1),
-      myEdgeCurves3D(256),
-      myEdgePolygons3D(256),
-      myCoEdgeCurves2D(256),
-      myCoEdgePolygons2D(256),
-      myCoEdgePolygonsOnTri(256),
-      myFaceSurfaces(256),
-      myFaceTriangulations(256),
-      myUIDToNodeId(1),
-      myRefUIDToRefId(1),
-      myShapeToNodeId(1),
-      myOriginalShapes(1),
+    : myVertices(recordPageSize<BRepGraphInc::VertexDef>()),
+      myEdges(recordPageSize<BRepGraphInc::EdgeDef>()),
+      myCoEdges(recordPageSize<BRepGraphInc::CoEdgeDef>()),
+      myWires(recordPageSize<BRepGraphInc::WireDef>()),
+      myFaces(recordPageSize<BRepGraphInc::FaceDef>()),
+      myShells(recordPageSize<BRepGraphInc::ShellDef>()),
+      mySolids(recordPageSize<BRepGraphInc::SolidDef>()),
+      myCompounds(recordPageSize<BRepGraphInc::CompoundDef>()),
+      myCompSolids(recordPageSize<BRepGraphInc::CompSolidDef>()),
+      myProducts(recordPageSize<BRepGraphInc::ProductDef>()),
+      myOccurrences(recordPageSize<BRepGraphInc::OccurrenceDef>()),
+      myShellRefs(recordPageSize<BRepGraphInc::ShellRef>()),
+      myFaceRefs(recordPageSize<BRepGraphInc::FaceRef>()),
+      myWireRefs(recordPageSize<BRepGraphInc::WireRef>()),
+      myVertexRefs(recordPageSize<BRepGraphInc::VertexRef>()),
+      mySolidRefs(recordPageSize<BRepGraphInc::SolidRef>()),
+      myChildRefs(recordPageSize<BRepGraphInc::ChildRef>()),
+      myOccurrenceRefs(recordPageSize<BRepGraphInc::OccurrenceRef>()),
+      myFaceRelations(THE_RELATION_PAGE_SIZE),
+      myWireRelations(THE_RELATION_PAGE_SIZE),
+      myEdgeRelations(THE_RELATION_PAGE_SIZE),
+      myShellRelations(THE_RELATION_PAGE_SIZE),
+      mySolidRelations(THE_RELATION_PAGE_SIZE),
+      myCompoundRelations(THE_RELATION_PAGE_SIZE),
+      myCompSolidRelations(THE_RELATION_PAGE_SIZE),
+      myVertexRelations(THE_RELATION_PAGE_SIZE),
+      myProductRelations(THE_RELATION_PAGE_SIZE),
+      myOccurrenceRelations(THE_RELATION_PAGE_SIZE),
+      myEdgeCurves3D(recordPageSize<BRepGraphInc::EdgeCurve3DRep>()),
+      myEdgePolygons3D(recordPageSize<BRepGraphInc::EdgePolygon3DRep>()),
+      myCoEdgeCurves2D(recordPageSize<BRepGraphInc::CoEdgeCurve2DRep>()),
+      myCoEdgePolygons2D(recordPageSize<BRepGraphInc::CoEdgePolygon2DRep>()),
+      myCoEdgePolygonsOnTri(recordPageSize<BRepGraphInc::CoEdgePolygonOnTriRep>()),
+      myFaceSurfaces(recordPageSize<BRepGraphInc::FaceSurfaceRep>()),
+      myFaceTriangulations(recordPageSize<BRepGraphInc::FaceTriangulationRep>()),
       myRuntimeIdentity(makeRuntimeIdentity(this))
 {
   myAllocator->SetThreadSafe(true);
@@ -1070,7 +1085,8 @@ void BRepGraphInc_Storage::ClearRelations()
 const NCollection_LinearVector<BRepGraph_ChildRefId>& BRepGraphInc_Storage::CompoundRefsOfNode(
   const BRepGraph_NodeId theNode) const
 {
-  if (const NCollection_LinearVector<BRepGraph_ChildRefId>* aRefs = myNodeToCompounds.Seek(theNode))
+  if (const NCollection_LinearVector<BRepGraph_ChildRefId>* aRefs =
+        myNodeToCompounds.Seek(theNode))
   {
     return *aRefs;
   }
@@ -1322,6 +1338,9 @@ void BRepGraphInc_Storage::CopyRemovedFlagsFrom(const BRepGraphInc_Storage& theS
 
 void BRepGraphInc_Storage::rebuildDerivedRelationsInternal(const bool theRecountActiveCounts)
 {
+  myVertexRelations.Clear();
+  myEdgeRelations.Clear();
+  myOccurrenceRelations.Clear();
   prepareRelationTable(myVertexRelations, NbVertices());
   prepareRelationTable(myEdgeRelations, NbEdges());
   prepareRelationTable(myWireRelations, NbWires());
@@ -1333,35 +1352,69 @@ void BRepGraphInc_Storage::rebuildDerivedRelationsInternal(const bool theRecount
   prepareRelationTable(myProductRelations, NbProducts());
   prepareRelationTable(myOccurrenceRelations, NbOccurrences());
 
-  for (BRepGraph_VertexId aVertexId(0); aVertexId.IsValid(NbVertices()); ++aVertexId)
-  {
-    ChangeVertexRelationsInternal(aVertexId).EdgeIds.Clear();
-  }
-  for (BRepGraph_EdgeId anEdgeId(0); anEdgeId.IsValid(NbEdges()); ++anEdgeId)
-  {
-    BRepGraphInc::EdgeRelations& anEdgeRel = ChangeEdgeRelationsInternal(anEdgeId);
-    anEdgeRel.CoEdgeIds.Clear();
-  }
   for (BRepGraph_WireId aWireId(0); aWireId.IsValid(NbWires()); ++aWireId)
   {
-    ChangeWireRelationsInternal(aWireId).ParentWireRefIds.Clear();
+    const BRepGraphInc::WireRelations& aRelations = WireRelations(aWireId);
+    if (!aRelations.ParentWireRefIds.IsEmpty())
+    {
+      if (aRelations.CoEdgeIds.IsEmpty())
+      {
+        myWireRelations.ChangeValue(static_cast<size_t>(aWireId.Index)) =
+          BRepGraphInc::WireRelations();
+      }
+      else
+      {
+        ChangeWireRelationsInternal(aWireId).ParentWireRefIds.Clear();
+      }
+    }
   }
   for (BRepGraph_FaceId aFaceId(0); aFaceId.IsValid(NbFaces()); ++aFaceId)
   {
-    ChangeFaceRelationsInternal(aFaceId).ParentFaceRefIds.Clear();
+    const BRepGraphInc::FaceRelations& aRelations = FaceRelations(aFaceId);
+    if (!aRelations.ParentFaceRefIds.IsEmpty())
+    {
+      if (aRelations.WireRefIds.IsEmpty())
+      {
+        myFaceRelations.ChangeValue(static_cast<size_t>(aFaceId.Index)) =
+          BRepGraphInc::FaceRelations();
+      }
+      else
+      {
+        ChangeFaceRelationsInternal(aFaceId).ParentFaceRefIds.Clear();
+      }
+    }
   }
   for (BRepGraph_ShellId aShellId(0); aShellId.IsValid(NbShells()); ++aShellId)
   {
-    ChangeShellRelationsInternal(aShellId).ParentShellRefIds.Clear();
+    const BRepGraphInc::ShellRelations& aRelations = ShellRelations(aShellId);
+    if (!aRelations.ParentShellRefIds.IsEmpty())
+    {
+      if (aRelations.FaceRefIds.IsEmpty())
+      {
+        myShellRelations.ChangeValue(static_cast<size_t>(aShellId.Index)) =
+          BRepGraphInc::ShellRelations();
+      }
+      else
+      {
+        ChangeShellRelationsInternal(aShellId).ParentShellRefIds.Clear();
+      }
+    }
   }
   for (BRepGraph_SolidId aSolidId(0); aSolidId.IsValid(NbSolids()); ++aSolidId)
   {
-    ChangeSolidRelationsInternal(aSolidId).ParentSolidRefIds.Clear();
-  }
-  for (BRepGraph_OccurrenceId anOccurrenceId(0); anOccurrenceId.IsValid(NbOccurrences());
-       ++anOccurrenceId)
-  {
-    ChangeOccurrenceRelationsInternal(anOccurrenceId).ParentOccurrenceRefIds.Clear();
+    const BRepGraphInc::SolidRelations& aRelations = SolidRelations(aSolidId);
+    if (!aRelations.ParentSolidRefIds.IsEmpty())
+    {
+      if (aRelations.ShellRefIds.IsEmpty())
+      {
+        mySolidRelations.ChangeValue(static_cast<size_t>(aSolidId.Index)) =
+          BRepGraphInc::SolidRelations();
+      }
+      else
+      {
+        ChangeSolidRelationsInternal(aSolidId).ParentSolidRefIds.Clear();
+      }
+    }
   }
   myNodeToCompounds.Clear();
   myNodeToOccurrences.Clear();
@@ -1662,103 +1715,34 @@ void BRepGraphInc_Storage::rebuildDerivedRelationsInternal(const bool theRecount
 
 //=================================================================================================
 
-void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& theSource)
+bool BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& theSource)
 {
-  prepareRelationTable(myVertexRelations, NbVertices());
-  prepareRelationTable(myEdgeRelations, NbEdges());
-  prepareRelationTable(myWireRelations, NbWires());
-  prepareRelationTable(myFaceRelations, NbFaces());
-  prepareRelationTable(myShellRelations, NbShells());
-  prepareRelationTable(mySolidRelations, NbSolids());
-  prepareRelationTable(myCompoundRelations, NbCompounds());
-  prepareRelationTable(myCompSolidRelations, NbCompSolids());
-  prepareRelationTable(myProductRelations, NbProducts());
-  prepareRelationTable(myOccurrenceRelations, NbOccurrences());
-
-  for (BRepGraph_VertexId aV(0); aV.IsValid(NbVertices()); ++aV)
+  if (NbVertices() != theSource.NbVertices() || NbEdges() != theSource.NbEdges()
+      || NbCoEdges() != theSource.NbCoEdges() || NbWires() != theSource.NbWires()
+      || NbFaces() != theSource.NbFaces() || NbShells() != theSource.NbShells()
+      || NbSolids() != theSource.NbSolids() || NbCompounds() != theSource.NbCompounds()
+      || NbCompSolids() != theSource.NbCompSolids() || NbProducts() != theSource.NbProducts()
+      || NbOccurrences() != theSource.NbOccurrences()
+      || NbShellRefs() != theSource.NbShellRefs() || NbFaceRefs() != theSource.NbFaceRefs()
+      || NbWireRefs() != theSource.NbWireRefs() || NbVertexRefs() != theSource.NbVertexRefs()
+      || NbSolidRefs() != theSource.NbSolidRefs() || NbChildRefs() != theSource.NbChildRefs()
+      || NbOccurrenceRefs() != theSource.NbOccurrenceRefs())
   {
-    if (aV.IsValid(theSource.NbVertices()))
-      ChangeVertexRelationsInternal(aV).EdgeIds = theSource.VertexRelations(aV).EdgeIds;
-  }
-  for (BRepGraph_EdgeId anE(0); anE.IsValid(NbEdges()); ++anE)
-  {
-    if (anE.IsValid(theSource.NbEdges()))
-      ChangeEdgeRelationsInternal(anE).CoEdgeIds = theSource.EdgeRelations(anE).CoEdgeIds;
-  }
-  for (BRepGraph_WireId aW(0); aW.IsValid(NbWires()); ++aW)
-  {
-    if (aW.IsValid(theSource.NbWires()))
-    {
-      ChangeWireRelationsInternal(aW).CoEdgeIds = theSource.WireRelations(aW).CoEdgeIds;
-      ChangeWireRelationsInternal(aW).ParentWireRefIds =
-        theSource.WireRelations(aW).ParentWireRefIds;
-    }
-  }
-  for (BRepGraph_FaceId aF(0); aF.IsValid(NbFaces()); ++aF)
-  {
-    if (aF.IsValid(theSource.NbFaces()))
-    {
-      ChangeFaceRelationsInternal(aF).WireRefIds = theSource.FaceRelations(aF).WireRefIds;
-      ChangeFaceRelationsInternal(aF).ParentFaceRefIds =
-        theSource.FaceRelations(aF).ParentFaceRefIds;
-    }
-  }
-  for (BRepGraph_ShellId aS(0); aS.IsValid(NbShells()); ++aS)
-  {
-    if (aS.IsValid(theSource.NbShells()))
-    {
-      ChangeShellRelationsInternal(aS).FaceRefIds = theSource.ShellRelations(aS).FaceRefIds;
-      ChangeShellRelationsInternal(aS).ParentShellRefIds =
-        theSource.ShellRelations(aS).ParentShellRefIds;
-    }
-  }
-  for (BRepGraph_SolidId aS(0); aS.IsValid(NbSolids()); ++aS)
-  {
-    if (aS.IsValid(theSource.NbSolids()))
-    {
-      ChangeSolidRelationsInternal(aS).ShellRefIds = theSource.SolidRelations(aS).ShellRefIds;
-      ChangeSolidRelationsInternal(aS).ParentSolidRefIds =
-        theSource.SolidRelations(aS).ParentSolidRefIds;
-    }
-  }
-  for (BRepGraph_CompSolidId aCS(0); aCS.IsValid(NbCompSolids()); ++aCS)
-  {
-    if (aCS.IsValid(theSource.NbCompSolids()))
-      ChangeCompSolidRelationsInternal(aCS).SolidRefIds =
-        theSource.CompSolidRelations(aCS).SolidRefIds;
-  }
-  for (BRepGraph_CompoundId aC(0); aC.IsValid(NbCompounds()); ++aC)
-  {
-    if (aC.IsValid(theSource.NbCompounds()))
-      ChangeCompoundRelationsInternal(aC).ChildRefIds = theSource.CompoundRelations(aC).ChildRefIds;
-  }
-  for (BRepGraph_ProductId aP(0); aP.IsValid(NbProducts()); ++aP)
-  {
-    if (aP.IsValid(theSource.NbProducts()))
-      ChangeProductRelationsInternal(aP).OccurrenceRefIds =
-        theSource.ProductRelations(aP).OccurrenceRefIds;
-  }
-  for (BRepGraph_OccurrenceId anO(0); anO.IsValid(NbOccurrences()); ++anO)
-  {
-    if (anO.IsValid(theSource.NbOccurrences()))
-      ChangeOccurrenceRelationsInternal(anO).ParentOccurrenceRefIds =
-        theSource.OccurrenceRelations(anO).ParentOccurrenceRefIds;
+    return false;
   }
 
-  // Copy sparse reverse maps (node -> compound/occurrence child refs).
-  myNodeToCompounds.Clear();
-  for (auto anIt = theSource.myNodeToCompounds.cbegin(); anIt != theSource.myNodeToCompounds.cend();
-       ++anIt)
-  {
-    myNodeToCompounds.Bind(anIt.Key(), anIt.Value());
-  }
-  myNodeToOccurrences.Clear();
-  for (auto anIt = theSource.myNodeToOccurrences.cbegin();
-       anIt != theSource.myNodeToOccurrences.cend();
-       ++anIt)
-  {
-    myNodeToOccurrences.Bind(anIt.Key(), anIt.Value());
-  }
+  myVertexRelations     = theSource.myVertexRelations;
+  myEdgeRelations       = theSource.myEdgeRelations;
+  myWireRelations       = theSource.myWireRelations;
+  myFaceRelations       = theSource.myFaceRelations;
+  myShellRelations      = theSource.myShellRelations;
+  mySolidRelations      = theSource.mySolidRelations;
+  myCompoundRelations   = theSource.myCompoundRelations;
+  myCompSolidRelations  = theSource.myCompSolidRelations;
+  myProductRelations    = theSource.myProductRelations;
+  myOccurrenceRelations = theSource.myOccurrenceRelations;
+  myNodeToCompounds     = theSource.myNodeToCompounds;
+  myNodeToOccurrences   = theSource.myNodeToOccurrences;
 
   // Copy compound/occurrence parent bit-planes for all node kinds.
   // These are indexed by the same type IDs in source and destination (identity copy).
@@ -1784,6 +1768,7 @@ void BRepGraphInc_Storage::CopyDerivedRelationsFrom(const BRepGraphInc_Storage& 
   myProducts.HasOccurrenceParentFlags    = theSource.myProducts.HasOccurrenceParentFlags;
   myOccurrences.HasCompoundParentFlags   = theSource.myOccurrences.HasCompoundParentFlags;
   myOccurrences.HasOccurrenceParentFlags = theSource.myOccurrences.HasOccurrenceParentFlags;
+  return true;
 }
 
 //=================================================================================================
@@ -2603,11 +2588,11 @@ bool BRepGraphInc_Storage::DetachChildFromCompound(const BRepGraph_CompoundId th
     eraseRelationId(ChangeCompoundRelationsInternal(theParentCompoundId).ChildRefIds, theRefId);
   if (isErased && aChildNode.IsValid())
   {
-    if (NCollection_LinearVector<BRepGraph_ChildRefId>* aRefs =
+    if (NCollection_LinearVector<BRepGraph_ChildRefId>* aStoredRelations =
           myNodeToCompounds.ChangeSeek(aChildNode))
     {
-      eraseRelationId(*aRefs, theRefId);
-      if (aRefs->IsEmpty())
+      eraseRelationId(*aStoredRelations, theRefId);
+      if (aStoredRelations->IsEmpty())
       {
         SetHasCompoundParent(aChildNode, false);
       }
@@ -2641,11 +2626,11 @@ bool BRepGraphInc_Storage::DetachOccurrenceFromProduct(const BRepGraph_ProductId
   }
   if (isErased && aChildNode.IsValid())
   {
-    if (NCollection_LinearVector<BRepGraph_OccurrenceRefId>* aRefs =
+    if (NCollection_LinearVector<BRepGraph_OccurrenceRefId>* aStoredRelations =
           myNodeToOccurrences.ChangeSeek(aChildNode))
     {
-      eraseRelationId(*aRefs, theRefId);
-      if (aRefs->IsEmpty())
+      eraseRelationId(*aStoredRelations, theRefId);
+      if (aStoredRelations->IsEmpty())
       {
         SetHasOccurrenceParent(aChildNode, false);
       }
@@ -2675,11 +2660,11 @@ void BRepGraphInc_Storage::RebindOccurrenceChild(const BRepGraph_OccurrenceId th
     }
     if (theOldChild.IsValid())
     {
-      if (NCollection_LinearVector<BRepGraph_OccurrenceRefId>* aRefs =
+      if (NCollection_LinearVector<BRepGraph_OccurrenceRefId>* aStoredRelations =
             myNodeToOccurrences.ChangeSeek(theOldChild))
       {
-        eraseRelationId(*aRefs, aRefId);
-        if (aRefs->IsEmpty())
+        eraseRelationId(*aStoredRelations, aRefId);
+        if (aStoredRelations->IsEmpty())
         {
           SetHasOccurrenceParent(theOldChild, false);
         }
@@ -2916,11 +2901,11 @@ void BRepGraphInc_Storage::RebindChildRef(const BRepGraph_ChildRefId theRefId,
   }
   if (theOldChild.IsValid())
   {
-    if (NCollection_LinearVector<BRepGraph_ChildRefId>* aRefs =
+    if (NCollection_LinearVector<BRepGraph_ChildRefId>* aStoredRelations =
           myNodeToCompounds.ChangeSeek(theOldChild))
     {
-      eraseRelationId(*aRefs, theRefId);
-      if (aRefs->IsEmpty())
+      eraseRelationId(*aStoredRelations, theRefId);
+      if (aStoredRelations->IsEmpty())
       {
         SetHasCompoundParent(theOldChild, false);
       }
@@ -2956,11 +2941,11 @@ void BRepGraphInc_Storage::RebindOccurrenceRef(const BRepGraph_OccurrenceRefId t
   }
   if (anOldChild.IsValid())
   {
-    if (NCollection_LinearVector<BRepGraph_OccurrenceRefId>* aRefs =
+    if (NCollection_LinearVector<BRepGraph_OccurrenceRefId>* aStoredRelations =
           myNodeToOccurrences.ChangeSeek(anOldChild))
     {
-      eraseRelationId(*aRefs, theRefId);
-      if (aRefs->IsEmpty())
+      eraseRelationId(*aStoredRelations, theRefId);
+      if (aStoredRelations->IsEmpty())
       {
         SetHasOccurrenceParent(anOldChild, false);
       }
