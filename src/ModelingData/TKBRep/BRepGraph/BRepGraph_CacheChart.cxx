@@ -448,8 +448,8 @@ void appendCut(BRepGraph_CacheChart_MutableResult&   theResult,
 
   BRepGraph_CacheChart::Cut aCut;
   aCut.PeriodicDirection = theDirection;
-  aCut.Parameter = aParameter;
-  aCut.Period    = aPeriod;
+  aCut.Parameter         = aParameter;
+  aCut.Period            = aPeriod;
   if (isU)
   {
     aCut.OtherFirst = theResult.VFirst;
@@ -764,10 +764,10 @@ occ::handle<BRepGraph_CacheChart::Result> BRepGraph_CacheChart::Build(
         aTransition.PeriodicDirection                 = std::abs(aLift.UPeriodIndex) != 0
                                                           ? BRepGraph_CacheChart::Direction::U
                                                           : BRepGraph_CacheChart::Direction::V;
-        aTransition.Period =
-          aTransition.PeriodicDirection == BRepGraph_CacheChart::Direction::U ? aPeriodic.UPeriod
-                                                                               : aPeriodic.VPeriod;
-        aTransition.Shift        = aShift;
+        aTransition.Period = aTransition.PeriodicDirection == BRepGraph_CacheChart::Direction::U
+                               ? aPeriodic.UPeriod
+                               : aPeriodic.VPeriod;
+        aTransition.Shift  = aShift;
         aTransition.PositiveSide = static_cast<int32_t>(anIndex);
         aTransition.NegativeSide = static_cast<int32_t>(anOtherIndex);
         aTransition.CutParameter =

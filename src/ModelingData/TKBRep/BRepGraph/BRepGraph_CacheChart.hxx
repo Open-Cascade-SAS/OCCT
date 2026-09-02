@@ -130,8 +130,8 @@ public:
     double    Period            = 0.0;
     double    CutParameter      = 0.0;
     gp_Pnt2d  Shift;
-    int32_t   PositiveSide      = -1;
-    int32_t   NegativeSide      = -1;
+    int32_t   PositiveSide = -1;
+    int32_t   NegativeSide = -1;
   };
 
   //! @brief A selected transient coordinate-aligned cut.
