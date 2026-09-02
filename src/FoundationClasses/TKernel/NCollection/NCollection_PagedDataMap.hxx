@@ -404,13 +404,21 @@ private:
   {
     using KeyValue = std::pair<TheKey, TheValue>;
 
+    union Storage {
+      Storage() noexcept {}
+
+      ~Storage() {}
+
+      KeyValue myKeyValue;
+    };
+
     Bucket() noexcept = default;
 
     Bucket(const Bucket& theOther)
     {
       if (theOther.IsOccupied())
       {
-        new (myStorage) KeyValue(theOther.keyValue());
+        new (&myStorage.myKeyValue) KeyValue(theOther.keyValue());
         myState = BucketState::Occupied;
       }
       else
@@ -445,7 +453,7 @@ private:
     template <typename TheStoredValue>
     TheValue& Bind(const TheKey& theKey, TheStoredValue&& theValue)
     {
-      new (myStorage) KeyValue(theKey, std::forward<TheStoredValue>(theValue));
+      new (&myStorage.myKeyValue) KeyValue(theKey, std::forward<TheStoredValue>(theValue));
       myState = BucketState::Occupied;
       return changeKeyValue().second;
     }
@@ -459,12 +467,12 @@ private:
   private:
     [[nodiscard]] const KeyValue& keyValue() const noexcept
     {
-      return *std::launder(reinterpret_cast<const KeyValue*>(myStorage));
+      return *std::launder(&myStorage.myKeyValue);
     }
 
     [[nodiscard]] KeyValue& changeKeyValue() noexcept
     {
-      return *std::launder(reinterpret_cast<KeyValue*>(myStorage));
+      return *std::launder(&myStorage.myKeyValue);
     }
 
     void destroy() noexcept
@@ -481,7 +489,7 @@ private:
       myState = BucketState::Empty;
       if (theOther.IsOccupied())
       {
-        new (myStorage) KeyValue(theOther.keyValue());
+        new (&myStorage.myKeyValue) KeyValue(theOther.keyValue());
         myState = BucketState::Occupied;
       }
       else
@@ -490,8 +498,8 @@ private:
       }
     }
 
+    Storage     myStorage;
     BucketState myState = BucketState::Empty;
-    alignas(KeyValue) unsigned char myStorage[sizeof(KeyValue)];
   };
 
   static constexpr size_t THE_MIN_CAPACITY = 8;

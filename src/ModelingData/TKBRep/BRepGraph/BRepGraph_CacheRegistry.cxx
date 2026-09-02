@@ -623,7 +623,8 @@ uint32_t BRepGraph_CacheRegistry::registerCacheLocked(const occ::handle<BRepGrap
 {
   Standard_ProgramError_Raise_if(theCache.IsNull(),
                                  "BRepGraph_CacheRegistry::RegisterCache() - null cache");
-  const BRepGraph_CacheRegistry* aRegistry = theCache->myRegistry.load(std::memory_order_acquire);
+  [[maybe_unused]] const BRepGraph_CacheRegistry* aRegistry =
+    theCache->myRegistry.load(std::memory_order_acquire);
   Standard_ProgramError_Raise_if(aRegistry != nullptr && aRegistry != this,
                                  "BRepGraph_CacheRegistry::RegisterCache() - cache is attached "
                                  "to another registry");
