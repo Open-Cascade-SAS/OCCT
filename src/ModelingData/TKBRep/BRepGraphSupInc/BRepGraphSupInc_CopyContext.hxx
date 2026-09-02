@@ -17,6 +17,8 @@
 #include <BRepGraphSupInc_ItemUID.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <NCollection_FlatDataMap.hxx>
+#include <Standard_GUID.hxx>
+#include <Standard_Handle.hxx>
 
 class BRepGraphSupInc_Storage;
 class BRepGraphSupInc_Store;
