@@ -44,9 +44,9 @@ class LDOM_CharReference
 public:
   // ---------- PUBLIC METHODS ----------
 
-  static char* Decode(char* theSrc, int& theLen);
+  Standard_EXPORT static char* Decode(char* theSrc, int& theLen);
 
-  static char* Encode(const char* theSrc, int& theLen, const bool isAttribute);
+  Standard_EXPORT static char* Encode(const char* theSrc, int& theLen, const bool isAttribute);
   // Encodes the string theSrc containing any byte characters 0x00-0xFF
   // Returns the encoded string. If (return value) != theSrc the returned
   // string should be deleted in caller routine (via delete[]).
