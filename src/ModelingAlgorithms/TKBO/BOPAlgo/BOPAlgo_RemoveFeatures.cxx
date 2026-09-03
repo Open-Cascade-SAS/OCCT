@@ -912,7 +912,13 @@ private: //! @name Private methods performing the operation
 
         NCollection_List<TopoDS_Shape> aLCB;
         BOPTools_AlgoTools::MakeConnexityBlocks(aCF, TopAbs_EDGE, TopAbs_FACE, aLCB);
-        if (aLCB.Extent() > 1)
+        // The blocks are selected by the presence of a split validated by an edge of the
+        // original face. When the face is entirely surrounded by the feature there is no
+        // such edge, so no split can ever be validated and rejecting every block would
+        // drop the face from the reconstruction altogether. Nothing is known about the
+        // blocks in that case, so keep them all and leave the choice to the classification
+        // of the cells built on them.
+        if (aLCB.Extent() > 1 && !aValidFaces.IsEmpty())
         {
           NCollection_List<TopoDS_Shape>::Iterator itLCB(aLCB);
           for (; itLCB.More(); itLCB.Next())

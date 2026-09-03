@@ -45,11 +45,6 @@ const double THE_POCKET_TILT     = 7.0; // degrees
 const double THE_TOOL_HEIGHT     = 5.0;
 const double THE_BLEND_RADIUS    = 0.5;
 
-//! Expected number of blend faces of the model: four free form ones along the
-//! elliptical top edge and the two cusps, two toroidal ones along the bottom
-//! arc and two cylindrical ones along the straight bottom segment.
-const int THE_BLEND_COUNT = 8;
-
 int CountFaces(const TopoDS_Shape& theShape)
 {
   ShapeMap aMap;
@@ -158,7 +153,9 @@ struct PocketModel
 //!
 //! @param theSplitAngle position of the shared generatrix, in degrees from the
 //!                      deepest point of the pocket
-PocketModel MakeSplitWallPocket(const double theSplitAngle)
+//! @param theSplitWall  when false the cutting cylinder is built in one piece,
+//!                      leaving the whole boundary of the wall on the blends
+PocketModel MakeTiltedPocket(const double theSplitAngle, const bool theSplitWall = true)
 {
   const double aTilt = THE_POCKET_TILT * M_PI / 180.0;
 
@@ -178,11 +175,19 @@ PocketModel MakeSplitWallPocket(const double theSplitAngle)
   gp_Ax2 aSecondHalf = aFirstHalf;
   aSecondHalf.Rotate(gp_Ax1(anApex, anAxis), M_PI);
 
-  const TopoDS_Shape aHalf1 =
-    BRepPrimAPI_MakeCylinder(aFirstHalf, THE_POCKET_RADIUS, THE_TOOL_HEIGHT, M_PI).Shape();
-  const TopoDS_Shape aHalf2 =
-    BRepPrimAPI_MakeCylinder(aSecondHalf, THE_POCKET_RADIUS, THE_TOOL_HEIGHT, M_PI).Shape();
-  const TopoDS_Shape aTool = BRepAlgoAPI_Fuse(aHalf1, aHalf2).Shape();
+  TopoDS_Shape aTool;
+  if (theSplitWall)
+  {
+    const TopoDS_Shape aHalf1 =
+      BRepPrimAPI_MakeCylinder(aFirstHalf, THE_POCKET_RADIUS, THE_TOOL_HEIGHT, M_PI).Shape();
+    const TopoDS_Shape aHalf2 =
+      BRepPrimAPI_MakeCylinder(aSecondHalf, THE_POCKET_RADIUS, THE_TOOL_HEIGHT, M_PI).Shape();
+    aTool = BRepAlgoAPI_Fuse(aHalf1, aHalf2).Shape();
+  }
+  else
+  {
+    aTool = BRepPrimAPI_MakeCylinder(aFirstHalf, THE_POCKET_RADIUS, THE_TOOL_HEIGHT).Shape();
+  }
 
   PocketModel aModel;
   aModel.myPocket = BRepAlgoAPI_Cut(aBlank, aTool).Shape();
@@ -234,10 +239,10 @@ PocketModel MakeSplitWallPocket(const double theSplitAngle)
 }
 
 //! Remove the blends of the model and check that the sharp pocket is restored.
-void CheckBlendsRemoved(const PocketModel& theModel)
+void CheckBlendsRemoved(const PocketModel& theModel, const int theNbBlends)
 {
   ASSERT_FALSE(theModel.myBlended.IsNull()) << "failed to blend the pocket";
-  ASSERT_EQ(THE_BLEND_COUNT, theModel.myBlends.Extent());
+  ASSERT_EQ(theNbBlends, theModel.myBlends.Extent());
 
   BRepAlgoAPI_Defeaturing aDefeaturing;
   aDefeaturing.SetShape(theModel.myBlended);
@@ -297,7 +302,7 @@ TEST(BRepAlgoAPI_DefeaturingTest, WedgeRound_ExtensionShorterThanTheGap_RoundRem
 // unsupported and the blends in place.
 TEST(BRepAlgoAPI_DefeaturingTest, SplitWallPocket_SeamOnDeepestGeneratrix_BlendsRemoved)
 {
-  CheckBlendsRemoved(MakeSplitWallPocket(0.0));
+  CheckBlendsRemoved(MakeTiltedPocket(0.0), 8);
 }
 
 // The wall is split away from the deepest generatrix. Here the blends were
@@ -305,5 +310,14 @@ TEST(BRepAlgoAPI_DefeaturingTest, SplitWallPocket_SeamOnDeepestGeneratrix_Blends
 // body and silently sealed the pocket.
 TEST(BRepAlgoAPI_DefeaturingTest, SplitWallPocket_SeamOffCentre_PocketNotSealed)
 {
-  CheckBlendsRemoved(MakeSplitWallPocket(30.0));
+  CheckBlendsRemoved(MakeTiltedPocket(30.0), 8);
+}
+
+// The cutting cylinder is built in one piece, so that every edge of the wall
+// bounds a blend. There is then no edge of the wall to validate the splits of
+// its extension against, and all of them used to be rejected, dropping the
+// wall from the reconstruction entirely.
+TEST(BRepAlgoAPI_DefeaturingTest, EnclosedWallPocket_WallFullyOnBlends_BlendsRemoved)
+{
+  CheckBlendsRemoved(MakeTiltedPocket(0.0, false), 7);
 }
