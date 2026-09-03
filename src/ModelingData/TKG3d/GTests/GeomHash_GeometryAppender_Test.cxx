@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomHash_CanonicalHashStream.hxx>
 #include <GeomHash_GeometryAppender.hxx>
 
 #include <Geom2d_BSplineCurve.hxx>
@@ -46,11 +47,52 @@
 
 #include <gtest/gtest.h>
 
+#include <limits>
 #include <utility>
 #include <vector>
 
 namespace
 {
+class ByteCollector
+{
+public:
+  using result_type = std::vector<uint8_t>;
+
+  void AppendBytes(const void* theData, const size_t theSize)
+  {
+    const uint8_t* aBytes = static_cast<const uint8_t*>(theData);
+    myBytes.insert(myBytes.end(), aBytes, aBytes + theSize);
+  }
+
+  result_type Finish() const { return myBytes; }
+
+private:
+  std::vector<uint8_t> myBytes;
+};
+
+using CollectingStream = GeomHash_CanonicalHashStream<ByteCollector>;
+
+std::vector<uint8_t> recordBytes(const occ::handle<Geom_Curve>& theCurve)
+{
+  CollectingStream aStream;
+  GeomHash_GeometryAppender<CollectingStream>::AppendCurveRecord(aStream, theCurve);
+  return aStream.Finish();
+}
+
+std::vector<uint8_t> recordBytes(const occ::handle<Geom2d_Curve>& theCurve)
+{
+  CollectingStream aStream;
+  GeomHash_GeometryAppender<CollectingStream>::AppendCurveRecord(aStream, theCurve);
+  return aStream.Finish();
+}
+
+std::vector<uint8_t> recordBytes(const occ::handle<Geom_Surface>& theSurface)
+{
+  CollectingStream aStream;
+  GeomHash_GeometryAppender<CollectingStream>::AppendSurfaceRecord(aStream, theSurface);
+  return aStream.Finish();
+}
+
 occ::handle<Geom_BezierCurve> bezier3d(const double theY)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 3);
@@ -152,10 +194,9 @@ TEST(GeomHash_GeometryAppenderTest, AllCurve3dKindsHashTheirDefinition)
      new Geom_TrimmedCurve(new Geom_Circle(anAxis, 2.0), 0.0, 2.0)},
     {new Geom_OffsetCurve(aBasis, 1.0, gp::DZ()), new Geom_OffsetCurve(aBasis, 2.0, gp::DZ())}};
 
-  const GeomHash_GeometryAppender<> aHasher;
   for (const auto& aPair : aPairs)
   {
-    EXPECT_NE(aHasher(aPair.first), aHasher(aPair.second));
+    EXPECT_NE(recordBytes(aPair.first), recordBytes(aPair.second));
   }
 }
 
@@ -175,10 +216,9 @@ TEST(GeomHash_GeometryAppenderTest, AllCurve2dKindsHashTheirDefinition)
      new Geom2d_TrimmedCurve(new Geom2d_Circle(anAxis, 2.0), 0.0, 2.0)},
     {new Geom2d_OffsetCurve(aBasis, 1.0), new Geom2d_OffsetCurve(aBasis, 2.0)}};
 
-  const GeomHash_GeometryAppender<> aHasher;
   for (const auto& aPair : aPairs)
   {
-    EXPECT_NE(aHasher(aPair.first), aHasher(aPair.second));
+    EXPECT_NE(recordBytes(aPair.first), recordBytes(aPair.second));
   }
 }
 
@@ -203,27 +243,44 @@ TEST(GeomHash_GeometryAppenderTest, AllSurfaceKindsHashTheirDefinition)
      new Geom_RectangularTrimmedSurface(aPlane, 0.0, 2.0, 0.0, 1.0)},
     {new Geom_OffsetSurface(aPlane, 1.0), new Geom_OffsetSurface(aPlane, 2.0)}};
 
-  const GeomHash_GeometryAppender<> aHasher;
   for (const auto& aPair : aPairs)
   {
-    EXPECT_NE(aHasher(aPair.first), aHasher(aPair.second));
+    EXPECT_NE(recordBytes(aPair.first), recordBytes(aPair.second));
   }
 }
 
-TEST(GeomHash_GeometryAppenderTest, DefaultHashIsFixedWidth)
+TEST(GeomHash_GeometryAppenderTest, RecordStartsWithDomainVersionAndPresence)
 {
-  using Hasher = GeomHash_GeometryAppender<>;
-  EXPECT_EQ(sizeof(Hasher::result_type), sizeof(uint64_t));
+  const std::vector<uint8_t> aBytes = recordBytes(occ::handle<Geom_Curve>());
+
+  const std::vector<uint8_t> anExpected = {0x44, 0x33, 0x43, 0x47, 1, 0, 0, 0, 0};
+  EXPECT_EQ(aBytes, anExpected);
 }
 
-TEST(GeomHash_AccumulatorTest, HashDependsOnBytesNotAppendBoundaries)
+TEST(GeomHash_GeometryAppenderTest, SurfaceRecordIncludesAxisHandedness)
 {
-  GeomHash_Accumulator<uint64_t> aWhole;
-  aWhole.AppendUInt64(0x1122334455667788ull);
+  gp_Ax3 aDirectAxis(gp_Pnt(), gp::DZ(), gp::DX());
+  gp_Ax3 anIndirectAxis = aDirectAxis;
+  anIndirectAxis.YReverse();
+  ASSERT_TRUE(aDirectAxis.Direct());
+  ASSERT_FALSE(anIndirectAxis.Direct());
 
-  GeomHash_Accumulator<uint64_t> aSplit;
-  aSplit.AppendUInt32(0x55667788u);
-  aSplit.AppendUInt32(0x11223344u);
+  const occ::handle<Geom_Surface> aDirectPlane    = new Geom_Plane(aDirectAxis);
+  const occ::handle<Geom_Surface> anIndirectPlane = new Geom_Plane(anIndirectAxis);
+  EXPECT_NE(recordBytes(aDirectPlane), recordBytes(anIndirectPlane));
+}
 
-  EXPECT_EQ(aWhole.Finish(), aSplit.Finish());
+TEST(GeomHash_CanonicalHashStreamTest, UsesCanonicalLittleEndianScalars)
+{
+  CollectingStream aStream;
+  aStream.AppendUInt32(0x12345678u);
+  aStream.AppendUInt64(0x0102030405060708ull);
+  aStream.AppendInt(-1);
+  aStream.AppendFloat(-0.0f);
+  aStream.AppendDouble(std::numeric_limits<double>::quiet_NaN());
+
+  const std::vector<uint8_t> anExpected = {
+    0x78, 0x56, 0x34, 0x12, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0xff, 0xff,
+    0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0x7f};
+  EXPECT_EQ(aStream.Finish(), anExpected);
 }

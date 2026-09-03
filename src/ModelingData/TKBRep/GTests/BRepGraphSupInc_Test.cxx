@@ -583,8 +583,10 @@ TEST(BRepGraphSupIncTest, GeometryStore_RuntimeUIDLookup)
   const BRepGraphSupInc_ItemUID   aCurve2dUID = aGeometry->ItemUID(aCurve2dID);
   const BRepGraphSupInc_ItemUID   aSurfaceUID = aGeometry->ItemUID(aSurfaceID);
 
-  const occ::handle<BRepGraphSupInc_Store> aStore      = aGeometry;
-  const BRepGraphSupInc_DefinitionId       aDefinition = aStore->FindDefinitionByUID(aCurve3dUID);
+  const occ::handle<BRepGraphSupInc_Store> aStore =
+    aGraph.Supplements().FindStore(BRepGraphSupInc_GeometryStore::GetID());
+  ASSERT_FALSE(aStore.IsNull());
+  const BRepGraphSupInc_DefinitionId aDefinition = aStore->FindDefinitionByUID(aCurve3dUID);
   ASSERT_TRUE(aDefinition.IsValid());
   EXPECT_EQ(aDefinition,
             (BRepGraphSupInc_DefinitionId{

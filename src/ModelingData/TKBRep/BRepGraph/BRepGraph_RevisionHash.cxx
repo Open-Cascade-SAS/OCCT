@@ -28,6 +28,7 @@
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraphSupInc_Storage.hxx>
 #include <BRepGraphSupInc_Store.hxx>
+#include <GeomHash_CanonicalHashStream.hxx>
 #include <GeomHash_GeometryAppender.hxx>
 #include <GeomHash_MeshAppender.hxx>
 #include <NCollection_LinearVector.hxx>
@@ -40,8 +41,6 @@
 #include <algorithm>
 #include <array>
 #include <charconv>
-#include <cmath>
-#include <cstring>
 #include <utility>
 
 namespace
@@ -166,12 +165,10 @@ public:
 namespace
 {
 
-class RevisionHashStream
+class RevisionHashByteSink
 {
 public:
-  using result_type = BRepGraph_RevisionHash;
-
-  explicit RevisionHashStream(const uint64_t theDomain) { AppendUInt64(theDomain); }
+  using result_type = std::optional<BRepGraph_RevisionHash>;
 
   void AppendBytes(const void* theData, size_t theSize)
   {
@@ -184,67 +181,41 @@ public:
 
   [[nodiscard]] bool IsValid() const noexcept { return myIsValid; }
 
-  void AppendByte(const uint8_t theByte) { AppendBytes(&theByte, sizeof(theByte)); }
-
-  void AppendBool(const bool theValue) { AppendByte(theValue ? 1u : 0u); }
-
-  void AppendUInt32(const uint32_t theValue)
+  [[nodiscard]] result_type Finish() const
   {
-    std::array<uint8_t, 4> aBytes;
-    for (int aByteIdx = 0; aByteIdx < 4; ++aByteIdx)
+    Standard_SHA256::Digest aDigest;
+    if (!myIsValid || !mySHA256.Finish(aDigest))
     {
-      aBytes[static_cast<size_t>(aByteIdx)] = static_cast<uint8_t>(theValue >> (aByteIdx * 8));
+      return std::nullopt;
     }
-    AppendBytes(aBytes.data(), aBytes.size());
+
+    BRepGraph_RevisionHash         aResult;
+    const std::array<uint8_t, 32>& aBytes = aDigest.Bytes();
+    for (size_t aWordIndex = 0; aWordIndex < 4; ++aWordIndex)
+    {
+      uint64_t aWord = 0;
+      for (size_t aByteIndex = 0; aByteIndex < 8; ++aByteIndex)
+      {
+        aWord = (aWord << 8) | aBytes[aWordIndex * 8 + aByteIndex];
+      }
+      aResult.Words[aWordIndex] = aWord;
+    }
+    return aResult;
   }
 
-  void AppendUInt64(const uint64_t theValue)
-  {
-    std::array<uint8_t, 8> aBytes;
-    for (int aByteIdx = 0; aByteIdx < 8; ++aByteIdx)
-    {
-      aBytes[static_cast<size_t>(aByteIdx)] = static_cast<uint8_t>(theValue >> (aByteIdx * 8));
-    }
-    AppendBytes(aBytes.data(), aBytes.size());
-  }
+private:
+  Standard_SHA256 mySHA256;
+  bool            myIsValid = true;
+};
 
-  void AppendInt(const int theValue) { AppendUInt32(static_cast<uint32_t>(theValue)); }
+class RevisionHashStream : public GeomHash_CanonicalHashStream<RevisionHashByteSink>
+{
+public:
+  explicit RevisionHashStream(const uint64_t theDomain) { AppendUInt64(theDomain); }
 
-  void AppendDouble(double theValue)
-  {
-    if (std::isnan(theValue))
-    {
-      AppendUInt64(0x7ff8000000000000ull);
-      return;
-    }
-    else if (theValue == 0.0)
-    {
-      theValue = 0.0;
-    }
+  RevisionHashStream() = default;
 
-    uint64_t aBits = 0;
-    static_assert(sizeof(aBits) == sizeof(theValue), "unexpected double size");
-    std::memcpy(&aBits, &theValue, sizeof(aBits));
-    AppendUInt64(aBits);
-  }
-
-  void AppendFloat(float theValue)
-  {
-    if (std::isnan(theValue))
-    {
-      AppendUInt32(0x7fc00000u);
-      return;
-    }
-    else if (theValue == 0.0f)
-    {
-      theValue = 0.0f;
-    }
-
-    uint32_t aBits = 0;
-    static_assert(sizeof(aBits) == sizeof(theValue), "unexpected float size");
-    std::memcpy(&aBits, &theValue, sizeof(aBits));
-    AppendUInt32(aBits);
-  }
+  [[nodiscard]] bool IsValid() const noexcept { return ByteSink().IsValid(); }
 
   void AppendUID(const BRepGraph_UID& theUID)
   {
@@ -294,19 +265,6 @@ public:
     }
   }
 
-  void AppendPoint(const gp_Pnt& thePoint)
-  {
-    AppendDouble(thePoint.X());
-    AppendDouble(thePoint.Y());
-    AppendDouble(thePoint.Z());
-  }
-
-  void AppendPoint2d(const gp_Pnt2d& thePoint)
-  {
-    AppendDouble(thePoint.X());
-    AppendDouble(thePoint.Y());
-  }
-
   void AppendLocation(const TopLoc_Location& theLocation)
   {
     const gp_Trsf& aTrsf = theLocation.Transformation();
@@ -321,110 +279,38 @@ public:
 
   void AppendCurve(const occ::handle<Geom_Curve>& theCurve)
   {
-    AppendUInt32(0x47433344u); // GC3D
-    AppendUInt32(1);
-    AppendBool(!theCurve.IsNull());
-    if (!theCurve.IsNull())
-    {
-      GeomHash_GeometryAppender<RevisionHashStream>::AppendCurve(*this, theCurve);
-    }
+    GeomHash_GeometryAppender<RevisionHashStream>::AppendCurveRecord(*this, theCurve);
   }
 
   void AppendCurve2d(const occ::handle<Geom2d_Curve>& theCurve)
   {
-    AppendUInt32(0x47433244u); // GC2D
-    AppendUInt32(1);
-    AppendBool(!theCurve.IsNull());
-    if (!theCurve.IsNull())
-    {
-      GeomHash_GeometryAppender<RevisionHashStream>::AppendCurve(*this, theCurve);
-    }
+    GeomHash_GeometryAppender<RevisionHashStream>::AppendCurveRecord(*this, theCurve);
   }
 
   void AppendSurface(const occ::handle<Geom_Surface>& theSurface)
   {
-    AppendUInt32(0x47535552u); // GSUR
-    AppendUInt32(1);
-    AppendBool(!theSurface.IsNull());
-    if (!theSurface.IsNull())
-    {
-      GeomHash_GeometryAppender<RevisionHashStream>::AppendSurface(*this, theSurface);
-    }
+    GeomHash_GeometryAppender<RevisionHashStream>::AppendSurfaceRecord(*this, theSurface);
   }
 
   void AppendPolygon3D(const occ::handle<Poly_Polygon3D>& thePolygon)
   {
-    AppendUInt32(0x50334450u); // P3DP
-    AppendUInt32(1);
-    AppendBool(!thePolygon.IsNull());
-    if (thePolygon.IsNull())
-    {
-      return;
-    }
-    GeomHash_MeshAppender<RevisionHashStream>::AppendPolygon(*this, thePolygon);
+    GeomHash_MeshAppender<RevisionHashStream>::AppendPolygonRecord(*this, thePolygon);
   }
 
   void AppendPolygon2D(const occ::handle<Poly_Polygon2D>& thePolygon)
   {
-    AppendUInt32(0x50324450u); // P2DP
-    AppendUInt32(1);
-    AppendBool(!thePolygon.IsNull());
-    if (thePolygon.IsNull())
-    {
-      return;
-    }
-    GeomHash_MeshAppender<RevisionHashStream>::AppendPolygon(*this, thePolygon);
+    GeomHash_MeshAppender<RevisionHashStream>::AppendPolygonRecord(*this, thePolygon);
   }
 
   void AppendPolygonOnTriangulation(const occ::handle<Poly_PolygonOnTriangulation>& thePolygon)
   {
-    AppendUInt32(0x504f5452u); // POTR
-    AppendUInt32(1);
-    AppendBool(!thePolygon.IsNull());
-    if (thePolygon.IsNull())
-    {
-      return;
-    }
-    GeomHash_MeshAppender<RevisionHashStream>::AppendPolygon(*this, thePolygon);
+    GeomHash_MeshAppender<RevisionHashStream>::AppendPolygonRecord(*this, thePolygon);
   }
 
   void AppendTriangulation(const occ::handle<Poly_Triangulation>& theTriangulation)
   {
-    AppendUInt32(0x50545249u); // PTRI
-    AppendUInt32(1);
-    AppendBool(!theTriangulation.IsNull());
-    if (theTriangulation.IsNull())
-    {
-      return;
-    }
-    GeomHash_MeshAppender<RevisionHashStream>::AppendTriangulation(*this, theTriangulation);
+    GeomHash_MeshAppender<RevisionHashStream>::AppendTriangulationRecord(*this, theTriangulation);
   }
-
-  [[nodiscard]] std::optional<BRepGraph_RevisionHash> Finish() const
-  {
-    Standard_SHA256::Digest aDigest;
-    if (!myIsValid || !mySHA256.Finish(aDigest))
-    {
-      return std::nullopt;
-    }
-
-    BRepGraph_RevisionHash         aResult;
-    const std::array<uint8_t, 32>& aBytes = aDigest.Bytes();
-    for (size_t aWordIndex = 0; aWordIndex < 4; ++aWordIndex)
-    {
-      uint64_t aWord = 0;
-      for (size_t aByteIndex = 0; aByteIndex < 8; ++aByteIndex)
-      {
-        aWord = (aWord << 8) | aBytes[aWordIndex * 8 + aByteIndex];
-      }
-      aResult.Words[aWordIndex] = aWord;
-    }
-    return aResult;
-  }
-
-private:
-  Standard_SHA256 mySHA256;
-  bool            myIsValid = true;
 };
 
 BRepGraph_RevisionHash finishOrNull(const RevisionHashStream& theStream)

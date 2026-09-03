@@ -29,6 +29,7 @@
 #include <BRepGraphSupInc_TopologyStore.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <gp_Pnt.hxx>
@@ -43,12 +44,10 @@ TopoDS_Vertex makeVertex(const gp_Pnt& thePoint)
   return aVertex;
 }
 
-const BRepGraphSupInc_TopologyStore* topologyStore(const BRepGraph& theGraph)
+occ::handle<BRepGraphSupInc_TopologyStore> topologyStore(const BRepGraph& theGraph)
 {
-  const occ::handle<BRepGraphSupInc_TopologyStore> aStore =
-    occ::down_cast<BRepGraphSupInc_TopologyStore>(
-      theGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()));
-  return aStore.get();
+  return occ::down_cast<BRepGraphSupInc_TopologyStore>(
+    theGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()));
 }
 
 int vertexCount(const TopoDS_Shape& theShape)
@@ -166,8 +165,8 @@ TEST(BRepGraphSupInc_TopologyStoreTest, RemovalDispatchesTopologyEndpointNotific
                                 BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
                                 makeVertex(gp_Pnt()));
   ASSERT_TRUE(anAttachment.IsValid());
-  const BRepGraphSupInc_TopologyStore* aTopology = topologyStore(aGraph);
-  ASSERT_NE(aTopology, nullptr);
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology = topologyStore(aGraph);
+  ASSERT_FALSE(aTopology.IsNull());
   const BRepGraphSupInc_Endpoint anEndpoint =
     BRepGraphSupInc_Endpoint::Supplemental(aTopology->ItemUID(anAttachment));
   const occ::handle<BRepGraph_LayerSupplement> aLayer =
@@ -193,8 +192,8 @@ TEST(BRepGraphSupInc_TopologyStoreTest, IncompatibleReplacementDispatchesTopolog
                                 BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
                                 makeVertex(gp_Pnt()));
   ASSERT_TRUE(anAttachment.IsValid());
-  const BRepGraphSupInc_TopologyStore* aTopology = topologyStore(aGraph);
-  ASSERT_NE(aTopology, nullptr);
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology = topologyStore(aGraph);
+  ASSERT_FALSE(aTopology.IsNull());
   const BRepGraphSupInc_Endpoint anEndpoint =
     BRepGraphSupInc_Endpoint::Supplemental(aTopology->ItemUID(anAttachment));
   const occ::handle<BRepGraph_LayerSupplement> aLayer =
@@ -220,8 +219,8 @@ TEST(BRepGraphSupInc_TopologyStoreTest, GraphClearDoesNotReuseAttachmentUIDCount
                                 BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
                                 makeVertex(gp_Pnt()));
   ASSERT_TRUE(aFirstAttachment.IsValid());
-  const BRepGraphSupInc_TopologyStore* aTopology = topologyStore(aGraph);
-  ASSERT_NE(aTopology, nullptr);
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTopology = topologyStore(aGraph);
+  ASSERT_FALSE(aTopology.IsNull());
   const BRepGraphSupInc_ItemUID aFirstUID = aTopology->ItemUID(aFirstAttachment);
 
   aGraph.Clear();
@@ -292,9 +291,9 @@ TEST(BRepGraphSupInc_TopologyStoreTest, GraphCompactCompactsSoftRemovedAttachmen
   const BRepGraph_Compact::Result aResult = BRepGraph_Compact::Perform(aGraph);
 
   EXPECT_EQ(aResult.NbNodesAfter, aResult.NbNodesBefore);
-  const BRepGraphSupInc_TopologyStore* aCompactedTopology = topologyStore(aGraph);
-  ASSERT_NE(aCompactedTopology, nullptr);
-  EXPECT_NE(aCompactedTopology, aTopology.get());
+  const occ::handle<BRepGraphSupInc_TopologyStore> aCompactedTopology = topologyStore(aGraph);
+  ASSERT_FALSE(aCompactedTopology.IsNull());
+  EXPECT_NE(aCompactedTopology, aTopology);
   EXPECT_EQ(aCompactedTopology->Count(), 1u);
   EXPECT_TRUE(aGraph.Supplements().Has(aRetainedUID));
   EXPECT_TRUE(aCompactedTopology->FindByUID(aRetainedUID).IsValid());
@@ -316,8 +315,10 @@ TEST(BRepGraphSupInc_TopologyStoreTest, RuntimeUIDLookupReturnsGenericAndTypedID
   ASSERT_FALSE(aTopology.IsNull());
   const BRepGraphSupInc_ItemUID anUID = aTopology->ItemUID(anAttachment);
 
-  const occ::handle<BRepGraphSupInc_Store> aStore      = aTopology;
-  const BRepGraphSupInc_DefinitionId       aDefinition = aStore->FindDefinitionByUID(anUID);
+  const occ::handle<BRepGraphSupInc_Store> aStore =
+    aGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID());
+  ASSERT_FALSE(aStore.IsNull());
+  const BRepGraphSupInc_DefinitionId aDefinition = aStore->FindDefinitionByUID(anUID);
   ASSERT_TRUE(aDefinition.IsValid());
   EXPECT_EQ(aDefinition,
             (BRepGraphSupInc_DefinitionId{BRepGraphSupInc_TopologyStore::THE_TOPOLOGY_KIND,

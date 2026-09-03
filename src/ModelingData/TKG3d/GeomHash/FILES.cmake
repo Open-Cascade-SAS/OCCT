@@ -2,7 +2,7 @@
 set(OCCT_GeomHash_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_GeomHash_FILES
-  GeomHash_Accumulator.hxx
+  GeomHash_CanonicalHashStream.hxx
   GeomHash_GeometryAppender.hxx
   GeomHash_MeshAppender.hxx
 

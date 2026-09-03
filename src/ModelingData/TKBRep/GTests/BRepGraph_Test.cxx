@@ -45,7 +45,6 @@
 #include <gp_Vec.hxx>
 #include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopExp.hxx>
@@ -1749,12 +1748,7 @@ TEST_F(BRepGraphTest, NodeIdFromUID_InvalidUID_ReturnsInvalid)
   EXPECT_FALSE(aResolved.IsValid());
 }
 
-TEST_F(BRepGraphTest, Allocator_DefaultConstructor_NotNull)
-{
-  EXPECT_FALSE(myGraph.Allocator().IsNull());
-}
-
-TEST_F(BRepGraphTest, Build_DefaultAllocator_IsNotEmpty)
+TEST_F(BRepGraphTest, Build_DefaultGraph_IsNotEmpty)
 {
   BRepGraph aGraph;
 
@@ -1764,7 +1758,6 @@ TEST_F(BRepGraphTest, Build_DefaultAllocator_IsNotEmpty)
     aGraph.Shapes().Add(aBoxMaker.Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 6);
-  EXPECT_FALSE(aGraph.Allocator().IsNull());
 }
 
 // ===================================================================

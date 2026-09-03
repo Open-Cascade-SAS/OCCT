@@ -14,7 +14,6 @@
 #ifndef _GeomHash_GeometryAppender_HeaderFile
 #define _GeomHash_GeometryAppender_HeaderFile
 
-#include <GeomHash_Accumulator.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_Circle.hxx>
@@ -46,48 +45,62 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
 
-template <class TheSinkType = GeomHash_Accumulator<uint64_t>>
+//! Appends canonical persistent geometry records to a hash stream.
+//!
+//! Each public record consists of a geometry domain, format version, presence flag,
+//! and geometry content when the supplied handle is not null. Unsupported dynamic
+//! geometry types raise Standard_NotImplemented.
+//! @tparam TheSinkType canonical stream receiving the geometry record
+template <class TheSinkType>
 class GeomHash_GeometryAppender
 {
 public:
-  using result_type = typename TheSinkType::result_type;
+  //! Current geometry record format version.
+  static constexpr uint32_t FormatVersion = 1;
 
-  result_type operator()(const occ::handle<Geom_Curve>& theCurve) const
+  //! Append a complete versioned 3D curve record.
+  //! @param[in,out] theSink stream receiving the record
+  //! @param[in] theCurve curve to encode; a null handle produces an absent record
+  static void AppendCurveRecord(TheSinkType& theSink, const occ::handle<Geom_Curve>& theCurve)
   {
-    TheSinkType aSink;
-    aSink.AppendUInt32(0x47433344u);
-    aSink.AppendBool(!theCurve.IsNull());
+    theSink.AppendUInt32(0x47433344u); // GC3D
+    theSink.AppendUInt32(FormatVersion);
+    theSink.AppendBool(!theCurve.IsNull());
     if (!theCurve.IsNull())
     {
-      AppendCurve(aSink, theCurve);
+      AppendCurve(theSink, theCurve);
     }
-    return aSink.Finish();
   }
 
-  result_type operator()(const occ::handle<Geom2d_Curve>& theCurve) const
+  //! Append a complete versioned 2D curve record.
+  //! @param[in,out] theSink stream receiving the record
+  //! @param[in] theCurve curve to encode; a null handle produces an absent record
+  static void AppendCurveRecord(TheSinkType& theSink, const occ::handle<Geom2d_Curve>& theCurve)
   {
-    TheSinkType aSink;
-    aSink.AppendUInt32(0x47433244u);
-    aSink.AppendBool(!theCurve.IsNull());
+    theSink.AppendUInt32(0x47433244u); // GC2D
+    theSink.AppendUInt32(FormatVersion);
+    theSink.AppendBool(!theCurve.IsNull());
     if (!theCurve.IsNull())
     {
-      AppendCurve(aSink, theCurve);
+      AppendCurve(theSink, theCurve);
     }
-    return aSink.Finish();
   }
 
-  result_type operator()(const occ::handle<Geom_Surface>& theSurface) const
+  //! Append a complete versioned surface record.
+  //! @param[in,out] theSink stream receiving the record
+  //! @param[in] theSurface surface to encode; a null handle produces an absent record
+  static void AppendSurfaceRecord(TheSinkType& theSink, const occ::handle<Geom_Surface>& theSurface)
   {
-    TheSinkType aSink;
-    aSink.AppendUInt32(0x47535552u);
-    aSink.AppendBool(!theSurface.IsNull());
+    theSink.AppendUInt32(0x47535552u); // GSUR
+    theSink.AppendUInt32(FormatVersion);
+    theSink.AppendBool(!theSurface.IsNull());
     if (!theSurface.IsNull())
     {
-      AppendSurface(aSink, theSurface);
+      AppendSurface(theSink, theSurface);
     }
-    return aSink.Finish();
   }
 
+private:
   static void AppendCurve(TheSinkType& theSink, const occ::handle<Geom_Curve>& theCurve)
   {
     const occ::handle<Standard_Type>& aType = theCurve->DynamicType();
@@ -320,7 +333,6 @@ public:
     }
   }
 
-private:
   static void appendDirection(TheSinkType& theSink, const gp_Dir& theDirection)
   {
     theSink.AppendDouble(theDirection.X());
@@ -352,6 +364,7 @@ private:
     theSink.AppendPoint(theAxis.Location());
     appendDirection(theSink, theAxis.Direction());
     appendDirection(theSink, theAxis.XDirection());
+    theSink.AppendBool(theAxis.Direct());
   }
 
   static void appendAxis(TheSinkType& theSink, const gp_Ax2d& theAxis)

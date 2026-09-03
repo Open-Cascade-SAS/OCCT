@@ -80,12 +80,6 @@ public:
   //! Clear allocator-backed containers before member destructors walk them.
   Standard_EXPORT ~BRepGraphInc_Storage();
 
-  //! Return the allocator used for backend storage.
-  [[nodiscard]] const occ::handle<NCollection_BaseAllocator>& Allocator() const
-  {
-    return myAllocator;
-  }
-
   //! Return products not referenced by any active occurrence.
   [[nodiscard]] const NCollection_LinearVector<BRepGraph_ProductId>& RootProductIds() const
   {

@@ -5,8 +5,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph.hxx
   BRepGraph_Cache.cxx
   BRepGraph_Cache.hxx
-  BRepGraph_CacheChart.cxx
-  BRepGraph_CacheChart.hxx
   BRepGraph_CacheDerivedState.cxx
   BRepGraph_CacheDerivedState.hxx
   BRepGraph_CacheIterator.hxx

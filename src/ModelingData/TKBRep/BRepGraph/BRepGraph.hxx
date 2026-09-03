@@ -53,7 +53,6 @@ class BRepGraph_Transaction;
 class BRepGraph_Deduplicate;
 class BRepGraphODE;
 class BRepGraphODE_Storage;
-class NCollection_BaseAllocator;
 class TCollection_AsciiString;
 
 //! @brief Topology-geometry graph over TopoDS / BRep.
@@ -196,9 +195,6 @@ public:
   //! Returns empty vector if the graph has not been built.
   [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_ProductId>&
                                       RootProductIds() const;
-
-  //! Return the current allocator.
-  [[nodiscard]] Standard_EXPORT const occ::handle<NCollection_BaseAllocator>& Allocator() const;
 
   //! Return true when this wrapper references graph data.
   [[nodiscard]] Standard_EXPORT bool IsValid() const noexcept;

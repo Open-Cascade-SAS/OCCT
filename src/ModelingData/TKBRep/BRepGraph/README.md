@@ -63,19 +63,6 @@ incremental FNV implementation when distribution justifies visiting their conten
 `BRepGraph_UsagePath` bounds hashing cost by hashing its size and the first, middle, and last steps,
 then leaves complete comparison to equality.
 
-## Periodic Face Charts
-
-Periodic seams are derived chart navigation, not intrinsic topology. `FaceDef` has no persistent
-`FaceDomain` classification, every persistent coedge uses a real edge, and virtual cuts exist only
-inside a transient chart result.
-
-`BRepGraph_CacheChart` owns chart policies, immutable results, on-demand construction, and a
-graph-local cache indexed by face and bounded to eight exact policy variants per face. Population
-imports or synthesizes supported explicit boundary components; selected cuts, lifted UV loops,
-transitions, and compatibility seam topology are derived when requested. Cached results are
-invalidated by face-subtree generations and are safe to discard because they can be rebuilt from
-persistent graph content.
-
 ## Recent API Changes (April 2026)
 
 - **Mutation API unified**: `BRepGraph::Access()` has been merged into `BRepGraph::Editor()`.

@@ -14,39 +14,64 @@
 #ifndef _GeomHash_MeshAppender_HeaderFile
 #define _GeomHash_MeshAppender_HeaderFile
 
-#include <GeomHash_Accumulator.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_TriangulationParameters.hxx>
 
-template <class TheSinkType = GeomHash_Accumulator<uint64_t>>
+//! Appends canonical persistent polygon and triangulation records to a hash stream.
+//!
+//! Each public record consists of a mesh domain, format version, presence flag,
+//! and complete persistent mesh content when the supplied handle is not null.
+//! @tparam TheSinkType canonical stream receiving the mesh record
+template <class TheSinkType>
 class GeomHash_MeshAppender
 {
 public:
-  using result_type = typename TheSinkType::result_type;
+  //! Current mesh record format version.
+  static constexpr uint32_t FormatVersion = 1;
 
-  result_type operator()(const occ::handle<Poly_Polygon3D>& thePolygon) const
+  //! Append a complete versioned 3D polygon record.
+  //! @param[in,out] theSink stream receiving the record
+  //! @param[in] thePolygon polygon to encode; a null handle produces an absent record
+  static void AppendPolygonRecord(TheSinkType&                       theSink,
+                                  const occ::handle<Poly_Polygon3D>& thePolygon)
   {
-    return hash(0x50334450u, thePolygon, &GeomHash_MeshAppender::AppendPolygon);
+    appendRecord(theSink, 0x50334450u, thePolygon, &GeomHash_MeshAppender::AppendPolygon);
   }
 
-  result_type operator()(const occ::handle<Poly_Polygon2D>& thePolygon) const
+  //! Append a complete versioned 2D polygon record.
+  //! @param[in,out] theSink stream receiving the record
+  //! @param[in] thePolygon polygon to encode; a null handle produces an absent record
+  static void AppendPolygonRecord(TheSinkType&                       theSink,
+                                  const occ::handle<Poly_Polygon2D>& thePolygon)
   {
-    return hash(0x50324450u, thePolygon, &GeomHash_MeshAppender::AppendPolygon);
+    appendRecord(theSink, 0x50324450u, thePolygon, &GeomHash_MeshAppender::AppendPolygon);
   }
 
-  result_type operator()(const occ::handle<Poly_PolygonOnTriangulation>& thePolygon) const
+  //! Append a complete versioned polygon-on-triangulation record.
+  //! @param[in,out] theSink stream receiving the record
+  //! @param[in] thePolygon polygon to encode; a null handle produces an absent record
+  static void AppendPolygonRecord(TheSinkType&                                    theSink,
+                                  const occ::handle<Poly_PolygonOnTriangulation>& thePolygon)
   {
-    return hash(0x504f5452u, thePolygon, &GeomHash_MeshAppender::AppendPolygon);
+    appendRecord(theSink, 0x504f5452u, thePolygon, &GeomHash_MeshAppender::AppendPolygon);
   }
 
-  result_type operator()(const occ::handle<Poly_Triangulation>& theTriangulation) const
+  //! Append a complete versioned triangulation record.
+  //! @param[in,out] theSink stream receiving the record
+  //! @param[in] theTriangulation triangulation to encode; a null handle produces an absent record
+  static void AppendTriangulationRecord(TheSinkType&                           theSink,
+                                        const occ::handle<Poly_Triangulation>& theTriangulation)
   {
-    return hash(0x50545249u, theTriangulation, &GeomHash_MeshAppender::AppendTriangulation);
+    appendRecord(theSink,
+                 0x50545249u,
+                 theTriangulation,
+                 &GeomHash_MeshAppender::AppendTriangulation);
   }
 
+private:
   static void AppendPolygon(TheSinkType& theSink, const occ::handle<Poly_Polygon3D>& thePolygon)
   {
     theSink.AppendDouble(thePolygon->Deflection());
@@ -166,20 +191,19 @@ public:
     }
   }
 
-private:
   template <class TheMeshType>
-  static result_type hash(const uint32_t                  theDomain,
-                          const occ::handle<TheMeshType>& theMesh,
-                          void (*theAppend)(TheSinkType&, const occ::handle<TheMeshType>&))
+  static void appendRecord(TheSinkType&                    theSink,
+                           const uint32_t                  theDomain,
+                           const occ::handle<TheMeshType>& theMesh,
+                           void (*theAppend)(TheSinkType&, const occ::handle<TheMeshType>&))
   {
-    TheSinkType aSink;
-    aSink.AppendUInt32(theDomain);
-    aSink.AppendBool(!theMesh.IsNull());
+    theSink.AppendUInt32(theDomain);
+    theSink.AppendUInt32(FormatVersion);
+    theSink.AppendBool(!theMesh.IsNull());
     if (!theMesh.IsNull())
     {
-      theAppend(aSink, theMesh);
+      theAppend(theSink, theMesh);
     }
-    return aSink.Finish();
   }
 };
 

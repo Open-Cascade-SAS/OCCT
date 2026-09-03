@@ -579,12 +579,12 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
     uint32_t         Depth;
   };
 
-  const uint32_t aNbNodes = aStorage.NbSolids() + aStorage.NbShells() + aStorage.NbFaces()
-                            + aStorage.NbWires() + aStorage.NbEdges() + aStorage.NbVertices()
-                            + aStorage.NbCompounds() + aStorage.NbCompSolids()
-                            + aStorage.NbProducts() + aStorage.NbOccurrences();
-  const uint32_t                        aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
-  occ::handle<NCollection_IncAllocator> anAlloc   = new NCollection_IncAllocator();
+  const uint32_t aNbNodes  = aStorage.NbSolids() + aStorage.NbShells() + aStorage.NbFaces()
+                             + aStorage.NbWires() + aStorage.NbEdges() + aStorage.NbVertices()
+                             + aStorage.NbCompounds() + aStorage.NbCompSolids()
+                             + aStorage.NbProducts() + aStorage.NbOccurrences();
+  const uint32_t aMaxDepth = aNbNodes > 0 ? aNbNodes : 1;
+  occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator();
   NCollection_LinearVector<StackEntry>  aStack(64);
   NCollection_Map<BRepGraph_NodeId>     aVisited(static_cast<size_t>(aNbNodes), anAlloc);
   aStack.Append({theNode, 0});
@@ -1043,13 +1043,6 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
       break;
     }
   }
-}
-
-//=================================================================================================
-
-const occ::handle<NCollection_BaseAllocator>& BRepGraph::Allocator() const
-{
-  return myData->myIncStorage.Allocator();
 }
 
 //=================================================================================================

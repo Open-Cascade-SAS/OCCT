@@ -13,6 +13,7 @@
 
 #include <gtest/gtest.h>
 
+#include <GeomHash_CanonicalHashStream.hxx>
 #include <GeomHash_Polygon2DHasher.hxx>
 #include <GeomHash_Polygon3DHasher.hxx>
 #include <GeomHash_PolygonOnTriHasher.hxx>
@@ -28,8 +29,45 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
+#include <vector>
+
 namespace
 {
+class MeshByteCollector
+{
+public:
+  using result_type = std::vector<uint8_t>;
+
+  void AppendBytes(const void* theData, const size_t theSize)
+  {
+    const uint8_t* aBytes = static_cast<const uint8_t*>(theData);
+    myBytes.insert(myBytes.end(), aBytes, aBytes + theSize);
+  }
+
+  result_type Finish() const { return myBytes; }
+
+private:
+  std::vector<uint8_t> myBytes;
+};
+
+using MeshCollectingStream = GeomHash_CanonicalHashStream<MeshByteCollector>;
+
+template <class ThePolygonType>
+std::vector<uint8_t> polygonRecordBytes(const occ::handle<ThePolygonType>& thePolygon)
+{
+  MeshCollectingStream aStream;
+  GeomHash_MeshAppender<MeshCollectingStream>::AppendPolygonRecord(aStream, thePolygon);
+  return aStream.Finish();
+}
+
+std::vector<uint8_t> triangulationRecordBytes(
+  const occ::handle<Poly_Triangulation>& theTriangulation)
+{
+  MeshCollectingStream aStream;
+  GeomHash_MeshAppender<MeshCollectingStream>::AppendTriangulationRecord(aStream, theTriangulation);
+  return aStream.Finish();
+}
+
 occ::handle<Poly_Polygon2D> makePolygon2D(const double theDeflection)
 {
   occ::handle<Poly_Polygon2D> aPoly = new Poly_Polygon2D(2);
@@ -197,7 +235,6 @@ TEST(GeomHash_MeshHasherTest, HashToleranceAffectsNumericFields)
 
 TEST(GeomHash_MeshAppenderTest, TriangulationHashesCompletePersistentContent)
 {
-  const GeomHash_MeshAppender<>   aHasher;
   occ::handle<Poly_Triangulation> aBase = new Poly_Triangulation(3, 1, true, true);
   aBase->SetNode(1, gp_Pnt(0.0, 0.0, 0.0));
   aBase->SetNode(2, gp_Pnt(1.0, 0.0, 0.0));
@@ -213,9 +250,9 @@ TEST(GeomHash_MeshAppenderTest, TriangulationHashesCompletePersistentContent)
   aBase->SetMeshPurpose(Poly_MeshPurpose_Calculation);
   aBase->Parameters(new Poly_TriangulationParameters(0.01, 0.2, 0.001));
 
-  const uint64_t aBaseHash    = aHasher(aBase);
-  const auto     expectChange = [&](const occ::handle<Poly_Triangulation>& theChanged) {
-    EXPECT_NE(aBaseHash, aHasher(theChanged));
+  const std::vector<uint8_t> aBaseHash    = triangulationRecordBytes(aBase);
+  const auto                 expectChange = [&](const occ::handle<Poly_Triangulation>& theChanged) {
+    EXPECT_NE(aBaseHash, triangulationRecordBytes(theChanged));
   };
 
   occ::handle<Poly_Triangulation> aChanged = aBase->Copy();
@@ -247,10 +284,16 @@ TEST(GeomHash_MeshAppenderTest, TriangulationHashesCompletePersistentContent)
   expectChange(aChanged);
 }
 
+TEST(GeomHash_MeshAppenderTest, RecordStartsWithDomainVersionAndPresence)
+{
+  const std::vector<uint8_t> aBytes = triangulationRecordBytes(occ::handle<Poly_Triangulation>());
+
+  const std::vector<uint8_t> anExpected = {0x49, 0x52, 0x54, 0x50, 1, 0, 0, 0, 0};
+  EXPECT_EQ(aBytes, anExpected);
+}
+
 TEST(GeomHash_MeshAppenderTest, PolygonHashesCompletePersistentContent)
 {
-  const GeomHash_MeshAppender<> aHasher;
-
   occ::handle<Poly_Polygon3D> aPolygon3d = new Poly_Polygon3D(2, true);
   aPolygon3d->ChangeNodes().SetValue(1, gp_Pnt(0.0, 0.0, 0.0));
   aPolygon3d->ChangeNodes().SetValue(2, gp_Pnt(1.0, 0.0, 0.0));
@@ -259,12 +302,12 @@ TEST(GeomHash_MeshAppenderTest, PolygonHashesCompletePersistentContent)
   occ::handle<Poly_Polygon3D> aChanged3d =
     new Poly_Polygon3D(aPolygon3d->Nodes(), aPolygon3d->Parameters());
   aChanged3d->ChangeParameters().SetValue(2, 2.0);
-  EXPECT_NE(aHasher(aPolygon3d), aHasher(aChanged3d));
+  EXPECT_NE(polygonRecordBytes(aPolygon3d), polygonRecordBytes(aChanged3d));
 
   occ::handle<Poly_Polygon2D> aPolygon2d = makePolygon2D(0.01);
   occ::handle<Poly_Polygon2D> aChanged2d = makePolygon2D(0.01);
   aChanged2d->ChangeNodes().SetValue(2, gp_Pnt2d(2.0, 0.0));
-  EXPECT_NE(aHasher(aPolygon2d), aHasher(aChanged2d));
+  EXPECT_NE(polygonRecordBytes(aPolygon2d), polygonRecordBytes(aChanged2d));
 
   occ::handle<Poly_PolygonOnTriangulation> aPolygonOnTri = new Poly_PolygonOnTriangulation(2, true);
   aPolygonOnTri->SetNode(1, 1);
@@ -276,5 +319,5 @@ TEST(GeomHash_MeshAppenderTest, PolygonHashesCompletePersistentContent)
   aChangedOnTri->SetNode(2, 2);
   aChangedOnTri->SetParameter(1, 0.0);
   aChangedOnTri->SetParameter(2, 2.0);
-  EXPECT_NE(aHasher(aPolygonOnTri), aHasher(aChangedOnTri));
+  EXPECT_NE(polygonRecordBytes(aPolygonOnTri), polygonRecordBytes(aChangedOnTri));
 }
