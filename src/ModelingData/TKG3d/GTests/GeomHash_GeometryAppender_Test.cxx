@@ -42,6 +42,7 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <gp_Pln.hxx>
 
 #include <gtest/gtest.h>
 
