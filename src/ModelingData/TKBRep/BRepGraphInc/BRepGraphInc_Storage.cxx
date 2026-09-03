@@ -2695,7 +2695,7 @@ void BRepGraphInc_Storage::RebindVertexEdge(const BRepGraph_VertexId    theOldVe
 
   BRepGraphInc::EdgeDef& anEdge     = ChangeEdge(theEdge);
   auto                   refTargets = [&](const BRepGraph_VertexRefId theRefId,
-                                          const BRepGraph_VertexId    theVertex) -> bool {
+                        const BRepGraph_VertexId    theVertex) -> bool {
     if (!theRefId.IsValid(NbVertexRefs()) || theRefId == theExcludingRef || IsRemoved(theRefId))
     {
       return false;
@@ -2757,7 +2757,7 @@ void BRepGraphInc_Storage::RebindVertexRef(const BRepGraph_VertexRefId theRefId,
 
   const BRepGraphInc::EdgeDef& anEdge     = Edge(anEdgeId);
   auto                         refTargets = [&](const BRepGraph_VertexRefId theOtherRef,
-                                                const BRepGraph_VertexId    theVertex) -> bool {
+                        const BRepGraph_VertexId    theVertex) -> bool {
     if (!theOtherRef.IsValid(NbVertexRefs()) || theOtherRef == theRefId || IsRemoved(theOtherRef))
     {
       return false;
