@@ -128,9 +128,9 @@ public:
   //! @param[in] thePuv point in the surface parametric space
   //! @param[in] theTolerance classification tolerance
   //! @return point state relative to the face
-  Standard_EXPORT TopAbs_State ClassifyUVPoint(
-    const gp_Pnt2d& thePuv,
-    double          theTolerance = Precision::Confusion()) const;
+  Standard_EXPORT TopAbs_State
+    ClassifyUVPoint(const gp_Pnt2d& thePuv,
+                    const double    theTolerance = Precision::Confusion()) const;
 
   Standard_EXPORT Bnd_Box Bounding() const;
 
