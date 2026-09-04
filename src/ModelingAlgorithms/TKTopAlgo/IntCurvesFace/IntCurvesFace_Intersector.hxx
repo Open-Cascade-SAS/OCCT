@@ -133,7 +133,7 @@ public:
   //! @return point state relative to the face
   Standard_EXPORT TopAbs_State ClassifyUVPoint(
     const gp_Pnt2d& thePuv,
-    Standard_Real   theTolerance = Precision::Confusion()) const;
+    double          theTolerance = Precision::Confusion()) const;
 
   Standard_EXPORT Bnd_Box Bounding() const;
 

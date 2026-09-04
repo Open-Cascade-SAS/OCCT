@@ -540,7 +540,7 @@ Bnd_Box IntCurvesFace_Intersector::Bounding() const
 }
 
 TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& thePuv,
-                                                        Standard_Real   theTolerance) const
+                                                        double          theTolerance) const
 {
   if (myTopolTool.IsNull())
   {
