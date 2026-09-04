@@ -22,6 +22,7 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
+#include <Precision.hxx>
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Face.hxx>
@@ -122,7 +123,8 @@ public:
   //! the intersection.
   const TopoDS_Face& Face() const;
 
-  Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& Puv, double tol = 1e-7) const;
+  Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& Puv,
+                                               double tol = Precision::Confusion()) const;
 
   Standard_EXPORT Bnd_Box Bounding() const;
 
