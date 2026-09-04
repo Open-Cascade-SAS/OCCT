@@ -45,7 +45,6 @@
 #include <gp_Vec.hxx>
 #include <NCollection_FlatMap.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopExp.hxx>
@@ -152,15 +151,13 @@ static BRepGraph_NodeId componentRootOfFace(const BRepGraph&       theGraph,
                                             const BRepGraph_FaceId theFaceId)
 {
   for (BRepGraph_ParentExplorer aSolidExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Solid);
-       aSolidExp.More();
-       aSolidExp.Next())
+       aSolidExp.More();)
   {
     return aSolidExp.Current().DefId;
   }
 
   for (BRepGraph_ParentExplorer aShellExp(theGraph, theFaceId, BRepGraph_NodeId::Kind::Shell);
-       aShellExp.More();
-       aShellExp.Next())
+       aShellExp.More();)
   {
     return aShellExp.Current().DefId;
   }
@@ -1751,12 +1748,7 @@ TEST_F(BRepGraphTest, NodeIdFromUID_InvalidUID_ReturnsInvalid)
   EXPECT_FALSE(aResolved.IsValid());
 }
 
-TEST_F(BRepGraphTest, Allocator_DefaultConstructor_NotNull)
-{
-  EXPECT_FALSE(myGraph.Allocator().IsNull());
-}
-
-TEST_F(BRepGraphTest, Build_DefaultAllocator_IsNotEmpty)
+TEST_F(BRepGraphTest, Build_DefaultGraph_IsNotEmpty)
 {
   BRepGraph aGraph;
 
@@ -1766,7 +1758,6 @@ TEST_F(BRepGraphTest, Build_DefaultAllocator_IsNotEmpty)
     aGraph.Shapes().Add(aBoxMaker.Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), 6);
-  EXPECT_FALSE(aGraph.Allocator().IsNull());
 }
 
 // ===================================================================

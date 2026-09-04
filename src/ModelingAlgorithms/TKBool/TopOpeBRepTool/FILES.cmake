@@ -6,8 +6,6 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool.hxx
   TopOpeBRepTool_2d.cxx
   TopOpeBRepTool_2d.hxx
-  TopOpeBRepTool_box.cxx
-  TopOpeBRepTool_box.hxx
   TopOpeBRepTool_C2DF.cxx
   TopOpeBRepTool_C2DF.hxx
   TopOpeBRepTool_CLASSI.cxx
@@ -22,17 +20,12 @@ set(OCCT_TopOpeBRepTool_FILES
 
   TopOpeBRepTool_face.cxx
   TopOpeBRepTool_face.hxx
-  TopOpeBRepTool_faulty.cxx
   TopOpeBRepTool_FuseEdges.cxx
   TopOpeBRepTool_FuseEdges.hxx
   TopOpeBRepTool_GEOMETRY.cxx
   TopOpeBRepTool_GEOMETRY.hxx
   TopOpeBRepTool_GeomTool.cxx
   TopOpeBRepTool_GeomTool.hxx
-  TopOpeBRepTool_HBoxTool.cxx
-  TopOpeBRepTool_HBoxTool.hxx
-
-  TopOpeBRepTool_KRO.hxx
 
   TopOpeBRepTool_makeTransition.cxx
   TopOpeBRepTool_makeTransition.hxx
@@ -69,6 +62,4 @@ set(OCCT_TopOpeBRepTool_FILES
   TopOpeBRepTool_TOOL.hxx
   TopOpeBRepTool_TOPOLOGY.cxx
   TopOpeBRepTool_TOPOLOGY.hxx
-  TopOpeBRepTool_trace.cxx
-  TopOpeBRepTool_traceSTATE.cxx
 )

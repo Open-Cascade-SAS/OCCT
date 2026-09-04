@@ -428,6 +428,30 @@ public:
     advance();
   }
 
+  //! Construct starting at a given reverse-relation index.
+  LookupParentRefsOf(const BRepGraph&     theGraph,
+                     const ContainerType& theParents,
+                     const ChildIdType    theChild,
+                     const uint32_t       theStartIndex)
+      : myGraph(&theGraph),
+        myParents(&theParents),
+        myChild(theChild),
+        myNbParents(theGraph.Topo().Gen().Nb(BRepGraph_NodeId(ParentIdType()).NodeKind)),
+        myNbRefs([&]() {
+          if constexpr (std::is_convertible_v<RefIdType, BRepGraph_NodeId>)
+          {
+            return theGraph.Topo().Gen().Nb(BRepGraph_NodeId(RefIdType()).NodeKind);
+          }
+          else
+          {
+            return theGraph.Refs().Gen().Nb(BRepGraph_RefId(RefIdType()).RefKind);
+          }
+        }()),
+        myIndex(theStartIndex)
+  {
+    advance();
+  }
+
   [[nodiscard]] bool More() const { return myHasCurrent; }
 
   void Next()

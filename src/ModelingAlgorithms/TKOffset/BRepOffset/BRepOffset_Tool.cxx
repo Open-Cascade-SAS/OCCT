@@ -122,10 +122,6 @@ const double TheInfini = 1.e+7;
 
 // tma: for new boolean operation
 
-#ifdef OCCT_DEBUG
-static bool AffichExtent = false;
-#endif
-
 static void PerformPlanes(const TopoDS_Face&              theFace1,
                           const TopoDS_Face&              theFace2,
                           const TopAbs_State              theState,
@@ -2216,25 +2212,9 @@ static bool ProjectVertexOnEdge(TopoDS_Vertex& V, const TopoDS_Edge& E, double T
   }
 
 #ifdef OCCT_DEBUG
-  if (AffichExtent)
-  {
-    double Dist = P.Distance(C.Value(U));
-    if (Dist > TolConf)
-    {
-      std::cout << " ProjectVertexOnEdge :distance vertex edge :" << Dist << std::endl;
-    }
-    if (U < f - Precision::Confusion() || U > l + Precision::Confusion())
-    {
-      std::cout << " ProjectVertexOnEdge : hors borne :" << std::endl;
-      std::cout << " f = " << f << " l =" << l << " U =" << U << std::endl;
-    }
-  }
   if (!found)
   {
     std::cout << "BRepOffset_Tool::ProjectVertexOnEdge Parameter no found" << std::endl;
-    if (std::abs(f) < Precision::Infinite() && std::abs(l) < Precision::Infinite())
-    {
-    }
   }
 #endif
   if (found)
@@ -4454,8 +4434,9 @@ void BRepOffset_Tool::CorrectOrientation(
   for (; exp.More(); exp.Next())
   {
 
-    const TopoDS_Face&                       FI  = TopoDS::Face(exp.Current());
-    const NCollection_List<TopoDS_Shape>&    LOF = InitOffset.Image(FI);
+    const TopoDS_Face&                       FI = TopoDS::Face(exp.Current());
+    NCollection_List<TopoDS_Shape>           aFallback;
+    const NCollection_List<TopoDS_Shape>&    LOF = InitOffset.ImageOrSelf(FI, aFallback);
     NCollection_List<TopoDS_Shape>::Iterator it(LOF);
     for (; it.More(); it.Next())
     {

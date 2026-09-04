@@ -69,6 +69,20 @@ public:
     Error
   };
 
+  //! Stable machine-readable classification of a validation issue.
+  //! Descriptions are presentation text and must never be used for policy decisions.
+  enum class IssueCode
+  {
+    Unspecified,
+    MutationBoundary,
+    InvalidReference,
+    RemovedReference,
+    InvalidRepresentation,
+    InvalidUID,
+    AssemblyCycle,
+    OrphanCoEdge
+  };
+
   //! Validation mode controlling check depth/performance trade-off.
   enum class Mode
   {
@@ -84,6 +98,7 @@ public:
     Severity                Sev;
     BRepGraph_NodeId        NodeId;
     TCollection_AsciiString Description;
+    IssueCode               Code = IssueCode::Unspecified;
   };
 
   //! Aggregated validation result.

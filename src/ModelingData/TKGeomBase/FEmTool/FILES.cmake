@@ -14,6 +14,7 @@ set(OCCT_FEmTool_FILES
 
   FEmTool_LinearFlexion.cxx
   FEmTool_LinearFlexion.hxx
+  FEmTool_LinearCriterion.pxx
   FEmTool_LinearJerk.cxx
   FEmTool_LinearJerk.hxx
   FEmTool_LinearTension.cxx

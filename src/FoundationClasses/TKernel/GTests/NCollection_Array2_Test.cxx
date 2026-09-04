@@ -287,6 +287,60 @@ TEST(NCollection_Array2Test, MoveConstructor)
   EXPECT_EQ(0, anArray1.NbRows());
 }
 
+TEST(NCollection_Array2Test, MoveConstructorFromArray1)
+{
+  NCollection_Array1<int> anArray1(1, 6);
+  for (size_t anIndex = 0; anIndex < anArray1.Size(); ++anIndex)
+  {
+    anArray1.ChangeAt(anIndex) = static_cast<int>(anIndex + 1);
+  }
+  const int* aData = anArray1.Data();
+
+  NCollection_Array2<int> anArray2(std::move(anArray1), 1, 2, 1, 3);
+
+  EXPECT_EQ(aData, anArray2.Data());
+  EXPECT_EQ(0u, anArray1.Size());
+  EXPECT_TRUE(anArray2.IsDeletable());
+  EXPECT_EQ(2, anArray2.NbRows());
+  EXPECT_EQ(3, anArray2.NbColumns());
+  EXPECT_EQ(NCollection_Array2<int>::BeginPosition(1, 2, 1, 3), anArray2.Array1().Lower());
+  EXPECT_EQ(1, anArray2(1, 1));
+  EXPECT_EQ(6, anArray2(2, 3));
+}
+
+TEST(NCollection_Array2Test, MoveConstructorFromArray1ZeroBased)
+{
+  NCollection_Array1<int> anArray1(6);
+  for (size_t anIndex = 0; anIndex < anArray1.Size(); ++anIndex)
+  {
+    anArray1.ChangeAt(anIndex) = static_cast<int>(anIndex + 1);
+  }
+  const int* aData = anArray1.Data();
+
+  NCollection_Array2<int> anArray2(std::move(anArray1), size_t(2), size_t(3));
+
+  EXPECT_EQ(aData, anArray2.Data());
+  EXPECT_EQ(0u, anArray1.Size());
+  EXPECT_TRUE(anArray2.IsDeletable());
+  EXPECT_EQ(0, anArray2.LowerRow());
+  EXPECT_EQ(0, anArray2.LowerCol());
+  EXPECT_EQ(2, anArray2.NbRows());
+  EXPECT_EQ(3, anArray2.NbColumns());
+  EXPECT_EQ(0, anArray2.Array1().Lower());
+  EXPECT_EQ(1, anArray2.At(0, 0));
+  EXPECT_EQ(6, anArray2.At(1, 2));
+}
+
+TEST(NCollection_Array2Test, MoveConstructorFromArray1RejectsWrongSize)
+{
+#ifndef No_Exception
+  NCollection_Array1<int> anArray1(1, 5);
+  EXPECT_THROW((NCollection_Array2<int>(std::move(anArray1), 1, 2, 1, 3)),
+               Standard_DimensionMismatch);
+  EXPECT_EQ(5u, anArray1.Size());
+#endif
+}
+
 TEST(NCollection_Array2Test, MoveAssignment)
 {
   NCollection_Array2<int> anArray1(1, 5, 1, 10);

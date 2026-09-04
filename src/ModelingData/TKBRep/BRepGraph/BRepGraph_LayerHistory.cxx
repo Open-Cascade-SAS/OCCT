@@ -242,6 +242,16 @@ const TCollection_AsciiString& BRepGraph_LayerHistory::Name() const
 
 //=================================================================================================
 
+BRepGraph_RevisionComponent::ComponentDescriptor BRepGraph_LayerHistory::RevisionDescriptor() const
+{
+  BRepGraph_RevisionComponent::ComponentDescriptor aDescriptor;
+  aDescriptor.StableGUID    = GetID();
+  aDescriptor.RetentionKind = BRepGraph_RevisionComponent::Retention::Transient;
+  return aDescriptor;
+}
+
+//=================================================================================================
+
 void BRepGraph_LayerHistory::OnNodeRemoved(const BRepGraph_NodeId theNode) noexcept
 {
   if (!myEnabled || !theNode.IsValid())

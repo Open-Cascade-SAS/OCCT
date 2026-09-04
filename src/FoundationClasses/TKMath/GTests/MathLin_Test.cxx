@@ -1186,8 +1186,8 @@ TEST(MathLin_Jacobi_Test, MismatchedBounds)
 
 TEST(MathLin_Jacobi_Test, SubnormalScalingAndInvalidMatrixPowers)
 {
-  const double aSubnormal = std::numeric_limits<double>::denorm_min();
-  math_Matrix  aMatrix(size_t{1}, size_t{1}, aSubnormal);
+  constexpr double aSubnormal = std::numeric_limits<double>::denorm_min();
+  math_Matrix      aMatrix(size_t{1}, size_t{1}, aSubnormal);
 
   const MathUtils::EigenResult aEigen = MathLin::Jacobi(aMatrix);
   ASSERT_TRUE(aEigen.IsDone()) << "status=" << static_cast<int>(aEigen.Status)

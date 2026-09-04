@@ -17,23 +17,9 @@
 #ifndef _TopOpeBRepTool_2d_HeaderFile
 #define _TopOpeBRepTool_2d_HeaderFile
 #include <Geom2d_Curve.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopAbs_State.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_Map.hxx>
-#include <NCollection_List.hxx>
-#include <NCollection_IndexedMap.hxx>
-#include <NCollection_DataMap.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_IndexedDataMap.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TCollection_AsciiString.hxx>
 
-Standard_EXPORT int  FC2D_Prepare(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
 Standard_EXPORT bool FC2D_HasC3D(const TopoDS_Edge& E);
 Standard_EXPORT bool FC2D_HasCurveOnSurface(const TopoDS_Edge& E, const TopoDS_Face& F);
 Standard_EXPORT bool FC2D_HasOldCurveOnSurface(const TopoDS_Edge&         E,
@@ -43,15 +29,6 @@ Standard_EXPORT bool FC2D_HasOldCurveOnSurface(const TopoDS_Edge&         E,
                                                double&                    l,
                                                double&                    tol);
 Standard_EXPORT bool FC2D_HasOldCurveOnSurface(const TopoDS_Edge&         E,
-                                               const TopoDS_Face&         F,
-                                               occ::handle<Geom2d_Curve>& C2D);
-Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&         E,
-                                               const TopoDS_Face&         F,
-                                               occ::handle<Geom2d_Curve>& C2D,
-                                               double&                    f,
-                                               double&                    l,
-                                               double&                    tol);
-Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&         E,
                                                const TopoDS_Face&         F,
                                                occ::handle<Geom2d_Curve>& C2D);
 Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge& E,
@@ -80,10 +57,4 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_EditableCurveOnSurface(const Topo
                                                                       double&            l,
                                                                       double&            tol,
                                                                       const bool trim3d = false);
-Standard_EXPORT int FC2D_AddNewCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
-                                              const TopoDS_Edge&               E,
-                                              const TopoDS_Face&               F,
-                                              const double&                    f,
-                                              const double&                    l,
-                                              const double&                    tol);
 #endif
