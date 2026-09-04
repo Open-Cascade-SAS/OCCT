@@ -64,6 +64,7 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntWalk_PWalking.hxx>
 #include <Law_Composite.hxx>
+#include <LocalAnalysis_CurveContinuity.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -4907,12 +4908,10 @@ static bool GoodExt(const occ::handle<Geom_Curve>& C,
 {
   for (int i = 0; i < 6; i++)
   {
-    gp_Pnt       d0;
-    gp_Vec       d1;
-    const double t = i * 0.2;
-    C->D1(((1 - t) * f + t * l), d0, d1);
-    const double ang    = d1.Angle(V);
-    const double angref = a * t + 0.002;
+    const double            t      = i * 0.2;
+    const Geom_Curve::ResD1 aD1    = C->EvalD1((1 - t) * f + t * l);
+    const double            ang    = aD1.D1.Angle(V);
+    const double            angref = a * t + 0.002;
     if (ang > angref)
     {
       return false;
@@ -4923,70 +4922,16 @@ static bool GoodExt(const occ::handle<Geom_Curve>& C,
 
 //=================================================================================================
 
-// Detect a geometrically smooth closure whose curvature is discontinuous. SetPeriodic() turns the
-// two end knots into one knot, but its multiplicity alone does not distinguish such a transition
-// from an exact periodic curve that should retain its original representation (OCC22163).
-static bool ChFi3d_HasCurvatureClosureDiscontinuity(const occ::handle<Geom_BSplineCurve>& theCurve,
-                                                    const double theTolerance)
+static bool ChFi3d_IsG2Closed(const occ::handle<Geom_Curve>& theCurve, const double theTolerance)
 {
-  GeomLProp_CLProps aFirstProps(theCurve, theCurve->FirstParameter(), 2, gp::Resolution());
-  GeomLProp_CLProps aLastProps(theCurve, theCurve->LastParameter(), 2, gp::Resolution());
-  if (!aFirstProps.Value().IsEqual(aLastProps.Value(),
-                                   std::max(theTolerance, Precision::Confusion()))
-      || !aFirstProps.IsTangentDefined() || !aLastProps.IsTangentDefined())
-  {
-    return false;
-  }
-
-  // Apply the angular, null-curvature and relative-variation criteria used by OCCT's local G2
-  // analysis. The null-curvature threshold must scale as inverse length.
-  constexpr double anAngularTolerance          = 1.0e-3;
-  constexpr double aRelativeCurvatureTolerance = 1.0e-2;
-  gp_Dir           aFirstTangent, aLastTangent;
-  aFirstProps.Tangent(aFirstTangent);
-  aLastProps.Tangent(aLastTangent);
-  if (aFirstTangent.Angle(aLastTangent) > anAngularTolerance)
-  {
-    return false;
-  }
-
-  const double      aFirstCurvature = aFirstProps.Curvature();
-  const double      aLastCurvature  = aLastProps.Curvature();
-  GeomAdaptor_Curve aCurveAdaptor(theCurve);
-  const double      aCurveLength     = GCPnts_AbscissaPoint::Length(aCurveAdaptor);
-  const double      aLinearTolerance = std::max(theTolerance, Precision::Confusion());
-  if (aCurveLength <= aLinearTolerance)
-  {
-    return false;
-  }
-
-  const double aNullCurvature      = 8.0 * aLinearTolerance / (aCurveLength * aCurveLength);
-  const double anInfiniteCurvature = 1.0 / aLinearTolerance;
-  const bool   isFirstNull         = aFirstCurvature <= aNullCurvature;
-  const bool   isLastNull          = aLastCurvature <= aNullCurvature;
-  if (isFirstNull || isLastNull)
-  {
-    return isFirstNull != isLastNull;
-  }
-
-  const bool isFirstInfinite = aFirstCurvature > anInfiniteCurvature;
-  const bool isLastInfinite  = aLastCurvature > anInfiniteCurvature;
-  if (isFirstInfinite || isLastInfinite)
-  {
-    return isFirstInfinite != isLastInfinite;
-  }
-
-  const double aRelativeVariation =
-    std::abs(aFirstCurvature - aLastCurvature) / std::sqrt(aFirstCurvature * aLastCurvature);
-  if (aRelativeVariation > aRelativeCurvatureTolerance)
-  {
-    return true;
-  }
-
-  gp_Dir aFirstNormal, aLastNormal;
-  aFirstProps.Normal(aFirstNormal);
-  aLastProps.Normal(aLastNormal);
-  return aFirstNormal.Angle(aLastNormal) > anAngularTolerance;
+  LocalAnalysis_CurveContinuity aContinuity(theCurve,
+                                            theCurve->FirstParameter(),
+                                            theCurve,
+                                            theCurve->LastParameter(),
+                                            GeomAbs_G2,
+                                            gp::Resolution(),
+                                            std::max(theTolerance, Precision::Confusion()));
+  return aContinuity.IsDone() && aContinuity.IsG2();
 }
 
 //=================================================================================================
@@ -5060,11 +5005,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   // Add vertex with tangent
   if (ES.IsPeriodic())
   {
-    double ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
-    gp_Pnt PntForElSpine;
-    gp_Vec DirForElSpine;
-    Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
-    ES.AddVertexWithTangent(gp_Ax1(PntForElSpine, DirForElSpine));
+    const double            ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
+    const Geom_Curve::ResD1 aD1           = Cv->EvalD1(ParForElSpine);
+    ES.AddVertexWithTangent(gp_Ax1(aD1.Point, aD1.D1));
   }
   /////////////////////////
   urefdeb  = Spine->FirstParameter(IF);
@@ -5221,11 +5164,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
     //
     Cv = BRep_Tool::Curve(E, First, Last);
     // Add vertex with tangent
-    double ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
-    gp_Pnt PntForElSpine;
-    gp_Vec DirForElSpine;
-    Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
-    ES.AddVertexWithTangent(gp_Ax1(PntForElSpine, DirForElSpine));
+    double                  ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
+    const Geom_Curve::ResD1 aD1           = Cv->EvalD1(ParForElSpine);
+    ES.AddVertexWithTangent(gp_Ax1(aD1.Point, aD1.D1));
     /////////////////////////
     if (IEdge == IL)
     {
@@ -5469,14 +5410,14 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   {
     if (!BSpline->IsPeriodic())
     {
-      const bool hasCurvatureClosureDiscontinuity =
-        ChFi3d_HasCurvatureClosureDiscontinuity(BSpline, tol);
+      const int  aFirstMultiplicity  = BSpline->Multiplicity(BSpline->FirstUKnotIndex());
+      const int  aLastMultiplicity   = BSpline->Multiplicity(BSpline->LastUKnotIndex());
+      const bool shouldSmoothClosure = std::max(aFirstMultiplicity, aLastMultiplicity) > MultMax
+                                       && (hasApproxByC2 || !ChFi3d_IsG2Closed(BSpline, tol));
       BSpline->SetPeriodic();
-      // Keep the OCC22163 guard for exact periodic guides, and additionally smooth a closure that
-      // is tangent-continuous but has the curvature jump seen at a multi-edge tangent transition.
-      if ((hasApproxByC2 || hasCurvatureClosureDiscontinuity) && BSpline->Multiplicity(1) > MultMax)
+      if (shouldSmoothClosure)
       {
-        Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
+        BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
       }
     }
   }
@@ -5484,24 +5425,24 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   {
     // Otherwise is it necessary to move the poles to adapt
     // them to new tangents ?
-    bool   adjust = false;
-    gp_Pnt P1, P2;
-    gp_Vec V1, V2;
-    BSpline->D1(WF, P1, V1);
+    bool                    adjust   = false;
+    const Geom_Curve::ResD1 aFirstD1 = BSpline->EvalD1(WF);
+    gp_Vec                  V1       = aFirstD1.D1;
     V1.Normalize();
     ES.FirstPointAndTgt(PDeb, VrefDeb);
     double scaldeb = VrefDeb.Dot(V1);
-    double disdeb  = PDeb.Distance(P1);
+    double disdeb  = PDeb.Distance(aFirstD1.Point);
     if ((std::abs(WF - LocalWF) < 1.e-12) && ((scaldeb <= 0.9999999) || disdeb >= tol))
     {
       // Yes if there was no extension and the tangent is not the good one.
       adjust = true;
     }
-    BSpline->D1(WL, P2, V2);
+    const Geom_Curve::ResD1 aLastD1 = BSpline->EvalD1(WL);
+    gp_Vec                  V2      = aLastD1.D1;
     V2.Normalize();
     ES.LastPointAndTgt(PFin, VrefFin);
     double scalfin = VrefFin.Dot(V2);
-    double disfin  = PFin.Distance(P2);
+    double disfin  = PFin.Distance(aLastD1.Point);
     if ((std::abs(WL - LocalWL) < 1.e-12) && ((scalfin <= 0.9999999) || disfin >= tol))
     {
       // the same at the end
@@ -6080,7 +6021,7 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
-        C->D0(t, P1);
+        P1 = C->EvalD0(t);
         LProp.CentreOfCurvature(P2);
         PrevVec      = gp_Vec(P1, P2);
         prevVecFound = true;
@@ -6115,7 +6056,7 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
-        C->D0(t, P1);
+        P1 = C->EvalD0(t);
         LProp.CentreOfCurvature(P2);
         gp_Vec Vec(P1, P2);
         double Angle = PrevVec.Angle(Vec);
