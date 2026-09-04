@@ -135,16 +135,16 @@ static int StepFile_Read(const char*                                 theName,
   // clang-format on
   for (int nr = 1; nr <= nbrec; nr++)
   {
-    int   nbarg;
-    char* ident;
-    char* typrec = nullptr;
+    int         nbarg;
+    const char* ident;
+    const char* typrec = nullptr;
     aFileDataModel.GetRecordDescription(&ident, &typrec, &nbarg);
     undirec->SetRecord(nr, ident, typrec, nbarg);
 
     if (nbarg > 0)
     {
       Interface_ParamType typa;
-      char*               val;
+      const char*         val;
       while (aFileDataModel.GetArgDescription(&typa, &val) == 1)
       {
         undirec->AddStepParam(nr, val, typa);

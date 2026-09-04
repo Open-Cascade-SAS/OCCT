@@ -16,6 +16,7 @@
 
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_define.hxx>
@@ -30,6 +31,57 @@
 
 #include <algorithm>
 
+namespace
+{
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& EmptyListOfInterference()
+{
+  static const NCollection_List<occ::handle<TopOpeBRepDS_Interference>> anEmptyListOfInterference;
+  return anEmptyListOfInterference;
+}
+
+const NCollection_List<TopoDS_Shape>& EmptyListOfShape()
+{
+  static const NCollection_List<TopoDS_Shape> anEmptyListOfShape;
+  return anEmptyListOfShape;
+}
+
+const TopoDS_Shape& EmptyShape()
+{
+  static const TopoDS_Shape anEmptyShape;
+  return anEmptyShape;
+}
+
+const TopOpeBRepDS_Point& EmptyPoint()
+{
+  static const TopOpeBRepDS_Point anEmptyPoint;
+  return anEmptyPoint;
+}
+
+const TopOpeBRepDS_Surface& EmptySurface()
+{
+  static const TopOpeBRepDS_Surface anEmptySurface;
+  return anEmptySurface;
+}
+
+const occ::handle<Geom_Surface>& EmptyGSurface()
+{
+  static const occ::handle<Geom_Surface> anEmptyGSurface;
+  return anEmptyGSurface;
+}
+
+const TopOpeBRepDS_ShapeWithState& EmptyShapeWithState()
+{
+  static const TopOpeBRepDS_ShapeWithState anEmptyShapeWithState;
+  return anEmptyShapeWithState;
+}
+
+const TopOpeBRepDS_Curve& EmptyCurve()
+{
+  static const TopOpeBRepDS_Curve anEmptyCurve;
+  return anEmptyCurve;
+}
+} // namespace
+
 //=================================================================================================
 
 TopOpeBRepDS_DataStructure::TopOpeBRepDS_DataStructure()
@@ -37,7 +89,8 @@ TopOpeBRepDS_DataStructure::TopOpeBRepDS_DataStructure()
       myNbCurves(0),
       myNbPoints(0),
       myIsfafa(false),
-      myI(0)
+      myI(0),
+      myConnexPrepared(false)
 {
 }
 
@@ -58,6 +111,10 @@ void TopOpeBRepDS_DataStructure::Init()
   myMapOfShapeWithStateTool.Clear();
   myMapOfRejectedShapesObj.Clear();
   myMapOfRejectedShapesTool.Clear();
+  myConnexEdges1.Clear();
+  myConnexEdges2.Clear();
+  myConnexFaceEdges.Clear();
+  myConnexPrepared = false;
   // End modified by NIZHNY-MZV  Tue Apr 18 16:33:32 2000
   InitSectionEdges();
 }
@@ -429,7 +486,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_Dat
 
   if (!mySurfaces.IsBound(I))
   {
-    return myEmptyListOfInterference;
+    return EmptyListOfInterference();
   }
   const TopOpeBRepDS_SurfaceData&                                 SD = mySurfaces.Find(I);
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = SD.Interferences();
@@ -444,7 +501,7 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStruc
 
   if (!mySurfaces.IsBound(I))
   {
-    return myEmptyListOfInterference;
+    throw Standard_NoSuchObject("TopOpeBRepDS_DataStructure::ChangeSurfaceInterferences");
   }
   TopOpeBRepDS_SurfaceData&                                 SD = mySurfaces.ChangeFind(I);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = SD.ChangeInterferences();
@@ -459,7 +516,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_Dat
 
   if (!myCurves.IsBound(I))
   {
-    return myEmptyListOfInterference;
+    return EmptyListOfInterference();
   }
   const TopOpeBRepDS_CurveData&                                   CD = myCurves.Find(I);
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = CD.Interferences();
@@ -474,7 +531,7 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStruc
 
   if (!myCurves.IsBound(I))
   {
-    return myEmptyListOfInterference;
+    throw Standard_NoSuchObject("TopOpeBRepDS_DataStructure::ChangeCurveInterferences");
   }
   TopOpeBRepDS_CurveData&                                   CD = myCurves.ChangeFind(I);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = CD.ChangeInterferences();
@@ -489,7 +546,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_Dat
 
   if (!myPoints.IsBound(I))
   {
-    return myEmptyListOfInterference;
+    return EmptyListOfInterference();
   }
   const TopOpeBRepDS_PointData&                                   PD = myPoints.Find(I);
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = PD.Interferences();
@@ -504,7 +561,7 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStruc
 
   if (!myPoints.IsBound(I))
   {
-    return myEmptyListOfInterference;
+    throw Standard_NoSuchObject("TopOpeBRepDS_DataStructure::ChangePointInterferences");
   }
   TopOpeBRepDS_PointData&                                   PD = myPoints.ChangeFind(I);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI = PD.ChangeInterferences();
@@ -520,7 +577,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_Dat
   {
     return myShapes.FindFromKey(S).myInterferences;
   }
-  return myEmptyListOfInterference;
+  return EmptyListOfInterference();
 }
 
 //=================================================================================================
@@ -530,7 +587,7 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_DataStruc
 {
   if (!HasShape(S))
   {
-    return myEmptyListOfInterference;
+    throw Standard_NoSuchObject("TopOpeBRepDS_DataStructure::ChangeShapeInterferences");
   }
   TopOpeBRepDS_ShapeData& SD = myShapes.ChangeFromKey(S);
   return SD.myInterferences;
@@ -543,7 +600,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_Dat
 {
   if (FindKeep && !KeepShape(I))
   {
-    return myEmptyListOfInterference;
+    return EmptyListOfInterference();
   }
   return myShapes.FindFromIndex(I).myInterferences;
 }
@@ -571,7 +628,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_DataStructure::ShapeSameDomai
       return l;
     }
   }
-  return myEmptyListOfShape;
+  return EmptyListOfShape();
 }
 
 //=================================================================================================
@@ -595,7 +652,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_DataStructure::ShapeSameDomai
   }
   else
   {
-    return myEmptyListOfShape;
+    return EmptyListOfShape();
   }
 }
 
@@ -1115,7 +1172,7 @@ const TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::Surface(const int I) con
   }
   else
   {
-    return myEmptySurface;
+    return EmptySurface();
   }
 }
 
@@ -1129,7 +1186,7 @@ TopOpeBRepDS_Surface& TopOpeBRepDS_DataStructure::ChangeSurface(const int I)
   }
   else
   {
-    return myEmptySurface;
+    throw Standard_NoSuchObject("TopOpeBRepDS_DataStructure::ChangeSurface");
   }
 }
 
@@ -1145,7 +1202,7 @@ const TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::Curve(const int I) const
   }
   else
   {
-    return myEmptyCurve;
+    return EmptyCurve();
   }
 }
 
@@ -1159,7 +1216,7 @@ TopOpeBRepDS_Curve& TopOpeBRepDS_DataStructure::ChangeCurve(const int I)
     TopOpeBRepDS_Curve&     C  = CD.myCurve;
     return C;
   }
-  return myEmptyCurve;
+  throw Standard_NoSuchObject("TopOpeBRepDS_DataStructure::ChangeCurve");
 }
 
 //=================================================================================================
@@ -1213,7 +1270,7 @@ const TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::Point(const int I) const
   }
   else
   {
-    return myEmptyPoint;
+    return EmptyPoint();
   }
 }
 
@@ -1232,7 +1289,7 @@ TopOpeBRepDS_Point& TopOpeBRepDS_DataStructure::ChangePoint(const int I)
   }
   else
   {
-    return myEmptyPoint;
+    throw Standard_NoSuchObject("TopOpeBRepDS_DataStructure::ChangePoint");
   }
 }
 
@@ -1245,7 +1302,7 @@ const TopoDS_Shape& TopOpeBRepDS_DataStructure::Shape(const int I, const bool Fi
     const TopoDS_Shape& S = myShapes.FindKey(I);
     return S;
   }
-  return myEmptyShape;
+  return EmptyShape();
 }
 
 //=================================================================================================
@@ -1270,7 +1327,7 @@ const TopoDS_Edge& TopOpeBRepDS_DataStructure::SectionEdge(const int I, const bo
   {
     return TopoDS::Edge(S);
   }
-  return TopoDS::Edge(myEmptyShape);
+  return TopoDS::Edge(EmptyShape());
 }
 
 //=================================================================================================
@@ -1341,7 +1398,7 @@ const occ::handle<Geom_Surface>& TopOpeBRepDS_DataStructure::NewSurface(const To
   {
     return myNewSurface.Find(F);
   }
-  return myEmptyGSurface;
+  return EmptyGSurface();
 }
 
 //=================================================================================================
@@ -1393,27 +1450,20 @@ NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_S
 
 //=================================================================================================
 
-NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>&
-  TopOpeBRepDS_DataStructure::ChangeMapOfShapeWithState(const TopoDS_Shape& aShape, bool& aFlag)
+NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>*
+  TopOpeBRepDS_DataStructure::ChangeMapOfShapeWithState(const TopoDS_Shape& theShape)
 {
-  static NCollection_IndexedDataMap<TopoDS_Shape,
-                                    TopOpeBRepDS_ShapeWithState,
-                                    TopTools_ShapeMapHasher>
-    dummy;
-  aFlag = true;
-
-  if (myMapOfShapeWithStateObj.Contains(aShape))
+  if (myMapOfShapeWithStateObj.Contains(theShape))
   {
-    return myMapOfShapeWithStateObj;
+    return &myMapOfShapeWithStateObj;
   }
 
-  if (myMapOfShapeWithStateTool.Contains(aShape))
+  if (myMapOfShapeWithStateTool.Contains(theShape))
   {
-    return myMapOfShapeWithStateTool;
+    return &myMapOfShapeWithStateTool;
   }
 
-  aFlag = false;
-  return dummy;
+  return nullptr;
 }
 
 //=================================================================================================
@@ -1421,7 +1471,6 @@ NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_S
 const TopOpeBRepDS_ShapeWithState& TopOpeBRepDS_DataStructure::GetShapeWithState(
   const TopoDS_Shape& aShape) const
 {
-  static TopOpeBRepDS_ShapeWithState dummy;
   if (myMapOfShapeWithStateObj.Contains(aShape))
   {
     return myMapOfShapeWithStateObj.FindFromKey(aShape);
@@ -1431,7 +1480,7 @@ const TopOpeBRepDS_ShapeWithState& TopOpeBRepDS_DataStructure::GetShapeWithState
     return myMapOfShapeWithStateTool.FindFromKey(aShape);
   }
 
-  return dummy;
+  return EmptyShapeWithState();
 }
 
 //=================================================================================================

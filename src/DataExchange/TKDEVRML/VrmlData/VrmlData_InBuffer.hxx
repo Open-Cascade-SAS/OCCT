@@ -18,19 +18,22 @@
 
 #include <Standard_IStream.hxx>
 
+#include <array>
+
 /**
  * Structure passed to the methods dealing with input stream.
  */
 struct VrmlData_InBuffer
 {
-  Standard_IStream& Input;
-  char              Line[8096];
-  char*             LinePtr;
-  bool              IsProcessed;
-  int               LineCount;
+  Standard_IStream&      Input;
+  std::array<char, 8096> Line;
+  char*                  LinePtr;
+  bool                   IsProcessed;
+  int                    LineCount;
   VrmlData_InBuffer(Standard_IStream& theStream)
       : Input(theStream),
-        LinePtr(&Line[0]),
+        Line{},
+        LinePtr(Line.data()),
         IsProcessed(false),
         LineCount(0) {};
 

@@ -21,6 +21,7 @@
 #include <NCollection_Array2.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 
 namespace
 {
@@ -178,6 +179,34 @@ TEST_F(PLibJacobiPolynomialTest, MaxValue)
         << "Max value should be finite at index " << i;
     }
   }
+}
+
+TEST_F(PLibJacobiPolynomialTest, CanonicalMaxValues)
+{
+  struct ExpectedTable
+  {
+    GeomAbs_Shape ConstraintOrder;
+    size_t        Size;
+    double        First;
+    double        Last;
+  };
+
+  constexpr ExpectedTable THE_EXPECTED[] = {
+    {GeomAbs_C0, 57, .9682458365518542212948163499456, 3.72184531357268220291630708234186},
+    {GeomAbs_C1, 55, 1.1092649593311780079813740546678, 3.05886060707437081434964933864149},
+    {GeomAbs_C2, 53, 1.21091229812484768570102219548814, 2.71238965987606292679677228666411}};
+
+  for (const ExpectedTable& anExpected : THE_EXPECTED)
+  {
+    const NCollection_Array1<double>& aValues =
+      PLib_JacobiPolynomial::MaxValues(anExpected.ConstraintOrder);
+    EXPECT_EQ(aValues.Lower(), 0);
+    EXPECT_EQ(aValues.Size(), anExpected.Size);
+    EXPECT_DOUBLE_EQ(aValues.At(0), anExpected.First);
+    EXPECT_DOUBLE_EQ(aValues.At(anExpected.Size - 1), anExpected.Last);
+  }
+
+  EXPECT_THROW(PLib_JacobiPolynomial::MaxValues(GeomAbs_C3), Standard_ConstructionError);
 }
 
 // Test basis function evaluation D0

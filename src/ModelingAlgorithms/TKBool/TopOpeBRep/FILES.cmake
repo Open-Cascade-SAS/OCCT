@@ -20,8 +20,6 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_FacesFiller_1.cxx
   TopOpeBRep_FacesIntersector.cxx
   TopOpeBRep_FacesIntersector.hxx
-  TopOpeBRep_FFDumper.cxx
-  TopOpeBRep_FFDumper.hxx
   TopOpeBRep_FFTransitionTool.cxx
   TopOpeBRep_FFTransitionTool.hxx
   TopOpeBRep_GeomTool.cxx
@@ -49,7 +47,6 @@ set(OCCT_TopOpeBRep_FILES
   TopOpeBRep_ProcessSectionEdges.cxx
 
   TopOpeBRep_sort.cxx
-  TopOpeBRep_trace.cxx
   TopOpeBRep_traceALWL.cxx
   TopOpeBRep_TypeLineCurve.hxx
   TopOpeBRep_VPointInter.cxx

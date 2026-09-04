@@ -24,6 +24,8 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 
+#include <string_view>
+
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ExtStringArrayDriver, XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING(FirstIndexString, "first")
 IMPLEMENT_DOMSTRING(LastIndexString, "last")
@@ -250,11 +252,15 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
   {
     // Preferable symbols for the separator: - _ . : ^ ~
     // Don't use a space as a separator: XML low-level parser sometimes "eats" it.
-    static char aPreferable[] = "-_.:^~";
-    for (i = 0; found && aPreferable[i]; i++)
+    constexpr std::string_view aPrefferableSeparators = "-_.:^~";
+    for (const char aSeparator : aPrefferableSeparators)
     {
-      c     = aPreferable[i];
+      c     = aSeparator;
       found = Contains(aExtStringArray, TCollection_ExtendedString(c));
+      if (!found)
+      {
+        break;
+      }
     }
     // If all preferable symbols exist in the array,
     // try to use any other simple symbols.

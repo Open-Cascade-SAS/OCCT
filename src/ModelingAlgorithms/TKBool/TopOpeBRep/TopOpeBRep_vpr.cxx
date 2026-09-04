@@ -16,7 +16,6 @@
 
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
-#include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRep_VPointInterClassifier.hxx>
@@ -42,7 +41,6 @@
 
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
-#include <TopOpeBRepDS_Dumper.hxx>
 
 #include <TopOpeBRep_FFTransitionTool.hxx>
 #include <TopOpeBRep_PointGeomTool.hxx>
@@ -93,7 +91,8 @@ Standard_EXPORT bool FUNBREP_topokpart(
   const TopoDS_Shape&                                             F,
   const double                                                    toluv,
   double&                                                         parline,
-  TopOpeBRepDS_Transition&                                        transLine);
+  TopOpeBRepDS_Transition&                                        transLine,
+  int&                                                            lastVPind);
 
 //-----------------------------------------------------------------------
 // Search, among a list of interferences accessed by the iterator <IT>,
@@ -454,7 +453,8 @@ Standard_EXPORT void FUN_VPIndex(
 } // FUN_VPIndex
 
 //-----------------------------------------------------------------------
-static bool FUN_LineRestF(const TopoDS_Face&                    F,
+static bool FUN_LineRestF(const TopOpeBRep_FacesFiller&         FF,
+                          const TopoDS_Face&                    F,
                           const TopOpeBRep_LineInter&           L,
                           const NCollection_List<TopoDS_Shape>& ERL,
                           TopoDS_Edge&                          ER)
@@ -482,7 +482,7 @@ static bool FUN_LineRestF(const TopoDS_Face&                    F,
     const TopoDS_Shape&            e = itER.Value();
     NCollection_List<TopoDS_Shape> eL;
     eL.Append(e);
-    bool isonL = TopOpeBRep_FacesFiller::LSameDomainERL(L, eL);
+    bool isonL = FF.LSameDomainERL(L, eL);
     if (isonL)
     {
       ERLonFonL.Append(e);
@@ -601,7 +601,7 @@ Standard_EXPORT bool FUN_newtransEdge(const occ::handle<TopOpeBRepDS_HDataStruct
     }
     else
     {
-      onOOface = ::FUN_LineRestF(OOface, L, ERL, OOER);
+      onOOface = ::FUN_LineRestF(FF, OOface, L, ERL, OOER);
     }
     if (!onOOface)
     {
@@ -777,6 +777,7 @@ static void FUN_processCPI(TopOpeBRep_FacesFiller&        FF,
                            const bool&                                                     Gfound,
                            const TopOpeBRepDS_Kind&                                        PVKind,
                            const int&                                                      PVIndex,
+                           int& lastVPind,
                            int& keptVPnbr)
 //-----------------------------------------------------------------------
 {
@@ -804,7 +805,8 @@ static void FUN_processCPI(TopOpeBRep_FacesFiller&        FF,
   // dist(p2d1,p2d2) < toluv => p2d1, p2d2 are considered equal.
   // NYI : compute uvtol with the original faces. By default, we set toluv = TolClass
   double toluv = 1.e-8;
-  bool   keep  = FUNBREP_topokpart(Ifound, DSCIL, L, VP, (*pDS), E, F, toluv, parline, ttransLine);
+  bool   keep =
+    FUNBREP_topokpart(Ifound, DSCIL, L, VP, (*pDS), E, F, toluv, parline, ttransLine, lastVPind);
 
   if (keep)
   {
@@ -1389,6 +1391,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
                    Gfound,
                    PVKind,
                    PVIndex,
+                   myLastVPind,
                    keptVPnbr);
     mykeptVPnbr = keptVPnbr;
   }
@@ -1576,6 +1579,7 @@ void TopOpeBRep_FacesFiller::ProcessVPonR(const TopOpeBRep_VPointInter&  VP,
                    Gfound,
                    PVKind,
                    PVIndex,
+                   myLastVPind,
                    keptVPnbr);
     mykeptVPnbr = keptVPnbr;
   }

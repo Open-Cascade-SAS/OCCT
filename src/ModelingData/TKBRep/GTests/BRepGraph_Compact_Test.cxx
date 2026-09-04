@@ -27,6 +27,7 @@
 #include <BRepGraph_Iterator.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_ShapesView.hxx>
+#include <BRepGraph_RevisionHash.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_RefsIterator.hxx>
@@ -38,6 +39,7 @@
 #include <NCollection_Map.hxx>
 #include <Precision.hxx>
 #include <BRepGraph_Compact.hxx>
+#include <BRepGraph_CopyRemap.hxx>
 #include <BRepGraph_Deduplicate.hxx>
 #include <BRepGraph_Validate.hxx>
 #include <BRepGraph_Tool.hxx>
@@ -46,6 +48,9 @@
 #include <BRepGraph_MeshView.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Line.hxx>
+#include <gp_Lin.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -137,6 +142,22 @@ void expectBoxNear(const Bnd_Box& theLeft, const Bnd_Box& theRight, const double
   EXPECT_NEAR(aLeftMaxZ, aRightMaxZ, theTol);
 }
 
+uint32_t countFaceBoundPCurveCoEdges(const BRepGraph& theGraph)
+{
+  uint32_t aCount = 0;
+  for (BRepGraph_Iterator<BRepGraphInc::CoEdgeDef> aCoEdgeIt(theGraph); aCoEdgeIt.More();
+       aCoEdgeIt.Next())
+  {
+    const BRepGraph_CoEdgeId       aCoEdgeId = aCoEdgeIt.CurrentId();
+    const BRepGraphInc::CoEdgeDef& aCoEdge   = aCoEdgeIt.Current();
+    if (aCoEdge.FaceId.IsValid() && !BRepGraph_Tool::CoEdge::PCurve(theGraph, aCoEdgeId).IsNull())
+    {
+      ++aCount;
+    }
+  }
+  return aCount;
+}
+
 } // namespace
 
 TEST(BRepGraph_CompactTest, NoRemovedNodes_Noop)
@@ -164,6 +185,224 @@ TEST(BRepGraph_CompactTest, NoRemovedNodes_Noop)
   EXPECT_EQ(aGraph.Topo().Faces().Nb(), aNbFacesBefore);
 }
 
+TEST(BRepGraph_CompactTest, RemovedTailVertex_CompactsStorage)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+
+  const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  ASSERT_TRUE(aV0.IsValid());
+  ASSERT_TRUE(aV1.IsValid());
+  ASSERT_EQ(aGraph.LayerRegistry().NbLayers(), 1u);
+  ASSERT_FALSE(aGraph.LayerRegistry().Find<BRepGraph_LayerHistory>().IsNull());
+
+  const BRepGraph_UID aV0Uid = aGraph.UIDs().Of(aV0);
+  ASSERT_TRUE(aV0Uid.IsValid());
+
+  aGraph.Editor().Gen().RemoveNode(aV1);
+  ASSERT_EQ(aGraph.Topo().Vertices().Nb(), 2u);
+
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
+
+  EXPECT_EQ(aRes.NbRemovedVertices, 1u);
+  EXPECT_EQ(aRes.NbNodesBefore, 2u);
+  EXPECT_EQ(aRes.NbNodesAfter, 1u);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 1u);
+  EXPECT_FALSE(BRepGraph_VertexId(1).IsValid(aGraph.Topo().Vertices().Nb()));
+  EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aV0Uid), BRepGraph_NodeId(aV0));
+  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph).IsValid());
+}
+
+TEST(BRepGraph_CompactTest, AuditValidationFailureKeepsSourceGraphUnchanged)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const BRepGraph_ProductId aProductA = aGraph.Editor().Products().Add();
+  const BRepGraph_ProductId aProductB = aGraph.Editor().Products().Add();
+  ASSERT_TRUE(aProductA.IsValid());
+  ASSERT_TRUE(aProductB.IsValid());
+  aGraph.Editor().Products().AppendDocumentRoot(aProductA);
+  ASSERT_TRUE(aGraph.Editor().Products().Append(aProductA, aProductB, TopLoc_Location()).IsValid());
+  ASSERT_TRUE(aGraph.Editor().Products().Append(aProductB, aProductA, TopLoc_Location()).IsValid());
+  aGraph.Editor().Products().AppendDocumentRoot(aProductA);
+
+  const BRepGraph_VertexId aRemovedVertex =
+    aGraph.Editor().Vertices().Add(gp_Pnt(100.0, 0.0, 0.0), Precision::Confusion());
+  ASSERT_TRUE(aRemovedVertex.IsValid());
+  aGraph.Editor().Gen().RemoveNode(aRemovedVertex);
+
+  ASSERT_FALSE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
+
+  const uint32_t      aNbNodesBefore       = aGraph.Topo().Gen().NbNodes();
+  const uint32_t      aNbVerticesBefore    = aGraph.Topo().Vertices().Nb();
+  const uint32_t      aNbProductsBefore    = aGraph.Topo().Products().Nb();
+  const uint32_t      aNbOccurrencesBefore = aGraph.Topo().Occurrences().Nb();
+  const BRepGraph_UID aFirstVertexUid      = aGraph.UIDs().Of(BRepGraph_VertexId::Start());
+  ASSERT_TRUE(aFirstVertexUid.IsValid());
+
+  BRepGraph_Compact::Options aOptions;
+  aOptions.ValidationMode              = BRepGraph_Compact::Options::ValidationPolicy::Audit;
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph, aOptions);
+
+  EXPECT_EQ(aRes.NbRemovedVertices, 1u);
+  EXPECT_EQ(aRes.NbNodesBefore, aNbNodesBefore);
+  EXPECT_EQ(aRes.NbNodesAfter, aNbNodesBefore);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), aNbVerticesBefore);
+  EXPECT_EQ(aGraph.Topo().Products().Nb(), aNbProductsBefore);
+  EXPECT_EQ(aGraph.Topo().Occurrences().Nb(), aNbOccurrencesBefore);
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aRemovedVertex));
+  EXPECT_EQ(aGraph.UIDs().NodeIdFrom(aFirstVertexUid),
+            BRepGraph_NodeId(BRepGraph_VertexId::Start()));
+  EXPECT_FALSE(BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit()).IsValid());
+}
+
+TEST(BRepGraph_CompactTest, RemovedTailEdge_CompactsVertexRefs)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+
+  const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_EdgeId   anE0 =
+    aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
+  const BRepGraph_VertexId aV2 = aGraph.Editor().Vertices().Add(gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV3 = aGraph.Editor().Vertices().Add(gp_Pnt(3.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_EdgeId   anE1 =
+    aGraph.Editor().Edges().Add(aV2, aV3, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
+  ASSERT_TRUE(anE0.IsValid());
+  ASSERT_TRUE(anE1.IsValid());
+  ASSERT_EQ(aGraph.Topo().Edges().Nb(), 2u);
+  ASSERT_EQ(aGraph.Refs().Vertices().Nb(), 4u);
+
+  const BRepGraph_UID anE0Uid = aGraph.UIDs().Of(anE0);
+  ASSERT_TRUE(anE0Uid.IsValid());
+
+  aGraph.Editor().Gen().RemoveNode(anE1);
+  const BRepGraph_RevisionHash aSemanticHash = BRepGraph_RevisionHash::Hasher::Semantic(aGraph);
+
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
+
+  EXPECT_EQ(aRes.NbRemovedEdges, 1u);
+  EXPECT_EQ(aGraph.Topo().Edges().Nb(), 1u);
+  EXPECT_EQ(aGraph.Refs().Vertices().Nb(), 2u);
+  EXPECT_EQ(aGraph.UIDs().NodeIdFrom(anE0Uid), BRepGraph_NodeId(anE0));
+  EXPECT_TRUE(
+    BRepGraph_Tool::Edge::StartVertexId(aGraph, anE0).IsValid(aGraph.Refs().Vertices().Nb()));
+  EXPECT_TRUE(
+    BRepGraph_Tool::Edge::EndVertexId(aGraph, anE0).IsValid(aGraph.Refs().Vertices().Nb()));
+  EXPECT_EQ(BRepGraph_RevisionHash::Hasher::Semantic(aGraph), aSemanticHash);
+  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph).IsValid());
+}
+
+TEST(BRepGraph_CompactTest, InteriorRemovedVertex_CompactsStorage)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+
+  const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV2 = aGraph.Editor().Vertices().Add(gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
+  ASSERT_TRUE(aV0.IsValid());
+  ASSERT_TRUE(aV1.IsValid());
+  ASSERT_TRUE(aV2.IsValid());
+  ASSERT_EQ(aGraph.LayerRegistry().NbLayers(), 1u);
+  ASSERT_FALSE(aGraph.LayerRegistry().Find<BRepGraph_LayerHistory>().IsNull());
+
+  aGraph.Editor().Gen().RemoveNode(aV1);
+
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
+
+  EXPECT_EQ(aRes.StatusCode, BRepGraph_Compact::Status::Done);
+  EXPECT_EQ(aRes.NbRemovedVertices, 1u);
+  EXPECT_EQ(aGraph.Topo().Vertices().Nb(), 2u);
+  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph).IsValid());
+}
+
+TEST(BRepGraph_CompactTest, RemovedCoEdgeOnly_CompactsStorage)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+
+  const BRepGraph_VertexId aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_EdgeId   anEdge =
+    aGraph.Editor().Edges().Add(aV0, aV1, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.0e-7);
+  const BRepGraph_CoEdgeId aCoEdge = aGraph.Editor().CoEdges().Add(anEdge, TopAbs_FORWARD);
+  ASSERT_TRUE(aCoEdge.IsValid());
+  ASSERT_EQ(aGraph.Topo().CoEdges().Nb(), 1u);
+
+  aGraph.Editor().Gen().RemoveNode(BRepGraph_NodeId(aCoEdge));
+
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
+
+  EXPECT_EQ(aRes.NbRemovedCoEdges, 1u);
+  EXPECT_GT(aRes.NbNodesBefore, aRes.NbNodesAfter);
+  EXPECT_EQ(aGraph.Topo().CoEdges().Nb(), 0u);
+  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph).IsValid());
+}
+
+TEST(BRepGraph_CompactTest, RemovedFaceRefOnly_CompactsStorage)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+  ASSERT_GT(aGraph.Refs().Faces().Nb(), 0u);
+  ASSERT_GT(aGraph.Topo().Shells().Nb(), 0u);
+
+  BRepGraph_FaceRefId aFaceRefId;
+  for (BRepGraph_RefsFaceOfShell aRefIt(aGraph, BRepGraph_ShellId::Start()); aRefIt.More();)
+  {
+    aFaceRefId = aRefIt.CurrentId();
+    break;
+  }
+  ASSERT_TRUE(aFaceRefId.IsValid());
+
+  const uint32_t aNbFaceRefsBefore = aGraph.Refs().Faces().Nb();
+  ASSERT_TRUE(aGraph.Editor().Gen().RemoveRef(aFaceRefId));
+  const BRepGraph_RevisionHash aSemanticHash = BRepGraph_RevisionHash::Hasher::Semantic(aGraph);
+
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
+
+  EXPECT_EQ(aRes.NbRemovedRefs, 1u);
+  EXPECT_EQ(aGraph.Refs().Faces().Nb(), aNbFaceRefsBefore - 1u);
+  EXPECT_EQ(BRepGraph_RevisionHash::Hasher::Semantic(aGraph), aSemanticHash);
+  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph).IsValid());
+}
+
+TEST(BRepGraph_CompactTest, RemovedCurveRepOnly_CompactsStorage)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+
+  const BRepGraph_VertexId      aV0 = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.0e-7);
+  const BRepGraph_VertexId      aV1 = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  const occ::handle<Geom_Curve> aCurve =
+    new Geom_Line(gp_Lin(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
+  const BRepGraph_EdgeId anEdge = aGraph.Editor().Edges().Add(aV0, aV1, aCurve, 0.0, 1.0, 1.0e-7);
+  ASSERT_TRUE(anEdge.IsValid());
+  ASSERT_EQ(aGraph.Topo().Geometry().NbEdgeCurves3D(), 1u);
+  ASSERT_EQ(aGraph.Topo().Geometry().NbActiveEdgeCurves3D(), 1u);
+
+  aGraph.Editor().Edges().ClearCurve(anEdge);
+  ASSERT_EQ(aGraph.Topo().Geometry().NbEdgeCurves3D(), 1u);
+  ASSERT_EQ(aGraph.Topo().Geometry().NbActiveEdgeCurves3D(), 0u);
+
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
+
+  EXPECT_EQ(aRes.NbRemovedReps, 1u);
+  EXPECT_EQ(aGraph.Topo().Geometry().NbEdgeCurves3D(), 0u);
+  EXPECT_EQ(aGraph.Topo().Geometry().NbActiveEdgeCurves3D(), 0u);
+  EXPECT_FALSE(aGraph.Topo().Edges().Definition(anEdge).Curve3DRepId.IsValid());
+  EXPECT_TRUE(BRepGraph_Validate::Perform(aGraph).IsValid());
+}
+
 TEST(BRepGraph_CompactTest, AfterDeduplicate_RemovesNodes)
 {
   BRepGraph aGraph;
@@ -175,9 +414,7 @@ TEST(BRepGraph_CompactTest, AfterDeduplicate_RemovesNodes)
   // Run geometry dedup which replaces duplicate surface/curve handles directly.
   std::ignore = BRepGraph_Deduplicate::Perform(aGraph);
 
-  BRepGraph_Compact::Options anOpts;
-  anOpts.HistoryMode                   = false;
-  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph, anOpts);
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
 
   // No separate geometry nodes exist, so NbRemovedSurfaces/NbRemovedCurves is always 0.
   EXPECT_EQ(aRes.NbRemovedSurfaces, 0);
@@ -239,7 +476,7 @@ TEST(BRepGraph_CompactTest, CrossReferences_Valid)
   EXPECT_TRUE(aValResult.IsValid());
 }
 
-TEST(BRepGraph_CompactTest, HistoryMode_RecordsMapping)
+TEST(BRepGraph_CompactTest, Compact_DoesNotRecordRemapHistory)
 {
   BRepGraph aGraph;
   aGraph.Clear();
@@ -253,15 +490,11 @@ TEST(BRepGraph_CompactTest, HistoryMode_RecordsMapping)
   aDedupOpts.MergeEntitiesWhenSafe = true;
   std::ignore                      = BRepGraph_Deduplicate::Perform(aGraph, aDedupOpts);
 
-  BRepGraph_Compact::Options anOpts;
-  anOpts.HistoryMode = true;
-  std::ignore        = BRepGraph_Compact::Perform(aGraph, anOpts);
+  std::ignore = BRepGraph_Compact::Perform(aGraph);
 
   const int aNbRemapRecords =
     countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Compact:Remap"));
-  // After merging duplicate entities at least some topology nodes are removed,
-  // which forces surviving-node index remapping during Compact.
-  EXPECT_GE(aNbRemapRecords, 1);
+  EXPECT_EQ(aNbRemapRecords, 0);
 }
 
 TEST(BRepGraph_CompactTest, FullPipeline_Deduplicate_Compact_Validate)
@@ -311,6 +544,31 @@ TEST(BRepGraph_CompactTest, RemovalCompact_PreservesBounds_AndDoesNotGrowTopolog
   Bnd_Box aBoxAfterCompact;
   addGraphBounds(aGraph, aBoxAfterCompact);
   expectBoxNear(aBoxAfterCompact, aBoxBeforeCompact, Precision::Confusion());
+
+  const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
+  EXPECT_TRUE(aValResult.IsValid());
+}
+
+TEST(BRepGraph_CompactTest, RemovalCompact_NoRootProducts_PreservesTopology)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
+
+  BRepGraph                      aGraph;
+  BRepGraph::ShapesView::Options anOptions;
+  anOptions.CreateAutoProduct = false;
+  const BRepGraph::ShapesView::Result aBuildResult =
+    aGraph.Shapes().Add(aBoxMaker.Shape(), anOptions);
+  ASSERT_TRUE(aBuildResult.TopologyRoot.IsValid());
+  ASSERT_TRUE(aGraph.RootProductIds().IsEmpty());
+  ASSERT_GT(aGraph.Topo().Faces().Nb(), 2u);
+
+  aGraph.Editor().Gen().RemoveNode(BRepGraph_FaceId(2));
+
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
+  EXPECT_GT(aRes.NbNodesBefore, aRes.NbNodesAfter);
+  EXPECT_EQ(aRes.NbRemovedFaces, 1u);
+  EXPECT_EQ(aRes.NbUnmappedActiveDefs, 0u);
+  EXPECT_TRUE(aGraph.RootProductIds().IsEmpty());
 
   const BRepGraph_Validate::Result aValResult = BRepGraph_Validate::Perform(aGraph);
   EXPECT_TRUE(aValResult.IsValid());
@@ -638,6 +896,129 @@ TEST(BRepGraph_CompactTest, CoEdgeUID_AfterCompaction)
     << "CoEdge UID resolved to wrong kind";
 }
 
+TEST(BRepGraph_CompactTest, Compact_PreservesManyFaceBoundFreePCurves)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+
+  const BRepGraph_VertexId aRemovedVertex =
+    aGraph.Editor().Vertices().Add(gp_Pnt(-10.0, 0.0, 0.0), 1.e-7);
+  ASSERT_TRUE(aRemovedVertex.IsValid());
+
+  const BRepGraph_FaceId aFace = aGraph.Editor().Faces().Add(occ::handle<Geom_Surface>(),
+                                                             BRepGraph_WireId(),
+                                                             NCollection_Array1<BRepGraph_WireId>(),
+                                                             1.e-7);
+  ASSERT_TRUE(aFace.IsValid());
+
+  constexpr uint32_t THE_NB_FREE_PCURVES = 160;
+  for (uint32_t anIdx = 0; anIdx < THE_NB_FREE_PCURVES; ++anIdx)
+  {
+    const double             anX    = static_cast<double>(anIdx);
+    const BRepGraph_VertexId aStart = aGraph.Editor().Vertices().Add(gp_Pnt(anX, 0.0, 0.0), 1.e-7);
+    const BRepGraph_VertexId anEnd  = aGraph.Editor().Vertices().Add(gp_Pnt(anX, 1.0, 0.0), 1.e-7);
+    ASSERT_TRUE(aStart.IsValid());
+    ASSERT_TRUE(anEnd.IsValid());
+
+    const BRepGraph_EdgeId anEdge =
+      aGraph.Editor().Edges().Add(aStart, anEnd, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.e-7);
+    ASSERT_TRUE(anEdge.IsValid());
+
+    const occ::handle<Geom2d_Line> aPCurve =
+      new Geom2d_Line(gp_Pnt2d(0.0, anX), gp_Dir2d(1.0, 0.0));
+    const BRepGraph_CoEdgeId aCoEdge =
+      aGraph.Editor().CoEdges().Add(anEdge, aFace, aPCurve, 0.0, 1.0, TopAbs_FORWARD);
+    ASSERT_TRUE(aCoEdge.IsValid());
+  }
+  ASSERT_EQ(countFaceBoundPCurveCoEdges(aGraph), THE_NB_FREE_PCURVES);
+
+  aGraph.Editor().Gen().RemoveNode(aRemovedVertex);
+
+  const BRepGraph_Compact::Result aCompactResult = BRepGraph_Compact::Perform(aGraph);
+  ASSERT_GT(aCompactResult.NbNodesBefore, aCompactResult.NbNodesAfter);
+  EXPECT_EQ(aCompactResult.NbRemovedVertices, 1u);
+  EXPECT_EQ(countFaceBoundPCurveCoEdges(aGraph), THE_NB_FREE_PCURVES);
+}
+
+TEST(BRepGraph_CompactTest, Compact_PreservesDistinctFreeCoEdgesOnSameEdgeAndFace)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+
+  const BRepGraph_VertexId aRemoved = aGraph.Editor().Vertices().Add(gp_Pnt(-1.0, 0.0, 0.0), 1.e-7);
+  const BRepGraph_VertexId aStart   = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), 1.e-7);
+  const BRepGraph_VertexId anEnd    = aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.e-7);
+  const BRepGraph_EdgeId   anEdge =
+    aGraph.Editor().Edges().Add(aStart, anEnd, occ::handle<Geom_Curve>(), 0.0, 1.0, 1.e-7);
+  const BRepGraph_FaceId aFace = aGraph.Editor().Faces().Add(occ::handle<Geom_Surface>(),
+                                                             BRepGraph_WireId(),
+                                                             NCollection_Array1<BRepGraph_WireId>(),
+                                                             1.e-7);
+  ASSERT_TRUE(aRemoved.IsValid());
+  ASSERT_TRUE(anEdge.IsValid());
+  ASSERT_TRUE(aFace.IsValid());
+
+  const occ::handle<Geom2d_Line> aForwardCurve =
+    new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  const occ::handle<Geom2d_Line> aReversedCurve =
+    new Geom2d_Line(gp_Pnt2d(0.0, 1.0), gp_Dir2d(1.0, 0.0));
+  const BRepGraph_CoEdgeId aForward =
+    aGraph.Editor().CoEdges().Add(anEdge, aFace, aForwardCurve, 0.0, 1.0, TopAbs_FORWARD);
+  const BRepGraph_CoEdgeId aReversed =
+    aGraph.Editor().CoEdges().Add(anEdge, aFace, aReversedCurve, 0.0, 1.0, TopAbs_REVERSED);
+  ASSERT_TRUE(aForward.IsValid());
+  ASSERT_TRUE(aReversed.IsValid());
+  ASSERT_NE(aForward, aReversed);
+  const BRepGraph_UID aForwardUID  = aGraph.UIDs().Of(aForward);
+  const BRepGraph_UID aReversedUID = aGraph.UIDs().Of(aReversed);
+
+  aGraph.Editor().Gen().RemoveNode(aRemoved);
+  const BRepGraph_Compact::Result aResult = BRepGraph_Compact::Perform(aGraph);
+  ASSERT_EQ(aResult.NbRemovedVertices, 1u);
+
+  const BRepGraph_CoEdgeId aCompactedForward =
+    BRepGraph_CoEdgeId::FromNodeId(aGraph.UIDs().NodeIdFrom(aForwardUID));
+  const BRepGraph_CoEdgeId aCompactedReversed =
+    BRepGraph_CoEdgeId::FromNodeId(aGraph.UIDs().NodeIdFrom(aReversedUID));
+  ASSERT_TRUE(aCompactedForward.IsValid());
+  ASSERT_TRUE(aCompactedReversed.IsValid());
+  EXPECT_NE(aCompactedForward, aCompactedReversed);
+  EXPECT_EQ(aGraph.Topo().CoEdges().Definition(aCompactedForward).Orientation, TopAbs_FORWARD);
+  EXPECT_EQ(aGraph.Topo().CoEdges().Definition(aCompactedReversed).Orientation, TopAbs_REVERSED);
+}
+
+TEST(BRepGraph_CompactTest, Compact_PreservesActiveDefinitionOutsideDocumentRoots)
+{
+  BRepGraph                           aGraph;
+  const BRepGraph::ShapesView::Result aBox =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape());
+  ASSERT_TRUE(aBox.IsOk());
+  ASSERT_FALSE(aGraph.RootProductIds().IsEmpty());
+
+  const BRepGraph_VertexId anOrphan =
+    aGraph.Editor().Vertices().Add(gp_Pnt(10.0, 20.0, 30.0), 1.e-7);
+  const BRepGraph_VertexId aRemoved =
+    aGraph.Editor().Vertices().Add(gp_Pnt(-10.0, -20.0, -30.0), 1.e-7);
+  ASSERT_TRUE(anOrphan.IsValid());
+  ASSERT_TRUE(aRemoved.IsValid());
+  const BRepGraph_UID anOrphanUID = aGraph.UIDs().Of(anOrphan);
+  const size_t        aRootCount  = aGraph.RootProductIds().Size();
+
+  aGraph.Editor().Gen().RemoveNode(aRemoved);
+  const BRepGraph_Compact::Result aResult = BRepGraph_Compact::Perform(aGraph);
+  ASSERT_EQ(aResult.NbRemovedVertices, 1u);
+
+  const BRepGraph_NodeId aCompactedOrphan = aGraph.UIDs().NodeIdFrom(anOrphanUID);
+  ASSERT_TRUE(aCompactedOrphan.IsValid());
+  EXPECT_NEAR(aGraph.Topo()
+                .Vertices()
+                .Definition(BRepGraph_VertexId(aCompactedOrphan))
+                .Point.Distance(gp_Pnt(10.0, 20.0, 30.0)),
+              0.0,
+              Precision::Confusion());
+  EXPECT_EQ(aGraph.RootProductIds().Size(), aRootCount);
+}
+
 TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
 {
   // Verify that all transferred RefUID kinds survive compaction.
@@ -718,8 +1099,7 @@ TEST(BRepGraph_CompactTest, UIDRoundTrip_RefUIDs_AfterCompaction)
   {
     for (BRepGraph_Iterator<BRepGraphInc::SolidDef> anIt(aGraph); anIt.More(); anIt.Next())
     {
-      for (BRepGraph_RefsShellOfSolid aRefIt(aGraph, anIt.CurrentId()); aRefIt.More();
-           aRefIt.Next())
+      for (BRepGraph_RefsShellOfSolid aRefIt(aGraph, anIt.CurrentId()); aRefIt.More();)
       {
         aShellRefId = aRefIt.CurrentId();
         break;
@@ -814,7 +1194,7 @@ TEST(BRepGraph_CompactTest, FindNodeStillWorksAfterCompact)
 
   // Pick one face from the original build input.
   TopoDS_Shape aFace;
-  for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next())
+  for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More();)
   {
     aFace = anExp.Current();
     break;
@@ -1080,11 +1460,71 @@ TEST(BRepGraph_CompactTest, HistorySurvivesCompactWithRemappedIds)
   aDedupOpts.MergeEntitiesWhenSafe = true;
   std::ignore                      = BRepGraph_Deduplicate::Perform(aGraph, aDedupOpts);
 
-  BRepGraph_Compact::Options aCompactOpts;
-  aCompactOpts.HistoryMode = true;
-  std::ignore              = BRepGraph_Compact::Perform(aGraph, aCompactOpts);
+  std::ignore = BRepGraph_Compact::Perform(aGraph);
 
-  EXPECT_GE(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aNbBefore + 1);
+  EXPECT_GE(aGraph.LayerRegistry().Ensure<BRepGraph_LayerHistory>()->NbRecords(), aNbBefore);
+  EXPECT_EQ(countHistoryRecordsByOp(aGraph, TCollection_AsciiString("Compact:Remap")), 0);
+}
+
+TEST(BRepGraph_CompactTest, PreservesPersistentMeshAndSemanticState)
+{
+  BRepGraph                aGraph;
+  const BRepGraph_VertexId aTombstone =
+    aGraph.Editor().Vertices().Add(gp_Pnt(-1.0, -1.0, -1.0), Precision::Confusion());
+  ASSERT_TRUE(aTombstone.IsValid());
+  aGraph.Editor().Gen().RemoveNode(aTombstone);
+  ASSERT_TRUE(aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()).IsOk());
+
+  const BRepGraph_FaceId   aFaceId   = BRepGraph_FaceId::Start();
+  const BRepGraph_CoEdgeId aCoEdgeId = BRepGraph_CoEdgeId::Start();
+  ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
+  ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
+  const BRepGraph_EdgeId anEdgeId = aGraph.Topo().CoEdges().Definition(aCoEdgeId).ChildEdgeId;
+  ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
+
+  const occ::handle<Poly_Triangulation> aTriangulation = new Poly_Triangulation(3, 1, false);
+  const occ::handle<Poly_Polygon3D>     aPolygon3D     = new Poly_Polygon3D(2, false);
+  const occ::handle<Poly_Polygon2D>     aPolygon2D     = new Poly_Polygon2D(2);
+  const occ::handle<Poly_PolygonOnTriangulation> aPolygonOnTri =
+    new Poly_PolygonOnTriangulation(2, false);
+  aGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTriangulation);
+  aGraph.Editor().Edges().SetPersistentPolygon3D(anEdgeId, aPolygon3D);
+  aGraph.Editor().CoEdges().SetPersistentPolygon2D(aCoEdgeId, aPolygon2D);
+  aGraph.Editor().CoEdges().SetPersistentPolygonOnTri(aCoEdgeId, aPolygonOnTri);
+
+  const BRepGraph_UID             aFaceUID      = aGraph.UIDs().Of(aFaceId);
+  const BRepGraph_UID             anEdgeUID     = aGraph.UIDs().Of(anEdgeId);
+  const BRepGraph_UID             aCoEdgeUID    = aGraph.UIDs().Of(aCoEdgeId);
+  const BRepGraph_RevisionHash    aSemanticHash = BRepGraph_RevisionHash::Hasher::Semantic(aGraph);
+  const BRepGraph_Compact::Result aResult       = BRepGraph_Compact::Perform(aGraph);
+  EXPECT_EQ(aResult.NbRemovedVertices, 1u);
+
+  const BRepGraph_FaceId   aNewFace(aGraph.UIDs().NodeIdFrom(aFaceUID));
+  const BRepGraph_EdgeId   aNewEdge(aGraph.UIDs().NodeIdFrom(anEdgeUID));
+  const BRepGraph_CoEdgeId aNewCoEdge(aGraph.UIDs().NodeIdFrom(aCoEdgeUID));
+  ASSERT_TRUE(aNewFace.IsValid());
+  ASSERT_TRUE(aNewEdge.IsValid());
+  ASSERT_TRUE(aNewCoEdge.IsValid());
+  EXPECT_EQ(aGraph.Mesh().Persistent().Faces().Triangulation(aNewFace), aTriangulation);
+  EXPECT_EQ(aGraph.Mesh().Persistent().Edges().Polygon3D(aNewEdge), aPolygon3D);
+  EXPECT_EQ(aGraph.Mesh().Persistent().CoEdges().PolygonOnSurface(aNewCoEdge), aPolygon2D);
+  EXPECT_EQ(aGraph.Mesh().Persistent().CoEdges().PolygonOnTriangulation(aNewCoEdge), aPolygonOnTri);
+  EXPECT_EQ(BRepGraph_RevisionHash::Hasher::Semantic(aGraph), aSemanticHash);
+}
+
+TEST(BRepGraph_CompactTest, DoesNotReuseRemovedHighUID)
+{
+  BRepGraph aGraph;
+  std::ignore = aGraph.Editor().Vertices().Add(gp_Pnt(0.0, 0.0, 0.0), Precision::Confusion());
+  const BRepGraph_VertexId aRemoved =
+    aGraph.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), Precision::Confusion());
+  const BRepGraph_UID aRemovedUID = aGraph.UIDs().Of(aRemoved);
+  aGraph.Editor().Gen().RemoveNode(aRemoved);
+  std::ignore = BRepGraph_Compact::Perform(aGraph);
+
+  const BRepGraph_VertexId aNext =
+    aGraph.Editor().Vertices().Add(gp_Pnt(2.0, 0.0, 0.0), Precision::Confusion());
+  EXPECT_GT(aGraph.UIDs().Of(aNext).Counter, aRemovedUID.Counter);
 }
 
 namespace
@@ -1094,7 +1534,7 @@ class StubMeshDriver : public BRepGraph_CacheMesh::Driver
 public:
   DEFINE_STANDARD_RTTI_INLINE(StubMeshDriver, BRepGraph_CacheMesh::Driver)
 
-  explicit StubMeshDriver(uint64_t theHash)
+  explicit StubMeshDriver(size_t theHash)
       : myHash(theHash)
   {
   }
@@ -1105,7 +1545,7 @@ public:
     return THE_ID;
   }
 
-  uint64_t RecipeHash() const override { return myHash; }
+  size_t RecipeHash() const override { return myHash; }
 
   bool Fill(BRepGraph&,
             BRepGraph_CacheMesh::SlotId,
@@ -1115,8 +1555,17 @@ public:
     return true;
   }
 
+  occ::handle<BRepGraph_CacheMesh::Driver> Copy(const BRepGraph_CopyRemap& theCopy) const override
+  {
+    if (theCopy.IsCompact())
+    {
+      return occ::handle<BRepGraph_CacheMesh::Driver>(const_cast<StubMeshDriver*>(this));
+    }
+    return new StubMeshDriver(myHash);
+  }
+
 private:
-  uint64_t myHash;
+  size_t myHash;
 };
 } // namespace
 
@@ -1132,8 +1581,8 @@ TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompact)
   occ::handle<BRepGraph_CacheMesh> aCache = aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
   ASSERT_FALSE(aCache.IsNull());
 
-  constexpr uint64_t THE_RECIPE_HASH = 42;
-  auto               aDriver         = new StubMeshDriver(THE_RECIPE_HASH);
+  constexpr size_t THE_RECIPE_HASH = 42;
+  auto             aDriver         = new StubMeshDriver(THE_RECIPE_HASH);
   aCache->RegisterDriver(BRepGraph_CacheMesh::DefaultDisplaySlot, aDriver);
 
   const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
@@ -1183,8 +1632,8 @@ TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompactWithDedup)
   occ::handle<BRepGraph_CacheMesh> aCache = aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
   ASSERT_FALSE(aCache.IsNull());
 
-  constexpr uint64_t THE_RECIPE_HASH = 99;
-  auto               aDriver         = new StubMeshDriver(THE_RECIPE_HASH);
+  constexpr size_t THE_RECIPE_HASH = 99;
+  auto             aDriver         = new StubMeshDriver(THE_RECIPE_HASH);
   aCache->RegisterDriver(BRepGraph_CacheMesh::DefaultDisplaySlot, aDriver);
 
   const occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(3, 1, false);
@@ -1212,7 +1661,7 @@ TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompactWithDedup)
   // Cache object and driver must survive.
   occ::handle<BRepGraph_CacheMesh> aCacheAfter = aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>();
   ASSERT_FALSE(aCacheAfter.IsNull());
-  EXPECT_EQ(aCache.get(), aCacheAfter.get());
+  EXPECT_NE(aCache.get(), aCacheAfter.get());
 
   const occ::handle<BRepGraph_CacheMesh::Driver>& aDriverAfter =
     aCacheAfter->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot);
@@ -1229,7 +1678,7 @@ TEST(BRepGraph_CompactTest, CacheMesh_DriverSurvivesCompactWithDedup)
   }
 }
 
-TEST(BRepGraph_CompactTest, CacheMesh_CanCopyFreshEntriesThroughCompact)
+TEST(BRepGraph_CompactTest, CacheMesh_CanCopyFreshEntriesThroughCompactAndPreserveDriver)
 {
   BRepGraph aGraph;
   std::ignore = aGraph.Shapes().Add(makeTwoCopiedFaces());
@@ -1238,8 +1687,8 @@ TEST(BRepGraph_CompactTest, CacheMesh_CanCopyFreshEntriesThroughCompact)
   occ::handle<BRepGraph_CacheMesh> aCache = aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
   ASSERT_FALSE(aCache.IsNull());
 
-  constexpr uint64_t THE_RECIPE_HASH = 77;
-  auto               aDriver         = new StubMeshDriver(THE_RECIPE_HASH);
+  constexpr size_t THE_RECIPE_HASH = 77;
+  auto             aDriver         = new StubMeshDriver(THE_RECIPE_HASH);
   aCache->RegisterDriver(BRepGraph_CacheMesh::DefaultDisplaySlot, aDriver);
 
   const occ::handle<Poly_Triangulation> aTri = new Poly_Triangulation(3, 1, false);
@@ -1264,17 +1713,21 @@ TEST(BRepGraph_CompactTest, CacheMesh_CanCopyFreshEntriesThroughCompact)
     ASSERT_NE(aCache->FindFaceMesh(aFaceId), nullptr);
   }
 
-  BRepGraph_Compact::Options aCompactOpts;
-  aCompactOpts.CacheMode               = BRepGraph_Compact::Options::CachePolicy::CopyFresh;
-  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph, aCompactOpts);
+  const BRepGraph_Compact::Result aRes = BRepGraph_Compact::Perform(aGraph);
   EXPECT_GT(aRes.NbRemovedVertices + aRes.NbRemovedEdges + aRes.NbRemovedFaces, 0u);
 
   occ::handle<BRepGraph_CacheMesh> aCacheAfter = aGraph.CacheRegistry().Find<BRepGraph_CacheMesh>();
   ASSERT_FALSE(aCacheAfter.IsNull());
   EXPECT_NE(aCacheAfter.get(), aCache.get());
-  ASSERT_FALSE(aCacheAfter->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot).IsNull());
-  EXPECT_EQ(aCacheAfter->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot)->RecipeHash(),
-            THE_RECIPE_HASH);
+  const occ::handle<BRepGraph_CacheMesh::Driver> aDriverAfter =
+    aCacheAfter->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot);
+  ASSERT_FALSE(aDriverAfter.IsNull());
+  EXPECT_EQ(aDriverAfter.get(), aCache->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot).get());
+  EXPECT_EQ(aDriverAfter->RecipeHash(), THE_RECIPE_HASH);
+  const BRepGraph_CacheMesh::SlotState aState =
+    aCacheAfter->State(BRepGraph_CacheMesh::DefaultDisplaySlot);
+  EXPECT_TRUE(aState.HasDriver);
+  EXPECT_EQ(aState.RecipeHash, THE_RECIPE_HASH);
 
   for (BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
        aFaceId.IsValid(aGraph.Topo().Faces().Nb());

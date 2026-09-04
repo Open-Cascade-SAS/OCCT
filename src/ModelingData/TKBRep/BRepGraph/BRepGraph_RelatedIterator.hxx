@@ -60,6 +60,21 @@ public:
     Finished, //!< All relations exhausted.
   };
 
+  //! Complete resumable iterator position.
+  //!
+  //! The position is process-local and valid only with the unchanged graph from
+  //! which it was obtained. It owns no graph data and performs no allocation.
+  struct Position
+  {
+    BRepGraph_NodeId Current;
+    RelationKind     Relation   = RelationKind::BoundaryEdge;
+    Stage            StageValue = Stage::First;
+    uint32_t         Index      = 0;
+    uint32_t         InnerIndex = 0;
+    uint32_t         DeepIndex  = 0;
+    bool             HasCurrent = false;
+  };
+
   //! Construct an iterator over all semantically related nodes of the given source node.
   //! @param[in] theGraph graph containing the node
   //! @param[in] theNode  source node whose relations are iterated
@@ -68,6 +83,32 @@ public:
         myNode(theNode)
   {
     advance();
+  }
+
+  //! Resume an iterator from a previously saved position.
+  //! @param[in] theGraph unchanged graph that produced the position
+  //! @param[in] theNode source node whose relations are iterated
+  //! @param[in] thePosition process-local iterator position
+  BRepGraph_RelatedIterator(const BRepGraph&       theGraph,
+                            const BRepGraph_NodeId theNode,
+                            const Position&        thePosition)
+      : myGraph(&theGraph),
+        myNode(theNode),
+        myCurrent(thePosition.Current),
+        myRelation(thePosition.Relation),
+        myStage(thePosition.StageValue),
+        myIndex(thePosition.Index),
+        myInnerIndex(thePosition.InnerIndex),
+        myDeepIndex(thePosition.DeepIndex),
+        myHasCurrent(thePosition.HasCurrent)
+  {
+  }
+
+  //! Return the complete position for later resumption.
+  //! @return process-local position at the current item
+  [[nodiscard]] Position CurrentPosition() const
+  {
+    return {myCurrent, myRelation, myStage, myIndex, myInnerIndex, myDeepIndex, myHasCurrent};
   }
 
   //! True if another related node is available.

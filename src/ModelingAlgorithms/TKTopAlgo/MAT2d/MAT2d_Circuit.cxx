@@ -33,20 +33,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
 
-#ifdef OCCT_DEBUG
-  #include <GC_MakeSegment2d.hxx>
-  #include <Geom2d_Curve.hxx>
-  #include <Geom2d_Parabola.hxx>
-  #include <Geom2d_Hyperbola.hxx>
-  #include <Geom2d_Line.hxx>
-  #include <Geom2d_Circle.hxx>
-#endif
-
-#ifdef OCCT_DEBUG
-static void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
-static bool AffichCircuit = 0;
-#endif
-
 // static functions:
 
 static double CrossProd(const occ::handle<Geom2d_Geometry>& Geom1,
@@ -198,20 +184,6 @@ void MAT2d_Circuit::Perform(
   //------------------------
   Road.RunOnConnexions();
 
-#ifdef OCCT_DEBUG
-  if (AffichCircuit)
-  {
-    int NbConnexions = Road.Path().Length();
-    for (i = 1; i <= NbConnexions; i++)
-    {
-      occ::handle<Geom2d_TrimmedCurve> edge;
-      edge = GC_MakeSegment2d(Road.Path().Value(i)->PointOnFirst(),
-                              Road.Path().Value(i)->PointOnSecond());
-      MAT2d_DrawCurve(edge, 2);
-    }
-  }
-#endif
-
   //-------------------------
   // Construction du Circuit.
   //-------------------------
@@ -298,13 +270,6 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
     Adaptor2d_OffsetCurve            OC2(HC2, D, C2->FirstParameter(), MilC2);
     Geom2dInt_GInter                 Intersect;
     Intersect.Perform(OC1, OC2, Tol, Tol);
-
-#ifdef OCCT_DEBUG
-    static bool Affich = 0;
-    if (Affich)
-    {
-    }
-#endif
 
     return !Intersect.IsDone() || Intersect.IsEmpty();
   } // end of if (myJoinType == GeomAbs_Arc)
@@ -463,20 +428,6 @@ void MAT2d_Circuit::ConstructCircuit(
       SortRefToEqui(Ite.Key());
     }
   }
-
-#ifdef OCCT_DEBUG
-  if (AffichCircuit)
-  {
-    ILastItem = geomElements.Length();
-    for (i = 1; i <= ILastItem; i++)
-    {
-      if (geomElements.Value(i)->DynamicType() != STANDARD_TYPE(Geom2d_CartesianPoint))
-      {
-        MAT2d_DrawCurve(occ::down_cast<Geom2d_Curve>(geomElements.Value(i)), 2);
-      }
-    }
-  }
-#endif
 }
 
 //=================================================================================================
@@ -643,16 +594,6 @@ void MAT2d_Circuit::DoubleLine(NCollection_Sequence<occ::handle<Geom2d_Geometry>
       }
     }
 
-#ifdef OCCT_DEBUG
-    if (AffichCircuit)
-    {
-      for (i = 1; i <= 2 * NbItems - 2; i++)
-      {
-        std::cout << "Correspondance " << i << " -> " << Corres(i) << std::endl;
-      }
-    }
-#endif
-
     //----------------------------
     // Mise a jour des Connexions.
     //----------------------------
@@ -681,16 +622,6 @@ void MAT2d_Circuit::InsertCorner(NCollection_Sequence<occ::handle<Geom2d_Geometr
   {
     isuiv  = (i == Line.Length()) ? 1 : i + 1;
     Insert = IsSharpCorner(Line.Value(i), Line.Value(isuiv), direction);
-
-#ifdef OCCT_DEBUG
-    if (AffichCircuit)
-    {
-      if (Insert)
-      {
-        Curve = occ::down_cast<Geom2d_TrimmedCurve>(Line.Value(isuiv));
-      }
-    }
-#endif
 
     if (Insert)
     {
@@ -870,69 +801,3 @@ static double CrossProd(const occ::handle<Geom2d_Geometry>& Geom1,
   DotProd = Dir1.Dot(Dir2);
   return Dir1 ^ Dir2;
 }
-
-#ifdef OCCT_DEBUG
-//==========================================================================
-// function : MAT2d_DrawCurve
-// purpose  : Affichage d une courbe <aCurve> de Geom2d. dans une couleur
-//            definie par <Indice>.
-//            Indice = 1 jaune,
-//            Indice = 2 bleu,
-//            Indice = 3 rouge,
-//            Indice = 4 vert.
-//==========================================================================
-void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice*/)
-{
-  occ::handle<Standard_Type> type = aCurve->DynamicType();
-  occ::handle<Geom2d_Curve>  curve, CurveDraw;
-
-  if (type == STANDARD_TYPE(Geom2d_TrimmedCurve))
-  {
-    curve = occ::down_cast<Geom2d_TrimmedCurve>(aCurve)->BasisCurve();
-    type  = curve->DynamicType();
-    // PB de representation des courbes semi_infinies.
-    gp_Parab2d gpParabola;
-    gp_Hypr2d  gpHyperbola;
-    double     Focus;
-    double     Limit = 50000.;
-    double     delta = 400;
-
-    // PB de representation des courbes semi_infinies.
-    if (aCurve->LastParameter() == Precision::Infinite())
-    {
-
-      if (type == STANDARD_TYPE(Geom2d_Parabola))
-      {
-        gpParabola  = occ::down_cast<Geom2d_Parabola>(curve)->Parab2d();
-        Focus       = gpParabola.Focal();
-        double Val1 = std::sqrt(Limit * Focus);
-        double Val2 = std::sqrt(Limit * Limit);
-        delta       = (Val1 <= Val2 ? Val1 : Val2);
-      }
-      else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
-      {
-        gpHyperbola  = occ::down_cast<Geom2d_Hyperbola>(curve)->Hypr2d();
-        double Majr  = gpHyperbola.MajorRadius();
-        double Minr  = gpHyperbola.MinorRadius();
-        double Valu1 = Limit / Majr;
-        double Valu2 = Limit / Minr;
-        double Val1  = Log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
-        double Val2  = Log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
-        delta        = (Val1 <= Val2 ? Val1 : Val2);
-      }
-      CurveDraw =
-        new Geom2d_TrimmedCurve(aCurve, aCurve->FirstParameter(), aCurve->FirstParameter() + delta);
-    }
-    else
-    {
-      CurveDraw = aCurve;
-    }
-    // fin PB.
-  }
-  else
-  {
-    CurveDraw = aCurve;
-  }
-}
-
-#endif

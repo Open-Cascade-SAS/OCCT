@@ -249,7 +249,7 @@ const occ::handle<Geom2d_Curve>& TopOpeBRepDS_Curve::Curve1() const
   }
   else
   {
-    static occ::handle<Geom2d_Curve> STALOC_Geom2dCurveNull1;
+    static const occ::handle<Geom2d_Curve> STALOC_Geom2dCurveNull1;
     return STALOC_Geom2dCurveNull1;
   }
 }
@@ -274,7 +274,7 @@ const occ::handle<Geom2d_Curve>& TopOpeBRepDS_Curve::Curve2() const
   }
   else
   {
-    static occ::handle<Geom2d_Curve> STALOC_Geom2dCurveNull2;
+    static const occ::handle<Geom2d_Curve> STALOC_Geom2dCurveNull2;
     return STALOC_Geom2dCurveNull2;
   }
 }

@@ -154,6 +154,16 @@ public:
 
   [[nodiscard]] bool More() const { return myCurrent < myLength; }
 
+  [[nodiscard]] uint32_t Count() const
+  {
+    uint32_t aCount = 0;
+    for (RefIterator anIt(*this); anIt.More(); anIt.Next())
+    {
+      ++aCount;
+    }
+    return aCount;
+  }
+
   void Next()
   {
     ++myCurrent;
@@ -428,6 +438,16 @@ public:
 
   [[nodiscard]] bool More() const { return myRefIds != nullptr && myIndex < myLength; }
 
+  [[nodiscard]] uint32_t Count() const
+  {
+    uint32_t aCount = 0;
+    for (RefsOfParent anIt(*this); anIt.More(); anIt.Next())
+    {
+      ++aCount;
+    }
+    return aCount;
+  }
+
   void Next()
   {
     ++myIndex;
@@ -544,6 +564,16 @@ public:
   }
 
   [[nodiscard]] bool More() const { return myEdge != nullptr && myIndex < myLength; }
+
+  [[nodiscard]] uint32_t Count() const
+  {
+    uint32_t aCount = 0;
+    for (RefsVertexOfEdge anIt(*this); anIt.More(); anIt.Next())
+    {
+      ++aCount;
+    }
+    return aCount;
+  }
 
   void Next()
   {

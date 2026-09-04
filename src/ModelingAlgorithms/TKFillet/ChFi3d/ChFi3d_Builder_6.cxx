@@ -629,15 +629,9 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
                                const bool                            Reversed)
 {
   // Small control tools.
-  // Per-thread reused scratch adaptor.
-  static thread_local occ::handle<GeomAdaptor_Curve> checkcurve;
-  if (checkcurve.IsNull())
-  {
-    checkcurve = new GeomAdaptor_Curve();
-  }
-  GeomAdaptor_Curve& chc = *checkcurve;
-  double             tolget3d, tolget2d, tolaux, tolC1, tolcheck;
-  double             tolC2 = 0.;
+  GeomAdaptor_Curve aCheckCurve;
+  double            tolget3d, tolget2d, tolaux, tolC1, tolcheck;
+  double            tolC2 = 0.;
   approx.TolReached(tolget3d, tolget2d);
   tolaux = approx.TolCurveOnSurf(1);
   tolC1  = tolget3d + tolaux;
@@ -749,9 +743,9 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
 
   double par1 = PCurveOnFace->FirstParameter();
   double par2 = PCurveOnFace->LastParameter();
-  chc.Load(Crv3d1, par1, par2);
+  aCheckCurve.Load(Crv3d1, par1, par2);
 
-  if (!ChFi3d_CheckSameParameter(checkcurve, PCurveOnFace, S1, tolC1, tolcheck))
+  if (!ChFi3d_CheckSameParameter(aCheckCurve, PCurveOnFace, S1, tolC1, tolcheck))
   {
 #ifdef OCCT_DEBUG
     std::cout << "approximate tolerance under-valued : " << tolC1 << " for " << tolcheck
@@ -819,8 +813,8 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
                                            approx.Curves2dKnots(),
                                            approx.Curves2dMults(),
                                            approx.Curves2dDegree());
-    chc.Load(Crv3d2, par1, par2);
-    if (!ChFi3d_CheckSameParameter(checkcurve, PCurveOnFace, S2, tolC2, tolcheck))
+    aCheckCurve.Load(Crv3d2, par1, par2);
+    if (!ChFi3d_CheckSameParameter(aCheckCurve, PCurveOnFace, S2, tolC2, tolcheck))
     {
 #ifdef OCCT_DEBUG
       std::cout << "approximate tolerance under-evaluated : " << tolC2 << " for " << tolcheck
