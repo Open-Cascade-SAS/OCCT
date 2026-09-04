@@ -22,7 +22,6 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Precision.hxx>
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Face.hxx>
@@ -124,13 +123,10 @@ public:
   const TopoDS_Face& Face() const;
 
   //! Classifies a UV point against the face.
-  //! This method is not thread-safe.
+  //! This method is not thread-safe on the same instance.
   //! @param[in] thePuv point in the surface parametric space
-  //! @param[in] theTolerance classification tolerance
   //! @return point state relative to the face
-  Standard_EXPORT TopAbs_State
-    ClassifyUVPoint(const gp_Pnt2d& thePuv,
-                    const double    theTolerance = Precision::Confusion()) const;
+  Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& thePuv) const;
 
   Standard_EXPORT Bnd_Box Bounding() const;
 
@@ -146,6 +142,8 @@ private:
   Standard_EXPORT void InternalCall(const IntCurveSurface_HInter& HICS,
                                     const double                  pinf,
                                     const double                  psup);
+
+  BRepTopAdaptor_TopolTool& topolTool() const;
 
   mutable occ::handle<BRepTopAdaptor_TopolTool>           myTopolTool;
   occ::handle<BRepAdaptor_Surface>                        Hsurface;

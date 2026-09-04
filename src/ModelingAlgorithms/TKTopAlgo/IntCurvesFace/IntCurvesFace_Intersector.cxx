@@ -34,6 +34,7 @@
 #include <IntCurveSurface_ThePolygonOfHInter.hxx>
 #include <IntCurveSurface_ThePolyhedronToolOfHInter.hxx>
 #include <Intf_Tool.hxx>
+#include <Precision.hxx>
 #include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
@@ -149,9 +150,9 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     V0 = Hsurface->FirstVParameter();
     V1 = Hsurface->LastVParameter();
     //
-    myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
-    nbsu        = myTopolTool->NbSamplesU();
-    nbsv        = myTopolTool->NbSamplesV();
+    BRepTopAdaptor_TopolTool& aTopolTool = topolTool();
+    nbsu                                  = aTopolTool.NbSamplesU();
+    nbsv                                  = aTopolTool.NbSamplesV();
     //
     double aURes = Hsurface->UResolution(1.0);
     double aVRes = Hsurface->VResolution(1.0);
@@ -253,7 +254,7 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
       const IntCurveSurface_IntersectionPoint& HICSPointindex = HICS.Point(index);
       gp_Pnt2d                                 Puv(HICSPointindex.U(), HICSPointindex.V());
 
-      TopAbs_State currentstate = ClassifyUVPoint(Puv, !myUseBoundTol ? 0 : mintol2d);
+      TopAbs_State currentstate = topolTool().Classify(Puv, !myUseBoundTol ? 0 : mintol2d);
       if (myUseBoundTol && currentstate == TopAbs_OUT && maxtol2d > mintol2d)
       {
         if (anAdditionalTool.IsNull())
@@ -539,14 +540,18 @@ Bnd_Box IntCurvesFace_Intersector::Bounding() const
   }
 }
 
-TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& thePuv,
-                                                        const double    theTolerance) const
+TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& thePuv) const
+{
+  return topolTool().Classify(thePuv, Precision::Confusion());
+}
+
+BRepTopAdaptor_TopolTool& IntCurvesFace_Intersector::topolTool() const
 {
   if (myTopolTool.IsNull())
   {
     myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
   }
-  return myTopolTool->Classify(thePuv, theTolerance);
+  return *myTopolTool;
 }
 
 void IntCurvesFace_Intersector::SetUseBoundToler(bool UseBToler)
