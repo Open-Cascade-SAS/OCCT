@@ -219,6 +219,16 @@ public:
 
   [[nodiscard]] bool More() const { return myCurrent < myLength; }
 
+  [[nodiscard]] uint32_t Count() const
+  {
+    uint32_t aCount = 0;
+    for (BRepGraph_Iterator anIt(*this); anIt.More(); anIt.Next())
+    {
+      ++aCount;
+    }
+    return aCount;
+  }
+
   void Next()
   {
     ++myCurrent;
@@ -258,7 +268,7 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-// Convenience type aliases (skip removed nodes  default)
+// Convenience type aliases (skip removed nodes by default)
 // ---------------------------------------------------------------------------
 
 using BRepGraph_SolidIterator      = BRepGraph_Iterator<BRepGraphInc::SolidDef>;
@@ -303,6 +313,11 @@ public:
   }
 
   [[nodiscard]] bool More() const { return myIndex < myRoots.Size(); }
+
+  [[nodiscard]] uint32_t Count() const
+  {
+    return myIndex < myRoots.Size() ? static_cast<uint32_t>(myRoots.Size() - myIndex) : 0u;
+  }
 
   void Next() { ++myIndex; }
 

@@ -44,7 +44,7 @@ struct BaseDef
   //! Own-data mutation counter, incremented ONLY when the entity's own
   //! definition fields change (tolerance, point, flags, etc.).
   //! NOT incremented by descendant changes.
-  //! Used by VersionStamp for persistent identity staleness detection.
+  //! Used by ItemStamp for persistent identity staleness detection.
   uint32_t OwnGen = 0;
 
   //! Subtree mutation counter, incremented when own data OR any descendant
@@ -92,9 +92,10 @@ struct EdgeDef : public BaseDef
 //! CoEdge entity: use of an edge on a specific face, owns PCurve data.
 //!
 //! Each coedge represents one edge-face binding with its parametric curve.
-//! Wires reference coedges rather than edges directly.
-//! Seam edges produce two coedges on the same face with opposite Orientation;
-//! the seam relation is queryable via BRepGraph_Tool::CoEdge::SeamPair.
+//! Wires reference coedges rather than edges directly. Persistent coedges
+//! always reference real edge definitions. A periodic chart navigator is
+//! derived from paired real uses when compatibility seam topology is needed;
+//! it is not a persistent edge-less coedge.
 struct CoEdgeDef : public BaseDef
 {
   using TypeId = BRepGraph_CoEdgeId;

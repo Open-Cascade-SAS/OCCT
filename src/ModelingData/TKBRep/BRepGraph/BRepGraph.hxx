@@ -17,6 +17,7 @@
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefId.hxx>
 #include <BRepGraph_RefUID.hxx>
+#include <BRepGraph_RevisionHash.hxx>
 #include <BRepGraphInc_RepId.hxx>
 #include <BRepGraph_UID.hxx>
 #include <BRepGraph_ItemId.hxx>
@@ -24,13 +25,13 @@
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_LinearVector.hxx>
 
+#include <cstdint>
 #include <memory>
 
 template <typename T>
@@ -38,16 +39,20 @@ class BRepGraph_MutGuard;
 
 struct BRepGraph_Data;
 class BRepGraphInc_Storage;
+class BRepGraphSupInc_Storage;
 class BRepGraph_CacheRegistry;
 class BRepGraph_Layer;
 class BRepGraph_LayerLock;
 class BRepGraph_LayerRegistry;
+class BRepGraph_LayerSupplementRegistry;
 class BRepGraph_CacheMesh;
 class BRepGraph_Validate;
+class BRepGraph_Revision;
+class BRepGraph_Replace;
+class BRepGraph_Transaction;
 class BRepGraph_Deduplicate;
 class BRepGraphODE;
 class BRepGraphODE_Storage;
-class NCollection_BaseAllocator;
 class TCollection_AsciiString;
 
 //! @brief Topology-geometry graph over TopoDS / BRep.
@@ -111,11 +116,16 @@ class TCollection_AsciiString;
 //! - **BRepGraph_DefsIterator / BRepGraph_RefsIterator**: single-level typed children of one
 //!   parent (e.g. active shells of one solid, coedges of one wire). Zero allocation.
 //!   Use when you have a specific parent and need its direct children.
+//! - **BRepGraph_ChildIterator**: resumable direct children of any node kind, including the
+//!   exact RefId, local placement, orientation, and structural/reference link kind. Use for
+//!   generic walkers, bindings, and checkpointed direct-child scans.
 //! - **BRepGraph_ChildExplorer**: depth-first downward walk from a root with accumulated
 //!   location/orientation per step. Use when visiting descendants across multiple levels or
 //!   when the global transform matters. Supports Recursive and DirectChildren modes.
+//! - **BRepGraph_ParentIterator**: resumable direct parents of any node kind. It returns the
+//!   same exact transition data as ChildIterator and is the primitive for generic reverse walks.
 //! - **BRepGraph_ParentExplorer**: upward walk via relation tables from a starting node.
-//!   Use when tracing which shells/solids/compounds contain a given face or edge.
+//!   Use when tracing ancestors across multiple levels; direct steps delegate to ParentIterator.
 //! - **BRepGraph_RelatedIterator**: single-level semantic neighbors (adjacent faces, boundary
 //!   edges, incident vertices). No structural descent; no location accumulation.
 class BRepGraph
@@ -140,6 +150,38 @@ public:
   //! Reset the graph to an empty state. Increments generation and regenerates the graph GUID.
   Standard_EXPORT void Clear();
 
+  //! Raise the next definition UID counter without ever moving it backwards.
+  //! @param[in] theKind definition kind whose watermark is raised
+  //! @param[in] theNextCounter first counter that may be allocated after the watermark
+  //! @return true if the watermark was accepted, false for an invalid or lower counter
+  [[nodiscard]] Standard_EXPORT bool RaiseNextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind,
+                                                             const uint32_t theNextCounter);
+
+  //! Set the next definition UID counter without overlapping an active UID.
+  //! Intended for exact restoration by persistence providers.
+  [[nodiscard]] Standard_EXPORT bool SetNextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind,
+                                                           const uint32_t theNextCounter);
+
+  //! Raise the next reference UID counter without ever moving it backwards.
+  //! @param[in] theKind reference kind whose watermark is raised
+  //! @param[in] theNextCounter first counter that may be allocated after the watermark
+  //! @return true if the watermark was accepted, false for an invalid or lower counter
+  [[nodiscard]] Standard_EXPORT bool RaiseNextRefUIDCounter(const BRepGraph_RefId::Kind theKind,
+                                                            const uint32_t theNextCounter);
+
+  //! Set the next reference UID counter without overlapping an active UID.
+  //! Intended for exact restoration by persistence providers.
+  [[nodiscard]] Standard_EXPORT bool SetNextRefUIDCounter(const BRepGraph_RefId::Kind theKind,
+                                                          const uint32_t theNextCounter);
+
+  //! Return the next allocatable durable node UID counter for a kind.
+  [[nodiscard]] Standard_EXPORT uint32_t
+    NextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind) const;
+
+  //! Return the next allocatable durable reference UID counter for a kind.
+  [[nodiscard]] Standard_EXPORT uint32_t
+    NextRefUIDCounter(const BRepGraph_RefId::Kind theKind) const;
+
   //! Return true when the graph contains no topology definitions.
   [[nodiscard]] Standard_EXPORT bool IsEmpty() const;
 
@@ -154,9 +196,6 @@ public:
   [[nodiscard]] Standard_EXPORT const NCollection_LinearVector<BRepGraph_ProductId>&
                                       RootProductIds() const;
 
-  //! Return the current allocator.
-  [[nodiscard]] Standard_EXPORT const occ::handle<NCollection_BaseAllocator>& Allocator() const;
-
   //! Return true when this wrapper references graph data.
   [[nodiscard]] Standard_EXPORT bool IsValid() const noexcept;
 
@@ -169,6 +208,7 @@ public:
   class ShapesView;
   class EditorView;
   class MeshView;
+  class SupplementsView;
 
   //! Access topology definitions, representation access, adjacency queries,
   //! raw Product/Occurrence definition storage, and assembly classification.
@@ -196,12 +236,23 @@ public:
   //! @return mutable mesh view
   [[nodiscard]] Standard_EXPORT MeshView& Mesh();
 
+  //! Access graph-owned optional supplemental definition stores.
+  [[nodiscard]] Standard_EXPORT SupplementsView& Supplements();
+  //! Access graph-owned optional supplemental definition stores.
+  [[nodiscard]] Standard_EXPORT const SupplementsView& Supplements() const;
+
   //! Access registered graph layers.
   //! @return layer registry for managing attribute layers
   [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry& LayerRegistry();
   //! Access registered graph layers (const).
   //! @return layer registry for managing attribute layers
   [[nodiscard]] Standard_EXPORT const BRepGraph_LayerRegistry& LayerRegistry() const;
+
+  //! Access layers whose references target supplemental definition stores.
+  [[nodiscard]] Standard_EXPORT BRepGraph_LayerSupplementRegistry& LayerSupplementRegistry();
+  //! Access layers whose references target supplemental definition stores.
+  [[nodiscard]] Standard_EXPORT const BRepGraph_LayerSupplementRegistry& LayerSupplementRegistry()
+    const;
 
   //! Access registered graph cache services.
   //! @return cache registry for managing typed transient cache services
@@ -222,6 +273,10 @@ private:
   friend class BRepGraph_Tool;
   friend class BRepGraph_Transform;
   friend class BRepGraph_Validate;
+  friend class BRepGraph_RevisionHash::Hasher;
+  friend class BRepGraph_Transaction;
+  friend class BRepGraph_Revision;
+  friend class BRepGraph_Replace;
   friend class BRepGraphInc_Populate;
   friend class BRepGraphInc_Reconstruct;
   friend class BRepGraphODE;
@@ -233,24 +288,55 @@ private:
   friend struct BRepGraph_RefId;
   friend struct BRepGraph_RepId;
 
+  //! Construct a graph facade over a page-sharing fork of native core storage.
+  BRepGraph(const BRepGraphInc_Storage& theStorage, const bool theToCloneMutableRepresentations);
+
   //! Access the underlying storage.
   [[nodiscard]] Standard_EXPORT BRepGraphInc_Storage&       incStorage();
   [[nodiscard]] Standard_EXPORT const BRepGraphInc_Storage& incStorage() const;
+
+  //! Access graph-owned supplemental storage.
+  [[nodiscard]] Standard_EXPORT BRepGraphSupInc_Storage&       supplementStorage();
+  [[nodiscard]] Standard_EXPORT const BRepGraphSupInc_Storage& supplementStorage() const;
 
   //! Access the graph data structure.
   [[nodiscard]] Standard_EXPORT BRepGraph_Data*       data();
   [[nodiscard]] Standard_EXPORT const BRepGraph_Data* data() const;
 
   //! Bind graph-owned views and registries to this owner.
-  Standard_EXPORT void initViewsAndRegistries() noexcept;
+  //! Owner relocation preserves live service state without detach/attach callbacks.
+  Standard_EXPORT void initViewsAndRegistries(const bool theIsOwnerRelocation = false) noexcept;
 
   //! Access the layer registry.
   [[nodiscard]] Standard_EXPORT BRepGraph_LayerRegistry&       layerRegistry();
   [[nodiscard]] Standard_EXPORT const BRepGraph_LayerRegistry& layerRegistry() const;
 
+  //! Access the layer-supplement registry.
+  [[nodiscard]] Standard_EXPORT BRepGraph_LayerSupplementRegistry&       layerSupplementRegistry();
+  [[nodiscard]] Standard_EXPORT const BRepGraph_LayerSupplementRegistry& layerSupplementRegistry()
+    const;
+
   //! Access the cache registry.
   [[nodiscard]] Standard_EXPORT BRepGraph_CacheRegistry&       cacheRegistry();
   [[nodiscard]] Standard_EXPORT const BRepGraph_CacheRegistry& cacheRegistry() const;
+
+  //! Register an external cache registry attached to this graph.
+  Standard_EXPORT void registerExternalCacheRegistry(BRepGraph_CacheRegistry* theRegistry);
+
+  //! Remove an external cache registry attached to this graph.
+  Standard_EXPORT void unregisterExternalCacheRegistry(
+    BRepGraph_CacheRegistry* theRegistry) noexcept;
+
+  //! Replace an external registry pointer after moving the registry object.
+  Standard_EXPORT void replaceExternalCacheRegistry(
+    BRepGraph_CacheRegistry* theOldRegistry,
+    BRepGraph_CacheRegistry* theNewRegistry) noexcept;
+
+  //! Detach external registries before graph data is destroyed or replaced.
+  Standard_EXPORT void detachExternalCacheRegistries() noexcept;
+
+  //! Clear data held by external registries after a graph reset.
+  Standard_EXPORT void clearExternalCacheRegistries() noexcept;
 
   //! Generic reference lookup by RefId (const).
   //! Returns nullptr if the RefId is invalid or out of range.

@@ -45,6 +45,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomGridEval_SurfaceOfRevolution_Test.cxx
   GeomGridEval_Torus_Test.cxx
   GeomHash_CurveHasher_Test.cxx
+  GeomHash_GeometryAppender_Test.cxx
   GeomHash_MeshHasher_Test.cxx
   GeomHash_SurfaceHasher_Test.cxx
 )

@@ -84,7 +84,7 @@ public:
                                               uint32_t&            theSlot) const;
 
   //! Return layer by slot index, or null handle if the slot is out of range.
-  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> Layer(uint32_t theSlot) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> Layer(const uint32_t theSlot) const;
 
   //! Number of registered layers.
   [[nodiscard]] uint32_t NbLayers() const
@@ -127,7 +127,8 @@ public:
     const int                                   theModifiedKindsMask) noexcept;
 
   //! Ask every registered source layer to copy itself into the target graph.
-  //! For Mode::Compact, layers are unregistered first and CopyTo creates fresh instances.
+  //! For Mode::Compact, CopyTo creates fresh target instances while the source
+  //! registry remains unchanged until graph publication succeeds.
   //! @param[in] theTargetGraph target graph to receive layer data
   //! @param[in] theItemRemap   source -> target item id mapping
   //! @param[in] theMode        Copy or Compact semantics
@@ -141,9 +142,15 @@ public:
   //! @param[in] theTargetGraph target graph to receive layer data
   //! @param[in] theMappingKind identity or explicit mapping
   //! @param[in] theMode        Copy or Compact semantics
-  Standard_EXPORT void CopyLayersTo(BRepGraph&                       theTargetGraph,
-                                    BRepGraph_CopyRemap::MappingKind theMappingKind,
-                                    BRepGraph_CopyRemap::Mode        theMode) const;
+  Standard_EXPORT void CopyLayersTo(BRepGraph&                             theTargetGraph,
+                                    const BRepGraph_CopyRemap::MappingKind theMappingKind,
+                                    const BRepGraph_CopyRemap::Mode        theMode) const;
+
+  //! Migrate runtime and derived layers into a replacement graph.
+  //! Persistent target layers remain authoritative and are never overwritten.
+  Standard_EXPORT void CopyTransientLayersTo(
+    BRepGraph&                                                         theTargetGraph,
+    const NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>& theItemRemap) const;
 
   //! True if any registered layer subscribes to reference modification events.
   [[nodiscard]] bool HasRefModificationSubscribers() const
@@ -184,6 +191,9 @@ private:
   //! Clear the graph data binding.
   Standard_EXPORT void Detach() noexcept;
 
+  //! Update graph owner after wrapper relocation without lifecycle callbacks.
+  Standard_EXPORT void Relocate(BRepGraph* theGraph) noexcept;
+
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> findLayerLocked(
     const Standard_GUID& theGUID) const;
 
@@ -194,7 +204,7 @@ private:
     const Standard_GUID&                                 theGUID,
     const std::function<occ::handle<BRepGraph_Layer>()>& theFactory);
 
-  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> layerAt(uint32_t theSlot) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Layer> layerAt(const uint32_t theSlot) const;
 
   Standard_EXPORT uint32_t registerLayerLocked(const occ::handle<BRepGraph_Layer>& theLayer);
 

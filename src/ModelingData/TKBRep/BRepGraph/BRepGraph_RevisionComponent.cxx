@@ -11,27 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BRepGraph_SupplementIterator.hxx>
+#include <BRepGraph_RevisionComponent.hxx>
 
-//=================================================================================================
+IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_RevisionComponent, Standard_Transient)
 
-void BRepGraph_SupplementIterator::skipInvalid()
+BRepGraph_RevisionComponent::BRepGraph_RevisionComponent(const uint64_t theGeneration)
+    : myGeneration(theGeneration)
 {
-  myEntry = nullptr;
-  if (myLayer.IsNull() || myUids == nullptr)
-  {
-    return;
-  }
-
-  while (myIndex < myUids->Size())
-  {
-    const BRepGraph_LayerTopoSupplement::Entry* anEntry =
-      myLayer->FindByUid(myUids->Value(myIndex));
-    if (anEntry != nullptr)
-    {
-      myEntry = anEntry;
-      return;
-    }
-    ++myIndex;
-  }
 }
