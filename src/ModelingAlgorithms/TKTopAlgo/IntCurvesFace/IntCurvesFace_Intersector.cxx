@@ -151,8 +151,8 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     V1 = Hsurface->LastVParameter();
     //
     BRepTopAdaptor_TopolTool& aTopolTool = topolTool();
-    nbsu                                  = aTopolTool.NbSamplesU();
-    nbsv                                  = aTopolTool.NbSamplesV();
+    nbsu                                 = aTopolTool.NbSamplesU();
+    nbsv                                 = aTopolTool.NbSamplesV();
     //
     double aURes = Hsurface->UResolution(1.0);
     double aVRes = Hsurface->VResolution(1.0);
