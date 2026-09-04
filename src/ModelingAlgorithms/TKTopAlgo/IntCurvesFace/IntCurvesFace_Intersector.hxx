@@ -123,13 +123,10 @@ public:
   //! the intersection.
   const TopoDS_Face& Face() const;
 
-  //! Classifies a UV point against the loaded face.
-  //!
-  //! This method lazily creates the topological classifier when needed and is
-  //! therefore not safe to call concurrently on the same intersector instance.
-  //!
-  //! @param thePuv point in the surface parameter space
-  //! @param theTolerance classification tolerance
+  //! Classifies a UV point against the face.
+  //! This method is not thread-safe.
+  //! @param[in] thePuv point in the surface parametric space
+  //! @param[in] theTolerance classification tolerance
   //! @return point state relative to the face
   Standard_EXPORT TopAbs_State ClassifyUVPoint(
     const gp_Pnt2d& thePuv,
