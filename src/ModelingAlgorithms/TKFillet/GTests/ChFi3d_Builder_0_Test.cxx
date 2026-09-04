@@ -12,11 +12,9 @@
 // commercial license or contractual agreement.
 
 #include <algorithm>
-#include <array>
 #include <cmath>
-#include <utility>
-#include <vector>
 
+#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -26,7 +24,6 @@
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
-#include <BRep_Tool.hxx>
 #include <ChFi3d_Builder_0.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <ChFiDS_ElSpine.hxx>
@@ -36,6 +33,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
@@ -57,8 +55,6 @@
 namespace
 {
 
-using ShapeMap = NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>;
-
 TopoDS_Wire makeRectangle(const double theWidth, const double theDepth, const double theZ)
 {
   BRepBuilderAPI_MakePolygon aPolygon;
@@ -70,32 +66,37 @@ TopoDS_Wire makeRectangle(const double theWidth, const double theDepth, const do
   return aPolygon.Wire();
 }
 
-std::pair<double, double> edgeZRange(const TopoDS_Edge& theEdge)
+void edgeZRange(const TopoDS_Edge& theEdge, double& theMinZ, double& theMaxZ)
 {
   TopoDS_Vertex aFirstVertex;
   TopoDS_Vertex aLastVertex;
   TopExp::Vertices(theEdge, aFirstVertex, aLastVertex);
   const double aFirstZ = BRep_Tool::Pnt(aFirstVertex).Z();
   const double aLastZ  = BRep_Tool::Pnt(aLastVertex).Z();
-  return {std::min(aFirstZ, aLastZ), std::max(aFirstZ, aLastZ)};
+  theMinZ              = std::min(aFirstZ, aLastZ);
+  theMaxZ              = std::max(aFirstZ, aLastZ);
 }
 
 bool spansHeight(const TopoDS_Edge& theEdge, const double theHeight)
 {
-  const auto [aMinZ, aMaxZ] = edgeZRange(theEdge);
+  double aMinZ = 0.0;
+  double aMaxZ = 0.0;
+  edgeZRange(theEdge, aMinZ, aMaxZ);
   return aMinZ < Precision::Confusion() && aMaxZ > theHeight - Precision::Confusion();
 }
 
 bool liesOnBottom(const TopoDS_Edge& theEdge)
 {
-  const auto [aMinZ, aMaxZ] = edgeZRange(theEdge);
+  double aMinZ = 0.0;
+  double aMaxZ = 0.0;
+  edgeZRange(theEdge, aMinZ, aMaxZ);
   return std::abs(aMinZ) < Precision::Confusion() && std::abs(aMaxZ) < Precision::Confusion();
 }
 
 int countC0BSplineFaces(const TopoDS_Shape& theShape)
 {
-  int      aC0FaceCount = 0;
-  ShapeMap aFaces;
+  int                                                           aC0FaceCount = 0;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFaces;
   TopExp::MapShapes(theShape, TopAbs_FACE, aFaces);
   for (int aFaceIndex = 1; aFaceIndex <= aFaces.Extent(); ++aFaceIndex)
   {
@@ -127,8 +128,9 @@ int countC0BSplineFaces(const TopoDS_Shape& theShape)
   return aC0FaceCount;
 }
 
-occ::handle<Geom_BSplineCurve> performPeriodicSpine(const std::vector<TopoDS_Edge>& theEdges,
-                                                    const double                    theTolerance)
+occ::handle<Geom_BSplineCurve> performPeriodicSpine(
+  const NCollection_LinearVector<TopoDS_Edge>& theEdges,
+  const double                                 theTolerance)
 {
   occ::handle<ChFiDS_Spine> aSpine = new ChFiDS_Spine(theTolerance);
   for (const TopoDS_Edge& anEdge : theEdges)
@@ -147,7 +149,7 @@ occ::handle<Geom_BSplineCurve> performPeriodicSpine(const std::vector<TopoDS_Edg
   return anElSpine->BSpline();
 }
 
-std::vector<TopoDS_Edge> makeStadiumEdges(const double theScale)
+NCollection_LinearVector<TopoDS_Edge> makeStadiumEdges(const double theScale)
 {
   const double aRadius = 10.0 * theScale;
   const double aLength = 50.0 * theScale;
@@ -156,30 +158,36 @@ std::vector<TopoDS_Edge> makeStadiumEdges(const double theScale)
   const gp_Pnt aP3(aLength, -aRadius, 0.0);
   const gp_Pnt aP4(0.0, -aRadius, 0.0);
 
-  return {
-    BRepBuilderAPI_MakeEdge(aP1, aP2),
-    BRepBuilderAPI_MakeEdge(
-      GC_MakeArcOfCircle(aP2, gp_Pnt(aLength + aRadius, 0.0, 0.0), aP3).Value()),
-    BRepBuilderAPI_MakeEdge(aP3, aP4),
-    BRepBuilderAPI_MakeEdge(GC_MakeArcOfCircle(aP4, gp_Pnt(-aRadius, 0.0, 0.0), aP1).Value())};
+  NCollection_LinearVector<TopoDS_Edge> anEdges(4);
+  anEdges.Append(BRepBuilderAPI_MakeEdge(aP1, aP2));
+  anEdges.Append(BRepBuilderAPI_MakeEdge(
+    GC_MakeArcOfCircle(aP2, gp_Pnt(aLength + aRadius, 0.0, 0.0), aP3).Value()));
+  anEdges.Append(BRepBuilderAPI_MakeEdge(aP3, aP4));
+  anEdges.Append(
+    BRepBuilderAPI_MakeEdge(GC_MakeArcOfCircle(aP4, gp_Pnt(-aRadius, 0.0, 0.0), aP1).Value()));
+  return anEdges;
 }
 
-std::vector<TopoDS_Edge> makeSplitCircleEdges()
+NCollection_LinearVector<TopoDS_Edge> makeSplitCircleEdges()
 {
   const gp_Circ aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 20.0);
-  return {BRepBuilderAPI_MakeEdge(aCircle, 0.0, 0.5 * M_PI),
-          BRepBuilderAPI_MakeEdge(aCircle, 0.5 * M_PI, M_PI),
-          BRepBuilderAPI_MakeEdge(aCircle, M_PI, 1.5 * M_PI),
-          BRepBuilderAPI_MakeEdge(aCircle, 1.5 * M_PI, 2.0 * M_PI)};
+  NCollection_LinearVector<TopoDS_Edge> anEdges(4);
+  anEdges.Append(BRepBuilderAPI_MakeEdge(aCircle, 0.0, 0.5 * M_PI));
+  anEdges.Append(BRepBuilderAPI_MakeEdge(aCircle, 0.5 * M_PI, M_PI));
+  anEdges.Append(BRepBuilderAPI_MakeEdge(aCircle, M_PI, 1.5 * M_PI));
+  anEdges.Append(BRepBuilderAPI_MakeEdge(aCircle, 1.5 * M_PI, 2.0 * M_PI));
+  return anEdges;
 }
 
-std::vector<TopoDS_Edge> makeSplitEllipseEdges(const double theScale)
+NCollection_LinearVector<TopoDS_Edge> makeSplitEllipseEdges(const double theScale)
 {
   const gp_Elips anEllipse(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
                            30.0 * theScale,
                            20.0 * theScale);
-  return {BRepBuilderAPI_MakeEdge(anEllipse, 0.0, M_PI),
-          BRepBuilderAPI_MakeEdge(anEllipse, M_PI, 2.0 * M_PI)};
+  NCollection_LinearVector<TopoDS_Edge> anEdges(2);
+  anEdges.Append(BRepBuilderAPI_MakeEdge(anEllipse, 0.0, M_PI));
+  anEdges.Append(BRepBuilderAPI_MakeEdge(anEllipse, M_PI, 2.0 * M_PI));
+  return anEdges;
 }
 
 } // namespace
@@ -201,24 +209,24 @@ TEST(ChFi3d_PerformElSpineTest, ExactMultiEdgeEllipse_NoApproximation_KeepsClosu
   constexpr double aTolerance = 1.0e-4;
   for (const double aScale : {1.0, 1.0e4})
   {
-    SCOPED_TRACE(::testing::Message() << "scale " << aScale);
     const occ::handle<Geom_BSplineCurve> aCurve =
       performPeriodicSpine(makeSplitEllipseEdges(aScale), aTolerance);
 
-    ASSERT_FALSE(aCurve.IsNull());
-    ASSERT_TRUE(aCurve->IsPeriodic());
-    EXPECT_EQ(aCurve->Multiplicity(1), aCurve->Degree());
+    ASSERT_FALSE(aCurve.IsNull()) << "Scale: " << aScale;
+    ASSERT_TRUE(aCurve->IsPeriodic()) << "Scale: " << aScale;
+    EXPECT_EQ(aCurve->Multiplicity(1), aCurve->Degree()) << "Scale: " << aScale;
   }
 }
 
 TEST(BRepFilletAPI_MakeFilletTest, PeriodicAnalyticSpineKeepsParticularSurface)
 {
-  const std::array<TopoDS_Shape, 2> aShapes = {BRepPrimAPI_MakeCylinder(20.0, 50.0).Shape(),
-                                               BRepPrimAPI_MakeCone(25.0, 12.0, 50.0).Shape()};
-  for (size_t aShapeIndex = 0; aShapeIndex < aShapes.size(); ++aShapeIndex)
+  NCollection_LinearVector<TopoDS_Shape> aShapes(2);
+  aShapes.Append(BRepPrimAPI_MakeCylinder(20.0, 50.0).Shape());
+  aShapes.Append(BRepPrimAPI_MakeCone(25.0, 12.0, 50.0).Shape());
+  for (size_t aShapeIndex = 0; aShapeIndex < aShapes.Size(); ++aShapeIndex)
   {
-    const TopoDS_Shape& aShape = aShapes[aShapeIndex];
-    ShapeMap            aEdges;
+    const TopoDS_Shape&                                           aShape = aShapes[aShapeIndex];
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aEdges;
     TopExp::MapShapes(aShape, TopAbs_EDGE, aEdges);
     int aCircularEdgeCount = 0;
     for (int anEdgeIndex = 1; anEdgeIndex <= aEdges.Extent(); ++anEdgeIndex)
@@ -230,18 +238,19 @@ TEST(BRepFilletAPI_MakeFilletTest, PeriodicAnalyticSpineKeepsParticularSurface)
       }
 
       ++aCircularEdgeCount;
-      SCOPED_TRACE(::testing::Message()
-                   << "shape " << aShapeIndex + 1 << ", circular edge " << aCircularEdgeCount);
       BRepFilletAPI_MakeFillet aFillet(aShape, ChFi3d_Rational);
       aFillet.Add(4.0, anEdge);
       aFillet.Build();
-      ASSERT_TRUE(aFillet.IsDone());
+      ASSERT_TRUE(aFillet.IsDone())
+        << "Shape: " << aShapeIndex + 1 << ", circular edge: " << aCircularEdgeCount;
 
       const TopoDS_Shape& aResult = aFillet.Shape();
-      ASSERT_FALSE(aResult.IsNull());
-      EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+      ASSERT_FALSE(aResult.IsNull())
+        << "Shape: " << aShapeIndex + 1 << ", circular edge: " << aCircularEdgeCount;
+      EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid())
+        << "Shape: " << aShapeIndex + 1 << ", circular edge: " << aCircularEdgeCount;
 
-      ShapeMap aFaces;
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFaces;
       TopExp::MapShapes(aResult, TopAbs_FACE, aFaces);
       int aTorusCount   = 0;
       int aBSplineCount = 0;
@@ -252,10 +261,12 @@ TEST(BRepFilletAPI_MakeFilletTest, PeriodicAnalyticSpineKeepsParticularSurface)
         aTorusCount += aType == GeomAbs_Torus ? 1 : 0;
         aBSplineCount += aType == GeomAbs_BSplineSurface ? 1 : 0;
       }
-      EXPECT_EQ(aTorusCount, 1);
-      EXPECT_EQ(aBSplineCount, 0);
+      EXPECT_EQ(aTorusCount, 1) << "Shape: " << aShapeIndex + 1
+                                << ", circular edge: " << aCircularEdgeCount;
+      EXPECT_EQ(aBSplineCount, 0) << "Shape: " << aShapeIndex + 1
+                                  << ", circular edge: " << aCircularEdgeCount;
     }
-    EXPECT_EQ(aCircularEdgeCount, 2);
+    EXPECT_EQ(aCircularEdgeCount, 2) << "Shape: " << aShapeIndex + 1;
   }
 }
 
@@ -264,14 +275,12 @@ TEST(ChFi3d_PerformElSpineTest, TangentCurvatureJump_ScaledGuide_ReducesClosureM
   constexpr double aTolerance = 1.0e-4;
   for (const double aScale : {1.0, 1.0e4})
   {
-    SCOPED_TRACE(::testing::Message() << "scale " << aScale);
     const occ::handle<Geom_BSplineCurve> aCurve =
       performPeriodicSpine(makeStadiumEdges(aScale), aTolerance);
 
-    ASSERT_FALSE(aCurve.IsNull());
-    ASSERT_TRUE(aCurve->IsPeriodic());
-    EXPECT_LE(aCurve->Multiplicity(1), aCurve->Degree() - 2)
-      << "A tangent-continuous curvature jump must be smoothed at the periodic closure";
+    ASSERT_FALSE(aCurve.IsNull()) << "Scale: " << aScale;
+    ASSERT_TRUE(aCurve->IsPeriodic()) << "Scale: " << aScale;
+    EXPECT_LE(aCurve->Multiplicity(1), aCurve->Degree() - 2) << "Scale: " << aScale;
   }
 }
 
@@ -287,8 +296,8 @@ TEST(BRepFilletAPI_MakeFilletTest, PeriodicSpine_TangentCurvatureJump_DoesNotCre
   aLoft.Build();
   ASSERT_TRUE(aLoft.IsDone()) << "Tapered loft should be built";
 
-  BRepFilletAPI_MakeFillet aVerticalFillet(aLoft.Shape());
-  ShapeMap                 aLoftEdges;
+  BRepFilletAPI_MakeFillet                                      aVerticalFillet(aLoft.Shape());
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aLoftEdges;
   TopExp::MapShapes(aLoft.Shape(), TopAbs_EDGE, aLoftEdges);
   int aVerticalEdgeCount = 0;
   for (int anEdgeIndex = 1; anEdgeIndex <= aLoftEdges.Extent(); ++anEdgeIndex)
@@ -304,39 +313,37 @@ TEST(BRepFilletAPI_MakeFilletTest, PeriodicSpine_TangentCurvatureJump_DoesNotCre
   aVerticalFillet.Build();
   ASSERT_TRUE(aVerticalFillet.IsDone()) << "Vertical fillet should be built";
 
-  std::vector<TopoDS_Edge> aBottomEdges;
-  ShapeMap                 aRoundedEdges;
+  NCollection_LinearVector<TopoDS_Edge>                         aBottomEdges(8);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aRoundedEdges;
   TopExp::MapShapes(aVerticalFillet.Shape(), TopAbs_EDGE, aRoundedEdges);
   for (int anEdgeIndex = 1; anEdgeIndex <= aRoundedEdges.Extent(); ++anEdgeIndex)
   {
     const TopoDS_Edge anEdge = TopoDS::Edge(aRoundedEdges(anEdgeIndex));
     if (liesOnBottom(anEdge))
     {
-      aBottomEdges.push_back(anEdge);
+      aBottomEdges.Append(anEdge);
     }
   }
-  ASSERT_EQ(aBottomEdges.size(), 8U);
+  ASSERT_EQ(aBottomEdges.Size(), 8U);
 
-  for (std::size_t aSeedIndex = 0; aSeedIndex < aBottomEdges.size(); ++aSeedIndex)
+  for (size_t aSeedIndex = 0; aSeedIndex < aBottomEdges.Size(); ++aSeedIndex)
   {
-    SCOPED_TRACE(::testing::Message() << "bottom seed edge " << aSeedIndex + 1);
     BRepFilletAPI_MakeFillet aBottomFillet(aVerticalFillet.Shape(), ChFi3d_Rational);
     aBottomFillet.SetParams(1.0e-2, 1.0e-4, 1.0e-5, 1.0e-4, 1.0e-5, 1.0e-3);
     aBottomFillet.SetContinuity(GeomAbs_C1, 1.0e-2);
     aBottomFillet.Add(5.0, aBottomEdges[aSeedIndex]);
     aBottomFillet.Build();
-    ASSERT_TRUE(aBottomFillet.IsDone()) << "Bottom fillet should be built";
+    ASSERT_TRUE(aBottomFillet.IsDone()) << "Seed edge: " << aSeedIndex + 1;
 
     const TopoDS_Shape& aResult = aBottomFillet.Shape();
-    ASSERT_FALSE(aResult.IsNull());
-    EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
-    ShapeMap aResultFaces;
-    ShapeMap aResultEdges;
+    ASSERT_FALSE(aResult.IsNull()) << "Seed edge: " << aSeedIndex + 1;
+    EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid()) << "Seed edge: " << aSeedIndex + 1;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aResultFaces;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aResultEdges;
     TopExp::MapShapes(aResult, TopAbs_FACE, aResultFaces);
     TopExp::MapShapes(aResult, TopAbs_EDGE, aResultEdges);
-    EXPECT_EQ(aResultFaces.Extent(), 18);
-    EXPECT_EQ(aResultEdges.Extent(), 40);
-    EXPECT_EQ(countC0BSplineFaces(aResult), 0)
-      << "Periodic closure must not introduce a C0 supporting surface";
+    EXPECT_EQ(aResultFaces.Extent(), 18) << "Seed edge: " << aSeedIndex + 1;
+    EXPECT_EQ(aResultEdges.Extent(), 40) << "Seed edge: " << aSeedIndex + 1;
+    EXPECT_EQ(countC0BSplineFaces(aResult), 0) << "Seed edge: " << aSeedIndex + 1;
   }
 }
