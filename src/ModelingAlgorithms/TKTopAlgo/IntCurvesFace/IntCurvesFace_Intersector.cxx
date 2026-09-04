@@ -539,14 +539,14 @@ Bnd_Box IntCurvesFace_Intersector::Bounding() const
   }
 }
 
-TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv,
-                                                        double          tol) const
+TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& thePuv,
+                                                        Standard_Real   theTolerance) const
 {
   if (myTopolTool.IsNull())
   {
     myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
   }
-  return myTopolTool->Classify(Puv, tol);
+  return myTopolTool->Classify(thePuv, theTolerance);
 }
 
 void IntCurvesFace_Intersector::SetUseBoundToler(bool UseBToler)
