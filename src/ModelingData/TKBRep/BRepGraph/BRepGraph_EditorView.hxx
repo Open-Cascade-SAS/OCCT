@@ -1312,7 +1312,7 @@ public:
     Standard_EXPORT void ReplaceNode(const BRepGraph_NodeId theNode,
                                      const BRepGraph_NodeId theReplacement);
 
-    //! Mark a node and all its descendants as removed (cascading soft deletion).
+    //! Mark a node and its unshared descendants as removed and detach incoming usages.
     //! @param[in] theNode root node to remove
     Standard_EXPORT void RemoveSubgraph(const BRepGraph_NodeId theNode);
 

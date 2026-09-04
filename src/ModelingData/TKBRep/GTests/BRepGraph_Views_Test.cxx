@@ -39,6 +39,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom_Plane.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopoDS_Compound.hxx>
@@ -1141,6 +1142,47 @@ TEST_F(BRepGraph_ViewsTest, BRepGraphTool_OuterWire_SkipsRemovedWireDef)
 
   const BRepGraph_WireId anOuterAfter = BRepGraph_Tool::Face::OuterWire(myGraph, aFaceId);
   EXPECT_NE(anOuterAfter, aWireId);
+}
+
+TEST(BRepGraph_RemoveSubgraphTest, WireDetachesAllFaceUsages)
+{
+  BRepGraph aGraph;
+  NCollection_LinearVector<BRepGraph_CoEdgeId> aNoCoEdges;
+  const BRepGraph_WireId anOuterWire1 = aGraph.Editor().Wires().Add(aNoCoEdges.ToArray1());
+  const BRepGraph_WireId anOuterWire2 = aGraph.Editor().Wires().Add(aNoCoEdges.ToArray1());
+  const BRepGraph_WireId anInnerWire = aGraph.Editor().Wires().Add(aNoCoEdges.ToArray1());
+  NCollection_LinearVector<BRepGraph_WireId> anInnerWires;
+  anInnerWires.Append(anInnerWire);
+  const BRepGraph_FaceId aFace1 = aGraph.Editor().Faces().Add(new Geom_Plane(gp_Pln()),
+                                                              anOuterWire1,
+                                                              anInnerWires.ToArray1(),
+                                                              1.0e-7);
+  const BRepGraph_FaceId aFace2 = aGraph.Editor().Faces().Add(new Geom_Plane(gp_Pln()),
+                                                              anOuterWire2,
+                                                              anInnerWires.ToArray1(),
+                                                              1.0e-7);
+  ASSERT_TRUE(aFace1.IsValid());
+  ASSERT_TRUE(aFace2.IsValid());
+  ASSERT_EQ(aGraph.Topo().Faces().Relations(aFace1).WireRefIds.Size(), 2u);
+  ASSERT_EQ(aGraph.Topo().Faces().Relations(aFace2).WireRefIds.Size(), 2u);
+
+  aGraph.Editor().Gen().RemoveSubgraph(anInnerWire);
+  aGraph.Editor().CommitMutation();
+
+  EXPECT_TRUE(aGraph.Topo().Gen().IsActive(aFace1));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsActive(aFace2));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsActive(anOuterWire1));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsActive(anOuterWire2));
+  EXPECT_FALSE(aGraph.Topo().Gen().IsActive(anInnerWire));
+  const NCollection_LinearVector<BRepGraph_WireRefId>& aRemainingRefs1 =
+    aGraph.Topo().Faces().Relations(aFace1).WireRefIds;
+  const NCollection_LinearVector<BRepGraph_WireRefId>& aRemainingRefs2 =
+    aGraph.Topo().Faces().Relations(aFace2).WireRefIds;
+  ASSERT_EQ(aRemainingRefs1.Size(), 1u);
+  ASSERT_EQ(aRemainingRefs2.Size(), 1u);
+  EXPECT_EQ(aGraph.Refs().Wires().Entry(aRemainingRefs1.First()).ChildWireId, anOuterWire1);
+  EXPECT_EQ(aGraph.Refs().Wires().Entry(aRemainingRefs2.First()).ChildWireId, anOuterWire2);
+  EXPECT_TRUE(aGraph.ValidateRelations());
 }
 
 TEST_F(BRepGraph_ViewsTest, BRepGraphTool_OuterWire_SkipsWireWithoutUVBounds)

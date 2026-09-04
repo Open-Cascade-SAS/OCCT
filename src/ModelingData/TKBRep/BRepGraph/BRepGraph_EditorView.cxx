@@ -23,6 +23,7 @@
 #include <BRepGraph_LayerRegistry.hxx>
 #include <BRepGraph_LayerSupplementRegistry.hxx>
 #include <BRepGraph_ParentExplorer.hxx>
+#include <BRepGraph_ParentIterator.hxx>
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
@@ -2947,11 +2948,21 @@ struct RemoveSubgraphScope
 
 void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNode)
 {
+  if (!theNode.IsValid())
+  {
+    return;
+  }
   myGraph->Editor().requireUnlocked(theNode,
                                     "BRepGraph::EditorView::RemoveSubgraph(): locked node");
   myGraph->Editor().requireNoActiveGuard(
     theNode,
     "BRepGraph::EditorView::RemoveSubgraph(): guard active on node");
+
+  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!isNodeIndexInRange(aStorage, theNode) || !isActiveNode(aStorage, theNode))
+  {
+    return;
+  }
 
   // Cascade-aware relation maintenance: each removal updates only affected
   // relation entries; the outermost call validates the final invariant.
@@ -2966,8 +2977,6 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
   //  - Product: occurrence children cascade.
   //  - Occurrence: child occurrence cascade + parent product ref detachment.
   // All other kinds use the generic ChildExplorer/ParentExplorer cascade.
-  BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
-
   switch (theNode.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Product: {
@@ -3078,9 +3087,47 @@ void BRepGraph::EditorView::GenOps::RemoveSubgraph(const BRepGraph_NodeId theNod
     }
   }
 
+  // Detach incoming usages before retiring the definition.
+  NCollection_LinearVector<BRepGraph_OccurrenceId> anIncomingOccurrences;
+  bool toCollectOccurrences = theNode.NodeKind != BRepGraph_NodeId::Kind::Occurrence;
+  for (;;)
+  {
+    BRepGraph_RefId anIncomingRef;
+    for (BRepGraph_ParentIterator aParentIt(*myGraph, theNode); aParentIt.More(); aParentIt.Next())
+    {
+      const BRepGraph_ParentIterator::ValueType& aParent = aParentIt.Current();
+      if (toCollectOccurrences && aParent.Parent.NodeKind == BRepGraph_NodeId::Kind::Occurrence
+          && aParent.Link == BRepGraph_ParentIterator::LinkKind::Structural)
+      {
+        anIncomingOccurrences.Append(BRepGraph_OccurrenceId::FromNodeId(aParent.Parent));
+      }
+      if (!anIncomingRef.IsValid() && aParent.Ref.IsValid())
+      {
+        anIncomingRef = aParent.Ref;
+      }
+      if (anIncomingRef.IsValid() && !toCollectOccurrences)
+      {
+        break;
+      }
+    }
+    toCollectOccurrences = false;
+    if (!anIncomingRef.IsValid())
+    {
+      break;
+    }
+    Standard_ASSERT_RETURN(RemoveRef(anIncomingRef),
+                           "RemoveSubgraph: failed to detach incoming reference",
+                           Standard_VOID_RETURN);
+  }
+
   // Mark the node as removed AFTER children have been collected and processed,
   // so that iterators can still see this node as a valid parent during traversal.
   RemoveNode(theNode);
+
+  for (const BRepGraph_OccurrenceId& anOccurrence : anIncomingOccurrences)
+  {
+    RemoveSubgraph(anOccurrence);
+  }
 
   if (isOutermost)
   {

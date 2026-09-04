@@ -853,10 +853,13 @@ TEST(BRepGraph_ShapesViewImportTest, RemoveSolid_CascadesToFaces)
   aGraph.Clear();
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes9 = aGraph.Shapes().Add(aBox);
 
-  BRepGraph_SolidId aSolidId(0);
+  BRepGraph_SolidId            aSolidId(0);
+  const BRepGraph_OccurrenceId aShapeRootOccurrence = BRepGraph_OccurrenceId::Start();
+  ASSERT_FALSE(aGraph.Topo().Gen().IsRemoved(aShapeRootOccurrence));
   aGraph.Editor().Gen().RemoveSubgraph(aSolidId);
 
   EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aSolidId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aShapeRootOccurrence));
 
   // All shells should be removed.
   const uint32_t aNbShells = aGraph.Topo().Shells().Nb();

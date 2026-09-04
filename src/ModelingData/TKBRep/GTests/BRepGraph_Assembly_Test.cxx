@@ -416,6 +416,26 @@ TEST(BRepGraph_AssemblyTest, RemoveProduct_CascadeOccurrences)
   EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOcc2));
 }
 
+TEST(BRepGraph_AssemblyTest, RemoveReferencedProduct_RemovesIncomingOccurrences)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildResult =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
+
+  const BRepGraph_ProductId aPartId     = BRepGraph_ProductId::Start();
+  const BRepGraph_ProductId aAssemblyId = aGraph.Editor().Products().Add();
+  aGraph.Editor().Products().AppendDocumentRoot(aAssemblyId);
+  const BRepGraph_OccurrenceId anOccurrence =
+    aGraph.Editor().Products().Append(aAssemblyId, aPartId, TopLoc_Location());
+
+  aGraph.Editor().Gen().RemoveSubgraph(aPartId);
+
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(aPartId));
+  EXPECT_TRUE(aGraph.Topo().Gen().IsRemoved(anOccurrence));
+  EXPECT_EQ(aGraph.Topo().Products().NbComponents(aAssemblyId), 0);
+}
+
 // =============================================================================
 // RemoveProduct_CascadesToPartTopology
 // =============================================================================
