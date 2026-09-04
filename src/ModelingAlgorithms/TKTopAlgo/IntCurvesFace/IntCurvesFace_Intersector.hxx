@@ -123,7 +123,6 @@ public:
   const TopoDS_Face& Face() const;
 
   //! Classifies a UV point against the face.
-  //! This method is not thread-safe on the same instance.
   //! @param[in] thePuv point in the surface parametric space
   //! @return point state relative to the face
   Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& thePuv) const;
