@@ -147,19 +147,18 @@ set_property (GLOBAL PROPERTY OCC_VERSION_MAJOR ${OCC_VERSION_MAJOR})
 set_property (GLOBAL PROPERTY OCC_VERSION_MINOR ${OCC_VERSION_MINOR})
 set_property (GLOBAL PROPERTY OCC_VERSION_MAINTENANCE ${OCC_VERSION_MAINTENANCE})
 
-# set soversion variable determining compatibility version on platforms with symlinks
-# 0 - for empty, 1 - for major, 2 - for major.minor, 3 - for major.minor.maintenance
-if (NOT BUILD_SOVERSION_NUMBERS)
-  set (BUILD_SOVERSION_NUMBERS "0" CACHE STRING "${BUILD_SOVERSION_NUMBERS_DESCR}" FORCE)
-  SET_PROPERTY(CACHE BUILD_SOVERSION_NUMBERS PROPERTY STRINGS 0 1 2 3)
-
+# set the number of version components in shared library names and SONAME
+# 0 - for none, 1 - for major, 2 - for major.minor, 3 - for major.minor.maintenance
+if ("${BUILD_SOVERSION_NUMBERS}" STREQUAL "")
   # update default state of soversion on different platforms
   if (WIN32 OR ANDROID OR EMSCRIPTEN)
-    set (BUILD_SOVERSION_NUMBERS 0)
+    set (BUILD_SOVERSION_NUMBERS "0")
   else()
-    set (BUILD_SOVERSION_NUMBERS 2)
+    set (BUILD_SOVERSION_NUMBERS "2")
   endif()
 endif()
+set (BUILD_SOVERSION_NUMBERS "${BUILD_SOVERSION_NUMBERS}" CACHE STRING "${BUILD_SOVERSION_NUMBERS_DESCR}" FORCE)
+set_property (CACHE BUILD_SOVERSION_NUMBERS PROPERTY STRINGS 0 1 2 3)
 
 set (INSTALL_TEST_CASES OFF CACHE BOOL "${INSTALL_TEST_CASES_DESCR}")
 
