@@ -138,12 +138,11 @@ public:
   Standard_EXPORT ~IntCurvesFace_Intersector() override;
 
 private:
-  Standard_EXPORT void InternalCall(const IntCurveSurface_HInter& HICS,
-                                    const double                  pinf,
-                                    const double                  psup);
+  void internalCall(const IntCurveSurface_HInter& HICS, const double pinf, const double psup);
 
   BRepTopAdaptor_TopolTool& topolTool() const;
 
+private:
   mutable occ::handle<BRepTopAdaptor_TopolTool>           myTopolTool;
   occ::handle<BRepAdaptor_Surface>                        Hsurface;
   double                                                  Tol;

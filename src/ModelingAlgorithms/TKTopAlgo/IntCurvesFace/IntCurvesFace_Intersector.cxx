@@ -226,7 +226,7 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
 
 //=================================================================================================
 
-void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
+void IntCurvesFace_Intersector::internalCall(const IntCurveSurface_HInter& HICS,
                                              const double                  parinf,
                                              const double                  parsup)
 {
@@ -460,7 +460,7 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L, const double ParMin, co
 #endif
   }
 
-  InternalCall(HICS, parinf, parsup);
+  internalCall(HICS, parinf, parsup);
 }
 
 //=================================================================================================
@@ -523,7 +523,7 @@ void IntCurvesFace_Intersector::Perform(const occ::handle<Adaptor3d_Curve>& HCu,
     HICS.Perform(HCu, polygon, Hsurface, *myPolyhedron);
 #endif
   }
-  InternalCall(HICS, parinf, parsup);
+  internalCall(HICS, parinf, parsup);
 }
 
 //============================================================================
