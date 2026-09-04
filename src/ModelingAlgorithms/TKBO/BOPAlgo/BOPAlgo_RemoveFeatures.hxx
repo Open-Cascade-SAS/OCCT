@@ -235,6 +235,7 @@ protected: //! @name Protected methods performing the removal
     const NCollection_IndexedDataMap<TopoDS_Shape,
                                      NCollection_List<TopoDS_Shape>,
                                      TopTools_ShapeMapHasher>&           theAdjFaces,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&        theAnchoredFaces,
     const occ::handle<BRepTools_History>&                                theAdjFacesHistory,
     const bool                                                           theSolidsHistoryNeeded,
     const Message_ProgressRange&                                         theRange);
