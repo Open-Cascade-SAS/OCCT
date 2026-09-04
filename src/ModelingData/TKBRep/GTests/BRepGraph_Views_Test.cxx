@@ -1146,11 +1146,11 @@ TEST_F(BRepGraph_ViewsTest, BRepGraphTool_OuterWire_SkipsRemovedWireDef)
 
 TEST(BRepGraph_RemoveSubgraphTest, WireDetachesAllFaceUsages)
 {
-  BRepGraph aGraph;
+  BRepGraph                                    aGraph;
   NCollection_LinearVector<BRepGraph_CoEdgeId> aNoCoEdges;
   const BRepGraph_WireId anOuterWire1 = aGraph.Editor().Wires().Add(aNoCoEdges.ToArray1());
   const BRepGraph_WireId anOuterWire2 = aGraph.Editor().Wires().Add(aNoCoEdges.ToArray1());
-  const BRepGraph_WireId anInnerWire = aGraph.Editor().Wires().Add(aNoCoEdges.ToArray1());
+  const BRepGraph_WireId anInnerWire  = aGraph.Editor().Wires().Add(aNoCoEdges.ToArray1());
   NCollection_LinearVector<BRepGraph_WireId> anInnerWires;
   anInnerWires.Append(anInnerWire);
   const BRepGraph_FaceId aFace1 = aGraph.Editor().Faces().Add(new Geom_Plane(gp_Pln()),
