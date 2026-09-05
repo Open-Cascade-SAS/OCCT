@@ -323,6 +323,7 @@ jobs:
         compiler: gcc
         install-artifact-name: install-linux-gcc-no-pch
         artifact-suffix: no-pch
+        build-type: Debug
 
   test-summary:
     name: 'Summarize Test Results'

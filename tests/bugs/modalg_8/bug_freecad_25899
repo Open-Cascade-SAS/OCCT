@@ -1,0 +1,74 @@
+puts "================================"
+puts "FreeCAD issue 25899: Boolean cut with a nearly closed section curve"
+puts "================================"
+puts ""
+
+restore [locate_data_file freecad_25899_base.brep] base
+restore [locate_data_file freecad_25899_tool.brep] tool
+
+bcut result base tool
+checkshape result
+checknbshapes result -solid 1
+checkprops result -v 493113.590083
+
+bsection section base tool
+checknbshapes section -vertex 1 -edge 1
+explode section e
+explode section_1 v
+set sectionVertices [directory section_1_*]
+set sectionVertexCount [llength $sectionVertices]
+set isSectionClosed [expr {$sectionVertexCount == 1}]
+if {!$isSectionClosed} {
+  puts "Error: the nearly closed section edge is topologically open"
+}
+
+# Render the actual inputs and result. The transparent cutter shows the removed
+# volume, red is the face/face section, and dark boundaries expose every face.
+vinit View1 w=900 h=700
+vbackground -color WHITE
+vdisplay -dispmode 1 base tool section
+vsetcolor base CYAN3
+vsetcolor tool ORANGE3
+vsetcolor section RED
+vsettransparency base 0.55
+vsettransparency tool 0.35
+vsetwidth section 6
+vaspects base tool -setFaceBoundaryDraw 1 -setFaceBoundaryColor GRAY20 -setFaceBoundaryWidth 2
+vaxo
+vfit
+vdump ${imagedir}/${test_image}_inputs_axo.png
+
+verase base tool
+vdisplay -dispmode 1 result section
+vsetcolor result CYAN3
+vsettransparency result 0.15
+vaspects result -setFaceBoundaryDraw 1 -setFaceBoundaryColor GRAY20 -setFaceBoundaryWidth 2
+vaxo
+vfit
+vdump ${imagedir}/${test_image}_result_axo.png
+vfront
+vfit
+vdump ${imagedir}/${test_image}_result_front.png
+vtop
+vfit
+vdump ${imagedir}/${test_image}_result_top.png
+
+# Topology diagnostic: magenta marks identify the distinct vertices owned by
+# the section edge. The corrected result has one marker reused at both ends.
+vaxo
+foreach aVertex $sectionVertices {
+  vdisplay $aVertex
+  vsetcolor $aVertex MAGENTA1
+  vaspects $aVertex -setMarkerType x -setMarkerSize 5
+}
+if {$isSectionClosed} {
+  set topologyLabel "CLOSED section: $sectionVertexCount shared topological vertex"
+  set topologyColor GREEN4
+} else {
+  set topologyLabel "OPEN section: $sectionVertexCount distinct topological vertices"
+  set topologyColor RED3
+}
+vdrawtext topology_label $topologyLabel -2d -perspos -1 1 -pos 30 -35 0 -height 18 -font SansFont -color $topologyColor -disptype subtitle -subcolor WHITE
+vdrawtext topology_legend "RED: section edge   MAGENTA X: vertices   CYAN: cut result" -2d -perspos -1 1 -pos 30 -62 0 -height 15 -font SansFont -color BLACK
+vfit
+vdump ${imagedir}/${test_image}_section_topology.png
