@@ -14,14 +14,31 @@
 #include <gtest/gtest.h>
 
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepTools.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <BRep_Tool.hxx>
 #include <BSplCLib.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomConvert.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GProp_GProps.hxx>
 #include <gce_MakeCirc.hxx>
@@ -30,9 +47,22 @@
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_List.hxx>
+#include <Precision.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 
 // Test OCC10006: BRepOffsetAPI_ThruSections loft operation with Boolean fusion
 TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
@@ -390,4 +420,984 @@ TEST(BRepOffsetAPI_ThruSections_Test, OCC895_TwoCircularArcWires_NoTwist)
   GProp_GProps aProps;
   BRepGProp::SurfaceProperties(aThruSect.Shape(), aProps);
   EXPECT_NEAR(aProps.Mass(), 18.1614, 0.01) << "Surface area should be approximately 18.1614";
+}
+
+namespace
+{
+TopoDS_Wire makeCircleWire(const gp_Pnt& theCenter, const double theRadius)
+{
+  BRepBuilderAPI_MakeEdge anEdge(gp_Circ(gp_Ax2(theCenter, gp::DZ()), theRadius));
+  return BRepBuilderAPI_MakeWire(anEdge.Edge()).Wire();
+}
+
+TopoDS_Wire makeRationalCircleWire(const gp_Pnt& theCenter, const double theRadius)
+{
+  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(theCenter, gp::DZ()), theRadius);
+  const occ::handle<Geom_BSplineCurve> aBSpline =
+    GeomConvert::CurveToBSplineCurve(aCircle, Convert_TgtThetaOver2);
+  return BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aBSpline).Edge()).Wire();
+}
+
+TopoDS_Wire makeRectangleWire(const double theHalfExtent, const double theZ)
+{
+  BRepBuilderAPI_MakePolygon aPolygon;
+  aPolygon.Add(gp_Pnt(-theHalfExtent, -theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(theHalfExtent, -theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(theHalfExtent, theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(-theHalfExtent, theHalfExtent, theZ));
+  aPolygon.Close();
+  return aPolygon.Wire();
+}
+
+TopoDS_Wire makeSplitRectangleWire(const double theHalfExtent, const double theZ)
+{
+  BRepBuilderAPI_MakePolygon aPolygon;
+  aPolygon.Add(gp_Pnt(-theHalfExtent, -theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(0.0, -theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(theHalfExtent, -theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(theHalfExtent, 0.0, theZ));
+  aPolygon.Add(gp_Pnt(theHalfExtent, theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(0.0, theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(-theHalfExtent, theHalfExtent, theZ));
+  aPolygon.Add(gp_Pnt(-theHalfExtent, 0.0, theZ));
+  aPolygon.Close();
+  return aPolygon.Wire();
+}
+
+occ::handle<Geom_Surface> firstLoftSurface(const TopoDS_Shape& theShape,
+                                           TopLoc_Location&    theLocation)
+{
+  TopExp_Explorer anExplorer(theShape, TopAbs_FACE);
+  if (!anExplorer.More())
+  {
+    return nullptr;
+  }
+  return BRep_Tool::Surface(TopoDS::Face(anExplorer.Current()), theLocation);
+}
+
+gp_Vec loftEndpointDerivative(const TopoDS_Shape& theShape, const bool theFirst)
+{
+  TopLoc_Location                 aLocation;
+  const occ::handle<Geom_Surface> aSurface = firstLoftSurface(theShape, aLocation);
+  if (aSurface.IsNull())
+  {
+    return gp_Vec();
+  }
+  double aUFirst, aULast, aVFirst, aVLast;
+  aSurface->Bounds(aUFirst, aULast, aVFirst, aVLast);
+  gp_Pnt aPoint;
+  gp_Vec aDU, aDV;
+  aSurface->D1(0.37 * aUFirst + 0.63 * aULast, theFirst ? aVFirst : aVLast, aPoint, aDU, aDV);
+  aDV.Transform(aLocation.Transformation());
+  return aDV;
+}
+
+double loftEndpointNormalCurvature(const TopoDS_Shape& theShape,
+                                   const bool          theFirst,
+                                   const double        theUFraction = 0.63)
+{
+  TopLoc_Location                 aLocation;
+  const occ::handle<Geom_Surface> aSurface = firstLoftSurface(theShape, aLocation);
+  if (aSurface.IsNull())
+  {
+    return RealLast();
+  }
+  double aUFirst, aULast, aVFirst, aVLast;
+  aSurface->Bounds(aUFirst, aULast, aVFirst, aVLast);
+  gp_Pnt aPoint;
+  gp_Vec aDU, aDV, aDUU, aDVV, aDUV;
+  aSurface->D2((1.0 - theUFraction) * aUFirst + theUFraction * aULast,
+               theFirst ? aVFirst : aVLast,
+               aPoint,
+               aDU,
+               aDV,
+               aDUU,
+               aDVV,
+               aDUV);
+  aDU.Transform(aLocation.Transformation());
+  aDV.Transform(aLocation.Transformation());
+  aDVV.Transform(aLocation.Transformation());
+  gp_Vec aNormal = aDU.Crossed(aDV);
+  if (aNormal.SquareMagnitude() <= gp::Resolution() || aDV.SquareMagnitude() <= gp::Resolution())
+  {
+    return RealLast();
+  }
+  aNormal.Normalize();
+  return aNormal.Dot(aDVV) / aDV.SquareMagnitude();
+}
+
+std::vector<gp_Vec> loftEndpointDerivatives(const TopoDS_Shape& theShape, const bool theFirst)
+{
+  std::vector<gp_Vec> aDerivatives;
+  for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
+  {
+    TopLoc_Location                 aLocation;
+    const occ::handle<Geom_Surface> aSurface =
+      BRep_Tool::Surface(TopoDS::Face(anExplorer.Current()), aLocation);
+    if (aSurface.IsNull())
+    {
+      continue;
+    }
+    double aUFirst, aULast, aVFirst, aVLast;
+    aSurface->Bounds(aUFirst, aULast, aVFirst, aVLast);
+    gp_Pnt aPoint;
+    gp_Vec aDU, aDV;
+    aSurface->D1(0.37 * aUFirst + 0.63 * aULast, theFirst ? aVFirst : aVLast, aPoint, aDU, aDV);
+    aDV.Transform(aLocation.Transformation());
+    aDerivatives.push_back(aDV);
+  }
+  return aDerivatives;
+}
+
+std::vector<double> loftEndpointNormalCurvatures(const TopoDS_Shape& theShape, const bool theFirst)
+{
+  std::vector<double> aCurvatures;
+  for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
+  {
+    TopLoc_Location                 aLocation;
+    const occ::handle<Geom_Surface> aSurface =
+      BRep_Tool::Surface(TopoDS::Face(anExplorer.Current()), aLocation);
+    if (aSurface.IsNull())
+    {
+      continue;
+    }
+    double aUFirst, aULast, aVFirst, aVLast;
+    aSurface->Bounds(aUFirst, aULast, aVFirst, aVLast);
+    gp_Pnt aPoint;
+    gp_Vec aDU, aDV, aDUU, aDVV, aDUV;
+    aSurface->D2(0.37 * aUFirst + 0.63 * aULast,
+                 theFirst ? aVFirst : aVLast,
+                 aPoint,
+                 aDU,
+                 aDV,
+                 aDUU,
+                 aDVV,
+                 aDUV);
+    aDU.Transform(aLocation.Transformation());
+    aDV.Transform(aLocation.Transformation());
+    aDVV.Transform(aLocation.Transformation());
+    gp_Vec aNormal = aDU.Crossed(aDV);
+    if (aNormal.SquareMagnitude() <= gp::Resolution() || aDV.SquareMagnitude() <= gp::Resolution())
+    {
+      aCurvatures.push_back(RealLast());
+      continue;
+    }
+    aNormal.Normalize();
+    aCurvatures.push_back(aNormal.Dot(aDVV) / aDV.SquareMagnitude());
+  }
+  return aCurvatures;
+}
+
+void expectSameDirection(const gp_Vec& theActual, const gp_Dir& theExpected)
+{
+  ASSERT_GT(theActual.SquareMagnitude(), gp::Resolution());
+  EXPECT_GT(theActual.Dot(gp_Vec(theExpected)), 0.0);
+  EXPECT_LT(theActual.Crossed(gp_Vec(theExpected)).Magnitude() / theActual.Magnitude(), 1.0e-7);
+}
+
+struct EdgeSupportedWire
+{
+  TopoDS_Wire                             Wire;
+  BRepOffsetAPI_ThruSections::EdgeFaceMap Supports;
+};
+
+int freeEdgeCount(const TopoDS_Shape& theShape)
+{
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    anEdgeFaces;
+  TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, anEdgeFaces);
+  int aCount = 0;
+  for (int anIndex = 1; anIndex <= anEdgeFaces.Extent(); ++anIndex)
+  {
+    if (anEdgeFaces.FindFromIndex(anIndex).Size() == 1)
+    {
+      ++aCount;
+    }
+  }
+  return aCount;
+}
+
+int faceCount(const TopoDS_Shape& theShape)
+{
+  int aCount = 0;
+  for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
+  {
+    ++aCount;
+  }
+  return aCount;
+}
+
+TopoDS_Wire makeToleranceCloseOpenRectangle(const double theZ)
+{
+  BRepBuilderAPI_MakeVertex aMakeFirst(gp_Pnt(-5.0, -5.0, theZ));
+  BRepBuilderAPI_MakeVertex aMakeSecond(gp_Pnt(5.0, -5.0, theZ));
+  BRepBuilderAPI_MakeVertex aMakeThird(gp_Pnt(5.0, 5.0, theZ));
+  BRepBuilderAPI_MakeVertex aMakeFourth(gp_Pnt(-5.0, 5.0, theZ));
+  // Use a distinct seam vertex whose offset is accepted by both vertex tolerances.
+  BRepBuilderAPI_MakeVertex aMakeClosing(gp_Pnt(-5.0, -5.0 + 5.0e-7, theZ));
+  TopoDS_Vertex             aFirst   = aMakeFirst.Vertex();
+  TopoDS_Vertex             aSecond  = aMakeSecond.Vertex();
+  TopoDS_Vertex             aThird   = aMakeThird.Vertex();
+  TopoDS_Vertex             aFourth  = aMakeFourth.Vertex();
+  TopoDS_Vertex             aClosing = aMakeClosing.Vertex();
+  BRep_Builder              aBuilder;
+  aBuilder.UpdateVertex(aFirst, 1.0e-6);
+  aBuilder.UpdateVertex(aClosing, 1.0e-6);
+
+  TopoDS_Wire aWire;
+  aBuilder.MakeWire(aWire);
+  aBuilder.Add(aWire, BRepBuilderAPI_MakeEdge(aFirst, aSecond).Edge());
+  aBuilder.Add(aWire, BRepBuilderAPI_MakeEdge(aSecond, aThird).Edge());
+  aBuilder.Add(aWire, BRepBuilderAPI_MakeEdge(aThird, aFourth).Edge());
+  aBuilder.Add(aWire, BRepBuilderAPI_MakeEdge(aFourth, aClosing).Edge());
+  return aWire;
+}
+
+struct C1SupportedWire
+{
+  TopoDS_Wire                      Wire;
+  TopoDS_Face                      Support;
+  occ::handle<Geom_BSplineSurface> Surface;
+};
+
+C1SupportedWire makeC1SupportedWire()
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 6);
+  const double               aZ[] = {0.0, 0.0, 0.0, 1.0, 2.0, 3.0};
+  for (int aUIndex = 1; aUIndex <= 2; ++aUIndex)
+  {
+    for (int aVIndex = 1; aVIndex <= 6; ++aVIndex)
+    {
+      aPoles(aUIndex, aVIndex) = gp_Pnt(aUIndex - 1.0, aVIndex - 1.0, aZ[aVIndex - 1]);
+    }
+  }
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 3);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 0.5;
+  aVKnots(3) = 1.0;
+  NCollection_Array1<int> aUMultiplicities(1, 2), aVMultiplicities(1, 3);
+  aUMultiplicities(1) = 2;
+  aUMultiplicities(2) = 2;
+  aVMultiplicities(1) = 4;
+  aVMultiplicities(2) = 2;
+  aVMultiplicities(3) = 4;
+
+  C1SupportedWire aResult;
+  aResult.Surface =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMultiplicities, aVMultiplicities, 1, 3);
+  aResult.Support = BRepBuilderAPI_MakeFace(aResult.Surface, Precision::Confusion()).Face();
+  aResult.Wire =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aResult.Surface->VIso(0.5)).Edge()).Wire();
+  return aResult;
+}
+
+EdgeSupportedWire makeBoxTopWireWithSideSupports()
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(-5.0, -5.0, -5.0), 10.0, 10.0, 5.0).Shape();
+  TopoDS_Face        aTopFace;
+  for (TopExp_Explorer aFaceExplorer(aBox, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExplorer.Current());
+    GProp_GProps       aProperties;
+    BRepGProp::SurfaceProperties(aFace, aProperties);
+    if (std::abs(aProperties.CentreOfMass().Z()) < Precision::Confusion())
+    {
+      aTopFace = aFace;
+      break;
+    }
+  }
+  if (aTopFace.IsNull())
+  {
+    return {};
+  }
+
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    anEdgeFaces;
+  TopExp::MapShapesAndAncestors(aBox, TopAbs_EDGE, TopAbs_FACE, anEdgeFaces);
+
+  EdgeSupportedWire aResult;
+  aResult.Wire = BRepTools::OuterWire(aTopFace);
+  for (BRepTools_WireExplorer anEdgeExplorer(aResult.Wire); anEdgeExplorer.More();
+       anEdgeExplorer.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExplorer.Current());
+    if (!anEdgeFaces.Contains(anEdge))
+    {
+      return {};
+    }
+    TopoDS_Face aSideFace;
+    for (NCollection_List<TopoDS_Shape>::Iterator aFaceIterator(anEdgeFaces.FindFromKey(anEdge));
+         aFaceIterator.More();
+         aFaceIterator.Next())
+    {
+      if (!aFaceIterator.Value().IsSame(aTopFace))
+      {
+        if (!aSideFace.IsNull())
+        {
+          return {};
+        }
+        aSideFace = TopoDS::Face(aFaceIterator.Value());
+      }
+    }
+    if (aSideFace.IsNull())
+    {
+      return {};
+    }
+    aResult.Supports.Bind(anEdge, aSideFace);
+  }
+  return aResult;
+}
+} // namespace
+
+TEST(BRepOffsetAPI_ThruSections_Test, PlanarNormal_TwoSections_MatchesDirections)
+{
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(makeRationalCircleWire(gp::Origin(), 5.0));
+  aLoft.AddWire(makeRationalCircleWire(gp_Pnt(1.0, 0.0, 10.0), 7.0));
+  aLoft.SetFirstSectionNormal();
+  aLoft.SetLastSectionNormal();
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  expectSameDirection(loftEndpointDerivative(aLoft.Shape(), true), gp::DZ());
+  expectSameDirection(loftEndpointDerivative(aLoft.Shape(), false), gp::DZ());
+
+  TopLoc_Location                        aLocation;
+  const occ::handle<Geom_Surface>        aSurface = firstLoftSurface(aLoft.Shape(), aLocation);
+  const occ::handle<Geom_BSplineSurface> aBSpline = occ::down_cast<Geom_BSplineSurface>(aSurface);
+  ASSERT_FALSE(aBSpline.IsNull());
+  EXPECT_TRUE(aBSpline->IsVRational());
+  EXPECT_EQ(aBSpline->VDegree(), 3);
+
+  BRepOffsetAPI_ThruSections aOneSidedLoft(false, false, 1.0e-7);
+  aOneSidedLoft.AddWire(makeRationalCircleWire(gp::Origin(), 5.0));
+  aOneSidedLoft.AddWire(makeRationalCircleWire(gp_Pnt(1.0, 0.0, 10.0), 7.0));
+  aOneSidedLoft.SetFirstSectionNormal();
+  aOneSidedLoft.Build();
+
+  ASSERT_TRUE(aOneSidedLoft.IsDone());
+  expectSameDirection(loftEndpointDerivative(aOneSidedLoft.Shape(), true), gp::DZ());
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, EndpointTangents_IndependentDirections_MatchesDirections)
+{
+  const gp_Dir aFirstDirection = gp::DZ();
+  const gp_Dir aLastDirection(1.0, 0.0, 1.0);
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(makeCircleWire(gp::Origin(), 5.0));
+  aLoft.AddWire(makeCircleWire(gp_Pnt(0.5, 0.0, 5.0), 6.0));
+  aLoft.AddWire(makeCircleWire(gp_Pnt(2.0, 0.0, 10.0), 7.0));
+  aLoft.SetFirstSectionTangent(aFirstDirection);
+  aLoft.SetLastSectionTangent(aLastDirection);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  expectSameDirection(loftEndpointDerivative(aLoft.Shape(), true), aFirstDirection);
+  expectSameDirection(loftEndpointDerivative(aLoft.Shape(), false), aLastDirection);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, PlanarG2_TwoSections_MatchesZeroCurvature)
+{
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(makeCircleWire(gp::Origin(), 5.0));
+  aLoft.AddWire(makeCircleWire(gp_Pnt(1.0, 0.0, 10.0), 7.0));
+  aLoft.SetFirstSectionNormal(GeomAbs_G2);
+  aLoft.SetLastSectionNormal(GeomAbs_G2);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.FirstSectionContinuity(), GeomAbs_G2);
+  EXPECT_EQ(aLoft.LastSectionContinuity(), GeomAbs_G2);
+  expectSameDirection(loftEndpointDerivative(aLoft.Shape(), true), gp::DZ());
+  expectSameDirection(loftEndpointDerivative(aLoft.Shape(), false), gp::DZ());
+  EXPECT_NEAR(loftEndpointNormalCurvature(aLoft.Shape(), true), 0.0, 1.0e-7);
+  EXPECT_NEAR(loftEndpointNormalCurvature(aLoft.Shape(), false), 0.0, 1.0e-7);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, PlanarG2_ManySections_MatchesZeroCurvature)
+{
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  for (int anIndex = 0; anIndex < 8; ++anIndex)
+  {
+    aLoft.AddWire(makeCircleWire(gp_Pnt(0.2 * anIndex, 0.0, 3.0 * anIndex), 5.0 + 0.4 * anIndex));
+  }
+  aLoft.SetFirstSectionNormal(GeomAbs_G2);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  expectSameDirection(loftEndpointDerivative(aLoft.Shape(), true), gp::DZ());
+  EXPECT_NEAR(loftEndpointNormalCurvature(aLoft.Shape(), true), 0.0, 1.0e-7);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, PlanarG2_SolidLoft_BuildsValidSolid)
+{
+  BRepOffsetAPI_ThruSections aLoft(true, false, 1.0e-7);
+  aLoft.AddWire(makeRationalCircleWire(gp::Origin(), 5.0));
+  aLoft.AddWire(makeRationalCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0));
+  aLoft.SetFirstSectionNormal(GeomAbs_G2);
+  aLoft.SetLastSectionNormal(GeomAbs_G2);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  ASSERT_FALSE(aLoft.Shape().IsNull());
+  EXPECT_EQ(aLoft.Shape().ShapeType(), TopAbs_SOLID);
+  EXPECT_TRUE(BRepCheck_Analyzer(aLoft.Shape()).IsValid());
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, G2Parameterization_NonUniformSections_ChangesKnots)
+{
+  const auto buildSurface = [](const Approx_ParametrizationType theParametrization) {
+    const double               aZ[] = {0.0, 0.5, 1.5, 4.0, 8.0, 13.0, 19.0, 28.0};
+    BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+    for (int anIndex = 0; anIndex < 8; ++anIndex)
+    {
+      aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, aZ[anIndex]), 5.0 + 0.3 * anIndex));
+    }
+    aLoft.SetParType(theParametrization);
+    aLoft.SetFirstSectionNormal(GeomAbs_G2);
+    aLoft.Build();
+    if (!aLoft.IsDone())
+    {
+      return occ::handle<Geom_BSplineSurface>();
+    }
+    TopLoc_Location aLocation;
+    return occ::down_cast<Geom_BSplineSurface>(firstLoftSurface(aLoft.Shape(), aLocation));
+  };
+
+  const occ::handle<Geom_BSplineSurface> aUniform     = buildSurface(Approx_IsoParametric);
+  const occ::handle<Geom_BSplineSurface> aChord       = buildSurface(Approx_ChordLength);
+  const occ::handle<Geom_BSplineSurface> aCentripetal = buildSurface(Approx_Centripetal);
+  ASSERT_FALSE(aUniform.IsNull());
+  ASSERT_FALSE(aChord.IsNull());
+  ASSERT_FALSE(aCentripetal.IsNull());
+  ASSERT_GT(aUniform->NbVKnots(), 2);
+  ASSERT_EQ(aUniform->NbVKnots(), aChord->NbVKnots());
+  ASSERT_EQ(aUniform->NbVKnots(), aCentripetal->NbVKnots());
+  EXPECT_GT(std::abs(aUniform->VKnot(2) - aChord->VKnot(2)), 1.0e-3);
+  EXPECT_GT(std::abs(aUniform->VKnot(2) - aCentripetal->VKnot(2)), 1.0e-3);
+  EXPECT_GT(std::abs(aChord->VKnot(2) - aCentripetal->VKnot(2)), 1.0e-3);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, G2ChordLength_NearCoincidentSections_Builds)
+{
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(makeCircleWire(gp::Origin(), 5.0));
+  aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 1.0e-6), 5.000001));
+  aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0));
+  aLoft.SetParType(Approx_ChordLength);
+  aLoft.SetFirstSectionNormal(GeomAbs_G2);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  EXPECT_TRUE(BRepCheck_Analyzer(aLoft.Shape()).IsValid());
+  EXPECT_NEAR(loftEndpointNormalCurvature(aLoft.Shape(), true), 0.0, 1.0e-6);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, SupportFace_G1FirstSection_MatchesTangentPlane)
+{
+  const TopoDS_Wire aBoundary = makeRationalCircleWire(gp::Origin(), 5.0);
+  const TopoDS_Face aSupport  = BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()), aBoundary).Face();
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(BRepTools::OuterWire(aSupport));
+  aLoft.AddWire(makeRationalCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0));
+  aLoft.SetFirstSectionSupport(aSupport, 1.0e-3);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  const gp_Vec aDerivative = loftEndpointDerivative(aLoft.Shape(), true);
+  ASSERT_GT(aDerivative.SquareMagnitude(), gp::Resolution());
+  EXPECT_LT(std::abs(aDerivative.Dot(gp::DZ())) / aDerivative.Magnitude(), 1.0e-7);
+
+  BRepOffsetAPI_ThruSections aReverseLoft(false, false, 1.0e-7);
+  aReverseLoft.AddWire(makeRationalCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0));
+  aReverseLoft.AddWire(BRepTools::OuterWire(aSupport));
+  aReverseLoft.SetLastSectionSupport(aSupport, 1.0e-3);
+  aReverseLoft.Build();
+
+  ASSERT_TRUE(aReverseLoft.IsDone());
+  const gp_Vec aLastDerivative = loftEndpointDerivative(aReverseLoft.Shape(), false);
+  ASSERT_GT(aLastDerivative.SquareMagnitude(), gp::Resolution());
+  EXPECT_LT(std::abs(aLastDerivative.Dot(gp::DZ())) / aLastDerivative.Magnitude(), 1.0e-7);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, SupportFace_G1_C1SurfaceDoesNotRequireD2)
+{
+  const C1SupportedWire aSupportedWire = makeC1SupportedWire();
+  ASSERT_FALSE(aSupportedWire.Wire.IsNull());
+  ASSERT_FALSE(aSupportedWire.Support.IsNull());
+  ASSERT_FALSE(aSupportedWire.Surface.IsNull());
+  ASSERT_EQ(aSupportedWire.Surface->Continuity(), GeomAbs_C1);
+
+  const gp_Pnt            aFirstPoint = aSupportedWire.Surface->Value(0.0, 0.5);
+  const gp_Pnt            aLastPoint  = aSupportedWire.Surface->Value(1.0, 0.5);
+  BRepBuilderAPI_MakeEdge aMakeAdjacent(aFirstPoint.Translated(gp_Vec(0.0, 0.0, 5.0)),
+                                        aLastPoint.Translated(gp_Vec(0.0, 0.0, 5.0)));
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(aSupportedWire.Wire);
+  aLoft.AddWire(BRepBuilderAPI_MakeWire(aMakeAdjacent.Edge()).Wire());
+  // Curvature tolerance is intentionally zero: it is irrelevant to a G1 constraint.
+  aLoft.SetFirstSectionSupport(aSupportedWire.Support, GeomAbs_G1, 1.0e-3, 0.0);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  const gp_Vec aDerivative = loftEndpointDerivative(aLoft.Shape(), true);
+  ASSERT_GT(aDerivative.SquareMagnitude(), gp::Resolution());
+  gp_Pnt aPoint;
+  gp_Vec aDU, aDV;
+  aSupportedWire.Surface->D1(0.63, 0.5, aPoint, aDU, aDV);
+  const gp_Vec aNormal = aDU.Crossed(aDV);
+  ASSERT_GT(aNormal.SquareMagnitude(), gp::Resolution());
+  EXPECT_LT(std::abs(aDerivative.Dot(aNormal))
+              / std::sqrt(aDerivative.SquareMagnitude() * aNormal.SquareMagnitude()),
+            1.0e-7);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, SupportFace_G1MultiEdgeSection_Builds)
+{
+  const TopoDS_Wire aBoundary = makeRectangleWire(5.0, 0.0);
+  const TopoDS_Face aSupport  = BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()), aBoundary).Face();
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(BRepTools::OuterWire(aSupport));
+  aLoft.AddWire(makeRectangleWire(6.0, 5.0));
+  aLoft.SetFirstSectionSupport(aSupport, 1.0e-3);
+  aLoft.Build();
+
+  EXPECT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, IndividualSupports_G1AndG2_BuildsAtBothEnds)
+{
+  const EdgeSupportedWire aSupportedWire = makeBoxTopWireWithSideSupports();
+  ASSERT_FALSE(aSupportedWire.Wire.IsNull());
+  ASSERT_EQ(aSupportedWire.Supports.Extent(), 4);
+
+  BRepOffsetAPI_ThruSections aG1Loft(false, false, 1.0e-7);
+  aG1Loft.AddWire(aSupportedWire.Wire);
+  aG1Loft.AddWire(makeRectangleWire(6.0, 5.0));
+  aG1Loft.SetFirstSectionSupports(aSupportedWire.Supports, GeomAbs_G1, 1.0e-3);
+  aG1Loft.Build();
+
+  ASSERT_TRUE(aG1Loft.IsDone());
+  EXPECT_EQ(aG1Loft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  const std::vector<gp_Vec> aG1Derivatives = loftEndpointDerivatives(aG1Loft.Shape(), true);
+  ASSERT_EQ(aG1Derivatives.size(), 4u);
+  for (const gp_Vec& aDerivative : aG1Derivatives)
+  {
+    expectSameDirection(aDerivative, gp::DZ());
+  }
+
+  BRepOffsetAPI_ThruSections aG2Loft(false, false, 1.0e-7);
+  aG2Loft.AddWire(aSupportedWire.Wire);
+  aG2Loft.AddWire(makeRectangleWire(6.0, 5.0));
+  aG2Loft.SetFirstSectionSupports(aSupportedWire.Supports, GeomAbs_G2, 1.0e-3);
+  aG2Loft.Build();
+
+  ASSERT_TRUE(aG2Loft.IsDone());
+  EXPECT_EQ(aG2Loft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  const std::vector<gp_Vec> aG2Derivatives = loftEndpointDerivatives(aG2Loft.Shape(), true);
+  ASSERT_EQ(aG2Derivatives.size(), 4u);
+  for (const gp_Vec& aDerivative : aG2Derivatives)
+  {
+    expectSameDirection(aDerivative, gp::DZ());
+  }
+  const std::vector<double> aFirstCurvatures = loftEndpointNormalCurvatures(aG2Loft.Shape(), true);
+  ASSERT_EQ(aFirstCurvatures.size(), 4u);
+  for (const double aCurvature : aFirstCurvatures)
+  {
+    EXPECT_NEAR(aCurvature, 0.0, 1.0e-7);
+  }
+
+  BRepOffsetAPI_ThruSections aLastLoft(false, false, 1.0e-7);
+  aLastLoft.AddWire(makeRectangleWire(6.0, -5.0));
+  aLastLoft.AddWire(aSupportedWire.Wire);
+  aLastLoft.SetLastSectionSupports(aSupportedWire.Supports, GeomAbs_G2, 1.0e-3);
+  aLastLoft.Build();
+
+  ASSERT_TRUE(aLastLoft.IsDone());
+  EXPECT_EQ(aLastLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  const std::vector<gp_Vec> aLastDerivatives = loftEndpointDerivatives(aLastLoft.Shape(), false);
+  ASSERT_EQ(aLastDerivatives.size(), 4u);
+  for (const gp_Vec& aDerivative : aLastDerivatives)
+  {
+    expectSameDirection(aDerivative, gp::DZ());
+  }
+  const std::vector<double> aLastCurvatures =
+    loftEndpointNormalCurvatures(aLastLoft.Shape(), false);
+  ASSERT_EQ(aLastCurvatures.size(), 4u);
+  for (const double aCurvature : aLastCurvatures)
+  {
+    EXPECT_NEAR(aCurvature, 0.0, 1.0e-7);
+  }
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, IndividualSupports_CompatibilitySplits_PropagatesMappings)
+{
+  const EdgeSupportedWire aSupportedWire = makeBoxTopWireWithSideSupports();
+  ASSERT_FALSE(aSupportedWire.Wire.IsNull());
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(aSupportedWire.Wire);
+  aLoft.AddWire(makeSplitRectangleWire(6.0, 5.0));
+  aLoft.SetFirstSectionSupports(aSupportedWire.Supports, GeomAbs_G1, 1.0e-3);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, IndividualSupports_CompatibilitySplits_PreserveInputTolerance)
+{
+  EdgeSupportedWire aSupportedWire = makeBoxTopWireWithSideSupports();
+  ASSERT_FALSE(aSupportedWire.Wire.IsNull());
+
+  BRep_Builder aBuilder;
+  for (TopExp_Explorer anExplorer(aSupportedWire.Wire, TopAbs_VERTEX); anExplorer.More();
+       anExplorer.Next())
+  {
+    aBuilder.UpdateVertex(TopoDS::Vertex(anExplorer.Current()), 1.0e-6);
+  }
+
+  BRepOffsetAPI_ThruSections::EdgeFaceMap aDetachedSupports;
+  for (BRepOffsetAPI_ThruSections::EdgeFaceMap::Iterator anIterator(aSupportedWire.Supports);
+       anIterator.More();
+       anIterator.Next())
+  {
+    const TopoDS_Face   aSupport = TopoDS::Face(anIterator.Value());
+    BRepAdaptor_Surface anAdaptor(aSupport);
+    const double        aU = 0.5 * (anAdaptor.FirstUParameter() + anAdaptor.LastUParameter());
+    const double        aV = 0.5 * (anAdaptor.FirstVParameter() + anAdaptor.LastVParameter());
+    gp_Pnt              aPoint;
+    gp_Vec              aDU, aDV;
+    anAdaptor.D1(aU, aV, aPoint, aDU, aDV);
+    gp_Vec aNormal = aDU.Crossed(aDV);
+    ASSERT_GT(aNormal.SquareMagnitude(), gp::Resolution());
+    aNormal.Normalize();
+
+    gp_Trsf aTranslation;
+    aTranslation.SetTranslation(aNormal.Multiplied(5.0e-7));
+    BRepBuilderAPI_Copy aCopy(aSupport);
+    aDetachedSupports.Bind(anIterator.Key(), aCopy.Shape().Moved(TopLoc_Location(aTranslation)));
+  }
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-6);
+  aLoft.AddWire(aSupportedWire.Wire);
+  aLoft.AddWire(makeSplitRectangleWire(6.0, 5.0));
+  aLoft.SetFirstSectionSupports(aDetachedSupports, GeomAbs_G1, 1.0e-3);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, ConstrainedClosedSections_CompatibilitySplitsShareSeam)
+{
+  for (const GeomAbs_Shape aContinuity : {GeomAbs_G1, GeomAbs_G2})
+  {
+    BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-6);
+    aLoft.AddWire(makeRectangleWire(5.0, 0.0));
+    aLoft.AddWire(makeSplitRectangleWire(6.0, 5.0));
+    aLoft.SetLastSectionNormal(aContinuity);
+    aLoft.Build();
+
+    ASSERT_TRUE(aLoft.IsDone());
+    ASSERT_GT(faceCount(aLoft.Shape()), 0);
+    EXPECT_EQ(freeEdgeCount(aLoft.Shape()), 2 * faceCount(aLoft.Shape()));
+    EXPECT_TRUE(BRepCheck_Analyzer(aLoft.Shape()).IsValid());
+  }
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, ConstrainedToleranceCloseOpenSections_RemainOpen)
+{
+  for (const GeomAbs_Shape aContinuity : {GeomAbs_G1, GeomAbs_G2})
+  {
+    BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-6);
+    aLoft.AddWire(makeToleranceCloseOpenRectangle(0.0));
+    aLoft.AddWire(makeToleranceCloseOpenRectangle(5.0));
+    aLoft.SetLastSectionNormal(aContinuity);
+    aLoft.Build();
+
+    ASSERT_TRUE(aLoft.IsDone());
+    ASSERT_GT(faceCount(aLoft.Shape()), 0);
+    EXPECT_EQ(freeEdgeCount(aLoft.Shape()), 2 * faceCount(aLoft.Shape()) + 2);
+    EXPECT_TRUE(BRepCheck_Analyzer(aLoft.Shape()).IsValid());
+  }
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, IndividualSupports_CoincidentDetachedFaces_ProjectsEdges)
+{
+  const EdgeSupportedWire aSupportedWire = makeBoxTopWireWithSideSupports();
+  ASSERT_FALSE(aSupportedWire.Wire.IsNull());
+
+  BRepOffsetAPI_ThruSections::EdgeFaceMap aDetachedSupports;
+  for (BRepOffsetAPI_ThruSections::EdgeFaceMap::Iterator anIterator(aSupportedWire.Supports);
+       anIterator.More();
+       anIterator.Next())
+  {
+    BRepBuilderAPI_Copy aCopy(anIterator.Value());
+    aDetachedSupports.Bind(anIterator.Key(), aCopy.Shape());
+  }
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(aSupportedWire.Wire);
+  aLoft.AddWire(makeRectangleWire(6.0, 5.0));
+  aLoft.SetFirstSectionSupports(aDetachedSupports, GeomAbs_G2, 1.0e-3);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  EXPECT_NEAR(loftEndpointNormalCurvature(aLoft.Shape(), true), 0.0, 1.0e-7);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, SupportFace_DetachedProfileInsideHole_IsRejected)
+{
+  const TopoDS_Wire       anOuterWire = makeRectangleWire(10.0, 0.0);
+  const TopoDS_Wire       aHoleWire   = makeCircleWire(gp::Origin(), 3.0);
+  BRepBuilderAPI_MakeFace aMakeSupport(gp_Pln(gp::XOY()), anOuterWire);
+  aMakeSupport.Add(TopoDS::Wire(aHoleWire.Reversed()));
+  ASSERT_TRUE(aMakeSupport.IsDone());
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(makeCircleWire(gp::Origin(), 1.0));
+  aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 2.0));
+  aLoft.SetFirstSectionSupport(aMakeSupport.Face(), GeomAbs_G1, 1.0e-3);
+  aLoft.Build();
+
+  EXPECT_FALSE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, SupportFace_DetachedParallelPlane_IsRejected)
+{
+  const TopoDS_Face aDetachedSupport =
+    BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0.0, 0.0, 20.0), gp::DZ()), -10.0, 10.0, -10.0, 10.0)
+      .Face();
+
+  for (const GeomAbs_Shape aContinuity : {GeomAbs_G1, GeomAbs_G2})
+  {
+    BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+    aLoft.AddWire(makeCircleWire(gp::Origin(), 5.0));
+    aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0));
+    aLoft.SetFirstSectionSupport(aDetachedSupport, aContinuity, 1.0e-3, 1.0e-3);
+    aLoft.Build();
+
+    EXPECT_FALSE(aLoft.IsDone());
+    EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint);
+  }
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, CylindricalSupport_G1FirstSection_MatchesTangentPlane)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(5.0, 5.0).Shape();
+  TopoDS_Face        aSupport;
+  for (TopExp_Explorer aFaceExplorer(aCylinder, TopAbs_FACE); aFaceExplorer.More();
+       aFaceExplorer.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExplorer.Current());
+    if (BRepAdaptor_Surface(aFace).GetType() == GeomAbs_Cylinder)
+    {
+      aSupport = aFace;
+      break;
+    }
+  }
+  ASSERT_FALSE(aSupport.IsNull());
+
+  TopoDS_Edge aBottomEdge, aTopEdge;
+  for (TopExp_Explorer anEdgeExplorer(aSupport, TopAbs_EDGE); anEdgeExplorer.More();
+       anEdgeExplorer.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExplorer.Current());
+    BRepAdaptor_Curve  aCurve(anEdge);
+    if (aCurve.GetType() != GeomAbs_Circle)
+    {
+      continue;
+    }
+    const double aZ = aCurve.Value(aCurve.FirstParameter()).Z();
+    if (std::abs(aZ) < Precision::Confusion())
+    {
+      aBottomEdge = anEdge;
+    }
+    else if (std::abs(aZ - 5.0) < Precision::Confusion())
+    {
+      aTopEdge = anEdge;
+    }
+  }
+  ASSERT_FALSE(aBottomEdge.IsNull());
+  ASSERT_FALSE(aTopEdge.IsNull());
+
+  BRepOffsetAPI_ThruSections aFirstLoft(false, false, 1.0e-7);
+  aFirstLoft.AddWire(BRepBuilderAPI_MakeWire(aBottomEdge).Wire());
+  aFirstLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0));
+  aFirstLoft.SetFirstSectionSupport(aSupport, 1.0e-3);
+  aFirstLoft.Build();
+
+  EXPECT_TRUE(aFirstLoft.IsDone());
+  EXPECT_EQ(aFirstLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+
+  BRepOffsetAPI_ThruSections aLastLoft(false, false, 1.0e-7);
+  aLastLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 0.0), 6.0));
+  aLastLoft.AddWire(BRepBuilderAPI_MakeWire(aTopEdge).Wire());
+  aLastLoft.SetLastSectionSupport(aSupport, 1.0e-3);
+  aLastLoft.Build();
+
+  EXPECT_TRUE(aLastLoft.IsDone());
+  EXPECT_EQ(aLastLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, SphericalSupport_G2CurvatureTolerance_PreservedAfterProfiling)
+{
+  const TopoDS_Shape aHemisphere = BRepPrimAPI_MakeSphere(5.0, -0.5 * M_PI, 0.0).Shape();
+  TopoDS_Face        aSupport;
+  for (TopExp_Explorer aFaceExplorer(aHemisphere, TopAbs_FACE); aFaceExplorer.More();
+       aFaceExplorer.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face(aFaceExplorer.Current());
+    if (BRepAdaptor_Surface(aFace).GetType() == GeomAbs_Sphere)
+    {
+      aSupport = aFace;
+      break;
+    }
+  }
+  ASSERT_FALSE(aSupport.IsNull());
+
+  TopoDS_Edge anEquator;
+  for (TopExp_Explorer anEdgeExplorer(aSupport, TopAbs_EDGE); anEdgeExplorer.More();
+       anEdgeExplorer.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExplorer.Current());
+    BRepAdaptor_Curve  aCurve(anEdge);
+    if (aCurve.GetType() == GeomAbs_Circle
+        && std::abs(aCurve.Value(aCurve.FirstParameter()).Z()) < Precision::Confusion())
+    {
+      anEquator = anEdge;
+      break;
+    }
+  }
+  ASSERT_FALSE(anEquator.IsNull());
+
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(BRepBuilderAPI_MakeWire(anEquator).Wire());
+  aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 2.0), 5.5));
+  aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.5));
+  aLoft.SetFirstSectionSupport(aSupport, GeomAbs_G2, 1.0e-3, 1.0e-4);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  EXPECT_EQ(aLoft.FirstSectionContinuity(), GeomAbs_G2);
+  for (int aSample = 0; aSample <= 32; ++aSample)
+  {
+    const double aFraction = static_cast<double>(aSample) / 32.0;
+    EXPECT_NEAR(std::abs(loftEndpointNormalCurvature(aLoft.Shape(), true, aFraction)), 0.2, 2.0e-3)
+      << "at profile fraction " << aFraction;
+  }
+
+  BRepOffsetAPI_ThruSections aStrictLoft(false, false, 1.0e-7);
+  aStrictLoft.AddWire(BRepBuilderAPI_MakeWire(anEquator).Wire());
+  aStrictLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 2.0), 5.5));
+  aStrictLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.5));
+  aStrictLoft.SetFirstSectionSupport(aSupport, GeomAbs_G2, 1.0e-3, 1.0e-8);
+  aStrictLoft.Build();
+  ASSERT_TRUE(aStrictLoft.IsDone());
+  for (int aSample = 0; aSample <= 32; ++aSample)
+  {
+    const double aFraction = static_cast<double>(aSample) / 32.0;
+    EXPECT_NEAR(std::abs(loftEndpointNormalCurvature(aStrictLoft.Shape(), true, aFraction)),
+                0.2,
+                1.0e-7)
+      << "at profile fraction " << aFraction;
+  }
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, BoundaryConstraints_RuledAndVariational_RejectsOptions)
+{
+  const TopoDS_Wire aFirst = makeCircleWire(gp::Origin(), 5.0);
+  const TopoDS_Wire aLast  = makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0);
+
+  BRepOffsetAPI_ThruSections aRuledLoft(false, true);
+  aRuledLoft.AddWire(aFirst);
+  aRuledLoft.AddWire(aLast);
+  aRuledLoft.SetFirstSectionTangent(gp::DZ());
+  aRuledLoft.Build();
+  EXPECT_FALSE(aRuledLoft.IsDone());
+  EXPECT_EQ(aRuledLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_IncompatibleOptions);
+
+  BRepOffsetAPI_ThruSections aSmoothedLoft;
+  aSmoothedLoft.AddWire(aFirst);
+  aSmoothedLoft.AddWire(aLast);
+  aSmoothedLoft.SetSmoothing(true);
+  aSmoothedLoft.SetFirstSectionTangent(gp::DZ());
+  aSmoothedLoft.Build();
+  EXPECT_FALSE(aSmoothedLoft.IsDone());
+  EXPECT_EQ(aSmoothedLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_IncompatibleOptions);
+
+  BRepOffsetAPI_ThruSections anInvalidSupportLoft;
+  anInvalidSupportLoft.AddWire(aFirst);
+  anInvalidSupportLoft.AddWire(aLast);
+  anInvalidSupportLoft.SetFirstSectionSupport(TopoDS_Face());
+  anInvalidSupportLoft.Build();
+  EXPECT_FALSE(anInvalidSupportLoft.IsDone());
+  EXPECT_EQ(anInvalidSupportLoft.GetStatus(),
+            BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint);
+
+  const TopoDS_Face aPlanarSupport =
+    BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()), -10.0, 10.0, -10.0, 10.0).Face();
+  BRepOffsetAPI_ThruSections anInvalidCurvatureToleranceLoft;
+  anInvalidCurvatureToleranceLoft.AddWire(aFirst);
+  anInvalidCurvatureToleranceLoft.AddWire(aLast);
+  anInvalidCurvatureToleranceLoft.SetFirstSectionSupport(aPlanarSupport, GeomAbs_G2, 1.0e-3, 0.0);
+  anInvalidCurvatureToleranceLoft.Build();
+  EXPECT_FALSE(anInvalidCurvatureToleranceLoft.IsDone());
+  EXPECT_EQ(anInvalidCurvatureToleranceLoft.GetStatus(),
+            BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint);
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, VariationalSolver_NoBoundaryConstraint_Builds)
+{
+  BRepOffsetAPI_ThruSections aLoft(false, false, 1.0e-7);
+  aLoft.AddWire(makeRectangleWire(5.0, 0.0));
+  aLoft.AddWire(makeRectangleWire(5.5, 2.5));
+  aLoft.AddWire(makeRectangleWire(6.0, 5.0));
+  aLoft.SetSmoothing(true);
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_Done);
+  EXPECT_FALSE(aLoft.Shape().IsNull());
+}
+
+TEST(BRepOffsetAPI_ThruSections_Test, BoundaryConstraint_PunctualSection_ReturnsInvalidStatus)
+{
+  BRepOffsetAPI_ThruSections aLoft;
+  aLoft.AddVertex(BRepBuilderAPI_MakeVertex(gp::Origin()).Vertex());
+  aLoft.AddWire(makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0));
+  aLoft.SetFirstSectionTangent(gp::DZ());
+  aLoft.Build();
+
+  EXPECT_FALSE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.GetStatus(), BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint);
+
+  const TopoDS_Wire aWire = makeCircleWire(gp_Pnt(0.0, 0.0, 5.0), 6.0);
+  TopExp_Explorer   anEdgeExplorer(aWire, TopAbs_EDGE);
+  ASSERT_TRUE(anEdgeExplorer.More());
+  BRepOffsetAPI_ThruSections::EdgeFaceMap aSupports;
+  aSupports.Bind(anEdgeExplorer.Current(),
+                 BRepBuilderAPI_MakeFace(gp_Pln(gp::XOY()), -10.0, 10.0, -10.0, 10.0).Face());
+
+  BRepOffsetAPI_ThruSections anEdgeSupportedLoft;
+  anEdgeSupportedLoft.AddVertex(BRepBuilderAPI_MakeVertex(gp::Origin()).Vertex());
+  anEdgeSupportedLoft.AddWire(aWire);
+  anEdgeSupportedLoft.SetFirstSectionSupports(aSupports);
+  EXPECT_NO_THROW(anEdgeSupportedLoft.Build());
+  EXPECT_FALSE(anEdgeSupportedLoft.IsDone());
+  EXPECT_EQ(anEdgeSupportedLoft.GetStatus(),
+            BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint);
 }

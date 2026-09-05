@@ -1,0 +1,47 @@
+# G2 constraints with an individual adjacent support face for every profile edge.
+vertex v11 -5 -5 0
+vertex v12  5 -5 0
+vertex v13  5  5 0
+vertex v14 -5  5 0
+edge e11 v11 v12
+edge e12 v12 v13
+edge e13 v13 v14
+edge e14 v14 v11
+wire w1 e11 e12 e13 e14
+prism f11 e11 0 0 -5
+prism f12 e12 0 0 -5
+prism f13 e13 0 0 -5
+prism f14 e14 0 0 -5
+
+vertex v21 -6 -6 5
+vertex v22  6 -6 5
+vertex v23  6  6 5
+vertex v24 -6  6 5
+edge e21 v21 v22
+edge e22 v22 v23
+edge e23 v23 v24
+edge e24 v24 v21
+wire w2 e21 e22 e23 e24
+
+vertex v31 -7 -7 10
+vertex v32  7 -7 10
+vertex v33  7  7 10
+vertex v34 -7  7 10
+edge e31 v31 v32
+edge e32 v32 v33
+edge e33 v33 v34
+edge e34 v34 v31
+wire w3 e31 e32 e33 e34
+prism f31 e31 0 0 5
+prism f32 e32 0 0 5
+prism f33 e33 0 0 5
+prism f34 e34 0 0 5
+
+thrusections g0 0 0 w1 w2 w3
+thrusections result 0 0 w1 w2 w3 -param centripetal -angtol 0.001 -curvtol 0.001 \
+  -firstsupports G2 e11 f11 e12 f12 e13 f13 e14 f14 \
+  -lastsupports G2 e31 f31 e32 f32 e33 f33 e34 f34
+checkshape g0
+checkshape result
+
+puts "G0 comparison: g0; per-edge G2 loft: result; supports: f11..f14 and f31..f34"

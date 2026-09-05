@@ -1,0 +1,25 @@
+# G2 at the first profile following the normal curvature of a spherical support.
+set piValue 3.141592653589793
+sphere sphereSurface 10
+mkface support sphereSurface 0 [expr {2.0 * $piValue}] 0 [expr {0.5 * $piValue}]
+
+viso c1 sphereSurface 0
+mkedge e1 c1
+wire w1 e1
+
+circle c2 0 0 4 0 0 1 11
+mkedge e2 c2
+wire w2 e2
+
+circle c3 0 0 10 0 0 1 13
+mkedge e3 c3
+wire w3 e3
+
+# The separately created equator has no pcurve on support; the builder projects it.
+thrusections g0 0 0 w1 w2 w3
+thrusections result 0 0 w1 w2 w3 -angtol 0.001 -curvtol 1e-8 -firstsupport G2 support
+checkshape g0
+checkshape result
+checkshape support
+
+puts "G0 comparison: g0; spherical-support G2 loft: result; support face: support"
