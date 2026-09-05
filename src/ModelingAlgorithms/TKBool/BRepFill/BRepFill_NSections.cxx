@@ -51,10 +51,6 @@
 #include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_NSections, BRepFill_SectionLaw)
 
-#ifdef OCCT_DEBUG
-static bool Affich = 0;
-#endif
-
 //=======================================================================
 // function : EdgeToBSpline
 // purpose  : auxiliary -- get curve from edge and convert it to bspline
@@ -391,11 +387,6 @@ BRepFill_NSections::BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>&
                                        const bool                                Build)
 
 {
-#ifdef OCCT_DEBUG
-  if (Affich)
-  {
-  }
-#endif
   bool ok = true;
   for (int iseq = 1; iseq < P.Length(); iseq++)
   {

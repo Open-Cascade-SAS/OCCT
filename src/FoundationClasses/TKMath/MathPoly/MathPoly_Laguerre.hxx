@@ -285,6 +285,11 @@ inline bool HasMultiplicity(const double* theCoefficients,
                             double&       theRoot,
                             size_t        theMultiplicity)
 {
+  if (theDegree < 0 || theDegree > THE_MAX_POLY_DEGREE || theMultiplicity == 0
+      || theMultiplicity > static_cast<size_t>(theDegree + 1))
+  {
+    return false;
+  }
   std::array<long double, THE_MAX_POLY_DEGREE + 1> aDerivative = {};
   for (int anIndex = 0; anIndex <= theDegree; ++anIndex)
   {
@@ -417,7 +422,12 @@ inline bool HasComplexMultiplicity(const double*         theCoefficients,
                                    std::complex<double>& theRoot,
                                    size_t                theMultiplicity)
 {
-  using LongComplex                                            = std::complex<long double>;
+  using LongComplex = std::complex<long double>;
+  if (theDegree < 0 || theDegree > THE_MAX_POLY_DEGREE || theMultiplicity == 0
+      || theMultiplicity > static_cast<size_t>(theDegree + 1))
+  {
+    return false;
+  }
   std::array<long double, THE_MAX_POLY_DEGREE + 1> aDerivative = {};
   for (int anIndex = 0; anIndex <= theDegree; ++anIndex)
   {

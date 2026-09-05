@@ -658,12 +658,14 @@ VectorResult PSO(Function&                                        theFunc,
               }
             }
 
+            const size_t aBestIndex = aBestIdx.value_or(aNbParticles);
+
             // Sort by fitness descending (simple selection of worst)
             // Reinitialize aNbRestart worst particles
             NCollection_LinearVector<size_t> aWorstIndices;
             for (size_t aCollIdx = 0; aCollIdx < aNbParticles; ++aCollIdx)
             {
-              if (aCollIdx != *aBestIdx)
+              if (aCollIdx != aBestIndex)
               {
                 aWorstIndices.Append(aCollIdx);
               }

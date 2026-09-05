@@ -29,6 +29,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_OrderedDataMap_Test.cxx
   NCollection_OrderedMap_Test.cxx
   NCollection_PackedMap_Test.cxx
+  NCollection_PagedContainers_Test.cxx
   NCollection_Sequence_Test.cxx
   NCollection_SparseArray_Test.cxx
   NCollection_UBTree_Test.cxx
@@ -48,6 +49,9 @@ set(OCCT_TKernel_GTests_FILES
   Standard_Failure_Test.cxx
   Standard_GUID_Test.cxx
   Standard_Handle_Test.cxx
+  Standard_ReadLineBuffer_Test.cxx
+  Standard_HashUtils_Test.cxx
+  Standard_SHA256_Test.cxx
   Standard_Strtod_Test.cxx
   TCollection_AsciiString_Test.cxx
   TCollection_ExtendedString_Test.cxx

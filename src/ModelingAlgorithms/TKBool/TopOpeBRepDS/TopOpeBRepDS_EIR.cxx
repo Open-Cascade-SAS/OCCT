@@ -1018,7 +1018,10 @@ void TopOpeBRepDS_EIR::ProcessEdgeInterferences(const int EIX)
           MakeEPVInterference(I->Transition(), S, OOG, par, K, ST, false);
         newloi.Append(newI);
       }
-      newtki.ChangeInterferences(K, G).Clear();
+      if (newtki.IsBound(K, G))
+      {
+        newtki.ChangeInterferences(K, G).Clear();
+      }
       if (!isb)
       {
         newtki.Add(K, OOG);

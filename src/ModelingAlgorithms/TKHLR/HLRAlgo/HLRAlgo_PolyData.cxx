@@ -23,9 +23,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyData, Standard_Transient)
 
-#ifdef OCCT_DEBUG
-static int HLRAlgo_PolyData_ERROR = false;
-#endif
 //=================================================================================================
 
 HLRAlgo_PolyData::HLRAlgo_PolyData() = default;
@@ -493,13 +490,6 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
           o[npi] = n1 == -1;
           m[npi] = Multiple;
         }
-#ifdef OCCT_DEBUG
-        else if (HLRAlgo_PolyData_ERROR)
-        {
-          std::cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << std::endl;
-          std::cout << " ( more than 2 points )." << std::endl;
-        }
-#endif
       }
     }
   }
@@ -759,13 +749,6 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
           o[npi] = n1 == -1;
           m[npi] = Multiple;
         }
-#ifdef OCCT_DEBUG
-        else if (HLRAlgo_PolyData_ERROR)
-        {
-          std::cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << std::endl;
-          std::cout << " ( more than 2 points )." << std::endl;
-        }
-#endif
       }
     }
   }
@@ -1025,13 +1008,6 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
           o[npi] = n1 == -1;
           m[npi] = Multiple;
         }
-#ifdef OCCT_DEBUG
-        else if (HLRAlgo_PolyData_ERROR)
-        {
-          std::cout << " error : HLRAlgo_PolyData::HideByOneTriangle " << std::endl;
-          std::cout << " ( more than 2 points )." << std::endl;
-        }
-#endif
       }
     }
   }

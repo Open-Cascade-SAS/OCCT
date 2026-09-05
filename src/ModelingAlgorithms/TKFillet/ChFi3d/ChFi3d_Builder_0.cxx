@@ -64,6 +64,8 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntWalk_PWalking.hxx>
 #include <Law_Composite.hxx>
+#include <LocalAnalysis_CurveContinuity.hxx>
+#include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <gp_Pnt.hxx>
@@ -1556,15 +1558,15 @@ void ChFi3d_ProjectPCurv(const occ::handle<Adaptor3d_Curve>&   HCg,
 // function : CheckSameParameter
 // purpose  : Controls a posteriori that sameparameter worked well
 //=======================================================================
-bool ChFi3d_CheckSameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
+bool ChFi3d_CheckSameParameter(const Adaptor3d_Curve&                C3d,
                                occ::handle<Geom2d_Curve>&            Pcurv,
                                const occ::handle<Adaptor3d_Surface>& S,
                                const double                          tol3d,
                                double&                               tolreached)
 {
   tolreached  = 0.;
-  double f    = C3d->FirstParameter();
-  double l    = C3d->LastParameter();
+  double f    = C3d.FirstParameter();
+  double l    = C3d.LastParameter();
   int    nbp  = 45;
   double step = 1. / (nbp - 1);
   for (int i = 0; i < nbp; i++)
@@ -1574,7 +1576,7 @@ bool ChFi3d_CheckSameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
     t = (1 - t) * f + t * l;
     Pcurv->Value(t).Coord(u, v);
     gp_Pnt pS  = S->Value(u, v);
-    gp_Pnt pC  = C3d->Value(t);
+    gp_Pnt pC  = C3d.Value(t);
     double d2  = pS.SquareDistance(pC);
     tolreached = std::max(tolreached, d2);
   }
@@ -1599,7 +1601,7 @@ bool ChFi3d_SameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
                           const double                          tol3d,
                           double&                               tolreached)
 {
-  if (ChFi3d_CheckSameParameter(C3d, Pcurv, S, tol3d, tolreached))
+  if (ChFi3d_CheckSameParameter(*C3d, Pcurv, S, tol3d, tolreached))
   {
     return true;
   }
@@ -4906,18 +4908,30 @@ static bool GoodExt(const occ::handle<Geom_Curve>& C,
 {
   for (int i = 0; i < 6; i++)
   {
-    gp_Pnt       d0;
-    gp_Vec       d1;
-    const double t = i * 0.2;
-    C->D1(((1 - t) * f + t * l), d0, d1);
-    const double ang    = d1.Angle(V);
-    const double angref = a * t + 0.002;
+    const double            t      = i * 0.2;
+    const Geom_Curve::ResD1 aD1    = C->EvalD1((1 - t) * f + t * l);
+    const double            ang    = aD1.D1.Angle(V);
+    const double            angref = a * t + 0.002;
     if (ang > angref)
     {
       return false;
     }
   }
   return true;
+}
+
+//=================================================================================================
+
+static bool ChFi3d_IsG2Closed(const occ::handle<Geom_Curve>& theCurve, const double theTolerance)
+{
+  LocalAnalysis_CurveContinuity aContinuity(theCurve,
+                                            theCurve->FirstParameter(),
+                                            theCurve,
+                                            theCurve->LastParameter(),
+                                            GeomAbs_G2,
+                                            gp::Resolution(),
+                                            std::max(theTolerance, Precision::Confusion()));
+  return aContinuity.IsDone() && aContinuity.IsG2();
 }
 
 //=================================================================================================
@@ -4929,8 +4943,8 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
                                            const bool                   IsOffset)
 {
 
-  bool                           periodic, Bof, checkdeb, cepadur, bIsSmooth;
-  int                            IEdge, IF, IL, nbed, iToApproxByC2;
+  bool                           periodic, Bof, checkdeb, cepadur, bIsSmooth, hasApproxByC2;
+  int                            IEdge, IF, IL, nbed;
   double                         WF, WL, Wrefdeb, Wreffin, nwf, nwl, period, pared = 0., tolpared;
   double                         First, Last, epsV, urefdeb, tolrac;
   GeomAbs_Shape                  aContinuity;
@@ -4991,11 +5005,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   // Add vertex with tangent
   if (ES.IsPeriodic())
   {
-    double ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
-    gp_Pnt PntForElSpine;
-    gp_Vec DirForElSpine;
-    Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
-    ES.AddVertexWithTangent(gp_Ax1(PntForElSpine, DirForElSpine));
+    const double            ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
+    const Geom_Curve::ResD1 aD1           = Cv->EvalD1(ParForElSpine);
+    ES.AddVertexWithTangent(gp_Ax1(aD1.Point, aD1.D1));
   }
   /////////////////////////
   urefdeb  = Spine->FirstParameter(IF);
@@ -5109,14 +5121,14 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   CurveCleaner(BS, std::abs(WL - WF) * 1.e-4, 0);
   //
   // Smoothing of the curve
-  iToApproxByC2 = 0;
+  hasApproxByC2 = false;
   aContinuity   = TC->Continuity();
   bIsSmooth     = ChFi3d_IsSmooth(TC);
   if (aContinuity < GeomAbs_C2 && !bIsSmooth)
   {
-    ++iToApproxByC2;
-    BS = ChFi3d_ApproxByC2(TC);
-    TC = BS;
+    hasApproxByC2 = true;
+    BS            = ChFi3d_ApproxByC2(TC);
+    TC            = BS;
   }
   //
   //  Concatenation des aretes suivantes
@@ -5152,11 +5164,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
     //
     Cv = BRep_Tool::Curve(E, First, Last);
     // Add vertex with tangent
-    double ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
-    gp_Pnt PntForElSpine;
-    gp_Vec DirForElSpine;
-    Cv->D1(ParForElSpine, PntForElSpine, DirForElSpine);
-    ES.AddVertexWithTangent(gp_Ax1(PntForElSpine, DirForElSpine));
+    double                  ParForElSpine = (E.Orientation() == TopAbs_FORWARD) ? First : Last;
+    const Geom_Curve::ResD1 aD1           = Cv->EvalD1(ParForElSpine);
+    ES.AddVertexWithTangent(gp_Ax1(aD1.Point, aD1.D1));
     /////////////////////////
     if (IEdge == IL)
     {
@@ -5200,9 +5210,9 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
     bIsSmooth   = ChFi3d_IsSmooth(TC);
     if (aContinuity < GeomAbs_C2 && !bIsSmooth)
     {
-      ++iToApproxByC2;
-      BS = ChFi3d_ApproxByC2(TC);
-      TC = BS;
+      hasApproxByC2 = true;
+      BS            = ChFi3d_ApproxByC2(TC);
+      TC            = BS;
     }
     //
     tolrac = std::min(tol, epsV);
@@ -5400,38 +5410,39 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   {
     if (!BSpline->IsPeriodic())
     {
+      const int  aFirstMultiplicity  = BSpline->Multiplicity(BSpline->FirstUKnotIndex());
+      const int  aLastMultiplicity   = BSpline->Multiplicity(BSpline->LastUKnotIndex());
+      const bool shouldSmoothClosure = std::max(aFirstMultiplicity, aLastMultiplicity) > MultMax
+                                       && (hasApproxByC2 || !ChFi3d_IsG2Closed(BSpline, tol));
       BSpline->SetPeriodic();
-      // modified by NIZNHY-PKV Fri Dec 10 12:20:22 2010ft
-      if (iToApproxByC2)
+      if (shouldSmoothClosure)
       {
-        Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
+        BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
       }
-      // Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL-WF)/10);
-      // modified by NIZNHY-PKV Mon Dec 13 14:12:54 2010t
     }
   }
   else
   {
     // Otherwise is it necessary to move the poles to adapt
     // them to new tangents ?
-    bool   adjust = false;
-    gp_Pnt P1, P2;
-    gp_Vec V1, V2;
-    BSpline->D1(WF, P1, V1);
+    bool                    adjust   = false;
+    const Geom_Curve::ResD1 aFirstD1 = BSpline->EvalD1(WF);
+    gp_Vec                  V1       = aFirstD1.D1;
     V1.Normalize();
     ES.FirstPointAndTgt(PDeb, VrefDeb);
     double scaldeb = VrefDeb.Dot(V1);
-    double disdeb  = PDeb.Distance(P1);
+    double disdeb  = PDeb.Distance(aFirstD1.Point);
     if ((std::abs(WF - LocalWF) < 1.e-12) && ((scaldeb <= 0.9999999) || disdeb >= tol))
     {
       // Yes if there was no extension and the tangent is not the good one.
       adjust = true;
     }
-    BSpline->D1(WL, P2, V2);
+    const Geom_Curve::ResD1 aLastD1 = BSpline->EvalD1(WL);
+    gp_Vec                  V2      = aLastD1.D1;
     V2.Normalize();
     ES.LastPointAndTgt(PFin, VrefFin);
     double scalfin = VrefFin.Dot(V2);
-    double disfin  = PFin.Distance(P2);
+    double disfin  = PFin.Distance(aLastD1.Point);
     if ((std::abs(WL - LocalWL) < 1.e-12) && ((scalfin <= 0.9999999) || disfin >= tol))
     {
       // the same at the end
@@ -6010,7 +6021,7 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
-        C->D0(t, P1);
+        P1 = C->EvalD0(t);
         LProp.CentreOfCurvature(P2);
         PrevVec      = gp_Vec(P1, P2);
         prevVecFound = true;
@@ -6045,7 +6056,7 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       Curvature = std::abs(LProp.Curvature());
       if (Curvature > Resolution)
       {
-        C->D0(t, P1);
+        P1 = C->EvalD0(t);
         LProp.CentreOfCurvature(P2);
         gp_Vec Vec(P1, P2);
         double Angle = PrevVec.Angle(Vec);

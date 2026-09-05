@@ -211,6 +211,10 @@ inline bool SolveDistinctReal(const LongCoefficients&     theCoefficients,
   {
     if (anIndex == 0 || aCritical[anIndex] != aCritical[anIndex - 1])
     {
+      if (aPointCount >= aPoints.size())
+      {
+        return false;
+      }
       aPoints[aPointCount++] = aCritical[anIndex];
     }
     if (HasSmallResidual(theCoefficients,
@@ -220,6 +224,10 @@ inline bool SolveDistinctReal(const LongCoefficients&     theCoefficients,
     {
       AppendUnique(theRoots, theCount, aCritical[anIndex]);
     }
+  }
+  if (aPointCount >= aPoints.size())
+  {
+    return false;
   }
   aPoints[aPointCount++] = aBound;
 

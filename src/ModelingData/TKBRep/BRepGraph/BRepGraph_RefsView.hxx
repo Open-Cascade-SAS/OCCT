@@ -16,7 +16,7 @@
 
 #include <BRepGraph.hxx>
 #include <BRepGraphInc_Reference.hxx>
-#include <BRepGraph_VersionStamp.hxx>
+#include <BRepGraph_ItemStamp.hxx>
 #include <NCollection_LinearVector.hxx>
 
 //! @brief Read-only view for RefId/RefUID-based reference storage.
@@ -25,14 +25,14 @@
 //! - typed reference entry access (Shell, Face, ...)
 //! - reference counts
 //! - RefUID lookup and reverse lookup through BRepGraph::UIDs()
-//! - freshness checks via BRepGraph_VersionStamp through BRepGraph::UIDs()
+//! - freshness checks via BRepGraph_ItemStamp through BRepGraph::UIDs()
 //!
 //! Identity semantics:
 //! - RefId (kind + index) is graph-local and may change after Compact().
 //!   Use it for in-graph traversal and short-lived mutation logic.
 //! - RefUID (kind + counter) is stable across index remapping and intended
 //!   for longer-lived identity tracking. Graph generation is carried by
-//!   BRepGraph_VersionStamp when freshness checks are needed.
+//!   BRepGraph_ItemStamp when freshness checks are needed.
 //!
 //! ## RefsView vs TopoView naming
 //! RefsView accessors take reference IDs (BRepGraph_ShellRefId, BRepGraph_FaceRefId)
@@ -280,7 +280,7 @@ public:
     //! Return true if the reference id is valid and not soft-removed.
     [[nodiscard]] Standard_EXPORT bool IsActive(const BRepGraph_RefId theRef) const;
 
-    //! Return true if the specified typed RefId is invalid or marked removed.
+    //! Return true if the reference id is valid and marked removed.
     [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_RefId theRef) const;
 
     //! Return the direct parent-owned RefId stored at the specified child step.
@@ -289,12 +289,18 @@ public:
     [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefAtStep(const BRepGraph_NodeId theParent,
                                                             const int              theStep) const;
 
+    //! Return the zero-based child step containing the specified parent-owned reference.
+    //! Returns -1 when the reference is not owned by the parent.
+    [[nodiscard]] Standard_EXPORT int StepOfRef(const BRepGraph_NodeId theParent,
+                                                const BRepGraph_RefId  theRef) const;
+
     //! Resolve the child definition node referenced by any typed RefId.
     [[nodiscard]] Standard_EXPORT BRepGraph_NodeId ChildNode(const BRepGraph_RefId theRef) const;
 
-    //! Return the local location carried by the specified typed RefId.
-    //! OccurrenceRef and invalid refs return identity.
-    [[nodiscard]] Standard_EXPORT TopLoc_Location LocalLocation(const BRepGraph_RefId theRef) const;
+    //! Return ChildRef/OccurrenceRef placement; other or invalid refs return identity.
+    //! The returned reference remains valid until the graph is mutated.
+    [[nodiscard]] Standard_EXPORT const TopLoc_Location& LocalLocation(
+      const BRepGraph_RefId theRef) const;
 
     //! Return the orientation carried by the specified typed RefId.
     //! OccurrenceRef and invalid refs return TopAbs_FORWARD.

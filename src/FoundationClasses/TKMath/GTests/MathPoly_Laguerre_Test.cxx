@@ -409,8 +409,8 @@ TEST_F(MathPoly_LaguerreTest, GloballyScaledEquation)
 
 TEST_F(MathPoly_LaguerreTest, RejectsNonFiniteInputAndTolerance)
 {
-  const double aNan       = std::numeric_limits<double>::quiet_NaN();
-  const double aCoeffs[3] = {1.0, aNan, 1.0};
+  constexpr double aNan       = std::numeric_limits<double>::quiet_NaN();
+  const double     aCoeffs[3] = {1.0, aNan, 1.0};
   EXPECT_EQ(MathPoly::Laguerre(aCoeffs, 2).Status, MathUtils::Status::InvalidInput);
   const double aFiniteCoeffs[3] = {-1.0, 0.0, 1.0};
   EXPECT_EQ(MathPoly::Laguerre(aFiniteCoeffs, 2, aNan).Status, MathUtils::Status::InvalidInput);

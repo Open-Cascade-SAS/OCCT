@@ -44,12 +44,12 @@ public:
 
   /**
    * Query one point
-   * @param i
+   * @param theIndex
    *   index in the array of points [0 .. N-1]
    * @return
    *   the coordinate for the index. If index irrelevant, returns (0., 0., 0.)
    */
-  inline const gp_XYZ& Coordinate(const int i) const { return Value(i); }
+  inline const gp_XYZ& Coordinate(const size_t theIndex) const { return Value(theIndex); }
 
   /**
    * Create a copy of this node.

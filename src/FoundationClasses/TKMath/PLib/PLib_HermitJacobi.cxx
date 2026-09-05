@@ -52,7 +52,7 @@ inline const double& GetWCoefficients(const int theNivConstr)
 
 const math_Matrix& GetHermiteMatrix_C0()
 {
-  static math_Matrix aMatrix = []() {
+  static const math_Matrix aMatrix = []() {
     math_Matrix aResult(1, 2, 1, 2);
     PLib::HermiteCoefficients(-1., 1., 0, 0, aResult);
     return aResult;
@@ -62,7 +62,7 @@ const math_Matrix& GetHermiteMatrix_C0()
 
 const math_Matrix& GetHermiteMatrix_C1()
 {
-  static math_Matrix aMatrix = []() {
+  static const math_Matrix aMatrix = []() {
     math_Matrix aResult(1, 4, 1, 4);
     PLib::HermiteCoefficients(-1., 1., 1, 1, aResult);
     return aResult;
@@ -72,7 +72,7 @@ const math_Matrix& GetHermiteMatrix_C1()
 
 const math_Matrix& GetHermiteMatrix_C2()
 {
-  static math_Matrix aMatrix = []() {
+  static const math_Matrix aMatrix = []() {
     math_Matrix aResult(1, 6, 1, 6);
     PLib::HermiteCoefficients(-1., 1., 2, 2, aResult);
     return aResult;

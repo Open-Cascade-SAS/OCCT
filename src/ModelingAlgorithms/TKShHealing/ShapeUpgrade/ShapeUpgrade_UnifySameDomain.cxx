@@ -934,7 +934,7 @@ static void ReconstructMissedSeam(const NCollection_Sequence<TopoDS_Shape>& theR
 
 static bool SameSurf(const occ::handle<Geom_Surface>& theS1, const occ::handle<Geom_Surface>& theS2)
 {
-  static double aCoefs[2] = {0.3399811, 0.7745966};
+  constexpr double aCoefs[2] = {0.3399811, 0.7745966};
 
   double uf1, ul1, vf1, vl1, uf2, ul2, vf2, vl2;
   theS1->Bounds(uf1, ul1, vf1, vl1);

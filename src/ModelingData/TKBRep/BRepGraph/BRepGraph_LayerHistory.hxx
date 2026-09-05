@@ -96,6 +96,10 @@ public:
   //! Layer display name.
   [[nodiscard]] Standard_EXPORT const TCollection_AsciiString& Name() const override;
 
+  //! History is operation-local data and is not retained in immutable graph revisions.
+  [[nodiscard]] Standard_EXPORT BRepGraph_RevisionComponent::ComponentDescriptor
+                                RevisionDescriptor() const override;
+
   //! Record a modification: theOriginal was replaced by theReplacements.
   //!
   //! @note When @p theReplacements is empty the record is auto-downgraded to

@@ -22,6 +22,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <atomic>
 #include <cstdint>
 
 class BRepGraph;
@@ -133,7 +134,7 @@ protected:
     [[nodiscard]] Standard_EXPORT bool IsFresh(const BRepGraph_Cache& theCache) const noexcept;
 
     //! True if the entry was successfully bound to a reference generation.
-    [[nodiscard]] bool IsBound() const noexcept { return myIsBound; }
+    [[nodiscard]] bool IsBound() const noexcept { return myRef.IsValid(); }
 
     //! Reference identity captured at bind time.
     [[nodiscard]] BRepGraph_RefId Ref() const noexcept { return myRef; }
@@ -141,7 +142,6 @@ protected:
   private:
     BRepGraph_RefId myRef;
     uint32_t        myGeneration = 0;
-    bool            myIsBound    = false;
   };
 
   //! @brief Value base for item-derived cache entries.
@@ -164,7 +164,7 @@ protected:
     [[nodiscard]] Standard_EXPORT bool IsFresh(const BRepGraph_Cache& theCache) const noexcept;
 
     //! True if the entry was successfully bound to an item generation.
-    [[nodiscard]] bool IsBound() const noexcept { return myIsBound; }
+    [[nodiscard]] bool IsBound() const noexcept { return myItem.IsValid(); }
 
     //! Item identity captured at bind time.
     [[nodiscard]] BRepGraph_ItemId Item() const noexcept { return myItem; }
@@ -172,19 +172,18 @@ protected:
   private:
     BRepGraph_ItemId myItem;
     uint32_t         myGeneration = 0;
-    bool             myIsBound    = false;
   };
 
   Standard_EXPORT BRepGraph_Cache();
 
   //! True while this cache is registered in a live graph registry.
-  [[nodiscard]] bool IsAttached() const noexcept { return myGraph != nullptr; }
+  [[nodiscard]] Standard_EXPORT bool IsAttached() const noexcept;
 
   //! Attached graph for read-only cache services. Raises Standard_ProgramError if detached.
   [[nodiscard]] Standard_EXPORT const BRepGraph& Graph() const;
 
   //! Attached mutable graph for graph-owned cache services. Returns null if detached.
-  [[nodiscard]] BRepGraph* AttachedGraph() const noexcept { return myGraph; }
+  [[nodiscard]] Standard_EXPORT BRepGraph* AttachedGraph() const noexcept;
 
   //! Called after the cache is attached to a graph registry.
   Standard_EXPORT virtual void OnAttached() noexcept;
@@ -220,11 +219,25 @@ protected:
 private:
   friend class ::BRepGraph_CacheRegistry;
 
-  Standard_EXPORT void attachGraph(BRepGraph* theGraph) noexcept;
-  Standard_EXPORT void rebindGraph(BRepGraph* theGraph) noexcept;
-  Standard_EXPORT void detachGraph() noexcept;
+  enum class LifecycleState : uint8_t
+  {
+    Detached,
+    Attaching,
+    Attached,
+    Detaching
+  };
 
-  BRepGraph* myGraph = nullptr;
+  Standard_EXPORT void attachGraph(BRepGraph_CacheRegistry* theRegistry) noexcept;
+  Standard_EXPORT void beginAttach() noexcept;
+  Standard_EXPORT void notifyAttached() noexcept;
+  Standard_EXPORT void detachGraph() noexcept;
+  Standard_EXPORT void clearForRelease() noexcept;
+  Standard_EXPORT void releaseRegistry() noexcept;
+  Standard_EXPORT void rebindRegistry(BRepGraph_CacheRegistry* theRegistry) noexcept;
+
+  std::atomic<BRepGraph_CacheRegistry*> myRegistry{nullptr};
+  std::atomic<bool>                     myWasCleared{false};
+  std::atomic<LifecycleState>           myLifecycleState{LifecycleState::Detached};
 };
 
 #endif // _BRepGraph_Cache_HeaderFile
