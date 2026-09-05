@@ -63,6 +63,8 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntWalk_PWalking.hxx>
 #include <Law_Composite.hxx>
+#include <Precision.hxx>
+#include <LocalAnalysis_CurveContinuity.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <gp_Pnt.hxx>
@@ -4794,6 +4796,20 @@ static bool GoodExt(const occ::handle<Geom_Curve>& C,
 
 //=================================================================================================
 
+static bool ChFi3d_IsG2Closed(const occ::handle<Geom_Curve>& theCurve, const double theTolerance)
+{
+  LocalAnalysis_CurveContinuity aContinuity(theCurve,
+                                            theCurve->FirstParameter(),
+                                            theCurve,
+                                            theCurve->LastParameter(),
+                                            GeomAbs_G2,
+                                            gp::Resolution(),
+                                            std::max(theTolerance, Precision::Confusion()));
+  return aContinuity.IsDone() && aContinuity.IsG2();
+}
+
+//=================================================================================================
+
 Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
                                            occ::handle<ChFiDS_Spine>&   Spine,
                                            const GeomAbs_Shape          continuity,
@@ -5272,14 +5288,15 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   {
     if (!BSpline->IsPeriodic())
     {
+      const int  aFirstMultiplicity  = BSpline->Multiplicity(BSpline->FirstUKnotIndex());
+      const int  aLastMultiplicity   = BSpline->Multiplicity(BSpline->LastUKnotIndex());
+      const bool shouldSmoothClosure = std::max(aFirstMultiplicity, aLastMultiplicity) > MultMax
+                                       && (iToApproxByC2 != 0 || !ChFi3d_IsG2Closed(BSpline, tol));
       BSpline->SetPeriodic();
-      // modified by NIZNHY-PKV Fri Dec 10 12:20:22 2010ft
-      if (iToApproxByC2)
+      if (shouldSmoothClosure)
       {
-        Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
+        BSpline->RemoveKnot(1, MultMax, std::abs(WL - WF) / 10);
       }
-      // Bof = BSpline->RemoveKnot(1, MultMax, std::abs(WL-WF)/10);
-      // modified by NIZNHY-PKV Mon Dec 13 14:12:54 2010t
     }
   }
   else
