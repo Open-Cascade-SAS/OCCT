@@ -16,4 +16,5 @@ set(OCCT_TKBO_GTests_FILES
   BRepAlgoAPI_Splitter_Test.cxx
   BRepAlgoAPI_Simplify_Test.cxx
   IntTools_FaceFace_Test.cxx
+  BOPTools_AlgoTools3D_Test.cxx
 )
