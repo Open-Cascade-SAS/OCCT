@@ -235,8 +235,8 @@ private: //! @name Internal helpers for point-triangle projection
       const T         aSquareLength = aEdge.Dot(aEdge);
       const T         aParameter =
         aSquareLength > T(0)
-                  ? std::clamp((thePoint - *aNodes[aSide]).Dot(aEdge) / aSquareLength, T(0), T(1))
-                  : T(0);
+          ? std::clamp((thePoint - *aNodes[aSide]).Dot(aEdge) / aSquareLength, T(0), T(1))
+          : T(0);
       const BVH_VecNt aCandidate         = *aNodes[aSide] + aEdge * aParameter;
       const T         aCandidateDistance = squareDistance(thePoint, aCandidate);
       if (aCandidateDistance < aDistance)
@@ -264,13 +264,25 @@ private: //! @name Internal helpers for point-triangle projection
     T               aWeightB;
     T               aWeightC;
     triangleCoordinates(aAB, aAC, aAP, aNorm, aWeightB, aWeightC);
-    if (aNorm > T(0) && aWeightB > T(0) && aWeightC > T(0) && aWeightB + aWeightC < aNorm)
+    if (aNorm > T(0))
     {
-      const BVH_VecNt aCandidate = theNode0 + aAB * (aWeightB / aNorm) + aAC * (aWeightC / aNorm);
-      if (squareDistance(thePoint, aCandidate) <= aDistance)
+      const T aWeightA   = aNorm - aWeightB - aWeightC;
+      const T aWeightTol =
+        T(64) * std::numeric_limits<T>::epsilon()
+        * std::max({aNorm, std::abs(aWeightA), std::abs(aWeightB), std::abs(aWeightC)});
+
+      // Preserve a lower-dimensional feature when the projected point is on,
+      // or numerically indistinguishable from, the triangle boundary.
+      if (aWeightA > aWeightTol && aWeightB > aWeightTol && aWeightC > aWeightTol)
       {
-        aClosest  = aCandidate;
-        aPrjState = BVH_PrjStateInTriangle_INNER;
+        const BVH_VecNt aCandidate =
+          theNode0 + aAB * (aWeightB / aNorm) + aAC * (aWeightC / aNorm);
+        const T aCandidateDistance = squareDistance(thePoint, aCandidate);
+        if (aCandidateDistance <= aDistance)
+        {
+          aClosest  = aCandidate;
+          aPrjState = BVH_PrjStateInTriangle_INNER;
+        }
       }
     }
 
