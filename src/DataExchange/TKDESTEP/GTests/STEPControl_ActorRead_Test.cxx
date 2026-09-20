@@ -15,6 +15,7 @@
 #include <STEPControl_Controller.hxx>
 #include <BRep_Tool.hxx>
 #include <Interface_HGraph.hxx>
+#include <Interface_InterfaceModel.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepAP214_Protocol.hxx>
 #include <StepBasic_NamedUnit.hxx>
@@ -144,4 +145,37 @@ TEST(STEPControl_ActorReadTest, StandalonePoint_UsesExplicitFactors)
   ASSERT_FALSE(aShape.IsNull());
   ASSERT_EQ(aShape.ShapeType(), TopAbs_VERTEX);
   EXPECT_LT(BRep_Tool::Pnt(TopoDS::Vertex(aShape)).Distance(gp_Pnt(2000, 3000, 4000)), 1.e-10);
+}
+
+//==================================================================================================
+
+//! The non-manifold flag lives on the actor, so two concurrent reads are independent only while
+//! each read owns its actor. Pin that: a shared actor would silently restore the old behaviour.
+TEST(STEPControl_ActorReadTest, ActorReadReturnsDistinctActorPerCall)
+{
+  STEPControl_Controller::Init();
+  occ::handle<STEPControl_Controller> aController = new STEPControl_Controller;
+
+  occ::handle<Interface_InterfaceModel> aModel1 = new StepData_StepModel;
+  occ::handle<Interface_InterfaceModel> aModel2 = new StepData_StepModel;
+
+  occ::handle<Transfer_ActorOfTransientProcess> anActor1 = aController->ActorRead(aModel1);
+  occ::handle<Transfer_ActorOfTransientProcess> anActor2 = aController->ActorRead(aModel2);
+
+  ASSERT_FALSE(anActor1.IsNull());
+  ASSERT_FALSE(anActor2.IsNull());
+  EXPECT_NE(anActor1.get(), anActor2.get());
+}
+
+//==================================================================================================
+
+//! Each actor must start with the flag clear, whatever a previously constructed actor saw.
+TEST(STEPControl_ActorReadTest, FreshActorIsIndependentOfAnyOther)
+{
+  occ::handle<Interface_InterfaceModel> aModel = new StepData_StepModel;
+
+  occ::handle<STEPControl_ActorRead> anActor1 = new STEPControl_ActorRead(aModel);
+  occ::handle<STEPControl_ActorRead> anActor2 = new STEPControl_ActorRead(aModel);
+
+  EXPECT_NE(anActor1.get(), anActor2.get());
 }
