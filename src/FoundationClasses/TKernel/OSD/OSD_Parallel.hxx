@@ -371,9 +371,10 @@ public: //! @name public methods
     }
     else if (ToUseOcctThreads())
     {
-      const occ::handle<OSD_ThreadPool>&   aThreadPool = OSD_ThreadPool::DefaultPool();
-      OSD_ThreadPool::Launcher aPoolLauncher(
-        *aThreadPool, std::min(aRange, aThreadPool->NbDefaultThreadsToLaunch()));
+      const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher           aPoolLauncher(
+        *aThreadPool,
+        std::min(aRange, aThreadPool->NbDefaultThreadsToLaunch()));
       FunctorWrapperForThreadPool<Functor> aFunctor(theFunctor);
       aPoolLauncher.Perform(theBegin, theEnd, aFunctor);
     }

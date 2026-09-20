@@ -203,10 +203,8 @@ private: //! @name Internal helpers for point-triangle projection
       {
         const T anArea = theAB[aFirst] * theAC[aSecond] - theAB[aSecond] * theAC[aFirst];
         theNorm += anArea * anArea;
-        theWeightB +=
-          (theAP[aFirst] * theAC[aSecond] - theAP[aSecond] * theAC[aFirst]) * anArea;
-        theWeightC +=
-          (theAB[aFirst] * theAP[aSecond] - theAB[aSecond] * theAP[aFirst]) * anArea;
+        theWeightB += (theAP[aFirst] * theAC[aSecond] - theAP[aSecond] * theAC[aFirst]) * anArea;
+        theWeightC += (theAB[aFirst] * theAP[aSecond] - theAB[aSecond] * theAP[aFirst]) * anArea;
       }
     }
   }
@@ -224,11 +222,11 @@ private: //! @name Internal helpers for point-triangle projection
   {
     const BVH_VecNt* aNodes[] = {&theNode0, &theNode1, &theNode2};
 
-    BVH_VecNt                aClosest  = theNode0;
-    T                        aDistance = squareDistance(thePoint, theNode0);
-    BVH_PrjStateInTriangle   aPrjState = BVH_PrjStateInTriangle_VERTEX;
-    int                      aFirstNode = 0;
-    int                      aLastNode  = 0;
+    BVH_VecNt              aClosest   = theNode0;
+    T                      aDistance  = squareDistance(thePoint, theNode0);
+    BVH_PrjStateInTriangle aPrjState  = BVH_PrjStateInTriangle_VERTEX;
+    int                    aFirstNode = 0;
+    int                    aLastNode  = 0;
 
     for (int aSide = 0; aSide < 3; ++aSide)
     {
@@ -237,8 +235,8 @@ private: //! @name Internal helpers for point-triangle projection
       const T         aSquareLength = aEdge.Dot(aEdge);
       const T         aParameter =
         aSquareLength > T(0)
-          ? std::clamp((thePoint - *aNodes[aSide]).Dot(aEdge) / aSquareLength, T(0), T(1))
-          : T(0);
+                  ? std::clamp((thePoint - *aNodes[aSide]).Dot(aEdge) / aSquareLength, T(0), T(1))
+                  : T(0);
       const BVH_VecNt aCandidate         = *aNodes[aSide] + aEdge * aParameter;
       const T         aCandidateDistance = squareDistance(thePoint, aCandidate);
       if (aCandidateDistance < aDistance)
@@ -268,8 +266,7 @@ private: //! @name Internal helpers for point-triangle projection
     triangleCoordinates(aAB, aAC, aAP, aNorm, aWeightB, aWeightC);
     if (aNorm > T(0) && aWeightB > T(0) && aWeightC > T(0) && aWeightB + aWeightC < aNorm)
     {
-      const BVH_VecNt aCandidate =
-        theNode0 + aAB * (aWeightB / aNorm) + aAC * (aWeightC / aNorm);
+      const BVH_VecNt aCandidate = theNode0 + aAB * (aWeightB / aNorm) + aAC * (aWeightC / aNorm);
       if (squareDistance(thePoint, aCandidate) <= aDistance)
       {
         aClosest  = aCandidate;
@@ -379,8 +376,7 @@ public: //! @name Point-Triangle Square distance
     // In that case use exterior-product coordinates, which are substantially more
     // stable for thin triangles.
     const T aCancellationLimit = std::sqrt(std::numeric_limits<T>::epsilon());
-    if (aNorm <= THE_ROUNDOFF * aProducts
-        || std::abs(aVA) <= aCancellationLimit * aVAProducts
+    if (aNorm <= THE_ROUNDOFF * aProducts || std::abs(aVA) <= aCancellationLimit * aVAProducts
         || std::abs(aVB) <= aCancellationLimit * aVBProducts
         || std::abs(aVC) <= aCancellationLimit * aVCProducts)
     {

@@ -504,8 +504,7 @@ inline bool HasComplexMultiplicity(const double*         theCoefficients,
       aValue     = aValue * aRoot + aDerivative[static_cast<size_t>(anIndex)];
       aMagnitude = aMagnitude * anAbsRoot + std::abs(aDerivative[static_cast<size_t>(anIndex)]);
     }
-    if (!std::isfinite(aValue.real()) || !std::isfinite(aValue.imag())
-        || !std::isfinite(aMagnitude)
+    if (!std::isfinite(aValue.real()) || !std::isfinite(aValue.imag()) || !std::isfinite(aMagnitude)
         || std::abs(aValue) > Precision::Computational() * aMagnitude)
     {
       return false;

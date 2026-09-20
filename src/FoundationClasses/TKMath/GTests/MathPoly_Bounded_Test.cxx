@@ -104,9 +104,7 @@ TEST(MathPoly_BoundedTest, StationaryResidualDistinguishesRealAndComplexPairs)
   {
     for (const double aSign : {-1.0, 0.0, 1.0})
     {
-      const double aPolynomial[] = {(0.0625 + aSign * 0x1p-54) * aScale,
-                                    -0.5 * aScale,
-                                    aScale};
+      const double aPolynomial[] = {(0.0625 + aSign * 0x1p-54) * aScale, -0.5 * aScale, aScale};
       const MathPoly::BoundedResult aResult = MathPoly::Bounded(aPolynomial, 2, -1, 1);
       ASSERT_TRUE(aResult.IsDone());
       if (aSign < 0)
@@ -197,8 +195,8 @@ TEST(MathPoly_BoundedTest, MaximumSupportedDegree)
 {
   // x^20 - 1 has two real roots on [-1, 1] and exercises the fixed-capacity limit.
   std::array<double, MathPoly::THE_MAX_POLY_DEGREE + 1> aPolynomial = {};
-  aPolynomial[0]                                                     = -1.0;
-  aPolynomial[MathPoly::THE_MAX_POLY_DEGREE]                         = 1.0;
+  aPolynomial[0]                                                    = -1.0;
+  aPolynomial[MathPoly::THE_MAX_POLY_DEGREE]                        = 1.0;
   const MathPoly::BoundedResult aResult =
     MathPoly::Bounded(aPolynomial.data(), MathPoly::THE_MAX_POLY_DEGREE, -1.0, 1.0);
   ASSERT_TRUE(aResult.IsDone());

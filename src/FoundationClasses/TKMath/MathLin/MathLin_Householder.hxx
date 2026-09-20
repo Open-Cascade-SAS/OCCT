@@ -215,8 +215,8 @@ inline LinearMultipleResult SolveTransformedQR(const QRResult&    theQR,
 
   const math_Matrix& aR = *theQR.R;
   const size_t       aN = aR.ColSize();
-  if (aN == 0 || aR.RowSize() < aN || theTransformed.RowSize() != aR.RowSize()
-      || theQR.Rank > aN || !Utils::IsFinite(theTransformed))
+  if (aN == 0 || aR.RowSize() < aN || theTransformed.RowSize() != aR.RowSize() || theQR.Rank > aN
+      || !Utils::IsFinite(theTransformed))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;

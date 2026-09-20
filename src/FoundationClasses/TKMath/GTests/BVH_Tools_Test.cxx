@@ -868,7 +868,7 @@ TEST(BVH_ToolsTest, ThinTriangleFloatAndTwoDimensions)
   EXPECT_FLOAT_EQ(aFloatProjection.y(), 5.e-5f);
   EXPECT_FLOAT_EQ(aFloatProjection.z(), 0.0f);
   const BVH_Vec2d aPoint(0.5, 5.e-13);
-  const auto aProjection = BVH_Tools<double, 2>::PointTriangleProjection(aPoint,
+  const auto      aProjection = BVH_Tools<double, 2>::PointTriangleProjection(aPoint,
                                                                          BVH_Vec2d(0, 0),
                                                                          BVH_Vec2d(1, 0),
                                                                          BVH_Vec2d(0.5, 1.e-12));

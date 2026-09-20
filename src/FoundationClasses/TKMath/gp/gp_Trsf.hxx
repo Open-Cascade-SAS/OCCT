@@ -69,11 +69,14 @@ public:
   //! @param[in] theTranslation translation part
   //! @param[in] theScale nonzero scale factor
   //! @param[in] theForm transformation form
-  constexpr gp_Trsf(const gp_Mat& theMatrix,
-                    const gp_XYZ& theTranslation,
-                    const double theScale,
+  constexpr gp_Trsf(const gp_Mat&     theMatrix,
+                    const gp_XYZ&     theTranslation,
+                    const double      theScale,
                     const gp_TrsfForm theForm) noexcept
-      : scale(theScale), shape(theForm), matrix(theMatrix), loc(theTranslation)
+      : scale(theScale),
+        shape(theForm),
+        matrix(theMatrix),
+        loc(theTranslation)
   {
   }
 

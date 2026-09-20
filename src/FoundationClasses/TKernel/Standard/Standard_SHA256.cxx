@@ -213,13 +213,20 @@ void Standard_SHA256::processBlock(const uint8_t* theBlock) noexcept
   uint32_t aG = myState[6];
   uint32_t aH = myState[7];
 
-  const auto aRound = [&](uint32_t& theA, uint32_t theB, uint32_t theC,
-                          uint32_t& theD, uint32_t theE, uint32_t theF,
-                          uint32_t theG, uint32_t& theH, const size_t theIndex) noexcept {
-    const uint32_t aSum1 = rotateRight(theE, 6) ^ rotateRight(theE, 11) ^ rotateRight(theE, 25);
+  const auto aRound = [&](uint32_t&    theA,
+                          uint32_t     theB,
+                          uint32_t     theC,
+                          uint32_t&    theD,
+                          uint32_t     theE,
+                          uint32_t     theF,
+                          uint32_t     theG,
+                          uint32_t&    theH,
+                          const size_t theIndex) noexcept {
+    const uint32_t aSum1   = rotateRight(theE, 6) ^ rotateRight(theE, 11) ^ rotateRight(theE, 25);
     const uint32_t aChoice = theG ^ (theE & (theF ^ theG));
-    const uint32_t aTemp1 = theH + aSum1 + aChoice + THE_ROUND_CONSTANTS[theIndex] + aWords[theIndex];
-    const uint32_t aSum0 = rotateRight(theA, 2) ^ rotateRight(theA, 13) ^ rotateRight(theA, 22);
+    const uint32_t aTemp1 =
+      theH + aSum1 + aChoice + THE_ROUND_CONSTANTS[theIndex] + aWords[theIndex];
+    const uint32_t aSum0     = rotateRight(theA, 2) ^ rotateRight(theA, 13) ^ rotateRight(theA, 22);
     const uint32_t aMajority = (theA & theB) | (theC & (theA | theB));
     theD += aTemp1;
     theH = aTemp1 + aSum0 + aMajority;

@@ -993,7 +993,7 @@ TEST_F(BSplSLib_CacheTest, RationalD1AsymmetricDegreesAndWeightScale)
         {
           for (int aVIndex = 1; aVIndex <= aPoles.UpperCol(); ++aVIndex)
           {
-            aPoles(aUIndex, aVIndex)   = gp_Pnt(aUIndex, aVIndex, std::sin(aUIndex + 2.0 * aVIndex));
+            aPoles(aUIndex, aVIndex) = gp_Pnt(aUIndex, aVIndex, std::sin(aUIndex + 2.0 * aVIndex));
             aWeights(aUIndex, aVIndex) = aWeightScale * (1.0 + 0.1 * aUIndex * aVIndex);
           }
         }

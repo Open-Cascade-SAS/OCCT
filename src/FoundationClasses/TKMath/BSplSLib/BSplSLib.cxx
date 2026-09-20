@@ -4232,15 +4232,11 @@ BSplSLib::LocalSpan BSplSLib::SelectLocalSpan(const double                      
                                               const NCollection_Array1<double>& theKnots,
                                               const bool                        theIsPeriodic)
 {
-  LocalSpan aSpan{theParameter,
-                  theLocatedFirst,
-                  theLocatedLast,
-                  theLocatedFirst == theLocatedLast};
+  LocalSpan aSpan{theParameter, theLocatedFirst, theLocatedLast, theLocatedFirst == theLocatedLast};
 
   // At the seam of a periodic surface, use the equivalent boundary
   // corresponding to the requested evaluation side.
-  if (aSpan.IsKnot && theIsPeriodic
-      && (aSpan.First == theFirstKnot || aSpan.First == theLastKnot))
+  if (aSpan.IsKnot && theIsPeriodic && (aSpan.First == theFirstKnot || aSpan.First == theLastKnot))
   {
     if (theSide < 0)
     {

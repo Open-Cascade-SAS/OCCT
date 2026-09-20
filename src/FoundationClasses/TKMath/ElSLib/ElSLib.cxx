@@ -417,27 +417,27 @@ gp_Vec ElSLib::TorusDN(const double  U,
       double RSinV = MinorRadius * sin(V);
       A1           = RSinV * SinU;
       A2           = -RSinV * CosU;
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
+      X            = A1 * XDir.X() + A2 * YDir.X();
+      Y            = A1 * XDir.Y() + A2 * YDir.Y();
+      Z            = A1 * XDir.Z() + A2 * YDir.Z();
     }
     else if (IsEven(Nu) && IsEven(Nv))
     {
       double RCosV = MinorRadius * cos(V);
       A1           = RCosV * CosU;
       A2           = RCosV * SinU;
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
+      X            = A1 * XDir.X() + A2 * YDir.X();
+      Y            = A1 * XDir.Y() + A2 * YDir.Y();
+      Z            = A1 * XDir.Z() + A2 * YDir.Z();
     }
     else if (IsEven(Nv) && IsOdd(Nu))
     {
       double RCosV = MinorRadius * cos(V);
       A1           = RCosV * SinU;
       A2           = -RCosV * CosU;
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
+      X            = A1 * XDir.X() + A2 * YDir.X();
+      Y            = A1 * XDir.Y() + A2 * YDir.Y();
+      Z            = A1 * XDir.Z() + A2 * YDir.Z();
       if (((Nv + Nu + 3) % 4) == 0)
       {
         X = -X;
@@ -450,9 +450,9 @@ gp_Vec ElSLib::TorusDN(const double  U,
       double RSinV = MinorRadius * sin(V);
       A1           = RSinV * CosU;
       A2           = RSinV * SinU;
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
+      X            = A1 * XDir.X() + A2 * YDir.X();
+      Y            = A1 * XDir.Y() + A2 * YDir.Y();
+      Z            = A1 * XDir.Z() + A2 * YDir.Z();
       if (((Nu + Nv + 3) % 4) == 0)
       {
         X = -X;
@@ -934,27 +934,27 @@ void ElSLib::TorusD2(const double  U,
 
   // Vuv = MinorRadius * std::sin(V) * (std::sin(U)*XDirection - std::cos(U)*YDirection)
 
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  const gp_XYZ& PLoc = Pos.Location().XYZ();
-  double        CosU = cos(U);
-  double        SinU = sin(U);
-  double        R1   = MinorRadius * cos(V);
-  double        R2   = MinorRadius * sin(V);
-  double        R    = MajorRadius + R1;
-  double        A1   = R * CosU;
-  double        A2   = R * SinU;
-  double        A3   = R2 * CosU;
-  double        A4   = R2 * SinU;
-  double        A5   = R1 * CosU;
-  double        A6   = R1 * SinU;
-  double Som1X = A1 * XDir.X() + A2 * YDir.X();
-  double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
-  double Som1Z = A1 * XDir.Z() + A2 * YDir.Z();
-  double R2ZX  = R2 * ZDir.X();
-  double R2ZY  = R2 * ZDir.Y();
-  double R2ZZ  = R2 * ZDir.Z();
+  const gp_XYZ& XDir  = Pos.XDirection().XYZ();
+  const gp_XYZ& YDir  = Pos.YDirection().XYZ();
+  const gp_XYZ& ZDir  = Pos.Direction().XYZ();
+  const gp_XYZ& PLoc  = Pos.Location().XYZ();
+  double        CosU  = cos(U);
+  double        SinU  = sin(U);
+  double        R1    = MinorRadius * cos(V);
+  double        R2    = MinorRadius * sin(V);
+  double        R     = MajorRadius + R1;
+  double        A1    = R * CosU;
+  double        A2    = R * SinU;
+  double        A3    = R2 * CosU;
+  double        A4    = R2 * SinU;
+  double        A5    = R1 * CosU;
+  double        A6    = R1 * SinU;
+  double        Som1X = A1 * XDir.X() + A2 * YDir.X();
+  double        Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
+  double        Som1Z = A1 * XDir.Z() + A2 * YDir.Z();
+  double        R2ZX  = R2 * ZDir.X();
+  double        R2ZY  = R2 * ZDir.Y();
+  double        R2ZZ  = R2 * ZDir.Z();
   P.SetX(Som1X + R2ZX + PLoc.X());
   P.SetY(Som1Y + R2ZY + PLoc.Y());
   P.SetZ(Som1Z + R2ZZ + PLoc.Z());
@@ -1278,36 +1278,36 @@ void ElSLib::TorusD3(const double  U,
 
   // Vuuv = MinorRadius * std::sin(V) * (std::cos(U)*XDirection + std::sin(U)*YDirection)
 
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  const gp_XYZ& PLoc = Pos.Location().XYZ();
-  double        CosU = cos(U);
-  double        SinU = sin(U);
-  double        R1   = MinorRadius * cos(V);
-  double        R2   = MinorRadius * sin(V);
-  double        R    = MajorRadius + R1;
-  double        A1   = R * CosU;
-  double        A2   = R * SinU;
-  double        A3   = R2 * CosU;
-  double        A4   = R2 * SinU;
-  double        A5   = R1 * CosU;
-  double        A6   = R1 * SinU;
-  double Som1X = A1 * XDir.X() + A2 * YDir.X();
-  double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
-  double Som1Z = A1 * XDir.Z() + A2 * YDir.Z();
-  double Som3X = A3 * XDir.X() + A4 * YDir.X();
-  double Som3Y = A3 * XDir.Y() + A4 * YDir.Y();
-  double Som3Z = A3 * XDir.Z() + A4 * YDir.Z();
-  double Dif1X = A2 * XDir.X() - A1 * YDir.X();
-  double Dif1Y = A2 * XDir.Y() - A1 * YDir.Y();
-  double Dif1Z = A2 * XDir.Z() - A1 * YDir.Z();
-  double R1ZX  = R1 * ZDir.X();
-  double R1ZY  = R1 * ZDir.Y();
-  double R1ZZ  = R1 * ZDir.Z();
-  double R2ZX  = R2 * ZDir.X();
-  double R2ZY  = R2 * ZDir.Y();
-  double R2ZZ  = R2 * ZDir.Z();
+  const gp_XYZ& XDir  = Pos.XDirection().XYZ();
+  const gp_XYZ& YDir  = Pos.YDirection().XYZ();
+  const gp_XYZ& ZDir  = Pos.Direction().XYZ();
+  const gp_XYZ& PLoc  = Pos.Location().XYZ();
+  double        CosU  = cos(U);
+  double        SinU  = sin(U);
+  double        R1    = MinorRadius * cos(V);
+  double        R2    = MinorRadius * sin(V);
+  double        R     = MajorRadius + R1;
+  double        A1    = R * CosU;
+  double        A2    = R * SinU;
+  double        A3    = R2 * CosU;
+  double        A4    = R2 * SinU;
+  double        A5    = R1 * CosU;
+  double        A6    = R1 * SinU;
+  double        Som1X = A1 * XDir.X() + A2 * YDir.X();
+  double        Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
+  double        Som1Z = A1 * XDir.Z() + A2 * YDir.Z();
+  double        Som3X = A3 * XDir.X() + A4 * YDir.X();
+  double        Som3Y = A3 * XDir.Y() + A4 * YDir.Y();
+  double        Som3Z = A3 * XDir.Z() + A4 * YDir.Z();
+  double        Dif1X = A2 * XDir.X() - A1 * YDir.X();
+  double        Dif1Y = A2 * XDir.Y() - A1 * YDir.Y();
+  double        Dif1Z = A2 * XDir.Z() - A1 * YDir.Z();
+  double        R1ZX  = R1 * ZDir.X();
+  double        R1ZY  = R1 * ZDir.Y();
+  double        R1ZZ  = R1 * ZDir.Z();
+  double        R2ZX  = R2 * ZDir.X();
+  double        R2ZY  = R2 * ZDir.Y();
+  double        R2ZZ  = R2 * ZDir.Z();
   P.SetX(Som1X + R2ZX + PLoc.X());
   P.SetY(Som1Y + R2ZY + PLoc.Y());
   P.SetZ(Som1Z + R2ZZ + PLoc.Z());

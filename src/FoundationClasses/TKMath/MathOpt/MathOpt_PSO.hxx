@@ -101,13 +101,13 @@ struct PSOConfig : NDimConfig
   PSOInertiaSchedule    InertiaSchedule = PSOInertiaSchedule::Constant;
   double                OmegaMin        = 0.4; //!< Min inertia for LinearDecay
   uint32_t              MinIterations   = 0;   //!< Completed updates before stagnation checks
-  std::optional<double> TargetValue;          //!< Early stop if best <= target (nullopt = disabled)
-  bool                  AllowPartialDomain = true; //!< Accept a best point despite rejected evaluations
-  double                NoImproveTol       = 0.0; //!< Relative current-fitness-spread tolerance (0 = Tolerance)
-  uint32_t              NoImproveIters     = 10;  //!< Stagnation iteration threshold
-  double                RestartFraction    = 0.0; //!< Fraction of particles to reinitialize (0 = none)
-  uint32_t              MaxRestarts        = 0;   //!< Maximum restart count (0 = unlimited)
-  uint32_t              PolishBudgetPerDim = 50;  //!< Max polishing evals per dimension (0 = none)
+  std::optional<double> TargetValue;  //!< Early stop if best <= target (nullopt = disabled)
+  bool     AllowPartialDomain = true; //!< Accept a best point despite rejected evaluations
+  double   NoImproveTol       = 0.0;  //!< Relative current-fitness-spread tolerance (0 = Tolerance)
+  uint32_t NoImproveIters     = 10;   //!< Stagnation iteration threshold
+  double   RestartFraction    = 0.0;  //!< Fraction of particles to reinitialize (0 = none)
+  uint32_t MaxRestarts        = 0;    //!< Maximum restart count (0 = unlimited)
+  uint32_t PolishBudgetPerDim = 50;   //!< Max polishing evals per dimension (0 = none)
 
   //! Default constructor.
   PSOConfig()
@@ -356,7 +356,7 @@ VectorResult PSO(Function&                                        theFunc,
       math_Vector aBestPosition(&aBestPositions.ChangeValue(anOffset),
                                 0,
                                 static_cast<int>(aNbDims) - 1);
-      std::optional<double>& aBestValue    = aBestValues.ChangeValue(aSeedIdx);
+      std::optional<double>& aBestValue = aBestValues.ChangeValue(aSeedIdx);
 
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
@@ -387,7 +387,7 @@ VectorResult PSO(Function&                                        theFunc,
       double aFunctionValue = 0.0;
       if (aCheckedFunc.Value(aPosition, aFunctionValue))
       {
-        aBestValue    = aFunctionValue;
+        aBestValue = aFunctionValue;
       }
       ++aLocalStats.NbFunctionEvals;
 
@@ -412,7 +412,7 @@ VectorResult PSO(Function&                                        theFunc,
         math_Vector aBestPosition(&aBestPositions.ChangeValue(anOffset),
                                   0,
                                   static_cast<int>(aNbDims) - 1);
-        std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
+        std::optional<double>& aBestValue = aBestValues.ChangeValue(aPartIdx);
         // Pick a seed to jitter (round-robin)
         const size_t           aSrcIdx = aPartIdx % aSeeded;
         const PSOSeedParticle& aSrc    = theSeeds->Value(aSrcIdx);
@@ -429,7 +429,7 @@ VectorResult PSO(Function&                                        theFunc,
         double aFunctionValue = 0.0;
         if (aCheckedFunc.Value(aPosition, aFunctionValue))
         {
-          aBestValue    = aFunctionValue;
+          aBestValue = aFunctionValue;
         }
         ++aLocalStats.NbFunctionEvals;
 
@@ -454,7 +454,7 @@ VectorResult PSO(Function&                                        theFunc,
     math_Vector  aBestPosition(&aBestPositions.ChangeValue(anOffset),
                               0,
                               static_cast<int>(aNbDims) - 1);
-    std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
+    std::optional<double>& aBestValue = aBestValues.ChangeValue(aPartIdx);
     for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
     {
       aPosition.ChangeAt(aDimIdx) = aLowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
@@ -464,7 +464,7 @@ VectorResult PSO(Function&                                        theFunc,
     double aFunctionValue = 0.0;
     if (aCheckedFunc.Value(aPosition, aFunctionValue))
     {
-      aBestValue    = aFunctionValue;
+      aBestValue = aFunctionValue;
     }
     ++aLocalStats.NbFunctionEvals;
 
@@ -524,7 +524,7 @@ VectorResult PSO(Function&                                        theFunc,
       math_Vector  aBestPosition(&aBestPositions.ChangeValue(anOffset),
                                 0,
                                 static_cast<int>(aNbDims) - 1);
-      std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
+      std::optional<double>& aBestValue = aBestValues.ChangeValue(aPartIdx);
 
       // Update velocity
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
@@ -627,8 +627,7 @@ VectorResult PSO(Function&                                        theFunc,
     // halving before subtraction avoids overflow for large opposite-sign values.
     const double aFitnessSpread =
       aCurrentMin && aCurrentMax ? std::max(0.0, 0.5 * *aCurrentMax - 0.5 * *aCurrentMin) : 0.0;
-    const double aBestImprovement =
-      std::max(0.0, 0.5 * aPrevBest - 0.5 * *aGlobalBestValue);
+    const double aBestImprovement = std::max(0.0, 0.5 * aPrevBest - 0.5 * *aGlobalBestValue);
 
     // Check for convergence (stagnation) after minimum iterations
     if (aResult.NbIterations > theConfig.MinIterations)
@@ -694,22 +693,21 @@ VectorResult PSO(Function&                                        theFunc,
                                 return !aLeft || (aRight && *aLeft > *aRight);
                               });
 
-            const size_t aNbToRestart =
-              std::min(aNbRestart, aWorstIndices.Size());
+            const size_t aNbToRestart = std::min(aNbRestart, aWorstIndices.Size());
             for (size_t aRestIdx = 0; aRestIdx < aNbToRestart; ++aRestIdx)
             {
               const size_t           aRestartIdx = aWorstIndices.Value(aRestIdx);
               const size_t           anOffset    = aRestartIdx * aNbDims;
-              math_Vector aPosition(&aPositions.ChangeValue(anOffset),
+              math_Vector            aPosition(&aPositions.ChangeValue(anOffset),
                                     0,
                                     static_cast<int>(aNbDims) - 1);
-              math_Vector aVelocity(&aVelocities.ChangeValue(anOffset),
+              math_Vector            aVelocity(&aVelocities.ChangeValue(anOffset),
                                     0,
                                     static_cast<int>(aNbDims) - 1);
-              math_Vector aBestPosition(&aBestPositions.ChangeValue(anOffset),
+              math_Vector            aBestPosition(&aBestPositions.ChangeValue(anOffset),
                                         0,
                                         static_cast<int>(aNbDims) - 1);
-              std::optional<double>& aBestValue    = aBestValues.ChangeValue(aRestartIdx);
+              std::optional<double>& aBestValue = aBestValues.ChangeValue(aRestartIdx);
               for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
               {
                 aPosition.ChangeAt(aDimIdx) =
@@ -720,7 +718,7 @@ VectorResult PSO(Function&                                        theFunc,
               double aFunctionValue = 0.0;
               if (aCheckedFunc.Value(aPosition, aFunctionValue))
               {
-                aBestValue    = aFunctionValue;
+                aBestValue = aFunctionValue;
               }
               else
               {

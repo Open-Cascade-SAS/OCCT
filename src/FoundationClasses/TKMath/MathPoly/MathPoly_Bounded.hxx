@@ -84,8 +84,8 @@ inline BoundedResult Bounded(const double* theCoefficients,
   }
   if (aDegree == 0)
   {
-    aResult.Status = theCoefficients[0] == 0.0 ? MathUtils::Status::InfiniteSolutions
-                                               : MathUtils::Status::OK;
+    aResult.Status =
+      theCoefficients[0] == 0.0 ? MathUtils::Status::InfiniteSolutions : MathUtils::Status::OK;
     return aResult;
   }
   for (int i = 0; i <= aDegree; ++i)

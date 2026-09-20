@@ -222,8 +222,8 @@ inline LinearResult SolveDecomposed(const SVDResult& theSVD, const math_Vector& 
   const size_t       aM = aU.RowSize();
   const size_t       aN = aW.Size();
 
-  if (theB.Size() != aM || aN == 0 || aU.ColSize() != aN || aV.RowSize() != aN
-      || aV.ColSize() != aN || theSVD.Rank > std::min(aM, aN) || !Utils::IsFinite(theB))
+  if (theB.Size() != aM || aN == 0 || aU.ColSize() != aN || aV.RowSize() != aN || aV.ColSize() != aN
+      || theSVD.Rank > std::min(aM, aN) || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;

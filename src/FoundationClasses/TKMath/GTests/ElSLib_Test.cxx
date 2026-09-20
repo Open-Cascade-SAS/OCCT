@@ -34,16 +34,14 @@ void expectVecNear(const gp_Vec& theActual, const gp_Vec& theExpected, const dou
 
 TEST(ElSLib_Test, TorusPreservesSmallNonzeroComponentsNearAxes)
 {
-  const gp_Ax3 aPosition(gp_Pnt(0.0, 0.0, 0.0),
-                         gp_Dir(0.0, 0.0, 1.0),
-                         gp_Dir(1.0, 0.0, 0.0));
+  const gp_Ax3 aPosition(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0));
   const double aMajorRadius = 5.0;
   const double aMinorRadius = 2.0;
   const double aHalfPi      = 0.5 * std::acos(-1.0);
   const double aULeft       = std::nextafter(aHalfPi, 0.0);
   const double aURight      = std::nextafter(aHalfPi, std::numeric_limits<double>::infinity());
 
-  const gp_Pnt aLeft = ElSLib::TorusValue(aULeft, 0.0, aPosition, aMajorRadius, aMinorRadius);
+  const gp_Pnt aLeft  = ElSLib::TorusValue(aULeft, 0.0, aPosition, aMajorRadius, aMinorRadius);
   const gp_Pnt aRight = ElSLib::TorusValue(aURight, 0.0, aPosition, aMajorRadius, aMinorRadius);
   EXPECT_GT(aLeft.X(), 0.0);
   EXPECT_LT(aRight.X(), 0.0);
@@ -55,7 +53,7 @@ TEST(ElSLib_Test, TorusPreservesSmallNonzeroComponentsNearAxes)
   EXPECT_DOUBLE_EQ(aD0.Z(), aRight.Z());
 
   const double aRadius = aMajorRadius + aMinorRadius;
-  const gp_Vec aDU = ElSLib::TorusDN(aURight, 0.0, aPosition, aMajorRadius, aMinorRadius, 1, 0);
+  const gp_Vec aDU     = ElSLib::TorusDN(aURight, 0.0, aPosition, aMajorRadius, aMinorRadius, 1, 0);
   EXPECT_NE(aDU.Y(), 0.0);
   EXPECT_DOUBLE_EQ(aDU.Y(), aRadius * std::cos(aURight));
 
@@ -86,9 +84,7 @@ TEST(ElSLib_Test, TorusPreservesSmallNonzeroComponentsNearAxes)
 
 TEST(ElSLib_Test, TorusD3MatchesDN)
 {
-  const gp_Ax3 aPosition(gp_Pnt(1.0, -2.0, 3.0),
-                         gp_Dir(0.0, 0.0, 1.0),
-                         gp_Dir(1.0, 0.0, 0.0));
+  const gp_Ax3 aPosition(gp_Pnt(1.0, -2.0, 3.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0));
   const double aMajorRadius = 7.0;
   const double aMinorRadius = 1.25;
   const double aU           = 0.37;
