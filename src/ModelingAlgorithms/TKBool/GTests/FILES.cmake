@@ -3,6 +3,7 @@ set(OCCT_TKBool_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKBool_GTests_FILES
   BRepAlgo_AsDes_Test.cxx
+  GeomFill_Sweep_ErrorOnSurface_Test.cxx
   BRepAlgoAPI_Cut_Test.cxx
   BRepAlgoAPI_Fuse_Test.cxx
   BRepAlgo_Image_Test.cxx
