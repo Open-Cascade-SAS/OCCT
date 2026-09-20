@@ -1,6 +1,4 @@
-// Created by: Eugeny MALTCHIKOV
-// Created on: 2019-04-17
-// Copyright (c) 2019 OPEN CASCADE SAS
+// Copyright (c) 2019-2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -19,6 +17,10 @@
 #include <BVH_Box.hxx>
 #include <BVH_Ray.hxx>
 #include <BVH_Types.hxx>
+
+#include <algorithm>
+#include <cmath>
+#include <limits>
 
 //! Defines a set of static methods operating with points and bounding boxes.
 //! \tparam T Numeric data type
@@ -135,9 +137,15 @@ private: //! @name Internal helpers for point-triangle projection
   {
     if (thePrjState != nullptr)
     {
-      *thePrjState  = BVH_PrjStateInTriangle_VERTEX;
+      *thePrjState = BVH_PrjStateInTriangle_VERTEX;
+    }
+    if (theFirstNode != nullptr)
+    {
       *theFirstNode = theVertexIndex;
-      *theLastNode  = theVertexIndex;
+    }
+    if (theLastNode != nullptr)
+    {
+      *theLastNode = theVertexIndex;
     }
   }
 
@@ -150,9 +158,15 @@ private: //! @name Internal helpers for point-triangle projection
   {
     if (thePrjState != nullptr)
     {
-      *thePrjState  = BVH_PrjStateInTriangle_EDGE;
+      *thePrjState = BVH_PrjStateInTriangle_EDGE;
+    }
+    if (theFirstNode != nullptr)
+    {
       *theFirstNode = theStartVertex;
-      *theLastNode  = theEndVertex;
+    }
+    if (theLastNode != nullptr)
+    {
+      *theLastNode = theEndVertex;
     }
   }
 
@@ -162,8 +176,123 @@ private: //! @name Internal helpers for point-triangle projection
                                  T                theDot1,
                                  T                theDot2)
   {
-    T aT = theDot1 / (theDot1 + theDot2);
-    return theEdgeStart + theEdge * aT;
+    const T aParameter = theDot1 / (theDot1 + theDot2);
+    return theEdgeStart + theEdge * aParameter;
+  }
+
+  //! Computes square distance between two points.
+  static T squareDistance(const BVH_VecNt& thePoint1, const BVH_VecNt& thePoint2)
+  {
+    const BVH_VecNt aDelta = thePoint1 - thePoint2;
+    return aDelta.Dot(aDelta);
+  }
+
+  //! Computes area-weighted coordinates using exterior products.
+  //! This form avoids subtraction of nearly equal squared dot products for thin triangles.
+  static void triangleCoordinates(const BVH_VecNt& theAB,
+                                  const BVH_VecNt& theAC,
+                                  const BVH_VecNt& theAP,
+                                  T&               theNorm,
+                                  T&               theWeightB,
+                                  T&               theWeightC)
+  {
+    theNorm = theWeightB = theWeightC = T(0);
+    for (int aFirst = 0; aFirst < N; ++aFirst)
+    {
+      for (int aSecond = aFirst + 1; aSecond < N; ++aSecond)
+      {
+        const T anArea = theAB[aFirst] * theAC[aSecond] - theAB[aSecond] * theAC[aFirst];
+        theNorm += anArea * anArea;
+        theWeightB +=
+          (theAP[aFirst] * theAC[aSecond] - theAP[aSecond] * theAC[aFirst]) * anArea;
+        theWeightC +=
+          (theAB[aFirst] * theAP[aSecond] - theAB[aSecond] * theAP[aFirst]) * anArea;
+      }
+    }
+  }
+
+  //! Computes closest point for a numerically thin or degenerate triangle.
+  //! Edge projections cover collapsed triangles; exterior-product coordinates are used
+  //! when an interior projection is still numerically resolvable.
+  static BVH_VecNt projectToThinTriangle(const BVH_VecNt&        thePoint,
+                                         const BVH_VecNt&        theNode0,
+                                         const BVH_VecNt&        theNode1,
+                                         const BVH_VecNt&        theNode2,
+                                         BVH_PrjStateInTriangle* thePrjState,
+                                         int*                    theFirstNode,
+                                         int*                    theLastNode)
+  {
+    const BVH_VecNt* aNodes[] = {&theNode0, &theNode1, &theNode2};
+
+    BVH_VecNt                aClosest  = theNode0;
+    T                        aDistance = squareDistance(thePoint, theNode0);
+    BVH_PrjStateInTriangle   aPrjState = BVH_PrjStateInTriangle_VERTEX;
+    int                      aFirstNode = 0;
+    int                      aLastNode  = 0;
+
+    for (int aSide = 0; aSide < 3; ++aSide)
+    {
+      const int       aNext         = (aSide + 1) % 3;
+      const BVH_VecNt aEdge         = *aNodes[aNext] - *aNodes[aSide];
+      const T         aSquareLength = aEdge.Dot(aEdge);
+      const T         aParameter =
+        aSquareLength > T(0)
+          ? std::clamp((thePoint - *aNodes[aSide]).Dot(aEdge) / aSquareLength, T(0), T(1))
+          : T(0);
+      const BVH_VecNt aCandidate         = *aNodes[aSide] + aEdge * aParameter;
+      const T         aCandidateDistance = squareDistance(thePoint, aCandidate);
+      if (aCandidateDistance < aDistance)
+      {
+        aClosest  = aCandidate;
+        aDistance = aCandidateDistance;
+        if (aParameter == T(0) || aParameter == T(1))
+        {
+          aPrjState  = BVH_PrjStateInTriangle_VERTEX;
+          aFirstNode = aLastNode = aParameter == T(0) ? aSide : aNext;
+        }
+        else
+        {
+          aPrjState  = BVH_PrjStateInTriangle_EDGE;
+          aFirstNode = aSide;
+          aLastNode  = aNext;
+        }
+      }
+    }
+
+    const BVH_VecNt aAB = theNode1 - theNode0;
+    const BVH_VecNt aAC = theNode2 - theNode0;
+    const BVH_VecNt aAP = thePoint - theNode0;
+    T               aNorm;
+    T               aWeightB;
+    T               aWeightC;
+    triangleCoordinates(aAB, aAC, aAP, aNorm, aWeightB, aWeightC);
+    if (aNorm > T(0) && aWeightB > T(0) && aWeightC > T(0) && aWeightB + aWeightC < aNorm)
+    {
+      const BVH_VecNt aCandidate =
+        theNode0 + aAB * (aWeightB / aNorm) + aAC * (aWeightC / aNorm);
+      if (squareDistance(thePoint, aCandidate) <= aDistance)
+      {
+        aClosest  = aCandidate;
+        aPrjState = BVH_PrjStateInTriangle_INNER;
+      }
+    }
+
+    if (thePrjState != nullptr)
+    {
+      *thePrjState = aPrjState;
+    }
+    if (aPrjState != BVH_PrjStateInTriangle_INNER)
+    {
+      if (theFirstNode != nullptr)
+      {
+        *theFirstNode = aFirstNode;
+      }
+      if (theLastNode != nullptr)
+      {
+        *theLastNode = aLastNode;
+      }
+    }
+    return aClosest;
   }
 
 public: //! @name Point-Triangle Square distance
@@ -218,9 +347,51 @@ public: //! @name Point-Triangle Square distance
       return theNode2;
     }
 
-    // Compute barycentric coordinates for edge/interior tests
+    // Barycentric weights use differences of products. Detect cancellation before
+    // the edge-region tests, where an unreliable sign can misclassify a thin triangle.
     const T aACdotBP = aAC.Dot(aBP);
-    const T aVC      = aABdotAP * aACdotBP + aBAdotBP * aACdotAP;
+    const T aABdotCP = aAB.Dot(aCP);
+
+    const T aVC1 = aABdotAP * aACdotBP;
+    const T aVC2 = aBAdotBP * aACdotAP;
+    const T aVA1 = aBAdotBP * aCAdotCP;
+    const T aVA2 = aABdotCP * aACdotBP;
+    const T aVB1 = aABdotCP * aACdotAP;
+    const T aVB2 = aABdotAP * aCAdotCP;
+
+    const T aVC   = aVC1 + aVC2;
+    const T aVA   = aVA1 - aVA2;
+    const T aVB   = aVB1 + aVB2;
+    const T aNorm = aVA + aVB + aVC;
+
+    const T aVCProducts = std::abs(aVC1) + std::abs(aVC2);
+    const T aVAProducts = std::abs(aVA1) + std::abs(aVA2);
+    const T aVBProducts = std::abs(aVB1) + std::abs(aVB2);
+    const T aProducts   = aVCProducts + aVAProducts + aVBProducts;
+
+    // Each dot product uses approximately 2*N operations; account also for
+    // the products and summations forming the barycentric weights.
+    constexpr T THE_ERROR_FACTOR = T(2 * N + 3) * std::numeric_limits<T>::epsilon();
+    constexpr T THE_ROUNDOFF     = THE_ERROR_FACTOR / (T(1) - THE_ERROR_FACTOR);
+
+    // The normalization can still be well above its roundoff bound while an
+    // individual barycentric weight loses significant digits through cancellation.
+    // In that case use exterior-product coordinates, which are substantially more
+    // stable for thin triangles.
+    const T aCancellationLimit = std::sqrt(std::numeric_limits<T>::epsilon());
+    if (aNorm <= THE_ROUNDOFF * aProducts
+        || std::abs(aVA) <= aCancellationLimit * aVAProducts
+        || std::abs(aVB) <= aCancellationLimit * aVBProducts
+        || std::abs(aVC) <= aCancellationLimit * aVCProducts)
+    {
+      return projectToThinTriangle(thePoint,
+                                   theNode0,
+                                   theNode1,
+                                   theNode2,
+                                   thePrjState,
+                                   theNumberOfFirstNode,
+                                   theNumberOfLastNode);
+    }
 
     // Check if P is in edge region of AB
     if (aVC <= T(0) && aABdotAP > T(0) && aBAdotBP > T(0))
@@ -229,17 +400,12 @@ public: //! @name Point-Triangle Square distance
       return ProjectToEdge(theNode0, aAB, aABdotAP, aBAdotBP);
     }
 
-    const T aABdotCP = aAB.Dot(aCP);
-    const T aVA      = aBAdotBP * aCAdotCP - aABdotCP * aACdotBP;
-
     // Check if P is in edge region of BC
     if (aVA <= T(0) && aBCdotBP > T(0) && aCBdotCP > T(0))
     {
       SetEdgeState(thePrjState, theNumberOfFirstNode, theNumberOfLastNode, 1, 2);
       return ProjectToEdge(theNode1, aBC, aBCdotBP, aCBdotCP);
     }
-
-    const T aVB = aABdotCP * aACdotAP + aABdotAP * aCAdotCP;
 
     // Check if P is in edge region of CA
     if (aVB <= T(0) && aACdotAP > T(0) && aCAdotCP > T(0))
@@ -248,15 +414,16 @@ public: //! @name Point-Triangle Square distance
       return ProjectToEdge(theNode0, aAC, aACdotAP, aCAdotCP);
     }
 
-    // P is inside triangle - compute barycentric coordinates
-    const T aNorm = aVA + aVB + aVC;
-
-    // Handle degenerate triangle (zero or near-zero area)
-    if (aNorm
-        <= std::numeric_limits<T>::epsilon() * (std::abs(aVA) + std::abs(aVB) + std::abs(aVC)))
+    // If roundoff produced inconsistent barycentric signs, use the robust path.
+    if (aVA <= T(0) || aVB <= T(0) || aVC <= T(0))
     {
-      SetVertexState(thePrjState, theNumberOfFirstNode, theNumberOfLastNode, 0);
-      return (theNode0 + theNode1 + theNode2) / T(3);
+      return projectToThinTriangle(thePoint,
+                                   theNode0,
+                                   theNode1,
+                                   theNode2,
+                                   thePrjState,
+                                   theNumberOfFirstNode,
+                                   theNumberOfLastNode);
     }
 
     if (thePrjState != nullptr)
@@ -264,7 +431,8 @@ public: //! @name Point-Triangle Square distance
       *thePrjState = BVH_PrjStateInTriangle_INNER;
     }
 
-    return (theNode0 * aVA + theNode1 * aVB + theNode2 * aVC) / aNorm;
+    // aVB and aVC are barycentric weights of nodes 1 and 2 respectively.
+    return theNode0 + aAB * (aVB / aNorm) + aAC * (aVC / aNorm);
   }
 
   //! Computes square distance between point and triangle

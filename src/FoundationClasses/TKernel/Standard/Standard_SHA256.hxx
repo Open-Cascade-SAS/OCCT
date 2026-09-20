@@ -56,23 +56,23 @@ public:
   };
 
   //! Construct an empty calculation.
-  Standard_EXPORT Standard_SHA256();
+  Standard_EXPORT Standard_SHA256() noexcept;
 
   //! Append bytes.
   //! @return false for a null non-empty block or an input length overflow
-  [[nodiscard]] Standard_EXPORT bool Append(const void* theData, size_t theSize);
+  [[nodiscard]] Standard_EXPORT bool Append(const void* theData, size_t theSize) noexcept;
 
   //! Finish the calculation without changing accumulated state.
   //! @return false if the total input length cannot be represented by SHA-256
-  [[nodiscard]] Standard_EXPORT bool Finish(Digest& theDigest) const;
+  [[nodiscard]] Standard_EXPORT bool Finish(Digest& theDigest) const noexcept;
 
   //! Calculate one complete byte sequence.
   [[nodiscard]] Standard_EXPORT static bool Hash(const void* theData,
                                                  size_t      theSize,
-                                                 Digest&     theDigest);
+                                                 Digest&     theDigest) noexcept;
 
 private:
-  Standard_EXPORT void processBlock(const uint8_t* theBlock);
+  void processBlock(const uint8_t* theBlock) noexcept;
 
   std::array<uint32_t, 8> myState;
   std::array<uint8_t, 64> myBuffer{};

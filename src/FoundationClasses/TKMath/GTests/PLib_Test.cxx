@@ -527,3 +527,46 @@ TEST_F(PLibTest, JacobiParameters)
   EXPECT_GT(aNbGaussPoints, 0);
   EXPECT_GT(aWorkDegree, 0);
 }
+
+TEST_F(PLibTest, FirstDerivativeAcrossComponentDimensions)
+{
+  for (const int aDimension : {1, 3, 4, 15, 16, 24, 84})
+  {
+    for (const int aDegree : {0, 1, 3, 8, 25})
+    {
+      NCollection_Array1<double> aCoefficients(0, (aDegree + 1) * aDimension - 1);
+      NCollection_Array1<double> aResult(0, 2 * aDimension - 1);
+      for (size_t anIndex = 0; anIndex < aCoefficients.Size(); ++anIndex)
+      {
+        aCoefficients.ChangeAt(anIndex) = double(int(anIndex % 17) - 8) / 16.0;
+      }
+      for (const double aParameter : {-1.0, -0.25, 0.0, 0.5, 1.0})
+      {
+        PLib::EvalPolynomial(aParameter,
+                             1,
+                             aDegree,
+                             aDimension,
+                             aCoefficients.First(),
+                             aResult.ChangeFirst());
+        for (int aComponent = 0; aComponent < aDimension; ++aComponent)
+        {
+          long double aValue      = 0.0L;
+          long double aDerivative = 0.0L;
+          for (int aPower = aDegree; aPower >= 0; --aPower)
+          {
+            aValue = aValue * aParameter + aCoefficients.At(aPower * aDimension + aComponent);
+            if (aPower > 0)
+            {
+              aDerivative =
+                aDerivative * aParameter
+                + aPower
+                    * static_cast<long double>(aCoefficients.At(aPower * aDimension + aComponent));
+            }
+          }
+          EXPECT_NEAR(aResult.At(aComponent), double(aValue), 1.e-12);
+          EXPECT_NEAR(aResult.At(aDimension + aComponent), double(aDerivative), 1.e-11);
+        }
+      }
+    }
+  }
+}

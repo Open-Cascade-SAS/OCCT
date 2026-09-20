@@ -22,6 +22,7 @@
 #include <NCollection_Array1.hxx>
 
 #include <gtest/gtest.h>
+#include <cmath>
 
 namespace
 {
@@ -973,6 +974,87 @@ TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_VGreaterU)
         << "DifferentDeg V>U D1 tanU X mismatch at u=" << u << ", v=" << v;
       EXPECT_NEAR(aCacheTanV.X(), aDirectTanV.X(), THE_TOLERANCE)
         << "DifferentDeg V>U D1 tanV X mismatch at u=" << u << ", v=" << v;
+    }
+  }
+}
+
+TEST_F(BSplSLib_CacheTest, RationalD1AsymmetricDegreesAndWeightScale)
+{
+  for (const int aUDegree : {1, 2, 5})
+  {
+    for (const int aVDegree : {1, 3, 5})
+    {
+      for (const double aWeightScale : {1.e-6, 1.0, 1.e6})
+      {
+        SCOPED_TRACE(::testing::Message() << aUDegree << "," << aVDegree << "," << aWeightScale);
+        NCollection_Array2<gp_Pnt> aPoles(1, aUDegree + 1, 1, aVDegree + 1);
+        NCollection_Array2<double> aWeights(1, aUDegree + 1, 1, aVDegree + 1);
+        for (int aUIndex = 1; aUIndex <= aPoles.UpperRow(); ++aUIndex)
+        {
+          for (int aVIndex = 1; aVIndex <= aPoles.UpperCol(); ++aVIndex)
+          {
+            aPoles(aUIndex, aVIndex)   = gp_Pnt(aUIndex, aVIndex, std::sin(aUIndex + 2.0 * aVIndex));
+            aWeights(aUIndex, aVIndex) = aWeightScale * (1.0 + 0.1 * aUIndex * aVIndex);
+          }
+        }
+        NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+        aUKnots(1) = 2.0;
+        aUKnots(2) = 5.0;
+        aVKnots(1) = -3.0;
+        aVKnots(2) = 7.0;
+        NCollection_Array1<int> aUMults(1, 2), aVMults(1, 2);
+        aUMults.Init(aUDegree + 1);
+        aVMults.Init(aVDegree + 1);
+        NCollection_Array1<double> aUFlat(2 * (aUDegree + 1));
+        NCollection_Array1<double> aVFlat(2 * (aVDegree + 1));
+        createFlatKnots(aUKnots, aUMults, aUFlat);
+        createFlatKnots(aVKnots, aVMults, aVFlat);
+        BSplSLib_Cache aCache(aUDegree, false, aUFlat, aVDegree, false, aVFlat, &aWeights);
+        aCache.BuildCache(3.5, 2.0, aUFlat, aVFlat, aPoles, &aWeights);
+        for (const double aU : {2.0, 2.3, 3.5, 4.8, 5.0})
+        {
+          for (const double aV : {-3.0, -2.7, 2.0, 6.8, 7.0})
+          {
+            gp_Pnt aExpectedPoint;
+            gp_Vec aExpectedU, aExpectedV;
+            BSplSLib::D1(aU,
+                         aV,
+                         0,
+                         0,
+                         aPoles,
+                         &aWeights,
+                         aUKnots,
+                         aVKnots,
+                         &aUMults,
+                         &aVMults,
+                         aUDegree,
+                         aVDegree,
+                         true,
+                         true,
+                         false,
+                         false,
+                         aExpectedPoint,
+                         aExpectedU,
+                         aExpectedV);
+            for (const bool aLocal : {false, true})
+            {
+              gp_Pnt aPoint;
+              gp_Vec aTangentU, aTangentV;
+              if (aLocal)
+              {
+                aCache.D1Local((aU - 3.5) / 1.5, (aV - 2.0) / 5.0, aPoint, aTangentU, aTangentV);
+              }
+              else
+              {
+                aCache.D1(aU, aV, aPoint, aTangentU, aTangentV);
+              }
+              EXPECT_LE(aPoint.Distance(aExpectedPoint), THE_TOLERANCE);
+              EXPECT_LE((aTangentU - aExpectedU).Magnitude(), THE_TOLERANCE);
+              EXPECT_LE((aTangentV - aExpectedV).Magnitude(), THE_TOLERANCE);
+            }
+          }
+        }
+      }
     }
   }
 }

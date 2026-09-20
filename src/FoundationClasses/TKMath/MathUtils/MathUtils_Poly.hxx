@@ -16,9 +16,11 @@
 
 #include <MathUtils_Core.hxx>
 
-#include <cmath>
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
+#include <limits>
 
 //! Modern math solver utilities.
 namespace MathUtils
@@ -42,6 +44,35 @@ inline double EvalPoly(const double* theCoeffs, int theDegree, double theX)
     aResult = aResult * theX + theCoeffs[i];
   }
   return aResult;
+}
+
+//! Evaluate an ascending-coefficient polynomial with compensated Horner arithmetic.
+//! FMA recovers each product error; an error-free two-sum recovers each addition
+//! error. Their Horner accumulation corrects cancellation in the ordinary value.
+//! The result remains double precision; overflow/underflow are not compensated.
+//! @param theCoeffs coefficient array (constant term first)
+//! @param theDegree nonnegative polynomial degree
+//! @param theX finite evaluation point
+//! @return corrected P(theX), or NaN for an invalid pointer, degree or point
+inline double EvalPolyCompensated(const double* theCoeffs, int theDegree, double theX)
+{
+  if (theCoeffs == nullptr || theDegree < 0 || !std::isfinite(theX))
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  double aValue      = theCoeffs[theDegree];
+  double aCorrection = 0;
+  for (int i = theDegree - 1; i >= 0; --i)
+  {
+    const double aProduct      = aValue * theX;
+    const double aProductError = std::fma(aValue, theX, -aProduct);
+    const double aSum          = aProduct + theCoeffs[i];
+    const double aPart         = aSum - aProduct;
+    const double aSumError     = (aProduct - (aSum - aPart)) + (theCoeffs[i] - aPart);
+    aCorrection                = std::fma(aCorrection, theX, aProductError + aSumError);
+    aValue                     = aSum;
+  }
+  return aValue + aCorrection;
 }
 
 //! Evaluate polynomial and its derivative using Horner's method.

@@ -18,6 +18,7 @@
 
 #include <gtest/gtest.h>
 
+#include <atomic>
 #include <cmath>
 #include <random>
 
@@ -139,6 +140,74 @@ private:
   NCollection_Array2<double>&       myResult;
   int                               mySize;
 };
+
+//! Restore process-wide dispatch settings after each thread-limit test.
+class OSD_ParallelLimitTest : public testing::Test
+{
+protected:
+  //! Select the OCCT dispatcher and restrict its default launch to the caller.
+  void SetUp() override;
+  //! Restore the pool limit and dispatcher selected by the application.
+  void TearDown() override;
+
+private:
+  int  myNbThreads = 1;
+  bool myUseOcct   = false;
+};
+
+//=================================================================================================
+
+void OSD_ParallelLimitTest::SetUp()
+{
+  myNbThreads = OSD_ThreadPool::DefaultPool()->NbDefaultThreadsToLaunch();
+  myUseOcct   = OSD_Parallel::ToUseOcctThreads();
+  OSD_ThreadPool::DefaultPool()->SetNbDefaultThreadsToLaunch(1);
+  OSD_Parallel::SetUseOcctThreads(true);
+}
+
+//=================================================================================================
+
+void OSD_ParallelLimitTest::TearDown()
+{
+  OSD_ThreadPool::DefaultPool()->SetNbDefaultThreadsToLaunch(myNbThreads);
+  OSD_Parallel::SetUseOcctThreads(myUseOcct);
+}
+
+//=================================================================================================
+
+//! Check reservations without depending on worker wake-up timing.
+class ThreadReservationCheck
+{
+public:
+  //! Borrow the pool and the shared test result.
+  ThreadReservationCheck(OSD_ThreadPool& thePool, std::atomic<bool>& theIsRespected);
+  //! A caller-only outer loop must leave every pool worker available.
+  void operator()(const int) const;
+
+private:
+  OSD_ThreadPool&    myPool;
+  std::atomic<bool>& myIsRespected;
+};
+
+//=================================================================================================
+
+ThreadReservationCheck::ThreadReservationCheck(OSD_ThreadPool&    thePool,
+                                               std::atomic<bool>& theIsRespected)
+    : myPool(thePool),
+      myIsRespected(theIsRespected)
+{
+}
+
+//=================================================================================================
+
+void ThreadReservationCheck::operator()(const int) const
+{
+  OSD_ThreadPool::Launcher aReservation(myPool, myPool.NbThreads());
+  if (aReservation.NbThreads() != myPool.NbThreads())
+  {
+    myIsRespected.store(false, std::memory_order_relaxed);
+  }
+}
 
 } // namespace
 
@@ -269,4 +338,18 @@ TEST(OSD_ParallelTest, OCC29935_MatrixMultiplyParallelMatchesSequential)
       }
     }
   }
+}
+
+//=================================================================================================
+
+TEST_F(OSD_ParallelLimitTest, IndexedLoopHonorsDefaultThreadLimit)
+{
+  const auto& aPool = OSD_ThreadPool::DefaultPool();
+  if (aPool->NbThreads() < 2)
+  {
+    GTEST_SKIP() << "The pool has no worker thread to reserve.";
+  }
+  std::atomic<bool> aLimitRespected{true};
+  OSD_Parallel::For(0, 2, ThreadReservationCheck(*aPool, aLimitRespected));
+  EXPECT_TRUE(aLimitRespected.load(std::memory_order_relaxed));
 }

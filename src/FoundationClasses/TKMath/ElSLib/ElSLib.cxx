@@ -14,8 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620
-
 #ifndef No_Exception
   #define No_Exception
 #endif
@@ -142,25 +140,6 @@ gp_Pnt ElSLib::TorusValue(const double  U,
   double        A3   = MinorRadius * sin(V);
   double        A1   = R * cos(U);
   double        A2   = R * sin(U);
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X() + PLoc.X(),
                 A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y() + PLoc.Y(),
                 A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z() + PLoc.Z());
@@ -382,9 +361,6 @@ gp_Vec ElSLib::TorusDN(const double  U,
   const gp_XYZ& YDir = Pos.YDirection().XYZ();
   const gp_XYZ& ZDir = Pos.Direction().XYZ();
   double        A1, A2, A3, X = 0, Y = 0, Z = 0;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 End
   if (Nv == 0)
   {
     double R = MajorRadius + MinorRadius * cos(V);
@@ -398,17 +374,6 @@ gp_Vec ElSLib::TorusDN(const double  U,
       A1 = -R * CosU;
       A2 = -R * SinU;
     }
-    //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-    if (std::abs(A1) <= eps)
-    {
-      A1 = 0.;
-    }
-
-    if (std::abs(A2) <= eps)
-    {
-      A2 = 0.;
-    }
-    //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
     X = A1 * XDir.X() + A2 * YDir.X();
     Y = A1 * XDir.Y() + A2 * YDir.Y();
     Z = A1 * XDir.Z() + A2 * YDir.Z();
@@ -435,22 +400,6 @@ gp_Vec ElSLib::TorusDN(const double  U,
       A2 = -RCosV * SinU;
       A3 = -RSinV;
     }
-    //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-    if (std::abs(A1) <= eps)
-    {
-      A1 = 0.;
-    }
-
-    if (std::abs(A2) <= eps)
-    {
-      A2 = 0.;
-    }
-
-    if (std::abs(A3) <= eps)
-    {
-      A3 = 0.;
-    }
-    //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
     X = A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X();
     Y = A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y();
     Z = A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z();
@@ -468,17 +417,6 @@ gp_Vec ElSLib::TorusDN(const double  U,
       double RSinV = MinorRadius * sin(V);
       A1           = RSinV * SinU;
       A2           = -RSinV * CosU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
-
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
       Z = A1 * XDir.Z() + A2 * YDir.Z();
@@ -488,17 +426,6 @@ gp_Vec ElSLib::TorusDN(const double  U,
       double RCosV = MinorRadius * cos(V);
       A1           = RCosV * CosU;
       A2           = RCosV * SinU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
-
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
       Z = A1 * XDir.Z() + A2 * YDir.Z();
@@ -508,17 +435,6 @@ gp_Vec ElSLib::TorusDN(const double  U,
       double RCosV = MinorRadius * cos(V);
       A1           = RCosV * SinU;
       A2           = -RCosV * CosU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
-
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
       Z = A1 * XDir.Z() + A2 * YDir.Z();
@@ -534,17 +450,6 @@ gp_Vec ElSLib::TorusDN(const double  U,
       double RSinV = MinorRadius * sin(V);
       A1           = RSinV * CosU;
       A2           = RSinV * SinU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
-
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
       X = A1 * XDir.X() + A2 * YDir.X();
       Y = A1 * XDir.Y() + A2 * YDir.Y();
       Z = A1 * XDir.Z() + A2 * YDir.Z();
@@ -640,24 +545,6 @@ void ElSLib::TorusD0(const double  U,
   double        A3   = MinorRadius * sin(V);
   double        A1   = R * cos(U);
   double        A2   = R * sin(U);
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   P.SetX(A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X() + PLoc.X());
   P.SetY(A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y() + PLoc.Y());
   P.SetZ(A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z() + PLoc.Z());
@@ -830,29 +717,6 @@ void ElSLib::TorusD1(const double  U,
   double        A2   = R * SinU;
   double        A3   = R2 * CosU;
   double        A4   = R2 * SinU;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  if (std::abs(A4) <= eps)
-  {
-    A4 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   P.SetX(A1 * XDir.X() + A2 * YDir.X() + R2 * ZDir.X() + PLoc.X());
   P.SetY(A1 * XDir.Y() + A2 * YDir.Y() + R2 * ZDir.Y() + PLoc.Y());
   P.SetZ(A1 * XDir.Z() + A2 * YDir.Z() + R2 * ZDir.Z() + PLoc.Z());
@@ -1085,39 +949,6 @@ void ElSLib::TorusD2(const double  U,
   double        A4   = R2 * SinU;
   double        A5   = R1 * CosU;
   double        A6   = R1 * SinU;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  if (std::abs(A4) <= eps)
-  {
-    A4 = 0.;
-  }
-
-  if (std::abs(A5) <= eps)
-  {
-    A5 = 0.;
-  }
-
-  if (std::abs(A6) <= eps)
-  {
-    A6 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   double Som1X = A1 * XDir.X() + A2 * YDir.X();
   double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
   double Som1Z = A1 * XDir.Z() + A2 * YDir.Z();
@@ -1462,39 +1293,6 @@ void ElSLib::TorusD3(const double  U,
   double        A4   = R2 * SinU;
   double        A5   = R1 * CosU;
   double        A6   = R1 * SinU;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  if (std::abs(A4) <= eps)
-  {
-    A4 = 0.;
-  }
-
-  if (std::abs(A5) <= eps)
-  {
-    A5 = 0.;
-  }
-
-  if (std::abs(A6) <= eps)
-  {
-    A6 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
   double Som1X = A1 * XDir.X() + A2 * YDir.X();
   double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
   double Som1Z = A1 * XDir.Z() + A2 * YDir.Z();

@@ -713,3 +713,44 @@ TEST(MathRoot_TrigTest, PeriodicRootCountRejectsUnrepresentableSteps)
                                                          false,
                                                          aCount));
 }
+
+//=================================================================================================
+
+TEST(MathRoot_TrigTest, CloseRootsAroundHalfAngleChartPoles)
+{
+  for (const double aDelta : {1.e-10, 1.e-12, 1.e-14})
+  {
+    const double               anE     = -1 + aDelta;
+    const MathRoot::TrigResult aResult = MathRoot::Trigonometric(1, 0, 0, 0, anE);
+    ASSERT_TRUE(aResult.IsDone());
+    ASSERT_EQ(aResult.NbRoots, 4u);
+    // sin^2(x)=1+E preserves the input coefficient's small difference.
+    const double                anAngle    = std::asin(std::sqrt(1 + anE));
+    const std::array<double, 4> anExpected = {anAngle,
+                                              MathUtils::THE_PI - anAngle,
+                                              MathUtils::THE_PI + anAngle,
+                                              2 * MathUtils::THE_PI - anAngle};
+    for (size_t i = 0; i < anExpected.size(); ++i)
+    {
+      EXPECT_NEAR(aResult.Roots[i], anExpected[i], 2.e-15);
+    }
+  }
+}
+
+//=================================================================================================
+
+TEST(MathRoot_TrigTest, InRangeSmallRootsDoNotMakePeriodicRoundTrips)
+{
+  for (const double aValue : {-1.e-10, 1.e-10})
+  {
+    const MathRoot::TrigResult aSine = MathRoot::Trigonometric(0, 0, 0, 1, -aValue, -0.1, 0.1);
+    ASSERT_TRUE(aSine.IsDone());
+    ASSERT_EQ(aSine.NbRoots, 1u);
+    EXPECT_DOUBLE_EQ(aSine.Roots[0], std::asin(aValue));
+    const MathRoot::TrigResult aHomogeneous =
+      MathRoot::Trigonometric(0, 0, -aValue, 1, 0, -0.1, 0.1);
+    ASSERT_TRUE(aHomogeneous.IsDone());
+    ASSERT_EQ(aHomogeneous.NbRoots, 1u);
+    EXPECT_DOUBLE_EQ(aHomogeneous.Roots[0], std::atan(aValue));
+  }
+}

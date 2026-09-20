@@ -352,6 +352,14 @@ public:
     return std::abs(R) >= (0.5 * Precision::Infinite());
   }
 
+  //! Returns True if R may be considered as a finite number.
+  //! A value is finite if it is not NaN and is not considered
+  //! infinite by Precision::IsInfinite().
+  static inline bool IsFinite(const double R)
+  {
+    return !std::isnan(R) && !Precision::IsInfinite(R);
+  }
+
   //! Returns True if R may be considered as a positive
   //! infinite number. Currently R > 1e100
   static constexpr bool IsPositiveInfinite(const double R)

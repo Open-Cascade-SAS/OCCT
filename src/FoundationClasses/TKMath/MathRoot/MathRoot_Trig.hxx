@@ -17,12 +17,14 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include <MathUtils_Poly.hxx>
 #include <MathRoot_Utils.hxx>
-#include <MathPoly_Quartic.hxx>
+#include <MathPoly_Bounded.hxx>
 #include <Precision.hxx>
 
-#include <cmath>
 #include <algorithm>
+#include <array>
+#include <cmath>
 
 namespace MathRoot
 {
@@ -43,15 +45,6 @@ struct TrigResult
 
 namespace Utils
 {
-
-//! Iteration cap preventing unbounded trigonometric root refinement.
-inline constexpr uint32_t THE_TRIG_REFINEMENT_MAX_ITERATIONS = 20;
-
-//! Step tolerance terminating trigonometric root refinement.
-inline constexpr double THE_TRIG_REFINEMENT_STEP_TOLERANCE = 1.0e-14;
-
-//! Maximum Newton or Halley step used to prevent refinement overshoot.
-inline constexpr double THE_TRIG_REFINEMENT_MAX_STEP = 0.5;
 
 //! Inserts a root in ascending order unless an equivalent root is already present.
 inline void AddDistinctTrigRoot(TrigResult& theResult, double theRoot, double theTolerance)
@@ -86,11 +79,14 @@ inline bool MapPeriodicTrigRoot(double  theRoot,
                                 double  theTolerance,
                                 double& theMappedRoot)
 {
-  theRoot += std::floor((theLower - theRoot) / THE_2PI) * THE_2PI;
-  if (theRoot < theLower - theTolerance)
+  // Determine the final turn before translating. Subtracting a period and
+  // adding it back destroys small roots that already lie in the interval.
+  double aTurn = std::floor((theLower - theRoot) / THE_2PI);
+  if (std::fma(aTurn, THE_2PI, theRoot) < theLower - theTolerance)
   {
-    theRoot += THE_2PI;
+    aTurn += 1;
   }
+  theRoot = std::fma(aTurn, THE_2PI, theRoot);
   if (theRoot < theLower)
   {
     theRoot = theLower;
@@ -131,11 +127,12 @@ inline void AddPeriodicTrigRoot(TrigResult& theResult,
 
 //! Solve trigonometric equation: a*cos^2(x) + 2*b*cos(x)*sin(x) + c*cos(x) + d*sin(x) + e = 0.
 //!
-//! Uses half-angle substitution t = tan(x/2) to convert to polynomial:
+//! Uses two bounded half-angle charts (tan(x/2) and cot(x/2)) to avoid
+//! unbounded polynomial roots near PI. In the tangent chart:
 //! - cos(x) = (1-t^2)/(1+t^2)
 //! - sin(x) = 2t/(1+t^2)
 //!
-//! Resulting polynomial is of degree 4, 3, or 2 depending on coefficients.
+//! Each chart produces a polynomial of degree at most 4.
 //! Roots are filtered to lie within [theInfBound, theSupBound].
 //!
 //! @param theA coefficient of cos^2(x)
@@ -276,6 +273,15 @@ inline TrigResult Trigonometric(double theA,
     }
     else
     {
+      if (theE == 0)
+      {
+        // A normal to (C,D) gives the homogeneous roots directly. Forming
+        // phase +/- pi/2 would cancel significant digits near zero.
+        const double anAngle = std::atan2(-theC, theD);
+        Utils::AddPeriodicTrigRoot(aResult, anAngle, aMyBorneInf, anUpper, anAngleTol);
+        Utils::AddPeriodicTrigRoot(aResult, anAngle + THE_PI, aMyBorneInf, anUpper, anAngleTol);
+        return aResult;
+      }
       // c*cos(x) + d*sin(x) = r*cos(x - phase)
       const double aRadius = std::hypot(theC, theD);
       double       aRatio  = -theE / aRadius;
@@ -371,127 +377,75 @@ inline TrigResult Trigonometric(double theA,
       }
     }
 
-    // General case: degree 4 polynomial
-    // t = tan(x/2), then:
-    // ko[0]*t^4 + ko[1]*t^3 + ko[2]*t^2 + ko[3]*t + ko[4] = 0
-    double ko0 = theA - theC + theE;
-    double ko1 = 2.0 * theD - 4.0 * theB;
-    double ko2 = 2.0 * theE - 2.0 * theA;
-    double ko3 = 4.0 * theB + 2.0 * theD;
-    double ko4 = theA + theC + theE;
-
-    MathPoly::PolyResult aPoly = MathPoly::Quartic(ko0, ko1, ko2, ko3, ko4);
-    if (!aPoly.IsDone())
+    // Preserve roots at chart centres and shared endpoints when direct
+    // coefficient combinations suffer cancellation. Compensated Horner
+    // evaluates the same exact stored coefficients with a recovered rounding term.
+    const double aAtZero[3] = {theE, theC, theA};
+    if (MathUtils::EvalPolyCompensated(aAtZero, 2, 1.0) == 0.0)
     {
-      if (aPoly.Status == MathUtils::Status::InfiniteSolutions)
+      Utils::AddPeriodicTrigRoot(aResult, 0.0, aMyBorneInf, anUpper, anAngleTol);
+    }
+    const double aAtPi[3] = {theE, -theC, theA};
+    if (MathUtils::EvalPolyCompensated(aAtPi, 2, 1.0) == 0.0)
+    {
+      Utils::AddPeriodicTrigRoot(aResult, THE_PI, aMyBorneInf, anUpper, anAngleTol);
+    }
+    const double aAtHalfPi[2] = {theE, theD};
+    if (MathUtils::EvalPolyCompensated(aAtHalfPi, 1, 1.0) == 0.0)
+    {
+      Utils::AddPeriodicTrigRoot(aResult, THE_PI / 2.0, aMyBorneInf, anUpper, anAngleTol);
+    }
+    const double aAtThreeHalfPi[2] = {theE, -theD};
+    if (MathUtils::EvalPolyCompensated(aAtThreeHalfPi, 1, 1.0) == 0.0)
+    {
+      Utils::AddPeriodicTrigRoot(aResult, 3.0 * THE_PI / 2.0, aMyBorneInf, anUpper, anAngleTol);
+    }
+
+    // Cover the circle by two bounded half-angle charts. In the first chart
+    // t=tan(x/2), |t|<=1; in the second t=cot(x/2), |t|<=1. Reversing the
+    // polynomial coefficients supplies the second chart. No root tends to
+    // infinity, and a small leading coefficient never discards roots near pi.
+    //
+    // tan chart: [-pi/2, pi/2]       cot chart: [pi/2, 3*pi/2]
+    //            x=2*atan(t)                    x=pi-2*atan(t)
+    //
+    // Ascending coefficients of (1+t*t)^2 * F(2*atan(t)).
+    std::array<double, 5> aCoefficients = {theA + theC + theE,
+                                           4.0 * theB + 2.0 * theD,
+                                           2.0 * (theE - theA),
+                                           2.0 * theD - 4.0 * theB,
+                                           theA - theC + theE};
+    for (int aChart = 0; aChart < 2; ++aChart)
+    {
+      const MathPoly::BoundedResult aRoots = MathPoly::Bounded(aCoefficients.data(), 4, -1, 1);
+      if (!aRoots.IsDone())
       {
-        aResult.InfiniteRoots = true;
-      }
-      else
-      {
-        aResult.Status = aPoly.Status;
-      }
-      return aResult;
-    }
-
-    // NbRoots is bounded by the fixed storage capacity; clamp defensively.
-    aNZer = std::min<size_t>(aPoly.NbRoots, aZer.size());
-    for (size_t i = 0; i < aNZer; ++i)
-    {
-      aZer[i] = aPoly.Roots[i];
-    }
-
-    // Sort roots
-    std::sort(aZer.begin(), aZer.begin() + aNZer);
-  }
-
-  // Convert t values to angles and filter by bounds
-  for (size_t i = 0; i < aNZer; ++i)
-  {
-    double aTeta = 2.0 * std::atan(aZer[i]);
-    if (aZer[i] <= -theEps)
-    {
-      aTeta = THE_2PI - std::abs(aTeta);
-    }
-    double aMappedTeta = 0.0;
-    if (Utils::MapPeriodicTrigRoot(aTeta, aMyBorneInf, anUpper, anAngleTol, aMappedTeta))
-    {
-      aTeta = aMappedTeta;
-      // Newton refinement with Halley's method fallback for double roots
-      auto aRefineRoot = [&](double theX) -> double {
-        for (uint32_t anIter = 0; anIter < Utils::THE_TRIG_REFINEMENT_MAX_ITERATIONS; ++anIter)
+        if (aRoots.Status == MathUtils::Status::InfiniteSolutions)
         {
-          double aCos  = std::cos(theX);
-          double aSin  = std::sin(theX);
-          double aCos2 = aCos * aCos;
-          double aSin2 = aSin * aSin;
-          double aCS   = aCos * aSin;
-
-          double aF  = theA * aCos2 + 2.0 * theB * aCS + theC * aCos + theD * aSin + theE;
-          double aDF = -2.0 * theA * aCS + 2.0 * theB * (aCos2 - aSin2) - theC * aSin + theD * aCos;
-
-          // Check if already converged
-          if (std::abs(aF) < 1.0e-15)
-          {
-            break;
-          }
-
-          double aDelta;
-          if (std::abs(aDF) < 1.0e-10 * (std::abs(aF) + 1.0))
-          {
-            // Near double root: use Halley's method for better convergence
-            // F'' = -2*a*(cos^2-sin^2) - 4*b*cos*sin - c*cos - d*sin
-            double aD2F =
-              -2.0 * theA * (aCos2 - aSin2) - 4.0 * theB * aCS - theC * aCos - theD * aSin;
-            double aDenom = 2.0 * aDF * aDF - aF * aD2F;
-            if (std::abs(aDenom) < 1.0e-30)
-            {
-              // Can't improve further
-              break;
-            }
-            aDelta = 2.0 * aF * aDF / aDenom;
-          }
-          else
-          {
-            // Standard Newton step
-            aDelta = aF / aDF;
-          }
-
-          // Limit step size to avoid overshooting
-          if (std::abs(aDelta) > Utils::THE_TRIG_REFINEMENT_MAX_STEP)
-          {
-            aDelta = (aDelta > 0) ? Utils::THE_TRIG_REFINEMENT_MAX_STEP
-                                  : -Utils::THE_TRIG_REFINEMENT_MAX_STEP;
-          }
-
-          theX -= aDelta;
-
-          if (std::abs(aDelta) < Utils::THE_TRIG_REFINEMENT_STEP_TOLERANCE)
-          {
-            break;
-          }
+          aResult.InfiniteRoots = true;
+          aResult.Status        = MathUtils::Status::OK;
         }
-        return theX;
-      };
-
-      double aTetaRefined = aRefineRoot(aTeta);
-
-      // Check if Newton didn't diverge too far
-      double aDeltaNewton = std::abs(aTetaRefined - aTeta);
-      double aSupmInfs100 = aDelta * 0.01;
-      if (aDeltaNewton <= aSupmInfs100)
-      {
-        aTeta = aTetaRefined;
+        else
+        {
+          aResult.Status = aRoots.Status;
+        }
+        return aResult;
       }
-
-      Utils::AddPeriodicTrigRoot(aResult, aTeta, aMyBorneInf, anUpper, anAngleTol);
+      for (size_t i = 0; i < aRoots.NbRoots; ++i)
+      {
+        const double aRoot = aRoots.Roots[i];
+        // The first chart owns the two shared endpoints. Avoid accepting a
+        // duplicated root solely because of its independent angle rounding.
+        if (aChart == 1 && (aRoot == -1 || aRoot == 1))
+        {
+          continue;
+        }
+        const double anAngle =
+          aChart == 0 ? 2.0 * std::atan(aRoot) : THE_PI - 2.0 * std::atan(aRoot);
+        Utils::AddPeriodicTrigRoot(aResult, anAngle, aMyBorneInf, anUpper, anAngleTol);
+      }
+      std::reverse(aCoefficients.begin(), aCoefficients.end());
     }
-  }
-
-  // Special case: check if PI is a root (when A - C + E = 0)
-  if (aResult.NbRoots < 4 && std::abs(theA - theC + theE) <= theEps)
-  {
-    Utils::AddPeriodicTrigRoot(aResult, THE_PI, aMyBorneInf, anUpper, anAngleTol);
   }
 
   return aResult;

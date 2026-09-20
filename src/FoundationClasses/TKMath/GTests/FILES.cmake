@@ -44,6 +44,7 @@ set(OCCT_TKMath_GTests_FILES
   Convert_TorusToBSplineSurface_Test.cxx
   CSLib_Test.cxx
   ElCLib_Test.cxx
+  ElSLib_Test.cxx
   gp_Ax3_Test.cxx
   gp_Circ_Test.cxx
   gp_Dir_Test.cxx
@@ -98,6 +99,7 @@ set(OCCT_TKMath_GTests_FILES
   MathPoly_Test.cxx
   MathPoly_Comparison_Test.cxx
   MathPoly_Laguerre_Test.cxx
+  MathPoly_Bounded_Test.cxx
   # Poly tests
   Poly_ArrayOfNodes_Test.cxx
   # MathLin tests

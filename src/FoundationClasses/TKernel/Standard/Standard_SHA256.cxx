@@ -31,18 +31,18 @@ constexpr std::array<uint32_t, 64> THE_ROUND_CONSTANTS = {
   0x748f82eeu, 0x78a5636fu, 0x84c87814u, 0x8cc70208u, 0x90befffau, 0xa4506cebu, 0xbef9a3f7u,
   0xc67178f2u};
 
-constexpr uint32_t rotateRight(const uint32_t theValue, const unsigned int theShift)
+constexpr uint32_t rotateRight(const uint32_t theValue, const unsigned int theShift) noexcept
 {
   return (theValue >> theShift) | (theValue << (32u - theShift));
 }
 
-uint32_t readUInt32(const uint8_t* theBytes)
+uint32_t readUInt32(const uint8_t* theBytes) noexcept
 {
   return (static_cast<uint32_t>(theBytes[0]) << 24) | (static_cast<uint32_t>(theBytes[1]) << 16)
          | (static_cast<uint32_t>(theBytes[2]) << 8) | static_cast<uint32_t>(theBytes[3]);
 }
 
-void writeUInt32(const uint32_t theValue, uint8_t* theBytes)
+void writeUInt32(const uint32_t theValue, uint8_t* theBytes) noexcept
 {
   theBytes[0] = static_cast<uint8_t>(theValue >> 24);
   theBytes[1] = static_cast<uint8_t>(theValue >> 16);
@@ -68,7 +68,7 @@ TCollection_AsciiString Standard_SHA256::Digest::ToString() const
 
 //=================================================================================================
 
-Standard_SHA256::Standard_SHA256()
+Standard_SHA256::Standard_SHA256() noexcept
     : myState{0x6a09e667u,
               0xbb67ae85u,
               0x3c6ef372u,
@@ -82,7 +82,7 @@ Standard_SHA256::Standard_SHA256()
 
 //=================================================================================================
 
-bool Standard_SHA256::Append(const void* theData, const size_t theSize)
+bool Standard_SHA256::Append(const void* theData, const size_t theSize) noexcept
 {
   if (theSize == 0)
   {
@@ -141,7 +141,7 @@ bool Standard_SHA256::Append(const void* theData, const size_t theSize)
 
 //=================================================================================================
 
-bool Standard_SHA256::Finish(Digest& theDigest) const
+bool Standard_SHA256::Finish(Digest& theDigest) const noexcept
 {
   if (myByteCount > std::numeric_limits<uint64_t>::max() / 8u)
   {
@@ -180,7 +180,7 @@ bool Standard_SHA256::Finish(Digest& theDigest) const
 
 //=================================================================================================
 
-bool Standard_SHA256::Hash(const void* theData, const size_t theSize, Digest& theDigest)
+bool Standard_SHA256::Hash(const void* theData, const size_t theSize, Digest& theDigest) noexcept
 {
   Standard_SHA256 aHash;
   return aHash.Append(theData, theSize) && aHash.Finish(theDigest);
@@ -188,7 +188,7 @@ bool Standard_SHA256::Hash(const void* theData, const size_t theSize, Digest& th
 
 //=================================================================================================
 
-void Standard_SHA256::processBlock(const uint8_t* theBlock)
+void Standard_SHA256::processBlock(const uint8_t* theBlock) noexcept
 {
   std::array<uint32_t, 64> aWords;
   for (size_t anIndex = 0; anIndex < 16; ++anIndex)
@@ -213,23 +213,28 @@ void Standard_SHA256::processBlock(const uint8_t* theBlock)
   uint32_t aG = myState[6];
   uint32_t aH = myState[7];
 
-  for (size_t anIndex = 0; anIndex < aWords.size(); ++anIndex)
+  const auto aRound = [&](uint32_t& theA, uint32_t theB, uint32_t theC,
+                          uint32_t& theD, uint32_t theE, uint32_t theF,
+                          uint32_t theG, uint32_t& theH, const size_t theIndex) noexcept {
+    const uint32_t aSum1 = rotateRight(theE, 6) ^ rotateRight(theE, 11) ^ rotateRight(theE, 25);
+    const uint32_t aChoice = theG ^ (theE & (theF ^ theG));
+    const uint32_t aTemp1 = theH + aSum1 + aChoice + THE_ROUND_CONSTANTS[theIndex] + aWords[theIndex];
+    const uint32_t aSum0 = rotateRight(theA, 2) ^ rotateRight(theA, 13) ^ rotateRight(theA, 22);
+    const uint32_t aMajority = (theA & theB) | (theC & (theA | theB));
+    theD += aTemp1;
+    theH = aTemp1 + aSum0 + aMajority;
+  };
+  // Rotate the argument roles instead of moving all eight state words each round.
+  for (size_t anIndex = 0; anIndex < aWords.size(); anIndex += 8)
   {
-    const uint32_t aSum1   = rotateRight(aE, 6) ^ rotateRight(aE, 11) ^ rotateRight(aE, 25);
-    const uint32_t aChoice = (aE & aF) ^ (~aE & aG);
-    const uint32_t aTemp1  = aH + aSum1 + aChoice + THE_ROUND_CONSTANTS[anIndex] + aWords[anIndex];
-    const uint32_t aSum0   = rotateRight(aA, 2) ^ rotateRight(aA, 13) ^ rotateRight(aA, 22);
-    const uint32_t aMajority = (aA & aB) ^ (aA & aC) ^ (aB & aC);
-    const uint32_t aTemp2    = aSum0 + aMajority;
-
-    aH = aG;
-    aG = aF;
-    aF = aE;
-    aE = aD + aTemp1;
-    aD = aC;
-    aC = aB;
-    aB = aA;
-    aA = aTemp1 + aTemp2;
+    aRound(aA, aB, aC, aD, aE, aF, aG, aH, anIndex);
+    aRound(aH, aA, aB, aC, aD, aE, aF, aG, anIndex + 1);
+    aRound(aG, aH, aA, aB, aC, aD, aE, aF, anIndex + 2);
+    aRound(aF, aG, aH, aA, aB, aC, aD, aE, anIndex + 3);
+    aRound(aE, aF, aG, aH, aA, aB, aC, aD, anIndex + 4);
+    aRound(aD, aE, aF, aG, aH, aA, aB, aC, anIndex + 5);
+    aRound(aC, aD, aE, aF, aG, aH, aA, aB, anIndex + 6);
+    aRound(aB, aC, aD, aE, aF, aG, aH, aA, anIndex + 7);
   }
 
   myState[0] += aA;

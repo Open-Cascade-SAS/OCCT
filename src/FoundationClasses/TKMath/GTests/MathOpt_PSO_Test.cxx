@@ -389,7 +389,7 @@ TEST(MathOpt_PSOTest, Reproducibility)
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 30;
-  aConfig.MaxIterations = 50;
+  aConfig.MaxIterations = 200;
   aConfig.Tolerance     = 1.0e-6;
 
   auto aResult1 = MathOpt::PSO(aFunc, aLower, aUpper, aConfig);
@@ -703,7 +703,7 @@ TEST(MathOpt_PSOTest, Stats_Reproducibility_FixedSeed)
 
   MathOpt::PSOConfig aConfig;
   aConfig.NbParticles   = 30;
-  aConfig.MaxIterations = 50;
+  aConfig.MaxIterations = 200;
   aConfig.Tolerance     = 1.0e-6;
 
   MathOpt::PSOStats aStats1;
@@ -925,4 +925,73 @@ TEST(MathOpt_PSOTest, BudgetExhaustionRetainsBest)
   EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
   EXPECT_TRUE(aResult.Solution.has_value());
   EXPECT_TRUE(aResult.Value.has_value());
+}
+
+TEST(MathOpt_PSOTest, StagnationIsIndependentOfObjectiveScale)
+{
+  struct ScaledSphere
+  {
+    double Scale;
+
+    bool Value(const math_Vector& theX, double& theValue)
+    {
+      theValue = Scale * (theX.At(0) * theX.At(0) + theX.At(1) * theX.At(1));
+      return true;
+    }
+  };
+
+  math_Vector        aLower(size_t{2}, -5.0), anUpper(size_t{2}, 5.0);
+  MathOpt::PSOConfig aConfig(30, 200, 1.e-10);
+  aConfig.PolishBudgetPerDim = 0;
+  ScaledSphere aReference{1.0};
+  const auto   aResult = MathOpt::PSO(aReference, aLower, anUpper, aConfig);
+  ASSERT_TRUE(aResult.IsDone());
+  for (const int anExponent : {-80, 80})
+  {
+    ScaledSphere aScaled{std::ldexp(1.0, anExponent)};
+    const auto   aScaledResult = MathOpt::PSO(aScaled, aLower, anUpper, aConfig);
+    ASSERT_TRUE(aScaledResult.IsDone());
+    EXPECT_EQ(aScaledResult.NbIterations, aResult.NbIterations);
+    EXPECT_DOUBLE_EQ(aScaledResult.Solution->At(0), aResult.Solution->At(0));
+    EXPECT_DOUBLE_EQ(aScaledResult.Solution->At(1), aResult.Solution->At(1));
+  }
+}
+
+TEST(MathOpt_PSOTest, StrictDomainPreservesEvaluationFailure)
+{
+  PartiallyDefinedFunc aFunc;
+  math_Vector          aLower(size_t{1}, -1.0), anUpper(size_t{1}, 1.0);
+  NCollection_DynamicArray<MathOpt::PSOSeedParticle> aSeeds;
+  aSeeds.Append(MathOpt::PSOSeedParticle(math_Vector(size_t{1}, 0.25)));
+  aSeeds.Append(MathOpt::PSOSeedParticle(math_Vector(size_t{1}, -0.25)));
+  MathOpt::PSOConfig aConfig(2);
+  aConfig.InitMode           = MathOpt::PSOInitMode::SeededOnly;
+  aConfig.AllowPartialDomain = false;
+  const auto aResult         = MathOpt::PSO(aFunc, aLower, anUpper, aConfig, &aSeeds);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::CallbackError);
+  ASSERT_TRUE(aResult.Value);
+  EXPECT_DOUBLE_EQ(*aResult.Value, 0.0);
+  EXPECT_EQ(aResult.NbIterations, 0u);
+}
+
+TEST(MathOpt_PSOTest, ObjectiveOffsetDoesNotCausePrematureStagnation)
+{
+  struct OffsetBooth
+  {
+    bool Value(const math_Vector& theX, double& theValue)
+    {
+      const double a = theX.At(0) + 2.0 * theX.At(1) - 7.0;
+      const double b = 2.0 * theX.At(0) + theX.At(1) - 5.0;
+      theValue       = 1.e8 + a * a + b * b;
+      return true;
+    }
+  } aFunc;
+
+  math_Vector        aLower(size_t{2}, -5.0), anUpper(size_t{2}, 5.0);
+  MathOpt::PSOConfig aConfig(40, 200, 1.e-8);
+  aConfig.PolishBudgetPerDim = 0;
+  const auto aResult         = MathOpt::PSO(aFunc, aLower, anUpper, aConfig);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 1.e-3);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, 1.e-3);
 }

@@ -71,6 +71,78 @@ struct BSplSLib_DataContainer
   double knots2[2 * THE_MAX_DEGREE];
   double ders[48];
 };
+
+//! Adjusts located knot indices to a valid local span.
+//! For a parameter lying on an inner knot, theSide selects the adjacent span:
+//! negative for the left span, non-negative for the right span.
+//! At the knot range boundaries, the only valid adjacent span is selected.
+void selectLocalSpan(const int theSide,
+                     int&      theFirst,
+                     int&      theLast,
+                     const int theFirstKnot,
+                     const int theLastKnot)
+{
+  const int aFirst = theFirst;
+  const int aLast  = theLast;
+
+  // Parameter is located between knots.
+  if (aFirst != aLast)
+  {
+    if (aFirst < theFirstKnot)
+    {
+      theFirst = theFirstKnot;
+      theLast  = theFirstKnot + 1;
+    }
+    else if (aLast > theLastKnot)
+    {
+      theFirst = theLastKnot - 1;
+      theLast  = theLastKnot;
+    }
+    else if (aFirst >= theLastKnot - 1)
+    {
+      theFirst = theLastKnot - 1;
+      theLast  = theLastKnot;
+    }
+    else if (aLast <= theFirstKnot + 1)
+    {
+      theFirst = theFirstKnot;
+      theLast  = theFirstKnot + 1;
+    }
+    else if (aFirst > aLast)
+    {
+      theFirst = aLast - 1;
+      theLast  = aLast;
+    }
+    else
+    {
+      theFirst = aFirst;
+      theLast  = aLast;
+    }
+    return;
+  }
+
+  // Parameter lies exactly on a knot.
+  if (aFirst <= theFirstKnot)
+  {
+    theFirst = theFirstKnot;
+    theLast  = theFirstKnot + 1;
+  }
+  else if (aFirst >= theLastKnot)
+  {
+    theFirst = theLastKnot - 1;
+    theLast  = theLastKnot;
+  }
+  else if (theSide < 0)
+  {
+    theFirst = aFirst - 1;
+    theLast  = aFirst;
+  }
+  else
+  {
+    theFirst = aFirst;
+    theLast  = aFirst + 1;
+  }
+}
 } // namespace
 
 //**************************************************************************
@@ -4147,4 +4219,41 @@ NCollection_Array2<double> BSplSLib::UnitWeights(const int theNbUPoles, const in
   NCollection_Array2<double> aResult(1, theNbUPoles, 1, theNbVPoles);
   aResult.Init(1.0);
   return aResult;
+}
+
+//=================================================================================================
+
+BSplSLib::LocalSpan BSplSLib::SelectLocalSpan(const double                      theParameter,
+                                              const int                         theSide,
+                                              const int                         theLocatedFirst,
+                                              const int                         theLocatedLast,
+                                              const int                         theFirstKnot,
+                                              const int                         theLastKnot,
+                                              const NCollection_Array1<double>& theKnots,
+                                              const bool                        theIsPeriodic)
+{
+  LocalSpan aSpan{theParameter,
+                  theLocatedFirst,
+                  theLocatedLast,
+                  theLocatedFirst == theLocatedLast};
+
+  // At the seam of a periodic surface, use the equivalent boundary
+  // corresponding to the requested evaluation side.
+  if (aSpan.IsKnot && theIsPeriodic
+      && (aSpan.First == theFirstKnot || aSpan.First == theLastKnot))
+  {
+    if (theSide < 0)
+    {
+      aSpan.First = aSpan.Last = theLastKnot;
+      aSpan.Parameter          = theKnots.Value(theLastKnot);
+    }
+    else if (theSide > 0)
+    {
+      aSpan.First = aSpan.Last = theFirstKnot;
+      aSpan.Parameter          = theKnots.Value(theFirstKnot);
+    }
+  }
+
+  selectLocalSpan(theSide, aSpan.First, aSpan.Last, theFirstKnot, theLastKnot);
+  return aSpan;
 }

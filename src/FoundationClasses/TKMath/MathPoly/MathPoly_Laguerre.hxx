@@ -81,7 +81,23 @@ inline bool HasSmallResidual(const double*               theCoefficients,
                   aDerivative,
                   aSecondDerivative,
                   aMagnitude);
-  return IsFinite(aValue) && std::abs(aValue) <= theTolerance * std::max(1.0, aMagnitude);
+  return IsFinite(aValue) && std::isfinite(aMagnitude)
+         && std::abs(aValue) <= theTolerance * aMagnitude;
+}
+
+//! Relative backward error for the final check in the scaled polynomial.
+//! A unit floor would accept nonroots when all Horner terms are small.
+inline bool HasRelativeResidual(const LongCoefficients& theCoefficients,
+                                int                     theDegree,
+                                long double             theRoot,
+                                long double             theTolerance)
+{
+  long double aValue      = 0;
+  long double aDerivative = 0;
+  long double aMagnitude  = 0;
+  Evaluate(theCoefficients, theDegree, theRoot, aValue, aDerivative, aMagnitude);
+  return std::isfinite(aValue) && std::isfinite(aMagnitude)
+         && std::abs(aValue) <= theTolerance * aMagnitude;
 }
 
 inline IterationResult LaguerreIteration(const double*        theCoefficients,
@@ -151,7 +167,7 @@ inline IterationResult LaguerreIteration(const double*        theCoefficients,
       return aResult;
     }
     const double aRootScale = std::max(1.0, std::abs(aRoot));
-    if (std::abs(aValue) <= theTolerance * std::max(1.0, aMagnitude))
+    if (std::abs(aValue) <= theTolerance * aMagnitude)
     {
       IterationResult aCandidate;
       aCandidate.Status       = MathUtils::Status::OK;
@@ -221,8 +237,8 @@ inline bool DeflateReal(double* theCoefficients,
   {
     aMagnitude = aMagnitude * std::abs(theRoot) + std::abs(theCoefficients[anIndex]);
   }
-  if (!std::isfinite(aRemainder)
-      || std::abs(aRemainder) > 32.0 * theTolerance * std::max(1.0, aMagnitude))
+  if (!std::isfinite(aRemainder) || !std::isfinite(aMagnitude)
+      || std::abs(aRemainder) > 32.0 * theTolerance * aMagnitude)
   {
     return false;
   }
@@ -346,10 +362,10 @@ inline bool HasMultiplicity(const double* theCoefficients,
     for (int anIndex = aDegree - 1; anIndex >= 0; --anIndex)
     {
       aValue = aValue * aRoot + aDerivative[static_cast<size_t>(anIndex)];
-      aNorm += std::abs(aDerivative[static_cast<size_t>(anIndex)]);
+      aNorm  = aNorm * std::abs(aRoot) + std::abs(aDerivative[static_cast<size_t>(anIndex)]);
     }
-    if (!std::isfinite(aValue)
-        || std::abs(aValue) > Precision::Computational() * std::max(1.0L, aNorm))
+    if (!std::isfinite(aValue) || !std::isfinite(aNorm)
+        || std::abs(aValue) > Precision::Computational() * aNorm)
     {
       return false;
     }
@@ -489,7 +505,8 @@ inline bool HasComplexMultiplicity(const double*         theCoefficients,
       aMagnitude = aMagnitude * anAbsRoot + std::abs(aDerivative[static_cast<size_t>(anIndex)]);
     }
     if (!std::isfinite(aValue.real()) || !std::isfinite(aValue.imag())
-        || std::abs(aValue) > Precision::Computational() * std::max(1.0L, aMagnitude))
+        || !std::isfinite(aMagnitude)
+        || std::abs(aValue) > Precision::Computational() * aMagnitude)
     {
       return false;
     }
@@ -751,7 +768,7 @@ inline PolyResult Laguerre(const double* theCoefficients,
   {
     const long double aScaledRoot =
       std::scalbn(static_cast<long double>(aResult.Roots[aRootIndex]), -aVariableExponent);
-    if (!Utils::HasSmallResidual(aLongScaled, theDegree, aScaledRoot, 128.0L * theTolerance))
+    if (!Utils::HasRelativeResidual(aLongScaled, theDegree, aScaledRoot, 128.0L * theTolerance))
     {
       aResult.Status = MathUtils::Status::NumericalError;
       return aResult;

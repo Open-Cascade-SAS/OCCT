@@ -37,6 +37,7 @@ set(OCCT_TKernel_GTests_FILES
   OSD_Parallel_Test.cxx
   OSD_Path_Test.cxx
   OSD_PerfMeter_Test.cxx
+  Precision_Test.cxx
   Resource_Manager_Test.cxx
   Quantity_Color_Test.cxx
   Quantity_ColorRGBA_Test.cxx

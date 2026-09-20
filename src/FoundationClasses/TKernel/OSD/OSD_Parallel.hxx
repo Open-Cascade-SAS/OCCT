@@ -16,6 +16,8 @@
 
 #include <OSD_ThreadPool.hxx>
 #include <Standard_Type.hxx>
+
+#include <algorithm>
 #include <memory>
 
 //! @brief Simple tool for code parallelization.
@@ -268,6 +270,7 @@ private:
   //! @endcode
   //! Implementation of framework-dependent functionality should be provided by
   //! forEach_impl function defined in opencascade::parallel namespace.
+  //! The OCCT dispatcher honors the default pool launch limit.
   //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
   //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}"
@@ -303,6 +306,7 @@ public: //! @name public methods
   //!     theFunctor(*anIter);
   //!   }
   //! @endcode
+  //! The OCCT dispatcher honors the default pool launch limit.
   //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
   //! @param theFunctor functor providing an interface "void operator(InputIterator theIter){}"
@@ -319,7 +323,9 @@ public: //! @name public methods
     if (isForceSingleThreadExecution || theNbItems == 1)
     {
       for (InputIterator it(theBegin); it != theEnd; ++it)
+      {
         theFunctor(*it);
+      }
     }
     else
     {
@@ -343,6 +349,7 @@ public: //! @name public methods
   //!     theFunctor(anIter);
   //!   }
   //! @endcode
+  //! The OCCT dispatcher honors the default pool launch limit.
   //! @param theBegin   the first index (inclusive)
   //! @param theEnd     the last  index (exclusive)
   //! @param theFunctor functor providing an interface "void operator(int theIndex){}"
@@ -358,12 +365,15 @@ public: //! @name public methods
     if (isForceSingleThreadExecution || aRange == 1)
     {
       for (int it(theBegin); it != theEnd; ++it)
+      {
         theFunctor(it);
+      }
     }
     else if (ToUseOcctThreads())
     {
       const occ::handle<OSD_ThreadPool>&   aThreadPool = OSD_ThreadPool::DefaultPool();
-      OSD_ThreadPool::Launcher             aPoolLauncher(*aThreadPool, aRange);
+      OSD_ThreadPool::Launcher aPoolLauncher(
+        *aThreadPool, std::min(aRange, aThreadPool->NbDefaultThreadsToLaunch()));
       FunctorWrapperForThreadPool<Functor> aFunctor(theFunctor);
       aPoolLauncher.Perform(theBegin, theEnd, aFunctor);
     }

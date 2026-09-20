@@ -88,3 +88,22 @@ TEST(Standard_SHA256Test, FinishDoesNotConsumeState)
   ASSERT_TRUE(aHash.Finish(aExtended));
   expectDigest("abcdef", 6, aExtended.ToString().ToCString());
 }
+
+TEST(Standard_SHA256Test, PaddingAndBlockBoundaries)
+{
+  std::array<unsigned char, 129> aBytes;
+  for (size_t i = 0; i < aBytes.size(); ++i)
+  {
+    aBytes[i] = static_cast<unsigned char>(i);
+  }
+  expectDigest(aBytes.data(), 55, "463eb28e72f82e0a96c0a4cc53690c571281131f672aa229e0d45ae59b598b59");
+  expectDigest(aBytes.data(), 56, "da2ae4d6b36748f2a318f23e7ab1dfdf45acdc9d049bd80e59de82a60895f562");
+  expectDigest(aBytes.data(), 63, "29af2686fd53374a36b0846694cc342177e428d1647515f078784d69cdb9e488");
+  expectDigest(aBytes.data(), 64, "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108");
+  expectDigest(aBytes.data(), 65, "4bfd2c8b6f1eec7a2afeb48b934ee4b2694182027e6d0fc075074f2fabb31781");
+  expectDigest(aBytes.data(), 119, "da18797ed7c3a777f0847f429724a2d8cd5138e6ed2895c3fa1a6d39d18f7ec6");
+  expectDigest(aBytes.data(), 120, "f52b23db1fbb6ded89ef42a23ce0c8922c45f25c50b568a93bf1c075420bbb7c");
+  expectDigest(aBytes.data(), 127, "92ca0fa6651ee2f97b884b7246a562fa71250fedefe5ebf270d31c546bfea976");
+  expectDigest(aBytes.data(), 128, "471fb943aa23c511f6f72f8d1652d9c880cfa392ad80503120547703e56a2be5");
+  expectDigest(aBytes.data(), 129, "5099c6a56203f9687f7d33f4bfdf576d31dc91f6b695ecea38b2770c87631135");
+}

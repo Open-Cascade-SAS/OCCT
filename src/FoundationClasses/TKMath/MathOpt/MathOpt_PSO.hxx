@@ -24,6 +24,7 @@
 #include <NCollection_DynamicArray.hxx>
 #include <NCollection_LinearVector.hxx>
 
+#include <algorithm>
 #include <cmath>
 #include <optional>
 
@@ -101,11 +102,12 @@ struct PSOConfig : NDimConfig
   double                OmegaMin        = 0.4; //!< Min inertia for LinearDecay
   uint32_t              MinIterations   = 0;   //!< Completed updates before stagnation checks
   std::optional<double> TargetValue;          //!< Early stop if best <= target (nullopt = disabled)
-  double                NoImproveTol   = 0.0; //!< Stagnation tolerance (0 = use Tolerance)
-  uint32_t              NoImproveIters = 10;  //!< Stagnation iteration threshold
-  double   RestartFraction    = 0.0; //!< Fraction of particles to reinitialize (0 = no restarts)
-  uint32_t MaxRestarts        = 0;   //!< Maximum restart count (0 = unlimited when fraction > 0)
-  uint32_t PolishBudgetPerDim = 50;  //!< Max polishing evals per dimension (0 = no polishing)
+  bool                  AllowPartialDomain = true; //!< Accept a best point despite rejected evaluations
+  double                NoImproveTol       = 0.0; //!< Relative current-fitness-spread tolerance (0 = Tolerance)
+  uint32_t              NoImproveIters     = 10;  //!< Stagnation iteration threshold
+  double                RestartFraction    = 0.0; //!< Fraction of particles to reinitialize (0 = none)
+  uint32_t              MaxRestarts        = 0;   //!< Maximum restart count (0 = unlimited)
+  uint32_t              PolishBudgetPerDim = 50;  //!< Max polishing evals per dimension (0 = none)
 
   //! Default constructor.
   PSOConfig()
@@ -272,8 +274,8 @@ VectorResult PSO(Function&                                        theFunc,
   PSOStats                         aLocalStats;
   Utils::CheckedFunction<Function> aCheckedFunc(theFunc);
 
-  auto LowerBound = [&](size_t theIndex) { return theLowerBounds.At(theIndex); };
-  auto UpperBound = [&](size_t theIndex) { return theUpperBounds.At(theIndex); };
+  auto aLowerBound = [&](size_t theIndex) { return theLowerBounds.At(theIndex); };
+  auto aUpperBound = [&](size_t theIndex) { return theUpperBounds.At(theIndex); };
 
   const size_t aSwarmSize = aNbParticles * aNbDims;
   if (aSwarmSize / aNbDims != aNbParticles)
@@ -285,7 +287,6 @@ VectorResult PSO(Function&                                        theFunc,
   NCollection_LinearVector<double>                aVelocities(aSwarmSize, 0.0);
   NCollection_LinearVector<double>                aBestPositions(aSwarmSize, 0.0);
   NCollection_LinearVector<std::optional<double>> aBestValues(aNbParticles, std::nullopt);
-  NCollection_LinearVector<std::optional<double>> aCurrentValues(aNbParticles, std::nullopt);
 
   // Random number generator
   MathUtils::RandomGenerator aRNG(theConfig.Seed);
@@ -295,7 +296,7 @@ VectorResult PSO(Function&                                        theFunc,
   math_Vector aRange(aNbDims);
   for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
   {
-    aRange.ChangeAt(aDimIdx)  = UpperBound(aDimIdx) - LowerBound(aDimIdx);
+    aRange.ChangeAt(aDimIdx)  = aUpperBound(aDimIdx) - aLowerBound(aDimIdx);
     aVelMax.ChangeAt(aDimIdx) = theConfig.VelocityClamp * aRange.At(aDimIdx);
   }
 
@@ -356,12 +357,11 @@ VectorResult PSO(Function&                                        theFunc,
                                 0,
                                 static_cast<int>(aNbDims) - 1);
       std::optional<double>& aBestValue    = aBestValues.ChangeValue(aSeedIdx);
-      std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aSeedIdx);
 
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
       {
         const double aClamped =
-          MathUtils::Clamp(aSeed.Position.At(aDimIdx), LowerBound(aDimIdx), UpperBound(aDimIdx));
+          MathUtils::Clamp(aSeed.Position.At(aDimIdx), aLowerBound(aDimIdx), aUpperBound(aDimIdx));
         aPosition.ChangeAt(aDimIdx) = aClamped;
       }
 
@@ -387,7 +387,6 @@ VectorResult PSO(Function&                                        theFunc,
       double aFunctionValue = 0.0;
       if (aCheckedFunc.Value(aPosition, aFunctionValue))
       {
-        aCurrentValue = aFunctionValue;
         aBestValue    = aFunctionValue;
       }
       ++aLocalStats.NbFunctionEvals;
@@ -414,7 +413,6 @@ VectorResult PSO(Function&                                        theFunc,
                                   0,
                                   static_cast<int>(aNbDims) - 1);
         std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
-        std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
         // Pick a seed to jitter (round-robin)
         const size_t           aSrcIdx = aPartIdx % aSeeded;
         const PSOSeedParticle& aSrc    = theSeeds->Value(aSrcIdx);
@@ -423,15 +421,14 @@ VectorResult PSO(Function&                                        theFunc,
         {
           const double aJitter        = (2.0 * aRNG.NextReal() - 1.0) * 0.1 * aRange.At(aDimIdx);
           aPosition.ChangeAt(aDimIdx) = MathUtils::Clamp(aSrc.Position.At(aDimIdx) + aJitter,
-                                                         LowerBound(aDimIdx),
-                                                         UpperBound(aDimIdx));
+                                                         aLowerBound(aDimIdx),
+                                                         aUpperBound(aDimIdx));
           aVelocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
         }
 
         double aFunctionValue = 0.0;
         if (aCheckedFunc.Value(aPosition, aFunctionValue))
         {
-          aCurrentValue = aFunctionValue;
           aBestValue    = aFunctionValue;
         }
         ++aLocalStats.NbFunctionEvals;
@@ -458,17 +455,15 @@ VectorResult PSO(Function&                                        theFunc,
                               0,
                               static_cast<int>(aNbDims) - 1);
     std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
-    std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
     for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
     {
-      aPosition.ChangeAt(aDimIdx) = LowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
+      aPosition.ChangeAt(aDimIdx) = aLowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
       aVelocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
     }
 
     double aFunctionValue = 0.0;
     if (aCheckedFunc.Value(aPosition, aFunctionValue))
     {
-      aCurrentValue = aFunctionValue;
       aBestValue    = aFunctionValue;
     }
     ++aLocalStats.NbFunctionEvals;
@@ -502,7 +497,9 @@ VectorResult PSO(Function&                                        theFunc,
   const double aStagnTol =
     (theConfig.NoImproveTol > 0.0) ? theConfig.NoImproveTol : theConfig.Tolerance;
 
-  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations
+                            && (theConfig.AllowPartialDomain || !aCheckedFunc.HadFailure);
+       ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
@@ -515,6 +512,9 @@ VectorResult PSO(Function&                                        theFunc,
                     / static_cast<double>(theConfig.MaxIterations);
     }
 
+    std::optional<double> aCurrentMin;
+    std::optional<double> aCurrentMax;
+
     // Update each particle
     for (size_t aPartIdx = 0; aPartIdx < aNbParticles; ++aPartIdx)
     {
@@ -525,7 +525,6 @@ VectorResult PSO(Function&                                        theFunc,
                                 0,
                                 static_cast<int>(aNbDims) - 1);
       std::optional<double>& aBestValue    = aBestValues.ChangeValue(aPartIdx);
-      std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aPartIdx);
 
       // Update velocity
       for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
@@ -548,40 +547,40 @@ VectorResult PSO(Function&                                        theFunc,
       {
         double aXnew = aPosition.At(aDimIdx) + aVelocity.At(aDimIdx);
 
-        if (aXnew < LowerBound(aDimIdx) || aXnew > UpperBound(aDimIdx))
+        if (aXnew < aLowerBound(aDimIdx) || aXnew > aUpperBound(aDimIdx))
         {
           ++aLocalStats.NbBoundaryCorrections;
 
           switch (theConfig.BoundaryMode)
           {
             case PSOBoundaryMode::Clamp: {
-              aXnew = MathUtils::Clamp(aXnew, LowerBound(aDimIdx), UpperBound(aDimIdx));
+              aXnew = MathUtils::Clamp(aXnew, aLowerBound(aDimIdx), aUpperBound(aDimIdx));
               aVelocity.ChangeAt(aDimIdx) = -0.5 * aVelocity.At(aDimIdx);
               break;
             }
             case PSOBoundaryMode::Reflect: {
-              if (aXnew < LowerBound(aDimIdx))
+              if (aXnew < aLowerBound(aDimIdx))
               {
-                aXnew = 2.0 * LowerBound(aDimIdx) - aXnew;
+                aXnew = 2.0 * aLowerBound(aDimIdx) - aXnew;
               }
               else
               {
-                aXnew = 2.0 * UpperBound(aDimIdx) - aXnew;
+                aXnew = 2.0 * aUpperBound(aDimIdx) - aXnew;
               }
               // Re-clamp in case reflection overshoots the other bound
-              aXnew = MathUtils::Clamp(aXnew, LowerBound(aDimIdx), UpperBound(aDimIdx));
+              aXnew = MathUtils::Clamp(aXnew, aLowerBound(aDimIdx), aUpperBound(aDimIdx));
               aVelocity.ChangeAt(aDimIdx) = -0.5 * aVelocity.At(aDimIdx);
               break;
             }
             case PSOBoundaryMode::Wrap: {
               const double aRangeSize = aRange.At(aDimIdx);
-              aXnew                   = aXnew - LowerBound(aDimIdx);
+              aXnew                   = aXnew - aLowerBound(aDimIdx);
               aXnew                   = std::fmod(aXnew, aRangeSize);
               if (aXnew < 0.0)
               {
                 aXnew += aRangeSize;
               }
-              aXnew += LowerBound(aDimIdx);
+              aXnew += aLowerBound(aDimIdx);
               break;
             }
           }
@@ -593,20 +592,18 @@ VectorResult PSO(Function&                                        theFunc,
       // Evaluate fitness
       double     aFunctionValue = 0.0;
       const bool isCurrentValid = aCheckedFunc.Value(aPosition, aFunctionValue);
-      if (isCurrentValid)
-      {
-        aCurrentValue = aFunctionValue;
-      }
-      else
-      {
-        aCurrentValue.reset();
-      }
       ++aLocalStats.NbFunctionEvals;
 
-      // Update personal best
-      if (aCurrentValue && (!aBestValue || *aCurrentValue < *aBestValue))
+      if (isCurrentValid)
       {
-        aBestValue    = *aCurrentValue;
+        aCurrentMin = aCurrentMin ? std::min(*aCurrentMin, aFunctionValue) : aFunctionValue;
+        aCurrentMax = aCurrentMax ? std::max(*aCurrentMax, aFunctionValue) : aFunctionValue;
+      }
+
+      // Current fitness is needed only for this comparison; retain personal bests.
+      if (isCurrentValid && (!aBestValue || aFunctionValue < *aBestValue))
+      {
+        aBestValue    = aFunctionValue;
         aBestPosition = aPosition;
       }
 
@@ -625,10 +622,18 @@ VectorResult PSO(Function&                                        theFunc,
       break;
     }
 
+    // Use current particle fitness spread rather than personal-best history.
+    // Differences make the criterion independent of an arbitrary objective offset;
+    // halving before subtraction avoids overflow for large opposite-sign values.
+    const double aFitnessSpread =
+      aCurrentMin && aCurrentMax ? std::max(0.0, 0.5 * *aCurrentMax - 0.5 * *aCurrentMin) : 0.0;
+    const double aBestImprovement =
+      std::max(0.0, 0.5 * aPrevBest - 0.5 * *aGlobalBestValue);
+
     // Check for convergence (stagnation) after minimum iterations
     if (aResult.NbIterations > theConfig.MinIterations)
     {
-      if (std::abs(*aGlobalBestValue - aPrevBest) < aStagnTol * (1.0 + std::abs(*aGlobalBestValue)))
+      if (aCurrentMin && aBestImprovement <= aStagnTol * aFitnessSpread)
       {
         ++aStagnationCount;
         if (aStagnationCount >= theConfig.NoImproveIters)
@@ -639,13 +644,19 @@ VectorResult PSO(Function&                                        theFunc,
           if (theConfig.RestartFraction > 0.0
               && (theConfig.MaxRestarts == 0 || aLocalStats.NbRestarts < theConfig.MaxRestarts))
           {
-            ++aLocalStats.NbRestarts;
-            aStagnationCount = 0;
-
-            // Reinitialize worst particles
+            // Reinitialize the requested worst particles while preserving one best particle.
             size_t aNbRestart =
               static_cast<size_t>(std::ceil(theConfig.RestartFraction * aNbParticles));
-            aNbRestart = std::min(aNbRestart, aNbParticles - 1); // keep at least the best
+            aNbRestart = std::min(aNbRestart, aNbParticles - 1);
+            if (aNbRestart == 0)
+            {
+              // A one-particle swarm cannot be restarted without discarding its best point.
+              isConverged = true;
+              break;
+            }
+
+            ++aLocalStats.NbRestarts;
+            aStagnationCount = 0;
 
             // Find best particle index
             std::optional<size_t> aBestIdx;
@@ -660,8 +671,7 @@ VectorResult PSO(Function&                                        theFunc,
 
             const size_t aBestIndex = aBestIdx.value_or(aNbParticles);
 
-            // Sort by fitness descending (simple selection of worst)
-            // Reinitialize aNbRestart worst particles
+            // Collect every particle except the preserved best.
             NCollection_LinearVector<size_t> aWorstIndices;
             for (size_t aCollIdx = 0; aCollIdx < aNbParticles; ++aCollIdx)
             {
@@ -670,58 +680,50 @@ VectorResult PSO(Function&                                        theFunc,
                 aWorstIndices.Append(aCollIdx);
               }
             }
-            // Simple approach: sort by BestValue descending, take first aNbRestart
-            for (size_t aSortOuter = 0; aSortOuter + 1 < aWorstIndices.Size(); ++aSortOuter)
-            {
-              for (size_t aSortInner = aSortOuter + 1; aSortInner < aWorstIndices.Size();
-                   ++aSortInner)
-              {
-                const std::optional<double>& anOuterValue =
-                  aBestValues.Value(aWorstIndices.Value(aSortOuter));
-                const std::optional<double>& anInnerValue =
-                  aBestValues.Value(aWorstIndices.Value(aSortInner));
-                if (anOuterValue && (!anInnerValue || *anOuterValue < *anInnerValue))
-                {
-                  const size_t aTmp                     = aWorstIndices.Value(aSortOuter);
-                  aWorstIndices.ChangeValue(aSortOuter) = aWorstIndices.Value(aSortInner);
-                  aWorstIndices.ChangeValue(aSortInner) = aTmp;
-                }
-              }
-            }
+            // Select only the requested worst particles, with deterministic ties.
+            std::partial_sort(aWorstIndices.begin(),
+                              aWorstIndices.begin() + aNbRestart,
+                              aWorstIndices.end(),
+                              [&](size_t theLeft, size_t theRight) {
+                                const auto& aLeft  = aBestValues.Value(theLeft);
+                                const auto& aRight = aBestValues.Value(theRight);
+                                if (aLeft == aRight)
+                                {
+                                  return theLeft < theRight;
+                                }
+                                return !aLeft || (aRight && *aLeft > *aRight);
+                              });
 
             const size_t aNbToRestart =
-              std::min(static_cast<size_t>(aNbRestart), aWorstIndices.Size());
+              std::min(aNbRestart, aWorstIndices.Size());
             for (size_t aRestIdx = 0; aRestIdx < aNbToRestart; ++aRestIdx)
             {
               const size_t           aRestartIdx = aWorstIndices.Value(aRestIdx);
               const size_t           anOffset    = aRestartIdx * aNbDims;
-              math_Vector            aPosition(&aPositions.ChangeValue(anOffset),
+              math_Vector aPosition(&aPositions.ChangeValue(anOffset),
                                     0,
                                     static_cast<int>(aNbDims) - 1);
-              math_Vector            aVelocity(&aVelocities.ChangeValue(anOffset),
+              math_Vector aVelocity(&aVelocities.ChangeValue(anOffset),
                                     0,
                                     static_cast<int>(aNbDims) - 1);
-              math_Vector            aBestPosition(&aBestPositions.ChangeValue(anOffset),
+              math_Vector aBestPosition(&aBestPositions.ChangeValue(anOffset),
                                         0,
                                         static_cast<int>(aNbDims) - 1);
               std::optional<double>& aBestValue    = aBestValues.ChangeValue(aRestartIdx);
-              std::optional<double>& aCurrentValue = aCurrentValues.ChangeValue(aRestartIdx);
               for (size_t aDimIdx = 0; aDimIdx < aNbDims; ++aDimIdx)
               {
                 aPosition.ChangeAt(aDimIdx) =
-                  LowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
+                  aLowerBound(aDimIdx) + aRNG.NextReal() * aRange.At(aDimIdx);
                 aVelocity.ChangeAt(aDimIdx) = (2.0 * aRNG.NextReal() - 1.0) * aVelMax.At(aDimIdx);
               }
 
               double aFunctionValue = 0.0;
               if (aCheckedFunc.Value(aPosition, aFunctionValue))
               {
-                aCurrentValue = aFunctionValue;
                 aBestValue    = aFunctionValue;
               }
               else
               {
-                aCurrentValue.reset();
                 aBestValue.reset();
               }
               ++aLocalStats.NbFunctionEvals;
@@ -753,7 +755,8 @@ VectorResult PSO(Function&                                        theFunc,
 
   // Polish the global best using coordinate-wise Brent's method
   size_t aPolishEvals = 0;
-  if (theConfig.PolishBudgetPerDim > 0)
+  if (theConfig.PolishBudgetPerDim > 0
+      && (theConfig.AllowPartialDomain || !aCheckedFunc.HadFailure))
   {
     PolishCoordinateWise(aCheckedFunc,
                          aGlobalBest,
@@ -774,7 +777,9 @@ VectorResult PSO(Function&                                        theFunc,
     *theStats = aLocalStats;
   }
 
-  aResult.Status   = isConverged ? Status::OK : Status::MaxIterations;
+  aResult.Status   = !theConfig.AllowPartialDomain && aCheckedFunc.HadFailure
+                       ? aCheckedFunc.FailureStatus
+                       : (isConverged ? Status::OK : Status::MaxIterations);
   aResult.Solution = aGlobalBest;
   aResult.Value    = *aGlobalBestValue;
   return aResult;

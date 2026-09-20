@@ -89,3 +89,50 @@ TEST(TopLoc_Location_Test, OCC25545_ConcurrentTransformationAccess)
   EXPECT_EQ(aFunc.myIsRaceDetected, 0)
     << "Data race detected in concurrent TopLoc_Location::Transformation() access";
 }
+
+TEST(TopLoc_Location_Test, DivisionPreservesDatumChainsAndTransformation)
+{
+  gp_Trsf aTranslation;
+  aTranslation.SetTranslation(gp_Vec(2.0, -3.0, 5.0));
+  gp_Trsf aRotation;
+  aRotation.SetRotation(gp::OZ(), 0.37);
+  const TopLoc_Location              aMove(aTranslation);
+  const TopLoc_Location              aTurn(aRotation);
+  const TopLoc_Location              aDistinctMove(aTranslation);
+  const TopLoc_Location              aChain = aMove * aTurn * aMove.Powered(-2) * aTurn.Powered(3);
+  const std::vector<TopLoc_Location> aLocations = {TopLoc_Location(),
+                                                   aMove,
+                                                   aTurn,
+                                                   aDistinctMove,
+                                                   aMove.Powered(-3),
+                                                   aTurn.Powered(2),
+                                                   aMove * aTurn,
+                                                   aTurn * aMove,
+                                                   aChain,
+                                                   aChain * aMove,
+                                                   aChain.Inverted()};
+
+  for (const TopLoc_Location& aLeft : aLocations)
+  {
+    EXPECT_TRUE(aLeft.Divided(aLeft).IsIdentity());
+    for (const TopLoc_Location& aRight : aLocations)
+    {
+      const TopLoc_Location aQuotient = aLeft.Divided(aRight);
+      EXPECT_TRUE((aQuotient * aRight).IsEqual(aLeft));
+      EXPECT_TRUE(aQuotient.IsEqual(aLeft.Multiplied(aRight.Inverted())));
+      const gp_Trsf anExpected = aLeft.Transformation() * aRight.Transformation().Inverted();
+      for (int aRow = 1; aRow <= 3; ++aRow)
+      {
+        for (int aCol = 1; aCol <= 4; ++aCol)
+        {
+          EXPECT_NEAR(aQuotient.Transformation().Value(aRow, aCol),
+                      anExpected.Value(aRow, aCol),
+                      1.e-12);
+        }
+      }
+    }
+  }
+
+  // Equal matrices do not make distinct datums interchangeable.
+  EXPECT_FALSE(aMove.Divided(aDistinctMove).IsIdentity());
+}
