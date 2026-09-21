@@ -322,7 +322,7 @@ bool GeomFill_Sweep::BuildAll(const GeomAbs_Shape Continuity, const int Degmax, 
         CError->SetValue(1, myCurve2d->Length(), 0.);
         CError->SetValue(2, myCurve2d->Length(), 0.);
 
-        SError = theTol;
+        SError = ConvertApprox.MaxError();
       }
     } // if (!mySurface->IsCNv(1))
 
