@@ -229,6 +229,8 @@ private:
   double                                myMaxTol;
   occ::handle<StepRepr_Representation>  mySRContext;
   occ::handle<Interface_InterfaceModel> myModel;
+  //! True while the representation item being transferred is non-manifold.
+  bool myIsNMDetected = false;
 };
 
 #endif // _STEPControl_ActorRead_HeaderFile

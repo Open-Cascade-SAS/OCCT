@@ -200,14 +200,6 @@ static void DumpWhatIs(const TopoDS_Shape& S)
 }
 #endif
 
-namespace
-{
-// Set global var to inform outer methods that current representation item is non-manifold.
-// The better way is to pass this information via binder or via TopoDS_Shape itself, however,
-// this is very specific info to do so...
-bool NM_DETECTED = false;
-} // namespace
-
 // ============================================================================
 // Method  : STEPControl_ActorRead::STEPControl_ActorRead  ()
 // Purpose : Empty constructor
@@ -739,7 +731,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     {
       Result1 = theResult;
       // [BEGIN] ssv: OCCT#22436: extra compound in NMSSR case
-      if (NM_DETECTED && Result1.ShapeType() == TopAbs_COMPOUND)
+      if (myIsNMDetected && Result1.ShapeType() == TopAbs_COMPOUND)
       {
         TopoDS_Iterator it(Result1);
         for (; it.More(); it.Next())
@@ -802,7 +794,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
       {
         Result1 = theResult;
         // [BEGIN] ssv: OCCT#22436: extra compound in NMSSR case
-        if (NM_DETECTED && Result1.ShapeType() == TopAbs_COMPOUND)
+        if (myIsNMDetected && Result1.ShapeType() == TopAbs_COMPOUND)
         {
           TopoDS_Iterator it(Result1);
           for (; it.More(); it.Next())
@@ -990,7 +982,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   const bool                                        theUseTrsf,
   const Message_ProgressRange&                      theProgress)
 {
-  NM_DETECTED = false;
+  myIsNMDetected = false;
   occ::handle<TransferBRep_ShapeBinder> shbinder;
   occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(TP->Model());
   if (!Recognize(sr))
@@ -1024,8 +1016,8 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
   bool isManifold = true;
   if (isNMMode && sr->IsKind(STANDARD_TYPE(StepShape_NonManifoldSurfaceShapeRepresentation)))
   {
-    isManifold  = false;
-    NM_DETECTED = true;
+    isManifold     = false;
+    myIsNMDetected = true;
 #ifdef OCCT_DEBUG
     int NMSSRItemsLen = sr->Items()->Length();
     std::cout << "NMSSR with " << NMSSRItemsLen << " items detected" << std::endl;
@@ -1037,8 +1029,8 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     int isIDeasMode = aStepModel->InternalParameters.ReadIdeas;
     if (isNMMode && myNMTool.IsIDEASCase() && isIDeasMode)
     {
-      isManifold  = false;
-      NM_DETECTED = true;
+      isManifold     = false;
+      myIsNMDetected = true;
 #ifdef OCCT_DEBUG
       std::cout << "I-DEAS post processing for non-manifold topology ENABLED" << std::endl;
 #endif
