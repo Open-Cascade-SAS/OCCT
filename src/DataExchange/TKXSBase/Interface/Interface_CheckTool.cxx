@@ -45,8 +45,6 @@
 #endif
 #include <cstdio>
 
-static int errh = 1;
-
 static void raisecheck(Standard_Failure& theException, occ::handle<Interface_Check>& ach)
 {
   char mess[100];
@@ -115,7 +113,7 @@ void Interface_CheckTool::FillCheck(const occ::handle<Standard_Transient>& ent,
   if (thegtool->Select(ent, module, CN))
   {
     //    Without try/catch (done by caller, avoids try/catch in loop)
-    if (!errh)
+    if (!myOwnErrorHandling)
     {
       module->CheckCase(CN, ent, sh, ach);
       return;
@@ -190,7 +188,7 @@ occ::handle<Interface_Check> Interface_CheckTool::Check(const int num)
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
   occ::handle<Standard_Transient>       ent   = model->Value(num);
   occ::handle<Interface_Check> ach = new Interface_Check(ent); // not filtered by "Warning": as is
-  errh                             = 1;
+  myOwnErrorHandling               = true;
   FillCheck(ent, theshare, ach);
   return ach;
 }
@@ -230,8 +228,8 @@ void Interface_CheckTool::CheckSuccess(const bool reset)
     return; // everything tested and it passes
   }
 
-  errh   = 0; // No try/catch, because we precisely raise
-  int nb = model->NbEntities();
+  myOwnErrorHandling = false; // No try/catch, because we precisely raise
+  int nb             = model->NbEntities();
   for (int i = 1; i <= nb; i++)
   {
     if (model->IsErrorEntity(i))
@@ -290,7 +288,7 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList()
   }
 
   int i = 0, n0 = 1, nb = model->NbEntities();
-  errh = 0;
+  myOwnErrorHandling = false;
   while (n0 <= nb)
   {
     occ::handle<Interface_Check>    ach = new Interface_Check;
@@ -368,7 +366,7 @@ Interface_CheckIterator Interface_CheckTool::CheckList()
     res.Add(globch, 0);
   }
 
-  errh = 0;
+  myOwnErrorHandling = false;
   while (n0 <= nb)
   {
     occ::handle<Interface_Check>    ach = new Interface_Check;
@@ -432,7 +430,7 @@ Interface_CheckIterator Interface_CheckTool::AnalyseCheckList()
   res.SetModel(model);
   int i = 0, n0 = 1, nb = model->NbEntities();
 
-  errh = 0;
+  myOwnErrorHandling = false;
   while (n0 <= nb)
   {
     occ::handle<Interface_Check> ach = new Interface_Check;
@@ -478,7 +476,7 @@ Interface_CheckIterator Interface_CheckTool::VerifyCheckList()
   res.SetModel(model);
   int i = 0, n0 = 1, nb = model->NbEntities();
 
-  errh = 0;
+  myOwnErrorHandling = false;
   while (n0 <= nb)
   {
     occ::handle<Standard_Transient> ent;
@@ -534,7 +532,7 @@ Interface_CheckIterator Interface_CheckTool::WarningCheckList()
   res.SetModel(model);
   int i = 0, n0 = 1, nb = model->NbEntities();
 
-  errh = 0;
+  myOwnErrorHandling = false;
   while (n0 <= nb)
   {
     occ::handle<Interface_Check>    ach = new Interface_Check;
