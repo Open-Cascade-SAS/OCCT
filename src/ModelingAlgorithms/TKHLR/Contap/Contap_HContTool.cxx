@@ -205,8 +205,9 @@ void Contap_HContTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
     int nbIntV = NbSamplesV(S, aBounds.VMin, aBounds.VMax) / 3;
     if (nbIntU * nbIntV > 5)
     {
-      int indU = (Index - 1) / nbIntU;        //----   0 --> nbIntV
-      int indV = (Index - 1) - indU * nbIntU; //----   0 --> nbIntU
+      // Index runs over an nbIntU x nbIntV grid, U fastest.
+      int indV = (Index - 1) / nbIntU;        //----   0 --> nbIntV - 1
+      int indU = (Index - 1) - indV * nbIntU; //----   0 --> nbIntU - 1
 
       U = aBounds.UMin
           + ((aBounds.UMax - aBounds.UMin) / ((double)(nbIntU + 1))) * (double)(indU + 1);
