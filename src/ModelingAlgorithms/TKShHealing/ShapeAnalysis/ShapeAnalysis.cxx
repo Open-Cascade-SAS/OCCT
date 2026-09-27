@@ -29,6 +29,7 @@
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>
+#include <Standard_NullObject.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
@@ -276,8 +277,14 @@ void ShapeAnalysis::GetFaceUVBounds(const TopoDS_Face& F,
   TopExp_Explorer ex(FF, TopAbs_EDGE);
   if (!ex.More())
   {
-    TopLoc_Location L;
-    BRep_Tool::Surface(F, L)->Bounds(UMin, UMax, VMin, VMax);
+    TopLoc_Location           L;
+    occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(F, L);
+    if (aSurf.IsNull())
+    {
+      // With no edges there is no pcurve to bound either, so nothing is left to report.
+      throw Standard_NullObject("ShapeAnalysis::GetFaceUVBounds: face has no surface");
+    }
+    aSurf->Bounds(UMin, UMax, VMin, VMax);
     return;
   }
 
