@@ -8,4 +8,5 @@ set(OCCT_TKMesh_GTests_FILES
   BRepMesh_DiscretAlgoFactory_Test.cxx
   BRepMesh_GeomTool_Test.cxx
   BRepMesh_IncrementalMesh_Test.cxx
+  BRepMesh_ModelHealer_Test.cxx
 )

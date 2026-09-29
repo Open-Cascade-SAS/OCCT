@@ -292,7 +292,8 @@ TEST(BRepMesh_IncrementalMeshTest, OCC32692_UnboundedCylinderFaceReportsFailure)
 
   BRepMesh_IncrementalMesh aMesher(aFace, 0.01, false, 0.5, true);
   EXPECT_TRUE(aMesher.IsDone());
-  EXPECT_EQ(aMesher.GetStatusFlags(), IMeshData_OpenWire | IMeshData_Failure | IMeshData_Outdated);
+  // The infinite seam of the face gets no discretization, so the face cannot be meshed.
+  EXPECT_EQ(aMesher.GetStatusFlags(), IMeshData_Failure);
 
   int aNbFaces = 0;
   for (TopExp_Explorer anExplorer(aFace, TopAbs_FACE); anExplorer.More(); anExplorer.Next())

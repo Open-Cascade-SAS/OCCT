@@ -110,6 +110,27 @@ bool isInToleranceWithSomeOf(const gp_Pnt& theRefPoint,
   return (theRefPoint.SquareDistance(thePoint1) < aSqTol
           || theRefPoint.SquareDistance(thePoint2) < aSqTol);
 }
+
+//! Returns True if some edge of the face has no discretization on it,
+//! i.e. BRepMesh_EdgeDiscret failed to tessellate that edge.
+bool hasUndiscretizedEdge(const IMeshData::IFaceHandle& theDFace)
+{
+  for (int aWireIt = 0; aWireIt < theDFace->WiresNb(); ++aWireIt)
+  {
+    const IMeshData::IWireHandle& aDWire = theDFace->GetWire(aWireIt);
+    for (int aEdgeIt = 0; aEdgeIt < aDWire->EdgesNb(); ++aEdgeIt)
+    {
+      const IMeshData::IEdgePtr& aDEdge = aDWire->GetEdge(aEdgeIt);
+      if (aDEdge->IsSet(IMeshData_Failure)
+          || aDEdge->GetPCurve(theDFace.get(), aDWire->GetEdgeOrientation(aEdgeIt))->ParametersNb()
+               == 0)
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 } // namespace
 
 //=================================================================================================
@@ -291,6 +312,14 @@ void BRepMesh_ModelHealer::process(const IMeshData::IFaceHandle& theDFace) const
 
 void BRepMesh_ModelHealer::fixFaceBoundaries(const IMeshData::IFaceHandle& theDFace) const
 {
+  // The end points of an edge without discretization cannot be connected to its neighbours,
+  // and the face bounded by such an edge cannot be meshed.
+  if (hasUndiscretizedEdge(theDFace))
+  {
+    theDFace->SetStatus(IMeshData_Failure);
+    return;
+  }
+
 #ifdef DEBUG_HEALER
   TopoDS_Compound aComp;
   BRep_Builder    aBuilder;
