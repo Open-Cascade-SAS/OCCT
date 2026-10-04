@@ -894,23 +894,24 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       const double      aTol    = std::max(CPopArc.Tolerance(), BRep_Tool::Tolerance(Arcprol));
       const double      aParTol = aCurve.Resolution(aTol);
       Extrema_ExtPC     anExt(CPopArc.Point(), aCurve);
-      if (anExt.IsDone())
+      const int         aNbExt = anExt.IsDone() ? anExt.NbExt() : 0;
+      for (int anExtIndex = 1; anExtIndex <= aNbExt; ++anExtIndex)
       {
-        for (int i = 1; i <= anExt.NbExt(); ++i)
+        const double aPar             = anExt.Point(anExtIndex).Parameter();
+        const bool   isOnEdgeInterior = anExt.SquareDistance(anExtIndex) <= aTol * aTol
+                                      && aPar > aCurve.FirstParameter() + aParTol
+                                      && aPar < aCurve.LastParameter() - aParTol;
+        if (!isOnEdgeInterior)
         {
-          const double aPar = anExt.Point(i).Parameter();
-          if (anExt.SquareDistance(i) <= aTol * aTol && aPar > aCurve.FirstParameter() + aParTol
-              && aPar < aCurve.LastParameter() - aParTol)
-          {
-            // Orient the split away from the corner vertex.
-            const TopAbs_Orientation anOri =
-              TopExp::FirstVertex(TopoDS::Edge(Arcprol.Oriented(TopAbs_FORWARD))).IsSame(Vtx)
-                ? TopAbs_FORWARD
-                : TopAbs_REVERSED;
-            CPopArc.SetArc(aTol, Arcprol, aPar, anOri);
-            break;
-          }
+          continue;
         }
+        // Orient the split away from the corner vertex.
+        const TopAbs_Orientation anOri =
+          TopExp::FirstVertex(TopoDS::Edge(Arcprol.Oriented(TopAbs_FORWARD))).IsSame(Vtx)
+            ? TopAbs_FORWARD
+            : TopAbs_REVERSED;
+        CPopArc.SetArc(aTol, Arcprol, aPar, anOri);
+        break;
       }
     }
   }
