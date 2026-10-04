@@ -30,58 +30,58 @@
 
 namespace
 {
-  //! Find the lateral face, whose periodic surface has a seam edge.
-  TopoDS_Face CylindricalFace(const double theRadius, const double theHeight)
+//! Find the lateral face, whose periodic surface has a seam edge.
+TopoDS_Face CylindricalFace(const double theRadius, const double theHeight)
+{
+  BRepPrimAPI_MakeCylinder aCylinderMaker(theRadius, theHeight);
+  const TopoDS_Shape&      aCylinder = aCylinderMaker.Shape();
+  if (!aCylinderMaker.IsDone())
   {
-    BRepPrimAPI_MakeCylinder aCylinderMaker(theRadius, theHeight);
-    const TopoDS_Shape& aCylinder = aCylinderMaker.Shape();
-    if (!aCylinderMaker.IsDone())
-    {
-      return TopoDS_Face();
-    }
-    for (TopExp_Explorer anExp(aCylinder, TopAbs_FACE); anExp.More(); anExp.Next())
-    {
-      const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-      if (!occ::down_cast<Geom_CylindricalSurface>(BRep_Tool::Surface(aFace)).IsNull())
-      {
-        return aFace;
-      }
-    }
     return TopoDS_Face();
   }
-
-  //! Find the edge represented by two pcurves on the face.
-  TopoDS_Edge SeamEdge(const TopoDS_Face& theFace)
+  for (TopExp_Explorer anExp(aCylinder, TopAbs_FACE); anExp.More(); anExp.Next())
   {
-    for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
+    const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
+    if (!occ::down_cast<Geom_CylindricalSurface>(BRep_Tool::Surface(aFace)).IsNull())
     {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
-      if (BRep_Tool::IsClosed(anEdge, theFace))
-      {
-        return anEdge;
-      }
+      return aFace;
     }
+  }
+  return TopoDS_Face();
+}
+
+//! Find the edge represented by two pcurves on the face.
+TopoDS_Edge SeamEdge(const TopoDS_Face& theFace)
+{
+  for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
+    if (BRep_Tool::IsClosed(anEdge, theFace))
+    {
+      return anEdge;
+    }
+  }
+  return TopoDS_Edge();
+}
+
+//! Build a lower-half seam fragment with a 3D curve but no face pcurve.
+TopoDS_Edge SeamFragmentWithoutPCurve(const double theRadius, const double theHeight)
+{
+  BRepBuilderAPI_MakeEdge anEdgeMaker(gp_Pnt(theRadius, 0., 0.),
+                                      gp_Pnt(theRadius, 0., 0.5 * theHeight));
+  if (!anEdgeMaker.IsDone())
+  {
     return TopoDS_Edge();
   }
-
-  //! Build a lower-half seam fragment with a 3D curve but no face pcurve.
-  TopoDS_Edge SeamFragmentWithoutPCurve(const double theRadius, const double theHeight)
-  {
-    BRepBuilderAPI_MakeEdge anEdgeMaker(gp_Pnt(theRadius, 0., 0.),
-                                        gp_Pnt(theRadius, 0., 0.5 * theHeight));
-    if (!anEdgeMaker.IsDone())
-    {
-      return TopoDS_Edge();
-    }
-    return anEdgeMaker.Edge();
-  }
+  return anEdgeMaker.Edge();
 }
+} // namespace
 
 TEST(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithoutPCurve)
 {
-  constexpr double aRadius = 10.;
-  constexpr double aHeight = 20.;
-  const TopoDS_Face aFace = CylindricalFace(aRadius, aHeight);
+  constexpr double  aRadius = 10.;
+  constexpr double  aHeight = 20.;
+  const TopoDS_Face aFace   = CylindricalFace(aRadius, aHeight);
   ASSERT_FALSE(aFace.IsNull());
 
   const TopoDS_Edge aSplit = SeamFragmentWithoutPCurve(aRadius, aHeight);
@@ -99,9 +99,9 @@ TEST(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithoutPCurve)
 
 TEST(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithOriginWithoutPCurve)
 {
-  constexpr double aRadius = 10.;
-  constexpr double aHeight = 20.;
-  const TopoDS_Face aFace = CylindricalFace(aRadius, aHeight);
+  constexpr double  aRadius = 10.;
+  constexpr double  aHeight = 20.;
+  const TopoDS_Face aFace   = CylindricalFace(aRadius, aHeight);
   ASSERT_FALSE(aFace.IsNull());
 
   const TopoDS_Edge aSeam = SeamEdge(aFace);
@@ -126,7 +126,7 @@ TEST(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithPCurve)
   occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(aSeam, aF, aL);
   ASSERT_FALSE(aC3D.IsNull());
 
-  BRepBuilderAPI_MakeEdge  aSplitMaker(aC3D, aF, 0.5 * (aF + aL));
+  BRepBuilderAPI_MakeEdge aSplitMaker(aC3D, aF, 0.5 * (aF + aL));
   ASSERT_TRUE(aSplitMaker.IsDone());
   const TopoDS_Edge         aSplit = aSplitMaker.Edge();
   occ::handle<Geom2d_Curve> aPCurve =
