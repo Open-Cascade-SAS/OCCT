@@ -28,23 +28,17 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
-//=================================================================================================
-// BOPTools_AlgoTools3D::DoSplitSEAMOnFace - the two-argument overload takes the pcurve of the
-// split edge on the face. Boolean operations may hand over a split which has none: when
-// BOPAlgo_PaveFiller::MakePCurves fails to build the pcurve it only adds the warning
-// BOPAlgo_AlertBuildingPCurveFailed and lets the operation continue.
-//=================================================================================================
-
-class BOPTools_AlgoTools3DTest : public ::testing::Test
+namespace
 {
-protected:
-  static constexpr double THE_RADIUS = 10.;
-  static constexpr double THE_HEIGHT = 20.;
-
-  //! Returns the lateral (cylindrical, U-closed) face of a cylinder primitive.
-  static TopoDS_Face CylindricalFace()
+  //! Find the lateral face, whose periodic surface has a seam edge.
+  TopoDS_Face CylindricalFace(const double theRadius, const double theHeight)
   {
-    TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(THE_RADIUS, THE_HEIGHT).Shape();
+    BRepPrimAPI_MakeCylinder aCylinderMaker(theRadius, theHeight);
+    const TopoDS_Shape& aCylinder = aCylinderMaker.Shape();
+    if (!aCylinderMaker.IsDone())
+    {
+      return TopoDS_Face();
+    }
     for (TopExp_Explorer anExp(aCylinder, TopAbs_FACE); anExp.More(); anExp.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
@@ -56,8 +50,8 @@ protected:
     return TopoDS_Face();
   }
 
-  //! Returns the seam edge of the face, i.e. the one closed on it.
-  static TopoDS_Edge SeamEdge(const TopoDS_Face& theFace)
+  //! Find the edge represented by two pcurves on the face.
+  TopoDS_Edge SeamEdge(const TopoDS_Face& theFace)
   {
     for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
     {
@@ -70,23 +64,28 @@ protected:
     return TopoDS_Edge();
   }
 
-  //! Returns a fragment geometrically coincident with the lower half of the seam of the
-  //! cylindrical face, carrying a 3D curve only and no pcurve on the face.
-  static TopoDS_Edge SeamFragmentWithoutPCurve()
+  //! Build a lower-half seam fragment with a 3D curve but no face pcurve.
+  TopoDS_Edge SeamFragmentWithoutPCurve(const double theRadius, const double theHeight)
   {
-    BRepBuilderAPI_MakeEdge anEdgeMaker(gp_Pnt(THE_RADIUS, 0., 0.),
-                                        gp_Pnt(THE_RADIUS, 0., 0.5 * THE_HEIGHT));
+    BRepBuilderAPI_MakeEdge anEdgeMaker(gp_Pnt(theRadius, 0., 0.),
+                                        gp_Pnt(theRadius, 0., 0.5 * theHeight));
+    if (!anEdgeMaker.IsDone())
+    {
+      return TopoDS_Edge();
+    }
     return anEdgeMaker.Edge();
   }
-};
+}
 
-//! A split with no pcurve on the face must be rejected, not dereferenced.
-TEST_F(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithoutPCurve)
+TEST(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithoutPCurve)
 {
-  const TopoDS_Face aFace = CylindricalFace();
+  constexpr double aRadius = 10.;
+  constexpr double aHeight = 20.;
+  const TopoDS_Face aFace = CylindricalFace(aRadius, aHeight);
   ASSERT_FALSE(aFace.IsNull());
 
-  const TopoDS_Edge aSplit = SeamFragmentWithoutPCurve();
+  const TopoDS_Edge aSplit = SeamFragmentWithoutPCurve(aRadius, aHeight);
+  ASSERT_FALSE(aSplit.IsNull());
 
   double aT1 = 0., aT2 = 0.;
   ASSERT_TRUE(BRep_Tool::CurveOnSurface(aSplit, aFace, aT1, aT2).IsNull())
@@ -94,42 +93,42 @@ TEST_F(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithoutPCurve)
 
   EXPECT_FALSE(BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aSplit, aFace));
 
-  // The edge must be left exactly as it was.
   EXPECT_TRUE(BRep_Tool::CurveOnSurface(aSplit, aFace, aT1, aT2).IsNull());
   EXPECT_FALSE(BRep_Tool::IsClosed(aSplit, aFace));
 }
 
-//! The three-argument overload already rejects the same input; the two must agree.
-TEST_F(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithOriginWithoutPCurve)
+TEST(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithOriginWithoutPCurve)
 {
-  const TopoDS_Face aFace = CylindricalFace();
+  constexpr double aRadius = 10.;
+  constexpr double aHeight = 20.;
+  const TopoDS_Face aFace = CylindricalFace(aRadius, aHeight);
   ASSERT_FALSE(aFace.IsNull());
 
   const TopoDS_Edge aSeam = SeamEdge(aFace);
   ASSERT_FALSE(aSeam.IsNull());
 
-  const TopoDS_Edge aSplit = SeamFragmentWithoutPCurve();
+  const TopoDS_Edge aSplit = SeamFragmentWithoutPCurve(aRadius, aHeight);
+  ASSERT_FALSE(aSplit.IsNull());
 
   EXPECT_FALSE(BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aSeam, aSplit, aFace));
   EXPECT_FALSE(BRep_Tool::IsClosed(aSplit, aFace));
 }
 
-//! A split which does have a pcurve must still receive its second one.
-TEST_F(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithPCurve)
+TEST(BOPTools_AlgoTools3DTest, DoSplitSEAMOnFaceWithPCurve)
 {
-  const TopoDS_Face aFace = CylindricalFace();
+  const TopoDS_Face aFace = CylindricalFace(10., 20.);
   ASSERT_FALSE(aFace.IsNull());
 
   const TopoDS_Edge aSeam = SeamEdge(aFace);
   ASSERT_FALSE(aSeam.IsNull());
 
-  // Build the lower half of the seam as a split carrying a single pcurve, the state in which
-  // the Boolean operations pass a seam fragment to the function.
   double                  aF = 0., aL = 0.;
   occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(aSeam, aF, aL);
   ASSERT_FALSE(aC3D.IsNull());
 
-  const TopoDS_Edge         aSplit = BRepBuilderAPI_MakeEdge(aC3D, aF, 0.5 * (aF + aL)).Edge();
+  BRepBuilderAPI_MakeEdge  aSplitMaker(aC3D, aF, 0.5 * (aF + aL));
+  ASSERT_TRUE(aSplitMaker.IsDone());
+  const TopoDS_Edge         aSplit = aSplitMaker.Edge();
   occ::handle<Geom2d_Curve> aPCurve =
     BRep_Tool::CurveOnSurface(TopoDS::Edge(aSeam.Oriented(TopAbs_FORWARD)), aFace, aF, aL);
   ASSERT_FALSE(aPCurve.IsNull());
