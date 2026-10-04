@@ -67,9 +67,7 @@
 
 //==================================================================================================
 
-// A fillet ending where a planar side is tangent to a cylinder must trim their
-// existing common edge. Appending an overlapping edge leaves self-intersecting
-// wires even though the fillet builder reports success (FreeCAD issue #29476).
+// Regression for https://github.com/FreeCAD/FreeCAD/issues/29476.
 static void testTangentBoundaryTrim(const bool theBothEnds)
 {
   for (const bool isReversed : {false, true})
@@ -119,7 +117,8 @@ static void testTangentBoundaryTrim(const bool theBothEnds)
       }
       ++aSelected;
       SCOPED_TRACE(aCenter.Y());
-      for (const double aRadius : {1.0, 2.0})
+      // 11.999 leaves 0.001 on the 12-unit edge before its far vertex.
+      for (const double aRadius : {1.0, 2.0, 11.999})
       {
         SCOPED_TRACE(aRadius);
         BRepFilletAPI_MakeFillet aFillet(aBase);
@@ -127,8 +126,7 @@ static void testTangentBoundaryTrim(const bool theBothEnds)
         ASSERT_NO_THROW(aFillet.Build());
         ASSERT_TRUE(aFillet.IsDone());
         const TopoDS_Shape& aResult = aFillet.Shape();
-        EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid())
-          << "Fillet must trim the tangent boundary without creating self-intersecting wires";
+        EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
 
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSolids;
         TopExp::MapShapes(aResult, TopAbs_SOLID, aSolids);
@@ -170,8 +168,6 @@ TEST(BRepFilletAPI_MakeFilletTest, TangentBoundaryTrim_OneEnd_ProducesValidShape
 
 //==================================================================================================
 
-// The long side edge ends tangentially at a cylinder at each end of the box.
-// A single fillet must trim both existing boundaries without overlapping edges.
 TEST(BRepFilletAPI_MakeFilletTest, TangentBoundaryTrim_BothEnds_ProducesValidShape)
 {
   testTangentBoundaryTrim(true);

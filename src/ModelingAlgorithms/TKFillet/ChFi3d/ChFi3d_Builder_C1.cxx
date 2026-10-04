@@ -656,8 +656,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
   {
     stat = spine->LastStatus();
   }
-  bool        onsame          = (stat == ChFiDS_OnSame);
-  bool        isOnSameTrimmed = false;
+  bool        onsame = (stat == ChFiDS_OnSame);
   TopoDS_Face Fv, Fad, Fop;
   TopoDS_Edge Arcpiv, Arcprol, Arcspine;
   if (isfirst)
@@ -887,10 +886,9 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       CPopArc = saveCPopArc;
       return;
     }
-    // The new end point may lie inside the common edge of Fv and Fop, rather
-    // than on its extension. Register it on that edge so ChFi3d_FilDS splits
-    // the existing boundary; adding a short extension here would overlap it.
-    if (inters && !CPopArc.IsOnArc() && !BRep_Tool::Degenerated(Arcprol))
+    // A surface intersection on Arcprol splits the edge instead of extending it.
+    if (inters && !CPopArc.IsOnArc() && !BRep_Tool::Degenerated(Arcprol)
+        && BRep_Tool::IsGeometric(Arcprol))
     {
       BRepAdaptor_Curve aCurve(Arcprol);
       const double      aTol    = std::max(CPopArc.Tolerance(), BRep_Tool::Tolerance(Arcprol));
@@ -904,13 +902,12 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
           if (anExt.SquareDistance(i) <= aTol * aTol && aPar > aCurve.FirstParameter() + aParTol
               && aPar < aCurve.LastParameter() - aParTol)
           {
-            // Keep the part of the edge away from the original corner vertex.
+            // Orient the split away from the corner vertex.
             const TopAbs_Orientation anOri =
               TopExp::FirstVertex(TopoDS::Edge(Arcprol.Oriented(TopAbs_FORWARD))).IsSame(Vtx)
                 ? TopAbs_FORWARD
                 : TopAbs_REVERSED;
             CPopArc.SetArc(aTol, Arcprol, aPar, anOri);
-            isOnSameTrimmed = true;
             break;
           }
         }
@@ -1426,7 +1423,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
 
   ChFi3d_EnlargeBox(HBs, Pc, Udeb, Ufin, box1, box2);
 
-  if (onsame && inters && !isOnSameTrimmed)
+  if (onsame && inters && !CPopArc.IsOnArc())
   {
 // VARIANT 1:
 // A small missing end of curve is added for the extension
