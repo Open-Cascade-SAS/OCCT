@@ -20,6 +20,9 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 
+#include <cmath>
+#include <limits>
+
 class gp_Vec;
 class gp_Ax1;
 class gp_Ax2;
@@ -85,6 +88,23 @@ public:
   //! direction and the method raises the exception ConstructionError.
   //! @note Constexpr-compatible when input is already normalized.
   constexpr gp_Dir(const double theXv, const double theYv, const double theZv);
+
+  //! Restore stored unit components without changing their binary values.
+  //! Raises ConstructionError unless their squared length differs from one
+  //! only by floating point evaluation error.
+  [[nodiscard]] static gp_Dir FromUnitComponents(const double theXv,
+                                                 const double theYv,
+                                                 const double theZv)
+  {
+    const double     aSquared = theXv * theXv + theYv * theYv + theZv * theZv;
+    constexpr double aBound   = 16.0 * std::numeric_limits<double>::epsilon();
+    Standard_ConstructionError_Raise_if(!std::isfinite(aSquared)
+                                          || std::abs(aSquared - 1.0) > aBound,
+                                        "gp_Dir::FromUnitComponents() - direction is not unit");
+    gp_Dir aResult;
+    aResult.coord.SetCoord(theXv, theYv, theZv);
+    return aResult;
+  }
 
   constexpr gp_Dir(const gp_Dir&) noexcept = default;
   constexpr gp_Dir(gp_Dir&&) noexcept      = default;

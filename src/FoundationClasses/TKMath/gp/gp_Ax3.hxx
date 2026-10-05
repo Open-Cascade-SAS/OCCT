@@ -90,6 +90,14 @@ public:
     vydir.Cross(vxdir);
   }
 
+  //! Restore stored orthogonal axes without recomputing their binary values.
+  //! Raises ConstructionError if the axes are not orthogonal within floating
+  //! point evaluation error. The handedness is preserved.
+  [[nodiscard]] Standard_EXPORT static gp_Ax3 FromUnitAxes(const gp_Pnt& theP,
+                                                           const gp_Dir& theZ,
+                                                           const gp_Dir& theX,
+                                                           const gp_Dir& theY);
+
   //! Creates an axis placement with standard directions.
   //! This constructor allows constexpr and noexcept construction when using standard directions.
   constexpr gp_Ax3(const gp_Pnt& theP, const gp_Dir::D theN, const gp_Dir::D theVx) noexcept

@@ -841,25 +841,19 @@ inline void eval_poly1_runtime(double*       theResult,
                                double        thePar,
                                int           theDimension)
 {
-  double* aRes0 = theResult;
-  double* aRes1 = theResult + theDimension;
-
-  for (int i = 0; i < theDimension; ++i)
+  for (int aComponent = 0; aComponent < theDimension; ++aComponent)
   {
-    aRes0[i] = theCoeffs[i];
-    aRes1[i] = 0.0;
-  }
-
-  const double* aCoeffs = theCoeffs;
-  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
-  {
-    aCoeffs -= theDimension;
-    for (int i = 0; i < theDimension; ++i)
+    const double* aCoefficients = theCoeffs + aComponent;
+    double        aValue        = *aCoefficients;
+    double        aDerivative   = 0.0;
+    for (int aDegree = 0; aDegree < theDegree; ++aDegree)
     {
-      const double aVal = aRes0[i];
-      aRes1[i]          = aRes1[i] * thePar + aVal;
-      aRes0[i]          = aVal * thePar + aCoeffs[i];
+      aCoefficients -= theDimension;
+      aDerivative = aDerivative * thePar + aValue;
+      aValue      = aValue * thePar + *aCoefficients;
     }
+    theResult[aComponent]                = aValue;
+    theResult[theDimension + aComponent] = aDerivative;
   }
 }
 

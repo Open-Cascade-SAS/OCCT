@@ -16,8 +16,37 @@
 #include <gp_Dir.hxx>
 #include <gp.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 
 #include <gtest/gtest.h>
+#include <limits>
+
+TEST(gp_Ax3_Test, StoredAxesPreserveComponentsAndHandedness)
+{
+  gp_Ax3 aFrame(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 1.0, 1.0), gp_Dir(1.0, 1.0, 0.0));
+  aFrame.YReverse();
+  const gp_Ax3 aRestored = gp_Ax3::FromUnitAxes(aFrame.Location(),
+                                                aFrame.Direction(),
+                                                aFrame.XDirection(),
+                                                aFrame.YDirection());
+  EXPECT_EQ(aRestored.Direction().Y(), aFrame.Direction().Y());
+  EXPECT_EQ(aRestored.XDirection().X(), aFrame.XDirection().X());
+  EXPECT_EQ(aRestored.YDirection().Z(), aFrame.YDirection().Z());
+  EXPECT_EQ(aRestored.Direct(), aFrame.Direct());
+}
+
+TEST(gp_Ax3_Test, StoredAxesRejectNonOrthogonalDirections)
+{
+#if defined(No_Exception) || defined(No_Standard_ConstructionError)
+  GTEST_SKIP() << "Construction validation is disabled in this build.";
+#else
+  EXPECT_THROW((void)gp_Ax3::FromUnitAxes(gp_Pnt(),
+                                          gp_Dir(gp_Dir::D::Z),
+                                          gp_Dir(gp_Dir::D::X),
+                                          gp_Dir(gp_Dir::D::X)),
+               Standard_ConstructionError);
+#endif
+}
 
 TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
 {
@@ -127,4 +156,23 @@ TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
     anAx4.SetYDirection(-gp::DZ());
     EXPECT_EQ(bDirect4, anAx4.Direct());
   }
+}
+
+TEST(gp_Ax3_Test, RestoreAxesRejectsNonFiniteDirection)
+{
+#if defined(No_Exception) || defined(No_Standard_ConstructionError)
+  GTEST_SKIP() << "Construction validation is disabled in this build.";
+#else
+  const double aNaN = std::numeric_limits<double>::quiet_NaN();
+  const gp_Dir anInvalidDirection(aNaN, 1.0, 0.0);
+  const gp_Dir aZ(gp_Dir::D::Z);
+  const gp_Dir aX(gp_Dir::D::X);
+  const gp_Dir aY(gp_Dir::D::Y);
+  EXPECT_THROW((void)gp_Ax3::FromUnitAxes(gp_Pnt(), anInvalidDirection, aX, aY),
+               Standard_ConstructionError);
+  EXPECT_THROW((void)gp_Ax3::FromUnitAxes(gp_Pnt(), aZ, anInvalidDirection, aY),
+               Standard_ConstructionError);
+  EXPECT_THROW((void)gp_Ax3::FromUnitAxes(gp_Pnt(), aZ, aX, anInvalidDirection),
+               Standard_ConstructionError);
+#endif
 }

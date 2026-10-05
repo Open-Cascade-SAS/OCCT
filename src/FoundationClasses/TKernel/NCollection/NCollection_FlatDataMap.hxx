@@ -453,6 +453,25 @@ public:
   //! Returns current capacity
   size_t Capacity() const noexcept { return myCapacity; }
 
+  //! Bytes allocated for the slot table, including unused capacity.
+  //! Excludes this object, allocator overhead and allocations owned by keys/items.
+  [[nodiscard]] size_t AllocatedBytes() const noexcept { return myCapacity * sizeof(Slot); }
+
+  //! Slot bytes needed by Reserve(theNbElements) on an empty map, without allocating.
+  //! Returns SIZE_MAX when the requested storage cannot be represented by size_t.
+  //! @param[in] theNbElements requested number of elements (zero still reserves a table)
+  [[nodiscard]] static size_t ReservedBytes(const size_t theNbElements) noexcept
+  {
+    constexpr size_t aMaximum = size_t(-1);
+    if (theNbElements > (aMaximum - 12) / 16)
+    {
+      return aMaximum;
+    }
+    const size_t aCapacity = capacityFor(theNbElements);
+    return aCapacity == 0 || aCapacity > aMaximum / sizeof(Slot) ? aMaximum
+                                                                 : aCapacity * sizeof(Slot);
+  }
+
   //! Check if key exists
   bool IsBound(const TheKeyType& theKey) const
   {

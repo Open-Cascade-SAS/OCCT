@@ -95,6 +95,34 @@ inline std::optional<double> Norm(double theScale, double theSumSquares)
   return std::isfinite(aNorm) ? std::optional<double>(aNorm) : std::nullopt;
 }
 
+//! Computes ||A*x - b||_2 using scaled norm accumulation.
+//! Returns no value for incompatible dimensions or non-finite arithmetic.
+inline std::optional<double> ResidualNorm(const math_Matrix& theA,
+                                          const math_Vector& theX,
+                                          const math_Vector& theB)
+{
+  if (theA.ColSize() != theX.Size() || theA.RowSize() != theB.Size())
+  {
+    return std::nullopt;
+  }
+
+  double aScale      = 0.0;
+  double aSumSquares = 1.0;
+  for (size_t i = 0; i < theA.RowSize(); ++i)
+  {
+    double aResidual = -theB.At(i);
+    for (size_t j = 0; j < theA.ColSize(); ++j)
+    {
+      aResidual = std::fma(theA.At(i, j), theX.At(j), aResidual);
+    }
+    if (!AccumulateNorm(aResidual, aScale, aSumSquares))
+    {
+      return std::nullopt;
+    }
+  }
+  return Norm(aScale, aSumSquares);
+}
+
 //! Converts a user relative tolerance to a valid scale-relative threshold.
 inline double RelativeTolerance(double theTolerance, size_t theDimension)
 {

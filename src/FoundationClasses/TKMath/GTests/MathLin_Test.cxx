@@ -1419,6 +1419,39 @@ TEST(MathLin_LeastSquares_Test, ZeroRegularizationUsesSVDCutoff)
   EXPECT_DOUBLE_EQ(aResult.Solution->At(1), 0.0);
 }
 
+//==================================================================================================
+
+TEST(MathLin_LeastSquares_Test, PositiveRegularizationRetainsSmallSingularValues)
+{
+  math_Matrix aA(-1, 1, 4, 6, 0.0);
+  aA.ChangeAt(0, 0) = 1.0;
+  aA.ChangeAt(1, 1) = 1.0e-4;
+  const math_Vector aB(8, 10, 1.0);
+  constexpr double  aLambda = 1.0e-8;
+
+  for (const double aRankTolerance : {1.0e-3, 1.0e-6})
+  {
+    SCOPED_TRACE(aRankTolerance);
+    const MathLin::LeastSquaresResult aResult =
+      MathLin::RegularizedLeastSquares(aA, aB, aLambda, aRankTolerance);
+    ASSERT_TRUE(aResult.IsDone());
+    ASSERT_TRUE(aResult.Solution.has_value());
+    EXPECT_EQ(aResult.Rank, aRankTolerance > 1.0e-4 ? 1u : 2u);
+    EXPECT_NEAR(aResult.Solution->At(0), 1.0 / (1.0 + aLambda), 1.0e-14);
+    EXPECT_NEAR(aResult.Solution->At(1), 5000.0, 1.0e-10);
+    EXPECT_DOUBLE_EQ(aResult.Solution->At(2), 0.0);
+
+    // The minimizer satisfies (A^T A + lambda I) x = A^T b.
+    for (size_t i = 0; i < aB.Size(); ++i)
+    {
+      const double aSigma = aA.At(i, i);
+      EXPECT_NEAR((aSigma * aSigma + aLambda) * aResult.Solution->At(i),
+                  aSigma * aB.At(i),
+                  1.0e-14);
+    }
+  }
+}
+
 TEST(MathLin_LeastSquares_Test, NonRepresentableResidualIsNumericalError)
 {
   math_Matrix aA(2, 1, 0.0);
@@ -1620,5 +1653,153 @@ TEST(MathLin_Test, CompareWithOldAPI_GaussLeastSquare)
   for (size_t i = 0; i < aNewResult.Solution->Size(); ++i)
   {
     EXPECT_NEAR(anOldSol.At(i), aNewResult.Solution->At(i), 1.0e-8);
+  }
+}
+
+TEST(MathLin_Householder_Test, ReflectorNearFloatingPointLimit)
+{
+  math_Matrix aA(1, 2, 1, 2, 0.0);
+  aA(1, 1) = 1.e308;
+  aA(2, 2) = 1.e308;
+  math_Vector aB(1, 2);
+  aB(1)                       = 5.e307;
+  aB(2)                       = -5.e307;
+  const MathLin::QRResult aQR = MathLin::QR(aA);
+  ASSERT_TRUE(aQR.IsDone());
+  const MathLin::LinearResult aFit = MathLin::SolveQR(aA, aB);
+  ASSERT_TRUE(aFit.IsDone());
+  EXPECT_NEAR((*aFit.Solution)[0], 0.5, 1.e-12);
+  EXPECT_NEAR((*aFit.Solution)[1], -0.5, 1.e-12);
+}
+
+TEST(MathLin_Householder_Test, ScaledMultipleRightHandSidesAndOrthogonality)
+{
+  for (const double aScale : {1.e-200, 1.0, 1.e200})
+  {
+    math_Matrix aA(-2, 1, 3, 4);
+    math_Matrix aB(8, 11, -3, -2);
+    for (size_t i = 0; i < 4; ++i)
+    {
+      aA.ChangeAt(i, 0) = aScale;
+      aA.ChangeAt(i, 1) = static_cast<double>(i) * aScale;
+      aB.ChangeAt(i, 0) = (2.0 + 3.0 * i) * aScale;
+      aB.ChangeAt(i, 1) = (-1.0 + 0.5 * i) * aScale;
+    }
+    const MathLin::LinearMultipleResult aFit = MathLin::SolveQRMultiple(aA, aB);
+    ASSERT_TRUE(aFit.IsDone());
+    EXPECT_NEAR(aFit.Solutions->At(0, 0), 2.0, 1.e-12);
+    EXPECT_NEAR(aFit.Solutions->At(1, 0), 3.0, 1.e-12);
+    EXPECT_NEAR(aFit.Solutions->At(0, 1), -1.0, 1.e-12);
+    EXPECT_NEAR(aFit.Solutions->At(1, 1), 0.5, 1.e-12);
+    const MathLin::QRResult aQR = MathLin::QR(aA);
+    ASSERT_TRUE(aQR.IsDone());
+    for (size_t i = 0; i < 4; ++i)
+    {
+      for (size_t j = 0; j < 4; ++j)
+      {
+        double aDot = 0.0;
+        for (size_t k = 0; k < 4; ++k)
+        {
+          aDot += aQR.Q->At(k, i) * aQR.Q->At(k, j);
+        }
+        EXPECT_NEAR(aDot, i == j ? 1.0 : 0.0, 1.e-12);
+      }
+    }
+  }
+}
+
+TEST(MathLin_Householder_Test, TallSystemUsesDirectRightHandSideTransforms)
+{
+  // A full Q would need more than 3 GB for this small two-unknown problem.
+  math_Matrix aA(size_t(20000), size_t(2));
+  math_Vector aB(size_t(20000));
+  for (size_t i = 0; i < aB.Size(); ++i)
+  {
+    const double aU   = static_cast<double>(i) / aB.Size();
+    aA.ChangeAt(i, 0) = 1.0;
+    aA.ChangeAt(i, 1) = aU;
+    aB[i]             = 2.0 - 3.0 * aU;
+  }
+  const MathLin::LinearResult aFit = MathLin::SolveQR(aA, aB);
+  ASSERT_TRUE(aFit.IsDone());
+  EXPECT_NEAR((*aFit.Solution)[0], 2.0, 1.e-10);
+  EXPECT_NEAR((*aFit.Solution)[1], -3.0, 1.e-10);
+  const MathLin::LeastSquaresResult aLeastSquares = MathLin::LeastSquares(aA, aB);
+  ASSERT_TRUE(aLeastSquares.IsDone());
+  EXPECT_EQ(aLeastSquares.Rank, 2u);
+  EXPECT_NEAR((*aLeastSquares.Solution)[0], 2.0, 1.e-10);
+  EXPECT_NEAR((*aLeastSquares.Solution)[1], -3.0, 1.e-10);
+}
+
+TEST(MathLin_Householder_Test, UnderflowSafeDiagonal)
+{
+  math_Matrix aA(1, 2, 1, 2, 0.0);
+  aA(1, 1) = 1.e-200;
+  aA(2, 2) = 2.e-200;
+  math_Vector aB(1, 2);
+  aB(1)                            = 3.e-200;
+  aB(2)                            = -4.e-200;
+  const MathLin::LinearResult aFit = MathLin::SolveQR(aA, aB, 0.0);
+  ASSERT_TRUE(aFit.IsDone());
+  EXPECT_NEAR(aFit.Solution->At(0), 3.0, 1.e-12);
+  EXPECT_NEAR(aFit.Solution->At(1), -2.0, 1.e-12);
+}
+
+TEST(MathLin_Householder_Test, InvalidDimensionsAndNonFiniteRightHandSides)
+{
+  math_Matrix aA(1, 3, 1, 2, 1.0);
+  math_Vector aShort(1, 2, 1.0);
+  EXPECT_EQ(MathLin::SolveQR(aA, aShort).Status, MathUtils::Status::InvalidInput);
+  math_Matrix aWide(1, 1, 1, 2, 1.0);
+  math_Vector aOne(1, 1, 1.0);
+  EXPECT_EQ(MathLin::SolveQR(aWide, aOne).Status, MathUtils::Status::InvalidInput);
+  math_Vector aRhs(1, 3, 1.0);
+  aRhs(2)                          = std::numeric_limits<double>::quiet_NaN();
+  const MathLin::LinearResult aFit = MathLin::SolveQR(aA, aRhs);
+  EXPECT_EQ(aFit.Status, MathUtils::Status::InvalidInput);
+  EXPECT_FALSE(aFit.Solution.has_value());
+}
+
+TEST(MathLin_Householder_Test, VectorViewsPreserveInputAndOwnResults)
+{
+  math_Matrix aA(-2, 0, 4, 5, 0.0);
+  aA(-2, 4) = aA(-1, 5) = 1.0;
+  aA(0, 4) = aA(0, 5) = 1.0;
+  math_Vector aB(7, 9);
+  aB(7)                           = 2.0;
+  aB(8)                           = 3.0;
+  aB(9)                           = 5.0;
+  MathLin::LinearResult       aQR = MathLin::SolveQR(aA, aB);
+  MathLin::LeastSquaresResult aLS = MathLin::LeastSquares(aA, aB);
+  ASSERT_TRUE(aQR.IsDone());
+  ASSERT_TRUE(aLS.IsDone());
+  EXPECT_DOUBLE_EQ(aB(7), 2.0);
+  EXPECT_DOUBLE_EQ(aB(8), 3.0);
+  EXPECT_DOUBLE_EQ(aB(9), 5.0);
+  aB.Init(99.0);
+  EXPECT_NEAR(aQR.Solution->At(0), 2.0, 1.e-12);
+  EXPECT_NEAR(aQR.Solution->At(1), 3.0, 1.e-12);
+  EXPECT_NEAR(aLS.Solution->At(0), 2.0, 1.e-12);
+  EXPECT_NEAR(aLS.Solution->At(1), 3.0, 1.e-12);
+  aQR.Solution->ChangeAt(0) = -1.0;
+  EXPECT_NEAR(aLS.Solution->At(0), 2.0, 1.e-12);
+}
+
+TEST(MathLin_Householder_Test, ReflectorsPreserveMixedMagnitudeComponents)
+{
+  math_Matrix aA(1, 2, 1, 2, 0.0);
+  aA(1, 1) = aA(2, 2) = 1.0;
+  math_Matrix aB(-2, -1, 4, 5);
+  aB(-2, 4) = aB(-1, 5) = 1.e200;
+  aB(-1, 4) = aB(-2, 5)                    = 1.e-200;
+  const MathLin::LinearMultipleResult aFit = MathLin::SolveQRMultiple(aA, aB);
+  ASSERT_TRUE(aFit.IsDone());
+  for (size_t i = 0; i < 2; ++i)
+  {
+    for (size_t j = 0; j < 2; ++j)
+    {
+      // Relative comparison detects loss of the small component in either order.
+      EXPECT_NEAR(aFit.Solutions->At(i, j) / aB.At(i, j), 1.0, 1.e-14);
+    }
   }
 }

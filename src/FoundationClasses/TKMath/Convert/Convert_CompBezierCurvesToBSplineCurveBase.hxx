@@ -19,6 +19,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <type_traits>
+#include <cmath>
 
 class gp_Pnt;
 class gp_Pnt2d;
@@ -114,7 +115,7 @@ public:
         const double aD1 = aV1.SquareMagnitude();
         const double aD2 = aV2.SquareMagnitude();
         if (aMaxDegree > 1 && aD1 > gp::Resolution() && aD2 > gp::Resolution()
-            && aV1.IsParallel(aV2, myAngular))
+            && std::abs(aV1.Angle(aV2)) <= myAngular)
         {
           const double aLambda = std::sqrt(aD2 / aD1);
           if constexpr (std::is_same_v<PointType, gp_Pnt>)

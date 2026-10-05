@@ -746,3 +746,26 @@ TEST_F(NCollection_FlatDataMapTest, ItemsIteratorEquality)
   ++anIt3;
   EXPECT_EQ(anIt2, anIt3);
 }
+
+TEST_F(NCollection_FlatDataMapTest, SlotStorageAccountingMatchesReserveAndRelease)
+{
+  using Map = NCollection_FlatDataMap<int, TCollection_AsciiString>;
+  for (const size_t aCount : {0u, 1u, 6u, 7u, 13u, 100u})
+  {
+    Map aMap;
+    EXPECT_EQ(aMap.AllocatedBytes(), 0u);
+    aMap.Reserve(aCount);
+    EXPECT_EQ(aMap.AllocatedBytes(), Map::ReservedBytes(aCount));
+    const size_t aReserved = aMap.AllocatedBytes();
+    for (size_t anItemIndex = 0; anItemIndex < aCount; ++anItemIndex)
+    {
+      aMap.Bind(int(anItemIndex), TCollection_AsciiString(int(anItemIndex)));
+    }
+    EXPECT_EQ(aMap.AllocatedBytes(), aReserved);
+    aMap.Clear();
+    EXPECT_EQ(aMap.AllocatedBytes(), aReserved);
+    aMap.Clear(true);
+    EXPECT_EQ(aMap.AllocatedBytes(), 0u);
+  }
+  EXPECT_EQ(Map::ReservedBytes(size_t(-1)), size_t(-1));
+}
