@@ -16,6 +16,7 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepBndLib_Test.cxx
   BRepGProp_Test.cxx
   BRepLib_MakeWire_Test.cxx
+  BRepLib_PointCloudShape_Test.cxx
   BRepOffsetAPI_ThruSections_Test.cxx
   BRepTopAdaptor_FClass2d_Test.cxx
 )
