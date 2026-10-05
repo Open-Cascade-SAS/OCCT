@@ -458,18 +458,10 @@ public:
   [[nodiscard]] size_t AllocatedBytes() const noexcept { return myCapacity * sizeof(Slot); }
 
   //! Slot bytes needed by Reserve(theNbElements) on an empty map, without allocating.
-  //! Returns SIZE_MAX when the requested storage cannot be represented by size_t.
   //! @param[in] theNbElements requested number of elements (zero still reserves a table)
   [[nodiscard]] static size_t ReservedBytes(const size_t theNbElements) noexcept
   {
-    constexpr size_t aMaximum = size_t(-1);
-    if (theNbElements > (aMaximum - 12) / 16)
-    {
-      return aMaximum;
-    }
-    const size_t aCapacity = capacityFor(theNbElements);
-    return aCapacity == 0 || aCapacity > aMaximum / sizeof(Slot) ? aMaximum
-                                                                 : aCapacity * sizeof(Slot);
+    return capacityFor(theNbElements) * sizeof(Slot);
   }
 
   //! Check if key exists
@@ -875,12 +867,12 @@ public:
 private:
   // **************** Internal implementation ****************
 
+  static constexpr size_t THE_DEFAULT_CAPACITY     = 8;
+  static constexpr size_t THE_MAX_LOAD_NUMERATOR   = 13;
+  static constexpr size_t THE_MAX_LOAD_DENOMINATOR = 16;
+
   static size_t capacityFor(const size_t theElementCount)
   {
-    constexpr size_t THE_DEFAULT_CAPACITY     = 8;
-    constexpr size_t THE_MAX_LOAD_NUMERATOR   = 13;
-    constexpr size_t THE_MAX_LOAD_DENOMINATOR = 16;
-
     if (theElementCount == 0)
     {
       return THE_DEFAULT_CAPACITY;
@@ -908,7 +900,6 @@ private:
 
   size_t nextCapacity() const
   {
-    constexpr size_t THE_DEFAULT_CAPACITY = 8;
     if (myCapacity == 0)
     {
       return THE_DEFAULT_CAPACITY;

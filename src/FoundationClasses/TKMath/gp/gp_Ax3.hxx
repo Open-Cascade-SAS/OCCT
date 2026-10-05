@@ -91,8 +91,8 @@ public:
   }
 
   //! Restore stored orthogonal axes without recomputing their binary values.
-  //! Raises ConstructionError if the axes are not orthogonal within floating
-  //! point evaluation error. The handedness is preserved.
+  //! The caller must supply mutually orthogonal axes from a valid gp_Ax3.
+  //! Axes are not validated. The handedness is preserved.
   [[nodiscard]] Standard_EXPORT static gp_Ax3 FromUnitAxes(const gp_Pnt& theP,
                                                            const gp_Dir& theZ,
                                                            const gp_Dir& theX,

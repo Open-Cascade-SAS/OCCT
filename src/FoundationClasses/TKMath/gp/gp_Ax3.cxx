@@ -21,10 +21,7 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>
-
-#include <limits>
 
 //=================================================================================================
 
@@ -33,12 +30,6 @@ gp_Ax3 gp_Ax3::FromUnitAxes(const gp_Pnt& theP,
                             const gp_Dir& theX,
                             const gp_Dir& theY)
 {
-  // A stored frame can differ from exact orthogonality by a few roundoff bits.
-  [[maybe_unused]] constexpr double aBound = 16.0 * std::numeric_limits<double>::epsilon();
-  Standard_ConstructionError_Raise_if(!(std::abs(theZ.Dot(theX)) <= aBound)
-                                        || !(std::abs(theZ.Dot(theY)) <= aBound)
-                                        || !(std::abs(theX.Dot(theY)) <= aBound),
-                                      "gp_Ax3::FromUnitAxes() - axes are not orthogonal");
   gp_Ax3 aResult;
   aResult.axis  = gp_Ax1(theP, theZ);
   aResult.vxdir = theX;

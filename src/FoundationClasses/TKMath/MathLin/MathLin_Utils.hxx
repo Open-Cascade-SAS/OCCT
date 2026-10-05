@@ -16,10 +16,10 @@
 
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
+#include <Precision.hxx>
 
 #include <algorithm>
 #include <cmath>
-#include <limits>
 #include <optional>
 
 namespace MathLin
@@ -130,9 +130,10 @@ inline double RelativeTolerance(double theTolerance, size_t theDimension)
   {
     return -1.0;
   }
-  return std::max(theTolerance,
-                  std::numeric_limits<double>::epsilon()
-                    * static_cast<double>(std::max<size_t>(1, theDimension)));
+  // Retain the existing dimension-scaled floor for accumulated arithmetic error.
+  const double anArithmeticFloor =
+    Precision::Computational() * static_cast<double>(std::max<size_t>(1, theDimension));
+  return std::max(theTolerance, anArithmeticFloor);
 }
 
 } // namespace Utils

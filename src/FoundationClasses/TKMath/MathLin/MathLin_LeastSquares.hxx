@@ -21,6 +21,7 @@
 #include <MathLin_Householder.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathLin_Utils.hxx>
+#include <Standard_Real.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -179,7 +180,7 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
     aResult.Status = Status::NumericalError;
     return aResult;
   }
-  const double aMaxNormWithFiniteSquare = std::sqrt(std::numeric_limits<double>::max());
+  const double aMaxNormWithFiniteSquare = std::sqrt(RealLast());
   if (*aResidual <= aMaxNormWithFiniteSquare)
   {
     aResult.ResidualSq = *aResidual * *aResidual;
@@ -323,7 +324,7 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
     aResult.Status = Status::NumericalError;
     return aResult;
   }
-  const double aMaxNormWithFiniteSquare = std::sqrt(std::numeric_limits<double>::max());
+  const double aMaxNormWithFiniteSquare = std::sqrt(RealLast());
   if (*aResidual <= aMaxNormWithFiniteSquare)
   {
     aResult.ResidualSq = *aResidual * *aResidual;

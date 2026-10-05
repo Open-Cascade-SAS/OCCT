@@ -767,5 +767,4 @@ TEST_F(NCollection_FlatDataMapTest, SlotStorageAccountingMatchesReserveAndReleas
     aMap.Clear(true);
     EXPECT_EQ(aMap.AllocatedBytes(), 0u);
   }
-  EXPECT_EQ(Map::ReservedBytes(size_t(-1)), size_t(-1));
 }

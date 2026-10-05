@@ -23,8 +23,6 @@
 
 #include <gtest/gtest.h>
 
-#include <limits>
-
 TEST(gp_DirTest, CoordinateConstructor)
 {
   gp_Dir aDir(0.0, 0.0, 1.0);
@@ -41,17 +39,6 @@ TEST(gp_DirTest, StoredUnitComponentsPreserveBinaryValues)
   EXPECT_EQ(aRestored.X(), aDirection.X());
   EXPECT_EQ(aRestored.Y(), aDirection.Y());
   EXPECT_EQ(aRestored.Z(), aDirection.Z());
-}
-
-TEST(gp_DirTest, StoredUnitComponentsRejectInvalidInput)
-{
-#if defined(No_Exception) || defined(No_Standard_ConstructionError)
-  GTEST_SKIP() << "Construction validation is disabled in this build.";
-#else
-  EXPECT_THROW((void)gp_Dir::FromUnitComponents(0.0, 2.0, 0.0), Standard_ConstructionError);
-  EXPECT_THROW((void)gp_Dir::FromUnitComponents(std::numeric_limits<double>::quiet_NaN(), 0.0, 1.0),
-               Standard_ConstructionError);
-#endif
 }
 
 TEST(gp_DirTest, XYZConstructor)
