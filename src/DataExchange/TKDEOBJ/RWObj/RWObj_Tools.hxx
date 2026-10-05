@@ -20,6 +20,8 @@
 #include <Standard_TypeDef.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <string_view>
+
 //! Auxiliary tools for OBJ format parser.
 namespace RWObj_Tools
 {
@@ -48,30 +50,26 @@ inline bool ReadVec3(const char* thePos, char*& theNext, gp_XYZ& theVec)
 }
 
 //! Read string.
-inline bool ReadName(const char* thePos, TCollection_AsciiString& theName)
+inline bool ReadName(std::string_view theValue, TCollection_AsciiString& theName)
 {
-  int aFrom = 0;
-  int aTail = (int)std::strlen(thePos) - 1;
-  if (aTail >= 0 && thePos[aTail] == '\n')
+  while (!theValue.empty() && (theValue.back() == '\n' || theValue.back() == '\r'))
   {
-    --aTail;
+    theValue.remove_suffix(1);
   }
-  if (aTail >= 0 && thePos[aTail] == '\r')
+  while (!theValue.empty() && IsSpace(theValue.back()))
   {
-    --aTail;
+    theValue.remove_suffix(1);
   }
-  for (; aTail >= 0 && IsSpace(thePos[aTail]); --aTail)
+  while (!theValue.empty() && IsSpace(theValue.front()))
   {
-  } // RightAdjust
-  for (; aFrom < aTail && IsSpace(thePos[aFrom]); ++aFrom)
-  {
-  } // LeftAdjust
-  if (aFrom > aTail)
+    theValue.remove_prefix(1);
+  }
+  if (theValue.empty())
   {
     theName.Clear();
     return false;
   }
-  theName = TCollection_AsciiString(thePos + aFrom, aTail - aFrom + 1);
+  theName = theValue;
   return true;
 }
 

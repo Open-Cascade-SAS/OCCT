@@ -591,6 +591,30 @@ void BRepGraph::MeshView::EditorView::CoEdgeOps::Clear(const BRepGraph_CoEdgeId 
 
 //=================================================================================================
 
+void BRepGraph::MeshView::EditorView::CoEdgeOps::ClearCachedPolygonsOnTri(
+  const BRepGraph_CoEdgeId theCoEdge)
+{
+  const BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
+  if (!theCoEdge.IsValid(aStorage.NbCoEdges()))
+  {
+    return;
+  }
+
+  BRepGraph_CacheMesh&                  aCacheMesh = getCacheMesh(myGraph);
+  BRepGraph_CacheMesh::CoEdgeMeshEntry& anEntry    = aCacheMesh.ChangeCoEdgeMesh(theCoEdge);
+  anEntry.ClearPolygonsOnTri();
+  if (anEntry.IsPresent())
+  {
+    aCacheMesh.BindFresh(anEntry, theCoEdge);
+  }
+  else
+  {
+    aCacheMesh.ClearCoEdgeMesh(theCoEdge);
+  }
+}
+
+//=================================================================================================
+
 void BRepGraph::MeshView::EditorView::PromoteToPersistent()
 {
   for (BRepGraph_FaceId aFaceId = myGraph->Topo().Faces().StartId();

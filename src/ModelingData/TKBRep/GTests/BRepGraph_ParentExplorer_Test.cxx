@@ -14,6 +14,7 @@
 #include <BRepGraph.hxx>
 #include <BRepGraph_EditorView.hxx>
 #include <BRepGraph_ParentExplorer.hxx>
+#include <BRepGraph_ParentIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
@@ -123,7 +124,11 @@ TEST(BRepGraph_ParentExplorerTest, FaceParents_DirectParents_StopsAtImmediateShe
                                  BRepGraph_FaceId::Start(),
                                  BRepGraph_ParentExplorer::TraversalMode::DirectParents);
   ASSERT_TRUE(anExp.More());
-  EXPECT_EQ(anExp.Current().DefId, BRepGraph_NodeId(BRepGraph_ShellId::Start()));
+  const BRepGraphInc::NodeInstance aCurrent = anExp.Current();
+  EXPECT_EQ(aCurrent.DefId, BRepGraph_NodeId(BRepGraph_ShellId::Start()));
+  EXPECT_EQ(anExp.CurrentNode(), aCurrent.DefId);
+  EXPECT_TRUE(anExp.CurrentLocation().IsEqual(aCurrent.Location));
+  EXPECT_EQ(anExp.CurrentOrientation(), aCurrent.Orientation);
 
   anExp.Next();
   EXPECT_FALSE(anExp.More());
@@ -310,7 +315,8 @@ TEST(BRepGraph_ParentExplorerTest, DeepProductOccurrenceChain_ComposesToTopProdu
   BRepGraph_ProductId       aChildProduct = aPart;
   double                    anExpectedX   = 0.0;
   BRepGraph_ProductId       aTopProduct;
-  for (int aLevel = 1; aLevel <= 6; ++aLevel)
+  constexpr size_t          THE_ASSEMBLY_DEPTH = 32;
+  for (size_t aLevel = 1; aLevel <= THE_ASSEMBLY_DEPTH; ++aLevel)
   {
     aTopProduct = aGraph.Editor().Products().Add();
     aGraph.Editor().Products().AppendDocumentRoot(aTopProduct);
@@ -843,4 +849,99 @@ TEST(BRepGraph_ParentExplorerTest, ProductRoot_HasNoParents)
 
   BRepGraph_ParentExplorer anExp(aGraph, aRootProduct);
   EXPECT_FALSE(anExp.More());
+}
+
+TEST(BRepGraph_ParentIteratorTest, FaceParent_ExposesExactReferenceTransition)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildResult =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+
+  BRepGraph_ParentIterator anIt(aGraph, BRepGraph_FaceId::Start());
+  ASSERT_TRUE(anIt.More());
+  const BRepGraph_ParentIterator::ValueType aParent = anIt.Current();
+  EXPECT_EQ(aParent.Parent, BRepGraph_NodeId(BRepGraph_ShellId::Start()));
+  EXPECT_EQ(aParent.Link, BRepGraph_ParentIterator::LinkKind::Reference);
+
+  const BRepGraph_FaceRefId aFaceRef =
+    aGraph.Refs().Faces().IdsOf(BRepGraph_ShellId::Start()).First();
+  EXPECT_EQ(aParent.Ref, BRepGraph_RefId(aFaceRef));
+}
+
+TEST(BRepGraph_ParentIteratorTest, VertexParents_PositionResumesWithoutReplaying)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildResult =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+
+  BRepGraph_ParentIterator anIt(aGraph, BRepGraph_VertexId::Start());
+  ASSERT_TRUE(anIt.More());
+  const BRepGraph_NodeId                   aFirstParent    = anIt.Current().Parent;
+  const BRepGraph_ParentIterator::Position aResumePosition = anIt.CurrentPosition();
+
+  BRepGraph_ParentIterator aResumed(aGraph, BRepGraph_VertexId::Start(), aResumePosition);
+  ASSERT_TRUE(aResumed.More());
+  EXPECT_NE(aResumed.Current().Parent, aFirstParent);
+  EXPECT_EQ(aResumed.Current().Parent.NodeKind, BRepGraph_NodeId::Kind::Edge);
+}
+
+TEST(BRepGraph_ParentIteratorTest, StructuralParents_ExposeNoReferenceAndLocalOrientation)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildResult =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+
+  BRepGraph_ParentIterator anOccurrenceIt(aGraph, BRepGraph_SolidId::Start());
+  while (anOccurrenceIt.More()
+         && anOccurrenceIt.Current().Parent.NodeKind != BRepGraph_NodeId::Kind::Occurrence)
+  {
+    anOccurrenceIt.Next();
+  }
+  ASSERT_TRUE(anOccurrenceIt.More());
+  EXPECT_EQ(anOccurrenceIt.Current().Link, BRepGraph_ParentIterator::LinkKind::Structural);
+  EXPECT_FALSE(anOccurrenceIt.Current().Ref.IsValid());
+  EXPECT_TRUE(anOccurrenceIt.CurrentLocalLocation().IsIdentity());
+
+  const BRepGraph_CoEdgeId aCoEdge = BRepGraph_CoEdgeId::Start();
+  const BRepGraph_EdgeId   anEdge  = aGraph.Topo().CoEdges().Definition(aCoEdge).ChildEdgeId;
+  BRepGraph_ParentIterator aCoEdgeIt(aGraph, anEdge);
+  while (aCoEdgeIt.More() && aCoEdgeIt.Current().Parent != BRepGraph_NodeId(aCoEdge))
+  {
+    aCoEdgeIt.Next();
+  }
+  ASSERT_TRUE(aCoEdgeIt.More());
+  EXPECT_EQ(aCoEdgeIt.Current().Link, BRepGraph_ParentIterator::LinkKind::Structural);
+  EXPECT_FALSE(aCoEdgeIt.Current().Ref.IsValid());
+  EXPECT_EQ(aCoEdgeIt.Current().LocalOrientation,
+            aGraph.Topo().CoEdges().Definition(aCoEdge).Orientation);
+}
+
+TEST(BRepGraph_ParentIteratorTest, RepeatedChildUse_PreservesEachExactReference)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  const BRepGraph_VertexId aVertex = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+
+  NCollection_LinearVector<BRepGraph_NodeId> aChildren;
+  aChildren.Append(aVertex);
+  aChildren.Append(aVertex);
+  const BRepGraph_CompoundId aCompound = aGraph.Editor().Compounds().Add(aChildren.ToArray1());
+  ASSERT_TRUE(aCompound.IsValid());
+
+  NCollection_LinearVector<BRepGraph_RefId> aFoundRefs;
+  for (BRepGraph_ParentIterator anIt(aGraph, aVertex); anIt.More(); anIt.Next())
+  {
+    if (anIt.Current().Parent == BRepGraph_NodeId(aCompound))
+    {
+      aFoundRefs.Append(anIt.Current().Ref);
+    }
+  }
+
+  ASSERT_EQ(aFoundRefs.Size(), 2);
+  EXPECT_TRUE(aFoundRefs.Value(0).IsValid());
+  EXPECT_TRUE(aFoundRefs.Value(1).IsValid());
+  EXPECT_NE(aFoundRefs.Value(0), aFoundRefs.Value(1));
 }

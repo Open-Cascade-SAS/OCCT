@@ -34,10 +34,6 @@
 #include <TopoDS_Shape.hxx>
 #include <cmath>
 
-#ifdef OCCT_DEBUG
-static int AffichEps = 0;
-#endif
-
 namespace
 {
 
@@ -170,10 +166,7 @@ static double surfaceProperties(const TopoDS_Shape& S,
                                 const bool          SkipShared,
                                 const bool          UseTriangulation)
 {
-  int i;
-#ifdef OCCT_DEBUG
-  int iErrorMax = 0;
-#endif
+  int              i;
   double           ErrorMax = 0.0, Error;
   TopExp_Explorer  ex;
   gp_Pnt           P(roughBaryCenter(S));
@@ -235,9 +228,6 @@ static double surfaceProperties(const TopoDS_Shape& S,
         if (ErrorMax < Error)
         {
           ErrorMax = Error;
-#ifdef OCCT_DEBUG
-          iErrorMax = i;
-#endif
         }
       }
       else
@@ -252,16 +242,8 @@ static double surfaceProperties(const TopoDS_Shape& S,
         }
       }
       Props.Add(G);
-#ifdef OCCT_DEBUG
-      if (AffichEps)
-        std::cout << "\n" << i << ":\tEpsArea = " << G.GetEpsilon();
-#endif
     }
   }
-#ifdef OCCT_DEBUG
-  if (AffichEps)
-    std::cout << "\n-----------------\n" << iErrorMax << ":\tMaxError = " << ErrorMax << "\n";
-#endif
   return ErrorMax;
 }
 
@@ -302,10 +284,7 @@ static double volumePropertiesFaces(const TopoDS_Shape& S,
                                     const bool          SkipShared,
                                     const bool          UseTriangulation)
 {
-  int i;
-#ifdef OCCT_DEBUG
-  int iErrorMax = 0;
-#endif
+  int              i;
   double           ErrorMax = 0.0, Error = 0.0;
   TopExp_Explorer  ex;
   BRepGProp_Vinert G;
@@ -377,9 +356,6 @@ static double volumePropertiesFaces(const TopoDS_Shape& S,
           if (ErrorMax < Error)
           {
             ErrorMax = Error;
-#ifdef OCCT_DEBUG
-            iErrorMax = i;
-#endif
           }
         }
         else
@@ -394,17 +370,9 @@ static double volumePropertiesFaces(const TopoDS_Shape& S,
           }
         }
         Props.Add(G);
-#ifdef OCCT_DEBUG
-        if (AffichEps)
-          std::cout << "\n" << i << ":\tEpsVolume = " << G.GetEpsilon();
-#endif
       }
     }
   }
-#ifdef OCCT_DEBUG
-  if (AffichEps)
-    std::cout << "\n-----------------\n" << iErrorMax << ":\tMaxError = " << ErrorMax << "\n";
-#endif
   return ErrorMax;
 }
 
@@ -597,10 +565,7 @@ double BRepGProp::VolumeProperties(const TopoDS_Shape& S,
   gp_Pnt P(0, 0, 0);
   P.Transform(S.Location());
   Props = GProp_GProps(P);
-  int i;
-#ifdef OCCT_DEBUG
-  int iErrorMax = 0;
-#endif
+  int    i;
   double ErrorMax = 0.0, Error = 0.0;
   if (OnlyClosed)
   {
@@ -619,9 +584,6 @@ double BRepGProp::VolumeProperties(const TopoDS_Shape& S,
         if (ErrorMax < Error)
         {
           ErrorMax = Error;
-#ifdef OCCT_DEBUG
-          iErrorMax = i;
-#endif
         }
       }
     }
@@ -630,10 +592,6 @@ double BRepGProp::VolumeProperties(const TopoDS_Shape& S,
   {
     ErrorMax = volumeProperties(S, Props, Eps, SkipShared, false);
   }
-#ifdef OCCT_DEBUG
-  if (AffichEps)
-    std::cout << "\n\n===================" << iErrorMax << ":\tMaxEpsVolume = " << ErrorMax << "\n";
-#endif
   return ErrorMax;
 }
 

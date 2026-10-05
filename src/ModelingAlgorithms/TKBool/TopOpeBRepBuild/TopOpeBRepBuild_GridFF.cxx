@@ -582,7 +582,7 @@ void TopOpeBRepBuild_Builder::GFillFacesWESMakeFaces(const NCollection_List<Topo
   // xpu290498
 
   NCollection_List<TopoDS_Shape> LOFS; // LOFS : LOF faces situees TB1/LSO2
-  GKeepShapes(FF, myEmptyShapeList, TB1, LOF, LOFS);
+  GKeepShapes(FF, TB1, LOF, LOFS);
 
   // les faces construites (LOFS) prennent l'orientation originale de FF
   TopAbs_Orientation odsFF = myDataStructure->Shape(iFF).Orientation();
@@ -1173,9 +1173,6 @@ void TopOpeBRepBuild_Builder::GSplitEdgeWES(const TopoDS_Shape&                 
 
 } // GSplitEdgeWES
 
-Standard_IMPORT bool                         FUN_ismotheropedef();
-Standard_IMPORT const TopOpeBRepBuild_GTopo& FUN_motherope();
-
 #ifdef OCCT_DEBUG
 void debmergee(const int /*i*/) {}
 #endif
@@ -1270,7 +1267,7 @@ void TopOpeBRepBuild_Builder::GMergeEdgeWES(const TopoDS_Shape&          EOR,
     return;
   }
 
-  ChangeMerged(EOR, TBEOR) = myEmptyShapeList;
+  ChangeMerged(EOR, TBEOR) = NCollection_List<TopoDS_Shape>();
   TopAbs_State stspEOR;
   //  if (isfafa) stspEOR = TBEOR; // xpu110598
   //  else stspEOR = (TBEOR == TopAbs_IN) ? TopAbs_ON : TopAbs_OUT;
@@ -1403,6 +1400,7 @@ void TopOpeBRepBuild_Builder::GSplitEdge(const TopoDS_Shape&                   E
   toclass      = !ONSOLID;
 
   NCollection_List<TopoDS_Shape>        loos;
+  const NCollection_List<TopoDS_Shape>  anEmptyShapeList;
   const NCollection_List<TopoDS_Shape>* pls;
   if (myClassifySplitEdge)
   {
@@ -1424,7 +1422,7 @@ void TopOpeBRepBuild_Builder::GSplitEdge(const TopoDS_Shape&                   E
   }
   else
   {
-    pls = &myEmptyShapeList;
+    pls = &anEmptyShapeList;
   }
 
   NCollection_List<TopoDS_Shape>           aLON;

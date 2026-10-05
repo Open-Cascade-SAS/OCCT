@@ -238,9 +238,9 @@ TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec, const double U1, const 
 
 void HLRBRep::PolyHLRAngleAndDeflection(const double InAngl, double& OutAngl, double& OutDefl)
 {
-  static double HAngMin = 1 * M_PI / 180;
-  static double HAngLim = 5 * M_PI / 180;
-  static double HAngMax = 35 * M_PI / 180;
+  constexpr double HAngMin = M_PI / 180;
+  constexpr double HAngLim = 5 * M_PI / 180;
+  constexpr double HAngMax = 35 * M_PI / 180;
 
   OutAngl = InAngl;
   if (OutAngl < HAngMin)

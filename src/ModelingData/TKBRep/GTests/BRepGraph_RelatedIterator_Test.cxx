@@ -247,7 +247,7 @@ TEST(BRepGraph_RelatedIteratorStandalone, Compound_YieldsNoRelations)
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_CompoundId aCompoundId;
-  for (BRepGraph_CompoundIterator anIt(aGraph); anIt.More(); anIt.Next())
+  for (BRepGraph_CompoundIterator anIt(aGraph); anIt.More();)
   {
     aCompoundId = anIt.CurrentId();
     break;

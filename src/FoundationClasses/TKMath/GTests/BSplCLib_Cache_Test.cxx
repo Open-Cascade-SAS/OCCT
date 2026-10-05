@@ -24,6 +24,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cmath>
+
 namespace
 {
 constexpr double THE_TOLERANCE = 1e-10;
@@ -518,5 +520,70 @@ TEST_F(BSplCLib_CacheTest, D3_NonRationalCurve3D)
     // Compare torsion
     EXPECT_NEAR(aCacheTors.X(), aDirectTors.X(), THE_TOLERANCE)
       << "D3 torsion X mismatch at u=" << u;
+  }
+}
+
+TEST_F(BSplCLib_CacheTest, NearRepeatedKnotUsesActualSpan)
+{
+  constexpr int aDegree = 3;
+
+  NCollection_Array1<gp_Pnt> aPoles(1, 10);
+  for (int anIndex = aPoles.Lower(); anIndex <= aPoles.Upper(); ++anIndex)
+  {
+    const double aValue = static_cast<double>(anIndex);
+    aPoles(anIndex)     = gp_Pnt(aValue, std::sin(aValue), aValue * aValue);
+  }
+
+  NCollection_Array1<double> aKnots(1, 5);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.2;
+  aKnots(3) = 0.5;
+  aKnots(4) = 0.75;
+  aKnots(5) = 1.0;
+  NCollection_Array1<int> aMults(1, 5);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 2;
+  aMults(4) = 3;
+  aMults(5) = 4;
+
+  NCollection_Array1<double> aFlatKnots(1, BSplCLib::KnotSequenceLength(aMults, aDegree, false));
+  BSplCLib::KnotSequence(aKnots, aMults, aDegree, false, aFlatKnots);
+
+  occ::handle<BSplCLib_Cache> aCache =
+    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  for (const double aParameter : {std::nextafter(0.5, 0.0), std::nextafter(0.75, 0.0)})
+  {
+    aCache->BuildCache(aParameter, aFlatKnots, aPoles, nullptr);
+    EXPECT_TRUE(aCache->IsCacheValid(aParameter));
+
+    gp_Pnt aPoint, aRefPoint;
+    gp_Vec aD1, aD2, aD3, aRefD1, aRefD2, aRefD3;
+    aCache->D3(aParameter, aPoint, aD1, aD2, aD3);
+
+    int    aRefSpan  = 0;
+    double aRefParam = aParameter;
+    BSplCLib::LocateParameter(aDegree, aKnots, &aMults, aParameter, false, aRefSpan, aRefParam);
+    if (aRefParam < aKnots.Value(aRefSpan))
+    {
+      --aRefSpan;
+    }
+    BSplCLib::D3(aRefParam,
+                 aRefSpan,
+                 aDegree,
+                 false,
+                 aPoles,
+                 nullptr,
+                 aKnots,
+                 &aMults,
+                 aRefPoint,
+                 aRefD1,
+                 aRefD2,
+                 aRefD3);
+
+    EXPECT_TRUE(aPoint.IsEqual(aRefPoint, THE_TOLERANCE));
+    EXPECT_TRUE(aD1.IsEqual(aRefD1, THE_TOLERANCE, THE_TOLERANCE));
+    EXPECT_TRUE(aD2.IsEqual(aRefD2, THE_TOLERANCE, THE_TOLERANCE));
+    EXPECT_TRUE(aD3.IsEqual(aRefD3, THE_TOLERANCE, THE_TOLERANCE));
   }
 }

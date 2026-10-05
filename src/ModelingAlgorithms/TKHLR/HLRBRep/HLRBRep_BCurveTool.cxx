@@ -25,7 +25,7 @@
 int HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C, const double U0, const double U1)
 {
   GeomAbs_CurveType typC     = C.GetType();
-  static double     nbsOther = 10.0;
+  constexpr double  nbsOther = 10.0;
   double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)

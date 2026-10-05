@@ -26,14 +26,17 @@
 #include <BRepGraph_Tool.hxx>
 #include <BRepGraph_UIDsView.hxx>
 #include <BRepGraph_Copy.hxx>
+#include <BRepGraph_CopyRemap.hxx>
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_Cache.hxx>
 #include <BRepGraph_LayerHistory.hxx>
 #include <BRepGraph_LayerRegistry.hxx>
-#include <BRepGraph_LayerTopoSupplement.hxx>
 #include <BRepGraph_CacheMesh.hxx>
 #include <BRepGraph_MeshView.hxx>
 #include <BRepGraph_RefsIterator.hxx>
+#include <BRepGraph_Validate.hxx>
+#include <BRepGraph_SupplementsView.hxx>
+#include <BRepGraphSupInc_TopologyStore.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -53,8 +56,11 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
+#include <atomic>
 #include <cmath>
 #include <iostream>
+#include <thread>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -112,6 +118,45 @@ public:
 
 private:
   NCollection_FlatMap<BRepGraph_NodeId> myNodes;
+};
+
+class CopyTestMeshDriver : public BRepGraph_CacheMesh::Driver
+{
+public:
+  DEFINE_STANDARD_RTTI_INLINE(CopyTestMeshDriver, BRepGraph_CacheMesh::Driver)
+
+  explicit CopyTestMeshDriver(const size_t theRecipeHash)
+      : myRecipeHash(theRecipeHash)
+  {
+  }
+
+  const Standard_GUID& ID() const override
+  {
+    static const Standard_GUID THE_ID("8f14b24b-4f20-4cb5-88d1-89eb339a8b88");
+    return THE_ID;
+  }
+
+  size_t RecipeHash() const override { return myRecipeHash; }
+
+  bool Fill(BRepGraph&,
+            BRepGraph_CacheMesh::SlotId,
+            const BRepGraph_CacheMesh::DirtySet&,
+            const Message_ProgressRange&) override
+  {
+    return false;
+  }
+
+  occ::handle<BRepGraph_CacheMesh::Driver> Copy(const BRepGraph_CopyRemap& theCopy) const override
+  {
+    if (theCopy.IsCompact())
+    {
+      return occ::handle<BRepGraph_CacheMesh::Driver>(const_cast<CopyTestMeshDriver*>(this));
+    }
+    return new CopyTestMeshDriver(myRecipeHash);
+  }
+
+private:
+  size_t myRecipeHash = 0;
 };
 
 template <typename IdT>
@@ -214,6 +259,26 @@ void expectMeshHandlesCopied(const occ::handle<Poly_Triangulation>&          the
   EXPECT_EQ(theCopiedPolygonOnTri->Node(2), theSourcePolygonOnTri->Node(2));
 }
 
+void expectMeshHandlesShared(const occ::handle<Poly_Triangulation>&          theSharedTriangulation,
+                             const occ::handle<Poly_Polygon3D>&              theSharedPolygon3D,
+                             const occ::handle<Poly_Polygon2D>&              theSharedPolygon2D,
+                             const occ::handle<Poly_PolygonOnTriangulation>& theSharedPolygonOnTri,
+                             const occ::handle<Poly_Triangulation>&          theSourceTriangulation,
+                             const occ::handle<Poly_Polygon3D>&              theSourcePolygon3D,
+                             const occ::handle<Poly_Polygon2D>&              theSourcePolygon2D,
+                             const occ::handle<Poly_PolygonOnTriangulation>& theSourcePolygonOnTri)
+{
+  ASSERT_FALSE(theSharedTriangulation.IsNull());
+  ASSERT_FALSE(theSharedPolygon3D.IsNull());
+  ASSERT_FALSE(theSharedPolygon2D.IsNull());
+  ASSERT_FALSE(theSharedPolygonOnTri.IsNull());
+
+  EXPECT_EQ(theSharedTriangulation.get(), theSourceTriangulation.get());
+  EXPECT_EQ(theSharedPolygon3D.get(), theSourcePolygon3D.get());
+  EXPECT_EQ(theSharedPolygon2D.get(), theSourcePolygon2D.get());
+  EXPECT_EQ(theSharedPolygonOnTri.get(), theSourcePolygonOnTri.get());
+}
+
 } // namespace
 
 TEST(BRepGraph_CopyTest, CopyBox_FaceCount)
@@ -227,7 +292,10 @@ TEST(BRepGraph_CopyTest, CopyBox_FaceCount)
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph aCopyGraph;
-  BRepGraph_Copy::Perform(aGraph, aCopyGraph, BRepGraph_Copy::GeomPolicy::Copy);
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aGraph,
+                                      aCopyGraph,
+                                      BRepGraph_Copy::GeomPolicy::Share,
+                                      BRepGraph_Copy::MeshPolicy::Share));
   ASSERT_FALSE(aCopyGraph.IsEmpty());
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), 6);
   EXPECT_EQ(aCopyGraph.Topo().Faces().Nb(), aGraph.Topo().Faces().Nb());
@@ -242,6 +310,119 @@ TEST(BRepGraph_CopyTest, CopyBox_FaceCount)
     ++aNbFaces;
   }
   EXPECT_EQ(aNbFaces, 6);
+}
+
+TEST(BRepGraph_CopyTest, CopyEmptyGraph_Succeeds)
+{
+  BRepGraph aSource;
+  BRepGraph aTarget;
+
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aSource, aTarget));
+  EXPECT_TRUE(aTarget.IsEmpty());
+}
+
+TEST(BRepGraph_CopyTest, CopyEmptyTarget_PreservesShapeAndOriginalBindings)
+{
+  const TopoDS_Shape aSourceShape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  BRepGraph          aSource;
+  aSource.Clear();
+  ASSERT_TRUE(aSource.Shapes().Add(aSourceShape).IsOk());
+
+  const BRepGraph_NodeId aSourceNode = aSource.Shapes().FindNode(aSourceShape);
+  ASSERT_TRUE(aSourceNode.IsValid());
+  ASSERT_TRUE(aSource.Shapes().HasOriginal(aSourceNode));
+  const TopoDS_Shape anOriginal = aSource.Shapes().Original(aSourceNode);
+  ASSERT_FALSE(anOriginal.IsNull());
+
+  BRepGraph aTarget;
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aSource, aTarget));
+  EXPECT_EQ(aTarget.Shapes().FindNode(aSourceShape), aSourceNode);
+  EXPECT_TRUE(aTarget.Shapes().HasOriginal(aSourceNode));
+  EXPECT_TRUE(aTarget.Shapes().Original(aSourceNode).IsSame(anOriginal));
+}
+
+TEST(BRepGraph_CopyTest, PerformIntoNonEmptyTargetAppendsOnlyCopiedRoots)
+{
+  BRepGraph aTarget;
+  aTarget.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aTargetBuild =
+    aTarget.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aTarget.IsEmpty());
+  ASSERT_EQ(aTarget.RootProductIds().Size(), 1u);
+  const BRepGraph_ProductId anExistingRoot = aTarget.RootProductIds().Value(0);
+
+  BRepGraph aSource;
+  aSource.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aSourceBuild =
+    aSource.Shapes().Add(BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape());
+  ASSERT_FALSE(aSource.IsEmpty());
+  ASSERT_EQ(aSource.RootProductIds().Size(), 1u);
+
+  const uint32_t aFirstNewProduct = aTarget.Topo().Products().Nb();
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aSource, aTarget, BRepGraph_Copy::GeomPolicy::Copy));
+  ASSERT_EQ(aTarget.RootProductIds().Size(), 2u);
+  EXPECT_EQ(aTarget.RootProductIds().Value(0), anExistingRoot);
+  EXPECT_GE(aTarget.RootProductIds().Value(1).Index, aFirstNewProduct);
+  EXPECT_NE(aTarget.RootProductIds().Value(1), anExistingRoot);
+
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aSource, aTarget, BRepGraph_Copy::GeomPolicy::Copy));
+  ASSERT_EQ(aTarget.RootProductIds().Size(), 3u);
+  EXPECT_EQ(aTarget.RootProductIds().Value(0), anExistingRoot);
+  EXPECT_NE(aTarget.RootProductIds().Value(1), aTarget.RootProductIds().Value(2));
+}
+
+TEST(BRepGraph_CopyTest, ConcurrentCopiesFromSameSourceAreReadSafe)
+{
+  constexpr int THE_NB_THREADS    = 8;
+  constexpr int THE_NB_ITERATIONS = 24;
+
+  BRepGraph aSource;
+  aSource.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildResult =
+    aSource.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aSource.IsEmpty());
+
+  std::atomic<int>         aReadyCount{0};
+  std::atomic<bool>        toStart{false};
+  std::atomic<int>         aFailureCount{0};
+  std::vector<std::thread> aThreads;
+  aThreads.reserve(static_cast<size_t>(THE_NB_THREADS));
+
+  for (int aThreadIdx = 0; aThreadIdx < THE_NB_THREADS; ++aThreadIdx)
+  {
+    aThreads.emplace_back([&]() {
+      aReadyCount.fetch_add(1);
+      while (!toStart.load())
+      {
+        std::this_thread::yield();
+      }
+
+      for (int anIteration = 0; anIteration < THE_NB_ITERATIONS; ++anIteration)
+      {
+        BRepGraph aCopy;
+        if (!BRepGraph_Copy::Perform(aSource, aCopy, BRepGraph_Copy::GeomPolicy::Copy)
+            || aCopy.IsEmpty() || aCopy.Topo().Faces().Nb() != aSource.Topo().Faces().Nb()
+            || aCopy.Topo().Edges().Nb() != aSource.Topo().Edges().Nb()
+            || !BRepGraph_Validate::Perform(aCopy).IsValid())
+        {
+          aFailureCount.fetch_add(1);
+        }
+      }
+    });
+  }
+
+  while (aReadyCount.load() != THE_NB_THREADS)
+  {
+    std::this_thread::yield();
+  }
+  toStart.store(true);
+
+  for (std::thread& aThread : aThreads)
+  {
+    aThread.join();
+  }
+
+  EXPECT_EQ(aFailureCount.load(), 0);
 }
 
 TEST(BRepGraph_CopyTest, CopyGraph_RemovedOccurrenceActiveCountsMatchFlags)
@@ -269,7 +450,10 @@ TEST(BRepGraph_CopyTest, CopyGraph_RemovedOccurrenceActiveCountsMatchFlags)
   ASSERT_TRUE(anOccRefId.IsRemoved(aGraph));
 
   BRepGraph aCopyGraph;
-  BRepGraph_Copy::Perform(aGraph, aCopyGraph, BRepGraph_Copy::GeomPolicy::Copy);
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aGraph,
+                                      aCopyGraph,
+                                      BRepGraph_Copy::GeomPolicy::Share,
+                                      BRepGraph_Copy::MeshPolicy::Share));
   ASSERT_FALSE(aCopyGraph.IsEmpty());
 
   EXPECT_TRUE(anOccId.IsRemoved(aCopyGraph));
@@ -378,9 +562,18 @@ TEST(BRepGraph_CopyTest, CopyGraph_CanCopyFreshRuntimeFaceCacheMesh)
   const BRepGraph_FaceId aFaceId = BRepGraph_FaceId::Start();
   ASSERT_TRUE(aFaceId.IsValid(aGraph.Topo().Faces().Nb()));
 
+  constexpr size_t                       THE_RECIPE_HASH = 0x9a17u;
+  const occ::handle<BRepGraph_CacheMesh> aSourceCache =
+    aGraph.CacheRegistry().Ensure<BRepGraph_CacheMesh>();
+  aSourceCache->RegisterDriver(BRepGraph_CacheMesh::DefaultDisplaySlot,
+                               new CopyTestMeshDriver(THE_RECIPE_HASH));
+  const occ::handle<BRepGraph_CacheMesh::Driver> aSourceDriver =
+    aSourceCache->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot);
+
   occ::handle<Poly_Triangulation> aTriangulation = new Poly_Triangulation(3, 1, false);
   aGraph.Mesh().Editor().Faces().SetCachedTriangulation(aFaceId, aTriangulation);
   ASSERT_NE(aGraph.Mesh().Cache().Faces().Entry(aFaceId), nullptr);
+  ASSERT_FALSE(aSourceCache->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot).IsNull());
 
   BRepGraph aCopyGraph;
   ASSERT_TRUE(BRepGraph_Copy::Perform(aGraph,
@@ -394,6 +587,19 @@ TEST(BRepGraph_CopyTest, CopyGraph_CanCopyFreshRuntimeFaceCacheMesh)
     aCopyGraph.Mesh().Cache().Faces().Entry(aFaceId);
   ASSERT_NE(aCopiedEntry, nullptr);
   EXPECT_EQ(aCopiedEntry->Triangulation.get(), aTriangulation.get());
+
+  const occ::handle<BRepGraph_CacheMesh> aCopiedCache =
+    aCopyGraph.CacheRegistry().Find<BRepGraph_CacheMesh>();
+  ASSERT_FALSE(aCopiedCache.IsNull());
+  const occ::handle<BRepGraph_CacheMesh::Driver> aCopiedDriver =
+    aCopiedCache->DriverOf(BRepGraph_CacheMesh::DefaultDisplaySlot);
+  ASSERT_FALSE(aCopiedDriver.IsNull());
+  EXPECT_NE(aCopiedDriver.get(), aSourceDriver.get());
+  EXPECT_EQ(aCopiedDriver->RecipeHash(), THE_RECIPE_HASH);
+  const BRepGraph_CacheMesh::SlotState aCopiedState =
+    aCopiedCache->State(BRepGraph_CacheMesh::DefaultDisplaySlot);
+  EXPECT_TRUE(aCopiedState.HasDriver);
+  EXPECT_EQ(aCopiedState.RecipeHash, THE_RECIPE_HASH);
 }
 
 TEST(BRepGraph_CopyTest, CopyGraph_DropsRuntimeEdgeAndCoEdgeCacheMesh)
@@ -545,6 +751,49 @@ TEST(BRepGraph_CopyTest, CopyGraph_CopiesPersistentMeshHandles)
     aPolygonOnTri);
 }
 
+TEST(BRepGraph_CopyTest, CopyGraph_SharesPersistentMeshHandles)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const BRepGraph_FaceId   aFaceId   = BRepGraph_FaceId::Start();
+  const BRepGraph_CoEdgeId aCoEdgeId = firstCoEdgeOfFace(aGraph, aFaceId);
+  ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
+  const BRepGraph_EdgeId anEdgeId = aGraph.Topo().CoEdges().Definition(aCoEdgeId).ChildEdgeId;
+  ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
+
+  occ::handle<Poly_Triangulation>          aTriangulation = new Poly_Triangulation(3, 1, false);
+  occ::handle<Poly_Polygon3D>              aPolygon3D     = new Poly_Polygon3D(2, false);
+  occ::handle<Poly_Polygon2D>              aPolygon2D     = new Poly_Polygon2D(2);
+  occ::handle<Poly_PolygonOnTriangulation> aPolygonOnTri =
+    new Poly_PolygonOnTriangulation(2, false);
+  initMeshHandles(aTriangulation, aPolygon3D, aPolygon2D, aPolygonOnTri);
+
+  aGraph.Editor().Faces().SetPersistentTriangulation(aFaceId, aTriangulation);
+  aGraph.Editor().Edges().SetPersistentPolygon3D(anEdgeId, aPolygon3D);
+  aGraph.Editor().CoEdges().SetPersistentPolygon2D(aCoEdgeId, aPolygon2D);
+  aGraph.Editor().CoEdges().SetPersistentPolygonOnTri(aCoEdgeId, aPolygonOnTri);
+
+  BRepGraph aCopyGraph;
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aGraph,
+                                      aCopyGraph,
+                                      BRepGraph_Copy::GeomPolicy::Copy,
+                                      BRepGraph_Copy::MeshPolicy::Share));
+
+  expectMeshHandlesShared(
+    aCopyGraph.Mesh().Persistent().Faces().Triangulation(aFaceId),
+    aCopyGraph.Mesh().Persistent().Edges().Polygon3D(anEdgeId),
+    aCopyGraph.Mesh().Persistent().CoEdges().PolygonOnSurface(aCoEdgeId),
+    aCopyGraph.Mesh().Persistent().CoEdges().PolygonOnTriangulation(aCoEdgeId),
+    aTriangulation,
+    aPolygon3D,
+    aPolygon2D,
+    aPolygonOnTri);
+}
+
 TEST(BRepGraph_CopyTest, CopyGraph_NonEmptyTargetUsesSetterPathForPersistentMesh)
 {
   BRepGraph aSource;
@@ -670,6 +919,41 @@ TEST(BRepGraph_CopyTest, CopyBox_SharedGeometry)
             BRepGraph_Tool::Face::Surface(aGraph, BRepGraph_FaceId::Start()).get());
 }
 
+TEST(BRepGraph_CopyTest, CopyGraph_DropsGeometryHandles)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const BRepGraph_FaceId   aFaceId   = BRepGraph_FaceId::Start();
+  const BRepGraph_CoEdgeId aCoEdgeId = firstCoEdgeOfFace(aGraph, aFaceId);
+  ASSERT_TRUE(aCoEdgeId.IsValid(aGraph.Topo().CoEdges().Nb()));
+  const BRepGraph_EdgeId anEdgeId = aGraph.Topo().CoEdges().Definition(aCoEdgeId).ChildEdgeId;
+  ASSERT_TRUE(anEdgeId.IsValid(aGraph.Topo().Edges().Nb()));
+  ASSERT_TRUE(BRepGraph_Tool::Face::HasSurface(aGraph, aFaceId));
+  ASSERT_TRUE(BRepGraph_Tool::Edge::HasCurve(aGraph, anEdgeId));
+  ASSERT_TRUE(BRepGraph_Tool::CoEdge::HasPCurve(aGraph, aCoEdgeId));
+
+  BRepGraph aCopyGraph;
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aGraph,
+                                      aCopyGraph,
+                                      BRepGraph_Copy::GeomPolicy::Drop,
+                                      BRepGraph_Copy::MeshPolicy::Copy));
+  ASSERT_FALSE(aCopyGraph.IsEmpty());
+
+  EXPECT_FALSE(BRepGraph_Tool::Face::HasSurface(aCopyGraph, aFaceId));
+  EXPECT_FALSE(BRepGraph_Tool::Edge::HasCurve(aCopyGraph, anEdgeId));
+  EXPECT_FALSE(BRepGraph_Tool::CoEdge::HasPCurve(aCopyGraph, aCoEdgeId));
+  EXPECT_EQ(aCopyGraph.Topo().Faces().Definition(aFaceId).SurfaceRepId,
+            BRepGraph_FaceSurfaceRepId());
+  EXPECT_EQ(aCopyGraph.Topo().Edges().Definition(anEdgeId).Curve3DRepId,
+            BRepGraph_EdgeCurve3DRepId());
+  EXPECT_EQ(aCopyGraph.Topo().CoEdges().Definition(aCoEdgeId).Curve2DRepId,
+            BRepGraph_CoEdgeCurve2DRepId());
+}
+
 TEST(BRepGraph_CopyTest, CopyBox_DoesNotCopyTransientCacheServices)
 {
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
@@ -691,45 +975,56 @@ TEST(BRepGraph_CopyTest, CopyBox_DoesNotCopyTransientCacheServices)
   EXPECT_TRUE(aCopyGraph.CacheRegistry().Find<CopyTestCacheService>().IsNull());
 }
 
-TEST(BRepGraph_CopyTest, CopyGraph_PreservesSupplementAttachmentsAndUids)
+TEST(BRepGraph_CopyTest, CopyGraph_RemapsSupplementAttachmentsAndUids)
 {
   BRepGraph aGraph;
   aGraph.Clear();
-  const occ::handle<BRepGraph_LayerTopoSupplement> aRegisteredLayer =
-    aGraph.LayerRegistry().Ensure<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aRegisteredLayer.IsNull());
+  const occ::handle<BRepGraphSupInc_TopologyStore> aRegisteredStore =
+    aGraph.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
+  ASSERT_FALSE(aRegisteredStore.IsNull());
   [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildResSupplement =
     aGraph.Shapes().Add(makeEdgeWithInternalVertex());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  const occ::handle<BRepGraph_LayerTopoSupplement> aSrcLayer =
-    aGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aSrcLayer.IsNull());
+  const occ::handle<BRepGraphSupInc_TopologyStore> aSrcStore =
+    occ::down_cast<BRepGraphSupInc_TopologyStore>(
+      aGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+  ASSERT_FALSE(aSrcStore.IsNull());
   ASSERT_GT(aGraph.Topo().Edges().Nb(), 0);
 
-  const BRepGraph_EdgeId                    aEdgeId      = BRepGraph_EdgeId::Start();
-  const NCollection_LinearVector<uint64_t>& aSrcAttached = aSrcLayer->AttachedTo(aEdgeId);
+  const BRepGraph_EdgeId                                      aEdgeId = BRepGraph_EdgeId::Start();
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& aSrcAttached =
+    aGraph.Supplements().Attachments(aEdgeId);
   ASSERT_EQ(aSrcAttached.Size(), 1);
-  const uint64_t aUid = aSrcAttached.First();
+  const BRepGraphSupInc_TopologyId aSourceAttachmentId = aSrcAttached.First();
+  const BRepGraphSupInc_ItemUID    aUid                = aSrcStore->ItemUID(aSourceAttachmentId);
 
   BRepGraph aCopyGraph;
-  BRepGraph_Copy::Perform(aGraph, aCopyGraph, BRepGraph_Copy::GeomPolicy::Copy);
+  ASSERT_TRUE(BRepGraph_Copy::Perform(aGraph,
+                                      aCopyGraph,
+                                      BRepGraph_Copy::GeomPolicy::Share,
+                                      BRepGraph_Copy::MeshPolicy::Share));
   ASSERT_FALSE(aCopyGraph.IsEmpty());
 
-  const occ::handle<BRepGraph_LayerTopoSupplement> aDstLayer =
-    aCopyGraph.LayerRegistry().FindLayer<BRepGraph_LayerTopoSupplement>();
-  ASSERT_FALSE(aDstLayer.IsNull());
+  const occ::handle<BRepGraphSupInc_TopologyStore> aDstStore =
+    occ::down_cast<BRepGraphSupInc_TopologyStore>(
+      aCopyGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+  ASSERT_FALSE(aDstStore.IsNull());
 
-  const NCollection_LinearVector<uint64_t>& aDstAttached = aDstLayer->AttachedTo(aEdgeId);
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& aDstAttached =
+    aCopyGraph.Supplements().Attachments(aEdgeId);
   ASSERT_EQ(aDstAttached.Size(), 1);
-  EXPECT_EQ(aDstAttached.First(), aUid);
+  EXPECT_NE(aDstStore->ItemUID(aDstAttached.First()), aUid);
 
-  const BRepGraph_LayerTopoSupplement::Entry* aDstEntry = aDstLayer->FindByUid(aUid);
+  const BRepGraphSupInc::TopologyDef* aDstEntry =
+    aCopyGraph.Supplements().Attachment(aDstAttached.First());
   ASSERT_NE(aDstEntry, nullptr);
-  EXPECT_EQ(aDstEntry->BaseOwner, BRepGraph_NodeId(aEdgeId));
-  EXPECT_EQ(aDstEntry->Kind, BRepGraph_LayerTopoSupplement::AttachmentKind::EdgeInternalVertex);
-  EXPECT_EQ(aDstEntry->Shape.ShapeType(), TopAbs_VERTEX);
-  EXPECT_EQ(aDstEntry->Shape.Orientation(), TopAbs_INTERNAL);
+  EXPECT_EQ(aDstEntry->Owner, BRepGraph_NodeId(aEdgeId));
+  EXPECT_EQ(aDstEntry->Kind, BRepGraphSupInc::TopologyAttachmentKind::EdgeInternalVertex);
+  const TopoDS_Shape* anAttachmentShape = aCopyGraph.Supplements().AttachmentShape(*aDstEntry);
+  ASSERT_NE(anAttachmentShape, nullptr);
+  EXPECT_EQ(anAttachmentShape->ShapeType(), TopAbs_VERTEX);
+  EXPECT_EQ(anAttachmentShape->Orientation(), TopAbs_INTERNAL);
 
   const TopoDS_Shape aRecon = aCopyGraph.Shapes().Reconstruct(aEdgeId);
   ASSERT_FALSE(aRecon.IsNull());
@@ -743,6 +1038,114 @@ TEST(BRepGraph_CopyTest, CopyGraph_PreservesSupplementAttachmentsAndUids)
     }
   }
   EXPECT_EQ(aFoundInternal, 1);
+}
+
+TEST(BRepGraph_CopyTest, CopyNode_CopiesMappedTopologyAttachmentsAndReconstructsShape)
+{
+  BRepGraph aSource;
+  aSource.Clear();
+  const occ::handle<BRepGraphSupInc_TopologyStore> aSourceStore =
+    aSource.Supplements().EnsureStore<BRepGraphSupInc_TopologyStore>();
+  ASSERT_FALSE(aSourceStore.IsNull());
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuild =
+    aSource.Shapes().Add(makeEdgeWithInternalVertex());
+  const BRepGraph_EdgeId aSourceEdge = BRepGraph_EdgeId::Start();
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& aSourceAttachments =
+    aSource.Supplements().Attachments(aSourceEdge);
+  ASSERT_EQ(aSourceAttachments.Size(), 1u);
+  const BRepGraphSupInc_ItemUID aSourceUID = aSourceStore->ItemUID(aSourceAttachments.First());
+
+  BRepGraph              aTarget;
+  const BRepGraph_NodeId aCopiedNode =
+    BRepGraph_Copy::CopyNode(aSource, aTarget, BRepGraph_NodeId(aSourceEdge));
+  ASSERT_TRUE(aCopiedNode.IsValid());
+  const BRepGraph_EdgeId aCopiedEdge = BRepGraph_EdgeId::FromNodeId(aCopiedNode);
+  const occ::handle<BRepGraphSupInc_TopologyStore> aTargetStore =
+    occ::down_cast<BRepGraphSupInc_TopologyStore>(
+      aTarget.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()));
+  ASSERT_FALSE(aTargetStore.IsNull());
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& aTargetAttachments =
+    aTarget.Supplements().Attachments(aCopiedEdge);
+  ASSERT_EQ(aTargetAttachments.Size(), 1u);
+  EXPECT_NE(aTargetStore->ItemUID(aTargetAttachments.First()), aSourceUID);
+  const TopoDS_Shape aTargetShape = aTarget.Shapes().Reconstruct(aCopiedEdge);
+  ASSERT_FALSE(aTargetShape.IsNull());
+  int aTargetInternalVertices = 0;
+  for (TopoDS_Iterator anIterator(aTargetShape, false); anIterator.More(); anIterator.Next())
+  {
+    if (anIterator.Value().ShapeType() == TopAbs_VERTEX
+        && anIterator.Value().Orientation() == TopAbs_INTERNAL)
+    {
+      ++aTargetInternalVertices;
+    }
+  }
+  EXPECT_EQ(aTargetInternalVertices, 1);
+
+  const BRepGraph_NodeId aSameGraphNode =
+    BRepGraph_Copy::CopyNode(aSource, aSource, BRepGraph_NodeId(aSourceEdge));
+  ASSERT_TRUE(aSameGraphNode.IsValid());
+  const BRepGraph_EdgeId aSameGraphEdge = BRepGraph_EdgeId::FromNodeId(aSameGraphNode);
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& aSameGraphAttachments =
+    aSource.Supplements().Attachments(aSameGraphEdge);
+  ASSERT_EQ(aSameGraphAttachments.Size(), 1u);
+  EXPECT_NE(aSourceStore->ItemUID(aSameGraphAttachments.First()), aSourceUID);
+  const BRepGraphSupInc::TopologyDef* aSameGraphAttachment =
+    aSource.Supplements().Attachment(aSameGraphAttachments.First());
+  ASSERT_NE(aSameGraphAttachment, nullptr);
+  EXPECT_EQ(aSameGraphAttachment->Owner, aSameGraphNode);
+  EXPECT_EQ(aSameGraphAttachment->Kind,
+            BRepGraphSupInc::TopologyAttachmentKind::EdgeInternalVertex);
+  EXPECT_EQ(aSameGraphAttachment->Shape.ShapeType(), TopAbs_VERTEX);
+  EXPECT_EQ(aSameGraphAttachment->Shape.Orientation(), TopAbs_INTERNAL);
+  const TopoDS_Shape aSameGraphShape = aSource.Shapes().Reconstruct(aSameGraphEdge);
+  ASSERT_FALSE(aSameGraphShape.IsNull());
+  int aSameGraphInternalVertices = 0;
+  for (TopoDS_Iterator anIterator(aSameGraphShape, false); anIterator.More(); anIterator.Next())
+  {
+    if (anIterator.Value().ShapeType() == TopAbs_VERTEX
+        && anIterator.Value().Orientation() == TopAbs_INTERNAL)
+    {
+      ++aSameGraphInternalVertices;
+    }
+  }
+  EXPECT_EQ(aSameGraphInternalVertices, 1);
+}
+
+TEST(BRepGraph_CopyTest, CopyNode_ExcludesAttachmentsOfUnmappedOwners)
+{
+  BRepGraph                aSource;
+  const BRepGraph_VertexId aFirstOwner = aSource.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  const BRepGraph_VertexId aSecondOwner =
+    aSource.Editor().Vertices().Add(gp_Pnt(1.0, 0.0, 0.0), 1.0e-7);
+  BRep_Builder  aBuilder;
+  TopoDS_Vertex aFirstAttachmentShape;
+  TopoDS_Vertex aSecondAttachmentShape;
+  aBuilder.MakeVertex(aFirstAttachmentShape, gp_Pnt(2.0, 0.0, 0.0), 1.0e-7);
+  aBuilder.MakeVertex(aSecondAttachmentShape, gp_Pnt(3.0, 0.0, 0.0), 1.0e-7);
+  ASSERT_TRUE(aSource.Supplements()
+                .Attach(aFirstOwner,
+                        BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                        aFirstAttachmentShape)
+                .IsValid());
+  ASSERT_TRUE(aSource.Supplements()
+                .Attach(aSecondOwner,
+                        BRepGraphSupInc::TopologyAttachmentKind::VertexSupplementShape,
+                        aSecondAttachmentShape)
+                .IsValid());
+
+  BRepGraph              aTarget;
+  const BRepGraph_NodeId aCopiedNode =
+    BRepGraph_Copy::CopyNode(aSource, aTarget, BRepGraph_NodeId(aFirstOwner));
+  ASSERT_TRUE(aCopiedNode.IsValid());
+  const BRepGraph_VertexId aCopiedOwner = BRepGraph_VertexId::FromNodeId(aCopiedNode);
+  const NCollection_LinearVector<BRepGraphSupInc_TopologyId>& aCopiedAttachments =
+    aTarget.Supplements().Attachments(aCopiedOwner);
+  ASSERT_EQ(aCopiedAttachments.Size(), 1u);
+  const BRepGraphSupInc::TopologyDef* anAttachment =
+    aTarget.Supplements().Attachment(aCopiedAttachments.First());
+  ASSERT_NE(anAttachment, nullptr);
+  EXPECT_EQ(anAttachment->Owner, aCopiedNode);
+  EXPECT_TRUE(aTarget.Supplements().Attachments(aSecondOwner).IsEmpty());
 }
 
 TEST(BRepGraph_CopyTest, CopyGraph_CopiesHistoryThroughLayerRemap)
@@ -821,7 +1224,7 @@ TEST(BRepGraph_CopyTest, CopyGraph_PreservesRefUIDs)
   EXPECT_TRUE(aResolvedRefId.IsValid());
   EXPECT_EQ(aResolvedRefId, BRepGraph_RefId(aWireRefId));
 
-  const BRepGraph_VersionStamp aStamp = aCopyGraph.UIDs().StampOf(aWireRefId);
+  const BRepGraph_ItemStamp aStamp = aCopyGraph.UIDs().StampOf(aWireRefId);
   EXPECT_TRUE(aStamp.IsValid());
   EXPECT_EQ(aStamp.ItemUID(), BRepGraph_ItemUID::Reference(aWireRefUID.Kind, aWireRefUID.Counter));
 }
@@ -912,6 +1315,37 @@ TEST(BRepGraph_CopyTest, CopySingleFace)
   GProp_GProps aProps;
   BRepGProp::SurfaceProperties(aCopiedFace, aProps);
   EXPECT_GT(std::abs(aProps.Mass()), 1.0);
+}
+
+TEST(BRepGraph_CopyTest, CopyNode_SelfCopyDuplicatesFaceSubgraph)
+{
+  BRepGraph aGraph;
+  aGraph.Clear();
+  [[maybe_unused]] const BRepGraph::ShapesView::Result aBuildRes =
+    aGraph.Shapes().Add(BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape());
+  ASSERT_FALSE(aGraph.IsEmpty());
+
+  const uint32_t         aFaceCountBefore   = aGraph.Topo().Faces().Nb();
+  const uint32_t         aWireCountBefore   = aGraph.Topo().Wires().Nb();
+  const uint32_t         anEdgeCountBefore  = aGraph.Topo().Edges().Nb();
+  const uint32_t         aVertexCountBefore = aGraph.Topo().Vertices().Nb();
+  const BRepGraph_FaceId aSourceFaceId      = BRepGraph_FaceId::Start();
+
+  const BRepGraph_NodeId aCopiedNodeId =
+    BRepGraph_Copy::CopyNode(aGraph, aGraph, BRepGraph_NodeId(aSourceFaceId));
+  ASSERT_TRUE(aCopiedNodeId.IsValid());
+  ASSERT_EQ(aCopiedNodeId.NodeKind, BRepGraph_NodeId::Kind::Face);
+  EXPECT_NE(aCopiedNodeId, BRepGraph_NodeId(aSourceFaceId));
+
+  EXPECT_EQ(aGraph.Topo().Faces().Nb(), aFaceCountBefore + 1);
+  EXPECT_GT(aGraph.Topo().Wires().Nb(), aWireCountBefore);
+  EXPECT_GT(aGraph.Topo().Edges().Nb(), anEdgeCountBefore);
+  EXPECT_GT(aGraph.Topo().Vertices().Nb(), aVertexCountBefore);
+
+  const BRepGraph_FaceId aCopiedFaceId = BRepGraph_FaceId::FromNodeId(aCopiedNodeId);
+  const TopoDS_Shape     aCopiedFace   = aGraph.Shapes().Reconstruct(aCopiedFaceId);
+  ASSERT_FALSE(aCopiedFace.IsNull());
+  EXPECT_EQ(aCopiedFace.ShapeType(), TopAbs_FACE);
 }
 
 TEST(BRepGraph_CopyTest, CopyFacesOnly_Compound)

@@ -39,79 +39,12 @@
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
 #include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 #include <gce_MakePln.hxx>
 #include <gp_Pnt2d.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Gauss.hxx>
-
-#ifdef OCCT_DEBUG
-  #include <Geom_BSplineCurve.hxx>
-  #include <Standard_Integer.hxx>
-  // POP pour NT
-  #include <stdio.h>
-
-static bool sectioncalculee;
-static int  IndexOfSection   = 0;
-static int  IndexOfRejection = 0;
-static int  nbcomputedsection;
-extern bool Blend_GettraceDRAWSECT();
-extern bool Blend_GetcontextNOTESTDEFL();
-
-// Pour debug : visualisation de la section
-static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
-                     const occ::handle<Adaptor3d_Surface>& surf2,
-                     const math_Vector&                    sol,
-                     const double                          param,
-                     Blend_Function&                       Func,
-                     const Blend_Status                    State)
-{
-  //  if(!sectioncalculee) return;
-  Blend_Point BP(Adaptor3d_HSurfaceTool::Value(surf1, sol(1), sol(2)),
-                 Adaptor3d_HSurfaceTool::Value(surf2, sol(3), sol(4)),
-                 param,
-                 sol(1),
-                 sol(2),
-                 sol(3),
-                 sol(4));
-  int         hp, hk, hd, hp2d;
-  Func.GetShape(hp, hk, hd, hp2d);
-  NCollection_Array1<double> TK(1, hk);
-  Func.Knots(TK);
-  NCollection_Array1<int> TMul(1, hk);
-  Func.Mults(TMul);
-  NCollection_Array1<gp_Pnt>   TP(1, hp);
-  NCollection_Array1<gp_Pnt2d> TP2d(1, hp2d);
-  NCollection_Array1<double>   TW(1, hp);
-  Func.Section(BP, TP, TP2d, TW);
-  occ::handle<Geom_BSplineCurve> sect = new Geom_BSplineCurve(TP, TW, TK, TMul, hd);
-
-  // POP pour NT
-  // char name[100];
-  char* name = new char[100];
-  if ((State == Blend_StepTooLarge) || (State == Blend_SamePoints))
-  {
-    IndexOfRejection++;
-    Sprintf(name, "%s_%d", "Rejection", IndexOfRejection);
-  }
-  else
-  {
-    IndexOfSection++;
-    Sprintf(name, "%s_%d", "Section", IndexOfSection);
-  }
-}
-
-static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
-                     const occ::handle<Adaptor3d_Surface>& surf2,
-                     const math_Vector&                    sol,
-                     const double                          param,
-                     Blend_Function&                       Func)
-{
-  Drawsect(surf1, surf2, sol, param, Func, Blend_OK);
-}
-#endif
 
 BRepBlend_Walking::BRepBlend_Walking(const occ::handle<Adaptor3d_Surface>&   Surf1,
                                      const occ::handle<Adaptor3d_Surface>&   Surf2,
@@ -260,21 +193,11 @@ void BRepBlend_Walking::Perform(Blend_Function&    Func,
     sol = ParDep;
   }
 
-#ifdef OCCT_DEBUG
-  sectioncalculee = 0;
-#endif
   State = TestArret(Func, Blend_OK, false);
   if (State != Blend_OK)
   {
     return;
   }
-#ifdef OCCT_DEBUG
-  if (Blend_GettraceDRAWSECT())
-  {
-    Drawsect(surf1, surf2, sol, param, Func);
-  }
-  nbcomputedsection = 1;
-#endif
   // Mettre a jour la ligne.
   // Correct first parameter if needed
   if (ToCorrectOnRst1 || ToCorrectOnRst2)
@@ -348,12 +271,6 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function& Func,
   }
 
   TestArret(Func, Blend_OK, false);
-#ifdef OCCT_DEBUG
-  if (Blend_GettraceDRAWSECT())
-  {
-    Drawsect(surf1, surf2, sol, param, Func);
-  }
-#endif
   return true;
 }
 
@@ -557,12 +474,6 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function&    Func,
   switch (State)
   {
     case Blend_OnRst1: {
-#ifdef OCCT_DEBUG
-      if (Blend_GettraceDRAWSECT())
-      {
-        Drawsect(surf1, surf2, sol, param, Func);
-      }
-#endif
       MakeExtremity(Ext1, true, Index1, solrst1(1), Isvtx1, Vtx1);
       if (ToCorrectOnRst1)
       {
@@ -576,12 +487,6 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function&    Func,
     break;
 
     case Blend_OnRst2: {
-#ifdef OCCT_DEBUG
-      if (Blend_GettraceDRAWSECT())
-      {
-        Drawsect(surf1, surf2, sol, param, Func);
-      }
-#endif
       if (ToCorrectOnRst2)
       {
         Ext1.SetValue(CorrectedPnt, CorrectedU, CorrectedV, tolpoint3d);
@@ -595,12 +500,6 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function&    Func,
     break;
 
     case Blend_OnRst12: {
-#ifdef OCCT_DEBUG
-      if (Blend_GettraceDRAWSECT())
-      {
-        Drawsect(surf1, surf2, sol, param, Func);
-      }
-#endif
       MakeExtremity(Ext1, true, Index1, solrst1(1), Isvtx1, Vtx1);
       MakeExtremity(Ext2, false, Index2, solrst2(1), Isvtx2, Vtx2);
     }
@@ -811,9 +710,6 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&    Function,
   }
   if (Function.IsSolution(sol, tolsolu))
   {
-#ifdef OCCT_DEBUG
-    sectioncalculee = 1;
-#endif
     bool curpointistangent = Function.IsTangencyPoint();
     pt1                    = Function.PointOnS1();
     pt2                    = Function.PointOnS2();
@@ -1972,11 +1868,6 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
 
   while (!Arrive)
   {
-#ifdef OCCT_DEBUG
-    sectioncalculee = 0;
-    nbcomputedsection++;
-#endif
-
     hguide->D1(param, PtOnGuide, TgOnGuide);
     // Check deflection on guide
     Cosi = PrevTgOnGuide * TgOnGuide;
@@ -2339,19 +2230,15 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           State = Blend_OK;
         }
 
-        bool testdefl = true;
-#ifdef OCCT_DEBUG
-        testdefl = !Blend_GetcontextNOTESTDEFL();
-#endif
         if (recad1 || recad2)
         {
           Func.Set(param);
           // Il vaut mieux un pas non orthodoxe que pas de recadrage!! PMN
-          State = TestArret(Func, State, (testdefl && (std::abs(stepw) > 3 * tolgui)), false, true);
+          State = TestArret(Func, State, std::abs(stepw) > 3 * tolgui, false, true);
         }
         else
         {
-          State = TestArret(Func, State, testdefl);
+          State = TestArret(Func, State, true);
         }
       }
       else
@@ -2373,12 +2260,6 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
       }
     }
 
-#ifdef OCCT_DEBUG
-    if (Blend_GettraceDRAWSECT())
-    {
-      Drawsect(surf1, surf2, sol, param, Func, State);
-    }
-#endif
     switch (State)
     {
       case Blend_OK: {

@@ -24,6 +24,24 @@ BRepGraph_Layer::BRepGraph_Layer() = default;
 
 //=================================================================================================
 
+BRepGraph_RevisionComponent::ComponentDescriptor BRepGraph_Layer::RevisionDescriptor() const
+{
+  BRepGraph_RevisionComponent::ComponentDescriptor aDescriptor;
+  aDescriptor.StableGUID = ID();
+  return aDescriptor;
+}
+
+//=================================================================================================
+
+occ::handle<BRepGraph_RevisionComponent> BRepGraph_Layer::CaptureRevision(
+  const BRepGraph&,
+  BRepGraph_RevisionStatus::Diagnostics&) const
+{
+  return occ::handle<BRepGraph_RevisionComponent>();
+}
+
+//=================================================================================================
+
 const BRepGraph& BRepGraph_Layer::Graph() const
 {
   if (myGraph == nullptr)

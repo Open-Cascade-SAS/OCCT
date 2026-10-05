@@ -285,7 +285,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
       continue;
     }
 
-    for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More(); aVtxIt.Next())
+    for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More();)
     {
       const TopoDS_Vertex& aVertex    = TopoDS::Vertex(aVtxIt.Value());
       const double         aParameter = aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;
@@ -300,7 +300,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
        aFaceExp.Next())
   {
     const TopoDS_Face& aFace = TopoDS::Face(aFaceExp.Current());
-    for (TopExp_Explorer aVtxExp(aFace, TopAbs_VERTEX); aVtxExp.More(); aVtxExp.Next())
+    for (TopExp_Explorer aVtxExp(aFace, TopAbs_VERTEX); aVtxExp.More();)
     {
       const TopoDS_Vertex& aVertex = TopoDS::Vertex(aVtxExp.Current());
       const gp_Pnt2d       aUV     = BRep_Tool::Parameters(aVertex, aFace);
@@ -330,7 +330,7 @@ TEST(BRepGraph_PolygonTest, VertexPointRepresentations_StructurallyValid)
       aBuilder.UpdateEdge(anEdge, aPCurve, aFace, BRep_Tool::Tolerance(anEdge));
       aBuilder.Range(anEdge, aFace, aFirst, aLast);
 
-      for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More(); aVtxIt.Next())
+      for (TopoDS_Iterator aVtxIt(anEdge, false, false); aVtxIt.More();)
       {
         const TopoDS_Vertex& aVertex    = TopoDS::Vertex(aVtxIt.Value());
         const double         aParameter = aVertex.Orientation() == TopAbs_REVERSED ? aLast : aFirst;

@@ -16,13 +16,14 @@
 
 #include <BRepGraph_Cache.hxx>
 #include <BRepGraph_CopyRemap.hxx>
-#include <NCollection_DataMap.hxx>
 #include <NCollection_FlatDataMap.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_GUID.hxx>
 
+#include <atomic>
 #include <functional>
+#include <limits>
 #include <mutex>
 #include <shared_mutex>
 
@@ -42,12 +43,29 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT BRepGraph_CacheRegistry();
+  Standard_EXPORT explicit BRepGraph_CacheRegistry(BRepGraph& theGraph);
+  Standard_EXPORT ~BRepGraph_CacheRegistry();
 
   BRepGraph_CacheRegistry(const BRepGraph_CacheRegistry&)            = delete;
   BRepGraph_CacheRegistry& operator=(const BRepGraph_CacheRegistry&) = delete;
 
   Standard_EXPORT BRepGraph_CacheRegistry(BRepGraph_CacheRegistry&& theOther) noexcept;
   Standard_EXPORT BRepGraph_CacheRegistry& operator=(BRepGraph_CacheRegistry&& theOther) noexcept;
+
+  //! Attach an external registry to a graph.
+  Standard_EXPORT void Attach(BRepGraph& theGraph);
+
+  //! Detach this registry and all registered caches from its graph.
+  Standard_EXPORT void Detach() noexcept;
+
+  //! Return true when this registry is attached to a graph.
+  [[nodiscard]] Standard_EXPORT bool IsAttached() const noexcept;
+
+  //! Return true when this registry is attached to the supplied graph.
+  [[nodiscard]] Standard_EXPORT bool IsFor(const BRepGraph& theGraph) const noexcept;
+
+  //! Return the attached graph, or null for a detached registry.
+  [[nodiscard]] Standard_EXPORT BRepGraph* AttachedGraph() const noexcept;
 
   //! Register a cache service. Replaces an existing cache with the same GUID.
   //! @param[in] theCache cache service
@@ -80,7 +98,7 @@ public:
   template <typename T>
   [[nodiscard]] occ::handle<T> Find() const
   {
-    return occ::down_cast<T>(FindCache(T::GetID()));
+    return occ::down_cast<T>(findCache(T::GetID()));
   }
 
   //! Return an existing cache service or create and register a default one.
@@ -93,7 +111,7 @@ public:
   }
 
   //! Return current graph-local slot for a GUID.
-  //! @param[in] theGUID cache family identity
+  //! @param[in] theGUID cache type identity
   //! @param[out] theSlot graph-local slot index
   //! @return true if the cache service is registered
   [[nodiscard]] Standard_EXPORT bool FindSlot(const Standard_GUID& theGUID,
@@ -108,7 +126,7 @@ public:
 
   //! Return cache service by graph-local slot, or null handle if the slot is out of range.
   //! @param[in] theSlot graph-local cache slot
-  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> Cache(uint32_t theSlot) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> Cache(const uint32_t theSlot) const;
 
   //! Number of registered cache services.
   [[nodiscard]] uint32_t NbCaches() const
@@ -127,12 +145,17 @@ public:
   Standard_EXPORT void CopyFreshCachesTo(
     BRepGraph&                                                         theTargetGraph,
     const NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>& theItemRemap,
-    const BRepGraph_CopyRemap::Mode                                    theMode) const;
+    const BRepGraph_CopyRemap::Mode                                    theMode,
+    const BRepGraph_CopyRemap::FreshnessPolicy                         theFreshnessPolicy =
+      BRepGraph_CopyRemap::FreshnessPolicy::SourceOnly) const;
 
   //! Ask registered cache services to copy fresh data using identity mapping.
-  Standard_EXPORT void CopyFreshCachesTo(BRepGraph&                       theTargetGraph,
-                                         BRepGraph_CopyRemap::MappingKind theMappingKind,
-                                         BRepGraph_CopyRemap::Mode        theMode) const;
+  Standard_EXPORT void CopyFreshCachesTo(
+    BRepGraph&                                 theTargetGraph,
+    const BRepGraph_CopyRemap::MappingKind     theMappingKind,
+    const BRepGraph_CopyRemap::Mode            theMode,
+    const BRepGraph_CopyRemap::FreshnessPolicy theFreshnessPolicy =
+      BRepGraph_CopyRemap::FreshnessPolicy::SourceOnly) const;
 
   //! Unregister all cache services.
   Standard_EXPORT void Clear() noexcept;
@@ -141,13 +164,21 @@ private:
   friend class ::BRepGraph;
   friend struct ::BRepGraph_Data;
 
-  //! Attach this registry to graph owner. Propagates context to registered caches.
-  Standard_EXPORT void Attach(BRepGraph* theGraph) noexcept;
+  static constexpr uint32_t THE_INVALID_SLOT = std::numeric_limits<uint32_t>::max();
 
-  //! Clear the graph data binding.
-  Standard_EXPORT void Detach() noexcept;
+  //! Attach this registry to graph owner. Propagates context to registered caches.
+  Standard_EXPORT void attachGraph(BRepGraph* theGraph) noexcept;
+
+  //! Rebind an external registry after its graph owner has moved.
+  Standard_EXPORT void rebindGraph(BRepGraph* theGraph) noexcept;
+
+  //! Detach an external registry from a graph that is being destroyed.
+  Standard_EXPORT void detachGraphFromOwner(BRepGraph* theGraph) noexcept;
 
   [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> findCacheLocked(
+    const Standard_GUID& theGUID) const;
+
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> findCache(
     const Standard_GUID& theGUID) const;
 
   //! Return an existing cache service or create and register a default one.
@@ -157,15 +188,21 @@ private:
     const Standard_GUID&                                 theGUID,
     const std::function<occ::handle<BRepGraph_Cache>()>& theFactory);
 
-  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> cacheAt(uint32_t theSlot) const;
+  [[nodiscard]] Standard_EXPORT occ::handle<BRepGraph_Cache> cacheAt(const uint32_t theSlot) const;
 
-  Standard_EXPORT uint32_t registerCacheLocked(const occ::handle<BRepGraph_Cache>& theCache);
+  Standard_EXPORT uint32_t registerCacheLocked(const occ::handle<BRepGraph_Cache>& theCache,
+                                               occ::handle<BRepGraph_Cache>&       theRemoved,
+                                               bool&                               theToAttach);
 
-  Standard_EXPORT void detachAllLocked() noexcept;
+  Standard_EXPORT void releaseCaches(const bool theToClearDetached) noexcept;
+
+  Standard_EXPORT void releaseIfUnregistered(const occ::handle<BRepGraph_Cache>& theCache) noexcept;
 
   NCollection_LinearVector<occ::handle<BRepGraph_Cache>> myCaches;
-  NCollection_DataMap<Standard_GUID, uint32_t>           myGuidToSlot;
-  BRepGraph*                                             myGraph = nullptr;
+  NCollection_FlatDataMap<Standard_GUID, uint32_t>       myGuidToSlot;
+  std::atomic<BRepGraph*>                                myGraph{nullptr};
+  bool                                                   myIsExternal  = false;
+  bool                                                   myIsDetaching = false;
   mutable std::shared_mutex                              myMutex;
 };
 

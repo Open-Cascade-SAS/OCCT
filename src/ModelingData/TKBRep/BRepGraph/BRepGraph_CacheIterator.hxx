@@ -17,13 +17,13 @@
 #include <BRepGraph_CacheRegistry.hxx>
 #include <NCollection_ForwardRange.hxx>
 
-//! @brief Iterator over registered cache families in a BRepGraph_CacheRegistry.
+//! @brief Iterator over registered cache types in a BRepGraph_CacheRegistry.
 //!
 //! Supports OCCT More()/Next()/Value() pattern and STL range-for via begin()/end().
 class BRepGraph_CacheIterator
 {
 public:
-  //! Construct an iterator over all cache families in the registry.
+  //! Construct an iterator over all cache types in the registry.
   explicit BRepGraph_CacheIterator(const BRepGraph_CacheRegistry& theRegistry)
       : myRegistry(&theRegistry),
         myCount(theRegistry.NbCaches())
@@ -33,16 +33,16 @@ public:
   //! True if the iterator has a current element.
   [[nodiscard]] bool More() const { return myCurrent < myCount; }
 
-  //! Advance to the next cache family.
+  //! Advance to the next cache type.
   void Next() { ++myCurrent; }
 
-  //! Return the current cache family descriptor.
+  //! Return the current cache type descriptor.
   [[nodiscard]] occ::handle<BRepGraph_Cache> Value() const { return myRegistry->Cache(myCurrent); }
 
   //! Return the current slot index in the registry.
   [[nodiscard]] uint32_t Slot() const { return myCurrent; }
 
-  //! Number of cache families in the registry.
+  //! Number of cache types in the registry.
   [[nodiscard]] uint32_t NbCaches() const { return myRegistry->NbCaches(); }
 
   //! STL range-for support.

@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <Standard_ProgramError.hxx>
+#include <Standard_NoSuchObject.hxx>
 #include <TopOpeBRepDS.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
@@ -31,6 +32,17 @@
 #define MDShaodmoiloi                                                                              \
   NCollection_HArray1<                                                                             \
     NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>>
+
+namespace
+{
+//=================================================================================================
+
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& EmptyListOfInterference()
+{
+  static const NCollection_List<occ::handle<TopOpeBRepDS_Interference>> anEmptyListOfInterference;
+  return anEmptyListOfInterference;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -131,7 +143,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI
   {
     return myT->Value(TI).Find(G);
   }
-  return myEmptyLOI;
+  return EmptyListOfInterference();
 }
 
 //=================================================================================================
@@ -146,7 +158,7 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::Chan
   {
     return myT->ChangeValue(TI).ChangeFind(G);
   }
-  return myEmptyLOI;
+  throw Standard_NoSuchObject("TopOpeBRepDS_TKI::ChangeInterferences");
 }
 
 //=================================================================================================
@@ -269,7 +281,7 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI
 {
   if (!More())
   {
-    return myEmptyLOI;
+    return EmptyListOfInterference();
   }
   K = myK;
   G = myG;
@@ -284,7 +296,7 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::Chan
 {
   if (!More())
   {
-    return myEmptyLOI;
+    throw Standard_NoSuchObject("TopOpeBRepDS_TKI::ChangeValue");
   }
   K = myK;
   G = myG;

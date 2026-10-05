@@ -19,7 +19,10 @@
 #include <BRepGraph_RefsIterator.hxx>
 #include <BRepGraph_RefsView.hxx>
 #include <BRepGraph_LayerHistory.hxx>
+#include <BRepGraph_SupplementsView.hxx>
+#include <BRepGraph_LayerSupplementRegistry.hxx>
 #include <BRepGraphInc_Storage.hxx>
+#include <BRepGraphSupInc_Storage.hxx>
 #include <MathUtils_Random.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_LinearVector.hxx>
@@ -29,6 +32,7 @@
 
 #include <random>
 #include <shared_mutex>
+#include <type_traits>
 
 namespace
 {
@@ -57,6 +61,21 @@ Standard_GUID generateRandomGUID()
 BRepGraph::BRepGraph()
     : myData(std::make_unique<BRepGraph_Data>())
 {
+  myData->myIncStorage.SetGraphGUID(generateRandomGUID());
+  initViewsAndRegistries();
+  (void)myData->myLayerRegistry.Ensure<BRepGraph_LayerHistory>();
+}
+
+//=================================================================================================
+
+BRepGraph::BRepGraph(const BRepGraphInc_Storage& theStorage,
+                     const bool                  theToCloneMutableRepresentations)
+    : myData(std::make_unique<BRepGraph_Data>(theStorage))
+{
+  if (theToCloneMutableRepresentations && !myData->myIncStorage.cloneMutableRepresentations())
+  {
+    throw Standard_ProgramError("BRepGraph: cannot isolate mutable representations");
+  }
   initViewsAndRegistries();
   (void)myData->myLayerRegistry.Ensure<BRepGraph_LayerHistory>();
 }
@@ -67,7 +86,9 @@ BRepGraph::~BRepGraph()
 {
   if (myData != nullptr)
   {
+    detachExternalCacheRegistries();
     myData->myLayerRegistry.Detach();
+    myData->myLayerSupplementRegistry.Detach();
     myData->myCacheRegistry.Detach();
   }
 }
@@ -144,10 +165,24 @@ BRepGraph::MeshView& BRepGraph::Mesh()
 
 //=================================================================================================
 
+BRepGraph::SupplementsView& BRepGraph::Supplements()
+{
+  return myData->mySupplementsView;
+}
+
+//=================================================================================================
+
+const BRepGraph::SupplementsView& BRepGraph::Supplements() const
+{
+  return myData->mySupplementsView;
+}
+
+//=================================================================================================
+
 BRepGraph::BRepGraph(BRepGraph&& theOther) noexcept
     : myData(std::move(theOther.myData))
 {
-  initViewsAndRegistries();
+  initViewsAndRegistries(true);
 }
 
 //=================================================================================================
@@ -158,11 +193,13 @@ BRepGraph& BRepGraph::operator=(BRepGraph&& theOther) noexcept
   {
     if (myData != nullptr)
     {
+      detachExternalCacheRegistries();
       myData->myLayerRegistry.Detach();
+      myData->myLayerSupplementRegistry.Detach();
       myData->myCacheRegistry.Detach();
     }
     myData = std::move(theOther.myData);
-    initViewsAndRegistries();
+    initViewsAndRegistries(true);
   }
   return *this;
 }
@@ -183,18 +220,133 @@ BRepGraph_RefUID BRepGraph::allocateRefUID(const BRepGraph_RefId theRefId)
 
 //=================================================================================================
 
+bool BRepGraph::RaiseNextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind,
+                                        const uint32_t               theNextCounter)
+{
+  if (!BRepGraph_NodeId::IsValidKind(theKind) || theNextCounter == 0)
+  {
+    return false;
+  }
+
+  const uint32_t aCurrentCounter = myData->myIncStorage.NextNodeUIDCounter(theKind);
+  if (theNextCounter < aCurrentCounter)
+  {
+    return false;
+  }
+  if (theNextCounter == aCurrentCounter)
+  {
+    return true;
+  }
+
+  myData->myIncStorage.SetNextNodeUIDCounter(theKind, theNextCounter);
+  return true;
+}
+
+//=================================================================================================
+
+bool BRepGraph::SetNextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind,
+                                      const uint32_t               theNextCounter)
+{
+  if (!BRepGraph_NodeId::IsValidKind(theKind) || theNextCounter == 0)
+  {
+    return false;
+  }
+  const uint32_t aCurrentCounter = NextNodeUIDCounter(theKind);
+  if (theNextCounter >= aCurrentCounter)
+  {
+    return RaiseNextNodeUIDCounter(theKind, theNextCounter);
+  }
+  for (uint32_t aCounter = theNextCounter; aCounter < aCurrentCounter; ++aCounter)
+  {
+    if (UIDs().NodeIdFrom(BRepGraph_UID(theKind, aCounter)).IsValid())
+    {
+      return false;
+    }
+  }
+  myData->myIncStorage.SetNextNodeUIDCounter(theKind, theNextCounter);
+  return true;
+}
+
+//=================================================================================================
+
+bool BRepGraph::RaiseNextRefUIDCounter(const BRepGraph_RefId::Kind theKind,
+                                       const uint32_t              theNextCounter)
+{
+  if (!BRepGraph_RefId::IsValidKind(theKind) || theNextCounter == 0)
+  {
+    return false;
+  }
+
+  const uint32_t aCurrentCounter = myData->myIncStorage.NextRefUIDCounter(theKind);
+  if (theNextCounter < aCurrentCounter)
+  {
+    return false;
+  }
+  if (theNextCounter == aCurrentCounter)
+  {
+    return true;
+  }
+
+  myData->myIncStorage.SetNextRefUIDCounter(theKind, theNextCounter);
+  return true;
+}
+
+//=================================================================================================
+
+bool BRepGraph::SetNextRefUIDCounter(const BRepGraph_RefId::Kind theKind,
+                                     const uint32_t              theNextCounter)
+{
+  if (!BRepGraph_RefId::IsValidKind(theKind) || theNextCounter == 0)
+  {
+    return false;
+  }
+  const uint32_t aCurrentCounter = NextRefUIDCounter(theKind);
+  if (theNextCounter >= aCurrentCounter)
+  {
+    return RaiseNextRefUIDCounter(theKind, theNextCounter);
+  }
+  for (uint32_t aCounter = theNextCounter; aCounter < aCurrentCounter; ++aCounter)
+  {
+    if (UIDs().RefIdFrom(BRepGraph_RefUID(theKind, aCounter)).IsValid())
+    {
+      return false;
+    }
+  }
+  myData->myIncStorage.SetNextRefUIDCounter(theKind, theNextCounter);
+  return true;
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph::NextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind) const
+{
+  return myData->myIncStorage.NextNodeUIDCounter(theKind);
+}
+
+//=================================================================================================
+
+uint32_t BRepGraph::NextRefUIDCounter(const BRepGraph_RefId::Kind theKind) const
+{
+  return myData->myIncStorage.NextRefUIDCounter(theKind);
+}
+
 //=================================================================================================
 
 void BRepGraph::Clear()
 {
   Standard_ASSERT_RAISE(!myData->myIncStorage.HasAnyGuard(),
                         "BRepGraph::Clear(): guards still active");
+  Standard_ASSERT_RAISE(!myData->myIncStorage.DeferredMode(),
+                        "BRepGraph::Clear(): deferred invalidation mode is active");
   myData->myIncStorage.Clear();
+  myData->mySupplementStorage.Clear();
   myData->myCacheRegistry.ClearAll();
+  clearExternalCacheRegistries();
   myData->myIncStorage.IncrementGeneration();
   myData->myIncStorage.SetGraphGUID(generateRandomGUID());
 
   myData->myLayerRegistry.ClearAll();
+  myData->myLayerSupplementRegistry.ClearAll();
 }
 
 //=================================================================================================
@@ -347,32 +499,8 @@ bool BRepGraph_NodeId::IsRemoved(const BRepGraph& theGraph) const
     return false;
   }
   const BRepGraphInc_Storage& aS = theGraph.myData->myIncStorage;
-  switch (NodeKind)
-  {
-    case Kind::Vertex:
-      return aS.IsRemoved(BRepGraph_VertexId(*this));
-    case Kind::Edge:
-      return aS.IsRemoved(BRepGraph_EdgeId(*this));
-    case Kind::CoEdge:
-      return aS.IsRemoved(BRepGraph_CoEdgeId(*this));
-    case Kind::Wire:
-      return aS.IsRemoved(BRepGraph_WireId(*this));
-    case Kind::Face:
-      return aS.IsRemoved(BRepGraph_FaceId(*this));
-    case Kind::Shell:
-      return aS.IsRemoved(BRepGraph_ShellId(*this));
-    case Kind::Solid:
-      return aS.IsRemoved(BRepGraph_SolidId(*this));
-    case Kind::Compound:
-      return aS.IsRemoved(BRepGraph_CompoundId(*this));
-    case Kind::CompSolid:
-      return aS.IsRemoved(BRepGraph_CompSolidId(*this));
-    case Kind::Product:
-      return aS.IsRemoved(BRepGraph_ProductId(*this));
-    case Kind::Occurrence:
-      return aS.IsRemoved(BRepGraph_OccurrenceId(*this));
-  }
-  return false;
+  return BRepGraph_NodeId::Visit(*this,
+                                 [&aS](const auto theTypedId) { return aS.IsRemoved(theTypedId); });
 }
 
 //=================================================================================================
@@ -384,32 +512,8 @@ bool BRepGraph_NodeId::IsOwned(const BRepGraph& theGraph) const
     return false;
   }
   const BRepGraphInc_Storage& aS = theGraph.myData->myIncStorage;
-  switch (NodeKind)
-  {
-    case Kind::Vertex:
-      return aS.IsOwned(BRepGraph_VertexId(*this));
-    case Kind::Edge:
-      return aS.IsOwned(BRepGraph_EdgeId(*this));
-    case Kind::CoEdge:
-      return aS.IsOwned(BRepGraph_CoEdgeId(*this));
-    case Kind::Wire:
-      return aS.IsOwned(BRepGraph_WireId(*this));
-    case Kind::Face:
-      return aS.IsOwned(BRepGraph_FaceId(*this));
-    case Kind::Shell:
-      return aS.IsOwned(BRepGraph_ShellId(*this));
-    case Kind::Solid:
-      return aS.IsOwned(BRepGraph_SolidId(*this));
-    case Kind::Compound:
-      return aS.IsOwned(BRepGraph_CompoundId(*this));
-    case Kind::CompSolid:
-      return aS.IsOwned(BRepGraph_CompSolidId(*this));
-    case Kind::Product:
-      return aS.IsOwned(BRepGraph_ProductId(*this));
-    case Kind::Occurrence:
-      return aS.IsOwned(BRepGraph_OccurrenceId(*this));
-  }
-  return false;
+  return BRepGraph_NodeId::Visit(*this,
+                                 [&aS](const auto theTypedId) { return aS.IsOwned(theTypedId); });
 }
 
 //=================================================================================================
@@ -421,24 +525,8 @@ bool BRepGraph_RefId::IsRemoved(const BRepGraph& theGraph) const
     return false;
   }
   const BRepGraphInc_Storage& aS = theGraph.myData->myIncStorage;
-  switch (RefKind)
-  {
-    case Kind::Shell:
-      return aS.IsRemoved(BRepGraph_ShellRefId(*this));
-    case Kind::Face:
-      return aS.IsRemoved(BRepGraph_FaceRefId(*this));
-    case Kind::Wire:
-      return aS.IsRemoved(BRepGraph_WireRefId(*this));
-    case Kind::Vertex:
-      return aS.IsRemoved(BRepGraph_VertexRefId(*this));
-    case Kind::Solid:
-      return aS.IsRemoved(BRepGraph_SolidRefId(*this));
-    case Kind::Child:
-      return aS.IsRemoved(BRepGraph_ChildRefId(*this));
-    case Kind::Occurrence:
-      return aS.IsRemoved(BRepGraph_OccurrenceRefId(*this));
-  }
-  return false;
+  return BRepGraph_RefId::Visit(*this,
+                                [&aS](const auto theTypedId) { return aS.IsRemoved(theTypedId); });
 }
 
 //=================================================================================================
@@ -450,24 +538,8 @@ bool BRepGraph_RepId::IsRemoved(const BRepGraph& theGraph) const
     return false;
   }
   const BRepGraphInc_Storage& aS = theGraph.myData->myIncStorage;
-  switch (RepKind)
-  {
-    case Kind::EdgeCurve3D:
-      return aS.IsRemoved(BRepGraph_EdgeCurve3DRepId(Index));
-    case Kind::EdgePolygon3D:
-      return aS.IsRemoved(BRepGraph_EdgePolygon3DRepId(Index));
-    case Kind::CoEdgeCurve2D:
-      return aS.IsRemoved(BRepGraph_CoEdgeCurve2DRepId(Index));
-    case Kind::CoEdgePolygon2D:
-      return aS.IsRemoved(BRepGraph_CoEdgePolygon2DRepId(Index));
-    case Kind::CoEdgePolygonOnTri:
-      return aS.IsRemoved(BRepGraph_CoEdgePolygonOnTriRepId(Index));
-    case Kind::FaceSurface:
-      return aS.IsRemoved(BRepGraph_FaceSurfaceRepId(Index));
-    case Kind::FaceTriangulation:
-      return aS.IsRemoved(BRepGraph_FaceTriangulationRepId(Index));
-  }
-  return false;
+  return BRepGraph_RepId::Visit(*this,
+                                [&aS](const auto theTypedId) { return aS.IsRemoved(theTypedId); });
 }
 
 //=================================================================================================
@@ -479,24 +551,8 @@ bool BRepGraph_RefId::IsOwned(const BRepGraph& theGraph) const
     return false;
   }
   const BRepGraphInc_Storage& aS = theGraph.myData->myIncStorage;
-  switch (RefKind)
-  {
-    case Kind::Shell:
-      return aS.IsOwned(BRepGraph_ShellRefId(*this));
-    case Kind::Face:
-      return aS.IsOwned(BRepGraph_FaceRefId(*this));
-    case Kind::Wire:
-      return aS.IsOwned(BRepGraph_WireRefId(*this));
-    case Kind::Vertex:
-      return aS.IsOwned(BRepGraph_VertexRefId(*this));
-    case Kind::Solid:
-      return aS.IsOwned(BRepGraph_SolidRefId(*this));
-    case Kind::Child:
-      return aS.IsOwned(BRepGraph_ChildRefId(*this));
-    case Kind::Occurrence:
-      return aS.IsOwned(BRepGraph_OccurrenceRefId(*this));
-  }
-  return false;
+  return BRepGraph_RefId::Visit(*this,
+                                [&aS](const auto theTypedId) { return aS.IsOwned(theTypedId); });
 }
 
 //=================================================================================================
@@ -551,19 +607,14 @@ void BRepGraph::invalidateSubgraphImpl(const BRepGraph_NodeId theNode)
       continue;
     }
 
-    // Bounds check: skip nodes whose index is outside the entity vector.
-    if (topoEntity(aCurrent.Node) == nullptr)
+    // Increment OwnGen + SubtreeGen so generation-based cache freshness detects the change.
+    BRepGraphInc::BaseDef* anEntity = changeTopoEntity(aCurrent.Node);
+    if (anEntity == nullptr)
     {
       continue;
     }
-
-    // Increment OwnGen + SubtreeGen so generation-based cache freshness detects the change.
-    BRepGraphInc::BaseDef* anEntity = changeTopoEntity(aCurrent.Node);
-    if (anEntity != nullptr)
-    {
-      ++anEntity->OwnGen;
-      ++anEntity->SubtreeGen;
-    }
+    ++anEntity->OwnGen;
+    ++anEntity->SubtreeGen;
 
     const uint32_t aNextDepth = aCurrent.Depth + 1;
 
@@ -721,19 +772,20 @@ void BRepGraph::markRefModified(const BRepGraph_RefId theRefId) noexcept
     }
   }
 
-  const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
-  switch (theRefId.RefKind)
-  {
-    case BRepGraph_RefId::Kind::Vertex: {
-      const BRepGraph_VertexRefId aRefId(theRefId);
+  const BRepGraphInc_Storage& aStorage   = myData->myIncStorage;
+  const auto                  aPropagate = [this, &aStorage](const auto theTypedRef) noexcept {
+    using RefId = std::remove_cv_t<decltype(theTypedRef)>;
+    if constexpr (std::is_same_v<RefId, BRepGraph_VertexRefId>)
+    {
+      const BRepGraph_VertexRefId aRefId = theTypedRef;
       if (!aRefId.IsValid(aStorage.NbVertexRefs()))
       {
-        break;
+        return;
       }
       const BRepGraph_VertexId aVertexId = aStorage.VertexRef(aRefId).ChildVertexId;
       if (!aVertexId.IsValid(aStorage.NbVertices()))
       {
-        break;
+        return;
       }
       for (const BRepGraph_EdgeId& anEdgeId : aStorage.VertexRelations(aVertexId).EdgeIds)
       {
@@ -748,89 +800,87 @@ void BRepGraph::markRefModified(const BRepGraph_RefId theRefId) noexcept
           markModified(anEdgeId);
         }
       }
-      break;
     }
-    case BRepGraph_RefId::Kind::Wire: {
-      const BRepGraph_WireRefId aRefId(theRefId);
+    else if constexpr (std::is_same_v<RefId, BRepGraph_WireRefId>)
+    {
+      const BRepGraph_WireRefId aRefId = theTypedRef;
       if (!aRefId.IsValid(aStorage.NbWireRefs()))
       {
-        break;
+        return;
       }
       const BRepGraph_FaceId aFaceId = aStorage.WireRef(aRefId).ParentFaceId;
       if (aFaceId.IsValid(aStorage.NbFaces()) && !aFaceId.IsRemoved(*this))
       {
         markModified(aFaceId);
       }
-      break;
     }
-    case BRepGraph_RefId::Kind::Face: {
-      const BRepGraph_FaceRefId aRefId(theRefId);
+    else if constexpr (std::is_same_v<RefId, BRepGraph_FaceRefId>)
+    {
+      const BRepGraph_FaceRefId aRefId = theTypedRef;
       if (!aRefId.IsValid(aStorage.NbFaceRefs()))
       {
-        break;
+        return;
       }
       const BRepGraph_ShellId aShellId = aStorage.FaceRef(aRefId).ParentShellId;
       if (aShellId.IsValid(aStorage.NbShells()) && !aShellId.IsRemoved(*this))
       {
         markModified(aShellId);
       }
-      break;
     }
-    case BRepGraph_RefId::Kind::Shell: {
-      const BRepGraph_ShellRefId aRefId(theRefId);
+    else if constexpr (std::is_same_v<RefId, BRepGraph_ShellRefId>)
+    {
+      const BRepGraph_ShellRefId aRefId = theTypedRef;
       if (!aRefId.IsValid(aStorage.NbShellRefs()))
       {
-        break;
+        return;
       }
       const BRepGraph_SolidId aSolidId = aStorage.ShellRef(aRefId).ParentSolidId;
       if (aSolidId.IsValid(aStorage.NbSolids()) && !aSolidId.IsRemoved(*this))
       {
         markModified(aSolidId);
       }
-      break;
     }
-    case BRepGraph_RefId::Kind::Solid: {
-      const BRepGraph_SolidRefId aRefId(theRefId);
+    else if constexpr (std::is_same_v<RefId, BRepGraph_SolidRefId>)
+    {
+      const BRepGraph_SolidRefId aRefId = theTypedRef;
       if (!aRefId.IsValid(aStorage.NbSolidRefs()))
       {
-        break;
+        return;
       }
       const BRepGraph_CompSolidId aCompSolidId = aStorage.SolidRef(aRefId).ParentCompSolidId;
       if (aCompSolidId.IsValid(aStorage.NbCompSolids()) && !aCompSolidId.IsRemoved(*this))
       {
         markModified(aCompSolidId);
       }
-      break;
     }
-    case BRepGraph_RefId::Kind::Child: {
-      const BRepGraph_ChildRefId aRefId(theRefId);
+    else if constexpr (std::is_same_v<RefId, BRepGraph_ChildRefId>)
+    {
+      const BRepGraph_ChildRefId aRefId = theTypedRef;
       if (!aRefId.IsValid(aStorage.NbChildRefs()))
       {
-        break;
+        return;
       }
       const BRepGraph_CompoundId aCompoundId = aStorage.ChildRef(aRefId).ParentCompoundId;
       if (aCompoundId.IsValid(aStorage.NbCompounds()) && !aCompoundId.IsRemoved(*this))
       {
         markModified(aCompoundId);
       }
-      break;
     }
-    case BRepGraph_RefId::Kind::Occurrence: {
-      const BRepGraph_OccurrenceRefId aRefId(theRefId);
+    else if constexpr (std::is_same_v<RefId, BRepGraph_OccurrenceRefId>)
+    {
+      const BRepGraph_OccurrenceRefId aRefId = theTypedRef;
       if (!aRefId.IsValid(aStorage.NbOccurrenceRefs()))
       {
-        break;
+        return;
       }
       const BRepGraph_ProductId aProductId = aStorage.OccurrenceRef(aRefId).ParentProductId;
       if (aProductId.IsValid(aStorage.NbProducts()) && !aProductId.IsRemoved(*this))
       {
         markModified(aProductId);
       }
-      break;
     }
-    default:
-      break;
-  }
+  };
+  BRepGraph_RefId::Visit(theRefId, aPropagate);
 }
 
 //=================================================================================================
@@ -863,6 +913,23 @@ void BRepGraph::markParentSubtreeGen(const BRepGraph_NodeId theParentId) noexcep
 void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
 {
   const BRepGraphInc_Storage& aStorage = myData->myIncStorage;
+  if (BRepGraph_NodeId::IsTopologyKind(theNodeId.NodeKind)
+      || theNodeId.NodeKind == BRepGraph_NodeId::Kind::Product)
+  {
+    for (const BRepGraph_ChildRefId& aRefId : aStorage.CompoundRefsOfNode(theNodeId))
+    {
+      if (!aRefId.IsValid(aStorage.NbChildRefs()) || aStorage.IsRemoved(aRefId))
+      {
+        continue;
+      }
+      const BRepGraphInc::ChildRef& aRef = aStorage.ChildRef(aRefId);
+      if (aRef.ChildNodeId == theNodeId && aRef.ParentCompoundId.IsValid(aStorage.NbCompounds())
+          && !aStorage.IsRemoved(aRef.ParentCompoundId))
+      {
+        markParentSubtreeGen(aRef.ParentCompoundId);
+      }
+    }
+  }
   switch (theNodeId.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Vertex: {
@@ -980,13 +1047,6 @@ void BRepGraph::propagateSubtreeGen(const BRepGraph_NodeId theNodeId) noexcept
 
 //=================================================================================================
 
-const occ::handle<NCollection_BaseAllocator>& BRepGraph::Allocator() const
-{
-  return myData->myIncStorage.Allocator();
-}
-
-//=================================================================================================
-
 BRepGraph_LayerRegistry& BRepGraph::LayerRegistry()
 {
   return myData->myLayerRegistry;
@@ -997,6 +1057,20 @@ BRepGraph_LayerRegistry& BRepGraph::LayerRegistry()
 const BRepGraph_LayerRegistry& BRepGraph::LayerRegistry() const
 {
   return myData->myLayerRegistry;
+}
+
+//=================================================================================================
+
+BRepGraph_LayerSupplementRegistry& BRepGraph::LayerSupplementRegistry()
+{
+  return myData->myLayerSupplementRegistry;
+}
+
+//=================================================================================================
+
+const BRepGraph_LayerSupplementRegistry& BRepGraph::LayerSupplementRegistry() const
+{
+  return myData->myLayerSupplementRegistry;
 }
 
 //=================================================================================================
@@ -1029,6 +1103,20 @@ const BRepGraphInc_Storage& BRepGraph::incStorage() const
 
 //=================================================================================================
 
+BRepGraphSupInc_Storage& BRepGraph::supplementStorage()
+{
+  return myData->mySupplementStorage;
+}
+
+//=================================================================================================
+
+const BRepGraphSupInc_Storage& BRepGraph::supplementStorage() const
+{
+  return myData->mySupplementStorage;
+}
+
+//=================================================================================================
+
 BRepGraph_Data* BRepGraph::data()
 {
   return myData.get();
@@ -1057,6 +1145,20 @@ const BRepGraph_LayerRegistry& BRepGraph::layerRegistry() const
 
 //=================================================================================================
 
+BRepGraph_LayerSupplementRegistry& BRepGraph::layerSupplementRegistry()
+{
+  return myData->myLayerSupplementRegistry;
+}
+
+//=================================================================================================
+
+const BRepGraph_LayerSupplementRegistry& BRepGraph::layerSupplementRegistry() const
+{
+  return myData->myLayerSupplementRegistry;
+}
+
+//=================================================================================================
+
 BRepGraph_CacheRegistry& BRepGraph::cacheRegistry()
 {
   return myData->myCacheRegistry;
@@ -1071,20 +1173,129 @@ const BRepGraph_CacheRegistry& BRepGraph::cacheRegistry() const
 
 //=================================================================================================
 
-void BRepGraph::initViewsAndRegistries() noexcept
+void BRepGraph::registerExternalCacheRegistry(BRepGraph_CacheRegistry* theRegistry)
+{
+  if (theRegistry == nullptr)
+  {
+    return;
+  }
+  for (BRepGraph_CacheRegistry* aRegistry : myData->myExternalCacheRegistries)
+  {
+    if (aRegistry == theRegistry)
+    {
+      return;
+    }
+  }
+  myData->myExternalCacheRegistries.Append(theRegistry);
+}
+
+//=================================================================================================
+
+void BRepGraph::unregisterExternalCacheRegistry(BRepGraph_CacheRegistry* theRegistry) noexcept
+{
+  if (theRegistry == nullptr || myData == nullptr)
+  {
+    return;
+  }
+  for (size_t anIndex = 0; anIndex < myData->myExternalCacheRegistries.Size(); ++anIndex)
+  {
+    if (myData->myExternalCacheRegistries.Value(anIndex) == theRegistry)
+    {
+      myData->myExternalCacheRegistries.Erase(anIndex);
+      return;
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::replaceExternalCacheRegistry(BRepGraph_CacheRegistry* theOldRegistry,
+                                             BRepGraph_CacheRegistry* theNewRegistry) noexcept
+{
+  if (theOldRegistry == nullptr || theNewRegistry == nullptr || myData == nullptr)
+  {
+    return;
+  }
+  for (size_t anIndex = 0; anIndex < myData->myExternalCacheRegistries.Size(); ++anIndex)
+  {
+    if (myData->myExternalCacheRegistries.Value(anIndex) == theOldRegistry)
+    {
+      myData->myExternalCacheRegistries.ChangeValue(anIndex) = theNewRegistry;
+      return;
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::detachExternalCacheRegistries() noexcept
 {
   if (myData == nullptr)
   {
     return;
   }
-  myData->myTopoView   = TopoView(this);
-  myData->myUIDsView   = UIDsView(this);
-  myData->myRefsView   = RefsView(this);
-  myData->myShapesView = ShapesView(this);
-  myData->myEditorView = EditorView(this);
-  myData->myMeshView   = MeshView(this);
-  myData->myLayerRegistry.Attach(this);
-  myData->myCacheRegistry.Attach(this);
+  while (!myData->myExternalCacheRegistries.IsEmpty())
+  {
+    BRepGraph_CacheRegistry* aRegistry = myData->myExternalCacheRegistries.Last();
+    myData->myExternalCacheRegistries.EraseLast();
+    if (aRegistry != nullptr)
+    {
+      aRegistry->detachGraphFromOwner(this);
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::clearExternalCacheRegistries() noexcept
+{
+  if (myData == nullptr)
+  {
+    return;
+  }
+  for (BRepGraph_CacheRegistry* aRegistry : myData->myExternalCacheRegistries)
+  {
+    if (aRegistry != nullptr)
+    {
+      aRegistry->ClearAll();
+    }
+  }
+}
+
+//=================================================================================================
+
+void BRepGraph::initViewsAndRegistries(const bool theIsOwnerRelocation) noexcept
+{
+  if (myData == nullptr)
+  {
+    return;
+  }
+  myData->myTopoView        = TopoView(this);
+  myData->myUIDsView        = UIDsView(this);
+  myData->myRefsView        = RefsView(this);
+  myData->myShapesView      = ShapesView(this);
+  myData->myEditorView      = EditorView(this);
+  myData->myMeshView        = MeshView(this);
+  myData->mySupplementsView = SupplementsView(this);
+  if (theIsOwnerRelocation)
+  {
+    myData->myLayerRegistry.Relocate(this);
+    myData->myLayerSupplementRegistry.Relocate(this);
+    myData->myCacheRegistry.rebindGraph(this);
+  }
+  else
+  {
+    myData->myLayerRegistry.Attach(this);
+    myData->myLayerSupplementRegistry.Attach(this);
+    myData->myCacheRegistry.attachGraph(this);
+  }
+  for (BRepGraph_CacheRegistry* aRegistry : myData->myExternalCacheRegistries)
+  {
+    if (aRegistry != nullptr)
+    {
+      aRegistry->rebindGraph(this);
+    }
+  }
 }
 
 //=================================================================================================

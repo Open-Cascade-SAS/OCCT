@@ -5,6 +5,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   AdvApp2Var_Context_Test.cxx
   AdvApp2Var_Framework_Test.cxx
   AdvApp2Var_Iso_Test.cxx
+  AdvApp2Var_MathBase_Test.cxx
   AdvApp2Var_Network_Test.cxx
   AdvApp2Var_Node_Test.cxx
   AppCont_ContMatrices_Test.cxx
@@ -43,6 +44,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   ExtremaPC2d_OtherCurve_Test.cxx
   ExtremaPC2d_Parabola_Test.cxx
   ExtremaPC2d_Test.cxx
+  FEmTool_LinearCriteria_Test.cxx
   GC_MakeArcOfCircle_Test.cxx
   GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx

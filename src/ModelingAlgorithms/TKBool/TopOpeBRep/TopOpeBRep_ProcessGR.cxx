@@ -16,7 +16,6 @@
 
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
-#include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
@@ -36,21 +35,6 @@
 #include <TopOpeBRepTool_PROJECT.hxx>
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_SC.hxx>
-
-#ifdef OCCT_DEBUG
-  #include <Geom_TrimmedCurve.hxx>
-  #include <Geom_Line.hxx>
-extern bool TopOpeBRep_GettraceBIPS();
-extern bool TopOpeBRep_GettraceDEGEN();
-
-extern bool FUN_debnull(const TopoDS_Shape& s)
-{
-  bool isnull = s.IsNull();
-  if (isnull)
-    std::cout << "***";
-  return isnull;
-}
-#endif
 
 //=================================================================================================
 
@@ -95,12 +79,6 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF(const TopOpeBRep_VPointInter& vp
   //      we have to commutate these bounds.
   if (isperiodic)
   {
-#ifdef OCCT_DEBUG
-//    TopOpeBRep_FFDumper FFD(*this);
-//    std::cout <<"vpf :"; FFD.DumpVP(vpf,std::cout);
-//    std::cout <<"vpl :"; FFD.DumpVP(vpl,std::cout);
-#endif
-
     int IArc = 0;
     if (Lrest.ArcIsEdge(1))
     {

@@ -13,7 +13,6 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepCheck_Analyzer.hxx>
-#include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -184,7 +183,7 @@ TEST(ShapeFix_ShapeTest, OCC25014_EmptyWireReorderDoesNotThrow)
 
   ShapeFix_Wire aFixer;
   aFixer.Init(anAnalyzer);
-  ShapeAnalysis_WireOrder anOrder(true, BRepBuilderAPI::Precision());
+  ShapeAnalysis_WireOrder anOrder(true, Precision::Confusion());
   EXPECT_NO_THROW(anAnalyzer->CheckOrder(anOrder));
   EXPECT_NO_THROW(aFixer.FixReorder(anOrder));
   EXPECT_EQ(anOrder.NbEdges(), 0);

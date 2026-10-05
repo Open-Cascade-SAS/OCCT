@@ -715,7 +715,7 @@ const gp_Pnt& SelectMgr_AxisIntersector::GetFarPnt() const
                         "Error! SelectMgr_AxisIntersector::GetFarPnt() should be called after "
                         "selection axis initialization");
 
-  static gp_Pnt anInfPnt(RealLast(), RealLast(), RealLast());
+  static const gp_Pnt anInfPnt(RealLast(), RealLast(), RealLast());
   return anInfPnt;
 }
 

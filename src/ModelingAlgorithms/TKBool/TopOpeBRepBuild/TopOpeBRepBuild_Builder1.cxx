@@ -365,10 +365,10 @@ void TopOpeBRepBuild_Builder1::GFillFaceNotSameDomSFS(const TopoDS_Shape&       
     myONElemMap.Clear();
   }
 
-  // LOFS : LOF faces located TB1 / LSclass = split faces of state TB1 of FF
+  // LOFS : LOF faces located in state TB1 of FF
   NCollection_List<TopoDS_Shape>& LOFS = ChangeSplit(FF, TB1);
   LOFS.Clear();
-  GKeepShapes(FF, myEmptyShapeList, TB1, LOF, LOFS);
+  GKeepShapes(FF, TB1, LOF, LOFS);
 
   GSplitFaceSFS(FOR, LSO2, Gin, SFS);
 } // GFillFaceSFS
@@ -604,7 +604,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomSFS(const TopoDS_Shape&          
   }
 
   LOFS.Clear();
-  GKeepShapes(FF, myEmptyShapeList, TB1, oriLOF, LOFS);
+  GKeepShapes(FF, TB1, oriLOF, LOFS);
 } // GFillFaceSFS
 
 //=================================================================================================

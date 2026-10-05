@@ -22,8 +22,9 @@
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <IntRes2d_Position.hxx>
+#include <MathUtils_Core.hxx>
 
-static double PIpPI = M_PI + M_PI;
+constexpr double PIpPI = MathUtils::THE_2PI;
 
 //======================================================================
 //==========          P R O T O T Y P E S                   ============

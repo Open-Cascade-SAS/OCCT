@@ -731,7 +731,7 @@ TEST(BRepGraph_ScenarioMatrix, Assembly_SharedPartBetweenTwoRootAssemblies)
     aGraph.Shapes().Add(BRepPrimAPI_MakeBox(5.0, 5.0, 5.0).Shape());
   ASSERT_FALSE(aGraph.IsEmpty());
 
-  // Snapshot topology entity counts before any assembly wiring.
+  // Store topology entity counts before any assembly wiring.
   const uint32_t aNbSolidsBefore = aGraph.Topo().Solids().Nb();
   const uint32_t aNbFacesBefore  = aGraph.Topo().Faces().Nb();
 
@@ -1284,11 +1284,13 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_BoundaryVertexRetirement)
   ASSERT_FALSE(aPreStartRefId.IsRemoved(aGraph));
   ASSERT_FALSE(aPreEndRefId.IsRemoved(aGraph));
 
+  const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
   const BRepGraph_VertexId aSplitVertex =
-    aGraph.Editor().Vertices().Add(gp_Pnt(5.0, 10.0, 15.0), 1.0e-7);
+    aGraph.Editor().Vertices().Add(aCurve->Value(aSplitParam), 1.0e-7);
 
   BRepGraph_EdgeId aSubA, aSubB;
-  aGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
+  ASSERT_TRUE(aGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB));
   ASSERT_TRUE(aSubA.IsValid());
   ASSERT_TRUE(aSubB.IsValid());
 
@@ -1330,10 +1332,12 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_SubEdgesHaveNoOriginal)
   ASSERT_TRUE(anEdgeId.IsValid());
   ASSERT_TRUE(aGraph.Shapes().HasOriginal(anEdgeId));
 
+  const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
   const BRepGraph_VertexId aSplitVertex =
-    aGraph.Editor().Vertices().Add(gp_Pnt(5.0, 10.0, 15.0), 1.0e-7);
+    aGraph.Editor().Vertices().Add(aCurve->Value(aSplitParam), 1.0e-7);
   BRepGraph_EdgeId aSubA, aSubB;
-  aGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
+  ASSERT_TRUE(aGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB));
   ASSERT_TRUE(aSubA.IsValid());
   ASSERT_TRUE(aSubB.IsValid());
 
@@ -1369,10 +1373,12 @@ TEST(BRepGraph_ScenarioMatrix, BoxEdgeSplit_ShapeReconstructsSubEdge)
   }
   ASSERT_TRUE(anEdgeId.IsValid());
 
+  const occ::handle<Geom_Curve>& aCurve = BRepGraph_Tool::Edge::Curve(aGraph, anEdgeId);
+  ASSERT_FALSE(aCurve.IsNull());
   const BRepGraph_VertexId aSplitVertex =
-    aGraph.Editor().Vertices().Add(gp_Pnt(5.0, 10.0, 15.0), 1.0e-7);
+    aGraph.Editor().Vertices().Add(aCurve->Value(aSplitParam), 1.0e-7);
   BRepGraph_EdgeId aSubA, aSubB;
-  aGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB);
+  ASSERT_TRUE(aGraph.Editor().Edges().Split(anEdgeId, aSplitVertex, aSplitParam, aSubA, aSubB));
 
   const TopoDS_Shape aSubAShape = aGraph.Shapes().Shape(aSubA);
   const TopoDS_Shape aSubBShape = aGraph.Shapes().Shape(aSubB);

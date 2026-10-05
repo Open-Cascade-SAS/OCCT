@@ -30,7 +30,8 @@
 //!   duplicated with new entity IDs; shared dependencies (geometry, vertices referenced
 //!   from outside the sub-graph) are preserved.
 //!
-//! Geometry and mesh policies are controlled by the GeomPolicy and MeshPolicy enums.
+//! Geometry and mesh policies apply to core graph incidence and representation data only.
+//! Supplemental stores define their copy behavior through BRepGraphSupInc_Store::CopyTo().
 //!
 //! @note Check the return value for success: Perform returns bool,
 //! CopyNode returns the mapped root NodeId (invalid on failure).
@@ -78,7 +79,8 @@ public:
   //! Identity no-op, returns true immediately.
   //!
   //! External copy to empty target (theTargetGraph.IsEmpty()):
-  //! Uses identity-mapped fast path (old index == new index).
+  //! Uses an index-preserving core fast path. Supplemental items receive newly allocated target
+  //! UIDs.
   //!
   //! External copy to non-empty target:
   //! Uses explicit mapping; IDs in theTargetGraph will differ from theSourceGraph.
@@ -89,11 +91,11 @@ public:
   //! @param[in] theGeomPolicy geometry handle policy (default: Copy)
   //! @param[in] theMeshPolicy mesh data policy (default: Copy)
   //! @return true on success, false on failure (empty source)
-  Standard_EXPORT static bool Perform(const BRepGraph& theSourceGraph,
-                                      BRepGraph&       theTargetGraph,
-                                      GeomPolicy       theGeomPolicy  = GeomPolicy::Copy,
-                                      MeshPolicy       theMeshPolicy  = MeshPolicy::Copy,
-                                      CachePolicy      theCachePolicy = CachePolicy::Drop);
+  Standard_EXPORT static bool Perform(const BRepGraph&  theSourceGraph,
+                                      BRepGraph&        theTargetGraph,
+                                      const GeomPolicy  theGeomPolicy  = GeomPolicy::Copy,
+                                      const MeshPolicy  theMeshPolicy  = MeshPolicy::Copy,
+                                      const CachePolicy theCachePolicy = CachePolicy::Drop);
 
   //! Copy a single node sub-graph of any kind (Face, Shell, Solid, Wire, Edge, Vertex, etc.).
   //! The target graph receives the specified node and all entities it references.
@@ -107,6 +109,9 @@ public:
   //! Shared dependencies (vertices, edges referenced from outside the sub-graph)
   //! are preserved as-is.
   //!
+  //! CopyNode invokes the node-scoped copy contract of every supplemental store. The generic
+  //! BRepGraph_LayerSupplement remains excluded because it has no node-scoped ownership.
+  //!
   //! @param[in] theSourceGraph a pre-built BRepGraph
   //! @param[in,out] theTargetGraph destination graph (may already contain data)
   //! @param[in] theNodeId node identifier (any kind)
@@ -117,10 +122,27 @@ public:
     const BRepGraph&       theSourceGraph,
     BRepGraph&             theTargetGraph,
     const BRepGraph_NodeId theNodeId,
-    GeomPolicy             theGeomPolicy  = GeomPolicy::Copy,
-    MeshPolicy             theMeshPolicy  = MeshPolicy::Copy,
-    CachePolicy            theCachePolicy = CachePolicy::Drop);
+    const GeomPolicy       theGeomPolicy  = GeomPolicy::Copy,
+    const MeshPolicy       theMeshPolicy  = MeshPolicy::Copy,
+    const CachePolicy      theCachePolicy = CachePolicy::Drop);
 
+private:
+  friend class BRepGraph_Transform;
+
+  static bool performInPlace(const BRepGraph&  theSourceGraph,
+                             BRepGraph&        theTargetGraph,
+                             const GeomPolicy  theGeomPolicy,
+                             const MeshPolicy  theMeshPolicy,
+                             const CachePolicy theCachePolicy);
+
+  static BRepGraph_NodeId copyNodeInPlace(const BRepGraph&       theSourceGraph,
+                                          BRepGraph&             theTargetGraph,
+                                          const BRepGraph_NodeId theNodeId,
+                                          const GeomPolicy       theGeomPolicy,
+                                          const MeshPolicy       theMeshPolicy,
+                                          const CachePolicy      theCachePolicy);
+
+public:
   BRepGraph_Copy() = delete;
 };
 

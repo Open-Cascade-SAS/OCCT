@@ -92,6 +92,14 @@ public:
   }
 
 private:
+  static NCollection_Array1<TheItemType>&& moveArray(NCollection_Array1<TheItemType>& theOther,
+                                                     [[maybe_unused]] const size_t theExpectedSize)
+  {
+    Standard_DimensionMismatch_Raise_if(theOther.Size() != theExpectedSize,
+                                        "NCollection_Array2: array size does not match dimensions");
+    return std::move(theOther);
+  }
+
   size_t offsetOf(const int theRow, const int theCol, [[maybe_unused]] const char* theMessage) const
   {
     const std::ptrdiff_t aRowOffset =
@@ -193,6 +201,47 @@ public:
     theOther.mySizeRow  = 0;
     theOther.myLowerCol = 1;
     theOther.mySizeCol  = 0;
+  }
+
+  //! Move constructor reshaping one-dimensional storage into a two-dimensional array.
+  //! Ownership of theOther's buffer is transferred without moving individual elements.
+  //! @param theOther source array; its size must match the requested dimensions
+  //! @param theRowLower lower row bound
+  //! @param theRowUpper upper row bound
+  //! @param theColLower lower column bound
+  //! @param theColUpper upper column bound
+  NCollection_Array2(NCollection_Array1<TheItemType>&& theOther,
+                     const int                         theRowLower,
+                     const int                         theRowUpper,
+                     const int                         theColLower,
+                     const int                         theColUpper)
+      : NCollection_Array1<TheItemType>(moveArray(
+          theOther,
+          ArraySize(RangeSize(theRowLower, theRowUpper), RangeSize(theColLower, theColUpper)))),
+        myLowerRow(theRowLower),
+        mySizeRow(RangeSize(theRowLower, theRowUpper)),
+        myLowerCol(theColLower),
+        mySizeCol(RangeSize(theColLower, theColUpper))
+  {
+    NCollection_Array1<TheItemType>::UpdateLowerBound(
+      BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper));
+  }
+
+  //! Move constructor reshaping one-dimensional storage into a zero-based two-dimensional array.
+  //! Ownership of theOther's buffer is transferred without moving individual elements.
+  //! @param theOther source array; its size must equal theNbRows * theNbCols
+  //! @param theNbRows number of rows
+  //! @param theNbCols number of columns
+  NCollection_Array2(NCollection_Array1<TheItemType>&& theOther,
+                     const size_t                      theNbRows,
+                     const size_t                      theNbCols)
+      : NCollection_Array1<TheItemType>(moveArray(theOther, ArraySize(theNbRows, theNbCols))),
+        myLowerRow(0),
+        mySizeRow(theNbRows),
+        myLowerCol(0),
+        mySizeCol(theNbCols)
+  {
+    NCollection_Array1<TheItemType>::UpdateLowerBound(0);
   }
 
   //! C array-based constructor

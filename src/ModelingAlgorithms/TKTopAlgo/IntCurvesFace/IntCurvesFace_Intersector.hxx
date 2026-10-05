@@ -122,7 +122,10 @@ public:
   //! the intersection.
   const TopoDS_Face& Face() const;
 
-  Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& Puv) const;
+  //! Classifies a UV point against the face.
+  //! @param[in] thePuv point in the surface parametric space
+  //! @return point state relative to the face
+  Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& thePuv) const;
 
   Standard_EXPORT Bnd_Box Bounding() const;
 
@@ -135,11 +138,12 @@ public:
   Standard_EXPORT ~IntCurvesFace_Intersector() override;
 
 private:
-  Standard_EXPORT void InternalCall(const IntCurveSurface_HInter& HICS,
-                                    const double                  pinf,
-                                    const double                  psup);
+  void internalCall(const IntCurveSurface_HInter& HICS, const double pinf, const double psup);
 
-  occ::handle<BRepTopAdaptor_TopolTool>                   myTopolTool;
+  BRepTopAdaptor_TopolTool& topolTool() const;
+
+private:
+  mutable occ::handle<BRepTopAdaptor_TopolTool>           myTopolTool;
   occ::handle<BRepAdaptor_Surface>                        Hsurface;
   double                                                  Tol;
   NCollection_Sequence<IntCurveSurface_IntersectionPoint> SeqPnt;

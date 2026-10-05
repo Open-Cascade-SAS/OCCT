@@ -22,12 +22,10 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
-#include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
-#include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_FFTransitionTool.hxx>
 #include <TopOpeBRep_GeomTool.hxx>
 #include <TopOpeBRep_LineInter.hxx>
@@ -54,8 +52,6 @@ Standard_EXPORT void debrline()
 {
   std::cout << "+ debrline" << std::endl;
 }
-
-extern bool TopOpeBRep_GetcontextNOPUNK();
 
 static void FUN_traceRLine(const TopOpeBRep_LineInter&) {}
 
@@ -110,339 +106,11 @@ Standard_EXPORT bool FUN_newtransEdge(const occ::handle<TopOpeBRepDS_HDataStruct
                                       TopOpeBRepDS_Transition&                        T);
 #define M_INTERNAL(st) (st == TopAbs_INTERNAL)
 
-static bool FUN_IwithsuppiS(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                            const int                                                       iS,
-                            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loIfound)
-{
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loI);
-  for (; it.More(); it.Next())
-  {
-    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
-    if (I->Support() == iS)
-    {
-      loIfound.Append(I);
-    }
-  }
-  bool ok = (loIfound.Extent() > 0);
-  return ok;
-}
-
-static bool FUN_IwithsuppkS(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                            const TopOpeBRepDS_Kind&                                        kS,
-                            NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loIfound)
-{
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loI);
-  for (; it.More(); it.Next())
-  {
-    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
-    if (I->SupportType() == kS)
-    {
-      loIfound.Append(I);
-    }
-  }
-  bool ok = (loIfound.Extent() > 0);
-  return ok;
-}
-
-static bool FUN_IwithToniS(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                           const int                                                       iS,
-                           NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       loIfound)
-{
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loI);
-  for (; it.More(); it.Next())
-  {
-    const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
-    if (I->Transition().Index() == iS)
-    {
-      loIfound.Append(I);
-    }
-  }
-  bool ok = (loIfound.Extent() > 0);
-  return ok;
-}
-
-static bool FUN_supponF(TopOpeBRepDS_DataStructure*                                     pDS,
-                        const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loI,
-                        const int                                                       iF,
-                        NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lIsupponF,
-                        NCollection_List<int>&                                          losupp)
-{
-  //<losupp> = list of support S / I in <loI> : I = (T,G,S = Edge on <F>);
-  bool ok = (0 < iF) && (iF <= pDS->NbShapes());
-  if (!ok)
-  {
-    return false;
-  }
-
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MOOE;
-  TopExp::MapShapes(pDS->Shape(iF), TopAbs_EDGE, MOOE);
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(loI);
-  for (; it.More(); it.Next())
-  {
-    const occ::handle<TopOpeBRepDS_Interference>& I     = it.Value();
-    int                                           iS    = I->Support();
-    TopOpeBRepDS_Kind                             skind = I->SupportType();
-    bool                                          add   = false;
-    if (skind == TopOpeBRepDS_EDGE)
-    {
-      add = MOOE.Contains(pDS->Shape(iS));
-    }
-    if (add)
-    {
-      losupp.Append(iS);
-      lIsupponF.Append(I);
-    }
-  }
-  return losupp.Extent() >= 1;
-}
-
-static bool FUN_IoflSsuppS(TopOpeBRepDS_DataStructure*                               pDS,
-                           const int                                                 iS,
-                           const NCollection_List<int>&                              lShape,
-                           NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& IsuppiS)
-{
-  bool ok = false;
-  // E in <losupp> /
-  // I on E : I = (T, G, S=iS)
-
-  // looking for interferences attached to shapes of <lShape> with support <iS>
-  NCollection_List<int>::Iterator iti(lShape);
-  for (; iti.More(); iti.Next())
-  {
-    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lI =
-      pDS->ShapeInterferences(iti.Value());
-    ok = FUN_IwithsuppiS(lI, iS, IsuppiS);
-  }
-  return ok;
-}
-
 //=======================================================================
 // 3D
 // purpose : The compute of a transition edge/face given interferences
 //           attached to the edge (stored in the DS).
 //=======================================================================
-static bool FUN_findTF(TopOpeBRepDS_DataStructure* pDS,
-                       const int                   iE,
-                       const int,
-                       const int                iOOF,
-                       TopOpeBRepDS_Transition& TF)
-{
-  double factor = 0.5;
-  // ----------------------------------------------------------------------
-  // <Ifound> on <E> : Ifound = (T, S=OOF, G=POINT/VERTEX on <E>)
-  //                            (T, S=edge of OOF, G=POINT/VERTEX on <E>)
-  // ----------------------------------------------------------------------
-
-  // <lITonOOF>
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITonOOF;
-  bool ok = FUN_IwithToniS(pDS->ShapeInterferences(iE), iOOF, lITonOOF);
-  if (!ok)
-  {
-    return false;
-  }
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITOOFskFACE;
-  bool found = FUN_IwithsuppkS(lITonOOF, TopOpeBRepDS_FACE, lITOOFskFACE);
-  if (found)
-  {
-    // NYI : a deeper analysis is needed, for the moment, we make the following
-    // prequesitory : transition on E of F on point of ES is valid for
-    //                all the ES (here restriction) ie :
-    //                TF : transition face(F) / face(OOF) on G = ES =
-    //                TE : transition edge(E) / face(OOF) at G = POINT/VERTEX
-    // Ifound on <E> : Ifound = (T(on face OOF), S=FACE, G=POINT/VERTEX on <E>)
-    const occ::handle<TopOpeBRepDS_Interference>& Ifound = lITOOFskFACE.First();
-    TF                                                   = Ifound->Transition();
-  }
-
-  bool                                                     done = false;
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITOOFskEDGE;
-  if (!found)
-  {
-    done = FUN_IwithsuppkS(lITonOOF, TopOpeBRepDS_EDGE, lITOOFskEDGE);
-  }
-  if (done)
-  {
-    // Ifound on <E> : Ifound = (T(on face OOF), S=FACE, G=POINT/VERTEX on <E>)
-    // if <Ifound> found : compute TE at G / <OOF>.
-    // TE ->TF.
-    const occ::handle<TopOpeBRepDS_Interference>& Ifound = lITOOFskEDGE.First();
-    const TopoDS_Edge&                            OOE = TopoDS::Edge(pDS->Shape(Ifound->Support()));
-    double                                        paronE;
-    bool                                          OOdone = FDS_Parameter(Ifound, paronE);
-    if (!OOdone)
-    {
-      return false;
-    }
-
-    const TopoDS_Edge& E   = TopoDS::Edge(pDS->Shape(iE));
-    const TopoDS_Face& OOF = TopoDS::Face(pDS->Shape(iOOF));
-
-    double f, l;
-    FUN_tool_bounds(E, f, l);
-    TopOpeBRepTool_makeTransition MKT;
-
-    bool OOEboundOOF = FUN_tool_EboundF(OOE, OOF);
-    bool iscl        = TopOpeBRepTool_TOOL::IsClosingE(OOE, OOF);
-    if (OOEboundOOF && (!iscl))
-    {
-      double oopar;
-      bool   ok1 = FUN_tool_parE(E, paronE, OOE, oopar);
-      if (!ok1)
-      {
-        return false;
-      }
-      gp_Pnt2d uv;
-      ok1 = FUN_tool_paronEF(OOE, oopar, OOF, uv);
-      if (!ok1)
-      {
-        return false;
-      }
-
-      ok = MKT.Initialize(E, f, l, paronE, OOF, uv, factor);
-      if (ok)
-      {
-        ok = MKT.SetRest(OOE, oopar);
-      }
-    }
-    else
-    {
-      gp_Pnt2d uv;
-      bool     ok1 = FUN_tool_parF(E, paronE, OOF, uv);
-      if (!ok1)
-      {
-        return false;
-      }
-
-      ok = MKT.Initialize(E, f, l, paronE, OOF, uv, factor);
-    }
-    TopAbs_State stb, sta;
-    ok = MKT.MkTonE(stb, sta);
-    if (!ok)
-    {
-      return false;
-    }
-    TF.Before(stb);
-    TF.After(sta);
-    return true;
-  }
-  ok = found || done;
-  return ok;
-}
-
-static bool FUN_findTOOF(TopOpeBRepDS_DataStructure* pDS,
-                         const int                   iE,
-                         const int                   iF,
-                         const int                   iOOF,
-                         TopOpeBRepDS_Transition&    TOOF)
-{
-  double factor = 0.5;
-
-  // ----------------------------------------------------------------------
-  // <E> bound of <F>,
-  // <OOE> on <OOF> /
-  // <OOIfound> on <OOE>  : OOIfound = (T, S=iF, G=POINT/VERTEX on <E>)
-  // ----------------------------------------------------------------------
-
-  // <lIsuppOOE> = list of interferences attached to <E> of support S = edge of <OOF>
-  // <liOOE> = list of supports of <lIsuppOOE>.
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loIE =
-    pDS->ShapeInterferences(iE);
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lITonOOF;
-  bool ok = FUN_IwithToniS(loIE, iOOF, lITonOOF);
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lIsuppOOE;
-  NCollection_List<int>                                    liOOEGonE;
-  if (ok)
-  {
-    ok = FUN_IwithsuppkS(lITonOOF, TopOpeBRepDS_EDGE, lIsuppOOE);
-    if (ok)
-    {
-      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(lIsuppOOE);
-      for (; it.More(); it.Next())
-      {
-        liOOEGonE.Append(it.Value()->Support());
-      }
-    }
-  }
-  else
-  {
-    ok = FUN_supponF(pDS, loIE, iOOF, lIsuppOOE, liOOEGonE);
-  }
-  if (!ok)
-  {
-    return false;
-  }
-
-  //  TopAbs_Orientation oritransOOE;
-
-  // <lOOIfound> = list of I attached to shapes of <liOOE> /
-  //               I = (T, S=F, G=POINT/VERTEX on <E>)
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> lIOOEsuppFGonE;
-  bool OOfound = FUN_IoflSsuppS(pDS, iF, liOOEGonE, lIOOEsuppFGonE);
-  if (OOfound)
-  {
-    // NYI : a deeper analysis is needed, for the moment, we make the following
-    // prequesitory : transition on OOE of OOF on point of ES is valid for
-    //                all the ES (here restriction) ie :
-    //                TOOF : transition face(OOF) / face(F) on (G == ES)
-    //            <=> TOOE : transition edge(OOE) / face(F) at G = POINT/VERTEX
-    const occ::handle<TopOpeBRepDS_Interference>& OOIfound = lIOOEsuppFGonE.First();
-    TOOF                                                   = OOIfound->Transition();
-  }
-
-  bool OOdone = false;
-  if (!OOfound)
-  {
-    // Ifound on <E> : Ifound = (T, S=EDGE on <OOF>, G=POINT/VERTEX on <E>)
-    // if <Ifound> found : compute TOOE at G / <F>
-    // TOOE ->TOOF.
-    const occ::handle<TopOpeBRepDS_Interference>& Ifound = lIsuppOOE.First();
-    const TopoDS_Edge&                            OOE = TopoDS::Edge(pDS->Shape(Ifound->Support()));
-    double                                        paronE;
-    OOdone = FDS_Parameter(Ifound, paronE);
-    if (!OOdone)
-    {
-      return false;
-    }
-
-    const TopoDS_Edge& E = TopoDS::Edge(pDS->Shape(iE));
-    const TopoDS_Face& F = TopoDS::Face(pDS->Shape(iF));
-
-    double oopar;
-    bool   ok1 = FUN_tool_parE(E, paronE, OOE, oopar);
-    if (!ok1)
-    {
-      return false;
-    }
-    gp_Pnt2d uv;
-    ok1 = FUN_tool_paronEF(E, paronE, F, uv);
-    if (!ok1)
-    {
-      return false;
-    }
-    double f, l;
-    FUN_tool_bounds(OOE, f, l);
-
-    TopAbs_State                  stb = TopAbs_UNKNOWN, sta = TopAbs_UNKNOWN;
-    TopOpeBRepTool_makeTransition MKT;
-    OOdone = MKT.Initialize(OOE, f, l, oopar, F, uv, factor);
-    if (OOdone)
-    {
-      OOdone = MKT.SetRest(E, paronE);
-    }
-    if (OOdone)
-    {
-      OOdone = MKT.MkTonE(stb, sta);
-    }
-    if (OOdone)
-    {
-      TOOF.Before(stb);
-      TOOF.After(sta);
-    }
-  }
-  ok = OOfound || OOdone;
-  return ok;
-}
-
 //=================================================================================================
 
 void TopOpeBRep_FacesFiller::ProcessLine()
@@ -481,6 +149,9 @@ void TopOpeBRep_FacesFiller::ResetDSC()
 {
   myDSCIndex = 0;
   myDSCIL.Clear();
+  myCurrentLine = nullptr;
+  myMapOfTreatedVertexListOfEdge.Clear();
+  myLastVPind = 0;
 }
 
 //=================================================================================================
@@ -661,64 +332,6 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
   T1.Index(iF2);
   TopOpeBRepDS_Transition T2 = FaceFaceTransition(2);
   T2.Index(iF1);
-
-  bool T1unk      = T1.IsUnknown();
-  bool T2unk      = T2.IsUnknown();
-  bool processUNK = false;
-#ifdef OCCT_DEBUG
-  bool nopunk = TopOpeBRep_GetcontextNOPUNK();
-  if (nopunk)
-    processUNK = false;
-#endif
-  if (processUNK && (T1unk || T2unk))
-  {
-    TopoDS_Shape F        = (*this).Face(rank);
-    int          iF       = myDS->Shape(F);
-    TopoDS_Shape OOF      = (*this).Face(OOrank);
-    int          iOOF     = myDS->Shape(OOF);
-    bool         findTOOF = (T1unk && (OOrank == 1)) || (T2unk && (OOrank == 2));
-    bool         findTF   = (T1unk && (rank == 1)) || (T2unk && (rank == 2));
-
-    if (findTOOF)
-    {
-      // <Erest> on <F>,
-      // ?<OOE> on <OOF> /
-      // ?<OOIfound> on <OOE>  : OOIfound = (T, S=iF, G=POINT/VERTEX on <Erest>)
-      TopOpeBRepDS_Transition T;
-      bool                    OOTok = FUN_findTOOF(myDS, iErest, iF, iOOF, T);
-      if (OOTok)
-      {
-        if (OOrank == 1)
-        {
-          FDS_SetT(T1, T);
-        }
-        else
-        {
-          FDS_SetT(T2, T);
-        }
-      }
-    } // !findTOOF
-    if (findTF)
-    {
-      // ?Ifound on <Erest> : Ifound = (T on FACE=iOOF, S, G=POINT/VERTEX on <Erest>)
-      // if <Ifound> found : compute TErest at G / <OOF>
-      TopOpeBRepDS_Transition T;
-      bool                    Tok = FUN_findTF(myDS, iErest, iF, iOOF, T);
-      if (Tok)
-      {
-        if (rank == 1)
-        {
-          FDS_SetT(T1, T);
-        }
-        else
-        {
-          FDS_SetT(T2, T);
-        }
-      }
-    }
-    T1unk = T1.IsUnknown();
-    T2unk = T2.IsUnknown();
-  } // processUNK && (T1unk || T2unk)
 
   IFE = TopOpeBRepDS_InterferenceTool::MakeFaceEdgeInterference(T1,
                                                                 iF2,

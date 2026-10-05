@@ -2,6 +2,7 @@
 set(OCCT_TKDESTEP_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKDESTEP_GTests_FILES
+    APIHeaderSection_MakeHeader_Test.cxx
     DESTEP_Provider_Test.cxx
     GDT_STEP_Storage_Test.cxx
     STEPConstruct_RenderingProperties_Test.cxx
@@ -16,6 +17,8 @@ set(OCCT_TKDESTEP_GTests_FILES
     StepTidy_PlaneReducer_Test.cxx
     StepTidy_Merger_Test.cxx
     StepTidy_VectorReducer_Test.cxx
+    StepShape_OrientedEdge_Test.cxx
+    StepToGeom_Test.cxx
     StepToTopoDS_TranslateFace_Test.cxx
     StepTransientReplacements_Test.cxx
     STEPCAFControl_Controller_Test.cxx

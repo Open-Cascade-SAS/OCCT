@@ -161,7 +161,7 @@ The following table gives the full list of environment variables used at the con
 | BUILD_RELEASE_DISABLE_EXCEPTIONS | Boolean | Disables exceptions like Standard_OutOfRange in Release builds. Defines No_Exception macros for Release builds when enabled (default). These exceptions are always enabled in Debug builds, but disabled in Release for better performance |
 | BUILD_RESOURCES | Boolean | Enables regeneration of OCCT resource files |
 | BUILD_SHARED_LIBRARY_NAME_POSTFIX | String | Appends the postfix to names of output libraries |
-| BUILD_SOVERSION_NUMBERS | String | Version numbers to put into SONAME: 0 for empty, 1 for major, 2 for major.minor, 3 for major.minor.maintenance |
+| BUILD_SOVERSION_NUMBERS | String | Number of version components in shared library names and SONAME: 0 for none, 1 for major, 2 for major.minor, 3 for major.minor.maintenance |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
 | USE_MMGR_TYPE | String | Select memory manager (NATIVE, FLEXIBLE, TBB, or JEMALLOC) |
 | USE_GIT_HASH | Boolean | Include the git hash in the OCCT version string |

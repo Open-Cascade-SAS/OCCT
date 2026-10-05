@@ -16,7 +16,6 @@
 
 #include <BSplCLib.hxx>
 
-#include <algorithm>
 #include <cmath>
 
 //! Simple structure containing parameters describing parameterization
@@ -88,14 +87,7 @@ struct BSplCLib_CacheParams
       return false;
     }
 
-    if (SpanIndex == SpanIndexMax)
-      return true;
-
-    // from BSplCLib::LocateParameter() check hitting of the next knot
-    // within double floating point precision
-    const double anEps        = Epsilon((std::min)(std::fabs(LastParameter), std::fabs(aNewParam)));
-    const double aDeltaToNext = std::fabs(aDelta - SpanLength);
-    return aDeltaToNext > anEps; // next knot should be used instead
+    return true;
   }
 
   //! Computes span for the specified parameter

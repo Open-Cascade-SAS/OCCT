@@ -212,7 +212,14 @@ void BRepGProp_Face::Normal(const double U, const double V, gp_Pnt& P, gp_Vec& V
 //  APO 17.04.2002 (OCC104)
 // This is functions that calculate coeff. to optimize "integration order".
 // They had been produced experimentally for some hard example.
-static double AS = -0.15, AL = -0.50, B = 1.0, C = 0.75, D = 0.25;
+namespace
+{
+constexpr double AS = -0.15;
+constexpr double AL = -0.50;
+constexpr double B  = 1.0;
+constexpr double C  = 0.75;
+constexpr double D  = 0.25;
+} // namespace
 
 static inline double SCoeff(const double Eps)
 {

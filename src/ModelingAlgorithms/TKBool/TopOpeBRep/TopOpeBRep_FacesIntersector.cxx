@@ -31,34 +31,7 @@
 #include <Precision.hxx>
 #include <Geom_Curve.hxx>
 #include <Standard_ProgramError.hxx>
-#include <BRepTools.hxx>
 #include <TopOpeBRepTool_tol.hxx>
-
-#ifdef OCCT_DEBUG
-  #include <TopAbs.hxx>
-extern bool TopOpeBRep_GettraceFI();
-extern bool TopOpeBRep_GettraceFITOL();
-extern bool TopOpeBRep_GettraceSAVFF();
-
-int SAVFFi1 = 0;
-int SAVFFi2 = 0;
-
-static void SAVFF(const TopoDS_Face& F1, const TopoDS_Face& F2)
-{
-  TCollection_AsciiString an1("SAVA");
-  if (SAVFFi1)
-    an1 = an1 + SAVFFi1;
-  TCollection_AsciiString an2("SAVB");
-  if (SAVFFi2)
-    an2 = an2 + SAVFFi2;
-  const char* n1 = an1.ToCString();
-  const char* n2 = an2.ToCString();
-  std::cout << "FaceIntersector : write " << n1 << "," << n2 << std::endl;
-  BRepTools::Write(F1, n1);
-  BRepTools::Write(F2, n2);
-}
-
-#endif
 
 // NYI
 // NYI : IntPatch_Intersection : TolArc,TolTang exact definition
@@ -162,11 +135,6 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
                                           const Bnd_Box&      B1,
                                           const Bnd_Box&      B2)
 {
-#ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceSAVFF())
-    SAVFF(TopoDS::Face(F1), TopoDS::Face(F2));
-#endif
-
   ResetIntersection();
   if (!myForceTolerances)
   {
@@ -195,18 +163,6 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
     myTol1 = (myTol1 > 1.e-4) ? 1.e-4 : myTol1;
     myTol2 = (myTol2 > 1.e-4) ? 1.e-4 : myTol2;
   }
-
-#ifdef OCCT_DEBUG
-  const double tol1 = myTol1;
-  const double tol2 = myTol2;
-  if (TopOpeBRep_GettraceFITOL())
-  {
-    std::cout << "FacesIntersector : Perform tol1 = " << tol1 << std::endl;
-    std::cout << "                           tol2 = " << tol2 << std::endl;
-    std::cout << "                           defl = " << Deflection << "  MaxUV = " << MaxUV
-              << std::endl;
-  }
-#endif
 
   myIntersector.SetTolerances(myTol1, myTol2, MaxUV, Deflection);
   myIntersector
@@ -238,11 +194,6 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,
       myEdgeRestrictionMap.Add(E);
     }
   }
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceFI())
-    std::cout << "Perform : isempty " << IsEmpty() << std::endl;
-#endif
 }
 
 //=================================================================================================
@@ -567,10 +518,6 @@ void TopOpeBRep_FacesIntersector::ForceTolerances(const double Tol1, const doubl
   myTol1            = Tol1;
   myTol2            = Tol2;
   myForceTolerances = true;
-#ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceFITOL())
-    std::cout << "ForceTolerances : myTol1,myTol2 = " << myTol1 << "," << myTol2 << std::endl;
-#endif
 }
 
 //=================================================================================================
@@ -584,7 +531,7 @@ void TopOpeBRep_FacesIntersector::GetTolerances(double& Tol1, double& Tol2) cons
 //=================================================================================================
 
 #ifdef OCCT_DEBUG
-void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
+void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape&, const TopoDS_Shape&)
 #else
 void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape&, const TopoDS_Shape&)
 #endif
@@ -593,16 +540,6 @@ void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape&, const Top
   myTol1            = Precision::Confusion();
   myTol2            = myTol1;
   myForceTolerances = false;
-#ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceFITOL())
-  {
-    std::cout << "ShapeTolerances on S1 = ";
-    TopAbs::Print(S1.ShapeType(), std::cout);
-    std::cout << " S2 = ";
-    TopAbs::Print(S2.ShapeType(), std::cout);
-    std::cout << " : myTol1,myTol2 = " << myTol1 << "," << myTol2 << std::endl;
-  }
-#endif
 }
 
 //=================================================================================================

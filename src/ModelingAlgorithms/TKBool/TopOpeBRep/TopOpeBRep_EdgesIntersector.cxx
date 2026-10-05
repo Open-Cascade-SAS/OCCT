@@ -18,9 +18,6 @@
 #include <BRep_Tool.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomTools_Curve2dSet.hxx>
-#include <GeomTools_CurveSet.hxx>
-#include <GeomTools_SurfaceSet.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
@@ -42,13 +39,6 @@
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_tol.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
-
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRep_GettracePROEDG();
-extern bool TopOpeBRep_GetcontextTOL0();
-extern bool TopOpeBRep_GetcontextNOFEI();
-extern bool TopOpeBRep_GettraceFITOL();
-#endif
 
 // la surface de reference peut etre celle de la 1ere ou la 2eme face
 // de l'appel de SetFaces. Ces deux faces sont "SameDomain".
@@ -468,20 +458,6 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
       PC2on1->D0(first, pfirst);
       PC2on1->D0(last, plast);
       myDomain2.SetValues(pfirst, first, tole, plast, last, tole);
-#ifdef OCCT_DEBUG
-      if (TopOpeBRep_GettracePROEDG())
-      {
-        std::cout << "------------ projection de curve" << std::endl;
-        std::cout << "--- Curve : " << std::endl;
-        GeomTools_CurveSet::PrintCurve(NC, std::cout);
-        std::cout << "--- nouvelle PCurve : " << std::endl;
-        GeomTools_Curve2dSet::PrintCurve2d(PC2on1, std::cout);
-        occ::handle<Geom_Surface> aS1 = BRep_Tool::Surface(myFace1);
-        std::cout << "--- sur surface : " << std::endl;
-        GeomTools_SurfaceSet::PrintSurface(aS1, std::cout);
-        std::cout << std::endl;
-      }
-#endif
     }
     else
     {
@@ -494,25 +470,11 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   // Wrong !!!
   /*  if ( !myTolForced ) {
       if ( t1 != t2 ) {
-        //#ifdef OCCT_DEBUG // JYL 28/09/98 : temporaire
-        //if ( TopOpeBRep_GetcontextTOL0() ) { // JYL 28/09/98 : temporaire
         tol1 = 0.; // JYL 28/09/98 : temporaire
         tol2 = 0.; // JYL 28/09/98 : temporaire
-        //} // JYL 28/09/98 : temporaire
-        //#endif // JYL 28/09/98 : temporaire
       }
     }
   */
-
-#ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceFITOL())
-  {
-    std::cout << "EdgesIntersector : Perform";
-    std::cout << std::endl;
-    std::cout << "                   tol1 = " << tol1 << std::endl;
-    std::cout << "                   tol2 = " << tol2 << std::endl;
-  }
-#endif
 
   myIntersector.Perform(myCurve1, myDomain1, myCurve2, myDomain2, tol1, tol2);
 
@@ -533,11 +495,6 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   }
 
   bool filter = true;
-#ifdef OCCT_DEBUG
-  bool nofilter = TopOpeBRep_GetcontextNOFEI();
-  if (nofilter)
-    filter = false;
-#endif
 
   //-- Filter :
   if (filter)

@@ -68,6 +68,41 @@ TEST(GeomGridEval_BezierSurfaceTest, BasicEvaluation)
   }
 }
 
+TEST(GeomGridEval_BezierSurfaceTest, SinglePointGrid)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  for (int aUIndex = 1; aUIndex <= 3; ++aUIndex)
+  {
+    for (int aVIndex = 1; aVIndex <= 3; ++aVIndex)
+    {
+      aPoles.SetValue(aUIndex, aVIndex, gp_Pnt(aUIndex, aVIndex, std::sin(aUIndex + aVIndex)));
+    }
+  }
+
+  const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles);
+  GeomGridEval_BezierSurface            anEvaluator(aSurface);
+  NCollection_Array1<double>            aUParams(1);
+  NCollection_Array1<double>            aVParams(1);
+  aUParams.ChangeAt(0) = 0.37;
+  aVParams.ChangeAt(0) = 0.63;
+
+  const gp_Pnt               aPoint       = anEvaluator.EvaluateGrid(aUParams, aVParams).At(0);
+  const GeomGridEval::SurfD1 aD1          = anEvaluator.EvaluateGridD1(aUParams, aVParams).At(0);
+  const GeomGridEval::SurfD2 aD2          = anEvaluator.EvaluateGridD2(aUParams, aVParams).At(0);
+  const Geom_Surface::ResD1  anExpectedD1 = aSurface->EvalD1(0.37, 0.63);
+  const Geom_Surface::ResD2  anExpectedD2 = aSurface->EvalD2(0.37, 0.63);
+  EXPECT_NEAR(aPoint.Distance(anExpectedD1.Point), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aD1.Point.Distance(anExpectedD1.Point), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD1.D1U - anExpectedD1.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD1.D1V - anExpectedD1.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(aD2.Point.Distance(anExpectedD2.Point), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D1U - anExpectedD2.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D1V - anExpectedD2.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D2U - anExpectedD2.D2U).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D2V - anExpectedD2.D2V).Magnitude(), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((aD2.D2UV - anExpectedD2.D2UV).Magnitude(), 0.0, THE_TOLERANCE);
+}
+
 TEST(GeomGridEval_BezierSurfaceTest, RationalEvaluation)
 {
   // Rational Bezier surface
@@ -161,6 +196,41 @@ TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2)
       EXPECT_NEAR((aGrid.Value(i, j).D2U - aD2U).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(i, j).D2V - aD2V).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(i, j).D2UV - aD2UV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(GeomGridEval_BezierSurfaceTest, DerivativeD2RationalLinear)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles.SetValue(1, 1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(2, 1, gp_Pnt(1.0, 0.0, 0.0));
+  aPoles.SetValue(1, 2, gp_Pnt(0.0, 1.0, 0.0));
+  aPoles.SetValue(2, 2, gp_Pnt(1.0, 1.0, 1.0));
+  aWeights.SetValue(1, 1, 1.0);
+  aWeights.SetValue(2, 1, 1.5);
+  aWeights.SetValue(1, 2, 2.0);
+  aWeights.SetValue(2, 2, 0.75);
+
+  const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles, aWeights);
+  GeomGridEval_BezierSurface            anEval(aSurface);
+  NCollection_Array1<double>            aParams        = CreateUniformParams(0.0, 1.0, 7);
+  const NCollection_Array2<GeomGridEval::SurfD2> aGrid = anEval.EvaluateGridD2(aParams, aParams);
+  for (size_t aUIndex = 0; aUIndex < aParams.Size(); ++aUIndex)
+  {
+    for (size_t aVIndex = 0; aVIndex < aParams.Size(); ++aVIndex)
+    {
+      const Geom_Surface::ResD2 anExpected =
+        aSurface->EvalD2(aParams.At(aUIndex), aParams.At(aVIndex));
+      const size_t                anIndex = aUIndex * aParams.Size() + aVIndex;
+      const GeomGridEval::SurfD2& aResult = aGrid.At(anIndex);
+      EXPECT_NEAR(aResult.Point.Distance(anExpected.Point), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D1U - anExpected.D1U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D1V - anExpected.D1V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D2U - anExpected.D2U).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D2V - anExpected.D2V).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D2UV - anExpected.D2UV).Magnitude(), 0.0, THE_TOLERANCE);
     }
   }
 }
@@ -414,16 +484,16 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineU_CompareToGeomD0)
   // U-isoline: 1 U param, multiple V params (triggers isoline path)
   NCollection_Array1<double> aUParams(1, 1);
   aUParams.SetValue(1, 0.5);
-  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 10);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 192);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Note: RowLength() = V count (columns), ColLength() = U count (rows)
-  EXPECT_EQ(aGrid.RowLength(), 10);
+  EXPECT_EQ(aGrid.RowLength(), 192);
   EXPECT_EQ(aGrid.ColLength(), 1);
 
   // Compare against Geom_Surface::D0
-  for (int j = 1; j <= 10; ++j)
+  for (int j = 1; j <= 192; ++j)
   {
     gp_Pnt aExpected;
     aBezier->D0(aUParams.Value(1), aVParams.Value(j), aExpected);
@@ -447,7 +517,7 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
   GeomGridEval_BezierSurface      anEval(aBezier);
 
   // V-isoline: multiple U params, 1 V param (triggers isoline path)
-  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 10);
+  NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 192);
   NCollection_Array1<double> aVParams(1, 1);
   aVParams.SetValue(1, 0.7);
 
@@ -455,10 +525,10 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineV_CompareToGeomD0)
 
   // Note: RowLength() = V count (columns), ColLength() = U count (rows)
   EXPECT_EQ(aGrid.RowLength(), 1);
-  EXPECT_EQ(aGrid.ColLength(), 10);
+  EXPECT_EQ(aGrid.ColLength(), 192);
 
   // Compare against Geom_Surface::D0
-  for (int i = 1; i <= 10; ++i)
+  for (int i = 1; i <= 192; ++i)
   {
     gp_Pnt aExpected;
     aBezier->D0(aUParams.Value(i), aVParams.Value(1), aExpected);
@@ -487,11 +557,11 @@ TEST(GeomGridEval_BezierSurfaceTest, IsolineRational_CompareToGeomD0)
   // U-isoline on rational surface
   NCollection_Array1<double> aUParams(1, 1);
   aUParams.SetValue(1, 0.3);
-  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 15);
+  NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 16);
 
   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(aUParams, aVParams);
 
-  for (int j = 1; j <= 15; ++j)
+  for (int j = 1; j <= 16; ++j)
   {
     gp_Pnt aExpected;
     aBezier->D0(aUParams.Value(1), aVParams.Value(j), aExpected);

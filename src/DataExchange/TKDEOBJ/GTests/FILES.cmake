@@ -2,4 +2,5 @@
 set(OCCT_TKDEOBJ_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKDEOBJ_GTests_FILES
+  RWObj_Reader_Test.cxx
 )

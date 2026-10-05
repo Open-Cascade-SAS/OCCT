@@ -23,6 +23,8 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
+#include <memory>
+
 class BRepTools_History;
 class TCollection_AsciiString;
 
@@ -42,6 +44,31 @@ class TCollection_AsciiString;
 class BRepGraph::ShapesView
 {
 public:
+  //! Bounded reconstruction context preserving common descendant TShapes.
+  //! Create through BeginCoherentReconstruction() and request shapes in place;
+  //! no result collection or persistent shape-cache population is involved.
+  class ReconstructionScope
+  {
+  public:
+    Standard_EXPORT ~ReconstructionScope();
+    Standard_EXPORT ReconstructionScope(ReconstructionScope&& theOther) noexcept;
+    Standard_EXPORT ReconstructionScope& operator=(ReconstructionScope&& theOther) noexcept;
+
+    ReconstructionScope(const ReconstructionScope&)            = delete;
+    ReconstructionScope& operator=(const ReconstructionScope&) = delete;
+
+    //! Reconstruct one node through this scope's shared temporary cache.
+    [[nodiscard]] Standard_EXPORT TopoDS_Shape Shape(const BRepGraph_NodeId theNode);
+
+  private:
+    struct Impl;
+    explicit ReconstructionScope(std::unique_ptr<Impl> theImpl);
+
+    std::unique_ptr<Impl> myImpl;
+
+    friend class ShapesView;
+  };
+
   //! Shape-ingestion options.
   struct Options
   {
@@ -182,6 +209,13 @@ public:
   //! @return original shape for an active node, or null shape when absent/invalid/removed
   [[nodiscard]] Standard_EXPORT TopoDS_Shape Original(const BRepGraph_NodeId theNode) const;
 
+  //! Bind an original shape restored by a persistence provider.
+  //! @param[in] theNode active node receiving the binding
+  //! @param[in] theShape original shape to retain
+  //! @return true when the binding was stored
+  [[nodiscard]] Standard_EXPORT bool BindOriginal(const BRepGraph_NodeId theNode,
+                                                  const TopoDS_Shape&    theShape);
+
   //! Reconstruct a TopoDS_Shape from a graph node without using the persistent cache.
   //! Use this when the caller explicitly needs a fresh rebuild instead of the
   //! shared cached shape returned by Shape(). This method does not populate the
@@ -192,6 +226,10 @@ public:
   //! @param[in] theRoot definition node identifier
   //! @return reconstructed shape, or null shape for invalid/removed nodes
   [[nodiscard]] Standard_EXPORT TopoDS_Shape Reconstruct(const BRepGraph_NodeId theRoot) const;
+
+  //! Begin a bounded, coherent reconstruction job. Shapes requested from the
+  //! returned scope share reconstructed TShapes for common descendants.
+  [[nodiscard]] Standard_EXPORT ReconstructionScope BeginCoherentReconstruction() const;
 
   //! Remove the cached reconstructed shape for one node.
   //! Does not change graph generation counters and does not rebuild the shape.
@@ -266,8 +304,7 @@ private:
                                              const TopAbs_ShapeEnum theShapeType,
                                              const uint32_t         theOldCountOfShapeKind);
 
-  static uint32_t snapshotCountForKind(const BRepGraph&       theGraph,
-                                       const TopAbs_ShapeEnum theShapeType);
+  static uint32_t countForKind(const BRepGraph& theGraph, const TopAbs_ShapeEnum theShapeType);
 
   static void populateUIDsIncremental(BRepGraph&     theGraph,
                                       const uint32_t theOldVtx,

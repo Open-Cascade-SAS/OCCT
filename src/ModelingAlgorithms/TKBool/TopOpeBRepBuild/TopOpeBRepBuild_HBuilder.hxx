@@ -124,7 +124,10 @@ public:
 
   Standard_EXPORT int GetDSEdgeFromSectEdge(const TopoDS_Shape& E, const int rank);
 
-  Standard_EXPORT NCollection_List<int>& GetDSFaceFromDSEdge(const int indexEdg, const int rank);
+  //! Returns the face indices associated with a data-structure edge.
+  //! Returns an empty list if the edge has no associated faces.
+  Standard_EXPORT const NCollection_List<int>& GetDSFaceFromDSEdge(const int indexEdg,
+                                                                   const int rank);
 
   Standard_EXPORT int GetDSCurveFromSectEdge(const TopoDS_Shape& SectEdge);
 
@@ -183,8 +186,9 @@ private:
   bool                                                            myMakeCurveAncestorIsDone;
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> myNewVertexDSPoint;
   bool                                                            myMakePointAncestorIsDone;
-  TopoDS_Shape                                                    myEmptyShape;
-  NCollection_List<int>                                           myEmptyIntegerList;
+  NCollection_List<TopoDS_Shape>                                  mySectionShapes;
+  NCollection_List<TopoDS_Shape>::Iterator                        mySectionIterator;
+  bool                                                            mySectionInitialized;
 };
 
 #endif // _TopOpeBRepBuild_HBuilder_HeaderFile

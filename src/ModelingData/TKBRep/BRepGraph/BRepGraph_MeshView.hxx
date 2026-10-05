@@ -501,6 +501,10 @@ public:
       //! @param[in] theCoEdge typed coedge definition identifier
       Standard_EXPORT void Clear(const BRepGraph_CoEdgeId theCoEdge);
 
+      //! Clear only cached polygon-on-triangulation data, preserving cached polygon-2D.
+      //! @param[in] theCoEdge typed coedge definition identifier
+      Standard_EXPORT void ClearCachedPolygonsOnTri(const BRepGraph_CoEdgeId theCoEdge);
+
     private:
       friend class EditorView;
 

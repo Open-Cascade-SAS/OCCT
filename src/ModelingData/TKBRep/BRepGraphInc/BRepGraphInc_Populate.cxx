@@ -14,8 +14,8 @@
 #include <BRepGraphInc_Populate.hxx>
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_LayerRegistry.hxx>
-#include <BRepGraph_LayerTopoSupplement.hxx>
+#include <BRepGraph_SupplementsView.hxx>
+#include <BRepGraphSupInc_TopologyStore.hxx>
 #include <BRepGraph_ParallelPolicy.hxx>
 #include <BRepGraphInc_Storage.hxx>
 #include <Bnd_Box.hxx>
@@ -86,9 +86,9 @@ struct BuildCounts
   uint32_t NbWireRefs   = 0;
 };
 
-static void extractEdgeSupplementAttachments(BRepGraph_LayerTopoSupplement& theLayer,
-                                             const BRepGraph_NodeId         theOwner,
-                                             const TopoDS_Shape&            theOwnerShape)
+static void extractEdgeSupplementAttachments(BRepGraph&             theGraph,
+                                             const BRepGraph_NodeId theOwner,
+                                             const TopoDS_Shape&    theOwnerShape)
 {
   size_t aLastForwardIdx  = 0;
   size_t aLastReversedIdx = 0;
@@ -118,9 +118,11 @@ static void extractEdgeSupplementAttachments(BRepGraph_LayerTopoSupplement& theL
     const TopoDS_Shape& aChild = aChildIt.Value();
     if (aChild.ShapeType() != TopAbs_VERTEX)
     {
-      theLayer.AddAttachment(theOwner,
-                             BRepGraph_LayerTopoSupplement::AttachmentKind::GenericSupplementShape,
-                             aChild);
+      [[maybe_unused]] const BRepGraphSupInc_TopologyId anAttachment =
+        theGraph.Supplements().Attach(
+          theOwner,
+          BRepGraphSupInc::TopologyAttachmentKind::GenericSupplementShape,
+          aChild);
       continue;
     }
 
@@ -130,21 +132,22 @@ static void extractEdgeSupplementAttachments(BRepGraph_LayerTopoSupplement& theL
       hasReversed && aChild.Orientation() == TopAbs_REVERSED && aChildIdx == aLastReversedIdx;
     if (!isBoundaryForward && !isBoundaryReversed)
     {
-      theLayer.AddAttachment(theOwner,
-                             BRepGraph_LayerTopoSupplement::AttachmentKind::EdgeInternalVertex,
-                             aChild);
+      [[maybe_unused]] const BRepGraphSupInc_TopologyId anAttachment =
+        theGraph.Supplements().Attach(theOwner,
+                                      BRepGraphSupInc::TopologyAttachmentKind::EdgeInternalVertex,
+                                      aChild);
     }
   }
 }
 
-static void extractOwnerSupplementAttachments(BRepGraph_LayerTopoSupplement& theLayer,
-                                              const BRepGraph_NodeId         theOwner,
-                                              const TopoDS_Shape&            theOwnerShape)
+static void extractOwnerSupplementAttachments(BRepGraph&             theGraph,
+                                              const BRepGraph_NodeId theOwner,
+                                              const TopoDS_Shape&    theOwnerShape)
 {
   switch (theOwner.NodeKind)
   {
     case BRepGraph_NodeId::Kind::Edge:
-      extractEdgeSupplementAttachments(theLayer, theOwner, theOwnerShape);
+      extractEdgeSupplementAttachments(theGraph, theOwner, theOwnerShape);
       return;
     case BRepGraph_NodeId::Kind::Face:
       for (TopoDS_Iterator aChildIt(theOwnerShape, false, false); aChildIt.More(); aChildIt.Next())
@@ -155,11 +158,12 @@ static void extractOwnerSupplementAttachments(BRepGraph_LayerTopoSupplement& the
           continue;
         }
 
-        const BRepGraph_LayerTopoSupplement::AttachmentKind aKind =
+        const BRepGraphSupInc::TopologyAttachmentKind aKind =
           aChild.ShapeType() == TopAbs_VERTEX
-            ? BRepGraph_LayerTopoSupplement::AttachmentKind::FaceDirectVertex
-            : BRepGraph_LayerTopoSupplement::AttachmentKind::GenericSupplementShape;
-        theLayer.AddAttachment(theOwner, aKind, aChild);
+            ? BRepGraphSupInc::TopologyAttachmentKind::FaceDirectVertex
+            : BRepGraphSupInc::TopologyAttachmentKind::GenericSupplementShape;
+        [[maybe_unused]] const BRepGraphSupInc_TopologyId anAttachment =
+          theGraph.Supplements().Attach(theOwner, aKind, aChild);
       }
       return;
     default:
@@ -167,15 +171,15 @@ static void extractOwnerSupplementAttachments(BRepGraph_LayerTopoSupplement& the
   }
 }
 
-static void attachSupplement(const occ::handle<BRepGraph_LayerTopoSupplement>& theLayer,
-                             const BRepGraph_NodeId                            theOwner,
-                             const TopoDS_Shape&                               theOwnerShape)
+static void attachSupplement(BRepGraph&             theGraph,
+                             const BRepGraph_NodeId theOwner,
+                             const TopoDS_Shape&    theOwnerShape)
 {
-  if (theLayer.IsNull())
+  if (theGraph.Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()).IsNull())
   {
     return;
   }
-  extractOwnerSupplementAttachments(*theLayer, theOwner, theOwnerShape);
+  extractOwnerSupplementAttachments(theGraph, theOwner, theOwnerShape);
 }
 
 //=================================================================================================
@@ -412,21 +416,20 @@ bool isCoreParityOrientation(const TopAbs_Orientation theOrientation)
   return theOrientation == TopAbs_FORWARD || theOrientation == TopAbs_REVERSED;
 }
 
-BRepGraph_LayerTopoSupplement::AttachmentKind containerSupplementKind(
-  const TopAbs_ShapeEnum theOwnerType)
+BRepGraphSupInc::TopologyAttachmentKind containerSupplementKind(const TopAbs_ShapeEnum theOwnerType)
 {
   switch (theOwnerType)
   {
     case TopAbs_COMPOUND:
-      return BRepGraph_LayerTopoSupplement::AttachmentKind::CompoundAuxShape;
+      return BRepGraphSupInc::TopologyAttachmentKind::CompoundAuxShape;
     case TopAbs_COMPSOLID:
-      return BRepGraph_LayerTopoSupplement::AttachmentKind::CompSolidAuxShape;
+      return BRepGraphSupInc::TopologyAttachmentKind::CompSolidAuxShape;
     case TopAbs_SOLID:
-      return BRepGraph_LayerTopoSupplement::AttachmentKind::SolidAuxShape;
+      return BRepGraphSupInc::TopologyAttachmentKind::SolidAuxShape;
     case TopAbs_SHELL:
-      return BRepGraph_LayerTopoSupplement::AttachmentKind::ShellAuxShape;
+      return BRepGraphSupInc::TopologyAttachmentKind::ShellAuxShape;
     default:
-      return BRepGraph_LayerTopoSupplement::AttachmentKind::GenericSupplementShape;
+      return BRepGraphSupInc::TopologyAttachmentKind::GenericSupplementShape;
   }
 }
 
@@ -549,10 +552,10 @@ using LocatedNodeBindingIndex = uint32_t;
 
 struct BuildContext;
 
-BRepGraph_NodeId findExistingNode(const BuildContext&    theBuild,
-                                  const TopoDS_Shape&    theShape,
-                                  BRepGraph_NodeId::Kind theExpectedKind,
-                                  const TopLoc_Location& theDefinitionLocation);
+BRepGraph_NodeId findExistingNode(const BuildContext&          theBuild,
+                                  const TopoDS_Shape&          theShape,
+                                  const BRepGraph_NodeId::Kind theExpectedKind,
+                                  const TopLoc_Location&       theDefinitionLocation);
 
 void bindLocatedNode(BuildContext&          theBuild,
                      const TopoDS_Shape&    theShape,
@@ -568,15 +571,15 @@ enum class TopologyBuildMode
 
 struct BuildContext
 {
-  BuildContext(BRepGraphInc_Storage&                             theStorage,
-               const bool                                        theParallel,
-               const TopologyBuildMode                           theMode,
-               const occ::handle<BRepGraph_LayerTopoSupplement>& theSupplementLayer,
-               NCollection_LinearVector<BRepGraph_NodeId>*       theAppendedRoots = nullptr)
+  BuildContext(BRepGraphInc_Storage&                       theStorage,
+               const bool                                  theParallel,
+               const TopologyBuildMode                     theMode,
+               BRepGraph*                                  theGraph,
+               NCollection_LinearVector<BRepGraph_NodeId>* theAppendedRoots = nullptr)
       : Storage(theStorage),
         Parallel(theParallel),
         Mode(theMode),
-        SupplementLayer(theSupplementLayer),
+        Graph(theGraph),
         AppendedRoots(theAppendedRoots),
         PendingFaces(THE_PENDING_FACE_BUCKET),
         LocatedNodes(THE_LOCATED_NODE_BUCKET)
@@ -590,7 +593,7 @@ struct BuildContext
   BRepGraphInc_Storage&                        Storage;
   bool                                         Parallel;
   TopologyBuildMode                            Mode;
-  occ::handle<BRepGraph_LayerTopoSupplement>   SupplementLayer;
+  BRepGraph*                                   Graph         = nullptr;
   NCollection_LinearVector<BRepGraph_NodeId>*  AppendedRoots = nullptr;
   NCollection_FlatMap<BRepGraph_NodeId>        AppendedRootSet;
   NCollection_DynamicArray<FaceBuildData>      PendingFaces;
@@ -628,10 +631,10 @@ TopoDS_Shape shapeWithoutOwnLocation(const TopoDS_Shape& theShape)
   return aShape;
 }
 
-BRepGraph_NodeId findExistingNode(const BuildContext&    theBuild,
-                                  const TopoDS_Shape&    theShape,
-                                  BRepGraph_NodeId::Kind theExpectedKind,
-                                  const TopLoc_Location& theDefinitionLocation)
+BRepGraph_NodeId findExistingNode(const BuildContext&          theBuild,
+                                  const TopoDS_Shape&          theShape,
+                                  const BRepGraph_NodeId::Kind theExpectedKind,
+                                  const TopLoc_Location&       theDefinitionLocation)
 {
   const TopoDS_TShape* aTShape = theShape.TShape().get();
 
@@ -743,14 +746,14 @@ bool attachNonCoreContainerChild(BuildContext&          theBuild,
                                  const TopAbs_ShapeEnum theOwnerType,
                                  const TopoDS_Shape&    theChild)
 {
-  if (theBuild.SupplementLayer.IsNull())
+  if (theBuild.Graph == nullptr
+      || theBuild.Graph->Supplements().FindStore(BRepGraphSupInc_TopologyStore::GetID()).IsNull())
   {
     return false;
   }
-  return theBuild.SupplementLayer->AddAttachment(theOwner,
-                                                 containerSupplementKind(theOwnerType),
-                                                 theChild)
-         != 0;
+  return theBuild.Graph->Supplements()
+    .Attach(theOwner, containerSupplementKind(theOwnerType), theChild)
+    .IsValid();
 }
 
 BuildCounts captureBuildCounts(const BRepGraphInc_Storage& theStorage)
@@ -792,9 +795,7 @@ static BRepGraph_VertexRefId appendEdgeVertexRef(BuildContext&            theBui
   return appendVertexRef(theBuild.Storage, aVertexId, theOrientation, theParentEdgeId);
 }
 
-BRepGraph_EdgeId registerEdge(BuildContext&                                     theBuild,
-                              const ExtractedEdge&                              theEdgeData,
-                              const occ::handle<BRepGraph_LayerTopoSupplement>& theSupplementLayer)
+BRepGraph_EdgeId registerEdge(BuildContext& theBuild, const ExtractedEdge& theEdgeData)
 {
   // Generated edges are not deduplicated; skip the existing-node lookup
   // so each generated edge always creates a fresh representation.
@@ -874,7 +875,7 @@ BRepGraph_EdgeId registerEdge(BuildContext&                                     
     theBuild.Storage.BindOriginal(
       anEdgeId,
       definitionShapeKey(theEdgeData.Shape, theEdgeData.DefinitionLocation));
-    attachSupplement(theSupplementLayer, anEdgeId, theEdgeData.Shape);
+    attachSupplement(*theBuild.Graph, anEdgeId, theEdgeData.Shape);
   }
   return anEdgeId;
 }
@@ -1054,10 +1055,10 @@ struct OrderedExtractedEdge
   uint32_t EdgeIndex = 0;
 };
 
-uint32_t findExtractedEdgeByExplorerEdge(const ExtractedWire&         theWireData,
-                                         const BRepGraphInc_BitFlags& theUsed,
-                                         const TopoDS_Edge&           theExplorerEdge,
-                                         const bool                   theMatchOrientation)
+uint32_t findExtractedEdgeByExplorerEdge(const ExtractedWire&               theWireData,
+                                         const NCollection_BitDynamicArray& theUsed,
+                                         const TopoDS_Edge&                 theExplorerEdge,
+                                         const bool                         theMatchOrientation)
 {
   const uint32_t aNbEdges = static_cast<uint32_t>(theWireData.Edges.Size());
   for (uint32_t anIdx = 0; anIdx < aNbEdges; ++anIdx)
@@ -1099,7 +1100,7 @@ bool orderExtractedWire(ExtractedWire& theWireData, const TopoDS_Face* theFace)
     anExplorer.Init(theWireData.Shape);
   }
 
-  BRepGraphInc_BitFlags aUsed;
+  NCollection_BitDynamicArray aUsed;
   aUsed.Resize(aNbEdges);
 
   NCollection_LinearVector<OrderedExtractedEdge> anOrder(aNbEdges);
@@ -1246,9 +1247,8 @@ void extractFaceData(FaceBuildData& theData)
   }
 }
 
-void registerFaceData(BuildContext&                                     theBuild,
-                      const NCollection_DynamicArray<FaceBuildData>&    theFaceData,
-                      const occ::handle<BRepGraph_LayerTopoSupplement>& theSupplementLayer)
+void registerFaceData(BuildContext&                                  theBuild,
+                      const NCollection_DynamicArray<FaceBuildData>& theFaceData)
 {
   BRepGraphInc_Storage& theStorage = theBuild.Storage;
   for (const FaceBuildData& aData : theFaceData)
@@ -1287,7 +1287,7 @@ void registerFaceData(BuildContext&                                     theBuild
 
       for (const ExtractedEdge& anEdgeData : aWireData.Edges)
       {
-        const BRepGraph_EdgeId anEdgeId = registerEdge(theBuild, anEdgeData, theSupplementLayer);
+        const BRepGraph_EdgeId anEdgeId = registerEdge(theBuild, anEdgeData);
         appendFaceCoEdge(theStorage, aWireId, aFaceId, anEdgeData, anEdgeId);
       }
       theBuild.HasWireOrderWarnings =
@@ -1451,7 +1451,7 @@ BRepGraph_NodeId enqueueFace(BuildContext&          theBuild,
   const BRepGraph_FaceId aFaceId = theBuild.Storage.AppendFace();
   bindLocatedNode(theBuild, theFace, aFaceId, aDefinitionLocation, true);
   theBuild.Storage.BindOriginal(aFaceId, definitionShapeKey(theFace, aDefinitionLocation));
-  attachSupplement(theBuild.SupplementLayer, aFaceId, theFace);
+  attachSupplement(*theBuild.Graph, aFaceId, theFace);
 
   FaceBuildData& aFaceData     = theBuild.PendingFaces.Appended();
   aFaceData.Face               = theFace;
@@ -1656,7 +1656,7 @@ BRepGraph_NodeId traverseWire(BuildContext&          theBuild,
     theBuild.HasWireOrderWarnings || !orderExtractedWire(aWireData, nullptr);
   for (const ExtractedEdge& anEdgeData : aWireData.Edges)
   {
-    const BRepGraph_EdgeId anEdgeId = registerEdge(theBuild, anEdgeData, theBuild.SupplementLayer);
+    const BRepGraph_EdgeId anEdgeId = registerEdge(theBuild, anEdgeData);
     if (!anEdgeId.IsValid())
     {
       continue;
@@ -1682,7 +1682,7 @@ BRepGraph_NodeId traverseEdge(BuildContext&          theBuild,
 
   ExtractedEdge anEdgeData;
   extractEdgeDefinition(anEdgeData, theEdge, theParentLocation);
-  return BRepGraph_NodeId(registerEdge(theBuild, anEdgeData, theBuild.SupplementLayer));
+  return BRepGraph_NodeId(registerEdge(theBuild, anEdgeData));
 }
 
 BRepGraph_NodeId registerTopology(BuildContext&          theBuild,
@@ -1794,7 +1794,7 @@ BRepGraphInc_Populate::BuildStatus runTopologyBuild(BuildContext&       theBuild
     }
   }
 
-  registerFaceData(theBuild, theBuild.PendingFaces, theBuild.SupplementLayer);
+  registerFaceData(theBuild, theBuild.PendingFaces);
 
   synthesizeFaceBoundaries(theBuild, theBuild.PendingFaces);
 
@@ -1817,10 +1817,7 @@ BRepGraphInc_Populate::BuildStatus buildTopology(
   NCollection_LinearVector<BRepGraph_NodeId>* theAppendedRoots = nullptr,
   BRepGraph_NodeId*                           theOutRootNodeId = nullptr)
 {
-  const occ::handle<BRepGraph_LayerTopoSupplement> aSupplementLayer =
-    theGraph.LayerRegistry().Find<BRepGraph_LayerTopoSupplement>();
-
-  BuildContext aBuild(theStorage, theParallel, theMode, aSupplementLayer, theAppendedRoots);
+  BuildContext aBuild(theStorage, theParallel, theMode, &theGraph, theAppendedRoots);
 
   BRepGraphInc_Populate::BuildStatus aStatus = runTopologyBuild(aBuild, theShape, theOutRootNodeId);
   (void)theOptions;
@@ -1834,7 +1831,7 @@ BRepGraphInc_Populate::BuildStatus buildTopology(
 
 BRepGraphInc_Populate::BuildStatus BRepGraphInc_Populate::Perform(BRepGraph&          theGraph,
                                                                   const TopoDS_Shape& theShape,
-                                                                  bool                theParallel,
+                                                                  const bool          theParallel,
                                                                   const Options&      theOptions)
 {
   theGraph.Clear();
@@ -1858,7 +1855,7 @@ BRepGraphInc_Populate::BuildStatus BRepGraphInc_Populate::Perform(BRepGraph&    
 BRepGraphInc_Populate::BuildStatus BRepGraphInc_Populate::AppendFlattened(
   BRepGraph&                                  theGraph,
   const TopoDS_Shape&                         theShape,
-  bool                                        theParallel,
+  const bool                                  theParallel,
   NCollection_LinearVector<BRepGraph_NodeId>& theAppendedRoots,
   const Options&                              theOptions)
 {
@@ -1881,7 +1878,7 @@ BRepGraphInc_Populate::BuildStatus BRepGraphInc_Populate::AppendFlattened(
 
 BRepGraphInc_Populate::BuildStatus BRepGraphInc_Populate::Append(BRepGraph&          theGraph,
                                                                  const TopoDS_Shape& theShape,
-                                                                 bool                theParallel,
+                                                                 const bool          theParallel,
                                                                  const Options&      theOptions)
 {
   if (theShape.IsNull())

@@ -14,7 +14,6 @@
 //:   abv 09.04.99: S4136: remove parameter lastpreci
 // szv#11:CASCADE30:01Feb00 BRepBuilderAPI::Precision(p) removed
 
-#include <BRepBuilderAPI.hxx>
 #include <BRepLib.hxx>
 #include <IFSelect_CheckCounter.hxx>
 #include <IFSelect_SignatureList.hxx>

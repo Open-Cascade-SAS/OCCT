@@ -1079,7 +1079,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
     TopOpeBRepBuild_PaveSet PVS(EF);
 
     mySplitSectionState = TheON;
-    GFillEdgePVS(EF, myEmptyShapeList, G, PVS);
+    GFillEdgePVS(EF, NCollection_List<TopoDS_Shape>(), G, PVS);
     mySplitSectionState = 0;
 
     // Create an edge builder EDBU
@@ -1140,7 +1140,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
     TopOpeBRepBuild_PaveSet PVS(EF);
 
     mySplitSectionState = TheIN;
-    GFillEdgePVS(EF, myEmptyShapeList, G, PVS);
+    GFillEdgePVS(EF, NCollection_List<TopoDS_Shape>(), G, PVS);
     mySplitSectionState = 0;
 
     // Create an edge builder EDBU
@@ -1158,7 +1158,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
     GEDBUMakeEdges(EF, EDBU, LEMNC);
 
     // modified by NIZHNY-MZV  Mon Apr 17 15:23:28 2000    NCollection_List<TopoDS_Shape> LEM;
-    // modified by NIZHNY-MZV  Mon Apr 17 15:23:16 2000 GKeepShapes(EF,losOO,TopAbs_IN,LEMNC,LEM);
+    // modified by NIZHNY-MZV  Mon Apr 17 15:23:16 2000 GKeepShapes(EF,TopAbs_IN,LEMNC,LEM);
 
     // connect new edges LEM as split parts (IN,SOLID)
     MarkSplit(EOR, TopAbs_IN);
@@ -1177,7 +1177,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
     TopOpeBRepBuild_PaveSet PVS(EF);
 
     mySplitSectionState = TheOUT;
-    GFillEdgePVS(EF, myEmptyShapeList, G, PVS);
+    GFillEdgePVS(EF, NCollection_List<TopoDS_Shape>(), G, PVS);
     mySplitSectionState = 0;
 
     // Create an edge builder EDBU
