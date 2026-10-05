@@ -334,5 +334,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
       
+      - name: Check target branch test results
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        shell: bash
+        run: |
+          run_id=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/build-and-test-multiplatform.yml/runs" \
+            -f branch="$BASE_REF" -f status=success -f per_page=100 \
+            --jq "[.workflow_runs[] | select(.head_repository.full_name == \"$GITHUB_REPOSITORY\")][0].id // empty")
+          if [ -n "$run_id" ]; then
+            available=$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/artifacts" | jq -s \
+              '[.[].artifacts[] | select(.expired == false) | .name] |
+               contains(["results-windows-x64", "results-macos-x64", "results-linux-clang-x64"])')
+            [ "$available" = true ] || run_id=''
+          fi
+          echo "latest_run_id=$run_id" >> "$GITHUB_ENV"
+          if [ -z "$run_id" ]; then
+            echo "::notice::Test comparison skipped: target branch results are missing or expired."
+          fi
+
       - name: Generate Test Summary
+        if: env.latest_run_id != ''
         uses: ./.github/actions/test-summary
