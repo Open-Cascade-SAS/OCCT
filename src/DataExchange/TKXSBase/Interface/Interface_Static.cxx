@@ -19,9 +19,45 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <cstdio>
+#include <mutex>
 IMPLEMENT_STANDARD_RTTIEXT(Interface_Static, Interface_TypedValue)
 
 static char defmess[31];
+
+// Interface_Static's backing store (MoniTool_TypedValue::Stats(), a process-wide
+// NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>) and each
+// individual named parameter's own mutable value fields (mutated in place by
+// SetCStringValue/SetIntegerValue/SetRealValue/SetUptodate, read by
+// CStringValue/IntegerValue/RealValue/UpdatedStatus, all inherited from
+// MoniTool_TypedValue/Interface_TypedValue) have no synchronization of their own.
+// Every static entry point below that touches either one takes this recursive mutex for its
+// whole body: recursive because several of these methods call back into other methods
+// declared here (Init's Interface_ParamMisc branch calls Static(), the '&' edit-syntax
+// branch calls Static() then mutates the returned handle directly, Init(char) calls the
+// Interface_ParamType overload then Static() again), all intended to run on the SAME
+// calling thread as one logical operation.
+//
+// This closes the memory-unsafety hole (concurrent NCollection_DataMap::Find/Bind, and
+// concurrent multi-step mutation of the same TCollection_HAsciiString buffer via
+// Clear()+AssignCat()) for every OCCT consumer, not just OCCTSwift's own bridge. It does
+// NOT make two independent, concurrently-running STEP/IGES operations that set DIFFERENT
+// values for the SAME named parameter safe to interleave: Interface_Static is a shared
+// global used as an IMPLICIT parameter-passing channel between a caller's SetCVal/SetIVal/
+// SetRVal and reads many stack frames below it inside Transfer()/Write()/ReadFile(), and no
+// amount of locking the accessor calls themselves closes the window between one thread's
+// Set and its own later (same-thread) Get. See OCCTSwift#1157 for the measurement that
+// proved this empirically (a variant of this exact lock still cross-talks 100% of the
+// time). OCCTSwift's own igesMutex() (Sources/OCCTBridge/src/OCCTBridge_IO_StepFormat.mm /
+// OCCTBridge_IO_IgesFormat.mm) stays in place for that reason: it serializes the whole
+// configure-then-run window, which this mutex deliberately does not attempt.
+namespace
+{
+std::recursive_mutex& StaticsMutex()
+{
+  static std::recursive_mutex aMutex;
+  return aMutex;
+}
+} // namespace
 
 //  Satisfies functions offered as standard ...
 
@@ -156,6 +192,7 @@ bool Interface_Static::Init(const char* const         family,
                             const Interface_ParamType type,
                             const char* const         init)
 {
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
   if (name[0] == '\0')
   {
     return false;
@@ -189,7 +226,8 @@ bool Interface_Static::Init(const char* const family,
                             const char        type,
                             const char* const init)
 {
-  Interface_ParamType epyt;
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  Interface_ParamType                   epyt;
   switch (type)
   {
     case 'e':
@@ -291,18 +329,21 @@ bool Interface_Static::Init(const char* const family,
 
 occ::handle<Interface_Static> Interface_Static::Static(const char* const name)
 {
-  occ::handle<Standard_Transient> result;
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Standard_Transient>       result;
   MoniTool_TypedValue::Stats().Find(name, result);
   return occ::down_cast<Interface_Static>(result);
 }
 
 bool Interface_Static::IsPresent(const char* const name)
 {
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
   return MoniTool_TypedValue::Stats().IsBound(name);
 }
 
 const char* Interface_Static::CDef(const char* const name, const char* const part)
 {
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
   if (!part || part[0] == '\0')
   {
     return "";
@@ -380,6 +421,7 @@ const char* Interface_Static::CDef(const char* const name, const char* const par
 
 int Interface_Static::IDef(const char* const name, const char* const part)
 {
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
   if (!part || part[0] == '\0')
   {
     return 0;
@@ -429,7 +471,8 @@ int Interface_Static::IDef(const char* const name, const char* const part)
 
 bool Interface_Static::IsSet(const char* const name, const bool proper)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
     return false;
@@ -448,7 +491,8 @@ bool Interface_Static::IsSet(const char* const name, const bool proper)
 
 const char* Interface_Static::CVal(const char* const name)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -461,7 +505,8 @@ const char* Interface_Static::CVal(const char* const name)
 
 int Interface_Static::IVal(const char* const name)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -474,7 +519,8 @@ int Interface_Static::IVal(const char* const name)
 
 double Interface_Static::RVal(const char* const name)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -487,7 +533,8 @@ double Interface_Static::RVal(const char* const name)
 
 bool Interface_Static::SetCVal(const char* const name, const char* const val)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
     return false;
@@ -497,7 +544,8 @@ bool Interface_Static::SetCVal(const char* const name, const char* const val)
 
 bool Interface_Static::SetIVal(const char* const name, const int val)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
     return false;
@@ -511,7 +559,8 @@ bool Interface_Static::SetIVal(const char* const name, const int val)
 
 bool Interface_Static::SetRVal(const char* const name, const double val)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
     return false;
@@ -523,7 +572,8 @@ bool Interface_Static::SetRVal(const char* const name, const double val)
 
 bool Interface_Static::Update(const char* const name)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
     return false;
@@ -534,7 +584,8 @@ bool Interface_Static::Update(const char* const name)
 
 bool Interface_Static::IsUpdated(const char* const name)
 {
-  occ::handle<Interface_Static> item = Interface_Static::Static(name);
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  occ::handle<Interface_Static>         item = Interface_Static::Static(name);
   if (item.IsNull())
   {
     return false;
@@ -546,7 +597,8 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interf
   const int         mode,
   const char* const criter)
 {
-  int modup = (mode / 100); // 0 any, 1 non-update, 2 update
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
+  int                                   modup = (mode / 100); // 0 any, 1 non-update, 2 update
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list =
     new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
@@ -605,6 +657,7 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interf
 void Interface_Static::FillMap(
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theMap)
 {
+  std::lock_guard<std::recursive_mutex> aLock(StaticsMutex());
   theMap.Clear();
 
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& aMap =
