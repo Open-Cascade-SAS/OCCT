@@ -65,6 +65,40 @@
 // modified by NIZNHY-PKV Fri Oct 17 14:13:29 2008f
 static bool IsPlane(const occ::handle<Geom_Surface>& aS);
 
+namespace
+{
+//=================================================================================================
+
+//! Checks trim range against the effective basis curve.
+//! @param[in] theCurve curve to check
+//! @param[in] theFirst first trim parameter
+//! @param[in] theLast last trim parameter
+//! @return true if the trim range is valid
+bool isValidTrimRange(const occ::handle<Geom_Curve>& theCurve,
+                      const double                   theFirst,
+                      const double                   theLast)
+{
+  const double aTrimFirst = std::min(theFirst, theLast);
+  const double aTrimLast  = std::max(theFirst, theLast);
+  if (!(aTrimFirst < aTrimLast))
+  {
+    return false;
+  }
+
+  // Unwrap nested trims.
+  occ::handle<Geom_Curve> aBasisCurve = theCurve;
+  for (occ::handle<Geom_TrimmedCurve> aTrim = occ::down_cast<Geom_TrimmedCurve>(aBasisCurve);
+       !aTrim.IsNull();
+       aTrim = occ::down_cast<Geom_TrimmedCurve>(aBasisCurve))
+  {
+    aBasisCurve = aTrim->BasisCurve();
+  }
+  return aBasisCurve->IsPeriodic()
+         || (aBasisCurve->FirstParameter() - aTrimFirst <= Precision::PConfusion()
+             && aTrimLast - aBasisCurve->LastParameter() <= Precision::PConfusion());
+}
+} // namespace
+
 // modified by NIZNHY-PKV Fri Oct 17 14:13:33 2008t
 //
 //=================================================================================================
@@ -427,12 +461,16 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&            
     l                    = C3D->TransformedParameter(l, aTrsf);
   }
 
+  if (!isValidTrimRange(C3D, f, l))
+  {
+    return nullPCurve;
+  }
+
+  occ::handle<Geom_TrimmedCurve> aTrimmedCurve = new Geom_TrimmedCurve(C3D, f, l, true, false);
+
   // Perform projection
   occ::handle<Geom_Curve> ProjOnPlane =
-    GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3D, f, l, true, false),
-                                GP,
-                                GP->Position().Direction(),
-                                true);
+    GeomProjLib::ProjectOnPlane(aTrimmedCurve, GP, GP->Position().Direction(), true);
 
   occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface(GP);
   occ::handle<GeomAdaptor_Curve>   HC = new GeomAdaptor_Curve(ProjOnPlane);

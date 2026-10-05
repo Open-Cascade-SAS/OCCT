@@ -168,41 +168,6 @@ public:
 
   Standard_EXPORT double Period() const override;
 
-  //! Computes the point of parameter U on the curve
-  Standard_EXPORT gp_Pnt2d Value(const double U) const final;
-
-  //! Computes the point of parameter U.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
-
-  //! Computes the point of parameter U on the curve with its
-  //! first derivative.
-  //! Raised if the continuity of the current interval
-  //! is not C1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const final;
-
-  //! Returns the point P of parameter U, the first and second
-  //! derivatives V1 and V2.
-  //! Raised if the continuity of the current interval
-  //! is not C2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
-
-  //! Returns the point P of parameter U, the first, the second
-  //! and the third derivative.
-  //! Raised if the continuity of the current interval
-  //! is not C3.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const final;
-
-  //! The returned vector gives the value of the derivative for the
-  //! order of derivation N.
-  //! Raised if the continuity of the current interval
-  //! is not CN.
-  //! Raised if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
-
   //! returns the parametric resolution
   Standard_EXPORT double Resolution(const double Ruv) const override;
 

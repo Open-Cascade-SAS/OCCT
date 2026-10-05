@@ -157,6 +157,27 @@ TEST(NCollection_CellFilterTest, AddInspect2D_Range)
   EXPECT_EQ(2u, anInspector.Found().size());
 }
 
+TEST(NCollection_CellFilterTest, ReversedRangesAreIgnored)
+{
+  NCollection_CellFilter<TestInspector2D> aFilter(1.0);
+  aFilter.Add(1, TestPoint2D(1.5, 1.5));
+
+  const TestPoint2D aMin(1.5, 1.5);
+  const TestPoint2D aMax(0.5, 0.5);
+
+  aFilter.Add(2, aMin, aMax);
+
+  TestInspector2D anInspector;
+  aFilter.Inspect(aMin, aMax, anInspector);
+  EXPECT_TRUE(anInspector.Found().empty());
+
+  aFilter.Remove(1, aMin, aMax);
+  TestInspector2D aPointInspector;
+  aFilter.Inspect(TestPoint2D(1.5, 1.5), aPointInspector);
+  ASSERT_EQ(1u, aPointInspector.Found().size());
+  EXPECT_EQ(1, aPointInspector.Found()[0]);
+}
+
 TEST(NCollection_CellFilterTest, Remove2D)
 {
   NCollection_CellFilter<TestInspector2D> aFilter(1.0);

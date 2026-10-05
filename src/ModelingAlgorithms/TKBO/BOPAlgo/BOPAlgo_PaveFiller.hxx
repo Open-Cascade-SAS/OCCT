@@ -35,8 +35,6 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
 #include <BOPDS_Pair.hxx>
-#include <BOPDS_PDS.hxx>
-#include <BOPDS_PIterator.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Curve.hxx>
 #include <BOPTools_BoxTree.hxx>
@@ -53,6 +51,8 @@ class IntTools_Context;
 class BOPDS_PaveBlock;
 class gp_Pnt;
 class BOPDS_Curve;
+class BOPDS_Iterator;
+class BOPDS_DS;
 class TopoDS_Vertex;
 class TopoDS_Edge;
 class TopoDS_Face;
@@ -116,9 +116,9 @@ public:
 
   Standard_EXPORT const BOPDS_DS& DS();
 
-  Standard_EXPORT BOPDS_PDS PDS();
+  Standard_EXPORT BOPDS_DS* PDS();
 
-  Standard_EXPORT const BOPDS_PIterator& Iterator();
+  Standard_EXPORT BOPDS_Iterator* const& Iterator();
 
   //! Sets the arguments for operation
   void SetArguments(const NCollection_List<TopoDS_Shape>& theLS) { myArguments = theLS; }
@@ -637,8 +637,8 @@ protected: //! Analyzing Progress steps
 
 protected: //! Fields
   NCollection_List<TopoDS_Shape> myArguments;
-  BOPDS_PDS                      myDS;
-  BOPDS_PIterator                myIterator;
+  BOPDS_DS*                      myDS;
+  BOPDS_Iterator*                myIterator;
   occ::handle<IntTools_Context>  myContext;
   BOPAlgo_SectionAttribute       mySectionAttribute;
   bool                           myNonDestructive;

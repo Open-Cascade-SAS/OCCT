@@ -18,7 +18,6 @@
 
 #include <Geom2dToIGES_Geom2dCurve.hxx>
 #include <Geom2dToIGES_Geom2dEntity.hxx>
-#include <Geom2dToIGES_Geom2dPoint.hxx>
 #include <IGESData_IGESModel.hxx>
 
 //=================================================================================================

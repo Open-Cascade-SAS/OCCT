@@ -108,9 +108,9 @@ static void MapShapes(const TDF_Label& LCible,
 //=================================================================================================
 
 static void SubstituteShape(
-  const TopoDS_Shape&                                                              oldShape,
-  const TopoDS_Shape&                                                              newShape,
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& amap)
+  const TopoDS_Shape&                                                            oldShape,
+  const TopoDS_Shape&                                                            newShape,
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& amap)
 {
   if (oldShape.IsSame(newShape))
   {
@@ -166,7 +166,7 @@ void TNaming::Substitute(
   MapShapes(LCible, LSource, M);
   occ::handle<TNaming_UsedShapes> US;
   LCible.Root().FindAttribute(TNaming_UsedShapes::GetID(), US);
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& amap = US->Map();
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& amap = US->Map();
   for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It(M);
        It.More();
        It.Next())
@@ -181,7 +181,7 @@ bool TNaming::SubstituteSShape(const TDF_Label& Lab, const TopoDS_Shape& From, T
 {
   occ::handle<TNaming_UsedShapes> US;
   Lab.Root().FindAttribute(TNaming_UsedShapes::GetID(), US);
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& amap = US->Map();
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& amap = US->Map();
   if (!amap.IsBound(To))
   {
     return false;
@@ -258,7 +258,7 @@ void TNaming::Update(const TDF_Label&                                           
   //       qui contiennent cette face.
   occ::handle<TNaming_UsedShapes> US;
   L.Root().FindAttribute(TNaming_UsedShapes::GetID(), US);
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& amap = US->Map();
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& amap = US->Map();
 
   for (TNaming_Iterator it(L); it.More(); it.Next())
   {

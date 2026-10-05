@@ -3,7 +3,7 @@
 ## Test    : N4
 ## Comment : from buc60330
 ## ====================================
-puts "TODO OCC22817 All:TEST INCOMPLETE"
+puts "TODO OCC22817 All: Faulty shapes in variables faulty_1 to faulty_1"
 
 restore [locate_data_file CFI_buc60330.rle] a
 explode a e
@@ -14,4 +14,4 @@ blend result a 10 a_5 10 a_6
 explode result sh
 renamevar result_1 result
 
-checkprops result -s 0
+checkprops result -s 45573.7

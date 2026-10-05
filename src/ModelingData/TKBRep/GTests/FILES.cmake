@@ -55,6 +55,8 @@ set(OCCT_TKBRep_GTests_FILES
   BRepGraph_SparseModel_Test.cxx
   BRepGraph_Deduplicate_Test.cxx
   BRepTools_ReShape_Test.cxx
+  BRepTools_GTrsfModification_Test.cxx
+  BRepTools_TrsfModification_Test.cxx
   BRepTools_Test.cxx
   TopExp_Test.cxx
   TopoDS_Builder_Test.cxx

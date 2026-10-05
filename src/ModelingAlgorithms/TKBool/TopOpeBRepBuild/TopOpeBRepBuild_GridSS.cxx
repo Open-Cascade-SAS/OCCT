@@ -1657,7 +1657,7 @@ static bool AreFacesCoincideInArea(const TopoDS_Shape&                   theBase
   double                tol2d   = Precision::PConfusion();
   BRepClass_Intersector anInter;
   BRepClass_Edge        aBCE;
-  aBCE.Face()    = aBaseFace;
+  aBCE.SetFace(aBaseFace);
   double maxDist = std::max(BRep_Tool::Tolerance(aBaseFace), BRep_Tool::Tolerance(aFace));
 
   bool                                     isError = false;
@@ -1687,7 +1687,7 @@ static bool AreFacesCoincideInArea(const TopoDS_Shape&                   theBase
       }
       BB.UpdateEdge(aE, PC, aBaseFace, tolE);
     }
-    aBCE.Edge() = aE;
+    aBCE.SetEdge(aE);
     anInter.Perform(aLin, pLinMin, tol2d, aBCE);
     if (anInter.IsDone())
     {

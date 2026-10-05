@@ -69,7 +69,6 @@ set(OCCT_TDataStd_FILES
   TDataStd_NamedData.hxx
   TDataStd_NoteBook.cxx
   TDataStd_NoteBook.hxx
-  TDataStd_PtrTreeNode.hxx
   TDataStd_Real.cxx
   TDataStd_Real.hxx
   TDataStd_RealArray.cxx

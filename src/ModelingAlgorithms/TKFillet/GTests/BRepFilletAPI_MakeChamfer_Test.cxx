@@ -16,6 +16,7 @@
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRep_Tool.hxx>
 #include <gp_Ax2.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
@@ -31,8 +32,10 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 
 TEST(BRepFilletAPI_MakeChamferTest, SymmetricChamfer)
 {
@@ -75,6 +78,53 @@ TEST(BRepFilletAPI_MakeChamferTest, AsymmetricChamfer)
 
   BRepCheck_Analyzer anAnalyzer(aResult);
   EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+// Chamfer every edge of a flat 50x50x10 slab with distance 5. The top and
+// bottom chamfers of each 50x10 side face (5 + 5) exactly consume the 10 mm
+// height, so the intervening side faces must be removed and the opposing
+// chamfers must meet cleanly, leaving no degenerate mid edges (issue #1177).
+TEST(BRepFilletAPI_MakeChamferTest, Issue1177_ChamferAllEdgesFlatBox_SucceedsWithoutCrash)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(50.0, 50.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  for (TopExp_Explorer anExp(aBox, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    aChamfer.Add(5.0, TopoDS::Edge(anExp.Current()));
+  }
+
+  ASSERT_NO_THROW(aChamfer.Build()) << "Chamfer build must not crash";
+
+  EXPECT_TRUE(aChamfer.IsDone())
+    << "Chamfering all edges of a 50x50x10 slab with d=5 should succeed (issue #1177)";
+
+  if (!aChamfer.IsDone())
+  {
+    return;
+  }
+
+  const TopoDS_Shape& aResult = aChamfer.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  BRepCheck_Analyzer anAnalyzer(aResult, true, false, true);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+
+  double aMaxTolerance = 0.0;
+  for (TopExp_Explorer aVertexExp(aResult, TopAbs_VERTEX); aVertexExp.More(); aVertexExp.Next())
+  {
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Vertex(aVertexExp.Current())));
+  }
+  for (TopExp_Explorer anEdgeExp(aResult, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    aMaxTolerance =
+      std::max(aMaxTolerance, BRep_Tool::Tolerance(TopoDS::Edge(anEdgeExp.Current())));
+  }
+  EXPECT_LE(aMaxTolerance, 1.01e-4)
+    << "Chamfer construction must not hide inconsistent edge parameterization with tolerance";
 }
 
 TEST(BRepFilletAPI_MakeChamferTest, ChamferMoreFaces)

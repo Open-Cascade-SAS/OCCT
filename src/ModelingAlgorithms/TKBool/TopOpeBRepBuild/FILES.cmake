@@ -84,9 +84,6 @@ set(OCCT_TopOpeBRepBuild_FILES
   TopOpeBRepBuild_PaveClassifier.hxx
   TopOpeBRepBuild_PaveSet.cxx
   TopOpeBRepBuild_PaveSet.hxx
-  TopOpeBRepBuild_PBuilder.hxx
-  TopOpeBRepBuild_PGTopo.hxx
-  TopOpeBRepBuild_PWireEdgeSet.hxx
   TopOpeBRepBuild_Section.cxx
   TopOpeBRepBuild_ShapeListOfShape.cxx
   TopOpeBRepBuild_ShapeListOfShape.hxx
@@ -108,7 +105,6 @@ set(OCCT_TopOpeBRepBuild_FILES
   TopOpeBRepBuild_Tools2d.cxx
   TopOpeBRepBuild_Tools2d.hxx
   TopOpeBRepBuild_Tools_1.cxx
-  TopOpeBRepBuild_trace.cxx
   TopOpeBRepBuild_VertexInfo.cxx
   TopOpeBRepBuild_VertexInfo.hxx
   TopOpeBRepBuild_WireEdgeClassifier.cxx

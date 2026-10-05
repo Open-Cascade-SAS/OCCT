@@ -17,11 +17,11 @@
 #include <NCollection_BaseMap.hxx>
 #include <NCollection_DefaultHasher.hxx>
 #include <NCollection_ItemsView.hxx>
-#include <NCollection_StlIterator.hxx>
 #include <NCollection_TListNode.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 
+#include <cstddef>
 #include <functional>
 #include <optional>
 #include <type_traits>
@@ -72,6 +72,12 @@ public:
   typedef TheKeyType key_type;
   //! STL-compliant typedef for value type
   typedef TheItemType value_type;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using reference       = TheItemType&;
+  using const_reference = const TheItemType&;
+  using pointer         = TheItemType*;
+  using const_pointer   = const TheItemType*;
 
 public:
   //! Adaptation of the TListNode to the ordered data map notations.
@@ -139,6 +145,11 @@ public:
     //! Key
     const TheKeyType& Key() const noexcept { return myKey; }
 
+    //! Next node in insertion order.
+    OrderedDataMapNode* OrderNext() noexcept { return myOrderNext; }
+
+    const OrderedDataMapNode* OrderNext() const noexcept { return myOrderNext; }
+
     //! Static deleter to be passed to BaseMap
     static void delNode(NCollection_ListNode*                   theNode,
                         occ::handle<NCollection_BaseAllocator>& theAl) noexcept
@@ -154,86 +165,101 @@ public:
     TheKeyType myKey;
   };
 
+  using iterator       = NCollection_BaseMap::BasicIterator<NCollection_OrderedDataMap,
+                                                            OrderedDataMapNode,
+                                                            TheKeyType,
+                                                            TheItemType,
+                                                            false,
+                                                            false,
+                                                            true>;
+  using const_iterator = NCollection_BaseMap::BasicIterator<NCollection_OrderedDataMap,
+                                                            OrderedDataMapNode,
+                                                            TheKeyType,
+                                                            TheItemType,
+                                                            false,
+                                                            true,
+                                                            true>;
+
 public:
-  //! Implementation of the Iterator interface.
-  //! Iterates in insertion order by walking the doubly-linked list.
-  class Iterator
+  //! Legacy OCCT cursor backed by the standard iterator state.
+  class Iterator : public iterator
   {
   public:
-    //! Empty constructor
-    Iterator() noexcept
-        : myNode(nullptr)
+    Iterator() noexcept = default;
+
+    explicit Iterator(NCollection_OrderedDataMap& theMap) noexcept
+        : iterator(static_cast<OrderedDataMapNode*>(theMap.myFirst)),
+          myMap(&theMap)
     {
     }
 
-    //! Constructor
-    Iterator(const NCollection_OrderedDataMap& theMap) noexcept
-        : myNode(theMap.myFirst)
+    //! Legacy cursor construction from a const map.
+    explicit Iterator(const NCollection_OrderedDataMap& theMap) noexcept
+        : iterator(const_cast<OrderedDataMapNode*>(theMap.myFirst)),
+          myMap(const_cast<NCollection_OrderedDataMap*>(&theMap))
     {
     }
 
-    //! Query if the end of collection is reached by iterator
-    bool More() const noexcept { return myNode != nullptr; }
+    bool More() const noexcept { return !iterator::operator==(iterator()); }
 
-    //! Make a step along the collection (in insertion order)
-    void Next() noexcept
-    {
-      if (myNode)
-        myNode = myNode->myOrderNext;
-    }
+    void Next() noexcept { ++(*this); }
 
-    //! Value inquiry
     const TheItemType& Value() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_OrderedDataMap::Iterator::Value");
-      return myNode->Value();
+      return iterator::operator*();
     }
 
-    //! Value change access
     TheItemType& ChangeValue() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_OrderedDataMap::Iterator::ChangeValue");
-      return myNode->ChangeValue();
+      return iterator::operator*();
     }
 
-    //! Key
     const TheKeyType& Key() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_OrderedDataMap::Iterator::Key");
-      return myNode->Key();
+      return iterator::Key();
     }
 
-    //! Performs comparison of two iterators.
-    bool IsEqual(const Iterator& theOther) const noexcept { return myNode == theOther.myNode; }
+    bool IsEqual(const Iterator& theOther) const noexcept
+    {
+      return iterator::operator==(static_cast<const iterator&>(theOther));
+    }
 
-    //! Initialize
-    void Initialize(const NCollection_OrderedDataMap& theMap) noexcept { myNode = theMap.myFirst; }
+    void Initialize(NCollection_OrderedDataMap& theMap) noexcept { *this = Iterator(theMap); }
 
-    //! Reset
-    void Reset() noexcept { myNode = nullptr; }
+    void Initialize(const NCollection_OrderedDataMap& theMap) noexcept { *this = Iterator(theMap); }
+
+    void Reset() noexcept { *this = myMap != nullptr ? Iterator(*myMap) : Iterator(); }
 
   private:
-    OrderedDataMapNode* myNode; //!< Current node in insertion-order list
+    NCollection_OrderedDataMap* myMap = nullptr;
   };
 
-  //! Shorthand for a regular iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false> iterator;
-
-  //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>
-    const_iterator;
-
   //! Returns an iterator pointing to the first element in the map.
-  iterator begin() const noexcept { return Iterator(*this); }
-
-  //! Returns an iterator referring to the past-the-end element in the map.
-  iterator end() const noexcept { return Iterator(); }
+  iterator begin() noexcept { return iterator(*this); }
 
   //! Returns a const iterator pointing to the first element in the map.
-  const_iterator cbegin() const noexcept { return Iterator(*this); }
+  const_iterator begin() const noexcept { return const_iterator(*this); }
+
+  //! Returns an iterator referring to the past-the-end element in the map.
+  iterator end() noexcept { return iterator(); }
 
   //! Returns a const iterator referring to the past-the-end element in the map.
-  const_iterator cend() const noexcept { return Iterator(); }
+  const_iterator end() const noexcept { return const_iterator(); }
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator cbegin() const noexcept { return const_iterator(*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator cend() const noexcept { return const_iterator(); }
+
+  //! Returns the first node in insertion order for the shared iterator state.
+  OrderedDataMapNode* FirstNode() noexcept { return myFirst; }
+
+  //! Returns the first node in insertion order for the shared iterator state.
+  const OrderedDataMapNode* FirstNode() const noexcept { return myFirst; }
 
 public:
   // **************** Key-value pair iteration support for structured bindings
@@ -249,18 +275,20 @@ private:
   //! Extractor for mutable key-value pairs
   struct ItemsExtractor
   {
-    static KeyValueRef Extract(const Iterator& theIter)
+    template <class TheIterator>
+    static KeyValueRef Extract(const TheIterator& theIter)
     {
-      return {theIter.Key(), theIter.ChangeValue()};
+      return {theIter.Key(), *theIter};
     }
   };
 
   //! Extractor for const key-value pairs
   struct ConstItemsExtractor
   {
-    static ConstKeyValueRef Extract(const Iterator& theIter)
+    template <class TheIterator>
+    static ConstKeyValueRef Extract(const TheIterator& theIter)
     {
-      return {theIter.Key(), theIter.Value()};
+      return {theIter.Key(), *theIter};
     }
   };
 
@@ -286,7 +314,7 @@ public:
 
   //! Empty Constructor.
   NCollection_OrderedDataMap()
-      : NCollection_BaseMap(1, true, occ::handle<NCollection_BaseAllocator>()),
+      : NCollection_BaseMap(1, occ::handle<NCollection_BaseAllocator>()),
         myFirst(nullptr),
         myLast(nullptr)
   {
@@ -296,7 +324,7 @@ public:
   explicit NCollection_OrderedDataMap(
     const size_t                                  theNbBuckets,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_BaseMap(theNbBuckets, true, theAllocator),
+      : NCollection_BaseMap(theNbBuckets, theAllocator),
         myFirst(nullptr),
         myLast(nullptr)
   {
@@ -306,7 +334,7 @@ public:
   explicit NCollection_OrderedDataMap(
     const int                                     theNbBuckets,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_OrderedDataMap(NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+      : NCollection_OrderedDataMap(NCollection_BaseMap::nbBucketsFromInt(theNbBuckets),
                                    theAllocator)
   {
   }
@@ -319,7 +347,7 @@ public:
     const Hasher&                                 theHasher,
     const size_t                                  theNbBuckets = 1,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_BaseMap(theNbBuckets, true, theAllocator),
+      : NCollection_BaseMap(theNbBuckets, theAllocator),
         myHasher(theHasher),
         myFirst(nullptr),
         myLast(nullptr)
@@ -332,7 +360,7 @@ public:
     const int                                     theNbBuckets,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_OrderedDataMap(theHasher,
-                                   NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                                   NCollection_BaseMap::nbBucketsFromInt(theNbBuckets),
                                    theAllocator)
   {
   }
@@ -345,7 +373,7 @@ public:
     Hasher&&                                      theHasher,
     const size_t                                  theNbBuckets = 1,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_BaseMap(theNbBuckets, true, theAllocator),
+      : NCollection_BaseMap(theNbBuckets, theAllocator),
         myHasher(std::move(theHasher)),
         myFirst(nullptr),
         myLast(nullptr)
@@ -358,14 +386,14 @@ public:
     const int                                     theNbBuckets,
     const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_OrderedDataMap(std::move(theHasher),
-                                   NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                                   NCollection_BaseMap::nbBucketsFromInt(theNbBuckets),
                                    theAllocator)
   {
   }
 
   //! Copy constructor
   NCollection_OrderedDataMap(const NCollection_OrderedDataMap& theOther)
-      : NCollection_BaseMap(theOther.NbBuckets(), true, theOther.myAllocator),
+      : NCollection_BaseMap(theOther.NbBuckets(), theOther.myAllocator),
         myHasher(theOther.myHasher),
         myFirst(nullptr),
         myLast(nullptr)
@@ -374,29 +402,32 @@ public:
     if (anExt <= 0)
       return;
     ReSize(anExt - 1);
-    for (Iterator anIter(theOther); anIter.More(); anIter.Next())
-      Bind(anIter.Key(), anIter.Value());
+    for (const_iterator anIter(theOther); anIter != theOther.cend(); ++anIter)
+      Bind(anIter.Key(), *anIter);
   }
 
   //! Move constructor
-  NCollection_OrderedDataMap(NCollection_OrderedDataMap&& theOther) noexcept
-      : NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther)),
+  NCollection_OrderedDataMap(NCollection_OrderedDataMap&& theOther) noexcept(
+    std::is_nothrow_move_constructible<Hasher>::value)
+      : NCollection_BaseMap(theOther.NbBuckets(), theOther.myAllocator),
         myHasher(std::move(theOther.myHasher)),
-        myFirst(theOther.myFirst),
-        myLast(theOther.myLast)
+        myFirst(nullptr),
+        myLast(nullptr)
   {
-    theOther.myFirst = nullptr;
-    theOther.myLast  = nullptr;
+    exchangeMapsData(theOther);
+    std::swap(myFirst, theOther.myFirst);
+    std::swap(myLast, theOther.myLast);
   }
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_OrderedDataMap& theOther) noexcept
+  void Exchange(NCollection_OrderedDataMap& theOther) noexcept(
+    noexcept(std::swap(std::declval<Hasher&>(), std::declval<Hasher&>())))
   {
-    this->exchangeMapsData(theOther);
+    std::swap(myHasher, theOther.myHasher);
     std::swap(myFirst, theOther.myFirst);
     std::swap(myLast, theOther.myLast);
-    std::swap(myHasher, theOther.myHasher);
+    this->exchangeMapsData(theOther);
   }
 
   //! Returns const reference to the hasher.
@@ -414,9 +445,9 @@ public:
     if (anExt)
     {
       ReSize(anExt - 1);
-      Iterator anIter(theOther);
-      for (; anIter.More(); anIter.Next())
-        Bind(anIter.Key(), anIter.Value());
+      const_iterator anIter(theOther);
+      for (; anIter != theOther.cend(); ++anIter)
+        Bind(anIter.Key(), *anIter);
     }
     return *this;
   }
@@ -428,10 +459,12 @@ public:
   }
 
   //! Move operator
-  NCollection_OrderedDataMap& operator=(NCollection_OrderedDataMap&& theOther) noexcept
+  NCollection_OrderedDataMap& operator=(NCollection_OrderedDataMap&& theOther) noexcept(
+    noexcept(std::swap(std::declval<Hasher&>(), std::declval<Hasher&>())))
   {
     if (this == &theOther)
       return *this;
+    std::swap(myHasher, theOther.myHasher);
     exchangeMapsData(theOther);
     std::swap(myFirst, theOther.myFirst);
     std::swap(myLast, theOther.myLast);
@@ -442,9 +475,8 @@ public:
   void ReSize(const size_t N)
   {
     NCollection_ListNode** newdata = nullptr;
-    NCollection_ListNode** dummy   = nullptr;
     size_t                 newBuck;
-    if (BeginResize(N, newBuck, newdata, dummy))
+    if (beginResize(N, newBuck, newdata))
     {
       if (myData1)
       {
@@ -457,7 +489,7 @@ public:
             p = olddata[i];
             while (p)
             {
-              const size_t k = HashCode(p->Key(), newBuck);
+              const size_t k = hashCode(p->Key(), newBuck);
               q              = (OrderedDataMapNode*)p->Next();
               p->Next()      = newdata[k];
               newdata[k]     = p;
@@ -466,7 +498,7 @@ public:
           }
         }
       }
-      EndResize(N, newBuck, newdata, dummy);
+      endResize(N, newBuck, newdata);
     }
   }
 
@@ -668,14 +700,14 @@ public:
     if (IsEmpty())
       return false;
     OrderedDataMapNode** data = (OrderedDataMapNode**)myData1;
-    const size_t         k    = HashCode(theKey, NbBuckets());
+    const size_t         k    = hashCode(theKey, NbBuckets());
     OrderedDataMapNode*  p    = data[k];
     OrderedDataMapNode*  q    = nullptr;
     while (p)
     {
-      if (IsEqual(p->Key(), theKey))
+      if (isEqual(p->Key(), theKey))
       {
-        Decrement();
+        decrement();
         if (q)
           q->Next() = p->Next();
         else
@@ -751,7 +783,7 @@ public:
   //! buckets is not released and will be reused.
   void Clear(const bool doReleaseMemory = false)
   {
-    Destroy(OrderedDataMapNode::delNode, doReleaseMemory);
+    destroy(OrderedDataMapNode::delNode, doReleaseMemory);
     myFirst = nullptr;
     myLast  = nullptr;
   }
@@ -765,7 +797,7 @@ public:
   }
 
   //! Destructor
-  ~NCollection_OrderedDataMap() override { Clear(true); }
+  ~NCollection_OrderedDataMap() { Clear(true); }
 
   //! Returns the first key in insertion order.
   //! @throws Standard_NoSuchObject if map is empty
@@ -830,10 +862,10 @@ protected:
   {
     if (IsEmpty())
       return false;
-    for (theNode = (OrderedDataMapNode*)myData1[HashCode(theKey, NbBuckets())]; theNode;
+    for (theNode = (OrderedDataMapNode*)myData1[hashCode(theKey, NbBuckets())]; theNode;
          theNode = (OrderedDataMapNode*)theNode->Next())
     {
-      if (IsEqual(theNode->Key(), theKey))
+      if (isEqual(theNode->Key(), theKey))
         return true;
     }
     return false;
@@ -846,13 +878,13 @@ protected:
   //! @return true if key is found
   bool lookup(const TheKeyType& theKey, OrderedDataMapNode*& theNode, size_t& theHash) const
   {
-    theHash = HashCode(theKey, NbBuckets());
+    theHash = hashCode(theKey, NbBuckets());
     if (IsEmpty())
       return false;
     for (theNode = (OrderedDataMapNode*)myData1[theHash]; theNode;
          theNode = (OrderedDataMapNode*)theNode->Next())
     {
-      if (IsEqual(theNode->Key(), theKey))
+      if (isEqual(theNode->Key(), theKey))
       {
         return true;
       }
@@ -860,12 +892,12 @@ protected:
     return false;
   }
 
-  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
+  bool isEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
   {
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const size_t theUpperBound) const
+  size_t hashCode(const TheKeyType& theKey, const size_t theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
   }
@@ -910,7 +942,7 @@ protected:
                    std::bool_constant<ReturnRef>,
                    Args&&... theArgs) -> std::conditional_t<ReturnRef, TheItemType&, bool>
   {
-    if (Resizable())
+    if (resizable())
       ReSize(Extent());
     size_t              aHash;
     OrderedDataMapNode* aNode;
@@ -931,7 +963,7 @@ protected:
                                                              data[aHash],
                                                              std::forward<Args>(theArgs)...);
     appendToList(data[aHash]);
-    Increment();
+    increment();
     if constexpr (ReturnRef)
       return data[aHash]->ChangeValue();
     else

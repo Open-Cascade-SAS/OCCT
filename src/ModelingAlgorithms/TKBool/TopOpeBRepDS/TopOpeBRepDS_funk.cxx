@@ -26,7 +26,6 @@
 #include <TopOpeBRepTool_GEOMETRY.hxx>
 #include <TopOpeBRepTool_PROJECT.hxx>
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
-#include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 #include <TopOpeBRepTool_tol.hxx>
 #include <Geom_Curve.hxx>
@@ -77,7 +76,7 @@ Standard_EXPORT void FUN_UNKFstasta(const TopoDS_Face&              FF,
                                     const bool                      EEofFF,
                                     TopAbs_State&                   stateb,
                                     TopAbs_State&                   statea,
-                                    TopOpeBRepTool_PShapeClassifier pClassif)
+                                    TopOpeBRepTool_ShapeClassifier* pClassif)
 {
   BRep_Builder BB;
 

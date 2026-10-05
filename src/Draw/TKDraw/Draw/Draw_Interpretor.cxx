@@ -263,7 +263,7 @@ Draw_Interpretor::Draw_Interpretor()
 
 //=================================================================================================
 
-Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& theInterp)
+Draw_Interpretor::Draw_Interpretor(Tcl_Interp* const& theInterp)
     : myInterp(theInterp),
       isAllocated(false),
       myDoLog(false),
@@ -529,13 +529,13 @@ Draw_Interpretor::~Draw_Interpretor()
 
 //=================================================================================================
 
-Draw_PInterp Draw_Interpretor::Interp() const
+Tcl_Interp* Draw_Interpretor::Interp() const
 {
   Standard_DomainError_Raise_if(myInterp == nullptr, "No call for  Draw_Interpretor::Init()");
   return myInterp;
 }
 
-void Draw_Interpretor::Set(const Draw_PInterp& PIntrp)
+void Draw_Interpretor::Set(Tcl_Interp* const& PIntrp)
 {
   if (isAllocated)
   {

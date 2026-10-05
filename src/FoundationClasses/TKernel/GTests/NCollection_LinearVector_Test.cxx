@@ -529,6 +529,11 @@ TEST(NCollection_LinearVectorTest, STLAlgorithms)
   EXPECT_EQ(30, aVec(0));
   EXPECT_EQ(20, aVec(1));
   EXPECT_EQ(10, aVec(2));
+
+  const NCollection_LinearVector<int>& aConstVec = aVec;
+  const auto anFound = std::find(aConstVec.cbegin(), aConstVec.cend(), 20);
+  ASSERT_NE(aConstVec.cend(), anFound);
+  EXPECT_EQ(20, *anFound);
 }
 
 TEST(NCollection_LinearVectorTest, TrivialTypeGrowth)
@@ -825,6 +830,10 @@ static_assert(HasToArray1<const NCollection_LinearVector<int>>::value,
 static_assert(std::is_same_v<decltype(std::declval<NCollection_LinearVector<int>&>().ToArray1()),
                              NCollection_Array1<int>>,
               "Mutable NCollection_LinearVector should expose mutable Array1 view");
+static_assert(
+  std::is_same_v<decltype(std::declval<const NCollection_LinearVector<int>&>().ToArray1()),
+                 NCollection_Array1<int>>,
+  "Const NCollection_LinearVector should expose shared Array1 view");
 
 // Verify that ToArray1() returns an Array1 sharing the same memory buffer.
 TEST(NCollection_LinearVectorTest, ToArray1_SamePointer)

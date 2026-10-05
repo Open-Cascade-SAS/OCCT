@@ -4,8 +4,8 @@ set(OCCT_StdPrs_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_StdPrs_FILES
   StdPrs_BRepFont.cxx
   StdPrs_BRepFont.hxx
-  StdPrs_BRepTextBuilder.cxx
-  StdPrs_BRepTextBuilder.hxx
+  StdPrs_BRepFontCache.cxx
+  StdPrs_BRepFontCache.hxx
   StdPrs_BndBox.hxx
   StdPrs_Curve.cxx
   StdPrs_Curve.hxx

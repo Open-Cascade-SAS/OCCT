@@ -33,7 +33,6 @@
 //! DT_SplitSurface        - ShapeUpgrade_SplitSurface
 //! DT_SupportModification - ShapeUpgrade_DataMapOfShapeSurface
 //! DT_Debug               - ShapeUpgrade::SetDebug
-//! shellsolid             - ShapeAnalysis_Shell/ShapeUpgrade_ShellSewing
 class SWDRAW_ShapeUpgrade
 {
 public:

@@ -18,6 +18,7 @@
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
+#include <Standard_ProgramError.hxx>
 
 //=================================================================================================
 

@@ -11,12 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StepData_Field.hxx>
+
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Standard_Transient.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_SelectInt.hxx>
 #include <StepData_SelectMember.hxx>
 #include <StepData_SelectNamed.hxx>
@@ -25,39 +26,14 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
-//  The kind encodes the data type, access mode (direct or via Select),
-//  and arity (simple, list, square array)
-//  Values for Kind: 0 = Clear/Undefined
-//  KindInteger KindBoolean KindLogical KindEnum KindReal KindString KindEntity
-//  + KindSelect which substitutes and can combine with them
-//  + KindList and KindList2 which can combine with them
-//  (on KindArity mask and ShiftArity offset)
-#define KindInteger 1
-#define KindBoolean 2
-#define KindLogical 3
-#define KindEnum 4
-#define KindReal 5
-#define KindString 6
-#define KindEntity 7
-#define KindAny 8
-#define KindDerived 9
-
-#define KindType 15
-#define KindSelect 16
-#define KindArity 192
-#define KindList 64
-#define KindList2 128
-#define ShiftArity 6
-
-static int TrueKind(const int kind)
-{
-  return (kind & KindType);
-}
+//=================================================================================================
 
 StepData_Field::StepData_Field()
 {
   Clear();
 }
+
+//=================================================================================================
 
 StepData_Field::StepData_Field(const StepData_Field& other, const bool copy)
 {
@@ -72,13 +48,15 @@ StepData_Field::StepData_Field(const StepData_Field& other, const bool copy)
   theany  = other.Transient();
 }
 
+//=================================================================================================
+
 void StepData_Field::CopyFrom(const StepData_Field& other)
 {
   thekind = other.Kind(false);
   theint  = other.Int();
   thereal = other.Real();
   theany  = other.Transient();
-  if (thekind == KindString || thekind == KindEnum)
+  if (thekind == FieldKind::String || thekind == FieldKind::Enum)
   {
     DeclareAndCast(TCollection_HAsciiString, str, theany);
     if (!str.IsNull())
@@ -87,9 +65,8 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     }
     return;
   }
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
-    //  Differents cas
     DeclareAndCast(StepData_SelectReal, sr, theany);
     if (!sr.IsNull())
     {
@@ -123,7 +100,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     }
   }
   //    Les listes ...
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     int i, low, up;
     DeclareAndCast(NCollection_HArray1<int>, hi, theany);
@@ -136,6 +113,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
       {
         hi2->SetValue(i, hi->Value(i));
       }
+      theany = hi2;
       return;
     }
     DeclareAndCast(NCollection_HArray1<double>, hr, theany);
@@ -148,6 +126,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
       {
         hr2->SetValue(i, hr->Value(i));
       }
+      theany = hr2;
       return;
     }
     DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
@@ -159,8 +138,13 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(low, up);
       for (i = low; i <= up; i++)
       {
-        hs2->SetValue(i, new TCollection_HAsciiString(hs->Value(i)));
+        const occ::handle<TCollection_HAsciiString>& aString = hs->Value(i);
+        if (!aString.IsNull())
+        {
+          hs2->SetValue(i, new TCollection_HAsciiString(aString->ToCString()));
+        }
       }
+      theany = hs2;
       return;
     }
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
@@ -170,36 +154,45 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
       up  = ht->Upper();
       occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht2 =
         new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
-      //  Should handle SelectMember cases...
       for (i = low; i <= up; i++)
       {
         ht2->SetValue(i, ht->Value(i));
       }
+      theany = ht2;
       return;
     }
   }
-  //    Remains the 2D list...
-  //  if ((thekind & KindArity) == KindList2) {
-  //    DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>,ht,theany);
-  //  }
 }
 
-void StepData_Field::Clear(const int kind)
+//=================================================================================================
+
+void StepData_Field::Clear(const FieldKind theKind)
 {
-  thekind = kind;
+  thekind = theKind;
   theint  = 0;
   thereal = 0.;
   theany.Nullify();
 }
 
+//=================================================================================================
+
+void StepData_Field::Clear(const int kind)
+{
+  Clear(KindTools::FromInt(kind));
+}
+
+//=================================================================================================
+
 void StepData_Field::SetDerived()
 {
-  Clear(KindDerived);
+  Clear(FieldKind::Derived);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetInt(const int val)
 {
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
@@ -208,17 +201,19 @@ void StepData_Field::SetInt(const int val)
       return;
     }
   }
-  if (thekind == KindInteger || thekind == KindBoolean || thekind == KindLogical
-      || thekind == KindEnum)
+  if (thekind == FieldKind::Integer || thekind == FieldKind::Boolean
+      || thekind == FieldKind::Logical || thekind == FieldKind::Enum)
   {
     theint = val;
   }
   //  else ?
 }
 
+//=================================================================================================
+
 void StepData_Field::SetInteger(const int val)
 {
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
@@ -227,13 +222,15 @@ void StepData_Field::SetInteger(const int val)
       return;
     }
   }
-  Clear(KindInteger);
+  Clear(FieldKind::Integer);
   theint = val;
 }
 
+//=================================================================================================
+
 void StepData_Field::SetBoolean(const bool val)
 {
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
@@ -242,13 +239,15 @@ void StepData_Field::SetBoolean(const bool val)
       return;
     }
   }
-  Clear(KindBoolean);
+  Clear(FieldKind::Boolean);
   theint = (val ? 1 : 0);
 }
 
+//=================================================================================================
+
 void StepData_Field::SetLogical(const StepData_Logical val)
 {
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
@@ -257,7 +256,7 @@ void StepData_Field::SetLogical(const StepData_Logical val)
       return;
     }
   }
-  Clear(KindLogical);
+  Clear(FieldKind::Logical);
   if (val == StepData_LFalse)
   {
     theint = 0;
@@ -272,9 +271,11 @@ void StepData_Field::SetLogical(const StepData_Logical val)
   }
 }
 
+//=================================================================================================
+
 void StepData_Field::SetReal(const double val)
 {
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
@@ -283,13 +284,15 @@ void StepData_Field::SetReal(const double val)
       return;
     }
   }
-  Clear(KindReal);
+  Clear(FieldKind::Real);
   thereal = val;
 }
 
+//=================================================================================================
+
 void StepData_Field::SetString(const char* const val)
 {
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
@@ -298,16 +301,18 @@ void StepData_Field::SetString(const char* const val)
       return;
     }
   }
-  if (thekind != KindEnum)
+  if (thekind != FieldKind::Enum)
   {
-    Clear(KindString);
+    Clear(FieldKind::String);
   }
   theany = new TCollection_HAsciiString(val);
 }
 
+//=================================================================================================
+
 void StepData_Field::SetEnum(const int val, const char* const text)
 {
-  Clear(KindEnum);
+  Clear(FieldKind::Enum);
   SetInt(val);
   if (text && text[0] != '\0')
   {
@@ -315,27 +320,35 @@ void StepData_Field::SetEnum(const int val, const char* const text)
   }
 }
 
+//=================================================================================================
+
 void StepData_Field::SetSelectMember(const occ::handle<StepData_SelectMember>& val)
 {
   if (val.IsNull())
   {
     return;
   }
-  Clear(KindSelect);
+  Clear(FieldKind::Select);
   theany = val;
 }
 
+//=================================================================================================
+
 void StepData_Field::SetEntity(const occ::handle<Standard_Transient>& val)
 {
-  Clear(KindEntity);
+  Clear(FieldKind::Entity);
   theany = val;
 }
+
+//=================================================================================================
 
 void StepData_Field::SetEntity()
 {
   occ::handle<Standard_Transient> nulent;
   SetEntity(nulent);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetList(const int size, const int first)
 {
@@ -346,16 +359,16 @@ void StepData_Field::SetList(const int size, const int first)
   theany.Nullify(); // ?? agrandissement ??
   switch (thekind)
   {
-    case KindInteger:
-    case KindBoolean:
-    case KindLogical:
+    case FieldKind::Integer:
+    case FieldKind::Boolean:
+    case FieldKind::Logical:
       theany = new NCollection_HArray1<int>(first, first + size - 1);
       break;
-    case KindReal:
+    case FieldKind::Real:
       theany = new NCollection_HArray1<double>(first, first + size - 1);
       break;
-    case KindEnum:
-    case KindString:
+    case FieldKind::Enum:
+    case FieldKind::String:
       theany =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(first, first + size - 1);
       break;
@@ -363,12 +376,14 @@ void StepData_Field::SetList(const int size, const int first)
     default:
       theany = new NCollection_HArray1<occ::handle<Standard_Transient>>(first, first + size - 1);
   }
-  if (thekind == 0)
+  if (thekind == FieldKind::Undefined)
   {
-    thekind = KindAny;
+    thekind = FieldKind::Any;
   }
-  thekind |= KindList;
+  thekind = KindTools::Combine(thekind, FieldKind::List);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, const int f2)
 {
@@ -377,27 +392,27 @@ void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, cons
   theint  = siz1;
   thereal = double(siz2);
   theany.Nullify();
-  int kind = thekind;
-  if (thekind == KindSelect)
+  FieldKind kind = thekind;
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
     {
-      kind = sm->Kind();
+      kind = KindTools::FromInt(sm->Kind());
     }
   }
   switch (kind)
   {
-    case KindInteger:
-    case KindBoolean:
-    case KindLogical:
+    case FieldKind::Integer:
+    case FieldKind::Boolean:
+    case FieldKind::Logical:
       theany = new NCollection_HArray2<int>(f1, f1 + siz1 - 1, f2, f2 + siz2 - 1);
       break;
-    case KindReal:
+    case FieldKind::Real:
       theany = new NCollection_HArray2<double>(f1, f1 + siz1 - 1, f2, f2 + siz2 - 1);
       break;
-    case KindEnum:
-    case KindString:
+    case FieldKind::Enum:
+    case FieldKind::String:
       theany = new NCollection_HArray2<occ::handle<Standard_Transient>>(f1,
                                                                         f1 + siz1 - 1,
                                                                         f2,
@@ -410,16 +425,18 @@ void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, cons
                                                                         f2,
                                                                         f2 + siz2 - 1);
   }
-  if (thekind == 0)
+  if (thekind == FieldKind::Undefined)
   {
-    thekind = KindAny;
+    thekind = FieldKind::Any;
   }
-  thekind |= KindList2;
+  thekind = KindTools::Combine(thekind, FieldKind::List2);
 }
+
+//=================================================================================================
 
 void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
 {
-  int kind = thekind;
+  FieldKind kind = thekind;
   Clear();
   theany = val;
   if (val.IsNull())
@@ -428,84 +445,86 @@ void StepData_Field::Set(const occ::handle<Standard_Transient>& val)
   }
   if (val->IsKind(STANDARD_TYPE(TCollection_HAsciiString)))
   {
-    thekind = KindString;
+    thekind = FieldKind::String;
     return;
   }
   DeclareAndCast(StepData_SelectMember, sm, val);
   if (!sm.IsNull())
   {
-    thekind = KindSelect;
+    thekind = FieldKind::Select;
     return;
   }
   DeclareAndCast(NCollection_HArray1<int>, hi, val);
   if (!hi.IsNull())
   {
-    if (kind == 0)
+    if (kind == FieldKind::Undefined)
     {
-      kind = KindInteger;
+      kind = FieldKind::Integer;
     }
-    thekind = kind | KindList;
+    thekind = KindTools::Combine(kind, FieldKind::List);
     theint  = hi->Length();
     return;
   }
   DeclareAndCast(NCollection_HArray1<double>, hr, val);
   if (!hr.IsNull())
   {
-    thekind = KindReal | KindList;
+    thekind = KindTools::Combine(FieldKind::Real, FieldKind::List);
     theint  = hr->Length();
     return;
   }
   DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, val);
   if (!hs.IsNull())
   {
-    thekind = KindString | KindList;
+    thekind = KindTools::Combine(FieldKind::String, FieldKind::List);
     theint  = hs->Length();
     return;
   }
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, val);
   if (!ht.IsNull())
   {
-    if (kind == 0)
+    if (kind == FieldKind::Undefined)
     {
-      kind = KindAny;
+      kind = FieldKind::Any;
     }
-    thekind = kind | KindList;
+    thekind = KindTools::Combine(kind, FieldKind::List);
     theint  = ht->Length();
     return;
   }
   DeclareAndCast(NCollection_HArray2<int>, hi2, val);
   if (!hi2.IsNull())
   {
-    if (kind == 0)
+    if (kind == FieldKind::Undefined)
     {
-      kind = KindInteger;
+      kind = FieldKind::Integer;
     }
-    thekind = kind | KindList2;
-    theint  = hi2->ColLength();
-    thereal = double(hi2->RowLength());
+    thekind = KindTools::Combine(kind, FieldKind::List2);
+    theint  = hi2->NbRows();
+    thereal = double(hi2->NbColumns());
     return;
   }
   DeclareAndCast(NCollection_HArray2<double>, hr2, val);
   if (!hr2.IsNull())
   {
-    thekind = KindInteger | KindList2;
-    theint  = hr2->ColLength();
-    thereal = double(hi2->RowLength());
+    thekind = KindTools::Combine(FieldKind::Real, FieldKind::List2);
+    theint  = hr2->NbRows();
+    thereal = double(hr2->NbColumns());
     return;
   }
   DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht2, val);
   if (!ht2.IsNull())
   {
-    if (kind == 0)
+    if (kind == FieldKind::Undefined)
     {
-      kind = KindAny;
+      kind = FieldKind::Any;
     }
-    thekind = kind | KindList2;
-    theint  = ht2->ColLength();
-    thereal = double(hi2->RowLength());
+    thekind = KindTools::Combine(kind, FieldKind::List2);
+    theint  = ht2->NbRows();
+    thereal = double(ht2->NbColumns());
     return;
   }
 }
+
+//=================================================================================================
 
 void StepData_Field::ClearItem(const int num)
 {
@@ -521,7 +540,9 @@ void StepData_Field::ClearItem(const int num)
   }
 }
 
-void StepData_Field::SetInt(const int num, const int val, const int kind)
+//=================================================================================================
+
+void StepData_Field::SetInt(const int num, const int val, const FieldKind kind)
 {
   DeclareAndCast(NCollection_HArray1<int>, hi, theany);
   if (!hi.IsNull())
@@ -535,42 +556,39 @@ void StepData_Field::SetInt(const int num, const int val, const int kind)
   {
     return; // yena erreur, ou alors OfReal
   }
-  thekind = KindAny | KindList;
+  thekind = KindTools::Combine(FieldKind::Any, FieldKind::List);
   DeclareAndCast(StepData_SelectMember, sm, ht->Value(num));
   if (sm.IsNull())
   {
     sm = new StepData_SelectInt;
     ht->SetValue(num, sm);
   }
-  sm->SetKind(kind);
+  sm->SetKind(KindTools::ToInt(kind));
   sm->SetInt(val);
 }
 
+//=================================================================================================
+
 void StepData_Field::SetInteger(const int num, const int val)
 {
-  SetInt(num, val, KindInteger);
+  SetInt(num, val, FieldKind::Integer);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetBoolean(const int num, const bool val)
 {
-  SetInt(num, (val ? 1 : 0), KindBoolean);
+  SetInt(num, (val ? 1 : 0), FieldKind::Boolean);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetLogical(const int num, const StepData_Logical val)
 {
-  if (val == StepData_LFalse)
-  {
-    SetInt(num, 0, KindLogical);
-  }
-  if (val == StepData_LTrue)
-  {
-    SetInt(num, 1, KindLogical);
-  }
-  if (val == StepData_LUnknown)
-  {
-    SetInt(num, 2, KindLogical);
-  }
+  SetInt(num, static_cast<int>(val), FieldKind::Logical);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetEnum(const int num, const int val, const char* const text)
 {
@@ -581,7 +599,7 @@ void StepData_Field::SetEnum(const int num, const int val, const char* const tex
     return;
   }
   DeclareAndCast(StepData_SelectMember, sm, ht->Value(num));
-  thekind = KindAny | KindList;
+  thekind = KindTools::Combine(FieldKind::Any, FieldKind::List);
   if (sm.IsNull())
   {
     sm = new StepData_SelectNamed;
@@ -589,6 +607,8 @@ void StepData_Field::SetEnum(const int num, const int val, const char* const tex
   }
   sm->SetEnum(val, text);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetReal(const int num, const double val)
 {
@@ -604,7 +624,7 @@ void StepData_Field::SetReal(const int num, const double val)
   {
     return; // yena erreur, ou alors OfInteger
   }
-  thekind = KindAny | KindList;
+  thekind = KindTools::Combine(FieldKind::Any, FieldKind::List);
   DeclareAndCast(StepData_SelectMember, sm, ht->Value(num));
   if (sm.IsNull())
   {
@@ -613,6 +633,8 @@ void StepData_Field::SetReal(const int num, const double val)
   }
   sm->SetReal(val);
 }
+
+//=================================================================================================
 
 void StepData_Field::SetString(const int num, const char* const val)
 {
@@ -628,9 +650,11 @@ void StepData_Field::SetString(const int num, const char* const val)
   {
     return;
   }
-  thekind = KindAny | KindList;
+  thekind = KindTools::Combine(FieldKind::Any, FieldKind::List);
   ht->SetValue(num, new TCollection_HAsciiString(val));
 }
+
+//=================================================================================================
 
 void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transient>& val)
 {
@@ -647,7 +671,7 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
     occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht =
       new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
     occ::handle<StepData_SelectMember> sm;
-    int                                kind = Kind();
+    FieldKind                          kind = Kind();
     for (int i = low; i <= up; i++)
     {
       if (i == num)
@@ -657,12 +681,12 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
       else
       {
         sm = new StepData_SelectInt;
-        sm->SetKind(kind);
+        sm->SetKind(KindTools::ToInt(kind));
         sm->SetInt(hi->Value(i));
         ht->SetValue(i, sm);
       }
     }
-    thekind = KindAny | KindList;
+    thekind = KindTools::Combine(FieldKind::Any, FieldKind::List);
     return;
   }
   DeclareAndCast(NCollection_HArray1<double>, hr, theany);
@@ -685,7 +709,7 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
         ht->SetValue(i, sm);
       }
     }
-    thekind = KindAny | KindList;
+    thekind = KindTools::Combine(FieldKind::Any, FieldKind::List);
     return;
   }
   DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
@@ -705,20 +729,22 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
         ht->SetValue(i, hs->Value(i));
       }
     }
-    thekind = KindAny | KindList;
+    thekind = KindTools::Combine(FieldKind::Any, FieldKind::List);
     return;
   }
 }
 
 //     QUERIES
 
+//=================================================================================================
+
 bool StepData_Field::IsSet(const int n1, const int n2) const
 {
-  if (thekind == 0)
+  if (thekind == FieldKind::Undefined)
   {
     return false;
   }
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (sm.IsNull())
@@ -727,7 +753,7 @@ bool StepData_Field::IsSet(const int n1, const int n2) const
     }
     return (sm->Kind() != 0);
   }
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
@@ -740,7 +766,7 @@ bool StepData_Field::IsSet(const int n1, const int n2) const
       return (!hs->Value(n1).IsNull());
     }
   }
-  if ((thekind & KindArity) == KindList2)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List2))
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
@@ -751,32 +777,35 @@ bool StepData_Field::IsSet(const int n1, const int n2) const
   return true;
 }
 
-int StepData_Field::ItemKind(const int n1, const int n2) const
+//=================================================================================================
+
+StepData_Field::FieldKind StepData_Field::ItemKind(const int n1, const int n2) const
 {
-  if ((thekind & KindArity) == 0)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == 0)
   {
     return Kind(true);
   }
-  int kind = TrueKind(thekind); // si Any, evaluer ...
-  if (kind != KindAny)
+  FieldKind kind = KindTools::TypeOf(thekind); // si Any, evaluer ...
+  if (kind != FieldKind::Any)
   {
     return kind;
   }
   //  Otherwise, look for a Transient
   occ::handle<Standard_Transient> item;
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
-    if (!ht.IsNull())
+    if (ht.IsNull())
     {
       return kind;
     }
     item = ht->Value(n1);
   }
-  else if ((thekind & KindArity) == KindList2)
+  else if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK)
+           == KindTools::ToInt(FieldKind::List2))
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
-    if (!ht.IsNull())
+    if (ht.IsNull())
     {
       return kind;
     }
@@ -784,49 +813,55 @@ int StepData_Field::ItemKind(const int n1, const int n2) const
   }
   if (item.IsNull())
   {
-    return 0;
+    return FieldKind::Undefined;
   }
   if (item->IsKind(STANDARD_TYPE(TCollection_HAsciiString)))
   {
-    return KindString;
+    return FieldKind::String;
   }
   DeclareAndCast(StepData_SelectMember, sm, item);
   if (sm.IsNull())
   {
-    return KindEntity;
+    return FieldKind::Entity;
   }
-  return sm->Kind();
+  return KindTools::FromInt(sm->Kind());
 }
 
-int StepData_Field::Kind(const bool type) const
+//=================================================================================================
+
+StepData_Field::FieldKind StepData_Field::Kind(const bool type) const
 {
   if (!type)
   {
     return thekind;
   }
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
     {
-      return TrueKind(sm->Kind());
+      return KindTools::TypeOf(KindTools::FromInt(sm->Kind()));
     }
   }
-  return TrueKind(thekind);
+  return KindTools::TypeOf(thekind);
 }
+
+//=================================================================================================
 
 int StepData_Field::Arity() const
 {
-  return (thekind & KindArity) >> ShiftArity;
+  return KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) >> KindTools::THE_ARITY_SHIFT;
 }
+
+//=================================================================================================
 
 int StepData_Field::Length(const int index) const
 {
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     return theint;
   }
-  if ((thekind & KindArity) == KindList2)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List2))
   {
     if (index == 2)
     {
@@ -840,9 +875,11 @@ int StepData_Field::Length(const int index) const
   return 0;
 }
 
+//=================================================================================================
+
 int StepData_Field::Lower(const int index) const
 {
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     DeclareAndCast(NCollection_HArray1<int>, hi, theany);
     if (!hi.IsNull())
@@ -865,8 +902,18 @@ int StepData_Field::Lower(const int index) const
       return ht->Lower();
     }
   }
-  if ((thekind & KindArity) == KindList2)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List2))
   {
+    DeclareAndCast(NCollection_HArray2<int>, hi, theany);
+    if (!hi.IsNull())
+    {
+      return index == 1 ? hi->LowerRow() : (index == 2 ? hi->LowerCol() : 0);
+    }
+    DeclareAndCast(NCollection_HArray2<double>, hr, theany);
+    if (!hr.IsNull())
+    {
+      return index == 1 ? hr->LowerRow() : (index == 2 ? hr->LowerCol() : 0);
+    }
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
     {
@@ -874,26 +921,30 @@ int StepData_Field::Lower(const int index) const
     }
     if (index == 1)
     {
-      return ht->LowerCol();
+      return ht->LowerRow();
     }
     if (index == 2)
     {
-      return ht->LowerRow();
+      return ht->LowerCol();
     }
   }
   return 0;
 }
+
+//=================================================================================================
 
 int StepData_Field::Int() const
 {
   return theint;
 }
 
+//=================================================================================================
+
 int StepData_Field::Integer(const int n1, const int n2) const
 {
-  if ((thekind & KindArity) == 0)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == 0)
   {
-    if (thekind == KindSelect)
+    if (thekind == FieldKind::Select)
     {
       DeclareAndCast(StepData_SelectMember, sm, theany);
       if (!sm.IsNull())
@@ -903,7 +954,7 @@ int StepData_Field::Integer(const int n1, const int n2) const
     }
     return theint;
   }
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     DeclareAndCast(NCollection_HArray1<int>, hi, theany);
     if (!hi.IsNull())
@@ -921,8 +972,13 @@ int StepData_Field::Integer(const int n1, const int n2) const
       return sm->Int();
     }
   }
-  if ((thekind & KindArity) == KindList2)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List2))
   {
+    DeclareAndCast(NCollection_HArray2<int>, hi, theany);
+    if (!hi.IsNull())
+    {
+      return hi->Value(n1, n2);
+    }
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
     {
@@ -937,10 +993,14 @@ int StepData_Field::Integer(const int n1, const int n2) const
   return 0;
 }
 
+//=================================================================================================
+
 bool StepData_Field::Boolean(const int n1, const int n2) const
 {
   return (Integer(n1, n2) > 0);
 }
+
+//=================================================================================================
 
 StepData_Logical StepData_Field::Logical(const int n1, const int n2) const
 {
@@ -956,11 +1016,13 @@ StepData_Logical StepData_Field::Logical(const int n1, const int n2) const
   return StepData_LUnknown;
 }
 
+//=================================================================================================
+
 double StepData_Field::Real(const int n1, const int n2) const
 {
-  if ((thekind & KindArity) == 0)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == 0)
   {
-    if (thekind == KindSelect)
+    if (thekind == FieldKind::Select)
     {
       DeclareAndCast(StepData_SelectMember, sm, theany);
       if (!sm.IsNull())
@@ -970,7 +1032,7 @@ double StepData_Field::Real(const int n1, const int n2) const
     }
     return thereal;
   }
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     DeclareAndCast(NCollection_HArray1<double>, hr, theany);
     if (!hr.IsNull())
@@ -988,7 +1050,7 @@ double StepData_Field::Real(const int n1, const int n2) const
       return sm->Real();
     }
   }
-  if ((thekind & KindArity) == KindList2)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List2))
   {
     DeclareAndCast(NCollection_HArray2<double>, hr, theany);
     if (!hr.IsNull())
@@ -1009,9 +1071,11 @@ double StepData_Field::Real(const int n1, const int n2) const
   return 0.0;
 }
 
+//=================================================================================================
+
 const char* StepData_Field::String(const int n1, const int n2) const
 {
-  if (thekind == KindString || thekind == KindEnum)
+  if (thekind == FieldKind::String || thekind == FieldKind::Enum)
   {
     DeclareAndCast(TCollection_HAsciiString, str, theany);
     if (!str.IsNull())
@@ -1023,7 +1087,7 @@ const char* StepData_Field::String(const int n1, const int n2) const
       return "";
     }
   }
-  if (thekind == KindSelect)
+  if (thekind == FieldKind::Select)
   {
     DeclareAndCast(StepData_SelectMember, sm, theany);
     if (!sm.IsNull())
@@ -1031,7 +1095,7 @@ const char* StepData_Field::String(const int n1, const int n2) const
       return sm->String();
     }
   }
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
     if (!hs.IsNull())
@@ -1061,7 +1125,7 @@ const char* StepData_Field::String(const int n1, const int n2) const
       return sm->String();
     }
   }
-  if ((thekind & KindArity) == KindList2)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List2))
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
@@ -1082,28 +1146,34 @@ const char* StepData_Field::String(const int n1, const int n2) const
   return "";
 }
 
+//=================================================================================================
+
 int StepData_Field::Enum(const int n1, const int n2) const
 {
   return Integer(n1, n2);
 }
+
+//=================================================================================================
 
 const char* StepData_Field::EnumText(const int n1, const int n2) const
 {
   return String(n1, n2);
 }
 
+//=================================================================================================
+
 occ::handle<Standard_Transient> StepData_Field::Entity(const int n1, const int n2) const
 {
   occ::handle<Standard_Transient> nulval; // null handle
-  if ((thekind & KindArity) == 0)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == 0)
   {
-    if (thekind == KindEntity)
+    if (thekind == FieldKind::Entity)
     {
       return theany;
     }
     return nulval;
   }
-  if ((thekind & KindArity) == KindList)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List))
   {
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
@@ -1122,7 +1192,7 @@ occ::handle<Standard_Transient> StepData_Field::Entity(const int n1, const int n
     }
     return nulval;
   }
-  if ((thekind & KindArity) == KindList2)
+  if (KindTools::Bits(thekind, KindTools::THE_ARITY_MASK) == KindTools::ToInt(FieldKind::List2))
   {
     DeclareAndCast(NCollection_HArray2<occ::handle<Standard_Transient>>, ht, theany);
     if (ht.IsNull())
@@ -1143,6 +1213,8 @@ occ::handle<Standard_Transient> StepData_Field::Entity(const int n1, const int n
   }
   return nulval;
 }
+
+//=================================================================================================
 
 occ::handle<Standard_Transient> StepData_Field::Transient() const
 {

@@ -22,18 +22,10 @@ set(OCCT_BlendFunc_FILES
   BlendFunc_ConstRadInv.hxx
   BlendFunc_Corde.cxx
   BlendFunc_Corde.hxx
-  BlendFunc_CSCircular.cxx
-  BlendFunc_CSCircular.hxx
-  BlendFunc_CSConstRad.cxx
-  BlendFunc_CSConstRad.hxx
   BlendFunc_EvolRad.cxx
   BlendFunc_EvolRad.hxx
   BlendFunc_EvolRadInv.cxx
   BlendFunc_EvolRadInv.hxx
-  BlendFunc_Ruled.cxx
-  BlendFunc_Ruled.hxx
-  BlendFunc_RuledInv.cxx
-  BlendFunc_RuledInv.hxx
   BlendFunc_SectionShape.hxx
   BlendFunc_Tensor.cxx
   BlendFunc_Tensor.hxx

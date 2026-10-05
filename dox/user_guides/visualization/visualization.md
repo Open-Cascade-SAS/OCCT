@@ -194,7 +194,7 @@ For example, the *AIS_Shape* object determine the following modes (see AIS_Shape
 
 #### Viewer selector
 
-For each OCCT viewer there is a **Viewer selector** class *SelectMgr_ViewerSelector3d*.
+For each OCCT viewer there is a **Viewer selector** class *SelectMgr_ViewerSelector*.
 It provides a high-level API for the whole selection algorithm and encapsulates the processing of objects and sensitive entities for each mouse pick.
 The viewer selector maintains activation and deactivation of selection modes, launches the algorithm, which detects candidate entities to be picked,
 and stores its results, as well as implements an interface for keeping selection structures up-to-date.
@@ -238,7 +238,7 @@ To maintain selection mechanism at the viewer level, a speedup structure compose
 The first level tree is constructed of axis-aligned bounding boxes of each selectable object.
 Hence, the root of this tree contains the combination of all selectable boundaries even if they have no currently activated selections.
 Objects are added during the display of *AIS_InteractiveObject* and will be removed from this tree only when the object is destroyed.
-The 1st level BVH tree is build on demand simultaneously with the first run of the selection algorithm.
+The 1st level BVH tree is built on demand simultaneously with the first run of the selection algorithm.
 
 The second level BVH tree consists of all sensitive entities of one selectable object.
 The 2nd level trees are built automatically when the default mode is activated and rebuilt whenever a new selection mode is calculated for the first time.
@@ -898,7 +898,7 @@ theCtx->SetDisplayMode (2, true);
 // theObj1 stays visualized in its mode 3
 ~~~~
 
-*PrsMgr_PresentationManager* and *SelectMgr_ViewerSelector3d*, which manage the presentation and selection of present interactive objects, are associated to the main Viewer.
+*PrsMgr_PresentationManager* and *SelectMgr_ViewerSelector*, which manage the presentation and selection of present interactive objects, are associated to the main Viewer.
 
 @warning Do NOT use integer values (like in sample above) in real code - use appropriate enumerations instead!
 Each presentable object has independent list of supported display and selection modes; for instance, *AIS_DisplayMode* enumeration is applicable only to *AIS_Shape* presentations.
@@ -1585,7 +1585,7 @@ aView->FitAll();
 
 View projection and orientation in OCCT *V3d_View* are driven by camera.
 The camera calculates and supplies projection and view orientation matrices for rendering by OpenGL.
-The allows to the user to control all projection parameters.
+This allows the user to control all projection parameters.
 The camera is defined by the following properties:
 
  * **Eye** -- defines the observer (camera) position.

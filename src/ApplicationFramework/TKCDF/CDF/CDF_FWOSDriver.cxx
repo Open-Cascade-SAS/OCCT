@@ -14,14 +14,11 @@
 #include <CDF_FWOSDriver.hxx>
 #include <CDM_MetaData.hxx>
 #include <OSD_Directory.hxx>
+#include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
-#include <OSD_FileNode.hxx>
 #include <OSD_Path.hxx>
-#include <OSD_Protection.hxx>
-#include <OSD_SingleProtection.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <UTL.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_FWOSDriver, CDF_MetaDataDriver)
 
@@ -55,14 +52,14 @@ bool CDF_FWOSDriver::Find(const TCollection_ExtendedString& aFolder,
                           const TCollection_ExtendedString& /*aVersion*/)
 {
 
-  OSD_Path      thePath = UTL::Path(aFolder);
+  OSD_Path      thePath(aFolder);
   OSD_Directory theDirectory(thePath);
   if (theDirectory.Exists())
   {
     TCollection_ExtendedString f(aFolder);
     PutSlash(f);
     f += aName;
-    OSD_Path p2 = UTL::Path(f);
+    OSD_Path p2(f);
     OSD_File theFile(p2);
     return theFile.Exists();
   }
@@ -75,24 +72,7 @@ bool CDF_FWOSDriver::HasReadPermission(const TCollection_ExtendedString& aFolder
                                        const TCollection_ExtendedString& aName,
                                        const TCollection_ExtendedString& /*aVersion*/)
 {
-  OSD_SingleProtection theProtection =
-    OSD_File(UTL::Path(Concatenate(aFolder, aName))).Protection().User();
-  switch (theProtection)
-  {
-    case OSD_None:
-    case OSD_R:
-    case OSD_RW:
-    case OSD_RX:
-    case OSD_WX:
-    case OSD_RWX:
-    case OSD_RD:
-    case OSD_RWD:
-    case OSD_RXD:
-    case OSD_RWXD:
-      return true;
-    default:
-      return false;
-  }
+  return OSD_File(OSD_Path(Concatenate(aFolder, aName))).IsReadable();
 }
 
 //=================================================================================================
@@ -102,7 +82,12 @@ occ::handle<CDM_MetaData> CDF_FWOSDriver::MetaData(const TCollection_ExtendedStr
                                                    const TCollection_ExtendedString& /*aVersion*/)
 {
   TCollection_ExtendedString p = Concatenate(aFolder, aName);
-  return CDM_MetaData::LookUp(*myLookUpTable, aFolder, aName, p, p, UTL::IsReadOnly(p));
+  return CDM_MetaData::LookUp(*myLookUpTable,
+                              aFolder,
+                              aName,
+                              p,
+                              p,
+                              !OSD_File(OSD_Path(p)).IsWriteable());
 }
 
 //=================================================================================================
@@ -116,7 +101,7 @@ occ::handle<CDM_MetaData> CDF_FWOSDriver::CreateMetaData(
                               aDocument->RequestedName(),
                               Concatenate(aDocument->RequestedFolder(), aDocument->RequestedName()),
                               aFileName,
-                              UTL::IsReadOnly(aFileName));
+                              !OSD_File(OSD_Path(aFileName)).IsWriteable());
 }
 
 //=================================================================================================
@@ -135,7 +120,7 @@ TCollection_ExtendedString CDF_FWOSDriver::BuildFileName(const occ::handle<CDM_D
 bool CDF_FWOSDriver::FindFolder(const TCollection_ExtendedString& aFolder)
 {
 
-  OSD_Path      thePath = UTL::Path(aFolder);
+  OSD_Path      thePath(aFolder);
   OSD_Directory theDirectory(thePath);
   return theDirectory.Exists();
 }
@@ -160,20 +145,20 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
   {
 
 #ifdef _WIN32
-    TCollection_ExtendedString hd = UTL::xgetenv("HOMEDRIVE");
+    TCollection_ExtendedString hd(OSD_Environment("HOMEDRIVE").Value());
     if (hd.Length() != 0)
     {
       theDefaultFolder = hd;
-      theDefaultFolder += UTL::xgetenv("HOMEPATH");
+      theDefaultFolder += TCollection_ExtendedString(OSD_Environment("HOMEPATH").Value());
     }
     else
     {
-      theDefaultFolder = UTL::xgetenv("TEMP");
+      theDefaultFolder = TCollection_ExtendedString(OSD_Environment("TEMP").Value());
       if (theDefaultFolder.Length() == 0)
         theDefaultFolder = ".";
     }
 #else
-    TCollection_ExtendedString home = UTL::xgetenv("HOME");
+    TCollection_ExtendedString home(OSD_Environment("HOME").Value());
     if (home.Length() != 0)
     {
       theDefaultFolder = home;

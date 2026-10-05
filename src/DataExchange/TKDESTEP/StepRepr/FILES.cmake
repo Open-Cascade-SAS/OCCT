@@ -153,8 +153,6 @@ set(OCCT_StepRepr_FILES
   StepRepr_ShapeAspectRelationship.hxx
   StepRepr_ShapeAspectTransition.cxx
   StepRepr_ShapeAspectTransition.hxx
-  StepRepr_ShapeDefinition.cxx
-  StepRepr_ShapeDefinition.hxx
   StepRepr_ShapeRepresentationRelationship.cxx
   StepRepr_ShapeRepresentationRelationship.hxx
   StepRepr_ShapeRepresentationRelationshipWithTransformation.cxx

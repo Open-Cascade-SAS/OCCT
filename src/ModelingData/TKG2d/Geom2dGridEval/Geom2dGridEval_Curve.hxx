@@ -48,7 +48,7 @@
 //! - BezierCurve: Optimized batch evaluation via BSplCLib
 //! - BSplineCurve: Optimized batch evaluation via BSplCLib with span caching
 //! - OffsetCurve: Composite evaluation using basis curve batch evaluator
-//! - Other: Fallback using Adaptor2d_Curve2d::D0
+//! - Other: Fallback using Adaptor2d_Curve2d::EvalD0
 //!
 //! Usage:
 //! @code

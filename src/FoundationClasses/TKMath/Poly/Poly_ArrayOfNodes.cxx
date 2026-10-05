@@ -44,10 +44,25 @@ Poly_ArrayOfNodes& Poly_ArrayOfNodes::Assign(const Poly_ArrayOfNodes& theOther)
   {
     throw Standard_DimensionMismatch("Poly_ArrayOfNodes::Assign(), arrays have different sizes");
   }
-  for (int anIter = 0; anIter < mySize; ++anIter)
+  if (myStride == sizeof(gp_Pnt))
   {
-    const gp_Pnt aPnt = theOther.Value(anIter);
-    SetValue(anIter, aPnt);
+    gp_Pnt*                        aTarget = ChangeData<gp_Pnt>();
+    const NCollection_Vec3<float>* aSource = theOther.Data<NCollection_Vec3<float>>();
+    for (size_t anIter = 0; anIter < mySize; ++anIter)
+    {
+      aTarget[anIter].SetCoord(aSource[anIter].x(), aSource[anIter].y(), aSource[anIter].z());
+    }
+  }
+  else
+  {
+    NCollection_Vec3<float>* aTarget = ChangeData<NCollection_Vec3<float>>();
+    const gp_Pnt*            aSource = theOther.Data<gp_Pnt>();
+    for (size_t anIter = 0; anIter < mySize; ++anIter)
+    {
+      aTarget[anIter].SetValues((float)aSource[anIter].X(),
+                                (float)aSource[anIter].Y(),
+                                (float)aSource[anIter].Z());
+    }
   }
   return *this;
 }

@@ -27,36 +27,67 @@ if (NOT DEFINED 3RDPARTY_TBB_DIR)
   set (3RDPARTY_TBB_DIR "" CACHE PATH "The directory containing tbb")
 endif()
 
+get_property (TBB_3RDPARTY_DIR CACHE 3RDPARTY_DIR PROPERTY VALUE)
+get_property (TBB_AUTO_DIR CACHE OCCT_TBB_AUTO_DIR PROPERTY VALUE)
+get_property (TBB_AUTO_ROOT CACHE OCCT_TBB_AUTO_ROOT PROPERTY VALUE)
+get_property (TBB_LAST_DIR CACHE OCCT_TBB_LAST_DIR PROPERTY VALUE)
+if ((NOT "${TBB_AUTO_DIR}" STREQUAL "")
+    AND ("${3RDPARTY_TBB_DIR}" STREQUAL "${TBB_AUTO_DIR}"))
+  if (("${TBB_3RDPARTY_DIR}" STREQUAL "")
+      OR (NOT "${TBB_3RDPARTY_DIR}" STREQUAL "${TBB_AUTO_ROOT}")
+      OR (NOT EXISTS "${TBB_AUTO_DIR}"))
+    set (3RDPARTY_TBB_DIR "" CACHE PATH "The directory containing tbb" FORCE)
+    unset (TBB_DIR CACHE)
+    unset (OCCT_TBB_AUTO_DIR CACHE)
+    unset (OCCT_TBB_AUTO_ROOT CACHE)
+  endif()
+endif()
+
+if ((NOT "${3RDPARTY_TBB_DIR}" STREQUAL "") AND (NOT EXISTS "${3RDPARTY_TBB_DIR}"))
+  message (FATAL_ERROR "3RDPARTY_TBB_DIR does not exist: ${3RDPARTY_TBB_DIR}")
+endif()
+
+if (("${3RDPARTY_TBB_DIR}" STREQUAL "")
+    AND (NOT "${TBB_3RDPARTY_DIR}" STREQUAL "")
+    AND (EXISTS "${TBB_3RDPARTY_DIR}"))
+  FIND_PRODUCT_DIR ("${TBB_3RDPARTY_DIR}" TBB TBB_DIR_NAME)
+  if (TBB_DIR_NAME)
+    set (3RDPARTY_TBB_DIR "${TBB_3RDPARTY_DIR}/${TBB_DIR_NAME}" CACHE PATH "The directory containing tbb" FORCE)
+    set (OCCT_TBB_AUTO_DIR "${3RDPARTY_TBB_DIR}" CACHE INTERNAL "Automatically detected TBB directory" FORCE)
+    set (OCCT_TBB_AUTO_ROOT "${TBB_3RDPARTY_DIR}" CACHE INTERNAL "Third-party root used to detect TBB" FORCE)
+  endif()
+endif()
+unset (TBB_3RDPARTY_DIR)
+unset (TBB_AUTO_DIR)
+unset (TBB_AUTO_ROOT)
+
+if (("${3RDPARTY_TBB_DIR}" STREQUAL "") AND (NOT "${TBB_LAST_DIR}" STREQUAL ""))
+  unset (TBB_DIR CACHE)
+endif()
+unset (TBB_LAST_DIR)
+
+if (NOT "${3RDPARTY_TBB_DIR}" STREQUAL "")
+  # An explicit OCCT product root takes precedence over a cached package location.
+  unset (TBB_DIR CACHE)
+  find_package (
+    TBB 2021.5
+    PATHS "${3RDPARTY_TBB_DIR}" NO_DEFAULT_PATH
+    REQUIRED
+    CONFIG)
+else()
+  find_package (
+    TBB 2021.5
+    REQUIRED
+    CONFIG)
+endif()
+set (OCCT_TBB_LAST_DIR "${3RDPARTY_TBB_DIR}" CACHE INTERNAL "Last TBB product directory" FORCE)
+
+if ((NOT TARGET TBB::tbb) OR (NOT TARGET TBB::tbbmalloc))
+  message (FATAL_ERROR "The TBB package does not define the required TBB::tbb and TBB::tbbmalloc targets.")
+endif()
+
 if (WIN32)
-  if (NOT DEFINED 3RDPARTY_DIR)
-    message (FATAL_ERROR "3RDPARTY_DIR is not defined.")
-  endif()
-  if ("${3RDPARTY_DIR}" STREQUAL "")
-    message (FATAL_ERROR "3RDPARTY_DIR is empty string.")
-  endif()
-  if (NOT EXISTS "${3RDPARTY_DIR}")
-    message (FATAL_ERROR "3RDPARTY_DIR is not exist.")
-  endif()
-
-  # Below, we have correct 3RDPARTY_DIR.
-
-  # Initialize TBB folder in connection with 3RDPARTY_DIR.
-  if (("${3RDPARTY_TBB_DIR}" STREQUAL "") OR (NOT EXISTS "${3RDPARTY_TBB_DIR}"))
-    FIND_PRODUCT_DIR ("${3RDPARTY_DIR}" TBB TBB_DIR_NAME)
-    if (TBB_DIR_NAME)
-      set (3RDPARTY_TBB_DIR "${3RDPARTY_DIR}/${TBB_DIR_NAME}" CACHE PATH "The directory containing tbb" FORCE)
-    endif()
-  endif()
-
-  # Here we have full path name to installation directory of TBB.
-  # Employ it.
-  if (EXISTS "${3RDPARTY_TBB_DIR}")
-    find_package (
-      TBB 2021.5
-      PATHS "${3RDPARTY_TBB_DIR}" NO_DEFAULT_PATH
-      REQUIRED
-      CONFIG)
-
+  if (TARGET TBB::tbb)
     # Archive include directory
     get_target_property (TBB_INCLUDE_DIR TBB::tbb INTERFACE_INCLUDE_DIRECTORIES)
     if (NOT DEFINED 3RDPARTY_TBB_INCLUDE_DIR)
@@ -108,6 +139,8 @@ if (WIN32)
         list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_${LIB_UPPER}_LIBRARY_DIR}")
       else()
         list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_${LIB_UPPER}_LIBRARY_DIR)
+        set (3RDPARTY_${LIB_UPPER}_LIBRARY "" CACHE FILEPATH "${LIB_UPPER} library (*.lib)" FORCE)
+        set (3RDPARTY_${LIB_UPPER}_LIBRARY_DIR "" CACHE PATH "The directory containing ${LIB_UPPER} library (*.lib)" FORCE)
       endif()
 
       # Archive *.dll files and directory containing it.
@@ -135,6 +168,8 @@ if (WIN32)
         list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_${LIB_UPPER}_DLL_DIR}")
       else()
         list (APPEND 3RDPARTY_NO_DLLS 3RDPARTY_${LIB_UPPER}_DLL_DIR)
+        set (3RDPARTY_${LIB_UPPER}_DLL "" CACHE FILEPATH "${LIB_UPPER} library (*.dll)" FORCE)
+        set (3RDPARTY_${LIB_UPPER}_DLL_DIR "" CACHE PATH "The directory containing ${LIB_UPPER} library (*.dll)" FORCE)
       endif()
 
       # install *.dll (tbb & tbbmalloc)
@@ -159,42 +194,10 @@ if (WIN32)
       set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_DLL_DIR})
     endif()
   else()
-    message (FATAL_ERROR "Installation directory with TBB is not exist.")
+    message (FATAL_ERROR "TBB::tbb target was not found.")
   endif()
 else ()
   # NOT WIN32 branch
-  if ((DEFINED 3RDPARTY_DIR) AND (NOT "${3RDPARTY_DIR}" STREQUAL "") AND (EXISTS "${3RDPARTY_DIR}"))
-    # Here, we have correct 3RDPARTY_DIR.
-    # Trying to specify TBB folder in connection with 3RDPARTY_DIR
-    if (("${3RDPARTY_TBB_DIR}" STREQUAL "") OR (NOT EXISTS "${3RDPARTY_TBB_DIR}"))
-      FIND_PRODUCT_DIR ("${3RDPARTY_DIR}" TBB TBB_DIR_NAME)
-      if (TBB_DIR_NAME)
-        set (3RDPARTY_TBB_DIR "${3RDPARTY_DIR}/${TBB_DIR_NAME}" CACHE PATH "The directory containing tbb" FORCE)
-      endif()
-    endif()
-    if ((NOT "${3RDPARTY_TBB_DIR}" STREQUAL "") AND (EXISTS "${3RDPARTY_TBB_DIR}"))
-      # Find TBB 2021.5 in existing directory.
-      find_package (
-      TBB 2021.5
-      PATHS "${3RDPARTY_TBB_DIR}" NO_DEFAULT_PATH
-      REQUIRED
-      CONFIG)
-    else()
-      # Find TBB 2021.5 in system directory.
-      find_package (
-      TBB 2021.5
-      REQUIRED
-      CONFIG)
-    endif()
-  else()
-    # Find TBB 2021.5 in system directory.
-    find_package (
-    TBB 2021.5
-    REQUIRED
-    CONFIG)
-  endif()
-  # TBB has been configured (in other case FATAL_ERROR occurs).
-
   # Archive include directory.
   get_target_property (TBB_INCLUDE_DIR TBB::tbb INTERFACE_INCLUDE_DIRECTORIES)
   if (NOT DEFINED 3RDPARTY_TBB_INCLUDE_DIR)
@@ -246,6 +249,8 @@ else ()
       list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_${LIB_UPPER}_LIBRARY_DIR}")
     else()
       list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_${LIB_UPPER}_LIBRARY_DIR)
+      set (3RDPARTY_${LIB_UPPER}_LIBRARY "" CACHE FILEPATH "${LIB_UPPER} library (*.so)" FORCE)
+      set (3RDPARTY_${LIB_UPPER}_LIBRARY_DIR "" CACHE PATH "The directory containing ${LIB_UPPER} library (*.so)" FORCE)
     endif()
 
     # install *.so* (tbb & tbbmalloc)
@@ -269,3 +274,5 @@ else ()
     set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_LIBRARY_DIR})
   endif()
 endif()
+
+set (CSF_TBB TBB::tbb TBB::tbbmalloc)

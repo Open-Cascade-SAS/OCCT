@@ -334,7 +334,7 @@ TEST(MathInteg_DoubleExp_NewTest, WithSingularity)
     bool Value(double theX, double& theF)
     {
       const double aDist = std::abs(theX - 0.5);
-      if (aDist < 1.0e-10)
+      if (aDist == 0.0)
       {
         return false;
       }
@@ -349,9 +349,10 @@ TEST(MathInteg_DoubleExp_NewTest, WithSingularity)
   auto aResult = MathInteg::TanhSinhWithSingularity(aFunc, 0.0, 1.0, 0.5);
 
   ASSERT_TRUE(aResult.IsDone());
-  // The integral exists (both halves are sqrt singularities)
-  // Total should be about 2 * 2*sqrt(0.5) = 2.83...
-  EXPECT_GT(*aResult.Value, 0.0);
+  ASSERT_TRUE(aResult.AbsoluteError.has_value());
+  EXPECT_NEAR(*aResult.Value, 2.0 * std::sqrt(2.0), 1.0e-6);
+  EXPECT_GT(aResult.NbPoints, 0u);
+  EXPECT_GT(aResult.NbIterations, 0u);
 }
 
 // ============================================================================

@@ -1,4 +1,4 @@
-// Copyright (c) 2023 OPEN CASCADE SAS
+// Copyright (c) 2023-2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -7,119 +7,137 @@
 // by the Free Software Foundation, with special exception defined in the file
 // OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
 // distribution for complete text of the license and disclaimer of any warranty.
-//
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
 
 #ifndef NCollection_Iterator_HeaderFile
 #define NCollection_Iterator_HeaderFile
 
-#include <Standard_Assert.hxx>
 #include <iterator>
+#include <type_traits>
+#include <utility>
 
-//! Helper class that allows to use NCollection iterators as STL iterators.
-//! NCollection iterator can be extended to STL iterator of any category by
-//! adding necessary methods: STL forward iterator requires IsEqual method,
-//! STL bidirectional iterator requires Previous method, and STL random access
-//! iterator requires Offset and Differ methods. See NCollection_DynamicArray as
-//! example of declaring custom STL iterators.
-template <class Container>
+//! OCCT cursor over a container's native iterator pair.
+//!
+//! The cursor is deliberately const-qualified at the type level.  It is not a
+//! wrapper around another OCCT cursor and never obtains mutable storage from a
+//! const container.  The default specialization is the mutable cursor kept for
+//! source code using the traditional `Container::Iterator` name.
+template <class Container, bool IsConstant = false>
 class NCollection_Iterator
 {
 public:
-  NCollection_Iterator()
-      : myCur(typename Container::iterator()),
-        myLast(typename Container::iterator())
-  {
-  }
+  using owner_type    = typename std::conditional<IsConstant, const Container, Container>::type;
+  using iterator_type = typename std::
+    conditional<IsConstant, typename Container::const_iterator, typename Container::iterator>::type;
 
-  NCollection_Iterator(const NCollection_Iterator& theOther)
+  NCollection_Iterator()                                           = default;
+  NCollection_Iterator(const NCollection_Iterator&)                = default;
+  NCollection_Iterator(NCollection_Iterator&&) noexcept            = default;
+  NCollection_Iterator& operator=(const NCollection_Iterator&)     = default;
+  NCollection_Iterator& operator=(NCollection_Iterator&&) noexcept = default;
+  ~NCollection_Iterator() noexcept                                 = default;
+
+  template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+  NCollection_Iterator(const NCollection_Iterator<Container, false>& theOther)
       : myCur(theOther.myCur),
         myLast(theOther.myLast)
   {
   }
 
-  NCollection_Iterator(const Container& theList)
-      : myCur(const_cast<Container&>(theList).begin()),
-        myLast(const_cast<Container&>(theList).end())
+  template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+  NCollection_Iterator& operator=(const NCollection_Iterator<Container, false>& theOther)
+  {
+    myCur  = theOther.myCur;
+    myLast = theOther.myLast;
+    return *this;
+  }
+
+  explicit NCollection_Iterator(owner_type& theContainer)
+      : myCur(theContainer.begin()),
+        myLast(theContainer.end())
   {
   }
 
-  NCollection_Iterator(const Container& theList, const typename Container::iterator& theOther)
-      : myCur(theOther),
-        myLast(const_cast<Container&>(theList).end())
+  //! Legacy cursor construction from a const container.
+  //! The old OCCT cursor API permitted this; const_iterator remains the
+  //! const-correct STL-style interface.
+  template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+  explicit NCollection_Iterator(const Container& theContainer)
+      : myCur(const_cast<Container&>(theContainer).begin()),
+        myLast(const_cast<Container&>(theContainer).end())
   {
   }
 
-  NCollection_Iterator(const Container& theList, typename Container::iterator&& theOther)
-      : myCur(theOther),
-        myLast(const_cast<Container&>(theList).end())
+  NCollection_Iterator(owner_type& theContainer, const iterator_type& thePosition)
+      : myCur(thePosition),
+        myLast(theContainer.end())
   {
   }
 
-  ~NCollection_Iterator() noexcept = default;
-
-  void Init(Container& theList)
+  NCollection_Iterator(owner_type& theContainer, iterator_type&& thePosition)
+      : myCur(std::move(thePosition)),
+        myLast(theContainer.end())
   {
-    myCur  = theList.begin();
-    myLast = theList.end();
   }
 
-  void Init(const Container& theList) { Init(const_cast<Container&>(theList)); }
+  void Init(owner_type& theContainer)
+  {
+    myCur  = theContainer.begin();
+    myLast = theContainer.end();
+  }
 
-  virtual bool More() const noexcept { return myCur != myLast; }
+  void Initialize(owner_type& theContainer) { Init(theContainer); }
 
-  void Initialize(Container& theList) { Init(theList); }
+  template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+  void Init(const Container& theContainer)
+  {
+    myCur  = const_cast<Container&>(theContainer).begin();
+    myLast = const_cast<Container&>(theContainer).end();
+  }
 
-  void Initialize(const Container& theList) { Init(theList); }
+  template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+  void Initialize(const Container& theContainer)
+  {
+    Init(theContainer);
+  }
 
-  const typename Container::iterator& ValueIter() const noexcept { return myCur; }
+  bool More() const noexcept { return myCur != myLast; }
 
-  typename Container::iterator& ChangeValueIter() noexcept { return myCur; }
+  void Next() noexcept { ++myCur; }
 
-  const typename Container::iterator& EndIter() const noexcept { return myLast; }
+  const iterator_type& ValueIter() const noexcept { return myCur; }
 
-  typename Container::iterator& ChangeEndIter() noexcept { return myLast; }
+  iterator_type& ChangeValueIter() noexcept { return myCur; }
 
-  virtual void Next() noexcept { ++(myCur); }
+  const iterator_type& EndIter() const noexcept { return myLast; }
 
-  const typename Container::const_reference Value() const { return *myCur; }
+  iterator_type& ChangeEndIter() noexcept { return myLast; }
 
-  const typename Container::reference ChangeValue() { return *myCur; }
+  typename Container::const_reference Value() const { return *myCur; }
 
-  bool operator==(const NCollection_Iterator& theOther) noexcept
+  template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+  typename Container::reference ChangeValue()
+  {
+    return *myCur;
+  }
+
+  template <bool theOtherIsConstant>
+  bool operator==(const NCollection_Iterator<Container, theOtherIsConstant>& theOther) const
   {
     return myLast == theOther.myLast && myCur == theOther.myCur;
   }
 
-  bool operator!=(const NCollection_Iterator& theOther) noexcept
+  template <bool theOtherIsConstant>
+  bool operator!=(const NCollection_Iterator<Container, theOtherIsConstant>& theOther) const
   {
-    return myLast != theOther.myLast || myCur != theOther.myCur;
-  }
-
-  NCollection_Iterator& operator=(const NCollection_Iterator& theOther) noexcept
-  {
-    if (this != &theOther)
-    {
-      myLast = theOther.myLast;
-      myCur  = theOther.myCur;
-    }
-    return *this;
-  }
-
-  NCollection_Iterator& operator=(NCollection_Iterator&& theOther) noexcept
-  {
-    if (this != &theOther)
-    {
-      myLast = std::move(theOther.myLast);
-      myCur  = std::move(theOther.myCur);
-    }
-    return *this;
+    return !(*this == theOther);
   }
 
 private:
-  typename Container::iterator myCur;
-  typename Container::iterator myLast;
+  template <class, bool>
+  friend class NCollection_Iterator;
+
+  iterator_type myCur{};
+  iterator_type myLast{};
 };
 
 #endif // NCollection_Iterator_HeaderFile

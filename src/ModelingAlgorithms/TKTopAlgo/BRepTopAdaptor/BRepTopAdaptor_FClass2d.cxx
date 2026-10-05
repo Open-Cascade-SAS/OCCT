@@ -21,6 +21,7 @@
 #include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepClass_FaceClassifier.hxx>
+#include <BRepClass_FaceExplorer.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <CSLib_Class2d.hxx>
@@ -31,8 +32,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -40,12 +40,22 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+#include <cmath>
+#include <limits>
+
 #ifdef _MSC_VER
   #include <stdio.h>
 #endif
 
 namespace
 {
+//! Returns true for representable values, including OCCT's finite infinity sentinels.
+inline bool isRepresentableValue(const double theValue)
+{
+  constexpr double THE_MAX_VALUE = std::numeric_limits<double>::max();
+  return theValue >= -THE_MAX_VALUE && theValue <= THE_MAX_VALUE;
+}
+
 // Increments @p theValue by @p theIncrement towards @p theDirection, ensuring that the result is
 // different from @p theValue. For large values of theValue with small theIncrement the result of
 // theValue + theIncrement can be equal to theValue due to the limited resolution of double
@@ -83,11 +93,59 @@ bool isDegenerated(const BRepAdaptor_Curve& theCurve,
 
   return true;
 }
+
+//=================================================================================================
+
+struct PolygonMetrics
+{
+  double Area      = 0.0;
+  double Perimeter = 0.0;
+};
+
+PolygonMetrics polygonMetrics(const NCollection_LinearVector<gp_Pnt2d>& thePoints)
+{
+  PolygonMetrics aMetrics;
+  if (thePoints.Size() < 2)
+  {
+    return aMetrics;
+  }
+
+  const size_t aLastUnique = thePoints.Size() - 2;
+  size_t       aPrevious   = aLastUnique;
+  for (size_t aCurrent = 0; aCurrent <= aLastUnique; ++aCurrent)
+  {
+    const gp_Pnt2d& aCurrentPoint  = thePoints[aCurrent];
+    const gp_Pnt2d& aPreviousPoint = thePoints[aPrevious];
+    aMetrics.Area +=
+      (aCurrentPoint.X() - aPreviousPoint.X()) * (aCurrentPoint.Y() + aPreviousPoint.Y()) * 0.5;
+    aMetrics.Perimeter += (aCurrentPoint.XY() - aPreviousPoint.XY()).Modulus();
+    aPrevious = aCurrent;
+  }
+  return aMetrics;
+}
+
+//=================================================================================================
+
+bool expectedThickness(const PolygonMetrics& theMetrics, double& theThickness)
+{
+  if (!isRepresentableValue(theMetrics.Area) || !isRepresentableValue(theMetrics.Perimeter)
+      || theMetrics.Perimeter <= 0.0)
+  {
+    return false;
+  }
+
+  theThickness = std::max(2.0 * (std::abs(theMetrics.Area) / theMetrics.Perimeter), 1.e-7);
+  return isRepresentableValue(theThickness);
+}
 } // namespace
 
 BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const double TolUV)
     : Toluv(TolUV),
       Face(aFace),
+      myIsUPeriodic(false),
+      myIsVPeriodic(false),
+      myUPeriod(0.0),
+      myVPeriod(0.0),
       U1(0.0),
       V1(0.0),
       U2(0.0),
@@ -96,8 +154,11 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
   //-- dead end on surfaces defined on more than one period
 
   Face.Orientation(TopAbs_FORWARD);
-  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
-  surf->Initialize(aFace, false);
+  BRepAdaptor_Surface aSurface(aFace, false);
+  myIsUPeriodic = aSurface.IsUPeriodic();
+  myIsVPeriodic = aSurface.IsVPeriodic();
+  myUPeriod     = myIsUPeriodic ? aSurface.UPeriod() : 0.0;
+  myVPeriod     = myIsVPeriodic ? aSurface.VPeriod() : 0.0;
 
   TopoDS_Edge            edge;
   TopAbs_Orientation     Or;
@@ -112,13 +173,13 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
   for (TopExp_Explorer aFaceExplorer(Face, TopAbs_WIRE); (aFaceExplorer.More() && !anIsBadWire);
        aFaceExplorer.Next())
   {
-    int                            nbpnts = 0;
-    NCollection_Sequence<gp_Pnt2d> SeqPnt2d;
-    int                            firstpoint     = 1;
-    double                         FlecheU        = 0.0;
-    double                         FlecheV        = 0.0;
-    bool                           WireIsNotEmpty = false;
-    int                            NbEdges        = 0;
+    int                                nbpnts = 0;
+    NCollection_LinearVector<gp_Pnt2d> SeqPnt2d;
+    int                                firstpoint     = 1;
+    double                             FlecheU        = 0.0;
+    double                             FlecheV        = 0.0;
+    bool                               WireIsNotEmpty = false;
+    int                                NbEdges        = 0;
 
     TopExp_Explorer Explorer;
     for (Explorer.Init(aFaceExplorer.Current(), TopAbs_EDGE); Explorer.More(); Explorer.Next())
@@ -261,14 +322,14 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
           //",nbpnts,u,FlecheU,FlecheV,ii,Avant);
           // 		  if(ii>(Avant+4))
           //  Modified by Sergey KHROMOV - Fri Apr 19 09:46:12 2002 Begin
-          if (ii > (Avant + 4) && SeqPnt2d(ii - 2).SquareDistance(SeqPnt2d(ii)))
+          if (ii > (Avant + 4) && SeqPnt2d[ii - 3].SquareDistance(SeqPnt2d[ii - 1]))
           //  Modified by Sergey KHROMOV - Fri Apr 19 09:46:13 2002 End
           {
-            gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
-            double   ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
+            gp_Lin2d Lin(SeqPnt2d[ii - 3], gp_Dir2d(gp_Vec2d(SeqPnt2d[ii - 3], SeqPnt2d[ii - 1])));
+            double   ul = ElCLib::Parameter(Lin, SeqPnt2d[ii - 2]);
             gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
-            double   dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
-            double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+            double   dU = std::abs(Pp.X() - SeqPnt2d[ii - 2].X());
+            double   dV = std::abs(Pp.Y() - SeqPnt2d[ii - 2].Y());
             //-- printf(" (du=%7.5g   dv=%7.5g)",dU,dV);
             if (dU > FlecheU)
             {
@@ -290,19 +351,15 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
 
     if (NbEdges)
     { //-- on compte ++ with a normal explorer and with the Wire Explorer
-      NCollection_Array1<gp_Pnt2d> PClass(1, 2);
-      //// modified by jgv, 28.04.2009 ////
-      PClass.Init(gp_Pnt2d(0., 0.));
-      /////////////////////////////////////
-      TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+      NCollection_LinearVector<gp_Pnt2d> aPoints(2, gp_Pnt2d(0.0, 0.0));
+      TabClass.Append(CSLib_Class2d(aPoints.ToArray1(), FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       anIsBadWire = true;
-      TabOrien.Append(-1);
+      TabOrien.Append(WireRole::Invalid);
     }
     else if (WireIsNotEmpty)
     {
       // double anglep=0,anglem=0;
-      NCollection_Array1<gp_Pnt2d> PClass(1, nbpnts);
-      double                       square = 0.0;
+      double aSignedArea = 0.0;
 
       //-------------------------------------------------------------------
       //-- ** The mode of calculation was somewhat changed
@@ -314,45 +371,30 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
 
       if (nbpnts > 3)
       {
-        //	      int im2=nbpnts-2;
-        int im1 = nbpnts - 1;
-        int im0 = 1;
-        //	      PClass(im2)=SeqPnt2d.Value(im2);
-        PClass(im1)    = SeqPnt2d.Value(im1);
-        PClass(nbpnts) = SeqPnt2d.Value(nbpnts);
-
-        double aPer = 0.;
-        //	      for(int ii=1; ii<nbpnts; ii++,im0++,im1++,im2++)
-        for (int ii = 1; ii < nbpnts; ii++, im0++, im1++)
+        PolygonMetrics aMetrics = polygonMetrics(SeqPnt2d);
+        aSignedArea             = aMetrics.Area;
+        double anExpThick       = 0.0;
+        if (!expectedThickness(aMetrics, anExpThick))
         {
-          //		  if(im2>=nbpnts) im2=1;
-          if (im1 >= nbpnts)
-          {
-            im1 = 1;
-          }
-          PClass(ii) = SeqPnt2d.Value(ii);
-          //		  gp_Vec2d A(PClass(im2),PClass(im1));
-          //		  gp_Vec2d B(PClass(im1),PClass(im0));
-          //		  double N = A.Magnitude() * B.Magnitude();
-
-          square += (PClass(im0).X() - PClass(im1).X()) * (PClass(im0).Y() + PClass(im1).Y()) * .5;
-          aPer += (PClass(im0).XY() - PClass(im1).XY()).Modulus();
-
-          //		  if(N>1e-16){ double a=A.Angle(B); angle+=a; }
+          anIsBadWire = true;
+          TabOrien.Append(WireRole::Invalid);
+          NCollection_LinearVector<gp_Pnt2d> aFallbackPoints(2, gp_Pnt2d(0.0, 0.0));
+          TabClass.Append(
+            CSLib_Class2d(aFallbackPoints.ToArray1(), FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+          continue;
         }
-
-        double anExpThick = std::max(2. * std::abs(square) / aPer, 1e-7);
         double aDefl      = std::max(FlecheU, FlecheV);
         double aDiscrDefl = std::min(aDefl * 0.1, anExpThick * 10.);
         while (aDefl > anExpThick && aDiscrDefl > 1e-7)
         {
           // Deflection of the polygon is too much for this ratio of area and perimeter,
           // and this might lead to self-intersections.
-          // Discretize the wire more tightly to eliminate the error.
-          firstpoint = 1;
-          SeqPnt2d.Clear();
-          FlecheU = 0.0;
-          FlecheV = 0.0;
+          // Build tighter samples separately so a failed edge leaves the coarse polygon intact.
+          NCollection_LinearVector<gp_Pnt2d> aRefinedPoints;
+          int                                aRefinedFirstPoint = 1;
+          double                             aRefinedFlecheU    = 0.0;
+          double                             aRefinedFlecheV    = 0.0;
+          bool                               isRefinementDone   = true;
           for (WireExplorer.Init(TopoDS::Wire(aFaceExplorer.Current()), Face); WireExplorer.More();
                WireExplorer.Next())
           {
@@ -370,6 +412,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
               GCPnts_QuasiUniformDeflection aDiscr(C, aDiscrDefl);
               if (!aDiscr.IsDone())
               {
+                isRefinementDone = false;
                 break;
               }
               int nbp   = aDiscr.NbPoints();
@@ -380,69 +423,64 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
                 i     = nbp;
                 iEnd  = 0;
               }
-              if (firstpoint == 2)
+              if (aRefinedFirstPoint == 2)
               {
                 i += iStep;
               }
               for (; i != iEnd; i += iStep)
               {
-                gp_Pnt2d aP2d = C.Value(aDiscr.Parameter(i));
-                SeqPnt2d.Append(aP2d);
+                aRefinedPoints.Append(C.Value(aDiscr.Parameter(i)));
               }
               if (nbp > 2)
               {
-                int      ii = SeqPnt2d.Length();
-                gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
-                double   ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
-                gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
-                double   dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
-                double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
-                if (dU > FlecheU)
+                const size_t ii = aRefinedPoints.Size();
+                gp_Lin2d     Lin(aRefinedPoints[ii - 3],
+                             gp_Dir2d(gp_Vec2d(aRefinedPoints[ii - 3], aRefinedPoints[ii - 1])));
+                double       ul = ElCLib::Parameter(Lin, aRefinedPoints[ii - 2]);
+                gp_Pnt2d     Pp = ElCLib::Value(ul, Lin);
+                double       dU = std::abs(Pp.X() - aRefinedPoints[ii - 2].X());
+                double       dV = std::abs(Pp.Y() - aRefinedPoints[ii - 2].Y());
+                if (dU > aRefinedFlecheU)
                 {
-                  FlecheU = dU;
+                  aRefinedFlecheU = dU;
                 }
-                if (dV > FlecheV)
+                if (dV > aRefinedFlecheV)
                 {
-                  FlecheV = dV;
+                  aRefinedFlecheV = dV;
                 }
               }
-              firstpoint = 2;
+              aRefinedFirstPoint = 2;
             }
-          }
-          nbpnts = SeqPnt2d.Length();
-          PClass.Resize(1, nbpnts, false);
-          im1            = nbpnts - 1;
-          im0            = 1;
-          PClass(im1)    = SeqPnt2d.Value(im1);
-          PClass(nbpnts) = SeqPnt2d.Value(nbpnts);
-          square         = 0.;
-          aPer           = 0.;
-          for (int ii = 1; ii < nbpnts; ii++, im0++, im1++)
-          {
-            if (im1 >= nbpnts)
-            {
-              im1 = 1;
-            }
-            PClass(ii) = SeqPnt2d.Value(ii);
-            square +=
-              (PClass(im0).X() - PClass(im1).X()) * (PClass(im0).Y() + PClass(im1).Y()) * .5;
-            aPer += (PClass(im0).XY() - PClass(im1).XY()).Modulus();
           }
 
-          anExpThick = std::max(2. * std::abs(square) / aPer, 1e-7);
-          aDefl      = std::max(FlecheU, FlecheV);
-          aDiscrDefl = std::min(aDiscrDefl * 0.1, anExpThick * 10.);
+          const PolygonMetrics aRefinedMetrics   = polygonMetrics(aRefinedPoints);
+          double               aRefinedThickness = 0.0;
+          if (!isRefinementDone || aRefinedPoints.Size() <= 3
+              || !expectedThickness(aRefinedMetrics, aRefinedThickness))
+          {
+            break;
+          }
+
+          SeqPnt2d    = std::move(aRefinedPoints);
+          nbpnts      = static_cast<int>(SeqPnt2d.Size());
+          FlecheU     = aRefinedFlecheU;
+          FlecheV     = aRefinedFlecheV;
+          aMetrics    = aRefinedMetrics;
+          aSignedArea = aMetrics.Area;
+          anExpThick  = aRefinedThickness;
+          aDefl       = std::max(FlecheU, FlecheV);
+          aDiscrDefl  = std::min(aDiscrDefl * 0.1, anExpThick * 10.);
         }
 
         //-- FlecheU*=10.0;
         //-- FlecheV*=10.0;
-        if (aNbE == 1 && FlecheU < eps && FlecheV < eps && std::abs(square) < eps)
+        if (aNbE == 1 && FlecheU < eps && FlecheV < eps && std::abs(aSignedArea) < eps)
         {
-          TabOrien.Append(1);
+          TabOrien.Append(WireRole::Outer);
         }
         else
         {
-          TabOrien.Append(((square < 0.0) ? 1 : 0));
+          TabOrien.Append(aSignedArea < 0.0 ? WireRole::Outer : WireRole::Inner);
         }
 
         if (FlecheU < Toluv)
@@ -453,33 +491,32 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
         {
           FlecheV = Toluv;
         }
-        TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+        TabClass.Append(
+          CSLib_Class2d(SeqPnt2d.ToArray1(), FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       } // if(nbpoints>3
       else
       {
         anIsBadWire = true;
-        TabOrien.Append(-1);
-        NCollection_Array1<gp_Pnt2d> xPClass(1, 2);
-        xPClass(1) = SeqPnt2d(1);
-        xPClass(2) = SeqPnt2d(2);
-        TabClass.Append(CSLib_Class2d(xPClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
+        TabOrien.Append(WireRole::Invalid);
+        TabClass.Append(
+          CSLib_Class2d(SeqPnt2d.ToArray1(), FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
       }
     } // else if(WareIsNotEmpty
   } // for(FaceExplorer
 
-  int nbtabclass = TabClass.Length();
+  const size_t nbtabclass = TabClass.Size();
 
   if (nbtabclass > 0)
   {
     //-- If an error was detected on a wire: set all TabOrien to -1
     if (anIsBadWire)
     {
-      TabOrien(1) = -1;
+      TabOrien[0] = WireRole::Invalid;
     }
 
-    if (surf->GetType() == GeomAbs_Cone || surf->GetType() == GeomAbs_Cylinder
-        || surf->GetType() == GeomAbs_Torus || surf->GetType() == GeomAbs_Sphere
-        || surf->GetType() == GeomAbs_SurfaceOfRevolution)
+    if (aSurface.GetType() == GeomAbs_Cone || aSurface.GetType() == GeomAbs_Cylinder
+        || aSurface.GetType() == GeomAbs_Torus || aSurface.GetType() == GeomAbs_Sphere
+        || aSurface.GetType() == GeomAbs_SurfaceOfRevolution)
 
     {
       double uuu = M_PI + M_PI - (Umax - Umin);
@@ -495,7 +532,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
       U1 = U2 = 0.0;
     }
 
-    if (surf->GetType() == GeomAbs_Torus)
+    if (aSurface.GetType() == GeomAbs_Torus)
     {
       double uuu = M_PI + M_PI - (Vmax - Vmin);
       if (uuu < 0)
@@ -512,6 +549,15 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace, const
   }
 }
 
+//=================================================================================================
+
+BRepTopAdaptor_FClass2d::~BRepTopAdaptor_FClass2d()
+{
+  Destroy();
+}
+
+//=================================================================================================
+
 TopAbs_State BRepTopAdaptor_FClass2d::PerformInfinitePoint() const
 {
   if (Umax == -RealLast() || Vmax == -RealLast() || Umin == RealLast() || Vmin == RealLast())
@@ -522,338 +568,196 @@ TopAbs_State BRepTopAdaptor_FClass2d::PerformInfinitePoint() const
   return (Perform(P, false));
 }
 
-TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& _Puv,
-                                              const bool      RecadreOnPeriodic) const
-{
-  int dedans;
-  int nbtabclass = TabClass.Length();
+//=================================================================================================
 
-  if (nbtabclass == 0)
+TopAbs_State BRepTopAdaptor_FClass2d::exactState(const gp_Pnt2d& thePoint,
+                                                 const double    theTolerance) const
+{
+  std::lock_guard<std::mutex> aLock(myExactMutex);
+  if (!myExactExplorer)
   {
-    return (TopAbs_IN);
+    myExactExplorer = std::make_unique<BRepClass_FaceExplorer>(Face);
+    myExactExplorer->SetUseBndBox(myExactExplorer->ShouldUseBndBox());
+  }
+  BRepClass_FaceClassifier aClassifier(*myExactExplorer, thePoint, theTolerance);
+  return aClassifier.State();
+}
+
+//=================================================================================================
+
+TopAbs_State BRepTopAdaptor_FClass2d::classify(const gp_Pnt2d&          thePoint,
+                                               const double             theTolerance,
+                                               const bool               theRecadreOnPeriodic,
+                                               const ClassificationMode theMode) const
+{
+  const size_t aClassifierCount = TabClass.Size();
+  if (aClassifierCount == 0)
+  {
+    return TopAbs_IN;
   }
 
   //-- U1 is the First Param and U2 in this case is U1+Period
-  double u  = _Puv.X();
-  double v  = _Puv.Y();
-  double uu = u, vv = v;
+  double aU          = thePoint.X();
+  double aV          = thePoint.Y();
+  double aReframedU  = aU;
+  double aReframedV  = aV;
+  bool   isUReframed = false;
+  bool   isVReframed = false;
 
-  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
-  surf->Initialize(Face, false);
-  const bool   IsUPer   = surf->IsUPeriodic();
-  const bool   IsVPer   = surf->IsVPeriodic();
-  const double uperiod  = IsUPer ? surf->UPeriod() : 0.0;
-  const double vperiod  = IsVPer ? surf->VPeriod() : 0.0;
-  TopAbs_State aStatus  = TopAbs_UNKNOWN;
-  bool         urecadre = false, vrecadre = false;
-
-  if (RecadreOnPeriodic)
+  if (theRecadreOnPeriodic)
   {
-    if (IsUPer)
+    if (myIsUPeriodic)
     {
-      if (uu < Umin)
+      if (aReframedU < Umin)
       {
-        while (uu < Umin)
+        while (aReframedU < Umin)
         {
-          uu += uperiod;
+          aReframedU += myUPeriod;
         }
       }
       else
       {
-        while (uu >= Umin)
+        while (aReframedU >= Umin)
         {
-          uu -= uperiod;
+          aReframedU -= myUPeriod;
         }
-        uu += uperiod;
+        aReframedU += myUPeriod;
       }
     }
-    if (IsVPer)
+    if (myIsVPeriodic)
     {
-      if (vv < Vmin)
+      if (aReframedV < Vmin)
       {
-        while (vv < Vmin)
+        while (aReframedV < Vmin)
         {
-          vv += vperiod;
+          aReframedV += myVPeriod;
         }
       }
       else
       {
-        while (vv >= Vmin)
+        while (aReframedV >= Vmin)
         {
-          vv -= vperiod;
+          aReframedV -= myVPeriod;
         }
-        vv += vperiod;
+        aReframedV += myVPeriod;
       }
     }
   }
 
+  TopAbs_State aState = TopAbs_UNKNOWN;
   for (;;)
   {
-    dedans = 1;
-    gp_Pnt2d Puv(u, v);
+    const gp_Pnt2d aPoint(aU, aV);
 
-    if (TabOrien(1) != -1)
+    if (TabOrien[0] != WireRole::Invalid)
     {
-      for (int n = 1; n <= nbtabclass; n++)
+      CSLib_Class2d::Result aPolygonResult = CSLib_Class2d::Result_Inside;
+      for (size_t aWireIndex = 0; aWireIndex < aClassifierCount; ++aWireIndex)
       {
-        int cur = TabClass(n).SiDans(Puv);
-        if (cur == 1)
+        const int aWireResult = theMode == ClassificationMode::Perform
+                                  ? TabClass[aWireIndex].SiDans(aPoint)
+                                  : TabClass[aWireIndex].SiDans_OnMode(aPoint, theTolerance);
+        if (aWireResult == CSLib_Class2d::Result_Inside)
         {
-          if (TabOrien(n) == 0)
+          if (TabOrien[aWireIndex] == WireRole::Inner)
           {
-            dedans = -1;
+            aPolygonResult = CSLib_Class2d::Result_Outside;
             break;
           }
         }
-        else if (cur == -1)
+        else if (aWireResult == CSLib_Class2d::Result_Outside)
         {
-          if (TabOrien(n) == 1)
+          if (TabOrien[aWireIndex] == WireRole::Outer)
           {
-            dedans = -1;
+            aPolygonResult = CSLib_Class2d::Result_Outside;
             break;
           }
         }
         else
         {
-          dedans = 0;
+          aPolygonResult = CSLib_Class2d::Result_Uncertain;
           break;
         }
       }
-      if (dedans == 0)
+
+      if (aPolygonResult == CSLib_Class2d::Result_Uncertain)
       {
-        BRepClass_FaceClassifier aClassifier;
-        double                   m_Toluv = (Toluv > 4.0) ? 4.0 : Toluv;
-        // aClassifier.Perform(Face,Puv,Toluv);
-        aClassifier.Perform(Face, Puv, m_Toluv);
-        aStatus = aClassifier.State();
+        aState = theMode == ClassificationMode::Perform ? exactState(aPoint, std::min(Toluv, 4.0))
+                                                        : TopAbs_ON;
       }
-      if (dedans == 1)
+      else
       {
-        aStatus = TopAbs_IN;
-      }
-      if (dedans == -1)
-      {
-        aStatus = TopAbs_OUT;
+        aState = aPolygonResult == CSLib_Class2d::Result_Inside ? TopAbs_IN : TopAbs_OUT;
       }
     }
     else
-    { //-- TabOrien(1)=-1    False Wire
-      BRepClass_FaceClassifier aClassifier;
-      aClassifier.Perform(Face, Puv, Toluv);
-      aStatus = aClassifier.State();
+    {
+      // A malformed wire cannot be classified reliably by its polygon.
+      aState = exactState(aPoint, theMode == ClassificationMode::Perform ? Toluv : theTolerance);
     }
 
-    if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
+    if (!theRecadreOnPeriodic || (!myIsUPeriodic && !myIsVPeriodic))
     {
-      return aStatus;
+      return aState;
     }
-    if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
+    if (aState == TopAbs_IN || aState == TopAbs_ON)
     {
-      return aStatus;
+      return aState;
     }
 
-    if (!urecadre)
+    if (!isUReframed)
     {
-      u        = uu;
-      urecadre = true;
+      aU          = aReframedU;
+      isUReframed = true;
     }
-    else if (IsUPer)
+    else if (myIsUPeriodic)
     {
-      u += uperiod;
+      aU += myUPeriod;
     }
-    if (u > Umax || !IsUPer)
+    if (aU > Umax || !myIsUPeriodic)
     {
-      if (!vrecadre)
+      if (!isVReframed)
       {
-        v        = vv;
-        vrecadre = true;
+        aV          = aReframedV;
+        isVReframed = true;
       }
-      else if (IsVPer)
+      else if (myIsVPeriodic)
       {
-        v += vperiod;
+        aV += myVPeriod;
       }
 
-      u = uu;
+      aU = aReframedU;
 
-      if (v > Vmax || !IsVPer)
+      if (aV > Vmax || !myIsVPeriodic)
       {
-        return aStatus;
+        return aState;
       }
     }
-  } // for (;;)
+  }
 }
 
-TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
-                                                        const double    Tol,
-                                                        const bool      RecadreOnPeriodic) const
+//=================================================================================================
+
+TopAbs_State BRepTopAdaptor_FClass2d::Perform(const gp_Pnt2d& thePoint,
+                                              const bool      theRecadreOnPeriodic) const
 {
-  int dedans;
-  int nbtabclass = TabClass.Length();
-
-  if (nbtabclass == 0)
-  {
-    return (TopAbs_IN);
-  }
-
-  //-- U1 is the First Param and U2 in this case is U1+Period
-  double u  = _Puv.X();
-  double v  = _Puv.Y();
-  double uu = u, vv = v;
-
-  occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
-  surf->Initialize(Face, false);
-  const bool   IsUPer   = surf->IsUPeriodic();
-  const bool   IsVPer   = surf->IsVPeriodic();
-  const double uperiod  = IsUPer ? surf->UPeriod() : 0.0;
-  const double vperiod  = IsVPer ? surf->VPeriod() : 0.0;
-  TopAbs_State aStatus  = TopAbs_UNKNOWN;
-  bool         urecadre = false, vrecadre = false;
-
-  if (RecadreOnPeriodic)
-  {
-    if (IsUPer)
-    {
-      if (uu < Umin)
-      {
-        while (uu < Umin)
-        {
-          uu += uperiod;
-        }
-      }
-      else
-      {
-        while (uu >= Umin)
-        {
-          uu -= uperiod;
-        }
-        uu += uperiod;
-      }
-    }
-    if (IsVPer)
-    {
-      if (vv < Vmin)
-      {
-        while (vv < Vmin)
-        {
-          vv += vperiod;
-        }
-      }
-      else
-      {
-        while (vv >= Vmin)
-        {
-          vv -= vperiod;
-        }
-        vv += vperiod;
-      }
-    }
-  }
-
-  for (;;)
-  {
-    dedans = 1;
-    gp_Pnt2d Puv(u, v);
-
-    if (TabOrien(1) != -1)
-    {
-      for (int n = 1; n <= nbtabclass; n++)
-      {
-        int cur = TabClass(n).SiDans_OnMode(Puv, Tol);
-        if (cur == 1)
-        {
-          if (TabOrien(n) == 0)
-          {
-            dedans = -1;
-            break;
-          }
-        }
-        else if (cur == -1)
-        {
-          if (TabOrien(n) == 1)
-          {
-            dedans = -1;
-            break;
-          }
-        }
-        else
-        {
-          dedans = 0;
-          break;
-        }
-      }
-      if (dedans == 0)
-      {
-        aStatus = TopAbs_ON;
-      }
-      if (dedans == 1)
-      {
-        aStatus = TopAbs_IN;
-      }
-      if (dedans == -1)
-      {
-        aStatus = TopAbs_OUT;
-      }
-    }
-    else
-    { //-- TabOrien(1)=-1    False Wire
-      BRepClass_FaceClassifier aClassifier;
-      aClassifier.Perform(Face, Puv, Tol);
-      aStatus = aClassifier.State();
-    }
-
-    if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
-    {
-      return aStatus;
-    }
-    if (aStatus == TopAbs_IN || aStatus == TopAbs_ON)
-    {
-      return aStatus;
-    }
-
-    if (!urecadre)
-    {
-      u        = uu;
-      urecadre = true;
-    }
-    else if (IsUPer)
-    {
-      u += uperiod;
-    }
-    if (u > Umax || !IsUPer)
-    {
-      if (!vrecadre)
-      {
-        v        = vv;
-        vrecadre = true;
-      }
-      else if (IsVPer)
-      {
-        v += vperiod;
-      }
-
-      u = uu;
-
-      if (v > Vmax || !IsVPer)
-      {
-        return aStatus;
-      }
-    }
-  } // for (;;)
+  return classify(thePoint, Toluv, theRecadreOnPeriodic, ClassificationMode::Perform);
 }
+
+//=================================================================================================
+
+TopAbs_State BRepTopAdaptor_FClass2d::TestOnRestriction(const gp_Pnt2d& thePoint,
+                                                        const double    theTolerance,
+                                                        const bool      theRecadreOnPeriodic) const
+{
+  return classify(thePoint, theTolerance, theRecadreOnPeriodic, ClassificationMode::OnRestriction);
+}
+
+//=================================================================================================
 
 void BRepTopAdaptor_FClass2d::Destroy()
 {
-  TabClass.Clear();
-}
-
-#include <Standard_ConstructionError.hxx>
-
-// const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d&
-// Other) const {
-const BRepTopAdaptor_FClass2d& BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d&) const
-{
-#ifdef OCCT_DEBUG
-  std::cerr << "Copy not allowed in BRepTopAdaptor_FClass2d" << std::endl;
-#endif
-  throw Standard_ConstructionError();
+  TabClass.Clear(true);
+  TabOrien.Clear(true);
+  myExactExplorer.reset();
 }

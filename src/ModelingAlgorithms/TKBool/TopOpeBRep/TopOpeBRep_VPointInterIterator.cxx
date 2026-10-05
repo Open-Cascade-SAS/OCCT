@@ -131,7 +131,7 @@ int TopOpeBRep_VPointInterIterator::CurrentVPIndex() const
   return myVPointIndex;
 }
 
-TopOpeBRep_PLineInter TopOpeBRep_VPointInterIterator::PLineInterDummy() const
+TopOpeBRep_LineInter* TopOpeBRep_VPointInterIterator::PLineInterDummy() const
 {
   return myLineInter;
 }

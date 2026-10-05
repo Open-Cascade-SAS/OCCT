@@ -36,9 +36,6 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 // #include <BRepAdaptor_Curve2d.hxx>
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GetcontextNOFE();
-#endif
 
 //=================================================================================================
 
@@ -364,9 +361,6 @@ void TopOpeBRepBuild_Builder::End()
   }
 
   bool makeFE = true;
-#ifdef OCCT_DEBUG
-  makeFE = !TopOpeBRepBuild_GetcontextNOFE();
-#endif
 
   if (makeFE)
   {

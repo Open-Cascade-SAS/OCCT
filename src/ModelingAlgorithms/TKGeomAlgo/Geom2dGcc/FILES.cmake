@@ -22,10 +22,6 @@ set(OCCT_Geom2dGcc_FILES
   Geom2dGcc_Circ2dTanCen.hxx
   Geom2dGcc_Circ2dTanCenGeo.cxx
   Geom2dGcc_Circ2dTanCenGeo.hxx
-  Geom2dGcc_Circ2dTanOnRad.cxx
-  Geom2dGcc_Circ2dTanOnRad.hxx
-  Geom2dGcc_Circ2dTanOnRadGeo.cxx
-  Geom2dGcc_Circ2dTanOnRadGeo.hxx
   Geom2dGcc_CurveTool.cxx
   Geom2dGcc_CurveTool.hxx
   Geom2dGcc_FunctionTanCirCu.cxx

@@ -2,6 +2,7 @@
 set(OCCT_MathRoot_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_MathRoot_FILES
+  MathRoot_Utils.hxx
   MathRoot_All.hxx
   MathRoot_Bisection.hxx
   MathRoot_Brent.hxx

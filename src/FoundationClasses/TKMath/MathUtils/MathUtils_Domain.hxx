@@ -54,6 +54,9 @@ struct Domain1D
   //! Returns the length of the domain.
   constexpr double Length() const { return Max - Min; }
 
+  //! Return true for finite, ordered bounds.
+  bool IsValid() const { return std::isfinite(Min) && std::isfinite(Max) && Min <= Max; }
+
   //! Returns the midpoint of the domain.
   constexpr double Mid() const { return (Min + Max) * 0.5; }
 
@@ -63,7 +66,8 @@ struct Domain1D
   //! @return true if theU is in [Min - theTol, Max + theTol]
   bool Contains(double theU, double theTol = 0.0) const
   {
-    return theU >= Min - theTol && theU <= Max + theTol;
+    return IsValid() && std::isfinite(theU) && std::isfinite(theTol) && theTol >= 0.0
+           && theU >= Min - theTol && theU <= Max + theTol;
   }
 
   //! Clamp value to domain bounds.
@@ -105,7 +109,8 @@ struct Domain1D
   //! @return true if both Min and Max are within finite range
   bool IsFinite(double theInfLimit = 1.0e100) const
   {
-    return Min > -theInfLimit && Max < theInfLimit;
+    return IsValid() && std::isfinite(theInfLimit) && theInfLimit > 0.0 && Min > -theInfLimit
+           && Max < theInfLimit;
   }
 
   //! Check if this domain equals another within tolerance.
@@ -174,6 +179,9 @@ struct Domain2D
   //! Returns V length.
   constexpr double VLength() const { return VMax - VMin; }
 
+  //! Return true for finite, ordered U and V bounds.
+  bool IsValid() const { return U().IsValid() && V().IsValid(); }
+
   //! Returns U midpoint.
   constexpr double UMid() const { return (UMin + UMax) * 0.5; }
 
@@ -187,8 +195,9 @@ struct Domain2D
   //! @return true if (theU, theV) is in domain
   bool Contains(double theU, double theV, double theTol = 0.0) const
   {
-    return theU >= UMin - theTol && theU <= UMax + theTol && theV >= VMin - theTol
-           && theV <= VMax + theTol;
+    return IsValid() && std::isfinite(theU) && std::isfinite(theV) && std::isfinite(theTol)
+           && theTol >= 0.0 && theU >= UMin - theTol && theU <= UMax + theTol
+           && theV >= VMin - theTol && theV <= VMax + theTol;
   }
 
   //! Clamp UV to domain bounds.
@@ -228,7 +237,7 @@ struct Domain2D
   //! @param theInfLimit threshold for "infinity" (default 1e100)
   bool IsFinite(double theInfLimit = 1.0e100) const
   {
-    return UMin > -theInfLimit && UMax < theInfLimit && VMin > -theInfLimit && VMax < theInfLimit;
+    return IsValid() && U().IsFinite(theInfLimit) && V().IsFinite(theInfLimit);
   }
 };
 

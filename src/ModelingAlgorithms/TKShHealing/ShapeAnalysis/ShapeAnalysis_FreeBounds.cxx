@@ -36,8 +36,8 @@
 #include <ShapeExtend_Explorer.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -49,7 +49,6 @@
 #include <TopoDS_Wire.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_Map.hxx>
 
 // ied_modif_for_compil_Nov-19-1998
 //=================================================================================================
@@ -138,25 +137,33 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_FreeBounds::Conne
   const bool                                              shared)
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> iwires = new NCollection_HSequence<TopoDS_Shape>;
+  NCollection_LinearVector<int>                    anEdgeIndices;
   BRep_Builder                                     B;
 
   int i; // svv #1
   for (i = 1; i <= edges->Length(); i++)
   {
+    const TopAbs_Orientation anOrientation = edges->Value(i).Orientation();
+    if (anOrientation == TopAbs_INTERNAL || anOrientation == TopAbs_EXTERNAL)
+    {
+      continue;
+    }
+
     TopoDS_Wire wire;
     B.MakeWire(wire);
     B.Add(wire, edges->Value(i));
     iwires->Append(wire);
+    anEdgeIndices.Append(i);
   }
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> wires =
     ConnectWiresToWires(iwires, toler, shared);
 
-  for (i = 1; i <= edges->Length(); i++)
+  for (i = 1; i <= iwires->Length(); i++)
   {
     if (iwires->Value(i).Orientation() == TopAbs_REVERSED)
     {
-      edges->ChangeValue(i).Reverse();
+      edges->ChangeValue(anEdgeIndices[i - 1]).Reverse();
     }
   }
 
@@ -207,6 +214,7 @@ static void connectWiresToWiresImpl(
 {
   if (iwires.IsNull() || !iwires->Length())
   {
+    owires = new NCollection_HSequence<TopoDS_Shape>; // was left null, later crashed Append
     return;
   }
   occ::handle<NCollection_HArray1<TopoDS_Shape>> arrwires =
@@ -219,15 +227,33 @@ static void connectWiresToWiresImpl(
   owires           = new NCollection_HSequence<TopoDS_Shape>;
   double tolerance = std::max(toler, Precision::Confusion());
 
-  occ::handle<ShapeExtend_WireData> sewd =
-    new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(1)));
-
-  bool isUsedManifoldMode = true;
-
-  if ((sewd->NbEdges() < 1) && (sewd->NbNonManifoldEdges() > 0))
+  ShapeAnalysis_BoxBndTreeSelector  aSel(arrwires, shared);
+  occ::handle<ShapeExtend_WireData> sewd;
+  for (i = 1; i <= arrwires->Length(); i++)
   {
-    isUsedManifoldMode = false;
-    sewd = new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(1)), true, isUsedManifoldMode);
+    occ::handle<ShapeExtend_WireData> aWireData =
+      new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(i)));
+    if (aWireData->NbEdges() > 0)
+    {
+      if (sewd.IsNull())
+      {
+        sewd = aWireData;
+        aSel.LoadList(i);
+      }
+    }
+    else
+    {
+      if (aWireData->NbNonManifoldEdges() > 0)
+      {
+        owires->Append(aWireData->Wire());
+      }
+      aSel.LoadList(i);
+    }
+  }
+
+  if (sewd.IsNull())
+  {
+    return;
   }
 
   occ::handle<ShapeAnalysis_Wire> saw = new ShapeAnalysis_Wire;
@@ -236,11 +262,13 @@ static void connectWiresToWiresImpl(
 
   NCollection_UBTree<int, Bnd_Box>       aBBTree;
   NCollection_UBTreeFiller<int, Bnd_Box> aTreeFiller(aBBTree);
-  ShapeAnalysis_BoxBndTreeSelector       aSel(arrwires, shared);
-  aSel.LoadList(1);
 
-  for (int inbW = 2; inbW <= arrwires->Length(); inbW++)
+  for (int inbW = 1; inbW <= arrwires->Length(); inbW++)
   {
+    if (aSel.ContWire(inbW))
+    {
+      continue;
+    }
     TopoDS_Wire   trW = TopoDS::Wire(arrwires->Value(inbW));
     Bnd_Box       aBox;
     TopoDS_Vertex trV1, trV2;
@@ -308,7 +336,7 @@ static void connectWiresToWiresImpl(
       }
 
       occ::handle<ShapeExtend_WireData> acurwd =
-        new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(lwire)), true, isUsedManifoldMode);
+        new ShapeExtend_WireData(TopoDS::Wire(arrwires->Value(lwire)), true, true);
       if (!acurwd->NbEdges())
       {
         continue;
@@ -359,55 +387,25 @@ static void connectWiresToWiresImpl(
       }
 
       TopoDS_Wire wire = sewd->Wire();
-      if (isUsedManifoldMode)
+      if (!saw->CheckConnected(1) && saw->LastCheckStatus(ShapeExtend_OK))
       {
-        if (!saw->CheckConnected(1) && saw->LastCheckStatus(ShapeExtend_OK))
-        {
-          wire.Closed(true);
-        }
-      }
-      else
-      {
-        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> vmap;
-        TopoDS_Iterator                                        it(wire);
-
-        for (; it.More(); it.Next())
-        {
-          const TopoDS_Shape& E = it.Value();
-          TopoDS_Iterator     ite(E, false, true);
-          for (; ite.More(); ite.Next())
-          {
-            const TopoDS_Shape& V = ite.Value();
-            if (V.Orientation() == TopAbs_FORWARD || V.Orientation() == TopAbs_REVERSED)
-            {
-              if (!vmap.Add(V))
-              {
-                vmap.Remove(V);
-              }
-            }
-          }
-        }
-        if (vmap.IsEmpty())
-        {
-          wire.Closed(true);
-        }
+        wire.Closed(true);
       }
 
       owires->Append(wire);
       sewd->Clear();
-      sewd->ManifoldMode() = isUsedManifoldMode;
 
       lwire = -1;
       for (i = 1; i <= arrwires->Length(); i++)
       {
         if (!aSel.ContWire(i))
         {
-          lwire = i;
-          sewd->Add(TopoDS::Wire(arrwires->Value(lwire)));
-          aSel.LoadList(lwire);
+          sewd->Add(TopoDS::Wire(arrwires->Value(i)));
+          aSel.LoadList(i);
 
           if (sewd->NbEdges() > 0)
           {
+            lwire = i;
             break;
           }
           sewd->Clear();

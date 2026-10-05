@@ -39,8 +39,6 @@ private:
 
 private:
   friend class ExprIntrp_GenExp;
-  friend class ExprIntrp_GenFct;
-  friend class ExprIntrp_GenRel;
 };
 
 #endif // _ExprIntrp_HeaderFile

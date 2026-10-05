@@ -25,8 +25,6 @@ set(OCCT_TDF_FILES
   TDF_ClosureMode.lxx
   TDF_ClosureTool.cxx
   TDF_ClosureTool.hxx
-  TDF_ComparisonTool.cxx
-  TDF_ComparisonTool.hxx
   TDF_CopyLabel.cxx
   TDF_CopyLabel.hxx
   TDF_CopyLabel.lxx
@@ -72,7 +70,6 @@ set(OCCT_TDF_FILES
 
   TDF_LabelNode.cxx
   TDF_LabelNode.hxx
-  TDF_LabelNodePtr.hxx
 
   TDF_Reference.cxx
   TDF_Reference.hxx

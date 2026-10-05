@@ -2,8 +2,6 @@
 set(OCCT_Transfer_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Transfer_FILES
-  Transfer_ActorDispatch.cxx
-  Transfer_ActorDispatch.hxx
   Transfer_ActorOfFinderProcess.cxx
   Transfer_ActorOfFinderProcess.hxx
   Transfer_ActorOfProcessForFinder.hxx
@@ -14,12 +12,8 @@ set(OCCT_Transfer_FILES
   Transfer_ActorOfTransientProcess.hxx
   Transfer_Binder.cxx
   Transfer_Binder.hxx
-  Transfer_BinderOfTransientInteger.cxx
-  Transfer_BinderOfTransientInteger.hxx
   Transfer_DataInfo.cxx
   Transfer_DataInfo.hxx
-  Transfer_DispatchControl.cxx
-  Transfer_DispatchControl.hxx
   Transfer_Finder.cxx
   Transfer_Finder.hxx
   Transfer_FinderProcess.cxx
@@ -30,8 +24,6 @@ set(OCCT_Transfer_FILES
   Transfer_IteratorOfProcessForFinder_0.cxx
   Transfer_IteratorOfProcessForTransient.hxx
   Transfer_IteratorOfProcessForTransient_0.cxx
-  Transfer_MapContainer.cxx
-  Transfer_MapContainer.hxx
   Transfer_MultipleBinder.cxx
   Transfer_MultipleBinder.hxx
   Transfer_ProcessForFinder.hxx
@@ -48,11 +40,7 @@ set(OCCT_Transfer_FILES
   Transfer_StatusExec.hxx
   Transfer_StatusResult.hxx
   Transfer_TransferDeadLoop.hxx
-  Transfer_TransferDispatch.cxx
-  Transfer_TransferDispatch.hxx
   Transfer_TransferFailure.hxx
-  Transfer_TransferInput.cxx
-  Transfer_TransferInput.hxx
   Transfer_TransferIterator.cxx
   Transfer_TransferIterator.hxx
 
@@ -64,7 +52,6 @@ set(OCCT_Transfer_FILES
   Transfer_TransientMapper_0.cxx
   Transfer_TransientProcess.cxx
   Transfer_TransientProcess.hxx
-  Transfer_UndefMode.hxx
   Transfer_VoidBinder.cxx
   Transfer_VoidBinder.hxx
 )

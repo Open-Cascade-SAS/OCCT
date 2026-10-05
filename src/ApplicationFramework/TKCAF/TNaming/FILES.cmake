@@ -38,9 +38,6 @@ set(OCCT_TNaming_FILES
   TNaming_NewShapeIterator.lxx
   TNaming_OldShapeIterator.hxx
   TNaming_OldShapeIterator.lxx
-  TNaming_PtrAttribute.hxx
-  TNaming_PtrNode.hxx
-  TNaming_PtrRefShape.hxx
   TNaming_RefShape.hxx
   TNaming_RefShape.lxx
   TNaming_SameShapeIterator.hxx

@@ -12,15 +12,23 @@
 // commercial license or contractual agreement.
 
 #include <StepData_FieldListN.hxx>
+#include <Standard_RangeError.hxx>
 
 StepData_FieldListN::StepData_FieldListN(const int nb)
-    : thefields((nb == 0 ? 0 : 1), nb)
 {
+  if (nb < 0)
+  {
+    throw Standard_RangeError("StepData_FieldListN: negative field count");
+  }
+  if (nb > 0)
+  {
+    thefields.Resize(1, nb, false);
+  }
 }
 
 int StepData_FieldListN::NbFields() const
 {
-  return thefields.Upper();
+  return thefields.Length();
 }
 
 const StepData_Field& StepData_FieldListN::Field(const int num) const

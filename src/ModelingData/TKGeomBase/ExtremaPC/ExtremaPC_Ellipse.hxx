@@ -16,11 +16,14 @@
 
 #include <ElCLib.hxx>
 #include <ExtremaPC.hxx>
+#include <ExtremaPC_Planar.hxx>
+#include <ExtremaPC2d_Ellipse.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <MathRoot_Trig.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <ProjLib.hxx>
 
 #include <cmath>
 #include <optional>
@@ -61,8 +64,7 @@ public:
   //! @param[in] theDomain parameter domain in radians (fixed for all queries)
   ExtremaPC_Ellipse(const gp_Elips& theEllipse, const ExtremaPC::Domain1D& theDomain)
       : myEllipse(theEllipse),
-        myDomain(theDomain.IsFullPeriod(2.0 * M_PI) ? std::nullopt
-                                                    : std::optional<ExtremaPC::Domain1D>(theDomain))
+        myDomain(theDomain)
   {
   }
 
@@ -100,6 +102,36 @@ public:
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (myDomain.has_value() && !myDomain->IsValid()))
+    {
+      myResult.Clear();
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    if (myDomain.has_value() && myDomain->IsValid() && myDomain->Min == myDomain->Max)
+    {
+      myResult.Clear();
+      myResult.Status = ExtremaPC::Status::NoSolution;
+      return myResult;
+    }
+
+    const gp_Pln aPlane(gp_Ax3(myEllipse.Position()));
+    if (ExtremaPC::PerformPlanar<ExtremaPC2d_Ellipse>(ProjLib::Project(aPlane, myEllipse),
+                                                      myDomain,
+                                                      ProjLib::Project(aPlane, theP),
+                                                      theP,
+                                                      aPlane,
+                                                      *this,
+                                                      theTol,
+                                                      theMode,
+                                                      false,
+                                                      myResult))
+    {
+      return myResult;
+    }
+
     // Use stored domain or full parameter range [0, 2*PI]
     ExtremaPC::Domain1D aDomain = myDomain.value_or(ExtremaPC::Domain1D{0.0, 2.0 * M_PI});
     performCore(theP, aDomain, theTol, theMode);
@@ -118,12 +150,37 @@ public:
     double                theTol,
     ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || (myDomain.has_value() && !myDomain->IsValid()))
+    {
+      myResult.Clear();
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return myResult;
+    }
+
+    if (myDomain.has_value() && myDomain->IsValid() && myDomain->Min == myDomain->Max)
+    {
+      myResult.Clear();
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, false);
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
+      return myResult;
+    }
+
     (void)Perform(theP, theTol, theMode);
 
     // Add endpoints if interior computation succeeded and domain is bounded
-    if (myResult.Status == ExtremaPC::Status::OK && myDomain.has_value())
+    if ((myResult.Status == ExtremaPC::Status::OK
+         || myResult.Status == ExtremaPC::Status::NoSolution)
+        && myDomain.has_value())
     {
-      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theTol, theMode);
+      const bool isClosed =
+        ExtremaPC::IsClosedPeriodicDomain(*myDomain, 2.0 * M_PI, Precision::Angular());
+      ExtremaPC::AddEndpointExtrema(myResult, theP, *myDomain, *this, theMode, isClosed);
+      if (!myResult.Extrema.IsEmpty())
+      {
+        myResult.Status = ExtremaPC::Status::OK;
+      }
     }
 
     return myResult;
@@ -141,6 +198,13 @@ private:
                    ExtremaPC::SearchMode      theMode) const
   {
     myResult.Clear();
+
+    if (!ExtremaPC::IsValidTolerance(theTol) || !ExtremaPC::IsFinitePoint(theP)
+        || !theDomain.IsValid())
+    {
+      myResult.Status = ExtremaPC::Status::InvalidInput;
+      return;
+    }
 
     const double theUMin = theDomain.Min;
     const double theUMax = theDomain.Max;
@@ -161,9 +225,9 @@ private:
     double aOPpMag = aOPp.Magnitude();
 
     // Check for degenerate case: point at center with circular ellipse
-    if (aOPpMag < theTol)
+    if (aOPpMag <= gp::Resolution())
     {
-      if (std::abs(aA - aB) < theTol)
+      if (aA == aB)
       {
         // Point at center of a circle - infinite solutions
         myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
@@ -187,38 +251,47 @@ private:
 
     // MathRoot::Trigonometric handles all special cases including Y ~= 0
     MathRoot::TrigResult aTrigRes =
-      MathRoot::Trigonometric(0.0, aKo2, aKo3, aKo4, 0.0, theUMin, theUMax);
+      MathRoot::Trigonometric(0.0, aKo2, aKo3, aKo4, 0.0, 0.0, 2.0 * M_PI);
 
+    if (aTrigRes.InfiniteRoots)
+    {
+      myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
+      const gp_Pnt aPtOnCurve         = ElCLib::Value(0.0, myEllipse);
+      myResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
+      return;
+    }
     if (!aTrigRes.IsDone())
     {
-      if (aTrigRes.InfiniteRoots)
-      {
-        myResult.Status = ExtremaPC::Status::InfiniteSolutions;
-        // For infinite case, compute distance to any point (use U=0)
-        gp_Pnt aPtOnCurve               = ElCLib::Value(0.0, myEllipse);
-        myResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
-      }
-      else
-      {
-        myResult.Status = ExtremaPC::Status::NumericalError;
-      }
+      myResult.Status = ExtremaPC::Status::NumericalError;
       return;
     }
 
     // Step 4: Collect extrema
-    double aTol2 = theTol * theTol;
+    auto stationarity = [&](double theU) {
+      const double aCos = std::cos(theU);
+      const double aSin = std::sin(theU);
+      return (aB * aB - aA * aA) * aCos * aSin - aB * aY * aCos + aA * aX * aSin;
+    };
 
-    auto addExtremum = [&](double aU) {
+    auto addExtremum = [&](double aU, bool theIsMin) {
+      aU +=
+        std::ceil((theUMin - aU - ExtremaPC::THE_PARAM_TOLERANCE) / (2.0 * M_PI)) * (2.0 * M_PI);
+      if (std::abs(aU - theUMin) <= ExtremaPC::THE_PARAM_TOLERANCE)
+      {
+        aU = theUMin;
+      }
+      if (aU < theUMin - ExtremaPC::THE_PARAM_TOLERANCE
+          || aU > theUMax + ExtremaPC::THE_PARAM_TOLERANCE)
+      {
+        return;
+      }
+
       gp_Pnt aCurvePt = ElCLib::Value(aU, myEllipse);
 
       // Check for duplicates using parameter proximity (more robust)
-      for (int j = 0; j < myResult.Extrema.Length(); ++j)
+      for (const ExtremaPC::ExtremumResult& anExtremum : myResult.Extrema)
       {
-        if (std::abs(myResult.Extrema.Value(j).Parameter - aU) < theTol)
-        {
-          return;
-        }
-        if (aCurvePt.SquareDistance(myResult.Extrema.Value(j).Point) < aTol2)
+        if (std::abs(anExtremum.Parameter - aU) < ExtremaPC::THE_PARAM_TOLERANCE)
         {
           return;
         }
@@ -226,22 +299,12 @@ private:
 
       double aSqDist = theP.SquareDistance(aCurvePt);
 
-      // Determine if this is a minimum or maximum by checking neighboring points
-      // Use step relative to parameter range
-      double aStep      = std::max(ExtremaPC::THE_NEIGHBOR_STEP_RATIO,
-                              (theUMax - theUMin) * ExtremaPC::THE_NEIGHBOR_STEP_RATIO);
-      gp_Pnt aPtPlus    = ElCLib::Value(aU + aStep, myEllipse);
-      gp_Pnt aPtMinus   = ElCLib::Value(aU - aStep, myEllipse);
-      double aDistPlus  = theP.SquareDistance(aPtPlus);
-      double aDistMinus = theP.SquareDistance(aPtMinus);
-      bool   aIsMin     = (aSqDist <= aDistPlus) && (aSqDist <= aDistMinus);
-
       // Filter by search mode
-      if (theMode == ExtremaPC::SearchMode::Min && !aIsMin)
+      if (theMode == ExtremaPC::SearchMode::Min && !theIsMin)
       {
         return;
       }
-      if (theMode == ExtremaPC::SearchMode::Max && aIsMin)
+      if (theMode == ExtremaPC::SearchMode::Max && theIsMin)
       {
         return;
       }
@@ -250,18 +313,62 @@ private:
       anExt.Parameter      = aU;
       anExt.Point          = aCurvePt;
       anExt.SquareDistance = aSqDist;
-      anExt.IsMinimum      = aIsMin;
+      anExt.IsMinimum      = theIsMin;
+      anExt.IsMaximum      = !theIsMin;
 
       myResult.Extrema.Append(anExt);
     };
 
-    // Add solutions from solver
-    for (int i = 0; i < aTrigRes.NbRoots; ++i)
+    std::array<double, 4> aCanonicalRoots   = {};
+    size_t                aNbCanonicalRoots = 0;
+    for (size_t aRootIndex = 0; aRootIndex < aTrigRes.NbRoots; ++aRootIndex)
     {
-      addExtremum(aTrigRes.Roots[i]);
+      double aRoot = std::fmod(aTrigRes.Roots[aRootIndex], 2.0 * M_PI);
+      if (aRoot < 0.0)
+      {
+        aRoot += 2.0 * M_PI;
+      }
+      if (aRoot >= 2.0 * M_PI - ExtremaPC::THE_PARAM_TOLERANCE)
+      {
+        aRoot = 0.0;
+      }
+
+      bool isDuplicate = false;
+      for (size_t anIndex = 0; anIndex < aNbCanonicalRoots; ++anIndex)
+      {
+        if (std::abs(aCanonicalRoots[anIndex] - aRoot) < ExtremaPC::THE_PARAM_TOLERANCE)
+        {
+          isDuplicate = true;
+          break;
+        }
+      }
+      if (!isDuplicate)
+      {
+        aCanonicalRoots[aNbCanonicalRoots++] = aRoot;
+      }
+    }
+    std::sort(aCanonicalRoots.begin(), aCanonicalRoots.begin() + aNbCanonicalRoots);
+
+    // Classify canonical roots and lift one representative into the requested domain.
+    for (size_t i = 0; i < aNbCanonicalRoots; ++i)
+    {
+      const double aRoot = aCanonicalRoots[i];
+      const double aPrev =
+        i == 0 ? aCanonicalRoots[aNbCanonicalRoots - 1] - 2.0 * M_PI : aCanonicalRoots[i - 1];
+      const double aNext =
+        i + 1 == aNbCanonicalRoots ? aCanonicalRoots[0] + 2.0 * M_PI : aCanonicalRoots[i + 1];
+      const double aLeftValue  = stationarity((aPrev + aRoot) * 0.5);
+      const double aRightValue = stationarity((aRoot + aNext) * 0.5);
+      const bool   isMinimum   = aLeftValue < 0.0 && aRightValue > 0.0;
+      const bool   isMaximum   = aLeftValue > 0.0 && aRightValue < 0.0;
+      if (isMinimum || isMaximum)
+      {
+        addExtremum(aRoot, isMinimum);
+      }
     }
 
-    myResult.Status = ExtremaPC::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPC::Status::NoSolution : ExtremaPC::Status::OK;
   }
 
   gp_Elips                           myEllipse; //!< Ellipse geometry

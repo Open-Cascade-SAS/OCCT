@@ -13,7 +13,7 @@ The generic Newton-Raphson method solves systems `F(X) = 0` by repeatedly solvin
 `J(X) * dX = -F(X)`.
 
 **Features:**
-- Fast local quadratic convergence near the solution
+- Newton updates from a supplied Jacobian
 - Generic vector/matrix interface for arbitrary dimension
 - Supports bounded variants with box constraints
 
@@ -23,16 +23,16 @@ Specialized 2D solvers target compact, allocation-free execution for common CAD 
 
 **Features:**
 - Zero allocation overhead (no `math_Vector`/`math_Matrix` in iteration loop)
-- Fast direct 2x2 solve path
+- Direct 2x2 solve path
 - SVD fallback for ill-conditioned symmetric Jacobians
-- Squared-norm convergence checks (avoid unnecessary `sqrt`)
+- Overflow-safe residual norm convergence checks
 - Step limiting to prevent wild oscillations
 - Gradient-descent fallback on singular Jacobians
 - Armijo backtracking line search for symmetric mode
 
 **Functions:**
 - `MathSys::Solve2D()` - General 2D Newton solver
-- `MathSys::Solve2DSymmetric()` - Robust 2D solver for symmetric Jacobian systems
+- `MathSys::Solve2DSymmetric()` - 2D solver with line search for symmetric Jacobian systems
 
 **Usage Example (2D):**
 ```cpp
@@ -65,7 +65,7 @@ if (aResult.IsDone())
 **Features:**
 - Zero allocation overhead in core iteration path
 - Cramer's rule/cofactor-based 3x3 solve
-- Squared-norm convergence checks
+- Overflow-safe residual norm convergence checks
 - Step limiting for stability
 - Gradient-descent fallback for singular cases
 - Specialized curve-surface extrema formulation
@@ -124,8 +124,8 @@ const MathSys::NewtonResultN<3> aResult =
 **Features:**
 - Zero allocation overhead in iteration loop
 - Gaussian elimination with partial pivoting for 4x4 systems
-- Squared-norm convergence checks
-- Step limiting for robustness
+- Overflow-safe residual norm convergence checks
+- Step limiting
 - Gradient-descent fallback for singular Jacobians
 - Specialized surface-surface extrema system with structured Jacobian blocks
 
@@ -173,13 +173,12 @@ const MathSys::NewtonResultN<4> aResult =
 ### Levenberg-Marquardt Algorithm (`MathSys_LevenbergMarquardt.hxx`)
 
 Levenberg-Marquardt targets nonlinear least-squares problems by minimizing `||F(X)||^2`.
-It blends Gauss-Newton speed near minima with gradient-descent robustness far from minima.
+It uses damped Gauss-Newton steps and adjusts the damping from the reduction in residual norm.
 
 **Features:**
-- Robust convergence under poor initial guesses
 - Adaptive damping to stabilize updates
 - Works with the generic vector interface
-- Suitable when pure Newton is too brittle for noisy systems
+- Bounded variant with projected-gradient stationarity checks
 
 ## Interface Styles and Return Types
 
@@ -188,7 +187,7 @@ MathSys exposes two interface styles:
 - Generic vector API:
   - Headers: `MathSys_Newton.hxx`, `MathSys_LevenbergMarquardt.hxx`
   - Uses `math_Vector`/`math_Matrix`-based interfaces
-  - Returns `MathUtils::VectorResult`
+  - Returns `MathSys::SystemResult`
 
 - Specialized small-dimension API:
   - Headers: `MathSys_Newton2D.hxx`, `MathSys_Newton3D.hxx`, `MathSys_Newton4D.hxx`
@@ -206,8 +205,14 @@ Shared specialized API types are defined in `MathSys_NewtonTypes.hxx`:
 - Specialized solvers use strict residual-based convergence (`ResidualNorm <= FTolerance`).
 - Step-size stagnation alone does not produce `Status::OK` status.
 - `Solve2DSymmetric()` uses Armijo backtracking with directional derivative based on `J^T * F`.
+- Levenberg-Marquardt combines absolute and relative residual tolerances and treats `StepMin` as
+  the minimum step threshold for stagnation checks.
+- Bounded Levenberg-Marquardt reports stationarity using the projected gradient at active bounds.
 
 ## Dependencies
 
 - `MathUtils` - common utilities, numeric types, and generic solver support
 - `gp` package - geometric point/vector primitives for extrema-specialized solvers
+
+Generic solver vectors, matrices, and results are zero-based. Dimensions and positional indices use
+`size_t`; iteration limits and stored iteration counters use `uint32_t`.

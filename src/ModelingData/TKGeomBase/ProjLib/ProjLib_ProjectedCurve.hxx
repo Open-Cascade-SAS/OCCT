@@ -144,41 +144,6 @@ public:
 
   Standard_EXPORT double Period() const override;
 
-  //! Computes the point of parameter U on the curve.
-  Standard_EXPORT gp_Pnt2d Value(const double U) const override;
-
-  //! Computes the point of parameter U on the curve.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
-
-  //! Computes the point of parameter U on the curve with its
-  //! first derivative.
-  //! Raised if the continuity of the current interval
-  //! is not C1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const override;
-
-  //! Returns the point P of parameter U, the first and second
-  //! derivatives V1 and V2.
-  //! Raised if the continuity of the current interval
-  //! is not C2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
-
-  //! Returns the point P of parameter U, the first, the second
-  //! and the third derivative.
-  //! Raised if the continuity of the current interval
-  //! is not C3.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
-
-  //! The returned vector gives the value of the derivative for the
-  //! order of derivation N.
-  //! Raised if the continuity of the current interval
-  //! is not CN.
-  //! Raised if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
-
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
   Standard_EXPORT double Resolution(const double R3d) const override;

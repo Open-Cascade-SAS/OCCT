@@ -23,10 +23,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
 #include <StepData_EnumTool.hxx>
+#include <StepData_Field.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
 class StepData_EDescr;
-class StepData_Field;
 class Interface_Check;
 
 //! This class is intended to describe the authorized form for a
@@ -206,13 +206,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepData_PDescr, Standard_Transient)
 
 private:
-  Standard_EXPORT int Kind() const;
+  Standard_EXPORT StepData_Field::FieldKind Kind() const;
 
   TCollection_AsciiString      thename;
   int                          thesel;
   TCollection_AsciiString      thesnam;
   occ::handle<StepData_PDescr> thenext;
-  int                          thekind;
+  StepData_Field::FieldKind    thekind;
   StepData_EnumTool            theenum;
   occ::handle<Standard_Type>   thetype;
   TCollection_AsciiString      thednam;

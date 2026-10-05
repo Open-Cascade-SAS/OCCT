@@ -4,9 +4,6 @@ set(OCCT_IntAna_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_IntAna_FILES
   IntAna_Curve.cxx
   IntAna_Curve.hxx
-  IntAna_Int3Pln.cxx
-  IntAna_Int3Pln.hxx
-  IntAna_Int3Pln.lxx
   IntAna_IntConicQuad.cxx
   IntAna_IntConicQuad.hxx
   IntAna_IntConicQuad.lxx

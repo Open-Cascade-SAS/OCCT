@@ -20,7 +20,7 @@
 //=================================================================================================
 
 TopOpeBRepDS_Filter::TopOpeBRepDS_Filter(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                         const TopOpeBRepTool_PShapeClassifier&          pClassif)
+                                         TopOpeBRepTool_ShapeClassifier* const&          pClassif)
     : myHDS(HDS),
       myPShapeClassif(pClassif)
 {

@@ -19,7 +19,6 @@
 
 #include <TopOpeBRepDS_define.hxx>
 
-#include <TopOpeBRepBuild_PWireEdgeSet.hxx>
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepBuild_ShellFaceSet.hxx>
 #include <TopOpeBRepBuild_GTopo.hxx>
@@ -30,7 +29,6 @@
 #include <TopOpeBRepBuild_FaceBuilder.hxx>
 #include <TopOpeBRepBuild_EdgeBuilder.hxx>
 #include <TopOpeBRepBuild_Builder.hxx>
-#include <TopOpeBRepBuild_PBuilder.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_ShapeListOfShape.hxx>
 #include <NCollection_List.hxx>
@@ -38,7 +36,6 @@
 #include <NCollection_DataMap.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 
-#define MTBpwes TopOpeBRepBuild_PWireEdgeSet
 #define MTBwes TopOpeBRepBuild_WireEdgeSet
 #define MTBsfs TopOpeBRepBuild_ShellFaceSet
 #define MTBgt TopOpeBRepBuild_GTopo
@@ -51,7 +48,6 @@
 #define MTBeb TopOpeBRepBuild_EdgeBuilder
 #define MTBbON TopOpeBRepBuild_BuilderON
 #define MTBb TopOpeBRepBuild_Builder
-#define MTBpb TopOpeBRepBuild_PBuilder
 #define MTBdmiodmosloslos                                                                          \
   NCollection_DataMap<TopoDS_Shape,                                                                \
                       NCollection_List<TopOpeBRepBuild_ShapeListOfShape>,                          \

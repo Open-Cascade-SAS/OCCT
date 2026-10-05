@@ -280,7 +280,6 @@ void BRepFeat_Builder::RebuildFaces()
   TopExp_Explorer    aExp, aExpE;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>           aME, aMESplit;
   NCollection_List<TopoDS_Shape>::Iterator                         aItIm;
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>::Iterator          aItMPB;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aItM;
   NCollection_Map<BOPTools_Set>                                    aMST;
   NCollection_List<TopoDS_Shape>                                   aLE;
@@ -578,9 +577,8 @@ void BRepFeat_Builder::RebuildEdge(
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
   NCollection_List<TopoDS_Shape>::Iterator                 aIt;
   NCollection_List<int>::Iterator                          aItLI;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aItM;
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>                    aMPB;
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>::Iterator          aItMPB;
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>            aMPB;
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>::Iterator  aItMPB;
   //
   aSI.SetShapeType(TopAbs_EDGE);
 

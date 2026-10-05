@@ -34,7 +34,6 @@ set(OCCT_TDocStd_FILES
   TDocStd_XLinkIterator.cxx
   TDocStd_XLinkIterator.hxx
   TDocStd_XLinkIterator.lxx
-  TDocStd_XLinkPtr.hxx
   TDocStd_XLinkRoot.cxx
   TDocStd_XLinkRoot.hxx
   TDocStd_XLinkRoot.lxx

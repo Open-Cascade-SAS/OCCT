@@ -27,6 +27,7 @@
 #include <OSD_ThreadPool.hxx>
 #include <Precision.hxx>
 #include <RWGltf_TriangulationReader.hxx>
+#include <Standard_ArrayStreamBuffer.hxx>
 #include <TDataStd_NamedData.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -35,6 +36,8 @@
 #include <gp_Quaternion.hxx>
 
 #include <fstream>
+#include <cstdint>
+#include <limits>
 
 #ifdef HAVE_RAPIDJSON
 namespace
@@ -685,6 +688,42 @@ void RWGltf_GltfJsonParser::SetFilePath(const TCollection_AsciiString& theFilePa
 }
 
 #ifdef HAVE_RAPIDJSON
+//=================================================================================================
+
+bool RWGltf_GltfJsonParser::loadStreamBuffer()
+{
+  if (!myStreamBuffer.IsNull())
+  {
+    return true;
+  }
+  if (myStream == nullptr || myBinBodyLen <= 0
+      || static_cast<uint64_t>(myBinBodyLen)
+           > static_cast<uint64_t>(std::numeric_limits<size_t>::max()))
+  {
+    reportGltfError("Binary buffer has invalid length.");
+    return false;
+  }
+
+  myStreamBuffer = new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(),
+                                          static_cast<size_t>(myBinBodyLen));
+  myStream->clear();
+  myStream->seekg(myBinBodyOffset, std::ios_base::beg);
+  if (myStream->fail())
+  {
+    myStreamBuffer.Nullify();
+    reportGltfError("Binary buffer cannot be positioned in stream.");
+    return false;
+  }
+  myStream->read(reinterpret_cast<char*>(myStreamBuffer->ChangeData()), myBinBodyLen);
+  if (!myStream->good())
+  {
+    myStreamBuffer.Nullify();
+    reportGltfError("Binary buffer cannot be read from stream.");
+    return false;
+  }
+  return true;
+}
+
 //=================================================================================================
 
 bool RWGltf_GltfJsonParser::gltfParseRoots()
@@ -1348,6 +1387,27 @@ bool RWGltf_GltfJsonParser::gltfParseTexturInGlbBuffer(
   {
     reportGltfError("BufferView '" + theBufferViewId + "' defines invalid byteOffset.");
     return false;
+  }
+
+  if (myStream != nullptr)
+  {
+    if (!loadStreamBuffer())
+    {
+      return false;
+    }
+    if (aBuffView.ByteOffset > myBinBodyLen
+        || aBuffView.ByteLength > myBinBodyLen - aBuffView.ByteOffset)
+    {
+      reportGltfError("BufferView '" + theBufferViewId + "' exceeds binary buffer length.");
+      return false;
+    }
+
+    occ::handle<RWGltf_SubBuffer> aSubBuffer =
+      new RWGltf_SubBuffer(myStreamBuffer,
+                           static_cast<size_t>(aBuffView.ByteOffset),
+                           static_cast<size_t>(aBuffView.ByteLength));
+    theTexture = new Image_Texture(aSubBuffer, myFilePath + "@" + theBufferViewId);
+    return true;
   }
 
   const int64_t anOffset = myBinBodyOffset + aBuffView.ByteOffset;
@@ -2298,9 +2358,21 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer(
     RWGltf_GltfPrimArrayData& aData = theMeshData->AddPrimArrayData(theType);
     aData.Accessor                  = theAccessor;
     aData.Accessor.ByteStride       = aByteStride;
-    aData.StreamOffset              = anOffset;
     aData.StreamLength              = theView.ByteLength;
     aData.StreamUri                 = myFilePath;
+    if (myStream != nullptr)
+    {
+      if (!loadStreamBuffer())
+      {
+        return false;
+      }
+      aData.StreamData   = myStreamBuffer;
+      aData.StreamOffset = theView.ByteOffset + theAccessor.ByteOffset;
+    }
+    else
+    {
+      aData.StreamOffset = anOffset;
+    }
     return true;
   }
 
@@ -2519,18 +2591,31 @@ bool RWGltf_GltfJsonParser::fillMeshData(
 
     occ::handle<RWGltf_TriangulationReader> aReader = new RWGltf_TriangulationReader();
     aReader->SetCoordinateSystemConverter(myCSTrsf);
-    std::shared_ptr<std::istream> aNewStream;
+
+    if (!aData.StreamData.IsNull())
+    {
+      Standard_ArrayStreamBuffer aStreamBuffer((const char*)aData.StreamData->Data(),
+                                               aData.StreamData->Size());
+      std::istream               aStream(&aStreamBuffer);
+      aStream.seekg((std::streamoff)aData.StreamOffset, std::ios_base::beg);
+      if (!aReader->ReadStream(theMeshData, theMeshData, aStream, aData.Accessor, aData.Type))
+      {
+        return false;
+      }
+      continue;
+    }
+
     if (myStream != nullptr)
     {
-      aNewStream = myStream;
-      aNewStream->seekg(aData.StreamOffset);
+      reportGltfError("Buffer '" + aData.StreamUri
+                      + "' cannot be loaded from caller-owned stream.");
+      return false;
     }
-    else
-    {
-      aNewStream = aFileSystem->OpenIStream(aData.StreamUri,
-                                            std::ios::in | std::ios::binary,
-                                            aData.StreamOffset);
-    }
+
+    std::shared_ptr<std::istream> aNewStream;
+    aNewStream = aFileSystem->OpenIStream(aData.StreamUri,
+                                          std::ios::in | std::ios::binary,
+                                          aData.StreamOffset);
 
     if (aNewStream == nullptr)
     {

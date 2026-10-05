@@ -29,9 +29,6 @@ set(OCCT_BOPDS_FILES
   BOPDS_Pave.lxx
   BOPDS_PaveBlock.cxx
   BOPDS_PaveBlock.hxx
-  BOPDS_PDS.hxx
-  BOPDS_PIterator.hxx
-  BOPDS_PIteratorSI.hxx
   BOPDS_Point.hxx
   BOPDS_Point.lxx
   BOPDS_ShapeInfo.cxx

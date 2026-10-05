@@ -82,7 +82,8 @@ enum class Status {
   NoSolution,
   NotPositiveDefinite,
   Singular,
-  NonDescentDirection
+  NonDescentDirection,
+  CallbackError
 };
 ```
 
@@ -91,7 +92,6 @@ via `MathSys_NewtonTypes.hxx`.
 
 ### Result Types
 - `ScalarResult` - For 1D root finding results
-- `PolyResult` - For polynomial root results (up to 4 roots)
 - `VectorResult` - For N-D optimization results
 - `LinearMultipleResult` - For linear systems with matrix right-hand side (`AX=B`)
 - `IntegResult` - For integration results with error estimate
@@ -99,15 +99,21 @@ via `MathSys_NewtonTypes.hxx`.
 ### Configuration
 ```cpp
 struct Config {
-  double XTolerance = 1e-10;   // Tolerance on X
-  double FTolerance = 1e-10;   // Tolerance on F
-  int    MaxIterations = 100;  // Maximum iterations
+  uint32_t MaxIterations     = 100;
+  double   Tolerance         = 1.0e-10;
+  double   XTolerance        = 1.0e-10;
+  double   FTolerance        = 1.0e-10;
+  double   RelativeTolerance = 1.0e-10;
+  double   StepMin           = Precision::Computational();
 };
 ```
+
+Solver iteration limits and stored iteration counters use `uint32_t`. Collection dimensions,
+indices, and evaluation counts use `size_t`.
 
 ## Design Principles
 
 1. **Template-based** - No virtual dispatch overhead
 2. **Header-only** - Most utilities are header-only templates
 3. **Constexpr** - Constants are compile-time evaluated
-4. **Non-throwing** - Functions return status codes, not exceptions
+4. **Status-based failures** - Numerical and callback failures are reported through result statuses

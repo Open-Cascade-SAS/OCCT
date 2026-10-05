@@ -432,7 +432,7 @@ Curves, which form the 2D of face boundaries, are translated  as *Geom2D_Curves*
 | 141: Boundary | TopoDS_Wire | Same behavior as for the Curve On Surface (see below). The translation of a non-referenced Boundary IGES entity in a *BoundedSurface* IGES entity outputs a *TopoDS_Edge* or a *TopoDS_Wire* with a *Geom_Curve*. |
 | 142: Curve On Surface | TopoDS_Wire | Each *TopoDS_Edge* is defined by a 3D curve and by a 2D curve that references the surface. |
 
-The type of OCCT shapes (either *TopDS_Edges* or  *TopoDS_Wires*) that result from the translation of IGES entities 106, 112 and  126 depends on the continuity of the curve in the IGES file and the value of  the *read.iges.bspline.continuity* translation parameter. 
+The type of OCCT shapes (either *TopoDS_Edges* or  *TopoDS_Wires*) that result from the translation of IGES entities 106, 112 and  126 depends on the continuity of the curve in the IGES file and the value of  the *read.iges.bspline.continuity* translation parameter.
 
 @subsubsection occt_iges_2_4_3 Surfaces
 Translation of a surface outputs either a *TopoDS_Face* or a  *TopoDS_Shell*.  
@@ -1183,5 +1183,4 @@ or
 bool statw = aWriter.Write (S); 
 ~~~~
 where S is OStream.  
-
 

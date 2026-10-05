@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TNaming_PtrNode.hxx>
 #include <TNaming_Evolution.hxx>
 #include <Standard_Integer.hxx>
 #include <TDF_Attribute.hxx>
@@ -32,6 +31,7 @@ class TDF_DeltaOnRemoval;
 class TDF_RelocationTable;
 class TDF_DataSet;
 class TDF_AttributeDelta;
+class TNaming_Node;
 
 //! The basis to define an attribute for the storage of
 //! topology and naming data.
@@ -140,9 +140,9 @@ public:
 
 private:
   //! Adds an evolution
-  Standard_EXPORT void Add(TNaming_PtrNode& Evolution);
+  Standard_EXPORT void Add(TNaming_Node*& Evolution);
 
-  TNaming_PtrNode   myNode;
+  TNaming_Node*     myNode;
   TNaming_Evolution myEvolution;
   int               myVersion;
 };

@@ -20,7 +20,9 @@
 #include <NCollection_DefaultHasher.hxx>
 #include <NCollection_ItemsView.hxx>
 
+#include <cstddef>
 #include <functional>
+#include <iterator>
 #include <new>
 #include <optional>
 #include <type_traits>
@@ -75,16 +77,15 @@ public:
   using key_type = TheKeyType;
 
   //! STL-compliant type alias for value type
-  using value_type = TheItemType;
+  using value_type      = TheItemType;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using reference       = TheItemType&;
+  using const_reference = const TheItemType&;
+  using pointer         = TheItemType*;
+  using const_pointer   = const TheItemType*;
 
 private:
-  //! Default initial capacity (must be power of 2)
-  static constexpr size_t THE_DEFAULT_CAPACITY = 8;
-  //! Maximum load factor numerator (13/16 = 81.25%).
-  static constexpr size_t THE_MAX_LOAD_NUMERATOR = 13;
-  //! Maximum load factor denominator.
-  static constexpr size_t THE_MAX_LOAD_DENOMINATOR = 16;
-
   //! Internal slot structure holding key, value, and metadata.
   //! Key and item storage is uninitialized until state becomes Used.
 #ifdef _MSC_VER
@@ -136,97 +137,183 @@ private:
   #pragma warning(pop)
 #endif
 
+  static void destroyTable(Slot* theSlots, const size_t theCapacity) noexcept
+  {
+    if (theSlots == nullptr)
+    {
+      return;
+    }
+    for (size_t anIndex = 0; anIndex < theCapacity; ++anIndex)
+    {
+      if (theSlots[anIndex].IsUsed())
+      {
+        theSlots[anIndex].Key().~TheKeyType();
+        theSlots[anIndex].Item().~TheItemType();
+        theSlots[anIndex].SetEmpty();
+      }
+      theSlots[anIndex].~Slot();
+    }
+    freeBytes(theSlots);
+  }
+
+  template <bool IsConstant>
+  class iterator_impl
+  {
+  public:
+    using iterator_category = std::forward_iterator_tag;
+    using value_type        = TheItemType;
+    using difference_type   = std::ptrdiff_t;
+    using pointer   = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
+    using reference = typename std::conditional<IsConstant, const TheItemType&, TheItemType&>::type;
+    using slot_pointer   = typename std::conditional<IsConstant, const Slot*, Slot*>::type;
+    using container_type = typename std::
+      conditional<IsConstant, const NCollection_FlatDataMap, NCollection_FlatDataMap>::type;
+
+    iterator_impl() noexcept = default;
+
+    explicit iterator_impl(container_type& theContainer) noexcept
+        : mySlots(theContainer.slotData()),
+          myCapacity(theContainer.myCapacity)
+    {
+      skipEmptySlots();
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    iterator_impl(const iterator_impl<false>& theOther) noexcept
+        : mySlots(theOther.mySlots),
+          myCapacity(theOther.myCapacity),
+          myIndex(theOther.myIndex)
+    {
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    iterator_impl& operator=(const iterator_impl<false>& theOther) noexcept
+    {
+      mySlots    = theOther.mySlots;
+      myCapacity = theOther.myCapacity;
+      myIndex    = theOther.myIndex;
+      return *this;
+    }
+
+    reference operator*() const noexcept { return mySlots[myIndex].Item(); }
+
+    pointer operator->() const noexcept { return &operator*(); }
+
+    const TheKeyType& Key() const noexcept { return mySlots[myIndex].Key(); }
+
+    bool More() const noexcept { return myIndex < myCapacity; }
+
+    iterator_impl& operator++() noexcept
+    {
+      ++myIndex;
+      skipEmptySlots();
+      return *this;
+    }
+
+    iterator_impl operator++(int) noexcept
+    {
+      iterator_impl anOld(*this);
+      ++(*this);
+      return anOld;
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator==(const iterator_impl<theOtherIsConstant>& theOther) const noexcept
+    {
+      return (!More() && !theOther.More())
+             || (mySlots == theOther.mySlots && myIndex == theOther.myIndex);
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator!=(const iterator_impl<theOtherIsConstant>& theOther) const noexcept
+    {
+      return !(*this == theOther);
+    }
+
+  private:
+    template <bool>
+    friend class iterator_impl;
+
+    void skipEmptySlots() noexcept
+    {
+      while (myIndex < myCapacity && !mySlots[myIndex].IsUsed())
+      {
+        ++myIndex;
+      }
+    }
+
+    slot_pointer mySlots    = nullptr;
+    size_t       myCapacity = 0;
+    size_t       myIndex    = 0;
+  };
+
 public:
   // **************** Iterator interface ****************
 
-  //! Forward iterator for NCollection_FlatDataMap
-  class Iterator
+  using iterator       = iterator_impl<false>;
+  using const_iterator = iterator_impl<true>;
+
+  //! Legacy OCCT cursor backed by the standard iterator state.
+  class Iterator : public iterator
   {
   public:
-    //! Empty constructor
-    Iterator() noexcept
-        : mySlots(nullptr),
-          myCapacity(0),
-          myIndex(0)
+    Iterator() noexcept = default;
+
+    //! Constructor from map
+    Iterator(NCollection_FlatDataMap& theMap) noexcept
+        : iterator(theMap)
     {
     }
 
-    //! Constructor from map
+    //! Legacy cursor construction from a const map.
     Iterator(const NCollection_FlatDataMap& theMap) noexcept
-        : mySlots(theMap.mySlots),
-          myCapacity(theMap.myCapacity),
-          myIndex(0)
+        : iterator(const_cast<NCollection_FlatDataMap&>(theMap))
     {
-      // Find first used slot
-      while (myIndex < myCapacity && !mySlots[myIndex].IsUsed())
-      {
-        ++myIndex;
-      }
     }
 
     //! Check if there are more elements
-    bool More() const noexcept { return myIndex < myCapacity; }
+    bool More() const noexcept { return iterator::More(); }
 
     //! Move to next element
-    void Next() noexcept
-    {
-      ++myIndex;
-      while (myIndex < myCapacity && !mySlots[myIndex].IsUsed())
-      {
-        ++myIndex;
-      }
-    }
+    void Next() noexcept { ++(*this); }
 
     //! Get current key
     const TheKeyType& Key() const
     {
       Standard_OutOfRange_Raise_if(!More(), "NCollection_FlatDataMap::Iterator::Key");
-      return mySlots[myIndex].Key();
+      return iterator::Key();
     }
 
     //! Get current value (const)
     const TheItemType& Value() const
     {
       Standard_OutOfRange_Raise_if(!More(), "NCollection_FlatDataMap::Iterator::Value");
-      return mySlots[myIndex].Item();
+      return iterator::operator*();
     }
 
     //! Get current value (mutable)
     TheItemType& ChangeValue() const
     {
       Standard_OutOfRange_Raise_if(!More(), "NCollection_FlatDataMap::Iterator::ChangeValue");
-      return const_cast<Slot*>(mySlots)[myIndex].Item();
+      return iterator::operator*();
     }
 
     //! Performs comparison of two iterators.
     bool IsEqual(const Iterator& theOther) const noexcept
     {
-      return mySlots == theOther.mySlots && myIndex == theOther.myIndex;
+      return iterator::operator==(static_cast<const iterator&>(theOther));
     }
-
-  private:
-    const Slot* mySlots;
-    size_t      myCapacity;
-    size_t      myIndex;
   };
 
 public:
   // **************** Constructors and destructor ****************
 
   //! Default constructor
-  NCollection_FlatDataMap()
-      : mySlots(nullptr),
-        myCapacity(0),
-        mySize(0)
-  {
-  }
+  NCollection_FlatDataMap() = default;
 
   //! Constructor with initial capacity hint
   //! @param theNbBuckets initial capacity (will be rounded up to power of 2)
   explicit NCollection_FlatDataMap(const size_t theNbBuckets)
-      : mySlots(nullptr),
-        myCapacity(0),
-        mySize(0)
   {
     if (theNbBuckets > 0)
     {
@@ -238,10 +325,7 @@ public:
   //! @param theHasher custom hasher instance
   //! @param theNbBuckets initial capacity hint
   explicit NCollection_FlatDataMap(const Hasher& theHasher, const size_t theNbBuckets = 0)
-      : mySlots(nullptr),
-        myCapacity(0),
-        mySize(0),
-        myHasher(theHasher)
+      : myHasher(theHasher)
   {
     if (theNbBuckets > 0)
     {
@@ -253,10 +337,7 @@ public:
   //! @param theHasher custom hasher instance (moved)
   //! @param theNbBuckets initial capacity hint
   explicit NCollection_FlatDataMap(Hasher&& theHasher, const size_t theNbBuckets = 0)
-      : mySlots(nullptr),
-        myCapacity(0),
-        mySize(0),
-        myHasher(std::move(theHasher))
+      : myHasher(std::move(theHasher))
   {
     if (theNbBuckets > 0)
     {
@@ -266,45 +347,34 @@ public:
 
   //! Copy constructor
   NCollection_FlatDataMap(const NCollection_FlatDataMap& theOther)
-      : mySlots(nullptr),
-        myCapacity(0),
-        mySize(0),
-        myHasher(theOther.myHasher)
+      : myHasher(theOther.myHasher)
   {
     if (theOther.mySize > 0)
     {
       // Allocate same capacity as the source (not through reserve which may change capacity)
-      mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+      mySlots = static_cast<Slot*>(allocateBytes(theOther.myCapacity * sizeof(Slot)));
       for (size_t i = 0; i < theOther.myCapacity; ++i)
       {
-        new (&mySlots[i]) Slot();
-      }
-      myCapacity = theOther.myCapacity;
-
-      for (size_t i = 0; i < theOther.myCapacity; ++i)
-      {
-        if (theOther.mySlots[i].IsUsed())
+        new (&slotData()[i]) Slot();
+        if (theOther.slotData()[i].IsUsed())
         {
-          new (&mySlots[i].Key()) TheKeyType(theOther.mySlots[i].Key());
-          new (&mySlots[i].Item()) TheItemType(theOther.mySlots[i].Item());
-          mySlots[i].myHash               = theOther.mySlots[i].myHash;
-          mySlots[i].myProbeDistancePlus1 = theOther.mySlots[i].myProbeDistancePlus1;
+          new (&slotData()[i].Key()) TheKeyType(theOther.slotData()[i].Key());
+          new (&slotData()[i].Item()) TheItemType(theOther.slotData()[i].Item());
+          slotData()[i].myHash               = theOther.slotData()[i].myHash;
+          slotData()[i].myProbeDistancePlus1 = theOther.slotData()[i].myProbeDistancePlus1;
         }
       }
-      mySize = theOther.mySize;
+      myCapacity = theOther.myCapacity;
+      mySize     = theOther.mySize;
     }
   }
 
   //! Move constructor
-  NCollection_FlatDataMap(NCollection_FlatDataMap&& theOther) noexcept
-      : mySlots(theOther.mySlots),
-        myCapacity(theOther.myCapacity),
-        mySize(theOther.mySize),
-        myHasher(std::move(theOther.myHasher))
+  NCollection_FlatDataMap(NCollection_FlatDataMap&& theOther) noexcept(
+    std::is_nothrow_move_constructible<Hasher>::value)
+      : myHasher(std::move(theOther.myHasher))
   {
-    theOther.mySlots    = nullptr;
-    theOther.myCapacity = 0;
-    theOther.mySize     = 0;
+    exchangeStorage(theOther);
   }
 
   //! Destructor
@@ -320,42 +390,34 @@ public:
       if (theOther.mySize > 0)
       {
         // Allocate same capacity as the source (not through reserve which may change capacity)
-        mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+        mySlots = static_cast<Slot*>(allocateBytes(theOther.myCapacity * sizeof(Slot)));
         for (size_t i = 0; i < theOther.myCapacity; ++i)
         {
-          new (&mySlots[i]) Slot();
-        }
-        myCapacity = theOther.myCapacity;
-
-        for (size_t i = 0; i < theOther.myCapacity; ++i)
-        {
-          if (theOther.mySlots[i].IsUsed())
+          new (&slotData()[i]) Slot();
+          if (theOther.slotData()[i].IsUsed())
           {
-            new (&mySlots[i].Key()) TheKeyType(theOther.mySlots[i].Key());
-            new (&mySlots[i].Item()) TheItemType(theOther.mySlots[i].Item());
-            mySlots[i].myHash               = theOther.mySlots[i].myHash;
-            mySlots[i].myProbeDistancePlus1 = theOther.mySlots[i].myProbeDistancePlus1;
+            new (&slotData()[i].Key()) TheKeyType(theOther.slotData()[i].Key());
+            new (&slotData()[i].Item()) TheItemType(theOther.slotData()[i].Item());
+            slotData()[i].myHash               = theOther.slotData()[i].myHash;
+            slotData()[i].myProbeDistancePlus1 = theOther.slotData()[i].myProbeDistancePlus1;
           }
         }
-        mySize = theOther.mySize;
+        myCapacity = theOther.myCapacity;
+        mySize     = theOther.mySize;
       }
     }
     return *this;
   }
 
   //! Move assignment
-  NCollection_FlatDataMap& operator=(NCollection_FlatDataMap&& theOther) noexcept
+  NCollection_FlatDataMap& operator=(NCollection_FlatDataMap&& theOther) noexcept(
+    std::is_nothrow_move_assignable<Hasher>::value)
   {
     if (this != &theOther)
     {
       Clear(true);
-      mySlots             = theOther.mySlots;
-      myCapacity          = theOther.myCapacity;
-      mySize              = theOther.mySize;
-      myHasher            = std::move(theOther.myHasher);
-      theOther.mySlots    = nullptr;
-      theOther.myCapacity = 0;
-      theOther.mySize     = 0;
+      exchangeStorage(theOther);
+      myHasher = std::move(theOther.myHasher);
     }
     return *this;
   }
@@ -395,7 +457,7 @@ public:
     size_t aIdx = 0;
     if (!findSlotIndex(theKey, aIdx))
       return std::nullopt;
-    return std::make_pair(std::cref(mySlots[aIdx].Key()), std::cref(mySlots[aIdx].Item()));
+    return std::make_pair(std::cref(slotData()[aIdx].Key()), std::cref(slotData()[aIdx].Item()));
   }
 
   //! Contained returns optional pair of const key reference and mutable value reference.
@@ -409,7 +471,7 @@ public:
     size_t aIdx = 0;
     if (!findSlotIndex(theKey, aIdx))
       return std::nullopt;
-    return std::make_pair(std::cref(mySlots[aIdx].Key()), std::ref(mySlots[aIdx].Item()));
+    return std::make_pair(std::cref(slotData()[aIdx].Key()), std::ref(slotData()[aIdx].Item()));
   }
 
   //! Find value by key, returns nullptr if not found
@@ -420,7 +482,7 @@ public:
     size_t aFoundIndex = 0;
     if (findSlotIndex(theKey, aFoundIndex))
     {
-      return &mySlots[aFoundIndex].Item();
+      return &slotData()[aFoundIndex].Item();
     }
     return nullptr;
   }
@@ -433,7 +495,7 @@ public:
     size_t aFoundIndex = 0;
     if (findSlotIndex(theKey, aFoundIndex))
     {
-      return &mySlots[aFoundIndex].Item();
+      return &slotData()[aFoundIndex].Item();
     }
     return nullptr;
   }
@@ -650,9 +712,9 @@ public:
 
     const size_t aIndex = aFoundIndex;
 
-    mySlots[aIndex].Key().~TheKeyType();
-    mySlots[aIndex].Item().~TheItemType();
-    mySlots[aIndex].SetEmpty();
+    slotData()[aIndex].Key().~TheKeyType();
+    slotData()[aIndex].Item().~TheItemType();
+    slotData()[aIndex].SetEmpty();
     --mySize;
 
     backwardShiftDelete(aIndex);
@@ -664,34 +726,31 @@ public:
   //! @param doReleaseMemory if true, free the internal buffer
   void Clear(bool doReleaseMemory = false)
   {
-    if (mySlots != nullptr)
+    if (slotData() != nullptr)
     {
       for (size_t i = 0; i < myCapacity; ++i)
       {
-        if (mySlots[i].IsUsed())
+        if (slotData()[i].IsUsed())
         {
-          mySlots[i].Key().~TheKeyType();
-          mySlots[i].Item().~TheItemType();
-          mySlots[i].SetEmpty();
+          slotData()[i].Key().~TheKeyType();
+          slotData()[i].Item().~TheItemType();
+          slotData()[i].SetEmpty();
         }
       }
       mySize = 0;
 
       if (doReleaseMemory)
       {
-        Standard::Free(mySlots);
-        mySlots    = nullptr;
-        myCapacity = 0;
+        releaseStorage(true);
       }
     }
   }
 
   //! Exchange content with another map
-  void Exchange(NCollection_FlatDataMap& theOther) noexcept
+  void Exchange(NCollection_FlatDataMap& theOther) noexcept(
+    noexcept(std::swap(std::declval<Hasher&>(), std::declval<Hasher&>())))
   {
-    std::swap(mySlots, theOther.mySlots);
-    std::swap(myCapacity, theOther.myCapacity);
-    std::swap(mySize, theOther.mySize);
+    exchangeStorage(theOther);
     std::swap(myHasher, theOther.myHasher);
   }
 
@@ -701,9 +760,7 @@ public:
   //! Reserve capacity for at least theN elements
   void reserve(size_t theN)
   {
-    const size_t aMinCapacity =
-      (theN * THE_MAX_LOAD_DENOMINATOR + THE_MAX_LOAD_NUMERATOR - 1) / THE_MAX_LOAD_NUMERATOR;
-    size_t aNewCapacity = nextPowerOf2(aMinCapacity);
+    const size_t aNewCapacity = capacityFor(theN);
     if (aNewCapacity > myCapacity)
     {
       rehash(aNewCapacity);
@@ -717,16 +774,20 @@ public:
   // **************** Iterator access ****************
 
   //! Returns iterator to first element
-  Iterator begin() const noexcept { return Iterator(*this); }
+  iterator begin() noexcept { return iterator(*this); }
+
+  const_iterator begin() const noexcept { return const_iterator(*this); }
 
   //! Returns iterator past the end
-  Iterator end() const noexcept { return Iterator(); }
+  iterator end() noexcept { return iterator(); }
+
+  const_iterator end() const noexcept { return const_iterator(); }
 
   //! Returns iterator to first element
-  Iterator cbegin() const noexcept { return Iterator(*this); }
+  const_iterator cbegin() const noexcept { return const_iterator(*this); }
 
   //! Returns iterator past the end
-  Iterator cend() const noexcept { return Iterator(); }
+  const_iterator cend() const noexcept { return const_iterator(); }
 
 public:
   // **************** Key-value pair iteration support for structured bindings
@@ -742,18 +803,20 @@ private:
   //! Extractor for mutable key-value pairs
   struct ItemsExtractor
   {
-    static KeyValueRef Extract(const Iterator& theIter)
+    template <class TheIterator>
+    static KeyValueRef Extract(const TheIterator& theIter)
     {
-      return {theIter.Key(), theIter.ChangeValue()};
+      return {theIter.Key(), *theIter};
     }
   };
 
   //! Extractor for const key-value pairs
   struct ConstItemsExtractor
   {
-    static ConstKeyValueRef Extract(const Iterator& theIter)
+    template <class TheIterator>
+    static ConstKeyValueRef Extract(const TheIterator& theIter)
     {
-      return {theIter.Key(), theIter.Value()};
+      return {theIter.Key(), *theIter};
     }
   };
 
@@ -777,47 +840,92 @@ public:
 private:
   // **************** Internal implementation ****************
 
-  //! Get next power of 2 >= n
-  static size_t nextPowerOf2(size_t n) noexcept
+  static size_t capacityFor(const size_t theElementCount)
   {
-    if (n == 0)
+    constexpr size_t THE_DEFAULT_CAPACITY     = 8;
+    constexpr size_t THE_MAX_LOAD_NUMERATOR   = 13;
+    constexpr size_t THE_MAX_LOAD_DENOMINATOR = 16;
+
+    if (theElementCount == 0)
+    {
       return THE_DEFAULT_CAPACITY;
-    --n;
-    n |= n >> 1;
-    n |= n >> 2;
-    n |= n >> 4;
-    n |= n >> 8;
-    n |= n >> 16;
+    }
+
+    size_t aCapacity = (theElementCount * THE_MAX_LOAD_DENOMINATOR + THE_MAX_LOAD_NUMERATOR - 1)
+                       / THE_MAX_LOAD_NUMERATOR;
+    if (aCapacity < THE_DEFAULT_CAPACITY)
+    {
+      aCapacity = THE_DEFAULT_CAPACITY;
+    }
+
+    --aCapacity;
+    aCapacity |= aCapacity >> 1;
+    aCapacity |= aCapacity >> 2;
+    aCapacity |= aCapacity >> 4;
+    aCapacity |= aCapacity >> 8;
+    aCapacity |= aCapacity >> 16;
     if constexpr (sizeof(size_t) > 4)
     {
-      n |= n >> 32;
+      aCapacity |= aCapacity >> 32;
     }
-    return n + 1;
+    return aCapacity + 1;
   }
 
+  size_t nextCapacity() const
+  {
+    constexpr size_t THE_DEFAULT_CAPACITY = 8;
+    if (myCapacity == 0)
+    {
+      return THE_DEFAULT_CAPACITY;
+    }
+
+    return myCapacity * 2;
+  }
+
+  bool needsGrowth() const { return myCapacity == 0 || capacityFor(mySize + 1) > myCapacity; }
+
+  static void* allocateBytes(const size_t theBytes) { return Standard::Allocate(theBytes); }
+
+  static void freeBytes(void* theAddress) noexcept { Standard::Free(theAddress); }
+
+  void releaseStorage(const bool doReleaseMemory) noexcept
+  {
+    if (doReleaseMemory)
+    {
+      Standard::Free(mySlots);
+      mySlots    = nullptr;
+      myCapacity = 0;
+    }
+  }
+
+  void exchangeStorage(NCollection_FlatDataMap& theOther) noexcept
+  {
+    std::swap(mySlots, theOther.mySlots);
+    std::swap(myCapacity, theOther.myCapacity);
+    std::swap(mySize, theOther.mySize);
+  }
+
+  //! Get next power of 2 >= n
   //! Ensure there's room for at least one more element
   void ensureCapacity()
   {
     // Grow at ~81.25% load factor.
-    if (myCapacity == 0
-        || (mySize + 1) * THE_MAX_LOAD_DENOMINATOR > myCapacity * THE_MAX_LOAD_NUMERATOR)
+    if (needsGrowth())
     {
-      size_t aNewCapacity = myCapacity == 0 ? THE_DEFAULT_CAPACITY : myCapacity * 2;
-      rehash(aNewCapacity);
+      rehash(nextCapacity());
     }
   }
 
   //! Rehash to new capacity
   void rehash(size_t theNewCapacity)
   {
-    Slot*  aOldSlots    = mySlots;
-    size_t aOldCapacity = myCapacity;
+    Slot*        aOldSlots    = slotData();
+    const size_t aOldCapacity = myCapacity;
 
-    // Allocate new buffer
-    mySlots = static_cast<Slot*>(Standard::Allocate(theNewCapacity * sizeof(Slot)));
+    mySlots = static_cast<Slot*>(allocateBytes(theNewCapacity * sizeof(Slot)));
     for (size_t i = 0; i < theNewCapacity; ++i)
     {
-      new (&mySlots[i]) Slot();
+      new (&slotData()[i]) Slot();
     }
     myCapacity = theNewCapacity;
     mySize     = 0;
@@ -828,14 +936,19 @@ private:
       {
         if (aOldSlots[i].IsUsed())
         {
-          insertRehashedImpl(std::move(aOldSlots[i].Key()),
-                             std::move(aOldSlots[i].Item()),
+          insertRehashedImpl(std::move_if_noexcept(aOldSlots[i].Key()),
+                             std::move_if_noexcept(aOldSlots[i].Item()),
                              aOldSlots[i].myHash);
           aOldSlots[i].Key().~TheKeyType();
           aOldSlots[i].Item().~TheItemType();
+          aOldSlots[i].SetEmpty();
         }
       }
-      Standard::Free(aOldSlots);
+      for (size_t i = 0; i < aOldCapacity; ++i)
+      {
+        aOldSlots[i].~Slot();
+      }
+      freeBytes(aOldSlots);
     }
   }
 
@@ -848,12 +961,18 @@ private:
     const size_t aHash  = myHasher(theKey);
     const size_t aMask  = myCapacity - 1;
     size_t       aIndex = aHash & aMask;
+    size_t       aProbe = 0;
 
     while (true)
     {
-      const Slot& aSlot = mySlots[aIndex];
+      const Slot& aSlot = slotData()[aIndex];
 
       if (aSlot.IsEmpty())
+      {
+        return false;
+      }
+
+      if (aProbe > aSlot.ProbeDistance())
       {
         return false;
       }
@@ -864,6 +983,7 @@ private:
         return true;
       }
       aIndex = (aIndex + 1) & aMask;
+      ++aProbe;
     }
   }
 
@@ -887,7 +1007,7 @@ private:
 
     while (true)
     {
-      Slot& aSlot = mySlots[aIndex];
+      Slot& aSlot = slotData()[aIndex];
       if (aSlot.IsEmpty())
       {
         new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
@@ -993,7 +1113,7 @@ private:
                                std::true_type{},
                                &aIndex);
     }
-    return mySlots[aIndex].Item();
+    return slotData()[aIndex].Item();
   }
 
   template <typename K, bool IsTry, typename... Args>
@@ -1009,7 +1129,7 @@ private:
 
     while (true)
     {
-      Slot& aSlot = mySlots[aIndex];
+      Slot& aSlot = slotData()[aIndex];
 
       if (aSlot.IsEmpty())
       {
@@ -1044,7 +1164,7 @@ private:
 
         while (true)
         {
-          Slot& aSlot2 = mySlots[aIndex];
+          Slot& aSlot2 = slotData()[aIndex];
 
           if (aSlot2.IsEmpty())
           {
@@ -1089,7 +1209,7 @@ private:
 
     while (true)
     {
-      Slot& aSlot = mySlots[aIndex];
+      Slot& aSlot = slotData()[aIndex];
 
       if (aSlot.IsEmpty())
       {
@@ -1126,7 +1246,7 @@ private:
 
         while (true)
         {
-          Slot& aSlot2 = mySlots[aIndex];
+          Slot& aSlot2 = slotData()[aIndex];
 
           if (aSlot2.IsEmpty())
           {
@@ -1164,28 +1284,32 @@ private:
     size_t       aCurrent = theIndex;
     size_t       aNext    = (aCurrent + 1) & aMask;
 
-    while (mySlots[aNext].IsUsed() && mySlots[aNext].ProbeDistance() > 0)
+    while (slotData()[aNext].IsUsed() && slotData()[aNext].ProbeDistance() > 0)
     {
-      new (&mySlots[aCurrent].Key()) TheKeyType(std::move(mySlots[aNext].Key()));
-      new (&mySlots[aCurrent].Item()) TheItemType(std::move(mySlots[aNext].Item()));
-      mySlots[aCurrent].myHash = mySlots[aNext].myHash;
-      mySlots[aCurrent].SetProbeDistance(mySlots[aNext].ProbeDistance() - 1);
+      new (&slotData()[aCurrent].Key()) TheKeyType(std::move(slotData()[aNext].Key()));
+      new (&slotData()[aCurrent].Item()) TheItemType(std::move(slotData()[aNext].Item()));
+      slotData()[aCurrent].myHash = slotData()[aNext].myHash;
+      slotData()[aCurrent].SetProbeDistance(slotData()[aNext].ProbeDistance() - 1);
 
-      mySlots[aNext].Key().~TheKeyType();
-      mySlots[aNext].Item().~TheItemType();
+      slotData()[aNext].Key().~TheKeyType();
+      slotData()[aNext].Item().~TheItemType();
 
       aCurrent = aNext;
       aNext    = (aNext + 1) & aMask;
     }
 
-    mySlots[aCurrent].SetEmpty();
+    slotData()[aCurrent].SetEmpty();
   }
 
 private:
-  Slot*  mySlots;    //!< Array of slots
-  size_t myCapacity; //!< Total number of slots (always power of 2)
-  size_t mySize;     //!< Number of used slots
-  Hasher myHasher;   //!< Hash and equality functor
+  Slot* slotData() noexcept { return static_cast<Slot*>(mySlots); }
+
+  const Slot* slotData() const noexcept { return static_cast<const Slot*>(mySlots); }
+
+  void*  mySlots    = nullptr;
+  size_t myCapacity = 0;
+  size_t mySize     = 0;
+  Hasher myHasher; //!< Hash and equality functor
 };
 
 #endif // NCollection_FlatDataMap_HeaderFile

@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// szv#4 S4163
-
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <ShapeAnalysis_ShapeTolerance.hxx>
@@ -27,111 +25,114 @@
 //=================================================================================================
 
 ShapeUpgrade_ShellSewing::ShapeUpgrade_ShellSewing()
+    : myReShape(new ShapeBuild_ReShape)
 {
-  myReShape = new ShapeBuild_ReShape;
 }
 
 //=================================================================================================
 
-void ShapeUpgrade_ShellSewing::Init(const TopoDS_Shape& shape)
+void ShapeUpgrade_ShellSewing::Init(const TopoDS_Shape& theShape)
 {
-  if (shape.IsNull())
+  if (theShape.IsNull())
   {
     return;
   }
-  if (shape.ShapeType() == TopAbs_SHELL)
+  if (theShape.ShapeType() == TopAbs_SHELL)
   {
-    myShells.Add(shape);
+    myShells.Add(theShape);
   }
   else
   {
-    for (TopExp_Explorer exs(shape, TopAbs_SHELL); exs.More(); exs.Next())
+    for (TopExp_Explorer aShellExplorer(theShape, TopAbs_SHELL); aShellExplorer.More();
+         aShellExplorer.Next())
     {
-      myShells.Add(exs.Current());
+      myShells.Add(aShellExplorer.Current());
     }
   }
 }
 
 //=================================================================================================
 
-int ShapeUpgrade_ShellSewing::Prepare(const double tol)
+size_t ShapeUpgrade_ShellSewing::Prepare(const double theTolerance)
 {
-  int nb = myShells.Extent(), ns = 0;
-  for (int i = 1; i <= nb; i++)
+  size_t aSewedShellCount = 0;
+  for (const TopoDS_Shape& aShellShape : myShells)
   {
-    TopoDS_Shell          sl = TopoDS::Shell(myShells.FindKey(i));
-    BRepBuilderAPI_Sewing ss(tol);
-    TopExp_Explorer       exp(sl, TopAbs_FACE);
-    for (; exp.More(); exp.Next())
+    const TopoDS_Shell    aShell = TopoDS::Shell(aShellShape);
+    BRepBuilderAPI_Sewing aSewer(theTolerance);
+    for (TopExp_Explorer aFaceExplorer(aShell, TopAbs_FACE); aFaceExplorer.More();
+         aFaceExplorer.Next())
     {
-      ss.Add(exp.Current());
+      aSewer.Add(aFaceExplorer.Current());
     }
-    ss.Perform();
-    TopoDS_Shape newsh = ss.SewedShape();
-    if (!newsh.IsNull())
+    aSewer.Perform();
+    const TopoDS_Shape aSewedShape = aSewer.SewedShape();
+    if (!aSewedShape.IsNull())
     {
-      myReShape->Replace(sl, newsh);
-      ns++;
+      myReShape->Replace(aShell, aSewedShape);
+      ++aSewedShellCount;
     }
   }
-  return ns;
+  return aSewedShellCount;
 }
 
 //=================================================================================================
 
-TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const double tol)
+TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& theShape,
+                                             const double        theTolerance)
 {
-  if (shape.IsNull() || myShells.Extent() == 0)
+  if (theShape.IsNull() || myShells.IsEmpty())
   {
-    return shape;
+    return theShape;
   }
 
-  TopoDS_Shape res = myReShape->Apply(shape, TopAbs_FACE, 2);
+  TopoDS_Shape aResult = myReShape->Apply(theShape, TopAbs_FACE, 2);
 
-  //  A present orienter les solides correctement
+  // Orient rebuilt solids so that the infinite point remains outside.
   myReShape->Clear();
-  int ns = 0;
-  for (TopExp_Explorer exd(shape, TopAbs_SOLID); exd.More(); exd.Next())
+  bool hasReversedSolid = false;
+  for (TopExp_Explorer aSolidExplorer(theShape, TopAbs_SOLID); aSolidExplorer.More();
+       aSolidExplorer.Next())
   {
-    TopoDS_Solid                sd = TopoDS::Solid(exd.Current());
-    BRepClass3d_SolidClassifier bsc3d(sd);
-    bsc3d.PerformInfinitePoint(tol);
-    if (bsc3d.State() == TopAbs_IN)
+    const TopoDS_Solid          aSolid = TopoDS::Solid(aSolidExplorer.Current());
+    BRepClass3d_SolidClassifier aClassifier(aSolid);
+    aClassifier.PerformInfinitePoint(theTolerance);
+    if (aClassifier.State() == TopAbs_IN)
     {
-      myReShape->Replace(sd, sd.Reversed());
-      ns++;
+      myReShape->Replace(aSolid, aSolid.Reversed());
+      hasReversedSolid = true;
     }
   }
 
-  // szv#4:S4163:12Mar99 optimized
-  if (ns != 0)
+  if (hasReversedSolid)
   {
-    res = myReShape->Apply(res, TopAbs_SHELL, 2);
+    aResult = myReShape->Apply(aResult, TopAbs_SHELL, 2);
   }
 
-  return res;
+  return aResult;
 }
 
 //=================================================================================================
 
-TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& shape, const double tol)
+TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& theShape,
+                                                   const double        theTolerance)
 {
-  if (shape.IsNull())
+  if (theShape.IsNull())
   {
-    return shape;
+    return theShape;
   }
 
-  double t = tol;
-  if (t <= 0.)
+  double aTolerance = theTolerance;
+  if (aTolerance <= 0.0)
   {
-    ShapeAnalysis_ShapeTolerance stu;
-    t = stu.Tolerance(shape, 0); // tolerance moyenne
+    ShapeAnalysis_ShapeTolerance aToleranceAnalyzer;
+    aTolerance = aToleranceAnalyzer.Tolerance(theShape, 0);
   }
 
-  Init(shape);
-  if (Prepare(t))
+  Init(theShape);
+  if (Prepare(aTolerance) != 0)
   {
-    return Apply(shape, t);
+    return Apply(theShape, aTolerance);
   }
 
   return TopoDS_Shape();

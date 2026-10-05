@@ -98,8 +98,8 @@ occ::handle<Poly_Triangulation> Prs3d_ToolQuadric::CreatePolyTriangulation(
 {
   occ::handle<Poly_Triangulation> aTriangulation =
     new Poly_Triangulation(VerticesNb(), TrianglesNb(), false);
-  float aStepU = 1.0f / mySlicesNb;
-  float aStepV = 1.0f / myStacksNb;
+  const double aStepU = 1.0 / mySlicesNb;
+  const float  aStepV = 1.0f / myStacksNb;
 
   // Fill triangles
   for (int aU = 0, anIndex = 0; aU <= mySlicesNb; ++aU)

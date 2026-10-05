@@ -30,7 +30,7 @@ Or via SSH:
 @subsection occt_gitguide_1_3 Repository Content
 
 - **master** branch: the current development version. Official releases are marked by tags.
-- **IR** branch: the weekly integration branch where contributions are merged after review and CI/CD checks.
+- **IR** branch: the integration branch where contributions are merged after review and CI/CD checks.
 - Topic branches for feature development, bug fixes, and improvements.
 
 @subsection occt_gitguide_1_4 Quick Rules
@@ -103,11 +103,11 @@ ssh -T git@github.com
 
 @subsection occt_gitguide_3_1 Create a Branch
 
-Always create branches from an up-to-date master:
+Always create branches from an up-to-date `IR` branch:
 
 ~~~~
-git checkout master
-git pull upstream master
+git checkout IR
+git pull upstream IR
 git checkout -b my-feature-branch
 ~~~~
 
@@ -169,9 +169,9 @@ PRs are typically squashed into a single commit on IR.
 Regularly sync your fork with upstream:
 
 ~~~~
-git checkout master
-git pull upstream master
-git push origin master
+git checkout IR
+git pull upstream IR
+git push origin IR
 ~~~~
 
 @section occt_gitguide_4 Rebasing

@@ -15,6 +15,7 @@
 
 // New API
 #include <MathOpt_Brent.hxx>
+#include <MathUtils_Core.hxx>
 
 // Old API
 #include <math_BrentMinimum.hxx>
@@ -25,7 +26,6 @@
 namespace
 {
 constexpr double THE_TOLERANCE = 1.0e-7;
-constexpr double THE_PI        = 3.14159265358979323846;
 
 // ============================================================================
 // Adapter classes for old API (inherit from math_Function)
@@ -218,7 +218,7 @@ TEST(MathOpt_1D_ComparisonTest, Brent_Cosine)
 
   // cos(x) minimum at x=PI, f(PI)=-1
   math_BrentMinimum anOldSolver(THE_TOLERANCE, 100);
-  anOldSolver.Perform(anOldFunc, 2.0, THE_PI, 4.0);
+  anOldSolver.Perform(anOldFunc, 2.0, MathUtils::THE_PI, 4.0);
 
   MathOpt::ScalarResult aNewResult = MathOpt::Brent(aNewFunc, 2.0, 4.0);
 
@@ -227,7 +227,7 @@ TEST(MathOpt_1D_ComparisonTest, Brent_Cosine)
 
   EXPECT_NEAR(anOldSolver.Location(), *aNewResult.Root, THE_TOLERANCE);
   EXPECT_NEAR(anOldSolver.Minimum(), *aNewResult.Value, THE_TOLERANCE);
-  EXPECT_NEAR(*aNewResult.Root, THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(*aNewResult.Root, MathUtils::THE_PI, THE_TOLERANCE);
   EXPECT_NEAR(*aNewResult.Value, -1.0, THE_TOLERANCE);
 }
 

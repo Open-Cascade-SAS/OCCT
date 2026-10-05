@@ -8,5 +8,4 @@ set(OCCT_BinDrivers_FILES
   BinDrivers_DocumentRetrievalDriver.hxx
   BinDrivers_DocumentStorageDriver.cxx
   BinDrivers_DocumentStorageDriver.hxx
-  BinDrivers_Marker.hxx
 )

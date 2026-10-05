@@ -25,32 +25,14 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Macro.hxx>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
 #include <Standard_Type.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <cstdio>
 IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_InternalAlgo, Standard_Transient)
-
-extern int nbPtIntersection;   // total P.I.
-extern int nbSegIntersection;  // total S.I
-extern int nbClassification;   // total classification
-extern int nbOkIntersection;   // pairs of intersecting edges
-extern int nbCal1Intersection; // pairs of unrejected edges
-extern int nbCal2Intersection; // true intersections (not vertex)
-extern int nbCal3Intersection; // curve-surface intersections
-
-static int HLRBRep_InternalAlgo_TRACE   = true;
-static int HLRBRep_InternalAlgo_TRACE10 = true;
 
 //=================================================================================================
 
-HLRBRep_InternalAlgo::HLRBRep_InternalAlgo()
-    : myDebug(false)
-{
-}
+HLRBRep_InternalAlgo::HLRBRep_InternalAlgo() = default;
 
 //=================================================================================================
 
@@ -59,7 +41,6 @@ HLRBRep_InternalAlgo::HLRBRep_InternalAlgo(const occ::handle<HLRBRep_InternalAlg
   myDS     = A->DataStructure();
   myProj   = A->Projector();
   myShapes = A->SeqOfShapeBounds();
-  myDebug  = A->Debug();
 }
 
 //=================================================================================================
@@ -98,14 +79,8 @@ void HLRBRep_InternalAlgo::Update()
         de        = DS[i - 1]->NbEdges();
         df        = DS[i - 1]->NbFaces();
       }
-      catch (Standard_Failure const& anException)
+      catch (Standard_Failure const&)
       {
-        if (myDebug)
-        {
-          std::cout << "An exception was caught when preparing the Shape " << i;
-          std::cout << " and computing its OutLines " << '\n';
-          std::cout << anException << '\n';
-        }
         DS[i - 1] = new HLRBRep_Data(0, 0, 0);
         dv        = 0;
         de        = 0;
@@ -355,8 +330,8 @@ void HLRBRep_InternalAlgo::Select()
   {
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
     NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
-    int                                   ne          = myDS->NbEdges();
-    int                                   nf          = myDS->NbFaces();
+    const int                             ne          = myDS->NbEdges();
+    const int                             nf          = myDS->NbFaces();
 
     for (int e = 1; e <= ne; e++)
     {
@@ -387,7 +362,7 @@ void HLRBRep_InternalAlgo::Select(const int I)
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
     NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
     int                                   ne          = myDS->NbEdges();
-    int                                   nf          = myDS->NbFaces();
+    const int                             nf          = myDS->NbFaces();
 
     for (int e = 1; e <= ne; e++)
     {
@@ -541,11 +516,6 @@ void HLRBRep_InternalAlgo::PartialHide()
   {
     int i, n = myShapes.Length();
 
-    if (myDebug)
-    {
-      std::cout << " Partial hiding" << '\n' << '\n';
-    }
-
     for (i = 1; i <= n; i++)
     {
       Hide(i);
@@ -562,11 +532,6 @@ void HLRBRep_InternalAlgo::Hide()
   if (!myDS.IsNull())
   {
     int i, j, n = myShapes.Length();
-
-    if (myDebug)
-    {
-      std::cout << " Total hiding" << '\n';
-    }
 
     for (i = 1; i <= n; i++)
     {
@@ -596,11 +561,6 @@ void HLRBRep_InternalAlgo::Hide(const int I)
   {
     Standard_OutOfRange_Raise_if(I == 0 || I > myShapes.Length(),
                                  "HLRBRep_InternalAlgo::Hide : unknown Shape");
-
-    if (myDebug)
-    {
-      std::cout << " hiding the shape " << I << " by itself" << '\n';
-    }
 
     Select(I);
     InitEdgeStatus();
@@ -640,11 +600,6 @@ void HLRBRep_InternalAlgo::Hide(const int I, const int J)
           && ((MinMaxShBJ->Max[6] - MinMaxShBI->Min[6]) & 0x80008000) == 0
           && ((MinMaxShBJ->Max[7] - MinMaxShBI->Min[7]) & 0x80008000) == 0)
       {
-        if (myDebug)
-        {
-          std::cout << " hiding the shape " << I;
-          std::cout << " by the shape : " << J << '\n';
-        }
         SelectEdge(I);
         SelectFace(J);
         HideSelected(I, false);
@@ -657,22 +612,6 @@ void HLRBRep_InternalAlgo::Hide(const int I, const int J)
 
 void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
 {
-  int e, f, j, nbVisEdges, nbSelEdges, nbSelFaces, nbCache;
-  int nbFSide, nbFSimp;
-
-#ifdef OCCT_DEBUG
-  if (myDebug)
-  {
-    nbPtIntersection   = 0;
-    nbSegIntersection  = 0;
-    nbOkIntersection   = 0;
-    nbClassification   = 0;
-    nbCal1Intersection = 0;
-    nbCal2Intersection = 0;
-    nbCal3Intersection = 0;
-  }
-#endif
-
   HLRBRep_ShapeBounds& SB = myShapes(I);
   int                  v1, v2, e1, e2, f1, f2;
   SB.Bounds(v1, v2, e1, e2, f1, f2);
@@ -681,112 +620,22 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
   {
     myDS->InitBoundSort(SB.MinMax(), e1, e2);
     HLRBRep_Hider                         Cache(myDS);
-    NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
     NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
-    int                                   ne          = myDS->NbEdges();
-    int                                   nf          = myDS->NbFaces();
-
-    if (myDebug)
-    {
-      nbVisEdges = 0;
-      nbSelEdges = 0;
-      nbSelFaces = 0;
-      nbCache    = 0;
-      nbFSide    = 0;
-      nbFSimp    = 0;
-
-      for (e = 1; e <= ne; e++)
-      {
-        HLRBRep_EdgeData& ed = aEDataArray.ChangeValue(e);
-        if (ed.Selected())
-        {
-          nbSelEdges++;
-          if (!ed.Status().AllHidden())
-          {
-            nbVisEdges++;
-          }
-        }
-      }
-
-      for (f = 1; f <= nf; f++)
-      {
-        HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
-        if (fd.Selected())
-        {
-          nbSelFaces++;
-          if (fd.Hiding())
-          {
-            nbCache++;
-          }
-          if (fd.Side())
-          {
-            nbFSide++;
-          }
-          if (fd.Simple())
-          {
-            nbFSimp++;
-          }
-        }
-      }
-
-      if (myDebug)
-      {
-        std::cout << '\n';
-        std::cout << "Vertices  : " << std::setw(5) << myDS->NbVertices() << '\n';
-        std::cout << "Edges     : " << std::setw(5) << myDS->NbEdges() << " , ";
-        std::cout << "Selected  : " << std::setw(5) << nbSelEdges << " , ";
-        std::cout << "Visible   : " << std::setw(5) << nbVisEdges << '\n';
-        std::cout << "Faces     : " << std::setw(5) << myDS->NbFaces() << " , ";
-        std::cout << "Selected  : " << std::setw(5) << nbSelFaces << " , ";
-        std::cout << "Simple    : " << std::setw(5) << nbFSimp << '\n';
-        if (SideFace)
-        {
-          std::cout << "Side      : " << std::setw(5) << nbFSide << " , ";
-        }
-        std::cout << "Cachantes : " << std::setw(5) << nbCache << '\n' << '\n';
-      }
-    }
+    const int                             nf          = myDS->NbFaces();
 
     if (nf == 0)
     {
       return;
     }
 
-    int QWE = 0, QWEQWE;
-    QWEQWE  = nf / 10;
-
     if (SideFace)
     {
-      j = 0;
-
-      for (f = 1; f <= nf; f++)
+      for (int f = 1; f <= nf; ++f)
       {
         HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
-        if (fd.Selected())
+        if (fd.Selected() && fd.Side())
         {
-          if (fd.Side())
-          {
-            if (HLRBRep_InternalAlgo_TRACE10)
-            {
-              if (++QWE > QWEQWE)
-              {
-                QWE = 0;
-                if (myDebug)
-                {
-                  std::cout << "*";
-                }
-              }
-            }
-            else
-            {
-              if (myDebug && HLRBRep_InternalAlgo_TRACE)
-              {
-                j++;
-                std::cout << " OwnHiding " << j << " of face : " << f << '\n';
-              }
-            }
-            Cache.OwnHiding(f);
-          }
+          Cache.OwnHiding(f);
         }
       }
     }
@@ -796,7 +645,7 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
     NCollection_Array1<double> Size(1, nf);
     NCollection_Array1<int>    Index(1, nf);
 
-    for (f = 1; f <= nf; f++)
+    for (int f = 1; f <= nf; ++f)
     {
       HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
       if (fd.Plane())
@@ -926,90 +775,16 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
       }
     }
 
-    j = 0;
-
-    QWE = 0;
-    for (f = 1; f <= nf; f++)
+    for (int f = 1; f <= nf; ++f)
     {
-      int               fi = Index(f);
+      const int         fi = Index(f);
       HLRBRep_FaceData& fd = aFDataArray.ChangeValue(fi);
-      if (fd.Selected())
+      if (fd.Selected() && fd.Hiding())
       {
-        if (fd.Hiding())
-        {
-          if (HLRBRep_InternalAlgo_TRACE10 && !static_cast<bool>(HLRBRep_InternalAlgo_TRACE))
-          {
-            if (++QWE > QWEQWE)
-            {
-              if (myDebug)
-              {
-                std::cout << ".";
-              }
-              QWE = 0;
-            }
-          }
-          else if (myDebug && HLRBRep_InternalAlgo_TRACE)
-          {
-            static int rty = 0;
-            j++;
-            printf("%6d", fi);
-            fflush(stdout);
-            if (++rty > 25)
-            {
-              rty = 0;
-              printf("\n");
-            }
-          }
-          Cache.Hide(fi, myMapOfShapeTool);
-        }
+        Cache.Hide(fi, myMapOfShapeTool);
       }
     }
-
-#ifdef OCCT_DEBUG
-    if (myDebug)
-    {
-      nbFSimp = 0;
-
-      for (f = 1; f <= nf; f++)
-      {
-        HLRBRep_FaceData& fd = aFDataArray.ChangeValue(f);
-        if (fd.Selected() && fd.Simple())
-          nbFSimp++;
-      }
-
-      std::cout << "\n";
-      std::cout << "Simple Faces                  : ";
-      std::cout << nbFSimp << "\n";
-      std::cout << "Intersections calculees       : ";
-      std::cout << nbCal2Intersection << "\n";
-      std::cout << "Intersections Ok              : ";
-      std::cout << nbOkIntersection << "\n";
-      std::cout << "Points                        : ";
-      std::cout << nbPtIntersection << "\n";
-      std::cout << "Segments                      : ";
-      std::cout << nbSegIntersection << "\n";
-      std::cout << "Classification                : ";
-      std::cout << nbClassification << "\n";
-      std::cout << "Intersections curve-surface   : ";
-      std::cout << nbCal3Intersection << "\n";
-      std::cout << std::endl << std::endl;
-    }
-#endif
   }
-}
-
-//=================================================================================================
-
-void HLRBRep_InternalAlgo::Debug(const bool deb)
-{
-  myDebug = deb;
-}
-
-//=================================================================================================
-
-bool HLRBRep_InternalAlgo::Debug() const
-{
-  return myDebug;
 }
 
 //=================================================================================================

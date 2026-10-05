@@ -249,7 +249,9 @@ protected:
                                        const TCollection_ExtendedString&      theText,
                                        const double                           theTextWidth,
                                        const int                              theMode,
-                                       const int                              theLabelPosition);
+                                       const int                              theLabelPosition,
+                                       const occ::handle<StdPrs_BRepFont>&    theFont,
+                                       const BRepFont_Builder::TextPlan*      thePlan);
 
   //! Fits text alignment relatively to the dimension line;
   //! it computes the value of label position and arrow orientation
@@ -262,6 +264,7 @@ protected:
   //! orientation automatically.
   Standard_EXPORT void FitTextAlignment(
     const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+    const double                                 theLabelWidth,
     int&                                         theLabelPosition,
     bool&                                        theIsArrowsExternal) const;
 

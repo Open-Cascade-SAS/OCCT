@@ -2,6 +2,7 @@
 set(OCCT_MathLin_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_MathLin_FILES
+  MathLin_Utils.hxx
   MathLin_Gauss.hxx
   MathLin_Crout.hxx
   MathLin_SVD.hxx

@@ -436,7 +436,7 @@ void BinMNaming_NamingDriver::Paste(
       anArray.SetValue(i, anIndx);
     }
 
-    theTarget.PutIntArray((BinObjMgt_PInteger)&anArray.Value(1), aNbArgs); // keep Array
+    theTarget.PutIntArray((int*)&anArray.Value(1), aNbArgs); // keep Array
   }
 
   // 4. keep StopNS

@@ -151,7 +151,7 @@ const BOPDS_DS& BOPAlgo_PaveFiller::DS()
 
 //=================================================================================================
 
-BOPDS_PDS BOPAlgo_PaveFiller::PDS()
+BOPDS_DS* BOPAlgo_PaveFiller::PDS()
 {
   return myDS;
 }

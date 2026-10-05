@@ -15,6 +15,8 @@
 // commercial license or contractual agreement.
 
 #include <TopExp.hxx>
+#include <BRep_Builder.hxx>
+#include <Precision.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_define.hxx>
@@ -26,6 +28,8 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
+
+#include <cmath>
 
 #ifdef OCCT_DEBUG
 extern void debfillp(const int i);
@@ -117,7 +121,9 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
 
     myBuildTool.CopyEdge(EF, newEdge);
 
-    int nVF = 0, nVR = 0; // nb vertex FORWARD,REVERSED
+    int    nVF = 0, nVR = 0; // nb vertex FORWARD,REVERSED
+    double aForwardParameter  = 0.0;
+    double aReversedParameter = 0.0;
 
     TopoDS_Shape VF, VR; // gestion du bit Closed
     VF.Nullify();
@@ -180,7 +186,8 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
           nVF++;
           if (nVF == 1)
           {
-            VF = V;
+            VF                = V;
+            aForwardParameter = EDBU.Parameter();
           }
         }
         if (Vori == TopAbs_REVERSED)
@@ -188,7 +195,8 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
           nVR++;
           if (nVR == 1)
           {
-            VR = V;
+            VR                 = V;
+            aReversedParameter = EDBU.Parameter();
           }
         }
         if (oriV == TopAbs_INTERNAL)
@@ -205,6 +213,12 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges(const TopoDS_Shape&             EF,
     bool addedge = (nVF == 1 && nVR == 1);
     if (addedge)
     {
+      if (VF.IsSame(VR)
+          && std::abs(aForwardParameter - aReversedParameter) <= Precision::PConfusion())
+      {
+        BRep_Builder aBuilder;
+        aBuilder.Degenerated(TopoDS::Edge(newEdge), true);
+      }
       if (tosplit)
       {
         NCollection_List<TopoDS_Shape> loe;

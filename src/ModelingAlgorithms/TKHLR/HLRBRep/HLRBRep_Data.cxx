@@ -27,6 +27,7 @@
 #include <HLRAlgo.hxx>
 #include <HLRAlgo_Interference.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Data.hxx>
 #include <HLRBRep_EdgeData.hxx>
@@ -41,23 +42,12 @@
 #include <StdFail_UndefinedDerivative.hxx>
 #include <Standard_Integer.hxx>
 
-#include <cstdio>
+#include <algorithm>
+#include <cstdint>
+#include <limits>
+#include <utility>
+
 IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_Data, Standard_Transient)
-
-int nbOkIntersection;
-int nbPtIntersection;
-int nbSegIntersection;
-int nbClassification;
-int nbCal1Intersection; // pairs of unrejected edges
-int nbCal2Intersection; // true intersections (not vertex)
-int nbCal3Intersection; // Curve-Surface intersections
-
-static const double CutLar = 2.e-1;
-static const double CutBig = 1.e-1;
-
-//-- voir HLRAlgo.cxx
-
-static const double DERIVEE_PREMIERE_NULLE = 0.000000000001;
 
 //-- ======================================================================
 //--
@@ -66,429 +56,140 @@ static const double DERIVEE_PREMIERE_NULLE = 0.000000000001;
 #include <IntRes2d_Position.hxx>
 #include <IntRes2d_Transition.hxx>
 
-static long unsigned Mask32[32] = {
-  1,        2,        4,        8,         16,        32,        64,         128,
-  256,      512,      1024,     2048,      4096,      8192,      16384,      32768,
-  65536,    131072,   262144,   524288,    1048576,   2097152,   4194304,    8388608,
-  16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648U};
-
-static const int SIZEUV = 8;
-
-class TableauRejection
+class HLRBRep_Data::RejectionCache
 {
-public:
-  // clang-format off
-  double **UV;               //-- UV[i][j]     contient le param (U sur Ci) de l intersection de Ci avec C(IndUV[j])
-  // clang-format on
-  int** IndUV; //-- IndUV[i][j]  = J0   -> Intersection entre i et J0
-  int*  nbUV;  //-- nbUV[i][j]   nombre de valeurs pour la ligne i
-  int   N;
-
-  long unsigned** TabBit;
-  int             nTabBit;
-
-#ifdef OCCT_DEBUG
-  int StNbLect, StNbEcr, StNbMax, StNbMoy, StNbMoyNonNul; //-- STAT
-#endif
-
 private:
-  TableauRejection(const TableauRejection&)            = delete;
-  TableauRejection& operator=(const TableauRejection&) = delete;
+  struct Intersection
+  {
+    uint32_t EdgeIndex;
+    double   Parameter;
+  };
 
 public:
-  //-- ============================================================
-  TableauRejection()
+  RejectionCache(const RejectionCache&)            = delete;
+  RejectionCache& operator=(const RejectionCache&) = delete;
+
+  explicit RejectionCache(const size_t theNbEdges)
   {
-    N       = 0;
-    nTabBit = 0;
-    UV      = nullptr;
-    nbUV    = nullptr;
-    IndUV   = nullptr;
-    TabBit  = nullptr;
-#ifdef OCCT_DEBUG
-    StNbLect = StNbEcr = StNbMax = StNbMoy = StNbMoyNonNul = 0;
-#endif
+    myIntersections.Resize(theNbEdges);
+
+    myWordsPerRow = (theNbEdges + THE_BITS_PER_WORD - 1) / THE_BITS_PER_WORD;
+    myRejectedPairs.Resize(theNbEdges * myWordsPerRow, uint32_t{0});
   }
 
   //-- ============================================================
-  void SetDim(const int n)
+  void Set(const size_t theFirstEdge, const size_t theSecondEdge, const double theParameter)
   {
-#ifdef OCCT_DEBUG
-    std::cout << "\n@#@#@#@#@# SetDim " << n << std::endl;
-#endif
-    if (UV)
+    const uint32_t                          aSecondEdge     = static_cast<uint32_t>(theSecondEdge);
+    NCollection_LinearVector<Intersection>& anIntersections = myIntersections[theFirstEdge - 1];
+    if (!anIntersections.HasData())
     {
-      Destroy();
+      anIntersections.Reserve(THE_INITIAL_ROW_CAPACITY);
     }
-#ifdef OCCT_DEBUG
-    StNbLect = StNbEcr = StNbMax = StNbMoy = 0;
-#endif
-    N     = n;
-    UV    = (double**)malloc(N * sizeof(double*));
-    IndUV = (int**)malloc(N * sizeof(int*));
-    nbUV  = (int*)malloc(N * sizeof(int));
-    //    for(int i=0;i<N;i++) {
-    int i;
-    for (i = 0; i < N; i++)
-    {
-      UV[i] = (double*)malloc(SIZEUV * sizeof(double));
-    }
-    for (i = 0; i < N; i++)
-    {
-      IndUV[i] = (int*)malloc(SIZEUV * sizeof(int));
-      for (int k = 0; k < SIZEUV; k++)
-      {
-        IndUV[i][k] = -1;
-      }
-      nbUV[i] = SIZEUV;
-    }
-    InitTabBit(n);
+
+    const auto anIterator =
+      std::lower_bound(anIntersections.begin(),
+                       anIntersections.end(),
+                       aSecondEdge,
+                       [](const Intersection& theIntersection, const uint32_t theEdge) {
+                         return theIntersection.EdgeIndex > theEdge;
+                       });
+    const size_t anIndex = static_cast<size_t>(anIterator - anIntersections.begin());
+    anIntersections.InsertBefore(anIndex, Intersection{aSecondEdge, theParameter});
   }
 
   //-- ============================================================
-  ~TableauRejection()
+  double Get(const size_t theFirstEdge, const size_t theSecondEdge) const
   {
-    //-- std::cout<<"\n Destructeur TableauRejection"<<std::endl;
-    Destroy();
+    const uint32_t aSecondEdge = static_cast<uint32_t>(theSecondEdge);
+    const NCollection_LinearVector<Intersection>& anIntersections =
+      myIntersections[theFirstEdge - 1];
+    if (anIntersections.IsEmpty())
+    {
+      return RealLast();
+    }
+    const auto anIterator =
+      std::lower_bound(anIntersections.begin(),
+                       anIntersections.end(),
+                       aSecondEdge,
+                       [](const Intersection& theIntersection, const uint32_t theEdge) {
+                         return theIntersection.EdgeIndex > theEdge;
+                       });
+
+    return anIterator != anIntersections.end() && anIterator->EdgeIndex == aSecondEdge
+             ? anIterator->Parameter
+             : RealLast();
   }
 
   //-- ============================================================
-  void Destroy()
+  void SetNoIntersection(size_t theFirstEdge, size_t theSecondEdge)
   {
-#ifdef OCCT_DEBUG
-    if (N)
+    --theFirstEdge;
+    --theSecondEdge;
+    if (theFirstEdge > theSecondEdge)
     {
-      int nnn = 0;
-      StNbMoy = StNbMoyNonNul = 0;
-      StNbMax                 = 0;
-      for (int i = 0; i < N; i++)
-      {
-        int nb = 0;
-        for (int j = 0; IndUV[i][j] != -1 && j < nbUV[i]; j++, nb++)
-          ;
-        if (nb > StNbMax)
-          StNbMax = nb;
-        StNbMoy += nb;
-        if (nb)
-        {
-          StNbMoyNonNul += nb;
-          nnn++;
-        }
-      }
-
-      printf("\n----------------------------------------");
-      printf("\nNbLignes  : %10d", N);
-      printf("\nNbLect    : %10d", StNbLect);
-      printf("\nNbEcr     : %10d", StNbEcr);
-      printf("\nNbMax     : %10d", StNbMax);
-      printf("\nNbMoy     : %10d / %10d -> %d", StNbMoy, N, StNbMoy / N);
-      if (nnn)
-      {
-        printf("\nNbMoy !=0 : %10d / %10d -> %d", StNbMoyNonNul, nnn, StNbMoyNonNul / nnn);
-      }
-      printf("\n----------------------------------------\n");
+      std::swap(theFirstEdge, theSecondEdge);
     }
-#endif
-    if (N)
-    {
-      ResetTabBit(N);
-      //      for(int i=0;i<N;i++) {
-      int i;
-      for (i = 0; i < N; i++)
-      {
-        if (IndUV[i])
-        {
-          free(IndUV[i]);
-          IndUV[i] = nullptr;
-        }
-#ifdef OCCT_DEBUG
-        else
-          std::cout << " IndUV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-#endif
-      }
-      for (i = 0; i < N; i++)
-      {
-        if (UV[i])
-        {
-          free(UV[i]);
-          UV[i] = nullptr;
-        }
-#ifdef OCCT_DEBUG
-        else
-        {
-          std::cout << " UV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-        }
-#endif
-      }
+    const size_t aWordIndex = theFirstEdge * myWordsPerRow + theSecondEdge / THE_BITS_PER_WORD;
+    const size_t aBitIndex  = theSecondEdge % THE_BITS_PER_WORD;
+    myRejectedPairs[aWordIndex] |= uint32_t{1} << aBitIndex;
+  }
 
-      if (nbUV)
-      {
-        free(nbUV);
-        nbUV = nullptr;
-      }
-      if (IndUV)
-      {
-        free(IndUV);
-        IndUV = nullptr;
-      }
-      if (UV)
-      {
-        free(UV);
-        UV = nullptr;
-      }
-      N = 0;
+  //-- ============================================================
+  bool NoIntersection(size_t theFirstEdge, size_t theSecondEdge) const
+  {
+    --theFirstEdge;
+    --theSecondEdge;
+    if (theFirstEdge > theSecondEdge)
+    {
+      std::swap(theFirstEdge, theSecondEdge);
+    }
+    const size_t aWordIndex = theFirstEdge * myWordsPerRow + theSecondEdge / THE_BITS_PER_WORD;
+    const size_t aBitIndex  = theSecondEdge % THE_BITS_PER_WORD;
+    return (myRejectedPairs[aWordIndex] & (uint32_t{1} << aBitIndex)) != 0;
+  }
+
+  //-- ============================================================
+  void SetIntersection(const size_t                      theFirstEdge,
+                       const size_t                      theSecondEdge,
+                       const IntRes2d_IntersectionPoint& theIntersection)
+  {
+    const IntRes2d_Transition& aFirstTransition  = theIntersection.TransitionOfFirst();
+    const IntRes2d_Transition& aSecondTransition = theIntersection.TransitionOfSecond();
+    if (aFirstTransition.PositionOnCurve() == IntRes2d_Middle
+        && aSecondTransition.PositionOnCurve() == IntRes2d_Middle
+        && (aFirstTransition.TransitionType() == IntRes2d_In
+            || aFirstTransition.TransitionType() == IntRes2d_Out))
+    {
+      Set(theFirstEdge, theSecondEdge, theIntersection.ParamOnFirst());
+      Set(theSecondEdge, theFirstEdge, theIntersection.ParamOnSecond());
     }
   }
 
   //-- ============================================================
-  void Set(int i0, int j0, const double u)
+  void GetSingleIntersection(const size_t theFirstEdge,
+                             const size_t theSecondEdge,
+                             double&      theFirstParameter,
+                             double&      theSecondParameter) const
   {
-    i0--;
-    j0--;
-#ifdef OCCT_DEBUG
-    StNbEcr++;
-#endif
-    int k = -1;
-    //    for(int i=0; k==-1 && i<nbUV[i0]; i++) {
-    int i;
-    for (i = 0; k == -1 && i < nbUV[i0]; i++)
+    theFirstParameter = Get(theFirstEdge, theSecondEdge);
+    if (theFirstParameter != RealLast())
     {
-      if (IndUV[i0][i] == -1)
-      {
-        k = i;
-      }
-    }
-    if (k == -1)
-    { //-- on agrandit le tableau
-      //--
-      //-- declaration de la Nv ligne de taille : ancienne taille + SIZEUV
-      //--
-
-      //-- std::cout<<" \n alloc nbUV["<<i0<<"]="<<nbUV[i0];
-
-      double* NvLigneUV  = (double*)malloc((nbUV[i0] + SIZEUV) * sizeof(double));
-      int*    NvLigneInd = (int*)malloc((nbUV[i0] + SIZEUV) * sizeof(int));
-      //--
-      //-- Recopie des anciennes valeurs ds la nouvelle ligne
-      //--
-      for (i = 0; i < nbUV[i0]; i++)
-      {
-        NvLigneUV[i]  = UV[i0][i];
-        NvLigneInd[i] = IndUV[i0][i];
-      }
-
-      //-- mise a jour de la nouvelle dimension   ;  free des anciennes lignes et affectation
-      k = nbUV[i0];
-      nbUV[i0] += SIZEUV;
-      free(UV[i0]);
-      free(IndUV[i0]);
-      UV[i0]    = NvLigneUV;
-      IndUV[i0] = NvLigneInd;
-      for (int kk = k; kk < nbUV[i0]; kk++)
-      {
-        IndUV[i0][kk] = -1;
-      }
-    }
-    IndUV[i0][k] = j0;
-    UV[i0][k]    = u;
-
-    //-- tri par ordre decroissant
-    bool TriOk;
-    do
-    {
-      TriOk   = true;
-      int im1 = 0;
-      for (i = 1; IndUV[i0][i] != -1 && i < nbUV[i0]; i++, im1++)
-      {
-        if (IndUV[i0][i] > IndUV[i0][im1])
-        {
-          TriOk          = false;
-          k              = IndUV[i0][i];
-          IndUV[i0][i]   = IndUV[i0][im1];
-          IndUV[i0][im1] = k;
-          double t       = UV[i0][i];
-          UV[i0][i]      = UV[i0][im1];
-          UV[i0][im1]    = t;
-        }
-      }
-    } while (!TriOk);
-  }
-
-  //-- ============================================================
-  double Get(int i0, int j0)
-  {
-    i0--;
-    j0--;
-#ifdef OCCT_DEBUG
-    StNbLect++;
-#endif
-
-    //--    for(int i=0; IndUV[i0][i]!=-1 && i<nbUV[i0]; i++) {
-    //--      if(IndUV[i0][i]==j0) {
-    //--	return(UV[i0][i]);
-    //--      }
-    //--    }
-    //-- ordre decroissant
-    int a = 0, b = nbUV[i0] - 1, ab;
-    if (IndUV[i0][a] == -1)
-    {
-      return (RealLast());
-    }
-    if (IndUV[i0][a] == j0)
-    {
-      return (UV[i0][a]);
-    }
-    if (IndUV[i0][b] == j0)
-    {
-      return (UV[i0][b]);
-    }
-    while ((IndUV[i0][a] > j0) && (IndUV[i0][b] < j0))
-    {
-      ab = (a + b) >> 1;
-      if (IndUV[i0][ab] < j0)
-      {
-        if (b == ab)
-        {
-          return (RealLast());
-        }
-        else
-        {
-          b = ab;
-        }
-      }
-      else if (IndUV[i0][ab] > j0)
-      {
-        if (a == ab)
-        {
-          return (RealLast());
-        }
-        else
-        {
-          a = ab;
-        }
-      }
-      else
-      {
-        return (UV[i0][ab]);
-      }
-    }
-
-    return (RealLast());
-  }
-
-  //-- ============================================================
-  void ResetTabBit(const int nbedgs)
-  {
-    //-- std::cout<<"\n ResetTabBit"<<std::endl;
-    if (TabBit)
-    {
-      for (int i = 0; i < nbedgs; i++)
-      {
-        if (TabBit[i])
-        {
-          free(TabBit[i]);
-          TabBit[i] = nullptr;
-        }
-      }
-      free(TabBit);
-      TabBit  = nullptr;
-      nTabBit = 0;
-    }
-  }
-
-  //-- ============================================================
-  void InitTabBit(const int nbedgs)
-  {
-    //--  std::cout<<"\n InitTabBit"<<std::endl;
-    if (TabBit && nTabBit)
-    {
-      ResetTabBit(nTabBit);
-    }
-    TabBit  = (long unsigned**)malloc((nbedgs) * sizeof(long unsigned*));
-    nTabBit = nbedgs;
-    int n   = 1 + (nbedgs >> 5);
-
-    for (int i = 0; i < nbedgs; i++)
-    {
-      TabBit[i] = (long unsigned*)malloc(n * sizeof(long unsigned));
-      for (int j = 0; j < n; j++)
-      {
-        TabBit[i][j] = 0;
-      }
-    }
-  }
-
-  //-- ============================================================
-  void SetNoIntersection(int i0, int i1)
-  {
-    //  std::cout<<" SetNoIntersection : "<<i0<<" "<<i1<<std::endl;
-    i0--;
-    i1--;
-    if (i0 > i1)
-    {
-      int t = i0;
-      i0    = i1;
-      i1    = t;
-    }
-    int c = i1 >> 5;
-    int o = i1 & 31;
-    TabBit[i0][c] |= Mask32[o];
-  }
-
-  //-- ============================================================
-  bool NoIntersection(int i0, int i1)
-  {
-    //  std::cout<<" ??NoIntersection : "<<i0<<" "<<i1<<" ";
-    i0--;
-    i1--;
-    if (i0 > i1)
-    {
-      int t = i0;
-      i0    = i1;
-      i1    = t;
-    }
-    int c = i1 >> 5;
-    int o = i1 & 31;
-    if (TabBit[i0][c] & Mask32[o])
-    {
-      //--    std::cout<<" TRUE "<<std::endl;
-      return (true);
-    }
-    //--  std::cout<<" FALSE "<<std::endl;
-    return (false);
-  }
-
-  //-- ============================================================
-  void SetIntersection(int i0, int i1, const IntRes2d_IntersectionPoint& IP)
-  {
-    const IntRes2d_Transition& T1 = IP.TransitionOfFirst();
-    const IntRes2d_Transition& T2 = IP.TransitionOfSecond();
-    if (T1.PositionOnCurve() == IntRes2d_Middle)
-    {
-      if (T2.PositionOnCurve() == IntRes2d_Middle)
-      {
-        if (T1.TransitionType() == IntRes2d_In || T1.TransitionType() == IntRes2d_Out)
-        {
-          Set(i0, i1, IP.ParamOnFirst());
-          Set(i1, i0, IP.ParamOnSecond());
-        }
-      }
-    }
-  }
-
-  //-- ============================================================
-  void GetSingleIntersection(int i0, int i1, double& u, double& v)
-  {
-    u = Get(i0, i1);
-    if (u != RealLast())
-    {
-      v = Get(i1, i0);
+      theSecondParameter = Get(theSecondEdge, theFirstEdge);
     }
     else
     {
-      v = RealLast();
+      theSecondParameter = RealLast();
     }
   }
+
+private:
+  static constexpr size_t THE_BITS_PER_WORD        = std::numeric_limits<uint32_t>::digits;
+  static constexpr size_t THE_INITIAL_ROW_CAPACITY = 8;
+
+  NCollection_LinearVector<NCollection_LinearVector<Intersection>> myIntersections;
+  NCollection_LinearVector<uint32_t>                               myRejectedPairs;
+  size_t                                                           myWordsPerRow = 0;
 };
 
 //-- ================================================================================
@@ -497,6 +198,8 @@ public:
 
 static void AdjustParameter(HLRBRep_EdgeData* E, const bool h, double& p, float& t)
 {
+  constexpr double THE_PARAMETER_CUT = 1.e-1;
+
   double p1, p2;
   float  t1, t2;
   if (h)
@@ -504,7 +207,7 @@ static void AdjustParameter(HLRBRep_EdgeData* E, const bool h, double& p, float&
     E->Status().Bounds(p, t, p2, t2);
     if (E->VerAtSta())
     {
-      p = p + (p2 - p) * CutBig;
+      p = p + (p2 - p) * THE_PARAMETER_CUT;
     }
   }
   else
@@ -512,7 +215,7 @@ static void AdjustParameter(HLRBRep_EdgeData* E, const bool h, double& p, float&
     E->Status().Bounds(p1, t1, p, t);
     if (E->VerAtEnd())
     {
-      p = p - (p - p1) * CutBig;
+      p = p - (p - p1) * THE_PARAMETER_CUT;
     }
   }
 }
@@ -530,17 +233,18 @@ HLRBRep_Data::HLRBRep_Data(const int NV, const int NE, const int NF)
       myLLProps(2, Epsilon(1.)),
       myFLProps(2, Epsilon(1.)),
       mySLProps(2, Epsilon(1.)),
-      myHideCount(0)
+      myHideCount(0),
+      myRejectionCache(std::make_unique<RejectionCache>(static_cast<size_t>(NE)))
 {
-  myReject = new TableauRejection();
-  ((TableauRejection*)myReject)->SetDim(myNbEdges);
 }
+
+HLRBRep_Data::~HLRBRep_Data() = default;
+
+//=================================================================================================
 
 void HLRBRep_Data::Destroy()
 {
-  //-- std::cout<<"\n HLRBRep_Data::~HLRBRep_Data()"<<std::endl;
-  ((TableauRejection*)myReject)->Destroy();
-  delete ((TableauRejection*)myReject);
+  myRejectionCache.reset();
 }
 
 //=================================================================================================
@@ -1232,6 +936,8 @@ void HLRBRep_Data::InitInterference()
 
 void HLRBRep_Data::NextInterference()
 {
+  constexpr double THE_VERTEX_PARAMETER_CUT = 2.e-1;
+
   // are there more intersections on the current edge
   iInterf++;
   //  int miniWire1,miniWire2;
@@ -1294,7 +1000,7 @@ void HLRBRep_Data::NextInterference()
         //--     LE Min ....   LE Max
         //-- ----------------------------------------------------------------------
 
-        if (!((TableauRejection*)myReject)->NoIntersection(myLE, myFE))
+        if (!myRejectionCache->NoIntersection(myLE, myFE))
         {
 
           if (((MinMaxFEdg->Max[0] - myLEMinMax->Min[0]) & 0x80008000) == 0
@@ -1328,7 +1034,6 @@ void HLRBRep_Data::NextInterference()
             }
             if (!rej)
             {
-              nbCal1Intersection++;
               bool h1      = false;
               bool e1      = false;
               bool h2      = false;
@@ -1374,8 +1079,6 @@ void HLRBRep_Data::NextInterference()
 
               if (myIntersected)
               { // compute real intersection
-                nbCal2Intersection++;
-
                 double da1 = 0;
                 double db1 = 0;
                 double da2 = 0;
@@ -1385,22 +1088,21 @@ void HLRBRep_Data::NextInterference()
                 {
                   if (h1)
                   {
-                    da1 = CutLar;
+                    da1 = THE_VERTEX_PARAMETER_CUT;
                   }
                   if (e1)
                   {
-                    db1 = CutLar;
+                    db1 = THE_VERTEX_PARAMETER_CUT;
                   }
                   if (h2)
                   {
-                    da2 = CutLar;
+                    da2 = THE_VERTEX_PARAMETER_CUT;
                   }
                   if (e2)
                   {
-                    db2 = CutLar;
+                    db2 = THE_VERTEX_PARAMETER_CUT;
                   }
                 }
-                int NoInter = 0;
                 if (myLE == myFE)
                 {
                   myIntersector.Perform(myLEData, da1, db1);
@@ -1408,11 +1110,10 @@ void HLRBRep_Data::NextInterference()
                 else
                 {
                   double su, sv;
-                  ((TableauRejection*)myReject)->GetSingleIntersection(myLE, myFE, su, sv);
+                  myRejectionCache->GetSingleIntersection(myLE, myFE, su, sv);
                   if (su != RealLast())
                   {
                     myIntersector.SimulateOnePoint(myLEData, su, myFEData, sv);
-                    //-- std::cout<<"p";
                   }
                   else
                   {
@@ -1422,57 +1123,27 @@ void HLRBRep_Data::NextInterference()
                     {
                       if (myIntersector.NbPoints() == 1 && myIntersector.NbSegments() == 0)
                       {
-                        ((TableauRejection*)myReject)
-                          ->SetIntersection(myLE, myFE, myIntersector.Point(1));
+                        myRejectionCache->SetIntersection(myLE, myFE, myIntersector.Point(1));
                       }
                     }
                   }
-                  NoInter = 0;
                 }
-                if (NoInter)
+                if (myIntersector.IsDone())
                 {
-                  myNbPoints = myNbSegments = 0;
+                  myNbPoints   = myIntersector.NbPoints();
+                  myNbSegments = myIntersector.NbSegments();
+                  if ((myNbSegments + myNbPoints) == 0)
+                  {
+                    myRejectionCache->SetNoIntersection(myLE, myFE);
+                  }
                 }
                 else
                 {
-                  if (myIntersector.IsDone())
-                  {
-                    myNbPoints   = myIntersector.NbPoints();
-                    myNbSegments = myIntersector.NbSegments();
-                    if ((myNbSegments + myNbPoints) > 0)
-                    {
-                      nbOkIntersection++;
-                    }
-                    else
-                    {
-                      ((TableauRejection*)myReject)->SetNoIntersection(myLE, myFE);
-                    }
-                  }
-                  else
-                  {
-                    myNbPoints = myNbSegments = 0;
-#ifdef OCCT_DEBUG
-                    std::cout << "HLRBRep_Data::NextInterference : ";
-                    if (myLE == myFE)
-                      std::cout << "Edge " << myLE << " : Intersection not done" << std::endl;
-                    else
-                      std::cout << "Edges " << myLE << " , " << myFE << " : Intersection not done"
-                                << std::endl;
-#endif
-                  }
+                  myNbPoints = myNbSegments = 0;
                 }
               }
-              nbPtIntersection += myNbPoints;
-              nbSegIntersection += myNbSegments;
             }
           }
-          else
-          {
-          }
-        }
-        else
-        {
-          //-- std::cout<<"+";
         }
       }
     }
@@ -1638,18 +1309,12 @@ void HLRBRep_Data::EdgeState(const double  p1,
     {
       stbef = TopAbs_OUT;
       staft = TopAbs_OUT;
-#ifdef OCCT_DEBUG
-      std::cout << "HLRBRep_Data::EdgeState : undefined" << std::endl;
-#endif
     }
   }
   else
   {
     stbef = TopAbs_OUT;
     staft = TopAbs_OUT;
-#ifdef OCCT_DEBUG
-    std::cout << "HLRBRep_Data::EdgeState : undefined" << std::endl;
-#endif
   }
 }
 
@@ -1719,13 +1384,6 @@ int HLRBRep_Data::HidingStartLevel(const int                                    
     else if (p > param + tolpar)
     {
       Loop = false;
-    }
-    else
-    {
-#ifdef OCCT_DEBUG
-      std::cout << "HLRBRep_Data::HidingStartLevel : ";
-      std::cout << "Bad Parameter." << std::endl;
-#endif
     }
     It.Next();
   }
@@ -1817,14 +1475,6 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
           {
             double curv = HLRBRep_EdgeFaceTool::CurvatureValue(iFaceGeom, pu, pv, V);
             gp_Vec Nm   = mySLProps.Normal();
-            if (curv == 0)
-            {
-#ifdef OCCT_DEBUG
-              std::cout << "HLRBRep_Data::OrientOutLine " << I;
-              std::cout << " Edge " << myFE << " : ";
-              std::cout << "CurvatureValue == 0." << std::endl;
-#endif
-            }
             if (curv > 0)
             {
               Nm.Reverse();
@@ -1833,14 +1483,6 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
             Pt.Transform(T);
             Nm.Transform(T);
             Nm.Cross(Tg);
-            if (Tg.Magnitude() < gp::Resolution())
-            {
-#ifdef OCCT_DEBUG
-              std::cout << "HLRBRep_Data::OrientOutLine " << I;
-              std::cout << " Edge " << myFE << " : ";
-              std::cout << "Tg.Magnitude() == 0." << std::endl;
-#endif
-            }
             if (myProj.Perspective())
             {
               r = Nm.Z() * myProj.Focus() - (Nm.X() * Pt.X() + Nm.Y() * Pt.Y() + Nm.Z() * Pt.Z());
@@ -1861,14 +1503,6 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
             eb1->Orientation(ie1, myFEOri);
           }
         }
-        else
-        {
-#ifdef OCCT_DEBUG
-          std::cout << "HLRBRep_Data::OrientOutLine " << I;
-          std::cout << " Edge " << myFE << " : ";
-          std::cout << "UVPoint not found, OutLine not Oriented" << std::endl;
-#endif
-        }
         ed1.Used(true);
       }
     }
@@ -1878,7 +1512,7 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
 
 //=================================================================================================
 
-void HLRBRep_Data::OrientOthEdge(const int I, HLRBRep_FaceData& FD)
+void HLRBRep_Data::OrientOthEdge(const int /*I*/, HLRBRep_FaceData& FD)
 {
   double                                 p, pu, pv, r;
   const occ::handle<HLRAlgo_WiresBlock>& wb = FD.Wires();
@@ -1927,16 +1561,6 @@ void HLRBRep_Data::OrientOthEdge(const int I, HLRBRep_FaceData& FD)
             }
           }
         }
-#ifdef OCCT_DEBUG
-        else
-        {
-          std::cout << "HLRBRep_Data::OrientOthEdge " << I;
-          std::cout << " Edge " << myFE << " : ";
-          std::cout << "UVPoint not found, Edge not Oriented" << std::endl;
-        }
-#else
-        (void)I; // avoid compiler warning
-#endif
       }
     }
   }
@@ -1998,7 +1622,6 @@ TopAbs_State HLRBRep_Data::Classify(const int               E,
 {
   (void)E; // avoid compiler warning
 
-  nbClassification++;
   HLRAlgo_EdgesBlock::MinMaxIndices VertMin, VertMax, MinMaxVert;
   double                            TotMin[16], TotMax[16];
 
@@ -2113,48 +1736,6 @@ TopAbs_State HLRBRep_Data::Classify(const int               E,
     REJECT1(myDeca, TotMin, TotMax, mySurD, VertMin, VertMax);
 
     HLRAlgo::EncodeMinMax(VertMin, VertMax, MinMaxVert);
-    /*
-#ifdef OCCT_DEBUG
-    {
-      int qwe,qwep8,q,q1,q2;
-      printf("\n E:%d -------\n",E);
-      for(qwe=0; qwe<8; qwe++) {
-        q1 = (((int*)iFaceMinMax)[qwe   ]) & 0x0000FFFF;
-        q2 = (((int*)iFaceMinMax)[qwe+8]) & 0x0000FFFF;
-        printf("\nFace: %3d    %6d  ->  %6d    delta : %6d ",qwe,q1,q2,q2-q1);
-
-        q1 = (((int*)MinMaxVert)[qwe   ]) & 0x0000FFFF;
-        q2 = (((int*)MinMaxVert)[qwe+8]) & 0x0000FFFF;
-        printf("  |  Vtx: %3d    %6d  ->  %6d    delta : %6d ",qwe,q1,q2,q2-q1);
-
-        q1 = ((((int*)iFaceMinMax)[qwe  ])>>16) & 0x0000FFFF;
-        q2 = ((((int*)iFaceMinMax)[qwe+8])>>16) & 0x0000FFFF;
-        printf("\nFace: %3d    %6d  ->  %6d    delta : %6d ",qwe,q1,q2,q2-q1);
-
-        q1 = ((((int*)MinMaxVert)[qwe  ])>>16) & 0x0000FFFF;
-        q2 = ((((int*)MinMaxVert)[qwe+8])>>16) & 0x0000FFFF;
-        printf("  |  Vtx: %3d    %6d  ->  %6d    delta : %6d ",qwe,q1,q2,q2-q1);
-      }
-      printf("\n");
-
-      for(qwe=0,qwep8=8; qwe<8; qwe++,qwep8++) {
-        q = ((int*)iFaceMinMax)[qwep8]- ((int*)MinMaxVert)[qwe];
-        q1 = q>>16;
-        q2 = (q& 0x0000FFFF);
-        printf("\nmot: %3d    q1 = %+10d    q2=%+10d    Mask : %d",qwe,(q1>32768)? (32768-q1) :
-q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
-      }
-      for(qwe=0,qwep8=8; qwe<8; qwe++,qwep8++) {
-        q = ((int*)MinMaxVert)[qwep8]- ((int*)iFaceMinMax)[qwe];
-        q1 = q>>16;
-        q2 = (q& 0x0000FFFF);
-        printf("\nmot: %3d    q1 = %+10d    q2=%+10d    Mask : %d",qwe+8,(q1>32768)? (32768-q1) :
-q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
-      }
-      std::cout<<std::endl;
-    }
- #endif
-    */
 
     if (((iFaceMinMax->Max[0] - MinMaxVert.Min[0]) & 0x80008000) != 0
         || ((MinMaxVert.Max[0] - iFaceMinMax->Min[0]) & 0x80008000) != 0
@@ -2176,18 +1757,10 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
     }
   }
 
-  nbCal3Intersection++;
   gp_Pnt   PLim;
   gp_Pnt2d Psta;
   Psta = EC.Value(sta);
   PLim = EC.Value3D(sta);
-
-  static int aff = 0;
-  if (aff)
-  {
-    static int nump1 = 0;
-    printf("\npoint PNR%d  %g %g %g", ++nump1, PLim.X(), PLim.Y(), PLim.Z());
-  }
 
   gp_Lin L    = myProj.Shoot(Psta.X(), Psta.Y());
   double wLim = ElCLib::Parameter(L, PLim);
@@ -2275,7 +1848,6 @@ TopAbs_State HLRBRep_Data::SimplClassify(const int /*E*/,
                                          const double            p1,
                                          const double            p2)
 {
-  nbClassification++;
   HLRAlgo_EdgesBlock::MinMaxIndices VertMin, VertMax, MinMaxVert;
   double                            TotMin[16], TotMax[16];
 
@@ -2469,7 +2041,7 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
         {
           douteux = true;
           ((HLRBRep_Curve*)myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
-          if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          if (Tgsav.SquareMagnitude() <= Precision::Angular())
           {
             Tgsav = Nmsav;
           }
@@ -2484,7 +2056,7 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
         {
           douteux = true;
           ((HLRBRep_Curve*)myFEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
-          if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          if (Tgsav.SquareMagnitude() <= Precision::Angular())
           {
             Tgsav = Nmsav;
           }
@@ -2521,7 +2093,7 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
         {
           douteux = true;
           ((HLRBRep_Curve*)myLEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
-          if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          if (Tgsav.SquareMagnitude() <= Precision::Angular())
           {
             Tgsav = Nmsav;
           }
@@ -2534,7 +2106,7 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
         {
           douteux = true;
           ((HLRBRep_Curve*)myLEGeom)->D2(psav, Ptsav, Tgsav, Nmsav);
-          if (Tgsav.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+          if (Tgsav.SquareMagnitude() <= Precision::Angular())
           {
             Tgsav = Nmsav;
           }

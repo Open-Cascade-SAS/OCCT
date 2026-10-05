@@ -76,7 +76,7 @@ const TopOpeBRep_WPointInter& TopOpeBRep_WPointInterIterator::CurrentWP()
   return WP;
 }
 
-TopOpeBRep_PLineInter TopOpeBRep_WPointInterIterator::PLineInterDummy() const
+TopOpeBRep_LineInter* TopOpeBRep_WPointInterIterator::PLineInterDummy() const
 {
   return myLineInter;
 }

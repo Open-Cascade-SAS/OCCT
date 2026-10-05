@@ -111,58 +111,6 @@ double Adaptor2d_Curve2d::Period() const
 
 //=================================================================================================
 
-// gp_Pnt2d Adaptor2d_Curve2d::Value(const double U) const
-gp_Pnt2d Adaptor2d_Curve2d::Value(const double) const
-{
-  throw Standard_NotImplemented("Adaptor2d_Curve2d::Value");
-}
-
-//=================================================================================================
-
-// void Adaptor2d_Curve2d::D0(const double U, gp_Pnt2d& P) const
-void Adaptor2d_Curve2d::D0(const double, gp_Pnt2d&) const
-{
-  throw Standard_NotImplemented("Adaptor2d_Curve2d::D0");
-}
-
-//=================================================================================================
-
-// void Adaptor2d_Curve2d::D1(const double U,
-//			 gp_Pnt2d& P, gp_Vec2d& V) const
-void Adaptor2d_Curve2d::D1(const double, gp_Pnt2d&, gp_Vec2d&) const
-{
-  throw Standard_NotImplemented("Adaptor2d_Curve2d::D1");
-}
-
-//=================================================================================================
-
-// void Adaptor2d_Curve2d::D2(const double U,
-//			 gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
-void Adaptor2d_Curve2d::D2(const double, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&) const
-{
-  throw Standard_NotImplemented("Adaptor2d_Curve2d::D2");
-}
-
-//=================================================================================================
-
-// void Adaptor2d_Curve2d::D3(const double U,
-//			 gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3)
-void Adaptor2d_Curve2d::D3(const double, gp_Pnt2d&, gp_Vec2d&, gp_Vec2d&, gp_Vec2d&) const
-{
-  throw Standard_NotImplemented("Adaptor2d_Curve2d::D3");
-}
-
-//=================================================================================================
-
-// gp_Vec2d Adaptor2d_Curve2d::DN(const double U,
-//			     const int N) const
-gp_Vec2d Adaptor2d_Curve2d::DN(const double, const int) const
-{
-  throw Standard_NotImplemented("Adaptor2d_Curve2d::DN");
-}
-
-//=================================================================================================
-
 // double Adaptor2d_Curve2d::Resolution(const double R3d) const
 double Adaptor2d_Curve2d::Resolution(const double) const
 {
@@ -264,41 +212,39 @@ int Adaptor2d_Curve2d::NbSamples() const
 
 gp_Pnt2d Adaptor2d_Curve2d::EvalD0(const double theU) const
 {
-  gp_Pnt2d aP;
-  D0(theU, aP);
-  return aP;
+  (void)theU;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::EvalD0");
 }
 
 //=================================================================================================
 
 Geom2d_Curve::ResD1 Adaptor2d_Curve2d::EvalD1(const double theU) const
 {
-  Geom2d_Curve::ResD1 aResult;
-  D1(theU, aResult.Point, aResult.D1);
-  return aResult;
+  (void)theU;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::EvalD1");
 }
 
 //=================================================================================================
 
 Geom2d_Curve::ResD2 Adaptor2d_Curve2d::EvalD2(const double theU) const
 {
-  Geom2d_Curve::ResD2 aResult;
-  D2(theU, aResult.Point, aResult.D1, aResult.D2);
-  return aResult;
+  (void)theU;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::EvalD2");
 }
 
 //=================================================================================================
 
 Geom2d_Curve::ResD3 Adaptor2d_Curve2d::EvalD3(const double theU) const
 {
-  Geom2d_Curve::ResD3 aResult;
-  D3(theU, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
-  return aResult;
+  (void)theU;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::EvalD3");
 }
 
 //=================================================================================================
 
 gp_Vec2d Adaptor2d_Curve2d::EvalDN(const double theU, const int theN) const
 {
-  return DN(theU, theN);
+  (void)theU;
+  (void)theN;
+  throw Standard_NotImplemented("Adaptor2d_Curve2d::EvalDN");
 }

@@ -15,10 +15,14 @@
 
 #include <ExtremaPC_BSplineCurve.hxx>
 #include <ExtremaPC_GridEvaluator.hxx>
+#include <ExtremaPC2d_BSplineCurve.hxx>
 
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <chrono>
 #include <cmath>
@@ -187,6 +191,21 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Middle)
   EXPECT_NEAR(aMinSqDist, 0.0, THE_TOL);
 }
 
+TEST_F(ExtremaPC_BSplineCurveTest, SingletonDomain_ReturnsSolePoint)
+{
+  occ::handle<Geom_BSplineCurve> aBSpline   = createCubicBSpline();
+  constexpr double               aParameter = 0.35;
+
+  ExtremaPC_BSplineCurve   anEval(aBSpline, ExtremaPC::Domain1D{aParameter, aParameter});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(5, 5, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[0].Parameter, aParameter, THE_TOL);
+  EXPECT_TRUE(aResult[0].IsMinimum);
+  EXPECT_TRUE(aResult[0].IsMaximum);
+}
+
 //==================================================================================================
 // Point near curve tests
 //==================================================================================================
@@ -222,7 +241,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Below)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBSpline->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 
@@ -300,7 +319,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointNear)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBSpline->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnCurve), THE_TOL);
@@ -339,7 +358,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_PointNear)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBSpline->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 
@@ -361,7 +380,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_MultipleExtrema)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify all extrema are on the curve
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     gp_Pnt aPtOnCurve = aBSpline->Value(aResult[i].Parameter);
     EXPECT_NEAR(aResult[i].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
@@ -400,7 +419,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointNear)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBSpline->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnCurve), THE_TOL);
@@ -423,7 +442,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_FirstHalf)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // All parameters should be in first half
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, 0.0 - THE_TOL);
     EXPECT_LE(aResult[i].Parameter, 0.5 + THE_TOL);
@@ -443,7 +462,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_SecondHalf)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // All parameters should be in second half
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, 0.5 - THE_TOL);
     EXPECT_LE(aResult[i].Parameter, 1.0 + THE_TOL);
@@ -467,7 +486,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, VerifyProjectedPoint)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Verify the projected point is on the curve
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBSpline->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.X(), aPtOnCurve.X(), THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), aPtOnCurve.Y(), THE_TOL);
@@ -487,7 +506,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, VerifyDistanceConsistency)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Verify distance matches point distance
-  int    aMinIdx     = aResult.MinIndex();
+  size_t aMinIdx     = aResult.MinIndex();
   double aComputedSq = aPoint.SquareDistance(aResult[aMinIdx].Point);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aComputedSq, THE_TOL);
 }
@@ -544,11 +563,231 @@ TEST_F(ExtremaPC_BSplineCurveTest, HighDegreeSpline_RefinementHelps)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Verify the closest point is on the curve
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBSpline->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 
   // Verify the distance is reasonable (point is within expected range of curve)
   double aDist = std::sqrt(aResult.MinSquareDistance());
   EXPECT_LT(aDist, 2.0);
+}
+
+TEST_F(ExtremaPC_BSplineCurveTest, C1Junction_PointOnCurve_FindsMinimum)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(2) = gp_Pnt(1.0, 1.0, 0.0);
+  aPoles(3) = gp_Pnt(2.0, 1.0, 0.0);
+  aPoles(4) = gp_Pnt(3.0, 0.0, 0.0);
+
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.5;
+  aKnots(3) = 1.0;
+
+  NCollection_Array1<int> aMultiplicities(1, 3);
+  aMultiplicities(1) = 3;
+  aMultiplicities(2) = 1;
+  aMultiplicities(3) = 3;
+
+  occ::handle<Geom_BSplineCurve> aBSpline =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 2);
+  const gp_Pnt aPoint = aBSpline->Value(0.5);
+
+  ExtremaPC_BSplineCurve   anEvaluator(aBSpline);
+  const ExtremaPC::Result& aResult = anEvaluator.Perform(aPoint, THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_GT(aResult.NbExt(), 0);
+  EXPECT_NEAR(aResult[aResult.MinIndex()].Parameter, 0.5, THE_TOL);
+  EXPECT_NEAR(aResult.MinSquareDistance(), 0.0, THE_TOL);
+}
+
+TEST_F(ExtremaPC_BSplineCurveTest, ClusteredC0Junctions_FindsBothExtrema)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(2) = gp_Pnt(1.0, 1.0, 0.0);
+  aPoles(3) = gp_Pnt(2.0, 0.0, 0.0);
+  aPoles(4) = gp_Pnt(3.0, 1.0, 0.0);
+
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.499;
+  aKnots(3) = 0.501;
+  aKnots(4) = 1.0;
+
+  NCollection_Array1<int> aMultiplicities(1, 4);
+  aMultiplicities(1) = 2;
+  aMultiplicities(2) = 1;
+  aMultiplicities(3) = 1;
+  aMultiplicities(4) = 2;
+
+  occ::handle<Geom_BSplineCurve> aBSpline =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 1);
+  ExtremaPC_BSplineCurve   anEvaluator(aBSpline);
+  const ExtremaPC::Result& aResult = anEvaluator.Perform(gp_Pnt(1.5, 1.5, 0.0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  bool hasFirstJunction  = false;
+  bool hasSecondJunction = false;
+  for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
+  {
+    if (std::abs(aResult[anIndex].Parameter - 0.499) <= THE_TOL)
+    {
+      hasFirstJunction = true;
+      EXPECT_TRUE(aResult[anIndex].IsMinimum);
+    }
+    if (std::abs(aResult[anIndex].Parameter - 0.501) <= THE_TOL)
+    {
+      hasSecondJunction = true;
+      EXPECT_TRUE(aResult[anIndex].IsMaximum);
+    }
+  }
+  EXPECT_TRUE(hasFirstJunction);
+  EXPECT_TRUE(hasSecondJunction);
+
+  const ExtremaPC::Result& aMinResult =
+    anEvaluator.Perform(gp_Pnt(1.5, 1.5, 0.0), THE_TOL, ExtremaPC::SearchMode::Min);
+  hasFirstJunction  = false;
+  hasSecondJunction = false;
+  for (size_t anIndex = 0; anIndex < aMinResult.NbExt(); ++anIndex)
+  {
+    hasFirstJunction =
+      hasFirstJunction || std::abs(aMinResult[anIndex].Parameter - 0.499) <= THE_TOL;
+    hasSecondJunction =
+      hasSecondJunction || std::abs(aMinResult[anIndex].Parameter - 0.501) <= THE_TOL;
+  }
+  EXPECT_TRUE(hasFirstJunction);
+  EXPECT_FALSE(hasSecondJunction);
+
+  const ExtremaPC::Result& aMaxResult =
+    anEvaluator.Perform(gp_Pnt(1.5, 1.5, 0.0), THE_TOL, ExtremaPC::SearchMode::Max);
+  hasFirstJunction  = false;
+  hasSecondJunction = false;
+  for (size_t anIndex = 0; anIndex < aMaxResult.NbExt(); ++anIndex)
+  {
+    hasFirstJunction =
+      hasFirstJunction || std::abs(aMaxResult[anIndex].Parameter - 0.499) <= THE_TOL;
+    hasSecondJunction =
+      hasSecondJunction || std::abs(aMaxResult[anIndex].Parameter - 0.501) <= THE_TOL;
+  }
+  EXPECT_FALSE(hasFirstJunction);
+  EXPECT_TRUE(hasSecondJunction);
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_BSplineCurveTest, PlanarDelegation_RationalCurvePreservesDomainAndEndpoints)
+{
+  NCollection_Array1<gp_Pnt>   aPoles3d(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPoles2d(1, 4);
+  NCollection_Array1<double>   aWeights(1, 4);
+  for (size_t anIndex = 0; anIndex < aPoles3d.Size(); ++anIndex)
+  {
+    const double anOrdinal     = static_cast<double>(anIndex + 1);
+    const double anX           = 10.0 + anOrdinal;
+    const double anY           = (anIndex + 1) % 2 == 0 ? 2.0 : -1.0;
+    aPoles3d.ChangeAt(anIndex) = gp_Pnt(anX, -4.0, anY);
+    aPoles2d.ChangeAt(anIndex) = gp_Pnt2d(anX, anY);
+    aWeights.ChangeAt(anIndex) = 0.5 + 0.25 * anOrdinal;
+  }
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 2.0;
+  aKnots(2) = 6.0;
+  NCollection_Array1<int> aMultiplicities(1, 2);
+  aMultiplicities(1) = 4;
+  aMultiplicities(2) = 4;
+  occ::handle<Geom_BSplineCurve> aCurve3d =
+    new Geom_BSplineCurve(aPoles3d, aWeights, aKnots, aMultiplicities, 3);
+  occ::handle<Geom2d_BSplineCurve> aCurve2d =
+    new Geom2d_BSplineCurve(aPoles2d, aWeights, aKnots, aMultiplicities, 3);
+  ExtremaPC_BSplineCurve   anEvaluator3d(aCurve3d, ExtremaPC::Domain1D{2.5, 5.5});
+  ExtremaPC2d_BSplineCurve anEvaluator2d(aCurve2d, ExtremaPC2d::Domain1D{2.5, 5.5});
+  const ExtremaPC::Result& aResult3d =
+    anEvaluator3d.PerformWithEndpoints(gp_Pnt(12.0, 3.0, 0.5), THE_TOL);
+  const ExtremaPC2d::Result& aResult2d =
+    anEvaluator2d.PerformWithEndpoints(gp_Pnt2d(12.0, 0.5), THE_TOL);
+  ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
+  for (size_t anIndex = 0; anIndex < aResult3d.NbExt(); ++anIndex)
+  {
+    EXPECT_NEAR(aResult3d[anIndex].Parameter, aResult2d[anIndex].Parameter, THE_TOL);
+    EXPECT_NEAR(aResult3d[anIndex].SquareDistance,
+                aResult2d[anIndex].SquareDistance + 49.0,
+                THE_TOL);
+  }
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_BSplineCurveTest, PlanarDelegation_NonPlanarCurveUses3dFallback)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(2) = gp_Pnt(1.0, 2.0, 1.0);
+  aPoles(3) = gp_Pnt(2.0, -1.0, 3.0);
+  aPoles(4) = gp_Pnt(4.0, 0.0, -2.0);
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  NCollection_Array1<int> aMultiplicities(1, 2);
+  aMultiplicities(1)                    = 4;
+  aMultiplicities(2)                    = 4;
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 3);
+  ExtremaPC_BSplineCurve         anEvaluator(aCurve);
+  const ExtremaPC::Result&       aResult = anEvaluator.Perform(gp_Pnt(1.0, 0.5, 2.0), THE_TOL);
+  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_GE(aResult.NbExt(), 1);
+}
+
+TEST_F(ExtremaPC_BSplineCurveTest, ShiftedMultiPeriodNonPlanarCurveFindsEveryMinimum)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 5);
+  aPoles(1) = gp_Pnt(1.0, 0.0, 0.0);
+  aPoles(2) = gp_Pnt(0.3, 1.0, 0.4);
+  aPoles(3) = gp_Pnt(-0.8, 0.6, -0.2);
+  aPoles(4) = gp_Pnt(-0.7, -0.7, 0.8);
+  aPoles(5) = gp_Pnt(0.4, -0.9, -0.5);
+  NCollection_Array1<double> aKnots(1, 6);
+  for (size_t anIndex = 0; anIndex < aKnots.Size(); ++anIndex)
+  {
+    aKnots.ChangeAt(anIndex) = 0.2 * static_cast<double>(anIndex);
+  }
+  NCollection_Array1<int> aMultiplicities(1, 6);
+  aMultiplicities.Init(1);
+  occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 3, true);
+
+  const double              aPeriod = aCurve->Period();
+  const double              aTarget = aCurve->FirstParameter() + 0.17 * aPeriod;
+  const ExtremaPC::Domain1D aDomain{aTarget - 0.1 * aPeriod, aTarget + 3.1 * aPeriod};
+  ExtremaPC_BSplineCurve    anEvaluator(aCurve, aDomain);
+  const ExtremaPC::Result&  aResult =
+    anEvaluator.Perform(aCurve->Value(aTarget), 1.0e-9, ExtremaPC::SearchMode::Min);
+
+  ASSERT_TRUE(aResult.IsDone());
+  int aNbZeroDistanceMinima = 0;
+  for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
+  {
+    if (aResult[anIndex].SquareDistance <= 1.0e-16)
+    {
+      EXPECT_NEAR(aResult[anIndex].Parameter, aTarget + aNbZeroDistanceMinima * aPeriod, 1.0e-7);
+      ++aNbZeroDistanceMinima;
+    }
+  }
+  EXPECT_EQ(aNbZeroDistanceMinima, 4);
+}
+
+TEST_F(ExtremaPC_BSplineCurveTest, GridUtilitiesRejectInvalidSamplesAndShortOpenClosure)
+{
+#if !defined(No_Exception) && !defined(No_Standard_RangeError)
+  EXPECT_THROW(ExtremaPC_GridEvaluator::BuildUniformParams(0.0, 1.0, 1), Standard_RangeError);
+#endif
+
+  NCollection_Array1<gp_Pnt> aPoles(1, 2);
+  aPoles(1)                            = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(2)                            = gp_Pnt(0.5 * Precision::Confusion(), 0.0, 0.0);
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+  GeomAdaptor_Curve             anAdaptor(aCurve);
+  EXPECT_FALSE(ExtremaPC_GridEvaluator::IsClosedDomain(anAdaptor, {0.0, 1.0}));
 }

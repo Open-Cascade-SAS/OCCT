@@ -32,7 +32,6 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettraceKPB();
 
 void debiskole() {}
 #endif
@@ -55,12 +54,6 @@ Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder&        BU,
 
 void TopOpeBRepBuild_Builder::MergeKPartiskole()
 {
-#ifdef OCCT_DEBUG
-  bool TKPB = TopOpeBRepBuild_GettraceKPB();
-  if (TKPB)
-    KPreturn(myIsKPart);
-  debiskole();
-#endif
 
   int ibid;
 
@@ -95,29 +88,6 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   {
     return;
   }
-
-#ifdef OCCT_DEBUG
-  if (TKPB)
-  {
-    std::cout << "" << std::endl;
-    for (; itm1.More(); itm1.Next())
-    {
-      const TopoDS_Shape& f  = itm1.Key();
-      int                 fi = myDataStructure->Shape(f);
-      std::cout << "face " << fi << " : ";
-      const NCollection_List<TopoDS_Shape>&    l = itm1.Value();
-      NCollection_List<TopoDS_Shape>::Iterator it(l);
-      for (; it.More(); it.Next())
-      {
-        const TopoDS_Shape& ff  = it.Value();
-        int                 ffi = myDataStructure->Shape(ff);
-        std::cout << ffi << " ";
-      }
-      std::cout << std::endl;
-    }
-    itm1.Initialize(myKPMAPf1f2);
-  }
-#endif
 
   NCollection_List<TopoDS_Shape>  LFIN;
   NCollection_List<TopoDS_Shape>* plfIN = nullptr;
@@ -163,20 +133,6 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   {
     return;
   }
-
-#ifdef OCCT_DEBUG
-  int  ifOU;
-  bool tSPS = GtraceSPS(*pfOU, ifOU);
-  if (tSPS || TKPB)
-  {
-    //    int iOU = myDataStructure->Shape(*pfOU);
-    //    int iIN = myDataStructure->Shape(*pfIN);
-    GdumpSHA(*pfOU, (char*)"MergeKPartiskole pfOU ");
-    std::cout << std::endl;
-    GdumpSAMDOM(LFIN, (char*)"LFIN : ");
-    debiskole();
-  }
-#endif
 
   int rankpfOU = GShapeRank(*pfOU);
   int rankpfIN = GShapeRank(*pfIN);
@@ -265,22 +221,6 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
 
   ChangeMerged(she1, myState1);
   ChangeMerged(she2, myState2);
-
-#ifdef OCCT_DEBUG
-  if (TKPB)
-  {
-    std::cout << "stsol1 ";
-    TopAbs::Print(stsol1, std::cout);
-    std::cout << " ";
-  }
-  if (TKPB)
-  {
-    std::cout << "stsol2 ";
-    TopAbs::Print(stsol2, std::cout);
-    std::cout << std::endl;
-  }
-  debiskole();
-#endif
 
   TopoDS_Shell newshe;
 
@@ -834,11 +774,6 @@ void TopOpeBRepBuild_Builder::KPiskoleanalyse(const TopAbs_State Stfac1,
     }
   }
 
-#ifdef OCCT_DEBUG
-  bool TKPB = TopOpeBRepBuild_GettraceKPB();
-  if (TKPB)
-    std::cout << "ires = " << ires << " icla1 " << icla1 << " icla2 " << icla2 << std::endl;
-#endif
 } // TopOpeBRepBuild_Builder::KPiskoleanalyse
 
 Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder&        BU,
@@ -1086,9 +1021,6 @@ bool TopOpeBRepBuild_Builder::KPiskolesh(const TopoDS_Shape&             Sarg,
                                          NCollection_List<TopoDS_Shape>& lShsd,
                                          NCollection_List<TopoDS_Shape>& lfhsd) const
 {
-#ifdef OCCT_DEBUG
-  bool TKPB = TopOpeBRepBuild_GettraceKPB();
-#endif
   const TopOpeBRepDS_DataStructure& BDS      = myDataStructure->DS();
   bool                              iskolesh = FUNKP_KPiskolesh(*this, BDS, Sarg, lShsd, lfhsd);
   if (!iskolesh)
@@ -1122,35 +1054,6 @@ bool TopOpeBRepBuild_Builder::KPiskolesh(const TopoDS_Shape&             Sarg,
     {
       return false;
     }
-
-#ifdef OCCT_DEBUG
-    int isol = myDataStructure->Shape(Sarg);
-    int ifac = myDataStructure->Shape(fac);
-    if (TKPB)
-    {
-      std::cout << "isol " << isol << std::endl;
-    }
-    if (TKPB)
-    {
-      std::cout << "nfhsd  " << nfhsd << std::endl;
-    }
-    if (TKPB)
-    {
-      std::cout << "ifac " << ifac << std::endl;
-    }
-    if (TKPB)
-    {
-      std::cout << "isplan " << isplan << std::endl;
-    }
-    if (TKPB)
-    {
-      std::cout << "nehg " << nehg << std::endl;
-    }
-    if (TKPB)
-    {
-      std::cout << std::endl;
-    }
-#endif
   }
 
   return true;

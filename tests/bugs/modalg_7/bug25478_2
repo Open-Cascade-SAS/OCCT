@@ -1,5 +1,3 @@
-puts "TODO OCC25478 ALL: Error: Fillets can not touch"
-
 puts "============"
 puts "OCC25478"
 puts "============"

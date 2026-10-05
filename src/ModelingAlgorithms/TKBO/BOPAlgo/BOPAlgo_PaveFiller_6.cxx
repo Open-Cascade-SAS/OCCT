@@ -626,7 +626,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 // purpose  : Updates the saved tolerance of the vertices of the edge
 //           with new tolerance of edge
 //=======================================================================
-static void UpdateSavedTolerance(const BOPDS_PDS&                  theDS,
+static void UpdateSavedTolerance(BOPDS_DS* const&                  theDS,
                                  const int                         theNE,
                                  const double                      theTolNew,
                                  NCollection_DataMap<int, double>& theMVTol)
@@ -1186,7 +1186,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
   TopoDS_Shape                             aV, aE;
   NCollection_List<TopoDS_Shape>::Iterator aItLS;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
-  BOPDS_PDS                                                aPDS;
+  BOPDS_DS*                                                aPDS;
   occ::handle<BOPDS_PaveBlock>                             aPB1;
   BOPDS_Pave                                               aPave[2];
   BOPDS_ShapeInfo                                          aSI;
@@ -2788,7 +2788,7 @@ void BOPAlgo_PaveFiller::PutStickPavesOnCurve(
     gp_Pnt                         aPC[2], aPV;
     gp_Dir                         aDN[2];
     gp_Pnt2d                       aP2D;
-    NCollection_Map<int>::Iterator aItMI, aItMI1;
+    NCollection_Map<int>::Iterator aItMI;
     //
     aDT2   = 2e-7;  // the rich criteria
     aDScPr = 5.e-9; // the creasing criteria

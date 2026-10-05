@@ -11,10 +11,10 @@ In order to contribute code to OCCT you must sign the Contributor License Agreem
 ### Steps to Submit Your Contribution
 
 1. **Fork the repository** on GitHub: https://github.com/Open-Cascade-SAS/OCCT
-2. **Create a feature branch** from an up-to-date `master`. Any descriptive branch name is fine.
+2. **Create a feature branch** from an up-to-date `IR`. Any descriptive branch name is fine.
 3. **Develop your change** following the [OCCT Coding Rules](https://dev.opencascade.org/doc/overview/html/occt_contribution__coding_rules.html). Format the source with `clang-format` using the `.clang-format` configuration shipped in the repository.
 4. **Test locally**. Run the existing DRAW test suite and `OpenCascadeGTest` tests; create a test case for the change when applicable.
-5. **Open a Draft Pull Request** against `Open-Cascade-SAS/OCCT:master`. CI/CD pipelines run on every push and report build, style and test results.
+5. **Open a Draft Pull Request** against `Open-Cascade-SAS/OCCT:IR`. CI/CD pipelines run on every push and report build, style and test results.
 6. **Mark the PR Ready for Review** once CI is green. A maintainer will review the change and request updates as needed.
 7. **Address review feedback** by pushing additional commits to the same branch; CI re-runs automatically.
 8. After approval the PR is merged (typically squashed) by a maintainer.

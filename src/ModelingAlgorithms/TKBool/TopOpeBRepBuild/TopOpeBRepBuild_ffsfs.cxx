@@ -38,7 +38,6 @@
   #define DEBSHASET(sarg, meth, shaset, str)                                                       \
     TCollection_AsciiString sarg((meth));                                                          \
     (sarg) = (sarg) + (shaset).DEBNumber() + (str);
-Standard_EXPORT bool TopOpeBRepBuild_GetcontextNOFUFA();
 
 Standard_EXPORT void debffsfs(const int i)
 {
@@ -353,9 +352,6 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape&                  
 #endif
 
       bool performfufa = true;
-#ifdef OCCT_DEBUG
-      performfufa = !TopOpeBRepBuild_GetcontextNOFUFA();
-#endif
       if (performfufa)
       {
         GLOBAL_lfrtoprocess = true;

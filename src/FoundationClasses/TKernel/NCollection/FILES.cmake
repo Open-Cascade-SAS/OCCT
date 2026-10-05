@@ -12,6 +12,10 @@ set(OCCT_NCollection_FILES
   NCollection_Array2.hxx
   NCollection_BaseAllocator.cxx
   NCollection_BaseAllocator.hxx
+  NCollection_BaseDoubleMap.cxx
+  NCollection_BaseDoubleMap.hxx
+  NCollection_BaseIndexedMap.cxx
+  NCollection_BaseIndexedMap.hxx
   NCollection_BaseList.cxx
   NCollection_BaseList.hxx
   NCollection_BaseMap.cxx
@@ -41,7 +45,6 @@ set(OCCT_NCollection_FILES
   NCollection_IncAllocator.cxx
   NCollection_IncAllocator.hxx
   NCollection_IndexedDataMap.hxx
-  NCollection_IndexedIterator.hxx
   NCollection_IndexedMap.hxx
   NCollection_ItemsView.hxx
   NCollection_Iterator.hxx
@@ -66,9 +69,7 @@ set(OCCT_NCollection_FILES
   NCollection_SparseArray.hxx
   NCollection_SparseArrayBase.cxx
   NCollection_SparseArrayBase.hxx
-  NCollection_StlIterator.hxx
   NCollection_String.hxx
-  NCollection_TListIterator.hxx
   NCollection_TListNode.hxx
   NCollection_UBTree.hxx
   NCollection_UBTreeFiller.hxx
@@ -81,6 +82,4 @@ set(OCCT_NCollection_FILES
   NCollection_Vec3.hxx
   NCollection_Vec4.hxx
   NCollection_Vector.hxx
-  NCollection_WinHeapAllocator.cxx
-  NCollection_WinHeapAllocator.hxx
 )

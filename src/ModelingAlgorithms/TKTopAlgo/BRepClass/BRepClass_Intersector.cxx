@@ -338,7 +338,16 @@ void BRepClass_Intersector::Perform(const gp_Lin2d&       L,
   const TopoDS_Face& F  = E.Face();
 
   //
-  aC2D = BRep_Tool::CurveOnSurface(EE, F, deb, fin);
+  aC2D = E.Curve();
+  if (!aC2D.IsNull())
+  {
+    deb = E.FirstParameter();
+    fin = E.LastParameter();
+  }
+  else
+  {
+    aC2D = BRep_Tool::CurveOnSurface(EE, F, deb, fin);
+  }
   if (aC2D.IsNull())
   {
     done = false; // !IsDone()
@@ -347,12 +356,23 @@ void BRepClass_Intersector::Perform(const gp_Lin2d&       L,
   //
   Bnd_Box2d aBond;
   gp_Pnt2d  aPntF;
-  bool      anUseBndBox = E.UseBndBox();
-  if (anUseBndBox)
+  bool      anUseBndBox = false;
+  if (E.UseBndBox() && E.BoundingBoxState() != BRepClass_Edge::BndBoxState::Unavailable)
   {
-    BndLib_Add2dCurve::Add(aC2D, deb, fin, 0., aBond);
-    aBond.SetGap(aTolZ);
-    aPntF = L.Location();
+    if (E.BoundingBoxState() == BRepClass_Edge::BndBoxState::Ready)
+    {
+      aBond = E.BoundingBox();
+    }
+    else
+    {
+      BndLib_Add2dCurve::Add(aC2D, deb, fin, 0.0, aBond);
+    }
+    anUseBndBox = !aBond.IsVoid();
+    if (anUseBndBox)
+    {
+      aBond.SetGap(aTolZ);
+      aPntF = L.Location();
+    }
   }
   //
   Geom2dAdaptor_Curve C(aC2D, deb, fin);
@@ -448,9 +468,14 @@ void BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
                                           gp_Dir2d&             Norm,
                                           double&               C) const
 {
-  double                    fpar, lpar;
-  occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(E.Edge(), E.Face(), fpar, lpar);
-  GeomLProp_CLProps2d       Prop(aPCurve, U, 2, Precision::PConfusion());
+  double                    fpar    = E.FirstParameter();
+  double                    lpar    = E.LastParameter();
+  occ::handle<Geom2d_Curve> aPCurve = E.Curve();
+  if (aPCurve.IsNull())
+  {
+    aPCurve = BRep_Tool::CurveOnSurface(E.Edge(), E.Face(), fpar, lpar);
+  }
+  GeomLProp_CLProps2d Prop(aPCurve, U, 2, Precision::PConfusion());
 
   C = 0.;
   if (Prop.IsTangentDefined())

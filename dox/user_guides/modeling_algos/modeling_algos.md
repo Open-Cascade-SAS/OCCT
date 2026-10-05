@@ -888,7 +888,7 @@ double D = GeomAPI_ProjectPointOnCurve (P,C);
 int N =  GeomAPI_ProjectPointOnCurve (P,C); 
 ~~~~
 
-*gp_Pnt2d()* returns the  nearest solution point. 
+*gp_Pnt()* returns the  nearest solution point.
 
 ~~~~{.cpp}
 gp_Pnt P1 = GeomAPI_ProjectPointOnCurve (P,C); 
@@ -1006,7 +1006,7 @@ double D = GeomAPI_ProjectPointOnSurf (P,S);
 int N = GeomAPI_ProjectPointOnSurf (P,S); 
 ~~~~
 
-*gp_Pnt2d()* returns the  nearest solution point. 
+*gp_Pnt()* returns the  nearest solution point.
 
 ~~~~{.cpp}
 gp_Pnt P1 = GeomAPI_ProjectPointOnSurf (P,S); 
@@ -1495,7 +1495,7 @@ The class *BRepPrimAPI_MakeBox* allows building a parallelepiped box. The result
 
 An error is raised if  the box is flat in any dimension using the default precision. The following  code shows how to create a box: 
 ~~~~{.cpp}
-TopoDS_Solid aBox = BRepPrimAPI_MakeBox(10.,20.,30.); 
+TopoDS_Solid aBox = BRepPrimAPI_MakeBox(10.,20.,30.);
 ~~~~
 
 The four methods to build a box are shown in the figure: 
@@ -1554,7 +1554,7 @@ The following code  builds the solid cone of the figure, which is located in the
 
 ~~~~{.cpp}
 double R1 = 30, R2 = 10, H = 15; 
-TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H); 
+TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H);
 ~~~~
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image030.png,"Cone",360}
@@ -1653,11 +1653,11 @@ double l = 10;
 // create a vector from the direction and the length 
 gp_Vec v = direc; 
 v *= l; 
-TopoDS_Solid P1 = BRepPrimAPI_MakePrism(F,v); 
+TopoDS_Shape P1 = BRepPrimAPI_MakePrism(F,v).Shape();
 // finite 
-TopoDS_Solid P2 = BRepPrimAPI_MakePrism(F,direc); 
+TopoDS_Shape P2 = BRepPrimAPI_MakePrism(F,direc).Shape();
 // infinite 
-TopoDS_Solid P3 =  BRepPrimAPI_MakePrism(F,direc,false); 
+TopoDS_Shape P3 = BRepPrimAPI_MakePrism(F,direc,false).Shape();
 // semi-infinite 
 ~~~~
 

@@ -55,9 +55,9 @@ GProp_PEquation::GProp_PEquation(const NCollection_Array1<gp_Pnt>& thePnts, doub
   }
 
   const math_Matrix& aVecs = *anEigen.EigenVectors;
-  myAxes[0]                = gp_Vec(aVecs(1, 1), aVecs(2, 1), aVecs(3, 1));
-  myAxes[1]                = gp_Vec(aVecs(1, 2), aVecs(2, 2), aVecs(3, 2));
-  myAxes[2]                = gp_Vec(aVecs(1, 3), aVecs(2, 3), aVecs(3, 3));
+  myAxes[0]                = gp_Vec(aVecs.At(0, 0), aVecs.At(1, 0), aVecs.At(2, 0));
+  myAxes[1]                = gp_Vec(aVecs.At(0, 1), aVecs.At(1, 1), aVecs.At(2, 1));
+  myAxes[2]                = gp_Vec(aVecs.At(0, 2), aVecs.At(1, 2), aVecs.At(2, 2));
 
   const double aXg = myG.X();
   const double aYg = myG.Y();

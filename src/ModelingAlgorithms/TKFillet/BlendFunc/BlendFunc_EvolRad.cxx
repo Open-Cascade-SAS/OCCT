@@ -196,13 +196,12 @@ bool BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
                                       const bool         byParam,
                                       const double       Param)
 {
-  // static declaration to avoid systematic realloc
-
-  static gp_Vec d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
-  static gp_Vec d1gui, d2gui, d3gui;
-  static gp_Pnt ptgui;
-  static double invnormtg, dinvnormtg;
-  double        T = Param, aux;
+  // Per-thread scratch, reused across calls via the t_OK / myX_OK guards below.
+  static thread_local gp_Vec d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
+  static thread_local gp_Vec d1gui, d2gui, d3gui;
+  static thread_local gp_Pnt ptgui;
+  static thread_local double invnormtg, dinvnormtg;
+  double                     T = Param, aux;
 
   // Case of implicit parameter
   if (!byParam)

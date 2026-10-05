@@ -59,20 +59,6 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 
-#ifdef OCCT_DEBUG
-  #include <Geom_TrimmedCurve.hxx>
-extern bool ChFi3d_GettraceDRAWSPINE();
-extern bool ChFi3d_GetcontextSPINEBEZIER();
-extern bool ChFi3d_GetcontextSPINECIRCLE();
-extern bool ChFi3d_GetcontextSPINECE();
-extern bool ChFi3d_GetcontextFORCEFILLING();
-  #include <OSD_Chronometer.hxx>
-
-extern double t_t3cornerinit, t_spherique, t_torique, t_notfilling, t_filling, t_t3cornerDS;
-extern void   ChFi3d_InitChron(OSD_Chronometer& ch);
-extern void   ChFi3d_ResultChron(OSD_Chronometer& ch, double& time);
-#endif
-
 //=================================================================================================
 
 static int SearchPivot(int* s, double u[3][3], const double t)
@@ -240,11 +226,6 @@ static bool ToricCorner(const TopoDS_Face& F, const double rd, const double rf, 
 
 void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
 {
-
-#ifdef OCCT_DEBUG
-  OSD_Chronometer ch;
-  ChFi3d_InitChron(ch); // init perf initialisation
-#endif
 
   TopOpeBRepDS_DataStructure&                            DStr = myDS->ChangeDS();
   const TopoDS_Vertex&                                   Vtx  = myVDataMap.FindKey(Jndex);
@@ -673,21 +654,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
              ->Value(p[pivot][fin]);
 
   done = false;
-#ifdef OCCT_DEBUG
-  if (ChFi3d_GetcontextFORCEFILLING())
-    c1spheric = c1toric = 0;
-#endif
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_t3cornerinit); // result perf initialisations
-#endif
 
   if (c1toric)
   {
-
-#ifdef OCCT_DEBUG
-    ChFi3d_InitChron(ch); // init perf case torus
-#endif
 
     // Direct Construction.
     // ---------------------
@@ -705,17 +674,9 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                                                 pfac2,
                                                 psurf1,
                                                 psurf2);
-
-#ifdef OCCT_DEBUG
-    ChFi3d_ResultChron(ch, t_torique); // result perf case torus
-#endif
   }
   else if (c1spheric)
   {
-
-#ifdef OCCT_DEBUG
-    ChFi3d_InitChron(ch); // init perf case sphere
-#endif
 
     done = ChFiKPart_ComputeData::ComputeCorner(DStr,
                                                 coin,
@@ -729,10 +690,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                                                 pfac1,
                                                 psurf1,
                                                 psurf2);
-
-#ifdef OCCT_DEBUG
-    ChFi3d_ResultChron(ch, t_spherique); // result perf cas sphere
-#endif
   }
   else if (c1pointu)
   {
@@ -742,10 +699,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   {
     if (!filling)
     {
-
-#ifdef OCCT_DEBUG
-      ChFi3d_InitChron(ch); // init perf not filling
-#endif
 
       // Calculate a guideline,
       //------------------------------
@@ -834,10 +787,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                            Gf2,
                            false,
                            true);
-#ifdef OCCT_DEBUG
-        if (ChFi3d_GetcontextFORCEFILLING())
-          done = 0;
-#endif
         if (done && Gf2)
         {
           done    = CompleteData(coin, func, lin, Fac, Surf, OFac, Gd1, false, Gf1, false);
@@ -887,10 +836,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                            Gf2,
                            false,
                            true);
-#ifdef OCCT_DEBUG
-        if (ChFi3d_GetcontextFORCEFILLING())
-          done = 0;
-#endif
         if (done && Gf2)
         {
           done    = CompleteData(coin, func, lin, Fac, Surf, OFac, Gd1, false, Gf1, false);
@@ -901,18 +846,10 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
           filling = true;
         }
       }
-
-#ifdef OCCT_DEBUG
-      ChFi3d_ResultChron(ch, t_notfilling); // result perf not filling
-#endif
     }
 
     if (filling)
     {
-
-#ifdef OCCT_DEBUG
-      ChFi3d_InitChron(ch); // init perf filling
-#endif
 
       // the contour to be fillet consists of straight lines uv in beginning and end
       // of two pcurves (only one if c1pointu) calculated as possible
@@ -1008,10 +945,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
                           false,
                           false,
                           false);
-
-#ifdef OCCT_DEBUG
-      ChFi3d_ResultChron(ch, t_filling); // result perf filling
-#endif
     }
   }
   double P1deb, P2deb, P1fin, P2fin;
@@ -1025,10 +958,6 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   {
     // Update of 4 Stripes and the DS
     // -------------------------------------
-
-#ifdef OCCT_DEBUG
-    ChFi3d_InitChron(ch); // init perf update DS
-#endif
 
     gp_Pnt2d                  pp1, pp2;
     double                    parpp1, parpp2;
@@ -1324,8 +1253,4 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const int Jndex)
   myEVIMap.ChangeFind(Vtx).Append(coin->Surf());
   corner->SetSolidIndex(CD[pivot]->SolidIndex());
   myListStripe.Append(corner);
-
-#ifdef OCCT_DEBUG
-  ChFi3d_ResultChron(ch, t_t3cornerDS); // result perf update DS
-#endif
 }

@@ -18,6 +18,7 @@
 !/cmake/
 !/data/
 !/dox/
+!/resources/
 !/src/
 !/tests/
 !/.github/
@@ -43,6 +44,22 @@
 !/src/ModelingData/
 !/src/Visualization/
 !/src/Deprecated/
+
+# resources/ level: Ignore everything except tracked items
+/resources/*
+!/resources/BOPAlgo/
+!/resources/DrawResources/
+!/resources/samples
+!/resources/Shaders/
+!/resources/SHMessage/
+!/resources/StdResource/
+!/resources/Textures/
+!/resources/TObj/
+!/resources/UnitsAPI/
+!/resources/XmlOcafResource/
+!/resources/XRResources/
+!/resources/XSMessage/
+!/resources/XSTEPResource/
 
 # ============================================================================
 # DEEPER LEVEL RULES (applied recursively within allowed directories above)

@@ -41,8 +41,6 @@ static ExtremaPC::Result THE_NOT_DONE_RESULT = [] {
 void ExtremaPC_Curve::initFromAdaptor(const GeomAdaptor_Curve&   theCurve,
                                       const ExtremaPC::Domain1D& theDomain)
 {
-  myAdaptorRef = &theCurve;
-
   const GeomAbs_CurveType aCurveType = theCurve.GetType();
 
   switch (aCurveType)
@@ -76,11 +74,13 @@ void ExtremaPC_Curve::initFromAdaptor(const GeomAdaptor_Curve&   theCurve,
       break;
 
     case GeomAbs_OffsetCurve:
-      myEvaluator = ExtremaPC_OffsetCurve(theCurve, theDomain);
+      myAdaptorRef = &theCurve;
+      myEvaluator  = ExtremaPC_OffsetCurve(*myAdaptorRef, theDomain);
       break;
 
     default:
-      myEvaluator = ExtremaPC_OtherCurve(theCurve, theDomain);
+      myAdaptorRef = &theCurve;
+      myEvaluator  = ExtremaPC_OtherCurve(*myAdaptorRef, theDomain);
       break;
   }
 }
@@ -90,6 +90,10 @@ void ExtremaPC_Curve::initFromAdaptor(const GeomAdaptor_Curve&   theCurve,
 ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve)
     : myEvaluator(std::monostate{})
 {
+  if (theCurve.Curve().IsNull())
+  {
+    return;
+  }
   ExtremaPC::Domain1D aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
   initFromAdaptor(theCurve, aDomain);
 }
@@ -99,6 +103,10 @@ ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve)
 ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve, double theUMin, double theUMax)
     : myEvaluator(std::monostate{})
 {
+  if (theCurve.Curve().IsNull())
+  {
+    return;
+  }
   ExtremaPC::Domain1D aDomain(theUMin, theUMax);
   initFromAdaptor(theCurve, aDomain);
 }
@@ -108,6 +116,10 @@ ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve, double theUM
 ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_TransformedCurve& theCurve)
     : myEvaluator(std::monostate{})
 {
+  if (theCurve.Is3DCurve() && theCurve.GeomCurve().IsNull())
+  {
+    return;
+  }
   initFromTransformedCurve(theCurve, std::nullopt);
 }
 
@@ -118,6 +130,10 @@ ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_TransformedCurve& theCurve,
                                  double                              theUMax)
     : myEvaluator(std::monostate{})
 {
+  if (theCurve.Is3DCurve() && theCurve.GeomCurve().IsNull())
+  {
+    return;
+  }
   ExtremaPC::Domain1D aDomain(theUMin, theUMax);
   initFromTransformedCurve(theCurve, aDomain);
 }
@@ -127,83 +143,29 @@ ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_TransformedCurve& theCurve,
 void ExtremaPC_Curve::initFromTransformedCurve(const GeomAdaptor_TransformedCurve&       theCurve,
                                                const std::optional<ExtremaPC::Domain1D>& theDomain)
 {
-  // Identity transform on a 3D curve: delegate to the faster GeomAdaptor_Curve path
-  // which avoids transform overhead in evaluators.
-  // Skipped for CurveOnSurface since its myCurve member is empty.
-  if (theCurve.Is3DCurve() && theCurve.Trsf().Form() == gp_Identity)
-  {
-    const GeomAdaptor_Curve& aCurve = theCurve.Curve();
-    ExtremaPC::Domain1D      aDomain =
-      theDomain.has_value() ? theDomain.value()
-                                 : ExtremaPC::Domain1D(aCurve.FirstParameter(), aCurve.LastParameter());
-    initFromAdaptor(aCurve, aDomain);
-    return;
-  }
-
   ExtremaPC::Domain1D aDomain =
     theDomain.has_value()
       ? theDomain.value()
       : ExtremaPC::Domain1D(theCurve.FirstParameter(), theCurve.LastParameter());
 
-  const GeomAbs_CurveType aCurveType = theCurve.GetType();
-
-  switch (aCurveType)
+  if (theCurve.Is3DCurve())
   {
-    // Elementary curves: Line(), Circle() etc. return already-transformed primitives
-    case GeomAbs_Line:
-      myEvaluator = ExtremaPC_Line(theCurve.Line(), aDomain);
-      break;
+    initFromAdaptor(theCurve.Curve(), aDomain);
+    if (theCurve.Trsf().Form() != gp_Identity)
+    {
+      myTrsf = theCurve.Trsf();
+    }
+    return;
+  }
 
-    case GeomAbs_Circle:
-      myEvaluator = ExtremaPC_Circle(theCurve.Circle(), aDomain);
-      break;
-
-    case GeomAbs_Ellipse:
-      myEvaluator = ExtremaPC_Ellipse(theCurve.Ellipse(), aDomain);
-      break;
-
-    case GeomAbs_Hyperbola:
-      myEvaluator = ExtremaPC_Hyperbola(theCurve.Hyperbola(), aDomain);
-      break;
-
-    case GeomAbs_Parabola:
-      myEvaluator = ExtremaPC_Parabola(theCurve.Parabola(), aDomain);
-      break;
-
-    // BSpline/Bezier: use untransformed handle, set up inverse-transform path.
-    // For CurveOnSurface the underlying myCurve is empty, so fall through to OtherCurve.
-    case GeomAbs_BSplineCurve:
-      if (theCurve.Is3DCurve())
-      {
-        myEvaluator = ExtremaPC_BSplineCurve(theCurve.Curve().BSpline(), aDomain);
-        myTrsf      = theCurve.Trsf();
-        break;
-      }
-      myAdaptorRef = &theCurve;
-      myEvaluator  = ExtremaPC_OtherCurve(*myAdaptorRef, aDomain);
-      break;
-
-    case GeomAbs_BezierCurve:
-      if (theCurve.Is3DCurve())
-      {
-        myEvaluator = ExtremaPC_BezierCurve(theCurve.Curve().Bezier(), aDomain);
-        myTrsf      = theCurve.Trsf();
-        break;
-      }
-      myAdaptorRef = &theCurve;
-      myEvaluator  = ExtremaPC_OtherCurve(*myAdaptorRef, aDomain);
-      break;
-
-    // Offset/Other: use non-owning pointer to caller's TransformedCurve
-    case GeomAbs_OffsetCurve:
-      myAdaptorRef = &theCurve;
-      myEvaluator  = ExtremaPC_OffsetCurve(*myAdaptorRef, aDomain);
-      break;
-
-    default:
-      myAdaptorRef = &theCurve;
-      myEvaluator  = ExtremaPC_OtherCurve(*myAdaptorRef, aDomain);
-      break;
+  myAdaptorRef = &theCurve;
+  if (theCurve.GetType() == GeomAbs_OffsetCurve)
+  {
+    myEvaluator = ExtremaPC_OffsetCurve(*myAdaptorRef, aDomain);
+  }
+  else
+  {
+    myEvaluator = ExtremaPC_OtherCurve(*myAdaptorRef, aDomain);
   }
 }
 
@@ -404,22 +366,22 @@ ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve,
 
 //=================================================================================================
 
-const ExtremaPC::Result& ExtremaPC_Curve::postProcessTransform(
-  const ExtremaPC::Result& theSrc) const
+const ExtremaPC::Result& ExtremaPC_Curve::postProcessTransform(const ExtremaPC::Result& theSrc,
+                                                               const gp_Pnt&            theP) const
 {
-  const double aSF   = myTrsf.ScaleFactor();
-  const double aSFSq = aSF * aSF;
+  const double aScale = std::abs(myTrsf->ScaleFactor());
 
   myTransformResult.Clear();
   myTransformResult.Status                 = theSrc.Status;
-  myTransformResult.InfiniteSquareDistance = theSrc.InfiniteSquareDistance * aSFSq;
-  for (int i = 0; i < theSrc.Extrema.Length(); ++i)
+  myTransformResult.InfiniteSquareDistance = theSrc.InfiniteSquareDistance * aScale * aScale;
+  for (size_t anIndex = 0; anIndex < theSrc.Extrema.Size(); ++anIndex)
   {
     ExtremaPC::ExtremumResult anExt;
-    anExt.Parameter      = theSrc[i].Parameter;
-    anExt.Point          = theSrc[i].Point.Transformed(myTrsf);
-    anExt.SquareDistance = theSrc[i].SquareDistance * aSFSq;
-    anExt.IsMinimum      = theSrc[i].IsMinimum;
+    anExt.Parameter      = theSrc[anIndex].Parameter;
+    anExt.Point          = theSrc[anIndex].Point.Transformed(*myTrsf);
+    anExt.SquareDistance = theP.SquareDistance(anExt.Point);
+    anExt.IsMinimum      = theSrc[anIndex].IsMinimum;
+    anExt.IsMaximum      = theSrc[anIndex].IsMaximum;
     myTransformResult.Extrema.Append(anExt);
   }
   return myTransformResult;
@@ -433,20 +395,34 @@ const ExtremaPC::Result& ExtremaPC_Curve::Perform(const gp_Pnt&         theP,
 {
   const ExtremaPC::Result* aResultPtr = &THE_NOT_DONE_RESULT;
 
-  if (myTrsf.Form() != gp_Identity)
+  if (myTrsf.has_value())
   {
+    if (!ExtremaPC::IsValidTolerance(theTol))
+    {
+      myTransformResult.Clear();
+      myTransformResult.Status = ExtremaPC::Status::InvalidInput;
+      return myTransformResult;
+    }
+
     // Inverse-transform query point and delegate to untransformed evaluator
-    gp_Pnt aPInv = theP.Transformed(myTrsf.Inverted());
+    const double aLocalTol = theTol / std::abs(myTrsf->ScaleFactor());
+    if (!ExtremaPC::IsValidTolerance(aLocalTol))
+    {
+      myTransformResult.Clear();
+      myTransformResult.Status = ExtremaPC::Status::NumericalError;
+      return myTransformResult;
+    }
+    gp_Pnt aPInv = theP.Transformed(myTrsf->Inverted());
     std::visit(
       [&](auto& theEval) {
         using T = std::decay_t<decltype(theEval)>;
         if constexpr (!std::is_same_v<T, std::monostate>)
         {
-          aResultPtr = &theEval.Perform(aPInv, theTol, theMode);
+          aResultPtr = &theEval.Perform(aPInv, aLocalTol, theMode);
         }
       },
       myEvaluator);
-    return postProcessTransform(*aResultPtr);
+    return postProcessTransform(*aResultPtr, theP);
   }
 
   std::visit(
@@ -469,20 +445,34 @@ const ExtremaPC::Result& ExtremaPC_Curve::PerformWithEndpoints(const gp_Pnt&    
 {
   const ExtremaPC::Result* aResultPtr = &THE_NOT_DONE_RESULT;
 
-  if (myTrsf.Form() != gp_Identity)
+  if (myTrsf.has_value())
   {
+    if (!ExtremaPC::IsValidTolerance(theTol))
+    {
+      myTransformResult.Clear();
+      myTransformResult.Status = ExtremaPC::Status::InvalidInput;
+      return myTransformResult;
+    }
+
     // Inverse-transform query point and delegate to untransformed evaluator
-    gp_Pnt aPInv = theP.Transformed(myTrsf.Inverted());
+    const double aLocalTol = theTol / std::abs(myTrsf->ScaleFactor());
+    if (!ExtremaPC::IsValidTolerance(aLocalTol))
+    {
+      myTransformResult.Clear();
+      myTransformResult.Status = ExtremaPC::Status::NumericalError;
+      return myTransformResult;
+    }
+    gp_Pnt aPInv = theP.Transformed(myTrsf->Inverted());
     std::visit(
       [&](auto& theEval) {
         using T = std::decay_t<decltype(theEval)>;
         if constexpr (!std::is_same_v<T, std::monostate>)
         {
-          aResultPtr = &theEval.PerformWithEndpoints(aPInv, theTol, theMode);
+          aResultPtr = &theEval.PerformWithEndpoints(aPInv, aLocalTol, theMode);
         }
       },
       myEvaluator);
-    return postProcessTransform(*aResultPtr);
+    return postProcessTransform(*aResultPtr, theP);
   }
 
   std::visit(

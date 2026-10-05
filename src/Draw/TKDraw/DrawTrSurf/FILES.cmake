@@ -34,6 +34,4 @@ set(OCCT_DrawTrSurf_FILES
   DrawTrSurf_Surface.hxx
   DrawTrSurf_Triangulation.cxx
   DrawTrSurf_Triangulation.hxx
-  DrawTrSurf_Triangulation2D.cxx
-  DrawTrSurf_Triangulation2D.hxx
 )

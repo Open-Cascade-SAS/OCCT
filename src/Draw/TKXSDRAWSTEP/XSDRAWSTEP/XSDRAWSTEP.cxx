@@ -39,7 +39,6 @@
 #include <STEPControl_Writer.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
-#include <StepSelect_Activator.hxx>
 #include <STEPSelections_AssemblyExplorer.hxx>
 #include <STEPSelections_Counter.hxx>
 #include <StepToTopoDS_MakeTransformed.hxx>

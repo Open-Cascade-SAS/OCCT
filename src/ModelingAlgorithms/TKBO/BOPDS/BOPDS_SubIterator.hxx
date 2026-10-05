@@ -19,12 +19,13 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPDS_PDS.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Pair.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
+
+class BOPDS_DS;
 
 //! The class BOPDS_SubIterator is used to compute intersections between
 //! bounding boxes of two sub-sets of BRep sub-shapes of arguments
@@ -46,7 +47,7 @@ public:
 
   //! Sets the data structure <pDS> to process.
   //! It is used to access the shapes and their bounding boxes.
-  void SetDS(const BOPDS_PDS& pDS) { myDS = pDS; }
+  void SetDS(BOPDS_DS* const& pDS) { myDS = pDS; }
 
   //! Returns the data structure
   const BOPDS_DS& DS() const { return *myDS; }
@@ -95,7 +96,7 @@ protected:
   Standard_EXPORT virtual void Intersect();
 
   occ::handle<NCollection_BaseAllocator>         myAllocator;
-  BOPDS_PDS                                      myDS;
+  BOPDS_DS*                                      myDS;
   NCollection_DynamicArray<BOPDS_Pair>           myList;
   NCollection_DynamicArray<BOPDS_Pair>::Iterator myIterator;
   NCollection_List<int>*                         mySubSet1;

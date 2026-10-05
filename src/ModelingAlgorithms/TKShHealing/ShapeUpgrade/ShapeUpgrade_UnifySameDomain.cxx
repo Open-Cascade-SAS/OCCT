@@ -533,7 +533,7 @@ static std::pair<gp_Pnt2d, gp_Pnt2d> getCurveParams(const TopoDS_Edge& theEdge,
 
 //=================================================================================================
 
-static void RelocatePCurvesToNewUorigin(
+static bool RelocatePCurvesToNewUorigin(
   const NCollection_Sequence<TopoDS_Shape>& theEdges,
   const TopoDS_Shape&                       theFirstFace,
   const TopoDS_Face&                        theRefFace,
@@ -611,6 +611,10 @@ static void RelocatePCurvesToNewUorigin(
     double                    anEdgeStartParam, anEdgeEndParam;
     occ::handle<Geom2d_Curve> CurPCurve =
       BRep_Tool::CurveOnSurface(aCurrentEdge, theRefFace, anEdgeStartParam, anEdgeEndParam);
+    if (CurPCurve.IsNull())
+    {
+      return false;
+    }
     CurPCurve = new Geom2d_TrimmedCurve(CurPCurve, anEdgeStartParam, anEdgeEndParam);
     theEdgeNewPCurve.Bind(aCurrentEdge, CurPCurve);
     if (aCurrentEdge.Orientation() == TopAbs_REVERSED)
@@ -655,6 +659,10 @@ static void RelocatePCurvesToNewUorigin(
 
         occ::handle<Geom2d_Curve> aPCurve =
           BRep_Tool::CurveOnSurface(anEdge, theRefFace, anEdgeStartParam, anEdgeEndParam);
+        if (aPCurve.IsNull())
+        {
+          return false;
+        }
         aPCurve = new Geom2d_TrimmedCurve(aPCurve, anEdgeStartParam, anEdgeEndParam);
         if (anEdge.Orientation() == TopAbs_REVERSED)
         {
@@ -694,6 +702,7 @@ static void RelocatePCurvesToNewUorigin(
       }
     } // for (;;) (collect pcurves of a contour)
   } // for (;;) (walk by contours)
+  return true;
 }
 
 static void InsertWiresIntoFaces(const NCollection_Sequence<TopoDS_Shape>& theWires,
@@ -801,6 +810,10 @@ static bool FindClosestPoints(const TopoDS_Edge&                                
     BRep_Tool::CurveOnSurface(theEdge1, theCommonFace, fpar1, lpar1);
   occ::handle<Geom2d_Curve> PCurve2 =
     BRep_Tool::CurveOnSurface(theEdge2, theCommonFace, fpar2, lpar2);
+  if (PCurve1.IsNull() || PCurve2.IsNull())
+  {
+    return false;
+  }
   PointsOnEdge1[0] = PCurve1->Value(fpar1);
   PointsOnEdge1[1] = PCurve1->Value(lpar1);
   PointsOnEdge2[0] = PCurve2->Value(fpar2);
@@ -1183,6 +1196,12 @@ static void TransformPCurves(
     PCurves[0] = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
     anEdge.Reverse();
     PCurves[1] = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
+
+    if (PCurves[0].IsNull() || PCurves[1].IsNull())
+    {
+      // The source face has no pcurve for this edge, so it cannot be transformed.
+      continue;
+    }
 
     int NbPcurves = (PCurves[0] == PCurves[1]) ? 1 : 2;
 
@@ -3708,15 +3727,26 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
               NCollection_DataMap<TopoDS_Shape, occ::handle<Geom2d_Curve>> EdgeNewPCurve;
 
               // Relocate pcurves to new U-origin
-              RelocatePCurvesToNewUorigin(edges,
-                                          faces(i_face_max),
-                                          F_RefFace,
-                                          CoordTol,
-                                          ii + 1,
-                                          aPeriods[ii],
-                                          VEmap,
-                                          EdgeNewPCurve,
-                                          UsedEdges);
+              if (!RelocatePCurvesToNewUorigin(edges,
+                                               faces(i_face_max),
+                                               F_RefFace,
+                                               CoordTol,
+                                               ii + 1,
+                                               aPeriods[ii],
+                                               VEmap,
+                                               EdgeNewPCurve,
+                                               UsedEdges))
+              {
+                VEmap.Clear();
+                for (int ind = 1; ind <= edges.Length(); ind++)
+                {
+                  TopExp::MapShapesAndUniqueAncestors(edges(ind),
+                                                      TopAbs_VERTEX,
+                                                      TopAbs_EDGE,
+                                                      VEmap);
+                }
+                break;
+              }
 
               // PCurves from unused edges (may be degenerated edges)
               for (int ind = 1; ind <= edges.Length(); ind++)
@@ -3727,9 +3757,18 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                   double                    fpar, lpar;
                   occ::handle<Geom2d_Curve> aPCurve =
                     BRep_Tool::CurveOnSurface(anEdge, F_RefFace, fpar, lpar);
+                  if (aPCurve.IsNull())
+                  {
+                    EdgeNewPCurve.Clear();
+                    break;
+                  }
                   aPCurve = new Geom2d_TrimmedCurve(aPCurve, fpar, lpar);
                   EdgeNewPCurve.Bind(anEdge, aPCurve);
                 }
+              }
+              if (EdgeNewPCurve.Extent() != edges.Length())
+              {
+                break;
               }
 
               // Restore VEmap
@@ -3829,6 +3868,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
       }
 
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> UsedEdges;
+      bool                                                   isWireBuildingFailed = false;
 
       double FaceUmin = RealLast();
       double FaceVmin = RealLast();
@@ -3973,20 +4013,20 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
               }
               TmpElist.Append(anEdge);
             }
-            if (TmpElist.Extent() <= 1 || (Uperiod != 0. || Vperiod != 0))
+            occ::handle<Geom2d_Curve> CurPCurve =
+              BRep_Tool::CurveOnSurface(CurEdge, F_RefFace, fpar, lpar);
+            if (TmpElist.Extent() <= 1 || (Uperiod != 0. || Vperiod != 0) || CurPCurve.IsNull())
             {
               TrueElist.Assign(TmpElist);
             }
             else
             {
               // we must choose the closest direction - the biggest angle
-              double                    MaxAngle = RealFirst();
-              TopoDS_Edge               TrueEdge;
-              occ::handle<Geom2d_Curve> CurPCurve =
-                BRep_Tool::CurveOnSurface(CurEdge, F_RefFace, fpar, lpar);
-              CurParam = (CurEdge.Orientation() == TopAbs_FORWARD) ? lpar : fpar;
-              gp_Vec2d CurDir;
-              CurPCurve->D1(CurParam, CurPoint, CurDir);
+              double      MaxAngle = RealFirst();
+              TopoDS_Edge TrueEdge;
+              CurParam                 = (CurEdge.Orientation() == TopAbs_FORWARD) ? lpar : fpar;
+              auto [aCurPoint, CurDir] = CurPCurve->EvalD1(CurParam);
+              CurPoint                 = aCurPoint;
               CurDir.Normalize();
               if (CurEdge.Orientation() == TopAbs_REVERSED)
               {
@@ -3997,10 +4037,13 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                 const TopoDS_Edge&        anEdge = TopoDS::Edge(itl.Value());
                 occ::handle<Geom2d_Curve> aPCurve =
                   BRep_Tool::CurveOnSurface(anEdge, F_RefFace, fpar, lpar);
-                double   aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? fpar : lpar;
-                gp_Pnt2d aPoint;
-                gp_Vec2d aDir;
-                aPCurve->D1(aParam, aPoint, aDir);
+                if (aPCurve.IsNull())
+                {
+                  // edge has no pcurve on the reference face, skip it as a direction candidate
+                  continue;
+                }
+                const double aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? fpar : lpar;
+                gp_Vec2d     aDir   = aPCurve->EvalD1(aParam).D1;
                 aDir.Normalize();
                 if (anEdge.Orientation() == TopAbs_REVERSED)
                 {
@@ -4013,7 +4056,10 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                   TrueEdge = anEdge;
                 }
               }
-              TrueElist.Append(TrueEdge);
+              if (!TrueEdge.IsNull())
+              {
+                TrueElist.Append(TrueEdge);
+              }
             }
 
             // Find next edge in TrueElist
@@ -4023,6 +4069,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
 
               occ::handle<Geom2d_Curve> aPCurve =
                 BRep_Tool::CurveOnSurface(anEdge, F_RefFace, fpar, lpar);
+              if (aPCurve.IsNull())
+              {
+                // edge has no pcurve on the reference face, skip it as a next-edge candidate
+                continue;
+              }
               double   aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? fpar : lpar;
               gp_Pnt2d aPoint = aPCurve->Value(aParam);
               double   DiffU  = std::abs(aPoint.X() - CurPoint.X());
@@ -4099,12 +4150,14 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
                                     NextPoint);
               if (NextEdge.IsNull())
               {
-                return;
+                isWireBuildingFailed = true;
+                break;
               }
             }
             else
             {
-              return;
+              isWireBuildingFailed = true;
+              break;
             }
           }
           CurPoint  = NextPoint;
@@ -4114,6 +4167,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
           UsedEdges.Add(CurEdge);
           RemoveEdgeFromMap(CurEdge, VEmap);
         } // for (;;)
+
+        if (isWireBuildingFailed)
+        {
+          break;
+        }
 
         aNewWire.Closed(true);
         UsedEdges.Add(StartEdge);
@@ -4167,6 +4225,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(
           }
         }
       } // while (!edges.IsEmpty())
+
+      if (isWireBuildingFailed)
+      {
+        continue;
+      }
 
       // Build wires from internal edges
       NCollection_IndexedDataMap<TopoDS_Shape,
@@ -4627,20 +4690,22 @@ void SplitWire(const TopoDS_Wire&                                               
           break;
         }
 
+        double                    fpar, lpar;
+        occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(CurEdge, theFace, fpar, lpar);
         if (aElist.Extent() == 1)
         {
           CurEdge = TopoDS::Edge(aElist.First());
           aElist.Clear();
         }
+        else if (aPCurve.IsNull())
+        {
+          CurEdge = TopoDS::Edge(aElist.First());
+          aElist.RemoveFirst();
+        }
         else
         {
-          double                    fpar, lpar;
-          occ::handle<Geom2d_Curve> aPCurve =
-            BRep_Tool::CurveOnSurface(CurEdge, theFace, fpar, lpar);
           double   aParam = (CurEdge.Orientation() == TopAbs_FORWARD) ? lpar : fpar;
-          gp_Pnt2d aPoint;
-          gp_Vec2d CurDir;
-          aPCurve->D1(aParam, aPoint, CurDir);
+          gp_Vec2d CurDir = aPCurve->EvalD1(aParam).D1;
           CurDir.Normalize();
           if (CurEdge.Orientation() == TopAbs_REVERSED)
           {
@@ -4654,9 +4719,13 @@ void SplitWire(const TopoDS_Wire&                                               
           {
             const TopoDS_Edge& anEdge = TopoDS::Edge(aLocalIter.Value());
             aPCurve                   = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
-            aParam                    = (anEdge.Orientation() == TopAbs_FORWARD) ? fpar : lpar;
-            gp_Vec2d aDir;
-            aPCurve->D1(aParam, aPoint, aDir);
+            if (aPCurve.IsNull())
+            {
+              // edge has no pcurve on the reference face, skip it as a direction candidate
+              continue;
+            }
+            aParam        = (anEdge.Orientation() == TopAbs_FORWARD) ? fpar : lpar;
+            gp_Vec2d aDir = aPCurve->EvalD1(aParam).D1;
             aDir.Normalize();
             if (anEdge.Orientation() == TopAbs_REVERSED)
             {
@@ -4668,6 +4737,11 @@ void SplitWire(const TopoDS_Wire&                                               
               MinAngle = anAngle;
               NextEdge = anEdge;
             }
+          }
+          if (NextEdge.IsNull())
+          {
+            // all candidates lacked a pcurve, fall back to an arbitrary one instead of stalling
+            NextEdge = TopoDS::Edge(aElist.First());
           }
           CurEdge = NextEdge;
           // Remove <CurEdge> from list

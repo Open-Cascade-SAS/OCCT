@@ -6,8 +6,6 @@ set(OCCT_ShapeConstruct_FILES
   ShapeConstruct.hxx
   ShapeConstruct_Curve.cxx
   ShapeConstruct_Curve.hxx
-  ShapeConstruct_MakeTriangulation.cxx
-  ShapeConstruct_MakeTriangulation.hxx
   ShapeConstruct_ProjectCurveOnSurface.cxx
   ShapeConstruct_ProjectCurveOnSurface.hxx
 )

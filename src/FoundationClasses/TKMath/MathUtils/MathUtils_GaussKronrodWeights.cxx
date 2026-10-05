@@ -21,7 +21,24 @@ bool MathUtils::GetKronrodPointsAndWeights(int          theNbKronrod,
                                            math_Vector& thePoints,
                                            math_Vector& theWeights)
 {
-  return math::KronrodPointsAndWeights(theNbKronrod, thePoints, theWeights);
+  if (theNbKronrod < 1 || thePoints.Size() != static_cast<size_t>(theNbKronrod)
+      || theWeights.Size() != static_cast<size_t>(theNbKronrod))
+  {
+    return false;
+  }
+  const size_t aSize = static_cast<size_t>(theNbKronrod);
+  math_Vector  aPoints(aSize);
+  math_Vector  aWeights(aSize);
+  if (!math::KronrodPointsAndWeights(theNbKronrod, aPoints, aWeights))
+  {
+    return false;
+  }
+  for (size_t i = 0; i < aSize; ++i)
+  {
+    thePoints.ChangeAt(i)  = aPoints.At(i);
+    theWeights.ChangeAt(i) = aWeights.At(i);
+  }
+  return true;
 }
 
 //=================================================================================================
@@ -30,7 +47,8 @@ bool MathUtils::GetOrderedGaussPointsAndWeights(int          theNbGauss,
                                                 math_Vector& thePoints,
                                                 math_Vector& theWeights)
 {
-  if (theNbGauss < 1 || thePoints.Length() != theNbGauss || theWeights.Length() != theNbGauss)
+  if (theNbGauss < 1 || thePoints.Size() != static_cast<size_t>(theNbGauss)
+      || theWeights.Size() != static_cast<size_t>(theNbGauss))
   {
     return false;
   }

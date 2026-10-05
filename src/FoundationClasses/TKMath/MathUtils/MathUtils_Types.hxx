@@ -18,6 +18,7 @@
 #include <math_Matrix.hxx>
 
 #include <array>
+#include <cstdint>
 #include <optional>
 
 //! Modern math solver types and result structures.
@@ -37,7 +38,8 @@ enum class Status
   NoSolution,          //!< No solution exists
   NotPositiveDefinite, //!< Matrix not positive definite (for Cholesky, Newton, etc.)
   Singular,            //!< Matrix is singular or nearly singular
-  NonDescentDirection  //!< Search direction is not a descent direction for merit function
+  NonDescentDirection, //!< Search direction is not a descent direction for merit function
+  CallbackError        //!< User callback reported failure
 };
 
 //! Result for scalar (1D) root finding and minimization.
@@ -45,7 +47,7 @@ enum class Status
 struct ScalarResult
 {
   MathUtils::Status     Status       = MathUtils::Status::NotConverged; //!< Computation status
-  size_t                NbIterations = 0; //!< Number of iterations performed
+  uint32_t              NbIterations = 0; //!< Number of iterations performed
   std::optional<double> Root;             //!< Found root or minimum location
   std::optional<double> Value;            //!< Function value at root/minimum
   std::optional<double> Derivative;       //!< Derivative at root (if computed)
@@ -75,7 +77,7 @@ struct PolyResult
   //! Access root by index (0-based).
   //! @param theIndex root index (0 to NbRoots-1)
   //! @return root value
-  double operator[](int theIndex) const { return Roots[theIndex]; }
+  double operator[](size_t theIndex) const { return Roots[theIndex]; }
 };
 
 //! Result for N-dimensional optimization and system solving.
@@ -83,7 +85,7 @@ struct PolyResult
 struct VectorResult
 {
   MathUtils::Status          Status       = MathUtils::Status::NotConverged; //!< Computation status
-  size_t                     NbIterations = 0; //!< Number of iterations performed
+  uint32_t                   NbIterations = 0; //!< Number of iterations performed
   std::optional<math_Vector> Solution;         //!< Solution vector (set by solver on success)
   std::optional<double>      Value;            //!< Function value at solution (if computed)
   std::optional<math_Vector> Gradient;         //!< Gradient at solution (if computed)
@@ -131,7 +133,7 @@ struct LinearMultipleResult
 struct EigenResult
 {
   MathUtils::Status          Status       = MathUtils::Status::NotConverged; //!< Computation status
-  size_t                     NbIterations = 0; //!< Number of iterations performed
+  uint32_t                   NbIterations = 0; //!< Number of iterations performed
   std::optional<math_Vector> EigenValues;      //!< Computed eigenvalues (set by solver)
   std::optional<math_Matrix> EigenVectors;     //!< Computed eigenvectors (set by solver)
 
@@ -164,7 +166,7 @@ struct DecompResult
 struct IntegResult
 {
   MathUtils::Status     Status       = MathUtils::Status::NotConverged; //!< Computation status
-  size_t                NbIterations = 0; //!< Number of adaptive iterations
+  uint32_t              NbIterations = 0; //!< Number of adaptive iterations
   size_t                NbPoints     = 0; //!< Total number of quadrature points used
   std::optional<double> Value;            //!< Computed integral value
   std::optional<double> AbsoluteError;    //!< Estimated absolute error (if computed)

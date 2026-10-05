@@ -49,7 +49,7 @@
 #endif
 
 #include <gce_MakePln.hxx>
-#include <BRepOffsetAPI_Sewing.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 
 //=================================================================================================
@@ -246,7 +246,7 @@ static int OCC544(Draw_Interpretor& di, int argc, const char** argv)
   //    Sprintf(name,"w2-last");
   //    DBRep::Set(name,mkPipe2.LastShape());
 
-  BRepOffsetAPI_Sewing SewIt(1.0e-4);
+  BRepBuilderAPI_Sewing SewIt(1.0e-4);
 
   // Make tube
   TopExp_Explorer getFaces;

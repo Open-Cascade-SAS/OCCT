@@ -24,6 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_SurfaceData.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_FlatDataMap.hxx>
 #include <TopOpeBRepDS_CurveData.hxx>
 #include <TopOpeBRepDS_PointData.hxx>
 #include <TopoDS_Shape.hxx>
@@ -84,6 +85,19 @@ public:
   Standard_EXPORT void ChangeKeepCurve(const int I, const bool FindKeep);
 
   Standard_EXPORT void ChangeKeepCurve(TopOpeBRepDS_Curve& C, const bool FindKeep);
+
+  //! Records that the specified ends of two intersection curves represent
+  //! the same topological point.
+  Standard_EXPORT void MergeEquivalentCurvePoints(const int  theFirstCurve,
+                                                  const bool theFirstCurveStart,
+                                                  const int  theSecondCurve,
+                                                  const bool theSecondCurveStart);
+
+  //! Returns the representative curve end for the specified curve end.
+  //! The returned curve index is equal to theCurve when no equivalence is recorded.
+  Standard_EXPORT int FindEquivalentCurvePoint(const int  theCurve,
+                                               const bool theCurveStart,
+                                               bool&      theRepresentativeStart) const;
 
   //! Insert a new point. Returns the index.
   Standard_EXPORT int AddPoint(const TopOpeBRepDS_Point& PDS);
@@ -243,6 +257,15 @@ public:
   //! Returns the Curve of index <I>.
   Standard_EXPORT TopOpeBRepDS_Curve& ChangeCurve(const int I);
 
+  //! Returns the representative of an equivalent-curve group and reports whether
+  //! the curve parameter direction is reversed relative to that representative.
+  Standard_EXPORT int FindEquivalentCurve(const int I, bool& theIsReversed) const;
+
+  //! Joins two complete coincident curves into one oriented topological boundary.
+  Standard_EXPORT void MergeEquivalentCurves(const int  theFirst,
+                                             const int  theSecond,
+                                             const bool theIsReversed);
+
   //! Returns the point of index <I>.
   Standard_EXPORT const TopOpeBRepDS_Point& Point(const int I) const;
 
@@ -309,7 +332,6 @@ public:
   Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
                   ChangeMapOfRejectedShapesTool();
 
-  friend class TopOpeBRepDS_SurfaceExplorer;
   friend class TopOpeBRepDS_CurveExplorer;
   friend class TopOpeBRepDS_PointExplorer;
 
@@ -322,6 +344,7 @@ private:
   NCollection_DataMap<int, TopOpeBRepDS_SurfaceData> mySurfaces;
   int                                                myNbCurves;
   NCollection_DataMap<int, TopOpeBRepDS_CurveData>   myCurves;
+  NCollection_FlatDataMap<int, int>                  myEquivalentCurvePoints;
   int                                                myNbPoints;
   NCollection_DataMap<int, TopOpeBRepDS_PointData>   myPoints;
   NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>

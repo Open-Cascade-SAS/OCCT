@@ -20,8 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopOpeBRep_PLineInter.hxx>
 #include <Standard_Integer.hxx>
+class TopOpeBRep_LineInter;
 class TopOpeBRep_WPointInter;
 
 class TopOpeBRep_WPointInterIterator
@@ -43,10 +43,10 @@ public:
 
   Standard_EXPORT const TopOpeBRep_WPointInter& CurrentWP();
 
-  Standard_EXPORT TopOpeBRep_PLineInter PLineInterDummy() const;
+  Standard_EXPORT TopOpeBRep_LineInter* PLineInterDummy() const;
 
 private:
-  TopOpeBRep_PLineInter myLineInter;
+  TopOpeBRep_LineInter* myLineInter;
   int                   myWPointIndex;
   int                   myWPointNb;
 };

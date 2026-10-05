@@ -27,7 +27,5 @@
 #define MTPei TopOpeBRep_EdgesIntersector
 #define MTPfei TopOpeBRep_FaceEdgeIntersector
 #define MTPff TopOpeBRep_FacesFiller
-#define MTPef TopOpeBRep_EdgesFiller
-#define MTPfef TopOpeBRep_FaceEdgeFiller
 #define MTPpgt TopOpeBRep_PointGeomTool
 #endif

@@ -319,7 +319,7 @@ void Poly_Triangulation::AddNormals()
 {
   if (myNormals.IsEmpty() || myNormals.Length() != myNodes.Length())
   {
-    myNormals.Resize(0, myNodes.Size() - 1, false);
+    myNormals.Resize(0, myNodes.Length() - 1, false);
   }
 }
 

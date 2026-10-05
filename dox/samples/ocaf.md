@@ -130,7 +130,7 @@ ad696001-5b34-11d1-b5ba-00a0c9064368.Location: TKStd
 //! This attribute implements a transformation data container
 class MyPackage_Transformation : public TDF_Attribute
 {
-public: //!@ name Static methods
+public: //! @name Static methods
 
   //! The method returns a unique GUID of this attribute.
   //! By means of this GUID this attribute may be identified
@@ -141,12 +141,12 @@ public: //!@ name Static methods
   //! The found or created attribute is returned.
   Standard_EXPORT static occ::handle<MyPackage_Transformation> Set (const TDF_Label theLabel);
 
-public: //!@ name Methods for access to the attribute data
+public: //! @name Methods for access to the attribute data
 
   //! The method returns the transformation.
   Standard_EXPORT gp_Trsf Get () const;
 
-public: //!@ name Methods for setting the data of transformation
+public: //! @name Methods for setting the data of transformation
 
   //! The method defines a rotation type of transformation.
   Standard_EXPORT void SetRotation (const gp_Ax1& theAxis, double theAngle);
@@ -169,7 +169,7 @@ public: //!@ name Methods for setting the data of transformation
   //! The method defines a complex type of transformation from one coordinate system to another.
   Standard_EXPORT void SetTransformation (const gp_Ax3& theCoordinateSystem1, const gp_Ax3& theCoordinateSystem2);
 
-public: //!@ name Overridden methods from TDF_Attribute
+public: //! @name Overridden methods from TDF_Attribute
 
   //! The method returns a unique GUID of the attribute.
   //! By means of this GUID this attribute may be identified among other attributes attached to the same label.
@@ -185,12 +185,12 @@ public: //!@ name Overridden methods from TDF_Attribute
 
   //! The method is called on Copy / Paste.
   //! It copies the content of this attribute into theAttribute (copies the fields).
-  Standard_EXPORT void Paste (const occ::handle<TDF_Attribute>& theAttribute, const occ::handle<TDF_RelocationTable>& theRelocationTable);
+  Standard_EXPORT void Paste (const occ::handle<TDF_Attribute>& theAttribute, const occ::handle<TDF_RelocationTable>& theRelocationTable) const override;
 
   //! Prints the content of this attribute into the stream.
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS);
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
-public: //!@ name Constructor
+public: //! @name Constructor
 
   //! The C++ constructor of this attribute class.
   //! Usually it is never called outside this class.

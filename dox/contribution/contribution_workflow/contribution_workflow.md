@@ -91,7 +91,7 @@ Re-formatting of unrelated code should be avoided unless done in a dedicated PR.
 @subsection occt_contribution_workflow_test Providing a Test Case
 
 For functional changes, a test case should be created (unless an existing test already covers it).
-See @ref testmanual_intro_quick_create "Creating a New Test" for instructions.
+See @ref testmanual_3 "Creating a New Test" for instructions.
 
 Test data files (CAD models, etc.) should be attached to the GitHub Issue or PR.
 

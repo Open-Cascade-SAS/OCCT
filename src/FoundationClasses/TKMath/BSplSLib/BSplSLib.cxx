@@ -1664,7 +1664,7 @@ void BSplSLib::Iso(const double                      Param,
     l2 = Poles.UpperRow();
   }
 
-  NCollection_LocalArray<double> locpoles((Degree + 1) * (l2 - f2 + 1) * dim);
+  NCollection_LocalArray<double> locpoles(static_cast<size_t>(Degree + 1) * (l2 - f2 + 1) * dim);
 
   double w, *pole = locpoles;
   index += f1;

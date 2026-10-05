@@ -26,7 +26,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronAC, GeomFill_TrihedronWithGuide)
 
@@ -299,10 +299,10 @@ int GeomFill_GuideTrihedronAC::NbIntervals(const GeomAbs_Shape S) const
   NCollection_Array1<double> DiscG(1, Nb + 1);
   myGuideAC->Intervals(DiscG, S);
 
-  NCollection_Sequence<double> Seq;
+  NCollection_LinearVector<double> Seq;
   GeomLib::FuseIntervals(DiscC, DiscG, Seq);
 
-  return Seq.Length() - 1;
+  return static_cast<int>(Seq.Size()) - 1;
 }
 
 //=================================================================================================
@@ -310,7 +310,7 @@ int GeomFill_GuideTrihedronAC::NbIntervals(const GeomAbs_Shape S) const
 void GeomFill_GuideTrihedronAC::Intervals(NCollection_Array1<double>& TT,
                                           const GeomAbs_Shape         S) const
 {
-  int Nb, ii;
+  int Nb;
   Nb = myCurveAC->NbIntervals(S);
   NCollection_Array1<double> DiscC(1, Nb + 1);
   myCurveAC->Intervals(DiscC, S);
@@ -318,13 +318,12 @@ void GeomFill_GuideTrihedronAC::Intervals(NCollection_Array1<double>& TT,
   NCollection_Array1<double> DiscG(1, Nb + 1);
   myGuideAC->Intervals(DiscG, S);
 
-  NCollection_Sequence<double> Seq;
+  NCollection_LinearVector<double> Seq;
   GeomLib::FuseIntervals(DiscC, DiscG, Seq);
-  Nb = Seq.Length();
 
-  for (ii = 1; ii <= Nb; ii++)
+  for (size_t anIndex = 0; anIndex < Seq.Size(); ++anIndex)
   {
-    TT(ii) = myCurveAC->GetUParameter(*myCurve, Seq(ii), 1);
+    TT.ChangeAt(anIndex) = myCurveAC->GetUParameter(*myCurve, Seq.Value(anIndex), 1);
   }
 }
 

@@ -49,7 +49,6 @@
 #endif
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GettracePURGE();
 
 void debifb() {}
 #endif
@@ -351,12 +350,6 @@ void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(
     mapVon1Edge)
 {
   // prequesitory : edges described by <mapVon1Edge> are not closed,not degenerated
-#ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettracePURGE())
-  {
-    std::cout << std::endl << "* CorrectGclosedWire :" << std::endl << std::endl;
-  }
-#endif
 
   int nVV = mapVVref.Extent();
   for (int i = 1; i <= nVV; i++)

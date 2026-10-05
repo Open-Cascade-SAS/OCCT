@@ -20,9 +20,14 @@
 #include <GProp_GProps.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
 #include <GeomAPI.hxx>
 #include <GeomConvert.hxx>
+#include <GeomFill_AppSurf.hxx>
 #include <GeomFill_BSplineCurves.hxx>
+#include <GeomFill_Line.hxx>
+#include <GeomFill_SectionGenerator.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -30,6 +35,7 @@
 #include <NCollection_HArray1.hxx>
 #include <Precision.hxx>
 #include <ShapeFix_Shape.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_Handle.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -126,6 +132,29 @@ double surfaceArea(const TopoDS_Shape& theShape)
   return aProps.Mass();
 }
 
+occ::handle<Geom_BSplineCurve> makeTwoPoleCurve(const gp_Pnt& theFirst,
+                                                const gp_Pnt& theLast,
+                                                const double  theLastKnot)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 2);
+  aPoles(1) = theFirst;
+  aPoles(2) = theLast;
+
+  NCollection_Array1<double> aWeights(1, 2);
+  aWeights(1) = 1.0;
+  aWeights(2) = 1.0;
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = theLastKnot;
+
+  NCollection_Array1<int> aMultiplicities(1, 2);
+  aMultiplicities(1) = 2;
+  aMultiplicities(2) = 2;
+
+  return new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMultiplicities, 1, false);
+}
+
 } // namespace
 
 TEST(GeomFill_BSplineCurvesTest, OCC28131_FillSurfaceFromBezierAndInterpolatedCurves)
@@ -176,4 +205,67 @@ TEST(GeomFill_BSplineCurvesTest, OCC28131_StandardOffsetOfFilledFace)
   EXPECT_NEAR(maxTolerance(aResult), 0.408, 0.408 * 0.01);
   // checkprops -s 1693.76
   EXPECT_NEAR(surfaceArea(aResult), 1693.76, 1693.76 * 0.01);
+}
+
+// Migrated from tests/bugs/filling/bug13904.  Keep the DRAW command's
+// approximation path: SectionGenerator -> AppSurf -> BSpline surface.
+TEST(GeomFill_BSplineCurvesTest, OCC13904_AppSurfBetweenCircleAndEllipse)
+{
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 100.0, 100.0), gp_Dir(0.0, 1.0, 1.0)), 50.0);
+  const occ::handle<Geom_Ellipse> anEllipse =
+    new Geom_Ellipse(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 1.0)), 100.0, 50.0);
+
+  GeomFill_SectionGenerator aSection;
+  aSection.AddCurve(aCircle);
+  aSection.AddCurve(anEllipse);
+  aSection.Perform(Precision::PConfusion());
+
+  occ::handle<GeomFill_Line> aLine = new GeomFill_Line(2);
+  GeomFill_AppSurf anApproximation(3, 8, Precision::Confusion(), Precision::PConfusion(), 0);
+  ASSERT_NO_THROW(anApproximation.Perform(aLine, aSection));
+  ASSERT_TRUE(anApproximation.IsDone());
+
+  int aUDegree  = 0;
+  int aVDegree  = 0;
+  int aNbUPoles = 0;
+  int aNbVPoles = 0;
+  int aNbUKnots = 0;
+  int aNbVKnots = 0;
+  anApproximation.SurfShape(aUDegree, aVDegree, aNbUPoles, aNbVPoles, aNbUKnots, aNbVKnots);
+  EXPECT_GE(aUDegree, 3);
+  EXPECT_GE(aVDegree, 1);
+  EXPECT_GT(aNbUPoles, 0);
+  EXPECT_GT(aNbVPoles, 0);
+  EXPECT_GT(aNbUKnots, 0);
+  EXPECT_GT(aNbVKnots, 0);
+
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(anApproximation.SurfPoles(),
+                            anApproximation.SurfWeights(),
+                            anApproximation.SurfUKnots(),
+                            anApproximation.SurfVKnots(),
+                            anApproximation.SurfUMults(),
+                            anApproximation.SurfVMults(),
+                            anApproximation.UDegree(),
+                            anApproximation.VDegree());
+  EXPECT_FALSE(aSurface.IsNull());
+}
+
+// Migrated from tests/bugs/filling/bug27775.  The source curves intentionally
+// have only two poles; GeomFill_BSplineCurves must reject this invalid input.
+TEST(GeomFill_BSplineCurvesTest, OCC27704_InvalidTwoPoleCurvesRaiseConstructionError)
+{
+  const gp_Pnt aP1(-24033.3957701043, -6337.90755953146, -16577.8188547128);
+  const gp_Pnt aP2(-23933.3957701044, -6337.90755953146, -16577.8362547128);
+  const gp_Pnt aP3(-24033.3957701043, -6371.01755953146, -16577.8188547128);
+  const gp_Pnt aP4(-23933.3957701044, -6371.01755953146, -16577.8362547128);
+
+  const occ::handle<Geom_BSplineCurve> aCurve1 = makeTwoPoleCurve(aP1, aP2, 100.000001513789);
+  const occ::handle<Geom_BSplineCurve> aCurve2 = makeTwoPoleCurve(aP2, aP1, 100.000001513789);
+  const occ::handle<Geom_BSplineCurve> aCurve3 = makeTwoPoleCurve(aP3, aP1, 33.1099999999979);
+  const occ::handle<Geom_BSplineCurve> aCurve4 = makeTwoPoleCurve(aP3, aP4, 100.000001513789);
+
+  EXPECT_THROW(GeomFill_BSplineCurves(aCurve1, aCurve2, aCurve3, aCurve4, GeomFill_CoonsStyle),
+               Standard_ConstructionError);
 }

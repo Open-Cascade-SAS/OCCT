@@ -130,6 +130,32 @@ public:
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
+  //! Reads streams according to internal configuration.
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Reads streams according to internal configuration.
+  Standard_EXPORT bool Read(
+    ReadStreamList&                     theStreams,
+    TopoDS_Shape&                       theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Reads streams according to internal configuration.
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Reads streams according to internal configuration.
+  Standard_EXPORT bool Read(
+    ReadStreamList&              theStreams,
+    TopoDS_Shape&                theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+
 public:
   //! Gets CAD format name of associated provider
   //! @return provider CAD format

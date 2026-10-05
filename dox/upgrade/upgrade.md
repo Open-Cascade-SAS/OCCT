@@ -7,7 +7,7 @@ Upgrade from older OCCT versions  {#occt__upgrade}
 
 This document provides technical details on changes made in particular versions of OCCT. It can help to upgrade user applications based on previous versions of OCCT to newer ones.
 
-@ref upgrade_occt800 "SEEK TO THE LAST CHAPTER (UPGRADE TO 8.0.0)"
+@ref upgrade_occt810 "SEEK TO THE LAST CHAPTER (UPGRADE TO 8.1.0)"
 
 @subsection upgrade_intro_precautions Precautions
 
@@ -1672,10 +1672,10 @@ TColStd_Array1OfReal anArr;                                    NCollection_Array
 TColgp_SequenceOfPnt aSeq;                                     NCollection_Sequence<gp_Pnt> aSeq;
 ~~~~
 
-Two package typedef wrappers have been removed entirely (no backward-compatible aliases): `TColGeom` and `TColGeom2d`. Replace with `NCollection_Array1<occ::handle<Geom_Curve>>` and the equivalent `Geom2d_*` form:
+The `TColGeom_*` and `TColGeom2d_*` collection typedefs have been deprecated (backward-compatible aliases are preserved with deprecation warnings). They will be removed in a future release. Replace them with the corresponding `NCollection_*` template instantiations, such as `NCollection_Array1<occ::handle<Geom_Curve>>`:
 
 ~~~~{.cpp}
-// Before (removed)                                           // After
+// Before (deprecated)                                        // After
 #include <TColGeom_Array1OfCurve.hxx>                          #include <NCollection_Array1.hxx>
 TColGeom_Array1OfCurve aCurves;                                #include <Geom_Curve.hxx>
                                                                NCollection_Array1<occ::handle<Geom_Curve>> aCurves;
@@ -1940,3 +1940,30 @@ Deprecated (still compiles with warnings):
 | OCCT math wrappers (`ACos`, `Sin`, `Sqrt`, `Min`, `Max`, ...) | `std::` equivalents in `<cmath>` / `<algorithm>` |
 | `Transfer_TransferDeadLoop` exception | Status-flag-based dead-loop detection |
 | `AIS_InteractiveContext` immediate-mode rendering methods | Retained-mode pipeline |
+
+@section upgrade_occt810 Upgrade to OCCT 8.1.0
+
+@subsection upgrade_810_brepfont BRep font and text conversion
+
+BRep font construction is provided by the `BRepFont` package in the `TKV3d` toolkit.
+`StdPrs_BRepTextBuilder`, `Font_BRepTextBuilder`, and `Font_BRepFont` have been removed. For direct
+TopoDS conversion, use `StdPrs_BRepFont::RenderText()` or `StdPrs_BRepFont::RenderGlyph()`.
+Lower-level code can regularize a `Font_GlyphOutline` with `BRepFont_Regularizer` and pass the result
+to `BRepFont_Builder`.
+
+For TopoDS output, contour concatenation is selected per call through `ToConcatenateContours` in
+the corresponding `GlyphOptions` or `TextOptions`. The persistent
+`StdPrs_BRepFont::SetCompositeCurveMode()` setting has been removed. Font outlines carrying the
+FreeType overlap flag are emitted as separate faces; no Boolean union is performed.
+
+`Font_FTFontParams` has been replaced by the aggregate `Font_FTFont::Params` structure. Use
+`Font_FontMgr::SetUseUnicodeSubsetFallback()` to change the process-wide Unicode fallback setting;
+`Font_FontMgr::ToUseUnicodeSubsetFallback()` now returns the current value rather than a writable
+reference.
+
+The `StdPrs_BRepFont::FTFont()` accessor has been removed. Use
+`StdPrs_BRepFont::SetSingleStrokeFont()` to select single-stroke construction, or use `Font_FTFont`
+directly for other low-level font operations.
+
+`StdPrs_BRepFont::RenderText()` skips glyphs that cannot be rendered and returns the remaining text
+geometry.

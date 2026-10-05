@@ -18,7 +18,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_LabelNodePtr.hxx>
 #include <TDF_HAllocator.hxx>
 #include <NCollection_DefineAlloc.hxx>
 
@@ -145,13 +144,13 @@ private:
   // Private Fields
   // --------------------------------------------------------------------------
 
-  TDF_LabelNodePtr              myFather;
-  TDF_LabelNodePtr              myBrother;
-  TDF_LabelNodePtr              myFirstChild;
-  std::atomic<TDF_LabelNodePtr> myLastFoundChild; // jfa 10.01.2003
-  int                           myTag;
-  int                           myFlags; // Flags & Depth
-  occ::handle<TDF_Attribute>    myFirstAttribute;
+  TDF_LabelNode*              myFather;
+  TDF_LabelNode*              myBrother;
+  TDF_LabelNode*              myFirstChild;
+  std::atomic<TDF_LabelNode*> myLastFoundChild; // jfa 10.01.2003
+  int                         myTag;
+  int                         myFlags; // Flags & Depth
+  occ::handle<TDF_Attribute>  myFirstAttribute;
 #ifdef KEEP_LOCAL_ROOT
   TDF_Data* myData;
 #endif

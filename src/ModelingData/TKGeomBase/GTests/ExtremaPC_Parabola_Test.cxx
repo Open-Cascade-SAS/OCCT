@@ -14,10 +14,14 @@
 #include <gtest/gtest.h>
 
 #include <ExtremaPC_Parabola.hxx>
+#include <ExtremaPC2d_Parabola.hxx>
 
 #include <gp_Ax2.hxx>
+#include <gp_Ax22d.hxx>
 #include <gp_Parab.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <ElCLib.hxx>
 
 #include <cmath>
@@ -47,6 +51,19 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnAxis_AtVertex)
 
   double aMinSqDist = aResult.MinSquareDistance();
   EXPECT_NEAR(aMinSqDist, 0.0, THE_TOL);
+}
+
+TEST_F(ExtremaPC_ParabolaTest, ZeroFocal_DegeneratesToLine)
+{
+  gp_Parab           aParabola(gp_Ax2(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)), 0.0);
+  ExtremaPC_Parabola anEval(aParabola, ExtremaPC::Domain1D{-10.0, 10.0});
+
+  const ExtremaPC::Result& aResult = anEval.Perform(gp_Pnt(5, 7, 3), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[0].Parameter, 4.0, THE_TOL);
+  EXPECT_NEAR(aResult[0].Point.Distance(gp_Pnt(5, 2, 3)), 0.0, THE_TOL);
 }
 
 TEST_F(ExtremaPC_ParabolaTest, PointOnAxis_Positive)
@@ -98,7 +115,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOffAxis_Positive)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify the point is on the parabola
-  int    aMinIdx     = aResult.MinIndex();
+  size_t aMinIdx     = aResult.MinIndex();
   gp_Pnt aPtOnParab  = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   double aExpectedSq = aPoint.SquareDistance(aPtOnParab);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aExpectedSq, THE_TOL);
@@ -116,7 +133,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOffAxis_Negative)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify the closest point is on the parabola and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnParab = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnParab), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnParab), THE_TOL);
@@ -137,7 +154,7 @@ TEST_F(ExtremaPC_ParabolaTest, PointOffAxis_LargeY)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify the closest point is on the parabola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnParab = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnParab), 0.0, THE_TOL);
 
@@ -202,7 +219,7 @@ TEST_F(ExtremaPC_ParabolaTest, BoundsPositive)
 
   // Since bounds are positive and point is at negative Y,
   // closest point should be at u=0 (vertex)
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_GE(aResult[aMinIdx].Parameter, 0.0);
 }
 
@@ -220,7 +237,7 @@ TEST_F(ExtremaPC_ParabolaTest, BoundsNegative)
 
   // Since bounds are negative and point is at positive Y,
   // closest point should be at u=0 (vertex)
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_LE(aResult[aMinIdx].Parameter, 0.0);
 }
 
@@ -237,7 +254,7 @@ TEST_F(ExtremaPC_ParabolaTest, NarrowBounds)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Parameter should be within bounds
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     EXPECT_GE(aResult[i].Parameter, 4.0 - THE_TOL);
     EXPECT_LE(aResult[i].Parameter, 6.0 + THE_TOL);
@@ -260,7 +277,7 @@ TEST_F(ExtremaPC_ParabolaTest, SmallFocalLength)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on parabola and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnParab = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnParab), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnParab), THE_TOL);
@@ -278,7 +295,7 @@ TEST_F(ExtremaPC_ParabolaTest, LargeFocalLength)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on parabola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnParab = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnParab), 0.0, THE_TOL);
 }
@@ -360,7 +377,7 @@ TEST_F(ExtremaPC_ParabolaTest, ParabolaWithOffset_PointOff)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify point is on parabola and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnParab = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnParab), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnParab), THE_TOL);
@@ -382,7 +399,7 @@ TEST_F(ExtremaPC_ParabolaTest, ParabolaInYZPlane)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify extremum point is on the parabola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnParab = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnParab), 0.0, THE_TOL);
 
@@ -402,7 +419,7 @@ TEST_F(ExtremaPC_ParabolaTest, ParabolaInXZPlane)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify extremum point is on the parabola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnParab = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnParab), 0.0, THE_TOL);
 
@@ -426,7 +443,7 @@ TEST_F(ExtremaPC_ParabolaTest, VerifyProjectedPoint)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Verify the projected point is on the parabola
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = ElCLib::Value(aResult[aMinIdx].Parameter, aParabola);
   EXPECT_NEAR(aResult[aMinIdx].Point.X(), aPtOnCurve.X(), THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), aPtOnCurve.Y(), THE_TOL);
@@ -445,7 +462,27 @@ TEST_F(ExtremaPC_ParabolaTest, VerifyDistanceConsistency)
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Verify distance matches point distance
-  int    aMinIdx     = aResult.MinIndex();
+  size_t aMinIdx     = aResult.MinIndex();
   double aComputedSq = aPoint.SquareDistance(aResult[aMinIdx].Point);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aComputedSq, THE_TOL);
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_ParabolaTest, PlanarDelegation_PreservesParameterAndHeight)
+{
+  ExtremaPC_Parabola anEvaluator3d(
+    gp_Parab(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 2.0));
+  ExtremaPC2d_Parabola anEvaluator2d(
+    gp_Parab2d(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), true), 2.0));
+  const ExtremaPC::Result&   aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
+  const ExtremaPC2d::Result& aResult2d = anEvaluator2d.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL);
+  ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
+  for (size_t anIndex = 0; anIndex < aResult3d.NbExt(); ++anIndex)
+  {
+    EXPECT_NEAR(aResult3d[anIndex].Parameter, aResult2d[anIndex].Parameter, THE_TOL);
+    EXPECT_NEAR(aResult3d[anIndex].SquareDistance,
+                aResult2d[anIndex].SquareDistance + 36.0,
+                THE_TOL);
+  }
 }

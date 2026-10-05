@@ -8,7 +8,6 @@ set(OCCT_CDM_FILES
 
   CDM_Document.cxx
   CDM_Document.hxx
-  CDM_DocumentPointer.hxx
 
   CDM_MetaData.cxx
   CDM_MetaData.hxx

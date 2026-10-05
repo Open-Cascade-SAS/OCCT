@@ -53,6 +53,9 @@ public:
   //! (default) scene will be loaded.
   void SetLoadAllScenes(bool theToLoadAll) { myToLoadAllScenes = theToLoadAll; }
 
+  //! Mark the input as a caller-owned stream so binary buffers can be cached in memory.
+  void SetStreamInput(bool theIsStream) { myIsStreamInput = theIsStream; }
+
   //! Set flag to use Mesh name in case if Node name is empty, TRUE by default.
   bool ToUseMeshNameAsFallback() { return myUseMeshNameAsFallback; }
 
@@ -139,6 +142,7 @@ protected:
                                // clang-format on
   bool myToPrintDebugMessages; //!< flag to print additional debug information
   bool myToApplyScale;         //!< flag to apply non-uniform scaling
+  bool myIsStreamInput;        //!< input is a caller-owned stream
   NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*
     myShapeScaleMap; //!< map of shapes with non-uniform scalings
 };

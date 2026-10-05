@@ -15,17 +15,18 @@
 
 #include <MathUtils_FunctorScalar.hxx>
 #include <MathUtils_FunctorVector.hxx>
+#include <MathUtils_Core.hxx>
 #include <MathRoot_Brent.hxx>
 #include <MathRoot_Newton.hxx>
 #include <MathOpt_Powell.hxx>
 #include <MathOpt_BFGS.hxx>
 
 #include <cmath>
+#include <limits>
 
 namespace
 {
 constexpr double THE_TOLERANCE = 1e-10;
-constexpr double THE_PI        = 3.14159265358979323846;
 } // namespace
 
 //=================================================================================================
@@ -277,7 +278,7 @@ TEST(MathUtils_Functor_Scalar, Sine_Value)
   EXPECT_TRUE(aSine.Value(0.0, aValue));
   EXPECT_NEAR(aValue, 0.0, THE_TOLERANCE);
 
-  EXPECT_TRUE(aSine.Value(THE_PI / 2.0, aValue));
+  EXPECT_TRUE(aSine.Value(MathUtils::THE_PI / 2.0, aValue));
   EXPECT_NEAR(aValue, 1.0, THE_TOLERANCE);
 }
 
@@ -300,7 +301,7 @@ TEST(MathUtils_Functor_Scalar, Cosine_Value)
   EXPECT_TRUE(aCosine.Value(0.0, aValue));
   EXPECT_NEAR(aValue, 1.0, THE_TOLERANCE);
 
-  EXPECT_TRUE(aCosine.Value(THE_PI, aValue));
+  EXPECT_TRUE(aCosine.Value(MathUtils::THE_PI, aValue));
   EXPECT_NEAR(aValue, -1.0, THE_TOLERANCE);
 }
 
@@ -337,6 +338,17 @@ TEST(MathUtils_Functor_Scalar, Power_NonInteger)
   EXPECT_FALSE(aPower.Value(-4.0, aValue));
 }
 
+TEST(MathUtils_Functor_Scalar, PowerZeroAtZeroHasZeroDerivative)
+{
+  MathUtils::Power aPower(0.0, 2.0, 3.0);
+  double           aValue      = 0.0;
+  double           aDerivative = 1.0;
+
+  ASSERT_TRUE(aPower.Values(0.0, aValue, aDerivative));
+  EXPECT_DOUBLE_EQ(aValue, 5.0);
+  EXPECT_DOUBLE_EQ(aDerivative, 0.0);
+}
+
 TEST(MathUtils_Functor_Scalar, Gaussian_Value)
 {
   MathUtils::Gaussian aGauss(1.0, 0.0, 1.0); // Standard normal
@@ -356,7 +368,7 @@ TEST(MathUtils_Functor_Scalar, Gaussian_Value)
 TEST(MathUtils_Functor_Vector, VectorLambda_Value)
 {
   auto aFunc = MathUtils::MakeVector([](const math_Vector& x, double& y) {
-    y = x(1) * x(1) + x(2) * x(2); // Sphere
+    y = x.At(0) * x.At(0) + x.At(1) * x.At(1); // Sphere
     return true;
   });
 
@@ -373,12 +385,12 @@ TEST(MathUtils_Functor_Vector, VectorLambdaWithGradient_Values)
 {
   auto aFunc = MathUtils::MakeVectorWithGradient(
     [](const math_Vector& x, double& y) {
-      y = x(1) * x(1) + x(2) * x(2);
+      y = x.At(0) * x.At(0) + x.At(1) * x.At(1);
       return true;
     },
     [](const math_Vector& x, math_Vector& g) {
-      g(1) = 2.0 * x(1);
-      g(2) = 2.0 * x(2);
+      g.ChangeAt(0) = 2.0 * x.At(0);
+      g.ChangeAt(1) = 2.0 * x.At(1);
       return true;
     });
 
@@ -530,6 +542,22 @@ TEST(MathUtils_Functor_Vector, Ackley_Value)
   EXPECT_NEAR(aValue, 0.0, THE_TOLERANCE); // Minimum at origin
 }
 
+TEST(MathUtils_Functor_Vector, AckleyRejectsEmptyAndNonFiniteInput)
+{
+  MathUtils::Ackley aAckley;
+  double            aValue = 0.0;
+
+  math_Vector anEmpty(size_t{0});
+  EXPECT_FALSE(aAckley.Value(anEmpty, aValue));
+
+  math_Vector aNonFinite(size_t{1}, std::numeric_limits<double>::infinity());
+  EXPECT_FALSE(aAckley.Value(aNonFinite, aValue));
+
+  MathUtils::Ackley anInvalid(std::numeric_limits<double>::infinity());
+  math_Vector       anOrigin(size_t{1}, 0.0);
+  EXPECT_FALSE(anInvalid.Value(anOrigin, aValue));
+}
+
 TEST(MathUtils_Functor_Vector, QuadraticForm_Value)
 {
   // f(x) = x^T * I * x = ||x||^2 (identity matrix)
@@ -644,7 +672,7 @@ TEST(MathUtils_Functor_Integration, Sine_RootFinding)
   auto aResult = MathRoot::Brent(aSine, 2.0, 4.0);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_TRUE(aResult.Root.has_value());
-  EXPECT_NEAR(*aResult.Root, THE_PI, 1e-10);
+  EXPECT_NEAR(*aResult.Root, MathUtils::THE_PI, 1e-10);
 }
 
 TEST(MathUtils_Functor_Integration, Sphere_WithPowell)
@@ -659,8 +687,8 @@ TEST(MathUtils_Functor_Integration, Sphere_WithPowell)
   auto aResult = MathOpt::Powell(aSphere, aStart);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_TRUE(aResult.Solution.has_value());
-  EXPECT_NEAR((*aResult.Solution)(1), 0.0, 1e-5);
-  EXPECT_NEAR((*aResult.Solution)(2), 0.0, 1e-5);
+  EXPECT_NEAR(aResult.Solution->At(0), 0.0, 1e-5);
+  EXPECT_NEAR(aResult.Solution->At(1), 0.0, 1e-5);
 }
 
 TEST(MathUtils_Functor_Integration, Booth_WithBFGS)
@@ -675,8 +703,8 @@ TEST(MathUtils_Functor_Integration, Booth_WithBFGS)
   auto aResult = MathOpt::BFGS(aBooth, aStart);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_TRUE(aResult.Solution.has_value());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 1e-5);
-  EXPECT_NEAR((*aResult.Solution)(2), 3.0, 1e-5);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 1e-5);
+  EXPECT_NEAR(aResult.Solution->At(1), 3.0, 1e-5);
 }
 
 TEST(MathUtils_Functor_Integration, Rosenbrock_WithBFGS)
@@ -696,8 +724,8 @@ TEST(MathUtils_Functor_Integration, Rosenbrock_WithBFGS)
   auto aResult = MathOpt::BFGS(aRosen, aStart, aConfig);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_TRUE(aResult.Solution.has_value());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 1e-4);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, 1e-4);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 1e-4);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, 1e-4);
 }
 
 TEST(MathUtils_Functor_Integration, Quadratic_WithNewton)
@@ -723,6 +751,6 @@ TEST(MathUtils_Functor_Integration, Quadratic_WithNewton)
   auto aResult = MathOpt::BFGS(aQuad, aStart);
   EXPECT_TRUE(aResult.IsDone());
   EXPECT_TRUE(aResult.Solution.has_value());
-  EXPECT_NEAR((*aResult.Solution)(1), 1.0, 1e-5);
-  EXPECT_NEAR((*aResult.Solution)(2), 1.0, 1e-5);
+  EXPECT_NEAR(aResult.Solution->At(0), 1.0, 1e-5);
+  EXPECT_NEAR(aResult.Solution->At(1), 1.0, 1e-5);
 }

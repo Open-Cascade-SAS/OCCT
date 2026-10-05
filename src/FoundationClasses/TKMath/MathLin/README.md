@@ -23,7 +23,7 @@ Singular Value Decomposition for general and ill-conditioned matrices.
 - `SVD()` - Compute singular value decomposition A = U * S * V^T
 - `SolveSVD()` - Solve linear system using SVD (handles rank-deficient systems)
 - `PseudoInverse()` - Compute Moore-Penrose pseudo-inverse
-- `ConditionNumber()` - Compute matrix condition number
+- `ConditionNumber()` - Compute an optional full-rank matrix condition number
 - `NumericalRank()` - Determine numerical rank
 
 ### MathLin_Householder.hxx
@@ -46,7 +46,8 @@ Least squares solvers with multiple methods.
 - `LeastSquares()` - Solve overdetermined systems with choice of method
 - `WeightedLeastSquares()` - Weighted least squares
 - `RegularizedLeastSquares()` - Tikhonov/Ridge regression
-- `OptimalRegularization()` - Find optimal regularization parameter
+- `OptimalRegularization()` - Find an optimal regularization parameter, returned as
+  `std::optional<double>` when a finite GCV score can be evaluated
 
 ### MathLin_EigenSearch.hxx
 QL algorithm for eigenvalue decomposition of tridiagonal matrices.
@@ -62,8 +63,8 @@ All functions are in the `MathLin` namespace and return result structures with s
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
-math_Matrix A(1, 3, 1, 3);
-math_Vector b(1, 3);
+math_Matrix A(size_t{3}, size_t{3});
+math_Vector b(size_t{3});
 // ... initialize A and b ...
 
 auto result = MathLin::Solve(A, b);
@@ -83,3 +84,9 @@ The MathLin package depends on:
 - MathUtils package for common types and utilities
 - math_Matrix, math_Vector, math_IntegerVector from the math package
 - math_Recipes for some low-level algorithms (SVD_Decompose, Jacobi)
+
+## Indexing
+
+MathLin reads input vectors and matrices positionally, regardless of their lower bounds, and returns
+zero-based results. Dimensions and positional indices use `size_t`; use `Size()`, `RowSize()`,
+`ColSize()`, `At()`, and `ChangeAt()`. Input lower bounds are not propagated to results.

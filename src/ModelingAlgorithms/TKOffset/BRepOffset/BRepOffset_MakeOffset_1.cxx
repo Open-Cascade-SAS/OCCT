@@ -4688,7 +4688,7 @@ void BRepOffset_BuildOffsetFaces::ShapesConnections(
   }
   //
   // get shapes connections for using in the rebuilding process
-  const BOPDS_PDS& pDS = theBuilder.PDS();
+  BOPDS_DS* const& pDS = theBuilder.PDS();
   // analyze all Face/Face intersections
   const NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   int                                             iInt, aNbFF = aFFs.Length();
@@ -7539,7 +7539,7 @@ void BRepOffset_BuildOffsetFaces::IntersectAndTrimEdges(
     return;
   }
   //
-  const BOPDS_PDS&                         pDS = aGFCE.PDS();
+  BOPDS_DS* const&                         pDS = aGFCE.PDS();
   NCollection_List<TopoDS_Shape>::Iterator aItLCE(aLCE);
   for (; aItLCE.More(); aItLCE.Next())
   {
@@ -7622,7 +7622,7 @@ void BRepOffset_BuildOffsetFaces::GetInvalidEdges(
     aDMVE;
   TopExp::MapShapesAndAncestors(aRes, TopAbs_VERTEX, TopAbs_EDGE, aDMVE);
   //
-  const BOPDS_PDS& pDS = theGF.PDS();
+  BOPDS_DS* const& pDS = theGF.PDS();
   //
   // find invalid splits of edges
   // check if the vertex is invalid:
@@ -8151,7 +8151,7 @@ void BRepOffset_BuildOffsetFaces::UpdateValidEdges(
   TopoDS_Compound                                               aCEAvoid;
   BRep_Builder().MakeCompound(aCEAvoid);
   // GF's data structure
-  const BOPDS_PDS& pDS = aGF.PDS();
+  BOPDS_DS* const& pDS = aGF.PDS();
 
   aNbE = myEdgesToAvoid.Extent();
   for (i = 1; i <= aNbE; ++i)
@@ -8704,7 +8704,7 @@ void BRepOffset_BuildOffsetFaces::GetInvalidEdgesByBounds(
   // vertices to check additionally by classification relatively to solid
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMVCheckAdd;
   // collect parts for removal
-  const BOPDS_PDS& pDS = aSec.PDS();
+  BOPDS_DS* const& pDS = aSec.PDS();
   //
   // check edge/edge intersections
   const NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = pDS->InterfEE();

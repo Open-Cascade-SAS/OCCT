@@ -17,6 +17,4 @@ set(OCCT_BRepClass3d_FILES
   BRepClass3d_SolidClassifier.hxx
   BRepClass3d_SolidExplorer.cxx
   BRepClass3d_SolidExplorer.hxx
-  BRepClass3d_SolidPassiveClassifier.hxx
-  BRepClass3d_SolidPassiveClassifier.cxx
 )

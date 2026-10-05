@@ -27,7 +27,7 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_SweepFunction, Approx_SweepFunction)
 
@@ -237,11 +237,11 @@ int GeomFill_SweepFunction::NbIntervals(const GeomAbs_Shape S) const
     return Nb_Sec;
   }
 
-  NCollection_Array1<double>   IntS(1, Nb_Sec + 1);
-  NCollection_Array1<double>   IntL(1, Nb_Loc + 1);
-  NCollection_Sequence<double> Inter;
-  double                       T;
-  int                          ii;
+  NCollection_Array1<double>       IntS(1, Nb_Sec + 1);
+  NCollection_Array1<double>       IntL(1, Nb_Loc + 1);
+  NCollection_LinearVector<double> Inter;
+  double                           T;
+  int                              ii;
   mySec->Intervals(IntS, S);
   for (ii = 1; ii <= Nb_Sec + 1; ii++)
   {
@@ -251,7 +251,7 @@ int GeomFill_SweepFunction::NbIntervals(const GeomAbs_Shape S) const
   myLoc->Intervals(IntL, S);
 
   GeomLib::FuseIntervals(IntS, IntL, Inter, Precision::PConfusion() * 0.99);
-  return Inter.Length() - 1;
+  return static_cast<int>(Inter.Size()) - 1;
 }
 
 //=================================================================================================
@@ -279,10 +279,10 @@ void GeomFill_SweepFunction::Intervals(NCollection_Array1<double>& T, const Geom
     return;
   }
 
-  NCollection_Array1<double>   IntS(1, Nb_Sec + 1);
-  NCollection_Array1<double>   IntL(1, Nb_Loc + 1);
-  NCollection_Sequence<double> Inter;
-  double                       t;
+  NCollection_Array1<double>       IntS(1, Nb_Sec + 1);
+  NCollection_Array1<double>       IntL(1, Nb_Loc + 1);
+  NCollection_LinearVector<double> Inter;
+  double                           t;
 
   mySec->Intervals(IntS, S);
   for (ii = 1; ii <= Nb_Sec + 1; ii++)
@@ -293,9 +293,9 @@ void GeomFill_SweepFunction::Intervals(NCollection_Array1<double>& T, const Geom
   myLoc->Intervals(IntL, S);
 
   GeomLib::FuseIntervals(IntS, IntL, Inter, Precision::PConfusion() * 0.99);
-  for (ii = 1; ii <= Inter.Length(); ii++)
+  for (size_t anIndex = 0; anIndex < Inter.Size(); ++anIndex)
   {
-    T(ii) = Inter(ii);
+    T.ChangeAt(anIndex) = Inter.Value(anIndex);
   }
 }
 

@@ -91,21 +91,31 @@ public:
 
   Standard_EXPORT double Period() const override;
 
-  Standard_EXPORT gp_Pnt2d Value(const double X) const override;
+  //! Evaluates the point on the line.
+  //! @param[in] theX parameter on the line
+  //! @return evaluated point
+  [[nodiscard]] Standard_EXPORT gp_Pnt2d EvalD0(const double theX) const final;
 
-  Standard_EXPORT void D0(const double X, gp_Pnt2d& P) const override;
+  //! Evaluates the point and first derivative on the line.
+  //! @param[in] theX parameter on the line
+  //! @return point and first derivative
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD1 EvalD1(const double theX) const final;
 
-  Standard_EXPORT void D1(const double X, gp_Pnt2d& P, gp_Vec2d& V) const override;
+  //! Evaluates the point and first two derivatives on the line.
+  //! @param[in] theX parameter on the line
+  //! @return point and derivatives through the second order
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD2 EvalD2(const double theX) const final;
 
-  Standard_EXPORT void D2(const double X, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  //! Evaluates the point and first three derivatives on the line.
+  //! @param[in] theX parameter on the line
+  //! @return point and derivatives through the third order
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD3 EvalD3(const double theX) const final;
 
-  Standard_EXPORT void D3(const double X,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
-
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  //! Evaluates a derivative of the requested order.
+  //! @param[in] theU parameter on the line
+  //! @param[in] theN derivative order; must be greater than zero
+  //! @return derivative vector of order theN
+  [[nodiscard]] Standard_EXPORT gp_Vec2d EvalDN(const double theU, const int theN) const final;
 
   Standard_EXPORT double Resolution(const double R3d) const override;
 

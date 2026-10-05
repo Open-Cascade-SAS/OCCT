@@ -264,7 +264,7 @@ const NCollection_List<TopoDS_Shape>& BRepAlgoAPI_BuilderAlgo::SectionEdges()
   // Fence map to avoid duplicated section edges in the result list
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
   // Intersection results
-  const BOPDS_PDS& pDS = myDSFiller->PDS();
+  BOPDS_DS* const& pDS = myDSFiller->PDS();
   // Iterate on all Face/Face interferences and take section edges
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs  = pDS->InterfFF();
   const int                                 aNbFF = aFFs.Length();

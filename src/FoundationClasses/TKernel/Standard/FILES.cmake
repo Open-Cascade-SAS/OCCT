@@ -10,7 +10,6 @@ set(OCCT_Standard_FILES
   Standard_Assert.hxx
   Standard_Atomic.hxx
   Standard_Boolean.hxx
-  Standard_Byte.hxx
   Standard_Character.hxx
   Standard_CLocaleSentry.cxx
   Standard_CLocaleSentry.hxx
@@ -65,7 +64,6 @@ set(OCCT_Standard_FILES
   Standard_OutOfMemory.hxx
   Standard_OutOfRange.hxx
   Standard_Overflow.hxx
-  Standard_PByte.hxx
   Standard_PCharacter.hxx
   Standard_Persistent.cxx
   Standard_Persistent.hxx

@@ -495,15 +495,15 @@ bool BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
                             const double       MaxToleranceToCheck)
 {
 
-  int curve_on_surface_index, curve_index, not_done, has_closed_curve, has_curve, jj, ii,
+  int curve_on_surface_index, curve_index, not_done, has_closed_curve, has_curve, ii,
     geom_reference_curve_flag = 0, max_sampling_points = 90, min_sampling_points = 30;
 
   double factor = 100.0e0,
          //     sampling_array[2],
     safe_factor         = 1.4e0, current_last, current_first, max_distance, coded_edge_tolerance,
          edge_tolerance = 0.0e0;
-  occ::handle<NCollection_HArray1<double>> parameters_ptr;
-  occ::handle<BRep_GCurve>                 geometric_representation_ptr;
+  NCollection_Array1<double> parameters;
+  occ::handle<BRep_GCurve>   geometric_representation_ptr;
 
   if (BRep_Tool::Degenerated(AnEdge))
   {
@@ -590,21 +590,15 @@ bool BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
   }
   if (a_sampler.NbPoints() < min_sampling_points)
   {
-    GeomLib::DensifyArray1OfReal(min_sampling_points, sampling_parameters, parameters_ptr);
+    GeomLib::DensifyArray1OfReal(min_sampling_points, sampling_parameters, parameters);
   }
   else if (a_sampler.NbPoints() > max_sampling_points)
   {
-    GeomLib::RemovePointsFromArray(max_sampling_points, sampling_parameters, parameters_ptr);
+    GeomLib::RemovePointsFromArray(max_sampling_points, sampling_parameters, parameters);
   }
   else
   {
-    jj             = 1;
-    parameters_ptr = new NCollection_HArray1<double>(1, sampling_parameters.Length());
-    for (ii = sampling_parameters.Lower(); ii <= sampling_parameters.Upper(); ii++)
-    {
-      parameters_ptr->ChangeArray1()(jj) = sampling_parameters(ii);
-      jj += 1;
-    }
+    parameters = sampling_parameters;
   }
 
   curve_index = 0;
@@ -654,7 +648,7 @@ bool BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
           GeomLib::EvalMaxParametricDistance(a_curve_on_surface,
                                              geom_reference_curve,
                                              MinToleranceRequested,
-                                             parameters_ptr->Array1(),
+                                             parameters,
                                              max_distance);
         }
         else if (geom_reference_curve_flag)
@@ -662,7 +656,7 @@ bool BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
           GeomLib::EvalMaxDistanceAlongParameter(a_curve_on_surface,
                                                  geom_reference_curve,
                                                  MinToleranceRequested,
-                                                 parameters_ptr->Array1(),
+                                                 parameters,
                                                  max_distance);
         }
         else
@@ -671,7 +665,7 @@ bool BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
           GeomLib::EvalMaxDistanceAlongParameter(a_curve_on_surface,
                                                  curve_on_surface_reference,
                                                  MinToleranceRequested,
-                                                 parameters_ptr->Array1(),
+                                                 parameters,
                                                  max_distance);
         }
         max_distance *= safe_factor;

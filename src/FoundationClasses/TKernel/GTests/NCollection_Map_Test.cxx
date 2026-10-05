@@ -17,6 +17,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 
 TEST(NCollection_MapTest, DefaultConstructor)
 {
@@ -432,6 +433,15 @@ TEST(NCollection_MapTest, BeginEndIterator)
   EXPECT_TRUE(aFoundKeys.count(10) > 0);
   EXPECT_TRUE(aFoundKeys.count(20) > 0);
   EXPECT_TRUE(aFoundKeys.count(30) > 0);
+
+  const NCollection_Map<int>& aConstMap = aMap;
+  EXPECT_EQ(aMap.begin(), aConstMap.cbegin());
+  EXPECT_EQ(aMap.end(), aConstMap.cend());
+
+  const auto anFound = std::find(aConstMap.cbegin(), aConstMap.cend(), 20);
+  ASSERT_NE(aConstMap.cend(), anFound);
+  EXPECT_EQ(20, *anFound);
+  EXPECT_EQ(1, std::count(aConstMap.cbegin(), aConstMap.cend(), 10));
 }
 
 TEST(NCollection_MapTest, RangeBasedForLoop)
@@ -484,7 +494,7 @@ TEST(NCollection_MapTest, ContainedNotFound)
   EXPECT_FALSE(anEmptyMap.Contained(10).has_value());
 }
 
-// Test iterator equality using NCollection_StlIterator
+// Test iterator equality
 TEST(NCollection_MapTest, IteratorEquality)
 {
   NCollection_Map<int> aMap;

@@ -15,6 +15,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <set>
 
 //=================================================================================================
@@ -126,6 +127,26 @@ TEST_F(NCollection_FlatMapTest, Iterator)
   EXPECT_TRUE(foundKeys.find(10) != foundKeys.end());
   EXPECT_TRUE(foundKeys.find(20) != foundKeys.end());
   EXPECT_TRUE(foundKeys.find(30) != foundKeys.end());
+}
+
+TEST_F(NCollection_FlatMapTest, STLIterators)
+{
+  NCollection_FlatMap<int> aMap;
+  aMap.Add(10);
+  aMap.Add(20);
+  aMap.Add(30);
+
+  int aSum = 0;
+  for (const int aKey : aMap)
+  {
+    aSum += aKey;
+  }
+  EXPECT_EQ(60, aSum);
+
+  const NCollection_FlatMap<int>& aConstMap = aMap;
+  const auto                      anIt      = std::find(aConstMap.cbegin(), aConstMap.cend(), 20);
+  ASSERT_NE(aConstMap.cend(), anIt);
+  EXPECT_EQ(20, *anIt);
 }
 
 TEST_F(NCollection_FlatMapTest, LargeDataSet)

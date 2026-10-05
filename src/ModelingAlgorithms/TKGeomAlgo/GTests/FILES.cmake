@@ -3,6 +3,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKGeomAlgo_GTests_FILES
   Geom2dAPI_InterCurveCurve_Test.cxx
+  Geom2dAPI_ExtremaCurveCurve_Test.cxx
   Geom2dAPI_Interpolate_Test.cxx
   Geom2dAPI_PointsToBSpline_Test.cxx
   GeomFill_BSplineCurves_Test.cxx
@@ -13,6 +14,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   GeomAPI_PointsToBSpline_Test.cxx
   Geom2dGcc_Circ2d2TanRad_Test.cxx
   Geom2dGcc_Circ2d3Tan_Test.cxx
+  GccAna_Circ2d3Tan_Test.cxx
   Geom2dGcc_Lin2d2Tan_Test.cxx
   GeomFill_CorrectedFrenet_Test.cxx
   GeomFill_Gordon_Test.cxx
@@ -31,6 +33,9 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntSurf_LineOn2S_Test.cxx
   IntSurf_Quadric_Test.cxx
   GeomAPI_IntSS_Test.cxx
+  GeomAPI_IntCS_Test.cxx
+  GeomAPI_ExtremaCurveSurface_Test.cxx
+  GeomAPI_ExtremaSurfaceSurface_Test.cxx
   GeomAPI_ProjectPointOnSurf_Test.cxx
   Geom2dConvert_BSplineCurveToBezierCurve_Test.cxx
   TopTrans_SurfaceTransition_Test.cxx

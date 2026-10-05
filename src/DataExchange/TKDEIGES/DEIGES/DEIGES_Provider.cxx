@@ -26,11 +26,50 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XSControl_WorkSession.hxx>
 
+#include <ios>
+#include <mutex>
+#include <utility>
+
 IMPLEMENT_STANDARD_RTTIEXT(DEIGES_Provider, DE_Provider)
 
 namespace
 {
-// Helper function to validate configuration node
+//! Executes a callable when leaving the current scope.
+//! @tparam Function callable type
+template <typename Function>
+class DEIGES_ScopeGuard
+{
+public:
+  //! Stores the cleanup callable.
+  //! @param[in] theFunction cleanup callable
+  explicit DEIGES_ScopeGuard(Function&& theFunction)
+      : myFunction(std::move(theFunction))
+  {
+  }
+
+  //! Executes the cleanup callable.
+  ~DEIGES_ScopeGuard() { myFunction(); }
+
+  DEIGES_ScopeGuard(const DEIGES_ScopeGuard&)            = delete;
+  DEIGES_ScopeGuard& operator=(const DEIGES_ScopeGuard&) = delete;
+
+private:
+  Function myFunction;
+};
+
+//! Creates a scope guard while preserving the callable type.
+//! @param[in] theFunction cleanup callable
+//! @return scope guard owning the callable
+template <typename Function>
+DEIGES_ScopeGuard<Function> makeScopeGuard(Function&& theFunction)
+{
+  return DEIGES_ScopeGuard<Function>(std::forward<Function>(theFunction));
+}
+
+//! Validates that a configuration node is suitable for this provider.
+//! @param[in] theNode configuration node to validate
+//! @param[in] theContext operation description used in diagnostics
+//! @return true if the node is a valid IGES configuration node
 bool validateConfigurationNode(const occ::handle<DE_ConfigurationNode>& theNode,
                                const TCollection_AsciiString&           theContext)
 {
@@ -39,7 +78,9 @@ bool validateConfigurationNode(const occ::handle<DE_ConfigurationNode>& theNode,
                                                        theContext);
 }
 
-// Helper function to configure IGES CAF reader parameters
+//! Applies configuration parameters to a CAF reader.
+//! @param[in,out] theReader reader to configure
+//! @param[in] theNode IGES configuration node
 void configureIGESCAFReader(IGESCAFControl_Reader&                       theReader,
                             const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
@@ -50,7 +91,9 @@ void configureIGESCAFReader(IGESCAFControl_Reader&                       theRead
   theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-// Helper function to configure IGES control reader parameters
+//! Applies configuration parameters to a shape reader.
+//! @param[in,out] theReader reader to configure
+//! @param[in] theNode IGES configuration node
 void configureIGESControlReader(IGESControl_Reader&                          theReader,
                                 const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
@@ -58,28 +101,33 @@ void configureIGESControlReader(IGESControl_Reader&                          the
   theReader.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-// Helper function to setup IGES unit configuration
-void setupIGESUnits(IGESData_GlobalSection&                      theGS,
+//! Configures IGES units in a global section.
+//! @param[in,out] theGlobalSection global section to configure
+//! @param[in] theNode IGES configuration node
+//! @param[in] theDocument source document for unit information
+//! @param[in] thePath output path or stream key used in diagnostics
+//! @param[in] theUseDocumentUnits whether document units should take precedence
+void setupIGESUnits(IGESData_GlobalSection&                      theGlobalSection,
                     const occ::handle<DEIGES_ConfigurationNode>& theNode,
                     const occ::handle<TDocStd_Document>&         theDocument,
                     const TCollection_AsciiString&               thePath,
                     bool                                         theUseDocumentUnits)
 {
-  int aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
+  const int aUnitFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
 
   if (theUseDocumentUnits && !theDocument.IsNull())
   {
-    double aScaleFactorMM = 1.;
-    bool   aHasUnits      = XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
-                                                         aScaleFactorMM,
-                                                         UnitsMethods_LengthUnit_Millimeter);
+    double     aScaleFactorMM = 1.;
+    const bool aHasUnits      = XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
+                                                               aScaleFactorMM,
+                                                               UnitsMethods_LengthUnit_Millimeter);
     if (aHasUnits)
     {
-      theGS.SetCascadeUnit(aScaleFactorMM);
+      theGlobalSection.SetCascadeUnit(aScaleFactorMM);
     }
     else
     {
-      theGS.SetCascadeUnit(theNode->GlobalParameters.SystemUnit);
+      theGlobalSection.SetCascadeUnit(theNode->GlobalParameters.SystemUnit);
       Message::SendWarning()
         << "Warning in the DEIGES_Provider during writing the file " << thePath
         << "\t: The document has no information on Units. Using global parameter as initial Unit.";
@@ -87,55 +135,91 @@ void setupIGESUnits(IGESData_GlobalSection&                      theGS,
   }
   else
   {
-    theGS.SetCascadeUnit(theNode->GlobalParameters.SystemUnit);
+    theGlobalSection.SetCascadeUnit(theNode->GlobalParameters.SystemUnit);
   }
 
-  if (aFlag == 0)
+  if (aUnitFlag == 0)
   {
-    theGS.SetScale(theNode->GlobalParameters.LengthUnit);
+    theGlobalSection.SetScale(theNode->GlobalParameters.LengthUnit);
   }
 }
 
-// Helper function to configure IGES CAF writer parameters
+//! Applies configuration parameters and units to a CAF writer.
+//! @param[in,out] theWriter writer to configure
+//! @param[in] theNode IGES configuration node
+//! @param[in] theDocument source document for unit information
+//! @param[in] thePath output path or stream key used in diagnostics
 void configureIGESCAFWriter(IGESCAFControl_Writer&                       theWriter,
                             const occ::handle<DEIGES_ConfigurationNode>& theNode,
                             const occ::handle<TDocStd_Document>&         theDocument,
                             const TCollection_AsciiString&               thePath)
 {
-  IGESData_GlobalSection aGS = theWriter.Model()->GlobalSection();
-  setupIGESUnits(aGS, theNode, theDocument, thePath, true);
+  IGESData_GlobalSection aGlobalSection = theWriter.Model()->GlobalSection();
+  setupIGESUnits(aGlobalSection, theNode, theDocument, thePath, true);
 
-  theWriter.Model()->SetGlobalSection(aGS);
+  theWriter.Model()->SetGlobalSection(aGlobalSection);
   theWriter.SetColorMode(theNode->InternalParameters.WriteColor);
   theWriter.SetNameMode(theNode->InternalParameters.WriteName);
   theWriter.SetLayerMode(theNode->InternalParameters.WriteLayer);
   theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-// Helper function to configure IGES control writer for shapes
+//! Applies configuration parameters and units to a shape writer.
+//! @param[in,out] theWriter writer to configure
+//! @param[in] theNode IGES configuration node
 void configureIGESControlWriter(IGESControl_Writer&                          theWriter,
                                 const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
-  IGESData_GlobalSection        aGS = theWriter.Model()->GlobalSection();
-  occ::handle<TDocStd_Document> aNullDoc;
-  setupIGESUnits(aGS, theNode, aNullDoc, "", false);
+  IGESData_GlobalSection              aGlobalSection = theWriter.Model()->GlobalSection();
+  const occ::handle<TDocStd_Document> aNullDocument;
+  setupIGESUnits(aGlobalSection, theNode, aNullDocument, "", false);
 
-  theWriter.Model()->SetGlobalSection(aGS);
+  theWriter.Model()->SetGlobalSection(aGlobalSection);
   theWriter.SetShapeFixParameters(theNode->ShapeFixParameters);
 }
 
-// Helper function to setup IGES writer unit flags
+//! Resolves the configured IGES unit name.
+//! @param[in] theNode IGES configuration node
+//! @return IGES unit name, or MM when no standard flag matches
 TCollection_AsciiString getIGESUnitString(const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
-  int aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
-  return (aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM";
+  const int aUnitFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
+  return (aUnitFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aUnitFlag) : "MM";
 }
 
-// Helper function to process read file operation
+//! Returns the mutex serializing access to process-wide IGES settings.
+//! @return shared IGES operation mutex
+std::mutex& globalIGESMutex()
+{
+  static std::mutex THE_GLOBAL_IGES_MUTEX;
+  return THE_GLOBAL_IGES_MUTEX;
+}
+
+//! Checks whether an output stream can accept data.
+//! @param[in] theStream stream to check
+//! @param[in] theKey stream key used in diagnostics
+//! @return true if the stream is ready for writing
+bool checkStreamWritability(Standard_OStream& theStream, const TCollection_AsciiString& theKey)
+{
+  if (!theStream.good())
+  {
+    const TCollection_AsciiString aKeyInfo = theKey.IsEmpty() ? "<empty key>" : theKey;
+    Message::SendFail() << "Error: Output stream '" << aKeyInfo
+                        << "' is not in good state for writing";
+    return false;
+  }
+
+  return true;
+}
+
+//! Reads an IGES file and reports a diagnostic on failure.
+//! @param[in,out] theReader reader receiving the file model
+//! @param[in] thePath input file path
+//! @return true if the model was read successfully
 bool processReadFile(IGESControl_Reader& theReader, const TCollection_AsciiString& thePath)
 {
-  IFSelect_ReturnStatus aReadStat = theReader.ReadFile(thePath.ToCString());
-  if (aReadStat != IFSelect_RetDone)
+  const IFSelect_ReturnStatus aReadStatus = theReader.ReadFile(thePath.ToCString());
+  if (aReadStatus != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
                         << "\t: abandon, no model loaded";
@@ -146,18 +230,18 @@ bool processReadFile(IGESControl_Reader& theReader, const TCollection_AsciiStrin
 
 } // namespace
 
-//=================================================================================================
+//==================================================================================================
 
 DEIGES_Provider::DEIGES_Provider() = default;
 
-//=================================================================================================
+//==================================================================================================
 
 DEIGES_Provider::DEIGES_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
     : DE_Provider(theNode)
 {
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void DEIGES_Provider::personizeWS(occ::handle<XSControl_WorkSession>& theWS)
 {
@@ -176,26 +260,25 @@ void DEIGES_Provider::personizeWS(occ::handle<XSControl_WorkSession>& theWS)
   }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void DEIGES_Provider::initStatic(const occ::handle<DE_ConfigurationNode>& theNode)
 {
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(theNode);
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(theNode);
   IGESData::Init();
 
-  // Get previous values
-  myOldValues.ReadBSplineContinuity =
-    (DEIGES_Parameters::ReadMode_BSplineContinuity)Interface_Static::IVal(
-      "read.iges.bspline.continuity");
-  myOldValues.ReadPrecisionMode =
-    (DEIGES_Parameters::ReadMode_Precision)Interface_Static::IVal("read.precision.mode");
-  myOldValues.ReadPrecisionVal = Interface_Static::RVal("read.precision.val");
-  myOldValues.ReadMaxPrecisionMode =
-    (DEIGES_Parameters::ReadMode_MaxPrecision)Interface_Static::IVal("read.maxprecision.mode");
-  myOldValues.ReadMaxPrecisionVal = Interface_Static::RVal("read.maxprecision.val");
-  myOldValues.ReadSameParamMode   = Interface_Static::IVal("read.stdsameparameter.mode") == 1;
-  myOldValues.ReadSurfaceCurveMode =
-    (DEIGES_Parameters::ReadMode_SurfaceCurve)Interface_Static::IVal("read.surfacecurve.mode");
+  myOldValues.ReadBSplineContinuity = static_cast<DEIGES_Parameters::ReadMode_BSplineContinuity>(
+    Interface_Static::IVal("read.iges.bspline.continuity"));
+  myOldValues.ReadPrecisionMode = static_cast<DEIGES_Parameters::ReadMode_Precision>(
+    Interface_Static::IVal("read.precision.mode"));
+  myOldValues.ReadPrecisionVal     = Interface_Static::RVal("read.precision.val");
+  myOldValues.ReadMaxPrecisionMode = static_cast<DEIGES_Parameters::ReadMode_MaxPrecision>(
+    Interface_Static::IVal("read.maxprecision.mode"));
+  myOldValues.ReadMaxPrecisionVal  = Interface_Static::RVal("read.maxprecision.val");
+  myOldValues.ReadSameParamMode    = Interface_Static::IVal("read.stdsameparameter.mode") == 1;
+  myOldValues.ReadSurfaceCurveMode = static_cast<DEIGES_Parameters::ReadMode_SurfaceCurve>(
+    Interface_Static::IVal("read.surfacecurve.mode"));
   myOldValues.EncodeRegAngle = Interface_Static::RVal("read.encoderegularity.angle") * 180.0 / M_PI;
 
   myOldValues.ReadApproxd1       = Interface_Static::IVal("read.iges.bspline.approxd1.mode") == 1;
@@ -203,67 +286,66 @@ void DEIGES_Provider::initStatic(const occ::handle<DE_ConfigurationNode>& theNod
   myOldValues.ReadOnlyVisible    = Interface_Static::IVal("read.iges.onlyvisible") == 1;
 
   myOldValues.WriteBRepMode =
-    (DEIGES_Parameters::WriteMode_BRep)Interface_Static::IVal("write.iges.brep.mode");
-  myOldValues.WriteConvertSurfaceMode =
-    (DEIGES_Parameters::WriteMode_ConvertSurface)Interface_Static::IVal(
-      "write.convertsurface.mode");
+    static_cast<DEIGES_Parameters::WriteMode_BRep>(Interface_Static::IVal("write.iges.brep.mode"));
+  myOldValues.WriteConvertSurfaceMode = static_cast<DEIGES_Parameters::WriteMode_ConvertSurface>(
+    Interface_Static::IVal("write.convertsurface.mode"));
   myOldValues.WriteHeaderAuthor   = Interface_Static::CVal("write.iges.header.author");
   myOldValues.WriteHeaderCompany  = Interface_Static::CVal("write.iges.header.company");
   myOldValues.WriteHeaderProduct  = Interface_Static::CVal("write.iges.header.product");
   myOldValues.WriteHeaderReciever = Interface_Static::CVal("write.iges.header.receiver");
-  myOldValues.WritePrecisionMode =
-    (DEIGES_Parameters::WriteMode_PrecisionMode)Interface_Static::IVal("write.precision.mode");
+  myOldValues.WritePrecisionMode  = static_cast<DEIGES_Parameters::WriteMode_PrecisionMode>(
+    Interface_Static::IVal("write.precision.mode"));
   myOldValues.WritePrecisionVal = Interface_Static::RVal("write.precision.val");
-  myOldValues.WritePlaneMode =
-    (DEIGES_Parameters::WriteMode_PlaneMode)Interface_Static::IVal("write.iges.plane.mode");
+  myOldValues.WritePlaneMode    = static_cast<DEIGES_Parameters::WriteMode_PlaneMode>(
+    Interface_Static::IVal("write.iges.plane.mode"));
   myOldValues.WriteOffsetMode = Interface_Static::IVal("write.iges.offset.mode") == 1;
 
   myOldLengthUnit = Interface_Static::IVal("xstep.cascade.unit");
 
-  // Set new values
   UnitsMethods::SetCasCadeLengthUnit(aNode->GlobalParameters.LengthUnit,
                                      UnitsMethods_LengthUnit_Millimeter);
-  TCollection_AsciiString aStrUnit(
+  TCollection_AsciiString aUnitName(
     UnitsMethods::DumpLengthUnit(aNode->GlobalParameters.LengthUnit));
-  aStrUnit.UpperCase();
-  Interface_Static::SetCVal("xstep.cascade.unit", aStrUnit.ToCString());
+  aUnitName.UpperCase();
+  Interface_Static::SetCVal("xstep.cascade.unit", aUnitName.ToCString());
   setStatic(aNode->InternalParameters);
 }
 
-//=================================================================================================
+//==================================================================================================
 
-void DEIGES_Provider::setStatic(const DEIGES_Parameters& theParameter)
+void DEIGES_Provider::setStatic(const DEIGES_Parameters& theParameters)
 {
-  Interface_Static::SetIVal("read.iges.bspline.continuity", theParameter.ReadBSplineContinuity);
-  Interface_Static::SetIVal("read.precision.mode", theParameter.ReadPrecisionMode);
-  Interface_Static::SetRVal("read.precision.val", theParameter.ReadPrecisionVal);
-  Interface_Static::SetIVal("read.maxprecision.mode", theParameter.ReadMaxPrecisionMode);
-  Interface_Static::SetRVal("read.maxprecision.val", theParameter.ReadMaxPrecisionVal);
-  Interface_Static::SetIVal("read.stdsameparameter.mode", theParameter.ReadSameParamMode);
-  Interface_Static::SetIVal("read.surfacecurve.mode", theParameter.ReadSurfaceCurveMode);
+  Interface_Static::SetIVal("read.iges.bspline.continuity", theParameters.ReadBSplineContinuity);
+  Interface_Static::SetIVal("read.precision.mode", theParameters.ReadPrecisionMode);
+  Interface_Static::SetRVal("read.precision.val", theParameters.ReadPrecisionVal);
+  Interface_Static::SetIVal("read.maxprecision.mode", theParameters.ReadMaxPrecisionMode);
+  Interface_Static::SetRVal("read.maxprecision.val", theParameters.ReadMaxPrecisionVal);
+  Interface_Static::SetIVal("read.stdsameparameter.mode", theParameters.ReadSameParamMode);
+  Interface_Static::SetIVal("read.surfacecurve.mode", theParameters.ReadSurfaceCurveMode);
   Interface_Static::SetRVal("read.encoderegularity.angle",
-                            theParameter.EncodeRegAngle * M_PI / 180.0);
+                            theParameters.EncodeRegAngle * M_PI / 180.0);
 
-  Interface_Static::SetIVal("read.iges.bspline.approxd1.mode", theParameter.ReadApproxd1);
-  Interface_Static::SetIVal("read.iges.faulty.entities", theParameter.ReadFaultyEntities);
-  Interface_Static::SetIVal("read.iges.onlyvisible", theParameter.ReadOnlyVisible);
+  Interface_Static::SetIVal("read.iges.bspline.approxd1.mode", theParameters.ReadApproxd1);
+  Interface_Static::SetIVal("read.iges.faulty.entities", theParameters.ReadFaultyEntities);
+  Interface_Static::SetIVal("read.iges.onlyvisible", theParameters.ReadOnlyVisible);
 
-  Interface_Static::SetIVal("write.iges.brep.mode", theParameter.WriteBRepMode);
-  Interface_Static::SetIVal("write.convertsurface.mode", theParameter.WriteConvertSurfaceMode);
-  Interface_Static::SetCVal("write.iges.header.author", theParameter.WriteHeaderAuthor.ToCString());
+  Interface_Static::SetIVal("write.iges.brep.mode", theParameters.WriteBRepMode);
+  Interface_Static::SetIVal("write.convertsurface.mode", theParameters.WriteConvertSurfaceMode);
+  Interface_Static::SetCVal("write.iges.header.author",
+                            theParameters.WriteHeaderAuthor.ToCString());
   Interface_Static::SetCVal("write.iges.header.company",
-                            theParameter.WriteHeaderCompany.ToCString());
+                            theParameters.WriteHeaderCompany.ToCString());
   Interface_Static::SetCVal("write.iges.header.product",
-                            theParameter.WriteHeaderProduct.ToCString());
+                            theParameters.WriteHeaderProduct.ToCString());
   Interface_Static::SetCVal("write.iges.header.receiver",
-                            theParameter.WriteHeaderReciever.ToCString());
-  Interface_Static::SetIVal("write.precision.mode", theParameter.WritePrecisionMode);
-  Interface_Static::SetRVal("write.precision.val", theParameter.WritePrecisionVal);
-  Interface_Static::SetIVal("write.iges.plane.mode", theParameter.WritePlaneMode);
-  Interface_Static::SetIVal("write.iges.offset.mode", theParameter.WriteOffsetMode);
+                            theParameters.WriteHeaderReciever.ToCString());
+  Interface_Static::SetIVal("write.precision.mode", theParameters.WritePrecisionMode);
+  Interface_Static::SetRVal("write.precision.val", theParameters.WritePrecisionVal);
+  Interface_Static::SetIVal("write.iges.plane.mode", theParameters.WritePlaneMode);
+  Interface_Static::SetIVal("write.iges.offset.mode", theParameters.WriteOffsetMode);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void DEIGES_Provider::resetStatic()
 {
@@ -272,23 +354,26 @@ void DEIGES_Provider::resetStatic()
   setStatic(myOldValues);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
                            occ::handle<XSControl_WorkSession>&  theWS,
                            const Message_ProgressRange&         theProgress)
 {
-  TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  std::lock_guard<std::mutex>   aLock(globalIGESMutex());
+  const TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
       || !validateConfigurationNode(GetNode(), aContext))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
   initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
                                       aNode->GlobalParameters.LengthUnit,
@@ -298,12 +383,11 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
   aReader.SetWS(theWS);
   configureIGESCAFReader(aReader, aNode);
 
-  IFSelect_ReturnStatus aReadStat = aReader.ReadFile(thePath.ToCString());
-  if (aReadStat != IFSelect_RetDone)
+  const IFSelect_ReturnStatus aReadStatus = aReader.ReadFile(thePath.ToCString());
+  if (aReadStatus != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
                         << "\t: abandon, no model loaded";
-    resetStatic();
     return false;
   }
 
@@ -311,30 +395,31 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
                         << "\t: Cannot read any relevant data from the IGES file";
-    resetStatic();
     return false;
   }
-  resetStatic();
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
                             occ::handle<XSControl_WorkSession>&  theWS,
                             const Message_ProgressRange&         theProgress)
 {
-  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  std::lock_guard<std::mutex>   aLock(globalIGESMutex());
+  const TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
       || !validateConfigurationNode(GetNode(), aContext))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
   initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   IGESCAFControl_Writer aWriter(theWS, false);
   configureIGESCAFWriter(aWriter, aNode, theDocument, thePath);
@@ -343,21 +428,18 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
   {
     Message::SendFail() << "Error in the DEIGES_Provider during writing the file " << thePath
                         << "\t: The document cannot be translated or gives no result";
-    resetStatic();
     return false;
   }
   if (!aWriter.Write(thePath.ToCString()))
   {
     Message::SendFail() << "Error in the DEIGES_Provider during writing the file " << thePath
                         << "\t: Write failed";
-    resetStatic();
     return false;
   }
-  resetStatic();
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
@@ -367,7 +449,7 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
   return Read(thePath, theDocument, aWS, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
@@ -377,21 +459,24 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
   return Write(thePath, theDocument, aWS, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Read(const TCollection_AsciiString&      thePath,
                            TopoDS_Shape&                       theShape,
                            occ::handle<XSControl_WorkSession>& theWS,
                            const Message_ProgressRange&        theProgress)
 {
+  std::lock_guard<std::mutex> aLock(globalIGESMutex());
   if (!validateConfigurationNode(GetNode(), TCollection_AsciiString("reading the file ") + thePath))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
+  initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   IGESControl_Reader aReader;
   aReader.SetWS(theWS);
@@ -399,7 +484,6 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&      thePath,
 
   if (!processReadFile(aReader, thePath))
   {
-    resetStatic();
     return false;
   }
 
@@ -407,54 +491,55 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&      thePath,
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
                         << "\t: Cannot read any relevant data from the IGES file";
-    resetStatic();
     return false;
   }
   theShape = aReader.OneShape();
-  resetStatic();
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Write(const TCollection_AsciiString&      thePath,
                             const TopoDS_Shape&                 theShape,
                             occ::handle<XSControl_WorkSession>& theWS,
                             const Message_ProgressRange&        theProgress)
 {
-  TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
+  std::lock_guard<std::mutex>   aLock(globalIGESMutex());
+  const TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!validateConfigurationNode(GetNode(), aContext))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
+  initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   IGESControl_Writer aWriter(getIGESUnitString(aNode).ToCString(),
                              aNode->InternalParameters.WriteBRepMode);
   configureIGESControlWriter(aWriter, aNode);
 
-  bool aIsOk = aWriter.AddShape(theShape, theProgress);
+  const bool aIsOk = aWriter.AddShape(theShape, theProgress);
   if (!aIsOk)
   {
     Message::SendFail() << "DEIGES_Provider: Shape not written";
-    resetStatic();
     return false;
   }
+
+  theWS->SetModel(aWriter.Model(), false);
+  theWS->SetMapWriter(aWriter.TransferProcess());
 
   if (!aWriter.Write(thePath.ToCString()))
   {
     Message::SendFail() << "DEIGES_Provider: Error on writing file " << thePath;
-    resetStatic();
     return false;
   }
-  resetStatic();
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Read(const TCollection_AsciiString& thePath,
                            TopoDS_Shape&                  theShape,
@@ -464,7 +549,7 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString& thePath,
   return Read(thePath, theShape, aWS, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
                             const TopoDS_Shape&            theShape,
@@ -474,50 +559,35 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
   return Write(thePath, theShape, aWS, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
 
-TCollection_AsciiString DEIGES_Provider::GetFormat() const
+bool DEIGES_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
+                           const Message_ProgressRange&         theProgress)
 {
-  return TCollection_AsciiString("IGES");
-}
-
-//=================================================================================================
-
-TCollection_AsciiString DEIGES_Provider::GetVendor() const
-{
-  return TCollection_AsciiString("OCC");
-}
-
-/*
-
-// TODO: Implement IGES stream support
-
-//=================================================================================================
-
-bool DEIGES_Provider::Read(ReadStreamList&                  theStreams,
-                                       const occ::handle<TDocStd_Document>& theDocument,
-                                       occ::handle<XSControl_WorkSession>&  theWS,
-                                       const Message_ProgressRange&    theProgress)
-{
-  TCollection_AsciiString aContext = "reading stream";
+  std::lock_guard<std::mutex>   aLock(globalIGESMutex());
+  const TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
-  TCollection_AsciiString        aFullContext = aContext + " " + aFirstKey;
-  Standard_IStream&              aStream      = theStreams.First().Stream;
-
+  const TCollection_AsciiString aFirstKey    = theStreams.First().Path;
+  const TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
       || !validateConfigurationNode(GetNode(), aFullContext))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
+  Standard_IStream& aStream = theStreams.First().Stream;
+
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
+  initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
                                       aNode->GlobalParameters.LengthUnit,
@@ -527,12 +597,21 @@ bool DEIGES_Provider::Read(ReadStreamList&                  theStreams,
   aReader.SetWS(theWS);
   configureIGESCAFReader(aReader, aNode);
 
-  IFSelect_ReturnStatus aReadStat = aReader.ReadStream(aFirstKey.ToCString(), aStream);
-  if (aReadStat != IFSelect_RetDone)
+  IFSelect_ReturnStatus aReadStatus = IFSelect_RetFail;
+  try
+  {
+    aReadStatus = aReader.ReadStream(aFirstKey.ToCString(), aStream);
+  }
+  catch (const std::ios_base::failure& theFailure)
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
+                        << "\t: " << theFailure.what();
+    return false;
+  }
+  if (aReadStatus != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
                         << "\t: abandon, no model loaded";
-    resetStatic();
     return false;
   }
 
@@ -540,39 +619,44 @@ bool DEIGES_Provider::Read(ReadStreamList&                  theStreams,
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
                         << "\t: Cannot read any relevant data from the IGES stream";
-    resetStatic();
     return false;
   }
-  resetStatic();
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
-bool DEIGES_Provider::Write(WriteStreamList&                 theStreams,
-                                        const occ::handle<TDocStd_Document>& theDocument,
-                                        occ::handle<XSControl_WorkSession>&  theWS,
-                                        const Message_ProgressRange&    theProgress)
+bool DEIGES_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange&         theProgress)
 {
-  TCollection_AsciiString aContext = "writing stream";
+  std::lock_guard<std::mutex>   aLock(globalIGESMutex());
+  const TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_OStream&              aStream   = theStreams.First().Stream;
-
-  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  const TCollection_AsciiString aFirstKey    = theStreams.First().Path;
+  const TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
       || !validateConfigurationNode(GetNode(), aFullContext))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
+  Standard_OStream& aStream = theStreams.First().Stream;
+  if (!checkStreamWritability(aStream, aFirstKey))
+  {
+    return false;
+  }
+
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
+  initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   IGESCAFControl_Writer aWriter(theWS, false);
   configureIGESCAFWriter(aWriter, aNode, theDocument, aFirstKey);
@@ -581,57 +665,97 @@ bool DEIGES_Provider::Write(WriteStreamList&                 theStreams,
   {
     Message::SendFail() << "Error in the DEIGES_Provider during writing stream " << aFirstKey
                         << "\t: The document cannot be translated or gives no result";
-    resetStatic();
     return false;
   }
 
-  if (!aWriter.Write(aStream))
+  bool isWritten = false;
+  try
+  {
+    isWritten = aWriter.Write(aStream);
+  }
+  catch (const std::ios_base::failure& theFailure)
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during writing stream " << aFirstKey
+                        << "\t: " << theFailure.what();
+    return false;
+  }
+  if (!isWritten)
   {
     Message::SendFail() << "Error in the DEIGES_Provider during writing stream " << aFirstKey
                         << "\t: Write failed";
-    resetStatic();
     return false;
   }
-  resetStatic();
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
-bool DEIGES_Provider::Read(ReadStreamList&                 theStreams,
-                                       TopoDS_Shape&                  theShape,
-                                       occ::handle<XSControl_WorkSession>& theWS,
-                                       const Message_ProgressRange&   theProgress)
+bool DEIGES_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           const Message_ProgressRange&         theProgress)
 {
-  TCollection_AsciiString aContext = "reading stream";
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
+  return Read(theStreams, theDocument, aWS, theProgress);
+}
+
+//==================================================================================================
+
+bool DEIGES_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange&         theProgress)
+{
+  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
+  return Write(theStreams, theDocument, aWS, theProgress);
+}
+
+//==================================================================================================
+
+bool DEIGES_Provider::Read(ReadStreamList&                     theStreams,
+                           TopoDS_Shape&                       theShape,
+                           occ::handle<XSControl_WorkSession>& theWS,
+                           const Message_ProgressRange&        theProgress)
+{
+  std::lock_guard<std::mutex>   aLock(globalIGESMutex());
+  const TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_IStream&              aStream   = theStreams.First().Stream;
-
-  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  const TCollection_AsciiString aFirstKey    = theStreams.First().Path;
+  const TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateConfigurationNode(GetNode(), aFullContext))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
+  Standard_IStream& aStream = theStreams.First().Stream;
+
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
+  initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   IGESControl_Reader aReader;
   aReader.SetWS(theWS);
   configureIGESControlReader(aReader, aNode);
 
-  IFSelect_ReturnStatus aReadStat = aReader.ReadStream(aFirstKey.ToCString(), aStream);
-  if (aReadStat != IFSelect_RetDone)
+  IFSelect_ReturnStatus aReadStatus = IFSelect_RetFail;
+  try
+  {
+    aReadStatus = aReader.ReadStream(aFirstKey.ToCString(), aStream);
+  }
+  catch (const std::ios_base::failure& theFailure)
+  {
+    Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
+                        << "\t: " << theFailure.what();
+    return false;
+  }
+  if (aReadStatus != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
                         << "\t: Could not read stream, no model loaded";
-    resetStatic();
     return false;
   }
 
@@ -639,101 +763,109 @@ bool DEIGES_Provider::Read(ReadStreamList&                 theStreams,
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading stream " << aFirstKey
                         << "\t: Cannot read any relevant data from the IGES stream";
-    resetStatic();
     return false;
   }
   theShape = aReader.OneShape();
-  resetStatic();
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
-bool DEIGES_Provider::Write(WriteStreamList&                theStreams,
-                                        const TopoDS_Shape&            theShape,
-                                        occ::handle<XSControl_WorkSession>& theWS,
-                                        const Message_ProgressRange&   theProgress)
+bool DEIGES_Provider::Write(WriteStreamList&                    theStreams,
+                            const TopoDS_Shape&                 theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange&        theProgress)
 {
-  TCollection_AsciiString aContext = "writing stream";
+  std::lock_guard<std::mutex>   aLock(globalIGESMutex());
+  const TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
   {
     return false;
   }
 
-  const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
-  Standard_OStream&              aStream   = theStreams.First().Stream;
-
-  TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
+  const TCollection_AsciiString aFirstKey    = theStreams.First().Path;
+  const TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!validateConfigurationNode(GetNode(), aFullContext))
   {
     return false;
   }
 
-  occ::handle<DEIGES_ConfigurationNode> aNode = occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
-  initStatic(aNode);
+  Standard_OStream& aStream = theStreams.First().Stream;
+  if (!checkStreamWritability(aStream, aFirstKey))
+  {
+    return false;
+  }
+
+  const occ::handle<DEIGES_ConfigurationNode> aNode =
+    occ::down_cast<DEIGES_ConfigurationNode>(GetNode());
   personizeWS(theWS);
+  initStatic(aNode);
+  const auto aResetGuard = makeScopeGuard([this]() { resetStatic(); });
 
   IGESControl_Writer aWriter(getIGESUnitString(aNode).ToCString(),
                              aNode->InternalParameters.WriteBRepMode);
   configureIGESControlWriter(aWriter, aNode);
 
-  bool isOk = aWriter.AddShape(theShape, theProgress);
-  if (!isOk)
+  const bool aIsOk = aWriter.AddShape(theShape, theProgress);
+  if (!aIsOk)
   {
     Message::SendFail() << "Error: DEIGES_Provider failed to transfer shape for stream "
                         << aFirstKey;
-    resetStatic();
     return false;
   }
 
-  if (!aWriter.Write(aStream))
+  theWS->SetModel(aWriter.Model(), false);
+  theWS->SetMapWriter(aWriter.TransferProcess());
+
+  bool isWritten = false;
+  try
   {
-    Message::SendFail() << "Error: DEIGES_Provider failed to write shape to stream " << aFirstKey;
-    resetStatic();
+    isWritten = aWriter.Write(aStream);
+  }
+  catch (const std::ios_base::failure& theFailure)
+  {
+    Message::SendFail() << "Error: DEIGES_Provider failed to write shape to stream " << aFirstKey
+                        << "\t: " << theFailure.what();
     return false;
   }
-  resetStatic();
+  if (!isWritten)
+  {
+    Message::SendFail() << "Error: DEIGES_Provider failed to write shape to stream " << aFirstKey;
+    return false;
+  }
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
-bool DEIGES_Provider::Read(ReadStreamList&                  theStreams,
-                                       const occ::handle<TDocStd_Document>& theDocument,
-                                       const Message_ProgressRange&    theProgress)
-{
-  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
-  return Read(theStreams, theDocument, aWS, theProgress);
-}
-
-//=================================================================================================
-
-bool DEIGES_Provider::Write(WriteStreamList&                 theStreams,
-                                        const occ::handle<TDocStd_Document>& theDocument,
-                                        const Message_ProgressRange&    theProgress)
-{
-  occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
-  return Write(theStreams, theDocument, aWS, theProgress);
-}
-
-//=================================================================================================
-
-bool DEIGES_Provider::Read(ReadStreamList&               theStreams,
-                                       TopoDS_Shape&                theShape,
-                                       const Message_ProgressRange& theProgress)
+bool DEIGES_Provider::Read(ReadStreamList&              theStreams,
+                           TopoDS_Shape&                theShape,
+                           const Message_ProgressRange& theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(theStreams, theShape, aWS, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
 
-bool DEIGES_Provider::Write(WriteStreamList&              theStreams,
-                                        const TopoDS_Shape&          theShape,
-                                        const Message_ProgressRange& theProgress)
+bool DEIGES_Provider::Write(WriteStreamList&             theStreams,
+                            const TopoDS_Shape&          theShape,
+                            const Message_ProgressRange& theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(theStreams, theShape, aWS, theProgress);
 }
 
-*/
+//==================================================================================================
+
+TCollection_AsciiString DEIGES_Provider::GetFormat() const
+{
+  return TCollection_AsciiString("IGES");
+}
+
+//==================================================================================================
+
+TCollection_AsciiString DEIGES_Provider::GetVendor() const
+{
+  return TCollection_AsciiString("OCC");
+}

@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopOpeBRepDS_PDataStructure.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTrans_SurfaceTransition.hxx>
@@ -29,6 +28,7 @@
 #include <gp_Pnt.hxx>
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Curve;
+class TopOpeBRepDS_DataStructure;
 
 //! a tool computing complex transition on Face.
 class TopOpeBRepDS_FaceInterferenceTool
@@ -36,7 +36,7 @@ class TopOpeBRepDS_FaceInterferenceTool
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT TopOpeBRepDS_FaceInterferenceTool(const TopOpeBRepDS_PDataStructure& P);
+  Standard_EXPORT TopOpeBRepDS_FaceInterferenceTool(TopOpeBRepDS_DataStructure* const& P);
 
   //! Eisnew = true if E is a new edge built on edge I->Geometry()
   //! false if E is shape <=> I->Geometry()
@@ -66,7 +66,7 @@ public:
   Standard_EXPORT void Transition(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
 private:
-  TopOpeBRepDS_PDataStructure myPBDS;
+  TopOpeBRepDS_DataStructure* myPBDS;
   bool                        myrefdef;
   TopAbs_Orientation          myFaceOrientation;
   int                         myFaceOriented;

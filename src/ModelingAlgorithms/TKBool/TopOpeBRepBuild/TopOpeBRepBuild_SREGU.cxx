@@ -26,9 +26,6 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepBuild_GetcontextNOREGUSO();
-extern bool TopOpeBRepBuild_GetcontextREGUXPU();
-extern bool TopOpeBRepBuild_GettraceSAVSREGU();
 
 Standard_EXPORT void debreguso(const int iS)
 {
@@ -135,18 +132,6 @@ void TopOpeBRepBuild_Builder::RegularizeSolid(const TopoDS_Shape&             SS
   bool                toregu   = true;
   bool                usestos  = true;
 
-#ifdef OCCT_DEBUG
-  int  iS;
-  bool tSPS = GtraceSPS(SS, iS);
-  //  bool savsregu = TopOpeBRepBuild_GettraceSAVSREGU();
-  if (TopOpeBRepBuild_GetcontextNOREGUSO())
-    toregu = false;
-  if (TopOpeBRepBuild_GetcontextREGUXPU())
-    usestos = false;
-  if (tSPS)
-    debreguso(iS);
-#endif
-
   if (!toregu)
   {
     LOSO.Append(newSolid);
@@ -218,14 +203,6 @@ void TopOpeBRepBuild_Builder::RegularizeSolid(const TopoDS_Shape&             SS
     LOSO.Append(newSolid);
     return;
   }
-
-#ifdef OCCT_DEBUG
-  if (tSPS)
-  {
-    std::cout << "RegularizeSolid " << iS << std::endl;
-    debreguso(iS);
-  }
-#endif
 
   // LOSO = nouvelles Solids regularisees de newSolid
   NCollection_List<TopoDS_Shape>::Iterator itlnf(newSolids);

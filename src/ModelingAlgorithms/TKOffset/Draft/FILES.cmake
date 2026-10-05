@@ -2,8 +2,6 @@
 set(OCCT_Draft_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Draft_FILES
-  Draft.cxx
-  Draft.hxx
 
   Draft_EdgeInfo.cxx
   Draft_EdgeInfo.hxx

@@ -13,8 +13,13 @@
 
 #include <gtest/gtest.h>
 
+#include <GCPnts_AbscissaPoint.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dConvert_ApproxCurve.hxx>
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2dConvert.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -102,4 +107,23 @@ TEST_F(Geom2d_OffsetCurve_Test, CopyIndependence)
   // Verify the copied curve is not affected
   EXPECT_DOUBLE_EQ(aCopiedCurve->Offset(), anOrigOffset);
   EXPECT_NE(aCopiedCurve->Offset(), myOriginalCurve->Offset());
+}
+
+TEST(Geom2d_OffsetCurve_AdditionalTest, FClassesBug_31381_RationalBSplineApproximation)
+{
+  // fclasses/bug31381: approximating an offset of a rational BSpline circle keeps its length.
+  occ::handle<Geom2d_Circle> aCircle =
+    new Geom2d_Circle(gp_Circ2d(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0));
+  occ::handle<Geom2d_BSplineCurve> aConvertedCircle = Geom2dConvert::CurveToBSplineCurve(aCircle);
+  ASSERT_FALSE(aConvertedCircle.IsNull());
+
+  occ::handle<Geom2d_OffsetCurve> anOffsetCurve = new Geom2d_OffsetCurve(aConvertedCircle, -0.5);
+  Geom2dConvert_ApproxCurve       anApproximation(anOffsetCurve, 1.0e-4, GeomAbs_C2, 25, 5);
+  ASSERT_TRUE(anApproximation.HasResult());
+  occ::handle<Geom2d_BSplineCurve> anApproximatedCurve = anApproximation.Curve();
+  ASSERT_FALSE(anApproximatedCurve.IsNull());
+
+  Geom2dAdaptor_Curve anAdaptor(anApproximatedCurve);
+  const double        aLength = GCPnts_AbscissaPoint::Length(anAdaptor);
+  EXPECT_NEAR(aLength, 3.1415850499856011, 1.0e-6);
 }

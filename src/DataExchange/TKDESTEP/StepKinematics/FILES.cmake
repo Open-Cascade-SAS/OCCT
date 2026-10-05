@@ -113,8 +113,6 @@ set(OCCT_StepKinematics_FILES
   StepKinematics_RevolutePairWithRange.hxx
   StepKinematics_RigidLinkRepresentation.cxx
   StepKinematics_RigidLinkRepresentation.hxx
-  StepKinematics_RigidPlacement.cxx
-  StepKinematics_RigidPlacement.hxx
   StepKinematics_RollingCurvePair.cxx
   StepKinematics_RollingCurvePair.hxx
   StepKinematics_RollingCurvePairValue.cxx
@@ -143,8 +141,6 @@ set(OCCT_StepKinematics_FILES
   StepKinematics_SpatialRotation.hxx
   StepKinematics_SphericalPair.cxx
   StepKinematics_SphericalPair.hxx
-  StepKinematics_SphericalPairSelect.cxx
-  StepKinematics_SphericalPairSelect.hxx
   StepKinematics_SphericalPairValue.cxx
   StepKinematics_SphericalPairValue.hxx
   StepKinematics_SphericalPairWithPin.cxx

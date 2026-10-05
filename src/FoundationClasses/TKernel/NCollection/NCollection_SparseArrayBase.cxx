@@ -30,18 +30,19 @@ void NCollection_SparseArrayBase::allocData(const size_t iBlock)
 
   // the allocation of blocks starts from myBlockSize items
   // and then is multiplied by 2 every time reallocation is needed
-  size_t newNbBlocks = (myNbBlocks ? myNbBlocks * 2 : myBlockSize);
+  size_t newNbBlocks = myNbBlocks ? myNbBlocks : myBlockSize;
   while (iBlock >= newNbBlocks)
   {
     newNbBlocks *= 2;
   }
 
-  void** newData = (void**)Standard::AllocateOptimal(newNbBlocks * sizeof(void*));
+  const size_t aNewBytes = newNbBlocks * sizeof(void*);
+  void**       newData   = (void**)Standard::AllocateOptimal(aNewBytes);
   if (myNbBlocks > 0)
   {
     memcpy(newData, myData, myNbBlocks * sizeof(void*));
   }
-  memset(newData + myNbBlocks, 0, (newNbBlocks - myNbBlocks) * sizeof(void*));
+  memset(newData + myNbBlocks, 0, aNewBytes - myNbBlocks * sizeof(void*));
 
   Standard::Free(myData);
   myData     = newData;
@@ -144,10 +145,10 @@ void NCollection_SparseArrayBase::assign(const NCollection_SparseArrayBase& theO
         if (anOtherBlock.IsSet(anInd))
         {
           void* anItem = getItem(aBlock, anInd);
+          theCreateItem(anItem, getItem(anOtherBlock, anInd));
           aBlock.Set(anInd);
           (*aBlock.Count)++;
           mySize++;
-          theCreateItem(anItem, getItem(anOtherBlock, anInd));
         }
       }
     }
@@ -167,15 +168,15 @@ void NCollection_SparseArrayBase::assign(const NCollection_SparseArrayBase& theO
           }
           else // create
           {
+            theCreateItem(anItem, getItem(anOtherBlock, anInd));
             aBlock.Set(anInd);
             (*aBlock.Count)++;
             mySize++;
-            theCreateItem(anItem, getItem(anOtherBlock, anInd));
           }
         }
         else if (aBlock.IsSet(anInd)) // delete
         {
-          aBlock.Set(anInd);
+          aBlock.Unset(anInd);
           (*aBlock.Count)--;
           mySize--;
           theDestroyItem(anItem);
@@ -243,16 +244,19 @@ void* NCollection_SparseArrayBase::setValue(const size_t   theIndex,
 
   // either create an item by copy constructor if it is new, or assign it
   // Optimize: Set() returns non-zero if bit was not set previously
-  if (aBlock.Set(anInd))
+  if (aBlock.IsSet(anInd))
   {
-    (*aBlock.Count)++;
-    mySize++;
-    theCreateItem(anItem, theValue);
+    // Item already exists, just copy the value.
+    theCopyItem(anItem, theValue);
   }
   else
   {
-    // Item already exists, just copy the value
-    theCopyItem(anItem, theValue);
+    // Construct first; publish the occupancy bit only after construction
+    // succeeds.
+    theCreateItem(anItem, theValue);
+    aBlock.Set(anInd);
+    (*aBlock.Count)++;
+    mySize++;
   }
 
   return anItem;

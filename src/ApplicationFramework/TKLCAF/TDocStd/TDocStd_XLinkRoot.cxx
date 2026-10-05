@@ -56,7 +56,7 @@ occ::handle<TDocStd_XLinkRoot> TDocStd_XLinkRoot::Set(const occ::handle<TDF_Data
 
 //=================================================================================================
 
-void TDocStd_XLinkRoot::Insert(const TDocStd_XLinkPtr& anXLinkPtr)
+void TDocStd_XLinkRoot::Insert(TDocStd_XLink* const& anXLinkPtr)
 {
   occ::handle<TDocStd_XLinkRoot> xRefRoot = TDocStd_XLinkRoot::Set(anXLinkPtr->Label().Data());
   // Insertion at beginning because the order is not significant.
@@ -66,7 +66,7 @@ void TDocStd_XLinkRoot::Insert(const TDocStd_XLinkPtr& anXLinkPtr)
 
 //=================================================================================================
 
-void TDocStd_XLinkRoot::Remove(const TDocStd_XLinkPtr& anXLinkPtr)
+void TDocStd_XLinkRoot::Remove(TDocStd_XLink* const& anXLinkPtr)
 {
   occ::handle<TDocStd_XLinkRoot> xRefRoot;
   if (anXLinkPtr->Label().Root().FindAttribute(TDocStd_XLinkRoot::GetID(), xRefRoot))

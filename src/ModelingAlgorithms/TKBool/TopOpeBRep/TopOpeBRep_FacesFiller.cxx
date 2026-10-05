@@ -99,14 +99,14 @@ TopOpeBRep_FacesFiller::TopOpeBRep_FacesFiller()
 
 //=================================================================================================
 
-TopOpeBRepTool_PShapeClassifier TopOpeBRep_FacesFiller::PShapeClassifier() const
+TopOpeBRepTool_ShapeClassifier* TopOpeBRep_FacesFiller::PShapeClassifier() const
 {
   return myPShapeClassifier;
 }
 
 //=================================================================================================
 
-void TopOpeBRep_FacesFiller::SetPShapeClassifier(const TopOpeBRepTool_PShapeClassifier& PSC)
+void TopOpeBRep_FacesFiller::SetPShapeClassifier(TopOpeBRepTool_ShapeClassifier* const& PSC)
 {
   myPShapeClassifier = PSC;
 }
@@ -718,17 +718,17 @@ const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(const 
   return T;
 }
 
-TopOpeBRep_PFacesIntersector TopOpeBRep_FacesFiller::PFacesIntersectorDummy() const
+TopOpeBRep_FacesIntersector* TopOpeBRep_FacesFiller::PFacesIntersectorDummy() const
 {
   return myFacesIntersector;
 }
 
-TopOpeBRepDS_PDataStructure TopOpeBRep_FacesFiller::PDataStructureDummy() const
+TopOpeBRepDS_DataStructure* TopOpeBRep_FacesFiller::PDataStructureDummy() const
 {
   return myDS;
 }
 
-TopOpeBRep_PLineInter TopOpeBRep_FacesFiller::PLineInterDummy() const
+TopOpeBRep_LineInter* TopOpeBRep_FacesFiller::PLineInterDummy() const
 {
   return myLine;
 }

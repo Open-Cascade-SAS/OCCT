@@ -31,8 +31,6 @@ set(OCCT_Expr_FILES
   Expr_Cosine.hxx
   Expr_Difference.cxx
   Expr_Difference.hxx
-  Expr_Different.cxx
-  Expr_Different.hxx
   Expr_Division.cxx
   Expr_Division.hxx
   Expr_Equal.cxx
@@ -50,17 +48,9 @@ set(OCCT_Expr_FILES
   Expr_GeneralFunction.hxx
   Expr_GeneralRelation.cxx
   Expr_GeneralRelation.hxx
-  Expr_GreaterThan.cxx
-  Expr_GreaterThan.hxx
-  Expr_GreaterThanOrEqual.cxx
-  Expr_GreaterThanOrEqual.hxx
   Expr_InvalidAssignment.hxx
   Expr_InvalidFunction.hxx
   Expr_InvalidOperand.hxx
-  Expr_LessThan.cxx
-  Expr_LessThan.hxx
-  Expr_LessThanOrEqual.cxx
-  Expr_LessThanOrEqual.hxx
   Expr_LogOf10.cxx
   Expr_LogOf10.hxx
   Expr_LogOfe.cxx

@@ -39,6 +39,7 @@
 #include <Standard_TypeMismatch.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -1550,20 +1551,12 @@ bool ProjLib_CompProjectedCurve::IsVIso(const int Index, double& V) const
 
 //=================================================================================================
 
-gp_Pnt2d ProjLib_CompProjectedCurve::Value(const double t) const
+gp_Pnt2d ProjLib_CompProjectedCurve::EvalD0(const double U) const
 {
   gp_Pnt2d P;
-  D0(t, P);
-  return P;
-}
-
-//=================================================================================================
-
-void ProjLib_CompProjectedCurve::D0(const double U, gp_Pnt2d& P) const
-{
-  int    i, j;
-  double Udeb, Ufin;
-  bool   found = false;
+  int      i, j;
+  double   Udeb, Ufin;
+  bool     found = false;
 
   for (i = 1; i <= myNbCurves; i++)
   {
@@ -1701,33 +1694,32 @@ void ProjLib_CompProjectedCurve::D0(const double U, gp_Pnt2d& P) const
       P.SetCoord(U0, V0);
     }
   }
+  return P;
 }
 
 //=================================================================================================
 
-void ProjLib_CompProjectedCurve::D1(const double t, gp_Pnt2d& P, gp_Vec2d& V) const
+Geom2d_Curve::ResD1 ProjLib_CompProjectedCurve::EvalD1(const double t) const
 {
-  double u, v;
-  D0(t, P);
-  u = P.X();
-  v = P.Y();
-  d1(t, u, v, V, myCurve, mySurface);
+  Geom2d_Curve::ResD1 aResult;
+  aResult.Point = EvalD0(t);
+  d1(t, aResult.Point.X(), aResult.Point.Y(), aResult.D1, myCurve, mySurface);
+  return aResult;
 }
 
 //=================================================================================================
 
-void ProjLib_CompProjectedCurve::D2(const double t, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+Geom2d_Curve::ResD2 ProjLib_CompProjectedCurve::EvalD2(const double t) const
 {
-  double u, v;
-  D0(t, P);
-  u = P.X();
-  v = P.Y();
-  d2(t, u, v, V1, V2, myCurve, mySurface);
+  Geom2d_Curve::ResD2 aResult;
+  aResult.Point = EvalD0(t);
+  d2(t, aResult.Point.X(), aResult.Point.Y(), aResult.D1, aResult.D2, myCurve, mySurface);
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec2d ProjLib_CompProjectedCurve::DN(const double t, const int N) const
+gp_Vec2d ProjLib_CompProjectedCurve::EvalDN(const double t, const int N) const
 {
   if (N < 1)
   {
@@ -1735,21 +1727,15 @@ gp_Vec2d ProjLib_CompProjectedCurve::DN(const double t, const int N) const
   }
   else if (N == 1)
   {
-    gp_Pnt2d P;
-    gp_Vec2d V;
-    D1(t, P, V);
-    return V;
+    return EvalD1(t).D1;
   }
   else if (N == 2)
   {
-    gp_Pnt2d P;
-    gp_Vec2d V1, V2;
-    D2(t, P, V1, V2);
-    return V2;
+    return EvalD2(t).D2;
   }
   else if (N > 2)
   {
-    throw Standard_NotImplemented("ProjLib_CompProjectedCurve::DN");
+    throw Standard_NotImplemented("ProjLib_CompProjectedCurve::EvalDN");
   }
   return gp_Vec2d();
 }
@@ -2041,19 +2027,18 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
   }
 
   // fusion
-  NCollection_Sequence<double> Fusion;
+  NCollection_LinearVector<double> Fusion;
   if (!CArr.IsNull())
   {
     GeomLib::FuseIntervals(BArr->ChangeArray1(),
                            CArr->ChangeArray1(),
                            Fusion,
                            Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, Fusion.Length());
-    for (i = 1; i <= BArr->Length(); i++)
+    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
+    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
     {
-      BArr->ChangeValue(i) = Fusion(i);
+      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
     }
-    Fusion.Clear();
   }
 
   if (!UArr.IsNull())
@@ -2062,12 +2047,11 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
                            UArr->ChangeArray1(),
                            Fusion,
                            Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, Fusion.Length());
-    for (i = 1; i <= BArr->Length(); i++)
+    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
+    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
     {
-      BArr->ChangeValue(i) = Fusion(i);
+      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
     }
-    Fusion.Clear();
   }
 
   if (!VArr.IsNull())
@@ -2076,10 +2060,10 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
                            VArr->ChangeArray1(),
                            Fusion,
                            Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, Fusion.Length());
-    for (i = 1; i <= BArr->Length(); i++)
+    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
+    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
     {
-      BArr->ChangeValue(i) = Fusion(i);
+      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
     }
   }
 

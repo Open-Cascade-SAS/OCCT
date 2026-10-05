@@ -365,6 +365,15 @@ IFSelect_ReturnStatus STEPCAFControl_Reader::ReadStream(const char* const theNam
 
 //=================================================================================================
 
+IFSelect_ReturnStatus STEPCAFControl_Reader::ReadStream(const char* const        theName,
+                                                        const DESTEP_Parameters& theParams,
+                                                        std::istream&            theIStream)
+{
+  return myReader.ReadStream(theName, theParams, theIStream);
+}
+
+//=================================================================================================
+
 int STEPCAFControl_Reader::NbRootsForTransfer()
 {
   return myReader.NbRootsForTransfer();

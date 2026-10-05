@@ -344,7 +344,7 @@ To get the type descriptor for a given class type, use macro *STANDARD_TYPE()* w
 
 Example of usage:
 ~~~~{.cpp}
-if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (dynamic_cast<Geom_Line>(aCurve.get()) != 0)"
+if (aCurve->IsKind(STANDARD_TYPE(Geom_Line))) // equivalent to "if (!occ::down_cast<Geom_Line>(aCurve).IsNull())"
 {
 ...
 }
@@ -418,7 +418,7 @@ t = aSeq.Value (1);
 // here, you cannot write:
 // a = t; // ERROR !
 // so you downcast:
-a = occ::down_cast<A>(t)
+a = occ::down_cast<A>(t);
 if (!a.IsNull())
 {
   // types are compatible, you can use a
@@ -695,7 +695,7 @@ The recommended location for it is first statement after opening brace of <i>try
 As an example, consider the exceptions of type *Standard_NumericError, Standard_Overflow, Standard_Underflow* and *Standard_DivideByZero*, where *Standard_NumericError* is the parent type of the three others.
 
 ~~~~{.cpp}
-void f(1)
+void f()
 {
   try
   {
@@ -720,7 +720,7 @@ The handlers are checked in order of appearance, from the nearest to the try blo
 For a try block, it would be a mistake to place a handler for a base exception type ahead of a handler for its derived type since that would ensure that the handler for the derived exception would never be invoked.
 
 ~~~~{.cpp}
-void f(1)
+void f()
 {
   int i = 0;
   {
@@ -1221,7 +1221,7 @@ void Perform (const MyPackage_SequenceOfPnt& theSequence)
 {
   for (MyPackage_SequenceOfPnt::Iterator anIter (theSequence); anIter.More(); anIter.Next())
   {
-    const gp_Pnt aPnt& = anIter.Value();
+    const gp_Pnt& aPnt = anIter.Value();
     ...
   }
 }
@@ -1427,7 +1427,12 @@ Math primitives and algorithms available in Open CASCADE Technology include:
 
 The Vectors and Matrices component provides a C++ implementation of the fundamental types *math_Vector* and *math_Matrix*, which are regularly used to define more complex data structures.
 
-@note **Modern alternative.** New code should prefer the *MathLin* solvers under `src/FoundationClasses/TKMath/MathLin/` (`MathLin_Gauss`, `MathLin_LU`, `MathLin_QR`, `MathLin_SVD`, …) and the dynamic vector type `NCollection_LinearVector`. The convenience entry point `MathLin::Solve(A, b)` returns a `MathUtils::LinearResult` with an optional `Solution` and a `Status` enum. The *math_** classes documented below remain fully supported and are still used internally by many algorithms.
+@note **Modern alternative.** New code should prefer the *MathLin* solvers under
+`src/FoundationClasses/TKMath/MathLin/` (`MathLin_Gauss`, `MathLin_Householder`,
+`MathLin_SVD`, etc.). The convenience entry point `MathLin::Solve(A, b)` returns a zero-based
+`MathUtils::LinearResult` with an optional `Solution` and a `Status` enum. Modern solver dimensions
+and indices use `size_t`; iteration counters use `uint32_t`. These APIs do not preserve the stateful
+interface or result indexing of the legacy *math_** solver classes, which remain supported.
 
 The <i>math_Vector</i> and <i>math_Matrix</i> classes provide commonly used mathematical algorithms which include:
 
@@ -1579,7 +1584,7 @@ Now the main program uses the math_Gauss class to solve the equations _a*x1=b1_ 
 ~~~~{.cpp}
 #include <math_Vector.hxx> 
 #include <math_Matrix.hxx>
-main()
+int main()
 {
   math_Matrix a(1, 3, 1, 3);
   math_Vector b1(1, 3), b2(1, 3);
@@ -1650,21 +1655,24 @@ public:
   virtual bool Value (const double x, double& f) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
+    return true;
   }
 
   virtual bool Derivative (const double x, double& d) override
   {
     d = myCoefA * x * 2.0 + myCoefB;
+    return true;
   }
 
   virtual bool Values (const double x, double& f, double& d) override
   {
     f = myCoefA * x * x + myCoefB * x + myCoefC;
     d = myCoefA * x *  2.0 + myCoefB;
+    return true;
   }
 };
 
-main()
+int main()
 {
   myFunction aFunc (1.0, 0.0, -4.0); // f(x) = x^2 - 4, root at x=2
   math_BissecNewton aSol (0.000001);

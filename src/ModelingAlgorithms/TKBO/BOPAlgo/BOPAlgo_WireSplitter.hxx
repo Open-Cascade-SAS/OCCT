@@ -19,7 +19,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <BOPAlgo_PWireEdgeSet.hxx>
 #include <NCollection_List.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
 #include <BOPAlgo_Algo.hxx>
@@ -28,6 +27,7 @@
 #include <TopoDS_Shape.hxx>
 class TopoDS_Wire;
 class TopoDS_Face;
+class BOPAlgo_WireEdgeSet;
 
 //! The class is to build loops from the given set of edges.
 //!
@@ -68,7 +68,7 @@ protected:
 
   Standard_EXPORT void MakeWires(const Message_ProgressRange& theRange);
 
-  BOPAlgo_PWireEdgeSet                      myWES;
+  BOPAlgo_WireEdgeSet*                      myWES;
   NCollection_List<BOPTools_ConnexityBlock> myLCB;
   occ::handle<IntTools_Context>             myContext;
 };

@@ -222,7 +222,7 @@ int bbuild(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << "Prepare PaveFiller first\n";
@@ -321,7 +321,7 @@ int bbop(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << "Prepare PaveFiller first\n";
@@ -452,7 +452,7 @@ int bsplit(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << "Prepare PaveFiller first\n";
@@ -540,7 +540,7 @@ int buildbop(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  BOPDS_PDS pDS = BOPTest_Objects::PDS();
+  BOPDS_DS* pDS = BOPTest_Objects::PDS();
   if (!pDS)
   {
     di << "Error: perform intersection of arguments first";

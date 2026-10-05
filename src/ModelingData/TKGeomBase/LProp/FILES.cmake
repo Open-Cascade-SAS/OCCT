@@ -9,6 +9,5 @@ set(OCCT_LProp_FILES
   LProp_CurAndInf.hxx
   LProp_CurveUtils.hxx
   LProp_NotDefined.hxx
-  LProp_SLProps3d.hxx
   LProp_Status.hxx
 )

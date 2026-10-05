@@ -31,6 +31,7 @@
 #include <Interface_Protocol.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -302,57 +303,84 @@ Interface_CheckIterator IFSelect_ModelCopier::Sending(
 
 //  .... SendAll : Data to transfer in G, no split, file sending
 
+//==================================================================================================
+
 Interface_CheckIterator IFSelect_ModelCopier::SendAll(
-  const char* const                        filename,
-  const Interface_Graph&                   G,
-  const occ::handle<IFSelect_WorkLibrary>& WL,
-  const occ::handle<Interface_Protocol>&   protocol)
+  const char* const                        theFilename,
+  const Interface_Graph&                   theGraph,
+  const occ::handle<IFSelect_WorkLibrary>& theWorkLibrary,
+  const occ::handle<Interface_Protocol>&   theProtocol)
 {
-  Interface_CheckIterator checks;
-  checks.SetName("X-STEP WorkSession : Send All");
+  return sendAll(theFilename, nullptr, theGraph, theWorkLibrary, theProtocol);
+}
+
+//==================================================================================================
+
+Interface_CheckIterator IFSelect_ModelCopier::SendAll(
+  Standard_OStream&                        theOStream,
+  const char* const                        theName,
+  const Interface_Graph&                   theGraph,
+  const occ::handle<IFSelect_WorkLibrary>& theWorkLibrary,
+  const occ::handle<Interface_Protocol>&   theProtocol)
+{
+  return sendAll(theName, &theOStream, theGraph, theWorkLibrary, theProtocol);
+}
+
+//==================================================================================================
+
+Interface_CheckIterator IFSelect_ModelCopier::sendAll(
+  const char* const                        theName,
+  Standard_OStream* const                  theOStream,
+  const Interface_Graph&                   theGraph,
+  const occ::handle<IFSelect_WorkLibrary>& theWorkLibrary,
+  const occ::handle<Interface_Protocol>&   theProtocol)
+{
+  Interface_CheckIterator aChecks;
+  aChecks.SetName("X-STEP WorkSession : Send All");
   Message::SendInfo() << "** WorkSession : Sending all data" << '\n';
-  const occ::handle<Interface_InterfaceModel>& model = G.Model();
-  if (model.IsNull() || protocol.IsNull() || WL.IsNull())
+  const occ::handle<Interface_InterfaceModel>& aModel = theGraph.Model();
+  if (aModel.IsNull() || theProtocol.IsNull() || theWorkLibrary.IsNull())
   {
-    return checks;
+    return aChecks;
   }
 
-  Interface_CopyTool TC(model, protocol);
-  int                i, nb = model->NbEntities();
-  for (i = 1; i <= nb; i++)
+  Interface_CopyTool aCopyTool(aModel, theProtocol);
+  const int          aNbEntities = aModel->NbEntities();
+  for (int anEntityIndex = 1; anEntityIndex <= aNbEntities; ++anEntityIndex)
   {
-    TC.Bind(model->Value(i), model->Value(i));
+    aCopyTool.Bind(aModel->Value(anEntityIndex), aModel->Value(anEntityIndex));
   }
 
-  Interface_EntityIterator               pipo;
-  occ::handle<Interface_InterfaceModel>  newmod;
-  occ::handle<IFSelect_AppliedModifiers> applied;
-  CopiedModel(G,
-              WL,
-              protocol,
-              pipo,
-              TCollection_AsciiString(filename),
+  const TCollection_AsciiString          aDestinationName = theName == nullptr ? "" : theName;
+  Interface_EntityIterator               anEmptyIterator;
+  occ::handle<Interface_InterfaceModel>  aCopiedModel;
+  occ::handle<IFSelect_AppliedModifiers> anAppliedModifiers;
+  CopiedModel(theGraph,
+              theWorkLibrary,
+              theProtocol,
+              anEmptyIterator,
+              aDestinationName,
               0,
               0,
-              TC,
-              newmod,
-              applied,
-              checks);
+              aCopyTool,
+              aCopiedModel,
+              anAppliedModifiers,
+              aChecks);
 
-  IFSelect_ContextWrite   ctx(model, protocol, applied, filename);
-  bool                    res      = WL->WriteFile(ctx);
-  Interface_CheckIterator checklst = ctx.CheckList();
-  checks.Merge(checklst);
-  if (!res)
+  IFSelect_ContextWrite   aContext(aCopiedModel,
+                                 theProtocol,
+                                 anAppliedModifiers,
+                                 aDestinationName.ToCString());
+  const bool              isWritten = theOStream == nullptr ? theWorkLibrary->WriteFile(aContext)
+                                                            : theWorkLibrary->WriteStream(aContext, *theOStream);
+  Interface_CheckIterator aContextChecks = aContext.CheckList();
+  aChecks.Merge(aContextChecks);
+  if (!isWritten)
   {
-    checks.CCheck(0)->AddFail("SendAll (WriteFile) has failed");
+    aChecks.CCheck(0)->AddFail(theOStream == nullptr ? "SendAll (WriteFile) has failed"
+                                                     : "SendAll (WriteStream) has failed");
   }
-  //  if (!checks.IsEmpty(false)) {
-  //    Message::SendWarning() <<
-  //      "  **    SendAll has produced Check Messages :    **"<<std::endl;
-  //    checks.Print (sout,model,false);
-  //  }
-  return checks;
+  return aChecks;
 }
 
 //  .... SendSelected : Data to transfer in G, filtered by iter,
@@ -553,6 +581,7 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&                   
     {
       Interface_EntityIterator        list = sel->UniqueResult(G);
       occ::handle<Standard_Transient> newent;
+      NCollection_LinearVector<int>   anEntityNumbers;
 
       //    Entities designated by the Selection and Copied ?
       //    -> if there is at least one, the Modifier applies, otherwise it is rejected
@@ -561,7 +590,19 @@ void IFSelect_ModelCopier::CopiedModel(const Interface_Graph&                   
       {
         if (TC.Search(list.Value(), newent))
         {
-          applied->AddNum(newmod->Number(newent));
+          const int anEntityNumber = newmod->Number(newent);
+          if (anEntityNumber > 0)
+          {
+            anEntityNumbers.Append(anEntityNumber);
+          }
+        }
+      }
+      if (!anEntityNumbers.IsEmpty())
+      {
+        applied->AddModif(unmod);
+        for (const int anEntityNumber : anEntityNumbers)
+        {
+          applied->AddNum(anEntityNumber);
         }
       }
     }

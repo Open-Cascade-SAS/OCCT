@@ -16,6 +16,7 @@
 
 #include <NCollection_Allocator.hxx>
 #include <NCollection_Array1.hxx>
+#include <Standard.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_OutOfRange.hxx>
 
@@ -23,6 +24,7 @@
 #include <cstddef>
 #include <cstring>
 #include <limits>
+#include <new>
 #include <type_traits>
 #include <utility>
 
@@ -50,6 +52,7 @@ class NCollection_LinearVector
 public:
   using value_type      = TheItemType;
   using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
   using pointer         = TheItemType*;
   using const_pointer   = const TheItemType*;
   using reference       = TheItemType&;
@@ -70,7 +73,7 @@ public:
   {
     if (theCapacity > 0)
     {
-      myData     = myAlloc.allocate(theCapacity);
+      myData     = allocateRaw(theCapacity);
       myCapacity = theCapacity;
     }
   }
@@ -89,29 +92,29 @@ public:
   {
     if (theOther.mySize > 0)
     {
-      myData     = myAlloc.allocate(theOther.mySize);
+      myData     = allocateRaw(theOther.mySize);
       myCapacity = theOther.mySize;
-      mySize     = theOther.mySize;
       if constexpr (std::is_trivially_copyable_v<TheItemType>)
       {
-        std::memcpy(myData, theOther.myData, mySize * sizeof(TheItemType));
+        std::memcpy(data(), theOther.data(), theOther.mySize * sizeof(TheItemType));
       }
       else
       {
-        for (size_t i = 0; i < mySize; ++i)
+        for (size_t i = 0; i < theOther.mySize; ++i)
         {
-          myAlloc.construct(myData + i, theOther.myData[i]);
+          constructAt(data() + i, theOther.data()[i]);
         }
       }
+      mySize = theOther.mySize;
     }
   }
 
   //! Move constructor.
   NCollection_LinearVector(NCollection_LinearVector&& theOther) noexcept
-      : myData(theOther.myData),
-        mySize(theOther.mySize),
-        myCapacity(theOther.myCapacity)
   {
+    myData              = theOther.myData;
+    mySize              = theOther.mySize;
+    myCapacity          = theOther.myCapacity;
     theOther.myData     = nullptr;
     theOther.mySize     = 0;
     theOther.myCapacity = 0;
@@ -136,7 +139,7 @@ public:
       {
         if (theOther.mySize > 0)
         {
-          std::memcpy(myData, theOther.myData, theOther.mySize * sizeof(TheItemType));
+          std::memcpy(data(), theOther.data(), theOther.mySize * sizeof(TheItemType));
         }
       }
       else
@@ -144,11 +147,11 @@ public:
         const size_t aCommonSize = std::min(mySize, theOther.mySize);
         for (size_t i = 0; i < aCommonSize; ++i)
         {
-          myData[i] = theOther.myData[i];
+          data()[i] = theOther.data()[i];
         }
         for (size_t i = aCommonSize; i < theOther.mySize; ++i)
         {
-          myAlloc.construct(myData + i, theOther.myData[i]);
+          constructAt(data() + i, theOther.data()[i]);
         }
         destroyRange(theOther.mySize, mySize);
       }
@@ -174,10 +177,10 @@ public:
   }
 
   //! @return raw data pointer.
-  TheItemType* Data() noexcept { return myData; }
+  TheItemType* Data() noexcept { return data(); }
 
   //! @return raw data pointer.
-  const TheItemType* Data() const noexcept { return myData; }
+  const TheItemType* Data() const noexcept { return data(); }
 
   //! @return true if the vector has allocated storage.
   bool HasData() const noexcept { return myData != nullptr; }
@@ -211,7 +214,26 @@ public:
   //! If theSize > Size(), new elements are default-constructed.
   //! If theSize < Size(), excess elements are destroyed.
   //! @param[in] theSize new number of elements
-  void Resize(const size_t theSize) { Resize(theSize, TheItemType()); }
+  void Resize(const size_t theSize)
+  {
+    if (theSize > mySize)
+    {
+      if (theSize > myCapacity)
+      {
+        grow(theSize);
+      }
+      for (size_t i = mySize; i < theSize; ++i)
+      {
+        constructAt(data() + i);
+      }
+      mySize = theSize;
+    }
+    else if (theSize < mySize)
+    {
+      destroyRange(theSize, mySize);
+      mySize = theSize;
+    }
+  }
 
   //! Change the number of elements, filling new slots with theValue.
   //! If theSize > Size(), new elements are copy-constructed from theValue.
@@ -228,7 +250,7 @@ public:
       }
       for (size_t i = mySize; i < theSize; ++i)
       {
-        myAlloc.construct(myData + i, theValue);
+        constructAt(data() + i, theValue);
       }
     }
     else if (theSize < mySize)
@@ -243,7 +265,7 @@ public:
   const TheItemType& Value(const size_t theIndex) const
   {
     Standard_OutOfRange_Raise_if(theIndex >= mySize, "NCollection_LinearVector::Value");
-    return myData[theIndex];
+    return data()[theIndex];
   }
 
   //! @return mutable reference to element at theIndex.
@@ -251,47 +273,47 @@ public:
   TheItemType& ChangeValue(const size_t theIndex)
   {
     Standard_OutOfRange_Raise_if(theIndex >= mySize, "NCollection_LinearVector::ChangeValue");
-    return myData[theIndex];
+    return data()[theIndex];
   }
 
   //! @return const reference to element at theIndex.
-  const TheItemType& operator()(const size_t theIndex) const { return myData[theIndex]; }
+  const TheItemType& operator()(const size_t theIndex) const { return data()[theIndex]; }
 
   //! @return mutable reference to element at theIndex.
-  TheItemType& operator()(const size_t theIndex) { return myData[theIndex]; }
+  TheItemType& operator()(const size_t theIndex) { return data()[theIndex]; }
 
   //! @return const reference to element at theIndex.
-  const TheItemType& operator[](const size_t theIndex) const { return myData[theIndex]; }
+  const TheItemType& operator[](const size_t theIndex) const { return data()[theIndex]; }
 
   //! @return mutable reference to element at theIndex.
-  TheItemType& operator[](const size_t theIndex) { return myData[theIndex]; }
+  TheItemType& operator[](const size_t theIndex) { return data()[theIndex]; }
 
   //! @return const reference to the first element.
   const TheItemType& First() const
   {
     Standard_OutOfRange_Raise_if(mySize == 0, "NCollection_LinearVector::First");
-    return myData[0];
+    return data()[0];
   }
 
   //! @return mutable reference to the first element.
   TheItemType& ChangeFirst()
   {
     Standard_OutOfRange_Raise_if(mySize == 0, "NCollection_LinearVector::ChangeFirst");
-    return myData[0];
+    return data()[0];
   }
 
   //! @return const reference to the last element.
   const TheItemType& Last() const
   {
     Standard_OutOfRange_Raise_if(mySize == 0, "NCollection_LinearVector::Last");
-    return myData[mySize - 1];
+    return data()[mySize - 1];
   }
 
   //! @return mutable reference to the last element.
   TheItemType& ChangeLast()
   {
     Standard_OutOfRange_Raise_if(mySize == 0, "NCollection_LinearVector::ChangeLast");
-    return myData[mySize - 1];
+    return data()[mySize - 1];
   }
 
   //! Append a copy of theValue to the end.
@@ -303,8 +325,8 @@ public:
     {
       grow(mySize + 1);
     }
-    myAlloc.construct(myData + mySize, theValue);
-    return myData[mySize++];
+    constructAt(data() + mySize, theValue);
+    return data()[mySize++];
   }
 
   //! Append theValue by move to the end.
@@ -316,8 +338,8 @@ public:
     {
       grow(mySize + 1);
     }
-    myAlloc.construct(myData + mySize, std::move(theValue));
-    return myData[mySize++];
+    constructAt(data() + mySize, std::move(theValue));
+    return data()[mySize++];
   }
 
   //! Append a default-constructed element.
@@ -328,8 +350,8 @@ public:
     {
       grow(mySize + 1);
     }
-    myAlloc.construct(myData + mySize, TheItemType());
-    return myData[mySize++];
+    constructAt(data() + mySize);
+    return data()[mySize++];
   }
 
   //! Append an element constructed in-place with the given arguments.
@@ -342,8 +364,8 @@ public:
     {
       grow(mySize + 1);
     }
-    myAlloc.construct(myData + mySize, std::forward<Args>(theArgs)...);
-    return myData[mySize++];
+    constructAt(data() + mySize, std::forward<Args>(theArgs)...);
+    return data()[mySize++];
   }
 
   //! Set value at theIndex. If theIndex >= Size(), the vector is extended.
@@ -356,8 +378,8 @@ public:
     {
       Resize(theIndex + 1);
     }
-    myData[theIndex] = theValue;
-    return myData[theIndex];
+    data()[theIndex] = theValue;
+    return data()[theIndex];
   }
 
   //! Set value at theIndex by move. If theIndex >= Size(), the vector is extended.
@@ -370,8 +392,8 @@ public:
     {
       Resize(theIndex + 1);
     }
-    myData[theIndex] = std::move(theValue);
-    return myData[theIndex];
+    data()[theIndex] = std::move(theValue);
+    return data()[theIndex];
   }
 
   //! Insert theValue before theIndex, shifting elements right.
@@ -388,7 +410,7 @@ public:
     {
       shiftRight(theIndex, 1);
     }
-    myAlloc.construct(myData + theIndex, theValue);
+    constructAt(data() + theIndex, theValue);
     ++mySize;
   }
 
@@ -415,7 +437,7 @@ public:
     {
       shiftRight(theIndex, 1);
     }
-    myAlloc.construct(myData + theIndex, std::move(theValue));
+    constructAt(data() + theIndex, std::move(theValue));
     ++mySize;
   }
 
@@ -480,73 +502,100 @@ public:
   {
     destroyRange(0, mySize);
     mySize = 0;
-    if (theReleaseMemory && myData != nullptr)
+    if (theReleaseMemory)
     {
-      myAlloc.deallocate(myData, myCapacity);
-      myData     = nullptr;
-      myCapacity = 0;
+      releaseStorage();
     }
   }
 
-  //! Returns a span as Array1 with shared memory.
+  //! Returns a mutable Array1 view with shared memory.
   //! Modifying the vector or the array may invalidate the shared buffer.
-  //! @return array view of the vector data
+  NCollection_Array1<TheItemType> ToArray1()
+  {
+    return NCollection_Array1<TheItemType>(data(), mySize);
+  }
+
+  //! Returns a read-only Array1 view with shared memory.
+  //! Modifying the vector or the array may invalidate the shared buffer.
   NCollection_Array1<TheItemType> ToArray1() const
   {
-    return NCollection_Array1<TheItemType>(myData, mySize);
+    return NCollection_Array1<TheItemType>(const_cast<pointer>(data()), mySize);
   }
 
   //! @return iterator to the first element.
-  iterator begin() noexcept { return myData; }
+  iterator begin() noexcept { return data(); }
 
   //! @return iterator past the last element.
-  iterator end() noexcept { return myData + mySize; }
+  iterator end() noexcept { return data() + mySize; }
 
   //! @return const iterator to the first element.
-  const_iterator begin() const noexcept { return myData; }
+  const_iterator begin() const noexcept { return data(); }
 
   //! @return const iterator past the last element.
-  const_iterator end() const noexcept { return myData + mySize; }
+  const_iterator end() const noexcept { return data() + mySize; }
 
   //! @return const iterator to the first element.
-  const_iterator cbegin() const noexcept { return myData; }
+  const_iterator cbegin() const noexcept { return data(); }
 
   //! @return const iterator past the last element.
-  const_iterator cend() const noexcept { return myData + mySize; }
+  const_iterator cend() const noexcept { return data() + mySize; }
 
 private:
+  static void* allocateRaw(const size_t theCapacity)
+  {
+    return Standard::AllocateOptimal(theCapacity * sizeof(TheItemType));
+  }
+
+  void reallocateStorage(const size_t theCapacity)
+  {
+    myData     = Standard::Reallocate(myData, theCapacity * sizeof(TheItemType));
+    myCapacity = theCapacity;
+  }
+
+  void replaceStorage(void* const theData, const size_t theCapacity) noexcept
+  {
+    Standard::Free(myData);
+    myData     = theData;
+    myCapacity = theCapacity;
+  }
+
+  void releaseStorage() noexcept
+  {
+    Standard::Free(myData);
+    myData     = nullptr;
+    mySize     = 0;
+    myCapacity = 0;
+  }
+
+  size_t nextCapacity(const size_t theMinimum, const size_t theMaximum) const
+  {
+    size_t aNewCapacity =
+      myCapacity == 0 ? 2 : (myCapacity > theMaximum / 2 ? theMaximum : myCapacity * 2);
+    if (aNewCapacity > theMaximum)
+    {
+      aNewCapacity = theMaximum;
+    }
+    return aNewCapacity < theMinimum ? theMinimum : aNewCapacity;
+  }
+
   //! Grow the buffer to accommodate at least theMinCapacity elements.
   void grow(const size_t theMinCapacity)
   {
-    Standard_OutOfMemory_Raise_if(theMinCapacity > MaxSize(), "NCollection_LinearVector::grow");
-    size_t aNewCap = myCapacity > 0 ? myCapacity * 2 : 2;
-    if (myCapacity > MaxSize() / 2)
-    {
-      aNewCap = MaxSize();
-    }
-    if (aNewCap < theMinCapacity)
-    {
-      aNewCap = theMinCapacity;
-    }
+    const size_t aNewCap = nextCapacity(theMinCapacity, MaxSize());
     if constexpr (std::is_trivially_copyable_v<TheItemType>)
     {
-      myData = myAlloc.reallocate(myData, aNewCap);
+      reallocateStorage(aNewCap);
     }
     else
     {
-      TheItemType* aNewData = myAlloc.allocate(aNewCap);
+      TheItemType* aNewData = static_cast<TheItemType*>(allocateRaw(aNewCap));
       for (size_t i = 0; i < mySize; ++i)
       {
-        myAlloc.construct(aNewData + i, std::move(myData[i]));
-        myData[i].~TheItemType();
+        constructAt(aNewData + i, std::move_if_noexcept(data()[i]));
       }
-      if (myData != nullptr)
-      {
-        myAlloc.deallocate(myData, myCapacity);
-      }
-      myData = aNewData;
+      destroyRange(0, mySize);
+      replaceStorage(aNewData, aNewCap);
     }
-    myCapacity = aNewCap;
   }
 
   //! Destroy elements in range [theFrom, theTo).
@@ -556,7 +605,7 @@ private:
     {
       for (size_t i = theFrom; i < theTo; ++i)
       {
-        myData[i].~TheItemType();
+        data()[i].~TheItemType();
       }
     }
   }
@@ -567,8 +616,8 @@ private:
   {
     if constexpr (std::is_trivially_copyable_v<TheItemType>)
     {
-      std::memmove(myData + theIndex + theCount,
-                   myData + theIndex,
+      std::memmove(data() + theIndex + theCount,
+                   data() + theIndex,
                    (mySize - theIndex) * sizeof(TheItemType));
     }
     else
@@ -576,8 +625,8 @@ private:
       // Move-construct last element into uninitialized space
       for (size_t i = mySize; i-- > theIndex;)
       {
-        myAlloc.construct(myData + i + theCount, std::move(myData[i]));
-        myData[i].~TheItemType();
+        constructAt(data() + i + theCount, std::move(data()[i]));
+        data()[i].~TheItemType();
       }
     }
   }
@@ -591,22 +640,32 @@ private:
     const size_t aCount = theSrcTo - theSrcFrom;
     if constexpr (std::is_trivially_copyable_v<TheItemType>)
     {
-      std::memmove(myData + theDstFrom, myData + theSrcFrom, aCount * sizeof(TheItemType));
+      std::memmove(data() + theDstFrom, data() + theSrcFrom, aCount * sizeof(TheItemType));
     }
     else
     {
       for (size_t i = 0; i < aCount; ++i)
       {
-        myData[theDstFrom + i] = std::move(myData[theSrcFrom + i]);
+        data()[theDstFrom + i] = std::move(data()[theSrcFrom + i]);
       }
     }
   }
 
 private:
-  allocator_type myAlloc;
-  TheItemType*   myData     = nullptr;
-  size_t         mySize     = 0;
-  size_t         myCapacity = 0;
+  pointer data() noexcept { return static_cast<pointer>(myData); }
+
+  const_pointer data() const noexcept { return static_cast<const_pointer>(myData); }
+
+  template <class... Args>
+  static void constructAt(pointer thePointer, Args&&... theArgs)
+  {
+    ::new (static_cast<void*>(thePointer)) TheItemType(std::forward<Args>(theArgs)...);
+  }
+
+private:
+  void*  myData     = nullptr;
+  size_t mySize     = 0;
+  size_t myCapacity = 0;
 };
 
 #endif // NCollection_LinearVector_HeaderFile

@@ -90,7 +90,7 @@ Standard_EXPORT void BRepTest_CheckCommands_SetFaultyName(const char* name)
 }
 
 static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                          theMap;
+                                                          THE_SHAPE_CONTEXT_MAP;
 static int                                                nbfaulty = 0;
 static NCollection_Sequence<occ::handle<Draw_Drawable3D>> lfaulty;
 
@@ -147,9 +147,9 @@ static void PrintSub(Standard_OStream&         OS,
     const TopoDS_Shape&                  sub = exp.Current();
     for (res->InitContextIterator(); res->MoreShapeInContext(); res->NextShapeInContext())
     {
-      if (res->ContextualShape().IsSame(S) && !Contains(theMap(sub), S))
+      if (res->ContextualShape().IsSame(S) && !Contains(THE_SHAPE_CONTEXT_MAP(sub), S))
       {
-        theMap(sub).Append(S);
+        THE_SHAPE_CONTEXT_MAP(sub).Append(S);
         itl.Initialize(res->StatusOnShape());
         if (itl.Value() != BRepCheck_NoError)
         {
@@ -195,7 +195,7 @@ static void Print(Standard_OStream& OS, const BRepCheck_Analyzer& Ana, const Top
   char*                                        Name;
   TopAbs_ShapeEnum                             styp = S.ShapeType();
   NCollection_List<BRepCheck_Status>::Iterator itl;
-  if (!Ana.Result(S).IsNull() && !theMap.IsBound(S))
+  if (!Ana.Result(S).IsNull() && !THE_SHAPE_CONTEXT_MAP.IsBound(S))
   {
     itl.Initialize(Ana.Result(S)->Status());
     if (itl.Value() != BRepCheck_NoError)
@@ -219,10 +219,10 @@ static void Print(Standard_OStream& OS, const BRepCheck_Analyzer& Ana, const Top
       }
     }
   }
-  if (!theMap.IsBound(S))
+  if (!THE_SHAPE_CONTEXT_MAP.IsBound(S))
   {
     NCollection_List<TopoDS_Shape> thelist;
-    theMap.Bind(S, thelist);
+    THE_SHAPE_CONTEXT_MAP.Bind(S, thelist);
   }
 
   switch (styp)
@@ -453,7 +453,7 @@ void ContextualDump(Draw_Interpretor&         theCommands,
                     const BRepCheck_Analyzer& theAna,
                     const TopoDS_Shape&       theShape)
 {
-  theMap.Clear();
+  THE_SHAPE_CONTEXT_MAP.Clear();
   nbfaulty = 0;
   lfaulty.Clear();
 
@@ -462,7 +462,7 @@ void ContextualDump(Draw_Interpretor&         theCommands,
   theCommands << aSStream;
 
   theCommands << "\n";
-  theMap.Clear();
+  THE_SHAPE_CONTEXT_MAP.Clear();
 
   if (nbfaulty != 0)
   {
@@ -506,9 +506,9 @@ static void GetProblemSub(const BRepCheck_Analyzer&                         Ana,
     const TopoDS_Shape& sub = exp.Current();
     for (res->InitContextIterator(); res->MoreShapeInContext(); res->NextShapeInContext())
     {
-      if (res->ContextualShape().IsSame(Shape) && !Contains(theMap(sub), Shape))
+      if (res->ContextualShape().IsSame(Shape) && !Contains(THE_SHAPE_CONTEXT_MAP(sub), Shape))
       {
-        theMap(sub).Append(Shape);
+        THE_SHAPE_CONTEXT_MAP(sub).Append(Shape);
         itl.Initialize(res->StatusOnShape());
 
         if (itl.Value() != BRepCheck_NoError)
@@ -560,7 +560,7 @@ static void GetProblemShapes(const BRepCheck_Analyzer&                         A
   }
   TopAbs_ShapeEnum                             styp = Shape.ShapeType();
   NCollection_List<BRepCheck_Status>::Iterator itl;
-  if (!Ana.Result(Shape).IsNull() && !theMap.IsBound(Shape))
+  if (!Ana.Result(Shape).IsNull() && !THE_SHAPE_CONTEXT_MAP.IsBound(Shape))
   {
     itl.Initialize(Ana.Result(Shape)->Status());
 
@@ -570,10 +570,10 @@ static void GetProblemShapes(const BRepCheck_Analyzer&                         A
       FillProblems(itl.Value(), NbProblems);
     }
   }
-  if (!theMap.IsBound(Shape))
+  if (!THE_SHAPE_CONTEXT_MAP.IsBound(Shape))
   {
     NCollection_List<TopoDS_Shape> thelist;
-    theMap.Bind(Shape, thelist);
+    THE_SHAPE_CONTEXT_MAP.Bind(Shape, thelist);
   }
 
   switch (styp)
@@ -619,9 +619,9 @@ void StructuralDump(Draw_Interpretor&         theCommands,
   }
   occ::handle<NCollection_HSequence<TopoDS_Shape>> sl, slv, sle, slw, slf, sls, slo;
   sl = new NCollection_HSequence<TopoDS_Shape>();
-  theMap.Clear();
+  THE_SHAPE_CONTEXT_MAP.Clear();
   GetProblemShapes(theAna, theShape, sl, NbProblems);
-  theMap.Clear();
+  THE_SHAPE_CONTEXT_MAP.Clear();
 
   int aProblemID = static_cast<int>(BRepCheck_InvalidPointOnCurve);
   if (NbProblems->Value(aProblemID) > 0)

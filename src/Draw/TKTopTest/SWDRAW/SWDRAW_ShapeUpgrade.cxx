@@ -73,7 +73,6 @@
 // #include <ShapeAnalysis_Shell.hxx>
 // #include <ShapeAnalysis_WireOrder.hxx>
 // #include <ShapeAnalysis_Wire.hxx>
-// #include <ShapeUpgrade_ShellSewing.hxx>
 //  the plane (equation z=0) shared by PlaneDividedFaceContinuity and PlaneGridShell
 // static occ::handle<Geom_Plane> ThePlane= new Geom_Plane(0,0,1,0);
 //=================================================================================================

@@ -6,6 +6,7 @@ set(OCCT_TKPrim_GTests_FILES
   BRepPrimAPI_MakeCone_Test.cxx
   BRepPrimAPI_MakeCylinder_Test.cxx
   BRepPrimAPI_MakePrism_Test.cxx
+  BRepPrimAPI_MakeRevol_Test.cxx
   BRepPrimAPI_MakeSphere_Test.cxx
   BRepPrimAPI_MakeTorus_Test.cxx
   BRepPrimAPI_MakeWedge_Test.cxx

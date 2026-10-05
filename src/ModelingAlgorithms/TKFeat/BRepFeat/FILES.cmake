@@ -41,5 +41,4 @@ set(OCCT_BRepFeat_FILES
   BRepFeat_SplitShape.lxx
   BRepFeat_Status.hxx
   BRepFeat_StatusError.hxx
-  BRepFeat_trace.cxx
 )

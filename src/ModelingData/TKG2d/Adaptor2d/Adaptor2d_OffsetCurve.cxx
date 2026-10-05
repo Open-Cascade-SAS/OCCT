@@ -292,86 +292,73 @@ double Adaptor2d_OffsetCurve::Period() const
 
 //=================================================================================================
 
-gp_Pnt2d Adaptor2d_OffsetCurve::Value(const double U) const
+gp_Pnt2d Adaptor2d_OffsetCurve::EvalD0(const double theU) const
 {
   if (myOffset != 0.)
   {
-    gp_Pnt2d aP;
-    gp_Vec2d aV;
-    myCurve->D1(U, aP, aV);
-    Geom2d_OffsetCurveUtils::CalculateD0(aP, aV, myOffset);
-    return aP;
+    Geom2d_Curve::ResD1 aResult = myCurve->EvalD1(theU);
+    Geom2d_OffsetCurveUtils::CalculateD0(aResult.Point, aResult.D1, myOffset);
+    return aResult.Point;
   }
-  else
-  {
-    return myCurve->Value(U);
-  }
+  return myCurve->EvalD0(theU);
 }
 
 //=================================================================================================
 
-void Adaptor2d_OffsetCurve::D0(const double U, gp_Pnt2d& P) const
-{
-  P = Value(U);
-}
-
-//=================================================================================================
-
-void Adaptor2d_OffsetCurve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
+Geom2d_Curve::ResD1 Adaptor2d_OffsetCurve::EvalD1(const double theU) const
 {
   if (myOffset != 0.)
   {
-    gp_Vec2d aV2;
-    myCurve->D2(U, P, V, aV2);
-    Geom2d_OffsetCurveUtils::CalculateD1(P, V, aV2, myOffset);
+    Geom2d_Curve::ResD2 aBasis = myCurve->EvalD2(theU);
+    Geom2d_OffsetCurveUtils::CalculateD1(aBasis.Point, aBasis.D1, aBasis.D2, myOffset);
+    return {aBasis.Point, aBasis.D1};
   }
-  else
-  {
-    myCurve->D1(U, P, V);
-  }
+  return myCurve->EvalD1(theU);
 }
 
 //=================================================================================================
 
-void Adaptor2d_OffsetCurve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+Geom2d_Curve::ResD2 Adaptor2d_OffsetCurve::EvalD2(const double theU) const
 {
   if (myOffset != 0.)
   {
-    gp_Vec2d aV3;
-    myCurve->D3(U, P, V1, V2, aV3);
-    Geom2d_OffsetCurveUtils::CalculateD2(P, V1, V2, aV3, false, myOffset);
+    Geom2d_Curve::ResD3 aBasis = myCurve->EvalD3(theU);
+    Geom2d_OffsetCurveUtils::CalculateD2(aBasis.Point,
+                                         aBasis.D1,
+                                         aBasis.D2,
+                                         aBasis.D3,
+                                         false,
+                                         myOffset);
+    return {aBasis.Point, aBasis.D1, aBasis.D2};
   }
-  else
-  {
-    myCurve->D2(U, P, V1, V2);
-  }
+  return myCurve->EvalD2(theU);
 }
 
 //=================================================================================================
 
-void Adaptor2d_OffsetCurve::D3(const double U,
-                               gp_Pnt2d&    P,
-                               gp_Vec2d&    V1,
-                               gp_Vec2d&    V2,
-                               gp_Vec2d&    V3) const
+Geom2d_Curve::ResD3 Adaptor2d_OffsetCurve::EvalD3(const double theU) const
 {
   if (myOffset != 0.)
   {
-    gp_Vec2d aV4 = myCurve->DN(U, 4);
-    myCurve->D3(U, P, V1, V2, V3);
-    Geom2d_OffsetCurveUtils::CalculateD3(P, V1, V2, V3, aV4, false, myOffset);
+    const gp_Vec2d      aD4     = myCurve->EvalDN(theU, 4);
+    Geom2d_Curve::ResD3 aResult = myCurve->EvalD3(theU);
+    Geom2d_OffsetCurveUtils::CalculateD3(aResult.Point,
+                                         aResult.D1,
+                                         aResult.D2,
+                                         aResult.D3,
+                                         aD4,
+                                         false,
+                                         myOffset);
+    return aResult;
   }
-  else
-  {
-    myCurve->D3(U, P, V1, V2, V3);
-  }
+  return myCurve->EvalD3(theU);
 }
 
 //=================================================================================================
 
-gp_Vec2d Adaptor2d_OffsetCurve::DN(const double, const int) const
+gp_Vec2d Adaptor2d_OffsetCurve::EvalDN(const double, const int) const
 {
-  throw Standard_NotImplemented("Adaptor2d_OffsetCurve::DN");
+  throw Standard_NotImplemented("Adaptor2d_OffsetCurve::EvalDN");
 }
 
 //=================================================================================================

@@ -177,7 +177,8 @@ RWGltf_CafReader::RWGltf_CafReader()
       myToSkipLateDataLoading(false),
       myToKeepLateData(true),
       myToPrintDebugMessages(false),
-      myToApplyScale(true)
+      myToApplyScale(true),
+      myIsStreamInput(false)
 {
   myCoordSysConverter.SetInputLengthUnit(1.0); // glTF defines model in meters
   myCoordSysConverter.SetInputCoordinateSystem(RWMesh_CoordinateSystem_glTF);
@@ -298,6 +299,11 @@ bool RWGltf_CafReader::performMesh(std::istream&                  theStream,
   aDoc.SetSkipEmptyNodes(myToSkipEmptyNodes);
   aDoc.SetLoadAllScenes(myToLoadAllScenes);
   aDoc.SetMeshNameAsFallback(myUseMeshNameAsFallback);
+  if (myIsStreamInput)
+  {
+    std::shared_ptr<std::istream> aSharedStream(&theStream, [](std::istream*) {});
+    aDoc.SetStream(aSharedStream);
+  }
   if (!theToProbe)
   {
     aDoc.SetAttributeMap(myAttribMap);

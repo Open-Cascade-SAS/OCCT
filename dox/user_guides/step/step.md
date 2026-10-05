@@ -30,7 +30,7 @@ Beyond the upper level API, which is fitted for an easy end-use, the STEP exchan
 
 * Specific packages for Data definition and checking;
 * Physical Access supported by Drivers (Part 21 file access is embedded);
-* Conversion to/from Open Cascade or applicative data supported by drivers (OCC-BREP and XDE ard basically provided);
+* Conversion to/from Open Cascade or applicative data supported by drivers (OCC-BREP and XDE are basically provided);
 * Tools for analysis, filtering, etc... including DRAW commands.
 
 These modules share common architecture and capabilities with other exchange modules of Open Cascade, like Shape Healing.
@@ -739,8 +739,8 @@ Not all entities defining the assembly structure in the STEP file are translated
 | | composite_curve | TopoDS_Wire | |  
 | | composite_curve_on_surface | TopoDS_Wire | | 
 | | boundary_curve |  TopoDS_Wire | | 
-| Surfaces | b_spline_surface | Geom_BsplineSurface | |
-| |  b_spline_surface_with_knots | Geom_BsplineSurface | | 
+| Surfaces | b_spline_surface | Geom_BSplineSurface | |
+| |  b_spline_surface_with_knots | Geom_BSplineSurface | |
 | | bezier_surface | Geom_BSplineSurface | | 
 | | conical_surface | Geom_ConicalSurface | | 
 | | cylindrical_surface | Geom_CylindricalSurface  | |
@@ -832,7 +832,7 @@ The following default tolerances are used when creating shapes and how they are 
 
 <h4>Healing of resulting shape in ShapeHealing component</h4>
 ##### ShapeFix_Wire::FixSelfIntersection() 
-This method is intended for detecting and fixing self-intersecting edges and intersections of adjacent edges in a wire. It fixes self-intersections by cutting edges at the intersection point and/or by increasing the tolerance of the vertex (so that the vertex comprises the point of intersection). There is a maximum tolerance that can be set by this method transmitted as a parameter, currently is *read.maxprecision.value*.
+This method is intended for detecting and fixing self-intersecting edges and intersections of adjacent edges in a wire. It fixes self-intersections by cutting edges at the intersection point and/or by increasing the tolerance of the vertex (so that the vertex comprises the point of intersection). There is a maximum tolerance that can be set by this method transmitted as a parameter, currently is *read.maxprecision.val*.
 
 When a self-intersection of one edge is found, it is fixed by one of the two methods: 
   * tolerance of the vertex of that edge which is nearest to the point of self-intersection is increased so that it comprises both its own old position and the intersection point
@@ -1198,8 +1198,8 @@ The table below describes STEP entities, which are created when the assembly str
 | | Geom_OffsetSurface | offset_surface | | 
 | | Geom_RectangularTrimmedSurface | rectangular_trimmed_surface | | 
 | | Geom_SphericalSurface |  spherical_surface | | 
-| | Geom_SurfaceOfLinear Extrusion | surface_of_linear_extrusion | | 
-| | Geom_SurfaceOf Revolution | surface_of_revolution | |
+| | Geom_SurfaceOfLinearExtrusion | surface_of_linear_extrusion | |
+| | Geom_SurfaceOfRevolution | surface_of_revolution | |
 | | Geom_ToroidalSurface | toroidal_surface or degenerate_toroidal_surface |   *degenerate_toroidal_surface* is produced if the minor radius is greater than the major one |
 | | Geom_BezierSurface | b_spline_surface_with_knots | | 
 | | Geom_BSplineSurface | b_spline_surface_with_knots or rational_b_spline_surface |  *rational_b_spline_surface* is produced if *Geom_BSplineSurface* is a rational BSpline |
@@ -1463,7 +1463,7 @@ Entities in the STEP file are numbered in the succeeding order. An entity can be
 Information about product names, *next_assembly_usage_occurrence, shape_definition_representation, context_dependent_shape_representation* or *mapped_item entities* that are involved into the assembly structure will be printed. 
 
 @subsubsection occt_step_6_4_2 Estimating the results of reading STEP
-All the following commands are available only after data is converted into OCCT shapes (i.e. after command 214read). 
+All the following commands are available only after data is converted into OCCT shapes (i.e. after command stepread).
 
 Command *Draw:> tpstat [*|?]\<symbol\> [\<selection\>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines what information will be printed: 
 
@@ -1777,4 +1777,3 @@ Saved Views are not exported by OCCT.
 
 ### User defined attributes
 Attributes can be imported from STEP.
-

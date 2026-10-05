@@ -38,7 +38,7 @@ extern bool TopOpeBRep_GetcontextNEWKP();
 
 // VP<STATIC_lastVPind> is the vp on which was computed the last CPI.
 // if no CPI is computed yet, <STATIC_lastVPind> = 0.
-static int STATIC_lastVPind;
+static thread_local int STATIC_lastVPind; // per-thread cross-call cache
 
 #define M_FORWARD(st) (st == TopAbs_FORWARD)
 #define M_REVERSED(st) (st == TopAbs_REVERSED)
@@ -252,12 +252,6 @@ bool FUNBREP_topowalki_new(const occ::handle<TopOpeBRepDS_Interference>&        
   return keep;
 } // FUNBREP_topowalki_new
 
-#ifdef OCCT_DEBUG
-extern bool GLOBAL_bvpr;
-
-Standard_EXPORT void debvpr2(void) {}
-#endif
-
 //----------------------------------------------------------------------
 bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&                   Ifound,
                        const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
@@ -410,11 +404,6 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
 
     if (keep)
     {
-#ifdef OCCT_DEBUG
-      if (GLOBAL_bvpr)
-        debvpr2();
-#endif
-
       if (CPIfound && samepar)
       {
         double PIfound = TopOpeBRepDS_InterferenceTool::Parameter(Ifound);

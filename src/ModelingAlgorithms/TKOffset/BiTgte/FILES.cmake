@@ -7,6 +7,4 @@ set(OCCT_BiTgte_FILES
   BiTgte_ContactType.hxx
   BiTgte_CurveOnEdge.cxx
   BiTgte_CurveOnEdge.hxx
-  BiTgte_CurveOnVertex.cxx
-  BiTgte_CurveOnVertex.hxx
 )

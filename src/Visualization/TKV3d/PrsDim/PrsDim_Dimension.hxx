@@ -19,6 +19,7 @@
 #include <PrsDim_DimensionOwner.hxx>
 #include <PrsDim_DisplaySpecialSymbol.hxx>
 #include <AIS_InteractiveObject.hxx>
+#include <BRepFont_Builder.hxx>
 #include <AIS_KindOfInteractive.hxx>
 #include <PrsDim_KindOfDimension.hxx>
 #include <Geom_Curve.hxx>
@@ -36,6 +37,11 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Handle.hxx>
+
+#include <optional>
+
+class StdPrs_BRepFont;
+class StdPrs_BRepFontCache;
 
 //! PrsDim_Dimension is a base class for 2D presentations of linear (length, diameter, radius)
 //! and angular dimensions.
@@ -216,6 +222,17 @@ public:
   //! @param[in] theType  the type of dimension.
   Standard_EXPORT PrsDim_Dimension(const PrsDim_KindOfDimension theType);
 
+  //! Set an optional shared cache for 3D BRep fonts.
+  //! A null handle creates a font for each presentation computation.
+  //! @param[in] theCache cache shared with this dimension
+  Standard_EXPORT void SetBRepFontCache(const occ::handle<StdPrs_BRepFontCache>& theCache);
+
+  //! Return the optional cache used for 3D BRep font resources.
+  [[nodiscard]] const occ::handle<StdPrs_BRepFontCache>& BRepFontCache() const
+  {
+    return myBRepFontCache;
+  }
+
   //! Gets dimension measurement value. If the value to display is not
   //! specified by user, then the dimension object is responsible to
   //! compute it on its own in model space coordinates.
@@ -356,10 +373,15 @@ public:
 protected:
   Standard_EXPORT double ValueToDisplayUnits() const;
 
-  //! Get formatted value string and its model space width.
-  //! @param[out] theWidth  the model space with of the string.
+  //! Get the formatted value and prepare its 3D text plan when requested by the aspect.
+  //! @param[out] theWidth model-space width of the string
+  //! @param[out] theFont initialized BRep font for 3D text, or null for 2D text
+  //! @param[out] thePlan formatted 3D text plan, or empty for 2D text or a failed font request
   //! @return formatted dimension value string.
-  Standard_EXPORT TCollection_ExtendedString GetValueString(double& theWidth) const;
+  Standard_EXPORT TCollection_ExtendedString
+    GetValueString(double&                                    theWidth,
+                   occ::handle<StdPrs_BRepFont>&              theFont,
+                   std::optional<BRepFont_Builder::TextPlan>& thePlan) const;
 
   //! Performs drawing of 2d or 3d arrows on the working plane
   //! @param[in] theLocation  the location of the arrow tip.
@@ -380,7 +402,9 @@ protected:
                                 const gp_Pnt&                          theTextPos,
                                 const gp_Dir&                          theTextDir,
                                 const TCollection_ExtendedString&      theText,
-                                const int                              theLabelPosition);
+                                const int                              theLabelPosition,
+                                const occ::handle<StdPrs_BRepFont>&    theFont,
+                                const BRepFont_Builder::TextPlan*      thePlan);
 
   //! Performs computing of dimension linear extension with text
   //! @param[in] thePresentation  the presentation to fill with graphical primitives.
@@ -398,7 +422,9 @@ protected:
                                      const TCollection_ExtendedString&      theLabelString,
                                      const double                           theLabelWidth,
                                      const int                              theMode,
-                                     const int                              theLabelPosition);
+                                     const int                              theLabelPosition,
+                                     const occ::handle<StdPrs_BRepFont>&    theFont,
+                                     const BRepFont_Builder::TextPlan*      thePlan);
 
   //! Performs computing of linear dimension (for length, diameter, radius and so on).
   //! Please note that this method uses base dimension properties, like working plane
@@ -484,6 +510,7 @@ protected:
     const gp_Pnt&                                theSecondPoint,
     const bool                                   theIsOneSide,
     const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+    const double                                 theLabelWidth,
     int&                                         theLabelPosition,
     bool&                                        theIsArrowsExternal) const;
 
@@ -655,7 +682,8 @@ protected:                  //! @name Geometrical properties
   bool   myIsGeometryValid; //!< Is dimension geometry properly defined.
 
 private:
-  PrsDim_KindOfDimension myKindOfDimension;
+  occ::handle<StdPrs_BRepFontCache> myBRepFontCache;
+  PrsDim_KindOfDimension            myKindOfDimension;
 };
 
 #endif // _PrsDim_Dimension_HeaderFile

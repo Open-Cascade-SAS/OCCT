@@ -477,7 +477,7 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face&,
 
 //=================================================================================================
 
-TopOpeBRep_PThePointOfIntersection TopOpeBRep_VPointInter::PThePointOfIntersectionDummy() const
+IntPatch_Point* TopOpeBRep_VPointInter::PThePointOfIntersectionDummy() const
 {
   return myPPOI;
 }

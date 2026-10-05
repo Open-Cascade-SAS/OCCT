@@ -2088,7 +2088,7 @@ void BSplCLib::InsertKnots(const int                         Degree,
   // -------------------
   // Use stack-based allocation for small arrays (MaxDegree=25, typical Dimension=4)
   NCollection_LocalArray<double, 64>  knots(2 * Degree);
-  NCollection_LocalArray<double, 256> poles((2 * Degree + 1) * Dimension);
+  NCollection_LocalArray<double, 256> poles(static_cast<size_t>(2 * Degree + 1) * Dimension);
 
   //----------------------------
   // loop on the knots to insert
@@ -2403,7 +2403,7 @@ bool BSplCLib::RemoveKnot(const int                         Index,
   // -------------------
   // Use stack-based allocation for small arrays (MaxDegree=25, typical Dimension=4)
   NCollection_LocalArray<double, 128> knots(4 * Degree);
-  NCollection_LocalArray<double, 256> poles((2 * Degree + 1) * Dimension);
+  NCollection_LocalArray<double, 256> poles(static_cast<size_t>(2 * Degree + 1) * Dimension);
 
   // ------------------------------------
   // build the knots for anti Boor Scheme
@@ -3575,7 +3575,8 @@ void BSplCLib::Eval(const double                      Parameter,
     {
       NewRequest = Degree;
     }
-    NCollection_LocalArray<double> LocalRealArray((LocalRequest + 1) * ArrayDimension);
+    NCollection_LocalArray<double> LocalRealArray(static_cast<size_t>(LocalRequest + 1)
+                                                  * ArrayDimension);
     Index   = 0;
     Inverse = 1.0e0;
 
@@ -3752,7 +3753,8 @@ void BSplCLib::Eval(const double                      Parameter,
     {
       NewRequest = Degree;
     }
-    NCollection_LocalArray<double> LocalRealArray((LocalRequest + 1) * ArrayDimension);
+    NCollection_LocalArray<double> LocalRealArray(static_cast<size_t>(LocalRequest + 1)
+                                                  * ArrayDimension);
 
     Index   = 0;
     Inverse = 1.0e0;

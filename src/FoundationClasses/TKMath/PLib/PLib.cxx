@@ -1163,7 +1163,8 @@ int PLib::EvalLagrange(const double Parameter,
   {
     local_request = Degree;
   }
-  NCollection_LocalArray<double> divided_differences_array((Degree + 1) * Dimension);
+  NCollection_LocalArray<double> divided_differences_array(static_cast<size_t>(Degree + 1)
+                                                           * Dimension);
   //
   //  Build the divided differences array
   //
@@ -1303,7 +1304,8 @@ int PLib::EvalCubicHermite(const double Parameter,
   {
     local_request = Degree;
   }
-  NCollection_LocalArray<double> divided_differences_array((Degree + 1) * Dimension);
+  NCollection_LocalArray<double> divided_differences_array(static_cast<size_t>(Degree + 1)
+                                                           * Dimension);
 
   for (ii = 0, jj = 0; ii < 2; ii++, jj += 2)
   {

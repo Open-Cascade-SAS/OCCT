@@ -238,6 +238,100 @@ bool DEGLTF_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
+bool DEGLTF_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
+                           const Message_ProgressRange&         theProgress)
+{
+  (void)theWS;
+  return Read(theStreams, theDocument, theProgress);
+}
+
+//=================================================================================================
+
+bool DEGLTF_Provider::Read(ReadStreamList&                     theStreams,
+                           TopoDS_Shape&                       theShape,
+                           occ::handle<XSControl_WorkSession>& theWS,
+                           const Message_ProgressRange&        theProgress)
+{
+  (void)theWS;
+  return Read(theStreams, theShape, theProgress);
+}
+
+//=================================================================================================
+
+bool DEGLTF_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           const Message_ProgressRange&         theProgress)
+{
+  const TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
+  {
+    return false;
+  }
+
+  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
+  const TCollection_AsciiString  aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
+      || !DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                        STANDARD_TYPE(DEGLTF_ConfigurationNode),
+                                                        aFullContext))
+  {
+    return false;
+  }
+
+  occ::handle<DEGLTF_ConfigurationNode> aNode = occ::down_cast<DEGLTF_ConfigurationNode>(GetNode());
+  RWGltf_CafReader                      aReader;
+  aReader.SetStreamInput(true);
+  aReader.SetDocument(theDocument);
+  SetReaderParameters(aReader, aNode);
+  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
+                                      aNode->GlobalParameters.LengthUnit,
+                                      UnitsMethods_LengthUnit_Millimeter);
+  if (!aReader.Perform(theStreams.First().Stream, theProgress, aFirstKey))
+  {
+    Message::SendFail() << "Error in the DEGLTF_Provider during reading stream " << aFirstKey;
+    return false;
+  }
+  return true;
+}
+
+//=================================================================================================
+
+bool DEGLTF_Provider::Read(ReadStreamList&              theStreams,
+                           TopoDS_Shape&                theShape,
+                           const Message_ProgressRange& theProgress)
+{
+  const TCollection_AsciiString aContext = "reading stream";
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
+  {
+    return false;
+  }
+
+  const TCollection_AsciiString& aFirstKey    = theStreams.First().Path;
+  const TCollection_AsciiString  aFullContext = aContext + " " + aFirstKey;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DEGLTF_ConfigurationNode),
+                                                     aFullContext))
+  {
+    return false;
+  }
+
+  occ::handle<DEGLTF_ConfigurationNode> aNode = occ::down_cast<DEGLTF_ConfigurationNode>(GetNode());
+  RWGltf_CafReader                      aReader;
+  aReader.SetStreamInput(true);
+  SetReaderParameters(aReader, aNode);
+  if (!aReader.Perform(theStreams.First().Stream, theProgress, aFirstKey))
+  {
+    Message::SendFail() << "Error in the DEGLTF_Provider during reading stream " << aFirstKey;
+    return false;
+  }
+  theShape = aReader.SingleShape();
+  return !theShape.IsNull();
+}
+
+//=================================================================================================
+
 TCollection_AsciiString DEGLTF_Provider::GetFormat() const
 {
   return TCollection_AsciiString("GLTF");

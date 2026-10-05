@@ -15,6 +15,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <vector>
 
 // Test fixture for NCollection_OrderedDataMap tests
@@ -28,7 +29,7 @@ protected:
   static std::vector<int> collectKeys(const IntStringMap& theMap)
   {
     std::vector<int> aKeys;
-    for (IntStringMap::Iterator anIter(theMap); anIter.More(); anIter.Next())
+    for (IntStringMap::const_iterator anIter = theMap.cbegin(); anIter != theMap.cend(); ++anIter)
     {
       aKeys.push_back(anIter.Key());
     }
@@ -39,7 +40,7 @@ protected:
   static std::vector<int> collectIntKeys(const IntIntMap& theMap)
   {
     std::vector<int> aKeys;
-    for (IntIntMap::Iterator anIter(theMap); anIter.More(); anIter.Next())
+    for (IntIntMap::const_iterator anIter = theMap.cbegin(); anIter != theMap.cend(); ++anIter)
     {
       aKeys.push_back(anIter.Key());
     }
@@ -724,15 +725,28 @@ TEST_F(NCollection_OrderedDataMapTest, STLBeginEnd)
   aMap.Bind(10, 100);
   aMap.Bind(20, 200);
 
-  // STL iterator gives values (not keys), in insertion order
+  // STL iterator gives mutable values (not keys), in insertion order
   std::vector<int> aValues;
-  for (auto it = aMap.cbegin(); it != aMap.cend(); ++it)
+  for (auto it = aMap.begin(); it != aMap.end(); ++it)
   {
     aValues.push_back(*it);
   }
 
   const std::vector<int> anExpected = {300, 100, 200};
   EXPECT_EQ(anExpected, aValues);
+
+  const IntIntMap& aConstMap = aMap;
+  std::vector<int> aConstValues;
+  for (auto it = aConstMap.cbegin(); it != aConstMap.cend(); ++it)
+  {
+    aConstValues.push_back(*it);
+  }
+  EXPECT_EQ(anExpected, aConstValues);
+
+  const auto aFound = std::find(aMap.cbegin(), aMap.cend(), 200);
+  ASSERT_NE(aMap.cend(), aFound);
+  EXPECT_EQ(200, *aFound);
+  EXPECT_TRUE(std::equal(aMap.cbegin(), aMap.cend(), anExpected.begin()));
 }
 
 TEST_F(NCollection_OrderedDataMapTest, CustomStatefulHasher)

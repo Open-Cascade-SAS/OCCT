@@ -12,12 +12,16 @@
 // commercial license or contractual agreement.
 
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_Ellipse.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAPI_ExtremaCurveCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <Precision.hxx>
 #include <gp_Ax22d.hxx>
+#include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Elips2d.hxx>
 #include <gp_Pnt2d.hxx>
 
 #include <gtest/gtest.h>
@@ -72,4 +76,44 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC24889_IntersectionParameterWithinLimits)
 
   double aDist2 = aP1.SquareDistance(aP2);
   EXPECT_LT(aDist2, 1.0e-14) << "Points on both curves at intersection parameters should coincide";
+}
+
+TEST(Geom2dAPI_InterCurveCurve_Test, FClassesBug_25635_1_TangentEllipses)
+{
+  // fclasses/bug25635_1: extrema between two tangent ellipses includes the zero-distance result.
+  occ::handle<Geom2d_Ellipse> anEllipse1 =
+    new Geom2d_Ellipse(gp_Elips2d(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0));
+  occ::handle<Geom2d_Ellipse> anEllipse2 =
+    new Geom2d_Ellipse(gp_Elips2d(gp_Ax2d(gp_Pnt2d(4.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0, 1.0));
+
+  Geom2dAPI_ExtremaCurveCurve anExtrema(anEllipse1,
+                                        anEllipse2,
+                                        anEllipse1->FirstParameter(),
+                                        anEllipse1->LastParameter(),
+                                        anEllipse2->FirstParameter(),
+                                        anEllipse2->LastParameter());
+  ASSERT_GT(anExtrema.NbExtrema(), 0);
+  EXPECT_NEAR(anExtrema.Distance(1), 0.0, 7.0e-5);
+}
+
+TEST(Geom2dAPI_InterCurveCurve_Test, FClassesBug_25635_2_TangentCircles)
+{
+  // fclasses/bug25635_2: all four extrema are reported and ext_2 is the tangent point.
+  occ::handle<Geom2d_Circle> aCircle1 =
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)), 2.0);
+  occ::handle<Geom2d_Circle> aCircle2 =
+    new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(4.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)), 2.0);
+
+  Geom2dAPI_ExtremaCurveCurve anExtrema(aCircle1,
+                                        aCircle2,
+                                        aCircle1->FirstParameter(),
+                                        aCircle1->LastParameter(),
+                                        aCircle2->FirstParameter(),
+                                        aCircle2->LastParameter());
+  ASSERT_GE(anExtrema.NbExtrema(), 4);
+  EXPECT_LE(anExtrema.Distance(2), Precision::PConfusion());
+
+  gp_Pnt2d aPoint1, aPoint2;
+  anExtrema.Points(2, aPoint1, aPoint2);
+  EXPECT_TRUE(aPoint1.IsEqual(aPoint2, Precision::PConfusion()));
 }

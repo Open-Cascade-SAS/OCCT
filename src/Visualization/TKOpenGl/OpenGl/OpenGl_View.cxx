@@ -541,7 +541,7 @@ bool OpenGl_View::BufferDump(Image_PixMap& theImage, const Graphic3d_BufferType&
   NCollection_LinearVector<GLfloat> aValues;
   try
   {
-    aValues.Resize(aW * aH);
+    aValues.Resize(static_cast<size_t>(aW) * aH);
   }
   catch (const Standard_OutOfMemory&)
   {
@@ -557,13 +557,14 @@ bool OpenGl_View::BufferDump(Image_PixMap& theImage, const Graphic3d_BufferType&
   aCtx->core11fwd->glBindTexture(GL_TEXTURE_RECTANGLE, 0);
   for (unsigned int aRow = 0; aRow < aH; aRow += 2)
   {
+    const size_t aRowOffset = static_cast<size_t>(aRow) * aW;
     for (unsigned int aCol = 0; aCol < aW; aCol += 3)
     {
       float* anImageValue  = theImage.ChangeValue<float[3]>((aH - aRow) / 2 - 1, aCol / 3);
-      float  aInvNbSamples = 1.f / aValues[aRow * aW + aCol + aW];
-      anImageValue[0]      = aValues[aRow * aW + aCol] * aInvNbSamples;
-      anImageValue[1]      = aValues[aRow * aW + aCol + 1] * aInvNbSamples;
-      anImageValue[2]      = aValues[aRow * aW + aCol + 1 + aW] * aInvNbSamples;
+      float  aInvNbSamples = 1.f / aValues[aRowOffset + aCol + aW];
+      anImageValue[0]      = aValues[aRowOffset + aCol] * aInvNbSamples;
+      anImageValue[1]      = aValues[aRowOffset + aCol + 1] * aInvNbSamples;
+      anImageValue[2]      = aValues[aRowOffset + aCol + 1 + aW] * aInvNbSamples;
     }
   }
 

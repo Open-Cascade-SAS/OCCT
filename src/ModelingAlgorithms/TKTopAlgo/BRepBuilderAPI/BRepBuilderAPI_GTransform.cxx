@@ -52,7 +52,7 @@ void BRepBuilderAPI_GTransform::Perform(const TopoDS_Shape& S, const bool Copy)
   TopoDS_Shape                             Slocal = nc.Shape();
   occ::handle<BRepTools_GTrsfModification> theModif =
     occ::down_cast<BRepTools_GTrsfModification>(myModification);
-  theModif->GTrsf() = myGTrsf;
+  theModif->SetGTrsf(myGTrsf);
   DoModif(Slocal, myModification);
   //  myHist.Filter (Shape());
 }

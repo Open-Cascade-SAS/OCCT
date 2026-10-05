@@ -5,8 +5,6 @@ set(OCCT_StepData_FILES
   StepData.cxx
   StepData.hxx
 
-  StepData_DefaultGeneral.cxx
-  StepData_DefaultGeneral.hxx
   StepData_Described.cxx
   StepData_Described.hxx
   StepData_ECDescr.cxx
@@ -23,18 +21,12 @@ set(OCCT_StepData_FILES
   StepData_Field.hxx
   StepData_FieldList.cxx
   StepData_FieldList.hxx
-  StepData_FieldList1.cxx
-  StepData_FieldList1.hxx
-  StepData_FieldListD.cxx
-  StepData_FieldListD.hxx
   StepData_FieldListN.cxx
   StepData_FieldListN.hxx
   StepData_FileProtocol.cxx
   StepData_FileProtocol.hxx
   StepData_FileRecognizer.hxx
   StepData_FileRecognizer_0.cxx
-  StepData_FreeFormEntity.cxx
-  StepData_FreeFormEntity.hxx
   StepData_GeneralModule.cxx
   StepData_GeneralModule.hxx
   StepData_GlobalNodeOfWriterLib.hxx

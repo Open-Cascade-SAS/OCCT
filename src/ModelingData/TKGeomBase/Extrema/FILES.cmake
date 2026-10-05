@@ -4,7 +4,6 @@ set(OCCT_Extrema_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_Extrema_FILES
 
   Extrema_CCLocFOfLocECC.hxx
-  Extrema_CCLocFOfLocECC2d.hxx
   Extrema_Curve2dTool.cxx
   Extrema_Curve2dTool.hxx
   Extrema_CurveTool.cxx
@@ -70,13 +69,9 @@ set(OCCT_Extrema_FILES
   Extrema_GenExtSS.cxx
   Extrema_GenExtSS.hxx
   Extrema_GenLocateExtCC.hxx
-  Extrema_GenLocateExtCS.cxx
-  Extrema_GenLocateExtCS.hxx
   Extrema_GenLocateExtPC.hxx
   Extrema_GenLocateExtPS.cxx
   Extrema_GenLocateExtPS.hxx
-  Extrema_GenLocateExtSS.cxx
-  Extrema_GenLocateExtSS.hxx
   Extrema_GGExtPC.hxx
   Extrema_GlobOptFuncCC.cxx
   Extrema_GlobOptFuncCC.hxx
@@ -90,12 +85,9 @@ set(OCCT_Extrema_FILES
 
   Extrema_LocateExtCC.cxx
   Extrema_LocateExtCC.hxx
-  Extrema_LocateExtCC2d.cxx
-  Extrema_LocateExtCC2d.hxx
   Extrema_LocateExtPC.hxx
   Extrema_LocateExtPC2d.hxx
   Extrema_LocECC.hxx
-  Extrema_LocECC2d.hxx
   Extrema_LocEPCOfLocateExtPC.hxx
   Extrema_LocEPCOfLocateExtPC2d.hxx
   Extrema_PCFOfEPCOfELPCOfLocateExtPC.hxx

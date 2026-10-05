@@ -92,24 +92,17 @@ set(OCCT_Interface_FILES
   Interface_ShareFlags.hxx
   Interface_ShareTool.cxx
   Interface_ShareTool.hxx
-  Interface_SignLabel.cxx
-  Interface_SignLabel.hxx
   Interface_SignType.cxx
   Interface_SignType.hxx
-  Interface_STAT.cxx
-  Interface_STAT.hxx
   Interface_Static.cxx
   Interface_Static.hxx
   Interface_Statics.hxx
   Interface_StaticSatisfies.hxx
   Interface_StaticStandards.cxx
-  Interface_Translates.hxx
   Interface_TypedValue.cxx
   Interface_TypedValue.hxx
   Interface_UndefinedContent.cxx
   Interface_UndefinedContent.hxx
-  Interface_ValueInterpret.hxx
-  Interface_ValueSatisfies.hxx
 
   Interface_Version.hxx
 )

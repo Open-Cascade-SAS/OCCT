@@ -33,7 +33,6 @@
 #include <IGESData_IGESModel.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
-#include <IGESSelect_Activator.hxx>
 #include <IGESSolid_Face.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>

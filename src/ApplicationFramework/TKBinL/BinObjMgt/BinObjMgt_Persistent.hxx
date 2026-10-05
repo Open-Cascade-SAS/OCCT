@@ -23,12 +23,7 @@
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_ShortReal.hxx>
-#include <BinObjMgt_PChar.hxx>
-#include <BinObjMgt_PByte.hxx>
-#include <BinObjMgt_PExtChar.hxx>
-#include <BinObjMgt_PInteger.hxx>
-#include <BinObjMgt_PReal.hxx>
-#include <BinObjMgt_PShortReal.hxx>
+#include <Standard_TypeDef.hxx>
 #include <BinObjMgt_Position.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
@@ -111,28 +106,24 @@ public:
   BinObjMgt_Persistent& operator<<(const Standard_GUID& theValue) { return PutGUID(theValue); }
 
   //! Put C array of char, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutCharArray(const BinObjMgt_PChar theArray,
-                                                     const int             theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutCharArray(char* const theArray, const int theLength);
 
   //! Put C array of unsigned chars, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutByteArray(const BinObjMgt_PByte theArray,
-                                                     const int             theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutByteArray(uint8_t* const theArray, const int theLength);
 
   //! Put C array of ExtCharacter, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutExtCharArray(const BinObjMgt_PExtChar theArray,
-                                                        const int                theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutExtCharArray(char16_t* const theArray,
+                                                        const int       theLength);
 
   //! Put C array of int, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutIntArray(const BinObjMgt_PInteger theArray,
-                                                    const int                theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutIntArray(int* const theArray, const int theLength);
 
   //! Put C array of double, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutRealArray(const BinObjMgt_PReal theArray,
-                                                     const int             theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutRealArray(double* const theArray, const int theLength);
 
   //! Put C array of float, theLength is the number of elements
-  Standard_EXPORT BinObjMgt_Persistent& PutShortRealArray(const BinObjMgt_PShortReal theArray,
-                                                          const int                  theLength);
+  Standard_EXPORT BinObjMgt_Persistent& PutShortRealArray(float* const theArray,
+                                                          const int    theLength);
 
   Standard_EXPORT const BinObjMgt_Persistent& GetCharacter(char& theValue) const;
 
@@ -194,38 +185,38 @@ public:
   //! Get C array of char, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetCharArray(const BinObjMgt_PChar theArray,
-                                                           const int             theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetCharArray(char* const theArray,
+                                                           const int   theLength) const;
 
   //! Get C array of unsigned chars, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetByteArray(const BinObjMgt_PByte theArray,
-                                                           const int             theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetByteArray(uint8_t* const theArray,
+                                                           const int      theLength) const;
 
   //! Get C array of ExtCharacter, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetExtCharArray(const BinObjMgt_PExtChar theArray,
-                                                              const int theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetExtCharArray(char16_t* const theArray,
+                                                              const int       theLength) const;
 
   //! Get C array of int, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetIntArray(const BinObjMgt_PInteger theArray,
-                                                          const int                theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetIntArray(int* const theArray,
+                                                          const int  theLength) const;
 
   //! Get C array of double, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetRealArray(const BinObjMgt_PReal theArray,
-                                                           const int             theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetRealArray(double* const theArray,
+                                                           const int     theLength) const;
 
   //! Get C array of float, theLength is the number of elements;
   //! theArray must point to a
   //! space enough to place theLength elements
-  Standard_EXPORT const BinObjMgt_Persistent& GetShortRealArray(const BinObjMgt_PShortReal theArray,
-                                                                const int theLength) const;
+  Standard_EXPORT const BinObjMgt_Persistent& GetShortRealArray(float* const theArray,
+                                                                const int    theLength) const;
 
   //! Tells the current position for get/put
   int Position() const;

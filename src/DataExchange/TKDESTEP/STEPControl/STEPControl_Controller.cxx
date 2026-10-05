@@ -31,7 +31,6 @@
 #include <STEPControl_ActorRead.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
-#include <StepData_FileProtocol.hxx>
 #include <StepData_StepModel.hxx>
 #include <STEPEdit.hxx>
 #include <STEPEdit_EditContext.hxx>

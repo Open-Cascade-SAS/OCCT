@@ -14,9 +14,12 @@
 #include <gtest/gtest.h>
 
 #include <ExtremaPC_Line.hxx>
+#include <ExtremaPC2d_Line.hxx>
 
 #include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <cmath>
 
@@ -29,6 +32,81 @@ class ExtremaPC_LineTest : public testing::Test
 protected:
   static constexpr double THE_TOL = 1.0e-10;
 };
+
+TEST_F(ExtremaPC_LineTest, SingletonDomain_IsMinimumAndMaximum)
+{
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{2.0, 2.0});
+
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(5, 3, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_TRUE(aResult[0].IsMinimum);
+  EXPECT_TRUE(aResult[0].IsMaximum);
+  EXPECT_NEAR(aResult[0].Parameter, 2.0, THE_TOL);
+}
+
+TEST_F(ExtremaPC_LineTest, SingletonProjection_IsMinimumAndMaximum)
+{
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{2.0, 2.0});
+
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(2, 3, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_TRUE(aResult[0].IsMinimum);
+  EXPECT_TRUE(aResult[0].IsMaximum);
+}
+
+TEST_F(ExtremaPC_LineTest, EffectivelyUnboundedDomain_DoesNotAddEndpoints)
+{
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-1.0e100, 1.0e100});
+
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(2, 3, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[0].Parameter, 2.0, THE_TOL);
+}
+
+TEST_F(ExtremaPC_LineTest, LowerBoundedDomain_PreservesFiniteEndpoint)
+{
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{0.0, 1.0e100});
+
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(-2, 3, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[0].Parameter, 0.0, THE_TOL);
+  EXPECT_TRUE(aResult[0].IsMinimum);
+}
+
+TEST_F(ExtremaPC_LineTest, UpperBoundedDomain_PreservesFiniteEndpoint)
+{
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{-1.0e100, 0.0});
+
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(2, 3, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[0].Parameter, 0.0, THE_TOL);
+  EXPECT_TRUE(aResult[0].IsMinimum);
+}
+
+TEST_F(ExtremaPC_LineTest, ReversedDomain_IsInvalidInput)
+{
+  gp_Lin         aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+  ExtremaPC_Line anEval(aLine, ExtremaPC::Domain1D{1.0, -1.0});
+
+  const ExtremaPC::Result& aResult = anEval.Perform(gp_Pnt(0, 0, 0), THE_TOL);
+
+  EXPECT_EQ(aResult.Status, ExtremaPC::Status::InvalidInput);
+}
 
 //==================================================================================================
 // Basic projection tests
@@ -46,7 +124,7 @@ TEST_F(ExtremaPC_LineTest, PointOnLine_AtOrigin)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 0.0, THE_TOL);
   EXPECT_TRUE(aResult[aMinIdx].IsMinimum);
@@ -63,7 +141,7 @@ TEST_F(ExtremaPC_LineTest, PointOnLine_Positive)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 0.0, THE_TOL);
 }
@@ -79,7 +157,7 @@ TEST_F(ExtremaPC_LineTest, PointOnLine_Negative)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, -7.5, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 0.0, THE_TOL);
 }
@@ -95,7 +173,7 @@ TEST_F(ExtremaPC_LineTest, PointOffLine_YOffset)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 9.0, THE_TOL); // 3^2 = 9
 }
@@ -111,7 +189,7 @@ TEST_F(ExtremaPC_LineTest, PointOffLine_ZOffset)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 16.0, THE_TOL); // 4^2 = 16
 }
@@ -127,7 +205,7 @@ TEST_F(ExtremaPC_LineTest, PointOffLine_YZOffset)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max (endpoints)
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL); // 3^2 + 4^2 = 25
 }
@@ -149,7 +227,7 @@ TEST_F(ExtremaPC_LineTest, ProjectionOutsideBounds_Left)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 0, max at 100
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 0.0, THE_TOL); // Clamped to lower bound
 }
 
@@ -165,7 +243,7 @@ TEST_F(ExtremaPC_LineTest, ProjectionOutsideBounds_Right)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 100, max at 0
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 100.0, THE_TOL); // Clamped to upper bound
 }
 
@@ -181,7 +259,7 @@ TEST_F(ExtremaPC_LineTest, ProjectionAtLowerBound)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 10, max at 100
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 10.0, THE_TOL);
 }
 
@@ -196,7 +274,7 @@ TEST_F(ExtremaPC_LineTest, ProjectionAtUpperBound)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at 100, max at 0
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 100.0, THE_TOL);
 }
 
@@ -211,7 +289,7 @@ TEST_F(ExtremaPC_LineTest, NarrowBounds)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // min at 50, max at endpoints
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 50.0, THE_TOL);
 }
 
@@ -230,7 +308,7 @@ TEST_F(ExtremaPC_LineTest, LineAlongY)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL); // 3^2 + 4^2 = 25
 }
@@ -246,7 +324,7 @@ TEST_F(ExtremaPC_LineTest, LineAlongZ)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 10.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL); // 3^2 + 4^2 = 25
 }
@@ -264,7 +342,7 @@ TEST_F(ExtremaPC_LineTest, LineDiagonal_XY)
 
   // Parameter along diagonal: (5,5,0) projected = 5*sqrt(2)
   double aExpectedParam = 5.0 * std::sqrt(2.0);
-  int    aMinIdx        = aResult.MinIndex();
+  size_t aMinIdx        = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, aExpectedParam, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 9.0, THE_TOL); // Z offset = 3
 }
@@ -298,7 +376,7 @@ TEST_F(ExtremaPC_LineTest, LineWithOffset_XAxis)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL); // 15 - 10 = 5
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 0.0, THE_TOL);
 }
@@ -314,7 +392,7 @@ TEST_F(ExtremaPC_LineTest, LineWithOffset_PointOff)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, THE_TOL); // 3^2 + 4^2 = 25
 }
@@ -334,7 +412,7 @@ TEST_F(ExtremaPC_LineTest, NegativeParameters)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, -25.0, THE_TOL);
 }
 
@@ -350,7 +428,7 @@ TEST_F(ExtremaPC_LineTest, NegativeBoundsClamp)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 2); // min at -10, max at -50
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, -10.0, THE_TOL); // Clamped to upper bound
 }
 
@@ -370,7 +448,7 @@ TEST_F(ExtremaPC_LineTest, LargeCoordinates)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 100.0, 1e-6);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25.0, 1e-6);
 }
@@ -386,7 +464,7 @@ TEST_F(ExtremaPC_LineTest, SmallCoordinates)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 1e-3, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 25e-8, THE_TOL); // (3e-4)^2 + (4e-4)^2
 }
@@ -407,7 +485,7 @@ TEST_F(ExtremaPC_LineTest, VerifyProjectedPoint)
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
   // Verify the minimum point (projected point)
-  int    aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   gp_Pnt aExpectedPt(7.0, 0.0, 0.0);
   EXPECT_NEAR(aResult[aMinIdx].Point.X(), aExpectedPt.X(), THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Point.Y(), aExpectedPt.Y(), THE_TOL);
@@ -426,7 +504,7 @@ TEST_F(ExtremaPC_LineTest, VerifyDistanceConsistency)
   ASSERT_EQ(aResult.NbExt(), 3); // 1 min + 2 max
 
   // Verify distance matches point distance for minimum
-  int    aMinIdx       = aResult.MinIndex();
+  size_t aMinIdx       = aResult.MinIndex();
   double aComputedDist = aPoint.SquareDistance(aResult[aMinIdx].Point);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aComputedDist, THE_TOL);
   EXPECT_NEAR(aResult.MinSquareDistance(), 100.0, THE_TOL); // 6^2 + 8^2 = 100
@@ -451,12 +529,27 @@ TEST_F(ExtremaPC_LineTest, EndpointsAsMaxima)
   ASSERT_EQ(aResult.NbExt(), 3);
 
   // Verify minimum is at the projection
-  int aMinIdx = aResult.MinIndex();
+  size_t aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].Parameter, 5.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 1.0, THE_TOL); // 1^2
 
   // Verify maximum is at one of the endpoints
-  int    aMaxIdx   = aResult.MaxIndex();
+  size_t aMaxIdx   = aResult.MaxIndex();
   double aMaxParam = aResult[aMaxIdx].Parameter;
   EXPECT_TRUE(std::abs(aMaxParam - 0.0) < THE_TOL || std::abs(aMaxParam - 10.0) < THE_TOL);
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_LineTest, PlanarDelegation_PreservesParameterAndHeight)
+{
+  ExtremaPC_Line   anEvaluator3d(gp_Lin(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
+  ExtremaPC2d_Line anEvaluator2d(gp_Lin2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)));
+
+  const ExtremaPC::Result&   aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
+  const ExtremaPC2d::Result& aResult2d = anEvaluator2d.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL);
+  ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
+  ASSERT_EQ(aResult3d.NbExt(), 1);
+  EXPECT_NEAR(aResult3d[0].Parameter, aResult2d[0].Parameter, THE_TOL);
+  EXPECT_NEAR(aResult3d[0].SquareDistance, aResult2d[0].SquareDistance + 36.0, THE_TOL);
 }

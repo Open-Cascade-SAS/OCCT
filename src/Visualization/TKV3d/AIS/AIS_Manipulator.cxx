@@ -1842,8 +1842,10 @@ void AIS_Manipulator::Axis::Compute(const occ::handle<PrsMgr_PresentationManager
       {
         for (int aV = 0; aV <= aStripsNb; ++aV)
         {
-          gp_Pnt aVertex = gp_Pnt(0.0, myAxisRadius * (1.5f * aU - 0.75f), aLength * aV * aStepV)
-                             .Transformed(aTrsf);
+          const gp_Pnt aVertex = gp_Pnt(0.0,
+                                        static_cast<double>(myAxisRadius) * (1.5f * aU - 0.75f),
+                                        aLength * aV * aStepV)
+                                   .Transformed(aTrsf);
           myTriangleArray->AddVertex(aVertex, aNormal);
 
           if (aV != 0)

@@ -110,6 +110,7 @@ public:
   //! at its tail.
   //!
   //! Orientation of the edge can change when connecting.
+  //! Edges having INTERNAL or EXTERNAL orientation are ignored.
   //! If <shared> is True connection is performed only when
   //! adjacent edges share the same vertex.
   //! If <shared> is False connection is performed only when

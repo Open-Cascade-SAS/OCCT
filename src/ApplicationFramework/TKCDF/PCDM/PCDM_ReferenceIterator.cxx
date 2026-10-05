@@ -16,11 +16,12 @@
 
 #include <Message_Messenger.hxx>
 #include <CDM_MetaData.hxx>
+#include <OSD_File.hxx>
 #include <OSD_Path.hxx>
 #include <PCDM_ReferenceIterator.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <Standard_Type.hxx>
-#include <UTL.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_ReferenceIterator, Standard_Transient)
 
@@ -88,26 +89,27 @@ occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
 
   TCollection_ExtendedString theFolder, theName;
   TCollection_ExtendedString theFile = myReferences(myIterator).FileName();
-  TCollection_ExtendedString f(theFile);
 #ifndef _WIN32
-
-  int                        i = f.SearchFromEnd("/");
-  TCollection_ExtendedString n = f.Split(i);
-  f.Trunc(f.Length() - 1);
-  theFolder = f;
-  theName   = n;
+  TCollection_AsciiString aFolder;
+  TCollection_AsciiString aName;
+  OSD_Path::FolderAndFileFromPath(TCollection_AsciiString(theFile), aFolder, aName);
+  if (!aFolder.IsEmpty())
+  {
+    aFolder.Trunc(aFolder.Length() - 1);
+  }
+  theFolder = TCollection_ExtendedString(aFolder);
+  theName   = TCollection_ExtendedString(aName);
 #else
-  OSD_Path                   p = UTL::Path(f);
-  char16_t                   chr;
-  TCollection_ExtendedString dir, dirRet, name;
+  OSD_Path                   p(theFile);
+  TCollection_ExtendedString dir, dirRet;
 
-  dir = UTL::Disk(p);
-  dir += UTL::Trek(p);
+  dir = TCollection_ExtendedString(p.Disk());
+  dir += TCollection_ExtendedString(p.Trek());
 
   for (int i = 1; i <= dir.Length(); ++i)
   {
 
-    chr = dir.Value(i);
+    const char16_t chr = dir.Value(i);
 
     switch (chr)
     {
@@ -126,8 +128,8 @@ occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
     }
   }
   theFolder = dirRet;
-  theName   = UTL::Name(p);
-  theName += UTL::Extension(p);
+  theName   = TCollection_ExtendedString(p.Name());
+  theName += TCollection_ExtendedString(p.Extension());
 #endif // _WIN32
 
   return CDM_MetaData::LookUp(theLookUpTable,
@@ -135,7 +137,7 @@ occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
                               theName,
                               theFile,
                               theFile,
-                              UTL::IsReadOnly(theFile));
+                              !OSD_File(OSD_Path(theFile)).IsWriteable());
 }
 
 //=================================================================================================

@@ -10,8 +10,6 @@ set(OCCT_BRepPrim_FILES
   BRepPrim_Cylinder.cxx
   BRepPrim_Cylinder.hxx
   BRepPrim_Direction.hxx
-  BRepPrim_FaceBuilder.cxx
-  BRepPrim_FaceBuilder.hxx
   BRepPrim_GWedge.cxx
   BRepPrim_GWedge.hxx
   BRepPrim_OneAxis.cxx

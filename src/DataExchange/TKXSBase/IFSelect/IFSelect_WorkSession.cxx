@@ -68,6 +68,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 
+#include <ios>
+
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_WorkSession, Standard_Transient)
 
 #define Flag_Incorrect 2
@@ -2634,7 +2636,80 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(const char* const filename,
   return IFSelect_RetError;
 }
 
-//=================================================================================================
+//==================================================================================================
+
+IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(Standard_OStream& theOStream,
+                                                    const char* const theName,
+                                                    const bool        computegraph)
+{
+  Interface_CheckIterator aChecks;
+  if (!IsLoaded())
+  {
+    return IFSelect_RetVoid;
+  }
+  if (thelibrary.IsNull())
+  {
+    aChecks.CCheck(0)->AddFail("WorkLibrary undefined");
+    thecheckrun = aChecks;
+    return IFSelect_RetError;
+  }
+
+  const bool isErrorHandlingEnabled = errhand;
+  if (isErrorHandlingEnabled)
+  {
+    errhand = false;
+    try
+    {
+      OCC_CATCH_SIGNALS
+      ComputeGraph(computegraph);
+      aChecks = thecopier->SendAll(theOStream, theName, thegraph->Graph(), thelibrary, theprotocol);
+    }
+    catch (Standard_Failure const& anException)
+    {
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
+      sout << "    ****    SendAll Interrupted by Exception :   ****\n";
+      sout << anException.what();
+      sout << "\n    Abandon" << '\n';
+      errhand = theerrhand;
+      aChecks.CCheck(0)->AddFail("Exception Raised -> Abandon");
+      thecheckrun = aChecks;
+      return IFSelect_RetFail;
+    }
+    catch (const std::ios_base::failure& anException)
+    {
+      Message::SendFail() << "SendAll interrupted by stream exception: " << anException.what();
+      errhand = theerrhand;
+      aChecks.CCheck(0)->AddFail("Stream exception raised during SendAll");
+      thecheckrun = aChecks;
+      return IFSelect_RetFail;
+    }
+  }
+  else
+  {
+    aChecks = thecopier->SendAll(theOStream, theName, thegraph->Graph(), thelibrary, theprotocol);
+  }
+  if (isErrorHandlingEnabled)
+  {
+    errhand = theerrhand;
+  }
+  thecheckrun                                  = aChecks;
+  const occ::handle<Interface_Check> aMainFail = aChecks.CCheck(0);
+  if (!aMainFail.IsNull() && aMainFail->HasFailed())
+  {
+    return IFSelect_RetFail;
+  }
+  if (theloaded.Length() == 0 && theName != nullptr && theName[0] != '\0')
+  {
+    theloaded.AssignCat(theName);
+  }
+  if (aChecks.IsEmpty(true))
+  {
+    return IFSelect_RetDone;
+  }
+  return IFSelect_RetError;
+}
+
+//==================================================================================================
 
 IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected(const char* const filename,
                                                          const occ::handle<IFSelect_Selection>& sel,
@@ -2707,7 +2782,24 @@ IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* const filename
   return SendAll(filename);
 }
 
-//=================================================================================================
+//==================================================================================================
+
+IFSelect_ReturnStatus IFSelect_WorkSession::WriteStream(Standard_OStream& theOStream,
+                                                        const char* const theName)
+{
+  if (WorkLibrary().IsNull())
+  {
+    return IFSelect_RetVoid;
+  }
+  ComputeGraph(true);
+  if (!IsLoaded())
+  {
+    return IFSelect_RetVoid;
+  }
+  return SendAll(theOStream, theName);
+}
+
+//==================================================================================================
 
 IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* const filename,
                                                       const occ::handle<IFSelect_Selection>& sel)

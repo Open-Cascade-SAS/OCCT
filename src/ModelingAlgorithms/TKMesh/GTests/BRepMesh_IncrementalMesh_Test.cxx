@@ -21,11 +21,17 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <IMeshData_Status.hxx>
 #include <IMeshTools_Parameters.hxx>
+#include <NCollection_Array1.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
@@ -41,6 +47,7 @@
 #include <gp_Vec.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
@@ -53,35 +60,36 @@
 TEST(BRepMesh_IncrementalMeshTest, OCC26407_PlanarPolygonMeshStatus)
 {
   // Hardcoded octagon-like polygon lying in the Z=88.5 plane
-  std::vector<gp_Pnt> aPnts = {
-    gp_Pnt(587.90000000000009094947, 40.6758179230516248026106, 88.5),
-    gp_Pnt(807.824182076948432040808, 260.599999999999965893949, 88.5),
-    gp_Pnt(644.174182076948454778176, 424.249999999999943156581, 88.5000000000000142108547),
-    gp_Pnt(629.978025792618950617907, 424.25, 88.5),
-    gp_Pnt(793.628025792618700506864, 260.599999999999852207111, 88.5),
-    gp_Pnt(587.900000000000204636308, 54.8719742073813492311274, 88.5),
-    gp_Pnt(218.521974207381418864315, 424.250000000000056843419, 88.5),
-    gp_Pnt(204.325817923051886282337, 424.249999999999943156581, 88.5)};
+  NCollection_Array1<gp_Pnt> aPnts(1, 8);
+  aPnts(1) = gp_Pnt(587.90000000000009094947, 40.6758179230516248026106, 88.5);
+  aPnts(2) = gp_Pnt(807.824182076948432040808, 260.599999999999965893949, 88.5);
+  aPnts(3) =
+    gp_Pnt(644.174182076948454778176, 424.249999999999943156581, 88.5000000000000142108547);
+  aPnts(4) = gp_Pnt(629.978025792618950617907, 424.25, 88.5);
+  aPnts(5) = gp_Pnt(793.628025792618700506864, 260.599999999999852207111, 88.5);
+  aPnts(6) = gp_Pnt(587.900000000000204636308, 54.8719742073813492311274, 88.5);
+  aPnts(7) = gp_Pnt(218.521974207381418864315, 424.250000000000056843419, 88.5);
+  aPnts(8) = gp_Pnt(204.325817923051886282337, 424.249999999999943156581, 88.5);
 
-  std::vector<TopoDS_Vertex> aVertices;
-  aVertices.reserve(aPnts.size());
-  for (const gp_Pnt& aPnt : aPnts)
+  NCollection_Array1<TopoDS_Vertex> aVertices(1, aPnts.Length());
+  for (int anIndex = aPnts.Lower(); anIndex <= aPnts.Upper(); ++anIndex)
   {
-    aVertices.push_back(BRepBuilderAPI_MakeVertex(aPnt));
+    aVertices(anIndex) = BRepBuilderAPI_MakeVertex(aPnts(anIndex));
   }
 
   BRepBuilderAPI_MakeWire aWireBuilder;
-  for (size_t i = 0; i < aVertices.size(); ++i)
+  for (int anIndex = aVertices.Lower(); anIndex <= aVertices.Upper(); ++anIndex)
   {
-    const TopoDS_Vertex& aV = aVertices[i];
-    const TopoDS_Vertex& aW = aVertices[(i + 1) % aVertices.size()];
+    const TopoDS_Vertex& aV = aVertices(anIndex);
+    const int aNextIndex    = anIndex == aVertices.Upper() ? aVertices.Lower() : anIndex + 1;
+    const TopoDS_Vertex& aW = aVertices(aNextIndex);
     aWireBuilder.Add(BRepBuilderAPI_MakeEdge(aV, aW));
   }
   ASSERT_TRUE(aWireBuilder.IsDone()) << "Wire construction failed";
 
-  const gp_Pnt& aV0         = aPnts[0];
-  const gp_Pnt& aV1         = aPnts[1];
-  const gp_Pnt& aV2         = aPnts[aPnts.size() - 1];
+  const gp_Pnt& aV0         = aPnts(1);
+  const gp_Pnt& aV1         = aPnts(2);
+  const gp_Pnt& aV2         = aPnts(aPnts.Upper());
   const gp_Vec  aFaceNormal = gp_Vec(aV0, aV1).Crossed(gp_Vec(aV0, aV2));
 
   const TopoDS_Face aFace = BRepBuilderAPI_MakeFace(gp_Pln(aV0, aFaceNormal), aWireBuilder.Wire());
@@ -270,4 +278,186 @@ TEST(BRepMesh_IncrementalMeshTest, ClosedCylinder_SeamPolygonsReferenceValidMesh
   }
 
   EXPECT_GT(aSeamEdges, 0);
+}
+
+// Migrated from tests/bugs/mesh/bug32692_3.  An unbounded cylindrical face
+// must be handled without a crash and must report the expected mesh status.
+TEST(BRepMesh_IncrementalMeshTest, OCC32692_UnboundedCylinderFaceReportsFailure)
+{
+  const occ::handle<Geom_CylindricalSurface> aCylinder =
+    new Geom_CylindricalSurface(gp::XOY(), 10.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(aCylinder, Precision::Confusion());
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+
+  BRepMesh_IncrementalMesh aMesher(aFace, 0.01, false, 0.5, true);
+  EXPECT_TRUE(aMesher.IsDone());
+  EXPECT_EQ(aMesher.GetStatusFlags(), IMeshData_OpenWire | IMeshData_Failure | IMeshData_Outdated);
+
+  int aNbFaces = 0;
+  for (TopExp_Explorer anExplorer(aFace, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
+  {
+    ++aNbFaces;
+  }
+  EXPECT_EQ(aNbFaces, 1);
+
+  TopLoc_Location                       aLocation;
+  const occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(aFace, aLocation);
+  int                                   aNbNodes       = 0;
+  int                                   aNbTriangles   = 0;
+  if (!aTriangulation.IsNull())
+  {
+    aNbNodes     = aTriangulation->NbNodes();
+    aNbTriangles = aTriangulation->NbTriangles();
+  }
+  EXPECT_EQ(aNbNodes, 0);
+  EXPECT_EQ(aNbTriangles, 0);
+}
+
+// Migrated from tests/bugs/demo/bug25445.  The DRAW test verifies that the
+// angular deflection is forwarded to BRepMesh by comparing the two meshes.
+TEST(BRepMesh_IncrementalMeshTest, OCC25445_AngularDeflectionChangesMesh)
+{
+  struct MeshCounts
+  {
+    int NbNodes;
+    int NbTriangles;
+  };
+
+  const auto countMeshElements = [](const TopoDS_Shape& theShape, const double theAngleDegrees) {
+    IMeshTools_Parameters aParameters;
+    aParameters.Deflection = 0.01;
+    aParameters.Angle      = theAngleDegrees * M_PI / 180.0;
+
+    BRepMesh_IncrementalMesh aMesher(theShape, aParameters);
+    EXPECT_TRUE(aMesher.IsDone());
+
+    int aNbNodes     = 0;
+    int aNbTriangles = 0;
+    for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
+    {
+      TopLoc_Location                       aLocation;
+      const occ::handle<Poly_Triangulation> aTriangulation =
+        BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
+      EXPECT_FALSE(aTriangulation.IsNull());
+      if (!aTriangulation.IsNull())
+      {
+        aNbNodes += aTriangulation->NbNodes();
+        aNbTriangles += aTriangulation->NbTriangles();
+      }
+    }
+    return MeshCounts{aNbNodes, aNbTriangles};
+  };
+
+  const TopoDS_Shape aCoarseAngleShape = BRepPrimAPI_MakeCone(100.0, 10.0, 100.0).Shape();
+  const TopoDS_Shape aFineAngleShape   = BRepPrimAPI_MakeCone(100.0, 10.0, 100.0).Shape();
+
+  const MeshCounts aCoarseMesh = countMeshElements(aCoarseAngleShape, 10.0);
+  const MeshCounts aFineMesh   = countMeshElements(aFineAngleShape, 1.0);
+
+  EXPECT_NE(aCoarseMesh.NbNodes, aFineMesh.NbNodes);
+  EXPECT_NE(aCoarseMesh.NbTriangles, aFineMesh.NbTriangles);
+}
+
+// Migrated from tests/bugs/mesh/bug30234.  A zero-radius free edge is a
+// legitimate degenerate input and must not acquire a face triangulation.
+TEST(BRepMesh_IncrementalMeshTest, OCC30234_ZeroLengthFreeEdgeHasNoTriangles)
+{
+  const occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), 0.0);
+  BRepBuilderAPI_MakeEdge        aEdgeBuilder(aCircle);
+  ASSERT_TRUE(aEdgeBuilder.IsDone());
+
+  IMeshTools_Parameters aParameters;
+  aParameters.Deflection = 0.005;
+  aParameters.Relative   = true;
+  BRepMesh_IncrementalMesh aMesher(aEdgeBuilder.Edge(), aParameters);
+  EXPECT_TRUE(aMesher.IsDone());
+
+  int aNbNodes     = 0;
+  int aNbTriangles = 0;
+  for (TopExp_Explorer anExplorer(aEdgeBuilder.Edge(), TopAbs_FACE); anExplorer.More();
+       anExplorer.Next())
+  {
+    TopLoc_Location                       aLocation;
+    const occ::handle<Poly_Triangulation> aTriangulation =
+      BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
+    ASSERT_FALSE(aTriangulation.IsNull());
+    aNbNodes += aTriangulation->NbNodes();
+    aNbTriangles += aTriangulation->NbTriangles();
+  }
+  EXPECT_EQ(aNbNodes, 0);
+  EXPECT_EQ(aNbTriangles, 0);
+}
+
+// Migrated from tests/bugs/mesh/bug31125.  Meshing an empty compound is a
+// no-op and must complete without dereferencing a missing face.
+TEST(BRepMesh_IncrementalMeshTest, OCC31125_EmptyCompoundDoesNotCrash)
+{
+  BRep_Builder    aBuilder;
+  TopoDS_Compound anEmptyCompound;
+  aBuilder.MakeCompound(anEmptyCompound);
+
+  IMeshTools_Parameters aParameters;
+  aParameters.Deflection = 1.0;
+  EXPECT_NO_THROW(BRepMesh_IncrementalMesh(anEmptyCompound, aParameters));
+}
+
+// Migrated from tests/bugs/mesh/bug31461.  A second pass with
+// AllowQualityDecrease must replace the fine sphere mesh with the requested
+// coarser one.
+TEST(BRepMesh_IncrementalMeshTest, OCC31461_AllowQualityDecreaseRebuildsMesh)
+{
+  const TopoDS_Shape aSphere = BRepPrimAPI_MakeSphere(10.0).Shape();
+
+  struct MeshCounts
+  {
+    int NbNodes;
+    int NbTriangles;
+  };
+
+  const auto countMeshElements = [](const TopoDS_Shape& theShape) {
+    int aNbNodes     = 0;
+    int aNbTriangles = 0;
+    for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
+    {
+      TopLoc_Location                       aLocation;
+      const occ::handle<Poly_Triangulation> aTriangulation =
+        BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
+      EXPECT_FALSE(aTriangulation.IsNull());
+      if (!aTriangulation.IsNull())
+      {
+        aNbNodes += aTriangulation->NbNodes();
+        aNbTriangles += aTriangulation->NbTriangles();
+      }
+    }
+    return MeshCounts{aNbNodes, aNbTriangles};
+  };
+
+  IMeshTools_Parameters aFineParameters;
+  aFineParameters.Deflection = 0.01;
+  BRepMesh_IncrementalMesh aFineMesher(aSphere, aFineParameters);
+  ASSERT_TRUE(aFineMesher.IsDone());
+  const MeshCounts aFineMesh = countMeshElements(aSphere);
+  EXPECT_EQ(aFineMesh.NbNodes, 5106);
+  EXPECT_EQ(aFineMesh.NbTriangles, 10108);
+
+  IMeshTools_Parameters aCoarseParameters;
+  aCoarseParameters.Deflection           = 0.1;
+  aCoarseParameters.AllowQualityDecrease = true;
+  BRepMesh_IncrementalMesh aCoarseMesher(aSphere, aCoarseParameters);
+  ASSERT_TRUE(aCoarseMesher.IsDone());
+  const MeshCounts aCoarseMesh = countMeshElements(aSphere);
+  EXPECT_LT(aCoarseMesh.NbNodes, aFineMesh.NbNodes);
+  EXPECT_LT(aCoarseMesh.NbTriangles, aFineMesh.NbTriangles);
+
+  BRepTools::CleanGeometry(aSphere);
+  IMeshTools_Parameters aFineAfterCleanParameters;
+  aFineAfterCleanParameters.Deflection = 0.01;
+  BRepMesh_IncrementalMesh aFineAfterCleanMesher(aSphere, aFineAfterCleanParameters);
+  ASSERT_TRUE(aFineAfterCleanMesher.IsDone());
+
+  BRepTools::Clean(aSphere);
+  const MeshCounts aAfterCleanMesh = countMeshElements(aSphere);
+  EXPECT_EQ(aAfterCleanMesh.NbNodes, aCoarseMesh.NbNodes);
+  EXPECT_EQ(aAfterCleanMesh.NbTriangles, aCoarseMesh.NbTriangles);
 }

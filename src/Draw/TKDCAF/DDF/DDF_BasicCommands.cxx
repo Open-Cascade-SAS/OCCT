@@ -21,8 +21,6 @@
 
 #include <DDF.hxx>
 
-#include <TDF_ComparisonTool.hxx>
-
 #include <DDF_Data.hxx>
 
 #include <Draw_Appli.hxx>

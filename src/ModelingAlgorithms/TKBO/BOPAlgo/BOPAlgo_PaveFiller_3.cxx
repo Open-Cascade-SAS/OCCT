@@ -162,7 +162,6 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aIt1, aIt2;
   occ::handle<NCollection_BaseAllocator>                   aAllocator;
   BOPAlgo_VectorOfEdgeEdge                                 aVEdgeEdge;
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>::Iterator  aItPB;
   // keep modified edges for further update
   NCollection_Map<int> aMEdges;
   //

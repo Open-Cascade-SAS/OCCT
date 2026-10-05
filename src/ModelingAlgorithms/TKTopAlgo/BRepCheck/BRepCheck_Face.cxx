@@ -68,6 +68,10 @@ static bool IsInside(const TopoDS_Wire&             wir,
                      const BRepTopAdaptor_FClass2d& FClass2d,
                      const TopoDS_Face&             F);
 
+static bool ComputeWireUVBounds(const TopoDS_Face& theFace,
+                                const TopoDS_Wire& theWire,
+                                Bnd_Box2d&         theBox);
+
 static bool CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f);
 
 //=================================================================================================
@@ -347,13 +351,26 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
   BRep_Builder                   B;
   TopExp_Explorer                exp1, exp2;
   NCollection_List<TopoDS_Shape> theListOfShape;
-  for (exp1.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp1.More(); exp1.Next())
+
+  const TopoDS_Face   aForwardFace = TopoDS::Face(myShape.Oriented(TopAbs_FORWARD));
+  DataMapOfShapeBox2d aWireBoxMap;
+  // Precompute reliable UV bounds for cheap rejection of disjoint wire pairs.
+  for (exp1.Init(aForwardFace, TopAbs_WIRE); exp1.More(); exp1.Next())
+  {
+    const TopoDS_Wire& aWire = TopoDS::Wire(exp1.Current());
+    Bnd_Box2d          aBox;
+    if (ComputeWireUVBounds(aForwardFace, aWire, aBox))
+    {
+      aWireBoxMap.Bind(aWire, aBox);
+    }
+  }
+
+  for (exp1.Init(aForwardFace, TopAbs_WIRE); exp1.More(); exp1.Next())
   {
 
     const TopoDS_Wire& wir1        = TopoDS::Wire(exp1.Current());
     TopoDS_Shape       aLocalShape = myShape.EmptyCopied();
     TopoDS_Face        newFace     = TopoDS::Face(aLocalShape);
-    //    TopoDS_Face newFace = TopoDS::Face(myShape.EmptyCopied());
 
     newFace.Orientation(TopAbs_FORWARD);
     B.Add(newFace, wir1);
@@ -368,16 +385,25 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
       myMapImb.Bind(wir1.Reversed(), theListOfShape);
     }
 
-    for (exp2.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp2.More(); exp2.Next())
+    const Bnd_Box2d* aBox1 = aWireBoxMap.Seek(wir1);
+
+    for (exp2.Init(aForwardFace, TopAbs_WIRE); exp2.More(); exp2.Next())
     {
       const TopoDS_Wire& wir2 = TopoDS::Wire(exp2.Current());
-      if (!wir2.IsSame(wir1))
+      if (wir2.IsSame(wir1))
       {
+        continue;
+      }
 
-        if (IsInside(wir2, WireBienOriente, FClass2d, newFace))
-        {
-          myMapImb(wir1).Append(wir2);
-        }
+      const Bnd_Box2d* aBox2 = aWireBoxMap.Seek(wir2);
+      // Wires with disjoint UV bounds cannot contain one another.
+      if (aBox1 != nullptr && aBox2 != nullptr && aBox1->IsOut(*aBox2))
+      {
+        continue;
+      }
+      if (IsInside(wir2, WireBienOriente, FClass2d, newFace))
+      {
+        myMapImb(wir1).Append(wir2);
       }
     }
   }
@@ -795,6 +821,49 @@ static bool Intersect(const TopoDS_Wire&         wir1,
     }
   }
   return false;
+}
+
+//=================================================================================================
+
+static bool ComputeWireUVBounds(const TopoDS_Face& theFace,
+                                const TopoDS_Wire& theWire,
+                                Bnd_Box2d&         theBox)
+{
+  if (!BRep_Tool::IsClosed(theWire))
+  {
+    return false;
+  }
+
+  Bnd_Box2d aBox;
+  for (TopExp_Explorer anExp(theWire, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    double                          aFirst, aLast;
+    const TopoDS_Edge&              anEdge = TopoDS::Edge(anExp.Current());
+    const occ::handle<Geom2d_Curve> aPCurve =
+      BRep_Tool::CurveOnSurface(anEdge, theFace, aFirst, aLast);
+    if (aPCurve.IsNull())
+    {
+      return false;
+    }
+
+    const Geom2dAdaptor_Curve aCurveAdaptor(aPCurve);
+    // IsInside() uses the original edge range, so a clamped box cannot safely reject the wire.
+    if (Precision::IsInfinite(aFirst) || Precision::IsInfinite(aLast)
+        || aFirst < aCurveAdaptor.FirstParameter() || aLast > aCurveAdaptor.LastParameter())
+    {
+      return false;
+    }
+
+    BndLib_Add2dCurve::Add(aCurveAdaptor, aFirst, aLast, Precision::PConfusion(), aBox);
+  }
+  if (aBox.IsVoid() || aBox.IsOpenXmin() || aBox.IsOpenXmax() || aBox.IsOpenYmin()
+      || aBox.IsOpenYmax())
+  {
+    return false;
+  }
+
+  theBox = aBox;
+  return true;
 }
 
 //=================================================================================================
