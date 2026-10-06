@@ -186,6 +186,20 @@ public:
   }
 
 protected:
+  //! Returns the continuation direction of a quadratic contact, oriented by theDirection.
+  Standard_EXPORT static bool ComputeContactDirection(
+    const occ::handle<Adaptor3d_Surface>& theSurface1,
+    const occ::handle<Adaptor3d_Surface>& theSurface2,
+    const IntSurf_PntOn2S&                thePoint,
+    gp_Dir&                               theDirection,
+    gp_Dir2d&                             theDirection1,
+    gp_Dir2d&                             theDirection2);
+
+  //! Corrects surface contact, fixing the marching parameter for a contact curve.
+  IntImp_ConstIsoparametric RefineContactPoint(NCollection_Array1<double>&     theParameters,
+                                               math_FunctionSetRoot&           theSolver,
+                                               const IntImp_ConstIsoparametric theIso);
+
   Standard_EXPORT void ComputePasInit(const double theDeltaU1,
                                       const double theDeltaV1,
                                       const double theDeltaU2,
@@ -240,6 +254,11 @@ protected:
                                               const bool                      theDirectionFlag);
 
 private:
+  //! Identifies a contact without a unique quadratic continuation direction.
+  static bool isSingularContact(const occ::handle<Adaptor3d_Surface>& theSurface1,
+                                const occ::handle<Adaptor3d_Surface>& theSurface2,
+                                const IntSurf_PntOn2S&                thePoint);
+
   bool                          done;
   occ::handle<IntSurf_LineOn2S> line;
   bool                          close;

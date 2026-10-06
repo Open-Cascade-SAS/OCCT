@@ -889,20 +889,48 @@ void BSplCLib::Eval(const double U,
                     const int    Dimension,
                     double&      Poles)
 {
+  // Keep the common coordinate outside the recursion. Rounding each level
+  // at that coordinate's magnitude can erase valid control-polygon variation.
+  NCollection_LocalArray<double, 16> anOrigin(Dimension);
+  const size_t                       aDimension = static_cast<size_t>(Dimension);
+  for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
+  {
+    anOrigin[aCoordinate] = (&Poles)[aCoordinate];
+    // Sterbenz's lemma makes these differences exact for like-signed poles
+    // within a factor of two. Otherwise keep the original coordinates: an
+    // inexact difference can lose a small endpoint or overflow.
+    for (size_t aPole = 1; anOrigin[aCoordinate] != 0.0 && aPole <= static_cast<size_t>(Degree);
+         ++aPole)
+    {
+      const double aRatio = (&Poles)[aPole * aDimension + aCoordinate] / anOrigin[aCoordinate];
+      if (aRatio < 0.5 || aRatio > 2.0)
+      {
+        anOrigin[aCoordinate] = 0.0;
+        break;
+      }
+    }
+    for (size_t aPole = 0; aPole <= static_cast<size_t>(Degree); ++aPole)
+    {
+      (&Poles)[aPole * aDimension + aCoordinate] -= anOrigin[aCoordinate];
+    }
+  }
   const double* aKnots = &Knots;
   for (int aLevel = 0; aLevel < Degree; ++aLevel)
   {
     double* aPoles = &Poles;
     for (int aPole = 0; aPole < Degree - aLevel; ++aPole)
     {
-      const double aLeftWeight =
-        (aKnots[Degree + aPole] - U) / (aKnots[Degree + aPole] - aKnots[aLevel + aPole]);
+      const double aKnotDistance = aKnots[Degree + aPole] - aKnots[aLevel + aPole];
+      const double aLeftWeight   = (aKnots[Degree + aPole] - U) / aKnotDistance;
       // Anchor interpolation at the nearer pole to retain constant coordinates
       // and exact endpoints, including when the other pole is much larger.
-      const bool    isRightNear = aLeftWeight <= 0.5;
-      const double  aWeight     = isRightNear ? aLeftWeight : 1.0 - aLeftWeight;
-      const double* aBase       = isRightNear ? aPoles + Dimension : aPoles;
-      const double* anOther     = isRightNear ? aPoles : aPoles + Dimension;
+      const bool isRightNear = aLeftWeight <= 0.5;
+      // Compute the small weight from its own knot distance. Subtracting a
+      // weight rounded to one would discard a valid endpoint contribution.
+      const double aWeight =
+        isRightNear ? aLeftWeight : (U - aKnots[aLevel + aPole]) / aKnotDistance;
+      const double* aBase   = isRightNear ? aPoles + Dimension : aPoles;
+      const double* anOther = isRightNear ? aPoles : aPoles + Dimension;
       for (int aCoordinate = 0; aCoordinate < Dimension; ++aCoordinate)
       {
         const double aBaseValue   = aBase[aCoordinate];
@@ -912,9 +940,16 @@ void BSplCLib::Eval(const double U,
           (aBaseValue < 0.0 && anOtherValue > 0.0) || (aBaseValue > 0.0 && anOtherValue < 0.0);
         aPoles[aCoordinate] = hasOppositeSigns
                                 ? (1.0 - aWeight) * aBaseValue + aWeight * anOtherValue
-                                : aBaseValue + aWeight * (anOtherValue - aBaseValue);
+                                : std::fma(aWeight, anOtherValue - aBaseValue, aBaseValue);
       }
       aPoles += Dimension;
+    }
+  }
+  for (size_t aPole = 0; aPole <= static_cast<size_t>(Degree); ++aPole)
+  {
+    for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
+    {
+      (&Poles)[aPole * aDimension + aCoordinate] += anOrigin[aCoordinate];
     }
   }
 }

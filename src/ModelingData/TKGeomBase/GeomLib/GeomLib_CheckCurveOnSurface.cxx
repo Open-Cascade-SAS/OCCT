@@ -18,6 +18,7 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -36,6 +37,9 @@
 #include <NCollection_HArray1.hxx>
 
 #include <algorithm>
+#include <array>
+#include <cmath>
+#include <NCollection_LocalArray.hxx>
 
 typedef NCollection_Array1<occ::handle<Adaptor3d_Curve>> Array1OfHCurve;
 
@@ -56,6 +60,254 @@ static int FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
 
 //=================================================================================================
 
+namespace
+{
+// A two-component expansion keeps rounding errors through a spline composition.
+// This is needed when its final difference is small compared with either point.
+class CompensatedReal
+{
+public:
+  CompensatedReal(double theValue = 0.0);
+  explicit operator double() const;
+
+  friend CompensatedReal operator+(const CompensatedReal& theA, const CompensatedReal& theB);
+  friend CompensatedReal operator-(const CompensatedReal& theA, const CompensatedReal& theB);
+  friend CompensatedReal operator*(const CompensatedReal& theA, const CompensatedReal& theB);
+  friend CompensatedReal operator/(const CompensatedReal& theA, const CompensatedReal& theB);
+  friend bool            operator<(const CompensatedReal& theA, const CompensatedReal& theB);
+
+private:
+  CompensatedReal(double theHigh, double theLow);
+
+  double myHigh;
+  double myLow;
+};
+
+//=================================================================================================
+
+CompensatedReal::CompensatedReal(double theValue)
+    : myHigh(theValue),
+      myLow(0.0)
+{
+}
+
+//=================================================================================================
+
+CompensatedReal::CompensatedReal(double theHigh, double theLow)
+{
+  myHigh             = theHigh + theLow;
+  const double aPart = myHigh - theHigh;
+  myLow              = (theHigh - (myHigh - aPart)) + (theLow - aPart);
+}
+
+//=================================================================================================
+
+CompensatedReal::operator double() const
+{
+  return myHigh + myLow;
+}
+
+//=================================================================================================
+
+CompensatedReal operator+(const CompensatedReal& theA, const CompensatedReal& theB)
+{
+  const double aSum    = theA.myHigh + theB.myHigh;
+  const double aPart   = aSum - theA.myHigh;
+  const double anError = (theA.myHigh - (aSum - aPart)) + (theB.myHigh - aPart);
+  return CompensatedReal(aSum, anError + theA.myLow + theB.myLow);
+}
+
+//=================================================================================================
+
+CompensatedReal operator-(const CompensatedReal& theA, const CompensatedReal& theB)
+{
+  return theA + CompensatedReal(-theB.myHigh, -theB.myLow);
+}
+
+//=================================================================================================
+
+CompensatedReal operator*(const CompensatedReal& theA, const CompensatedReal& theB)
+{
+  const double aProduct = theA.myHigh * theB.myHigh;
+  const double anError  = std::fma(theA.myHigh, theB.myHigh, -aProduct);
+  return CompensatedReal(aProduct,
+                         anError + theA.myHigh * theB.myLow + theA.myLow * theB.myHigh
+                           + theA.myLow * theB.myLow);
+}
+
+//=================================================================================================
+
+CompensatedReal operator/(const CompensatedReal& theA, const CompensatedReal& theB)
+{
+  const double          aQuotient  = theA.myHigh / theB.myHigh;
+  const CompensatedReal aRemainder = theA - theB * aQuotient;
+  return CompensatedReal(aQuotient, (aRemainder.myHigh + aRemainder.myLow) / theB.myHigh);
+}
+
+//=================================================================================================
+
+bool operator<(const CompensatedReal& theA, const CompensatedReal& theB)
+{
+  return theA.myHigh < theB.myHigh || (theA.myHigh == theB.myHigh && theA.myLow < theB.myLow);
+}
+
+// Evaluates the residual of nonperiodic B-spline compositions without rounding
+// the intermediate UV coordinates or the two spatial points to double.
+class BSplineResidual
+{
+  using Point = std::array<CompensatedReal, 4>;
+
+public:
+  BSplineResidual(const Adaptor3d_Curve& theCurve, const Adaptor3d_Curve& theCurveOnSurface);
+  bool Value(double theParameter, gp_Vec& theResidual) const;
+
+private:
+  template <class PoleAccessor>
+  static Point evaluate(size_t                            theDegree,
+                        const NCollection_Array1<double>& theKnots,
+                        size_t                            theNbPoles,
+                        const CompensatedReal&            theParameter,
+                        const PoleAccessor&               thePole);
+
+  occ::handle<Geom_BSplineCurve>   myCurve;
+  occ::handle<Geom2d_BSplineCurve> myPCurve;
+  occ::handle<Geom_BSplineSurface> mySurface;
+};
+
+//=================================================================================================
+
+BSplineResidual::BSplineResidual(const Adaptor3d_Curve& theCurve,
+                                 const Adaptor3d_Curve& theCurveOnSurface)
+{
+  const Adaptor3d_CurveOnSurface* aCoS =
+    dynamic_cast<const Adaptor3d_CurveOnSurface*>(&theCurveOnSurface);
+  if (theCurve.GetType() != GeomAbs_BSplineCurve || aCoS == nullptr
+      || aCoS->GetCurve()->GetType() != GeomAbs_BSplineCurve
+      || aCoS->GetSurface()->GetType() != GeomAbs_BSplineSurface)
+  {
+    return;
+  }
+  myCurve   = theCurve.BSpline();
+  myPCurve  = aCoS->GetCurve()->BSpline();
+  mySurface = aCoS->GetSurface()->BSpline();
+  if (myCurve->IsPeriodic() || myPCurve->IsPeriodic() || mySurface->IsUPeriodic()
+      || mySurface->IsVPeriodic())
+  {
+    myCurve.Nullify();
+  }
+}
+
+//=================================================================================================
+
+// de Boor evaluation of homogeneous poles, including end-span extrapolation.
+template <class PoleAccessor>
+BSplineResidual::Point BSplineResidual::evaluate(size_t                            theDegree,
+                                                 const NCollection_Array1<double>& theKnots,
+                                                 size_t                            theNbPoles,
+                                                 const CompensatedReal&            theParameter,
+                                                 const PoleAccessor&               thePole)
+{
+  size_t aFirst = theDegree, aLast = theNbPoles;
+  while (aFirst + 1 < aLast)
+  {
+    const size_t aMiddle = aFirst + (aLast - aFirst) / 2;
+    if (theParameter < CompensatedReal(theKnots.At(aMiddle)))
+    {
+      aLast = aMiddle;
+    }
+    else
+    {
+      aFirst = aMiddle;
+    }
+  }
+  NCollection_LocalArray<Point, 8> aPoles(theDegree + 1);
+  for (size_t anIndex = 0; anIndex <= theDegree; ++anIndex)
+  {
+    aPoles[anIndex] = thePole(aFirst - theDegree + anIndex);
+  }
+  for (size_t aLevel = 1; aLevel <= theDegree; ++aLevel)
+  {
+    for (size_t anIndex = theDegree; anIndex >= aLevel; --anIndex)
+    {
+      const CompensatedReal aLeftKnot  = theKnots.At(aFirst - theDegree + anIndex);
+      const CompensatedReal aRightKnot = theKnots.At(aFirst + 1 + anIndex - aLevel);
+      const CompensatedReal aWeight    = (theParameter - aLeftKnot) / (aRightKnot - aLeftKnot);
+      for (size_t aCoordinate = 0; aCoordinate < aPoles[anIndex].size(); ++aCoordinate)
+      {
+        aPoles[anIndex][aCoordinate] = (1.0 - aWeight) * aPoles[anIndex - 1][aCoordinate]
+                                       + aWeight * aPoles[anIndex][aCoordinate];
+      }
+    }
+  }
+  return aPoles[theDegree];
+}
+
+//=================================================================================================
+
+bool BSplineResidual::Value(double theParameter, gp_Vec& theResidual) const
+{
+  if (myCurve.IsNull())
+  {
+    return false;
+  }
+  const NCollection_Array1<double>* aCurveWeights  = myCurve->Weights();
+  const NCollection_Array1<double>* aPCurveWeights = myPCurve->Weights();
+  const Point                       aCurvePoint =
+    evaluate(myCurve->Degree(),
+             myCurve->KnotSequence(),
+             myCurve->NbPoles(),
+             theParameter,
+             [&](size_t theIndex) {
+               const gp_Pnt&         aPole = myCurve->Poles().At(theIndex);
+               const CompensatedReal aWeight =
+                 (aCurveWeights == nullptr ? 1.0 : aCurveWeights->At(theIndex));
+               return Point{aWeight * aPole.X(), aWeight * aPole.Y(), aWeight * aPole.Z(), aWeight};
+             });
+  const Point           aUV           = evaluate(myPCurve->Degree(),
+                             myPCurve->KnotSequence(),
+                             myPCurve->NbPoles(),
+                             theParameter,
+                             [&](size_t theIndex) {
+                               const gp_Pnt2d&       aPole = myPCurve->Poles().At(theIndex);
+                               const CompensatedReal aWeight =
+                                 (aPCurveWeights == nullptr ? 1.0 : aPCurveWeights->At(theIndex));
+                               return Point{aWeight * aPole.X(), aWeight * aPole.Y(), 0.0, aWeight};
+                             });
+  const CompensatedReal aU            = aUV[0] / aUV[3];
+  const CompensatedReal aV            = aUV[1] / aUV[3];
+  const Point           aSurfacePoint = evaluate(
+    mySurface->UDegree(),
+    mySurface->UKnotSequence(),
+    mySurface->NbUPoles(),
+    aU,
+    [&](size_t theUIndex) {
+      return evaluate(
+        mySurface->VDegree(),
+        mySurface->VKnotSequence(),
+        mySurface->NbVPoles(),
+        aV,
+        [&](size_t theVIndex) {
+          const gp_Pnt& aPole =
+            mySurface->Pole(static_cast<int>(theUIndex) + 1, static_cast<int>(theVIndex) + 1);
+          const CompensatedReal aWeight =
+            mySurface->Weight(static_cast<int>(theUIndex) + 1, static_cast<int>(theVIndex) + 1);
+          return Point{aWeight * aPole.X(), aWeight * aPole.Y(), aWeight * aPole.Z(), aWeight};
+        });
+    });
+  const gp_Vec aResidual(
+    double(aSurfacePoint[0] / aSurfacePoint[3] - aCurvePoint[0] / aCurvePoint[3]),
+    double(aSurfacePoint[1] / aSurfacePoint[3] - aCurvePoint[1] / aCurvePoint[3]),
+    double(aSurfacePoint[2] / aSurfacePoint[3] - aCurvePoint[2] / aCurvePoint[3]));
+  if (!std::isfinite(aResidual.X()) || !std::isfinite(aResidual.Y())
+      || !std::isfinite(aResidual.Z()))
+  {
+    return false;
+  }
+  theResidual = aResidual;
+  return true;
+}
+} // namespace
+
 class GeomLib_CheckCurveOnSurface_TargetFunc : public math_MultipleVarFunctionWithHessian
 {
 public:
@@ -63,7 +315,8 @@ public:
                                          const Adaptor3d_Curve& theCurveOnSurface,
                                          const double           theFirst,
                                          const double           theLast)
-      : myCurve1(theC3D),
+      : myResidual(theC3D, theCurveOnSurface),
+        myCurve1(theC3D),
         myCurve2(theCurveOnSurface),
         myFirst(theFirst),
         myLast(theLast)
@@ -89,6 +342,12 @@ public:
         return false;
       }
 
+      gp_Vec aResidual;
+      if (myResidual.Value(theX, aResidual))
+      {
+        theFVal = -aResidual.SquareMagnitude();
+        return true;
+      }
       const gp_Pnt aP1(myCurve1.Value(theX)), aP2(myCurve2.Value(theX));
 
       theFVal = -1.0 * aP1.SquareDistance(aP2);
@@ -136,7 +395,9 @@ public:
         myCurve2.D2(theX, aP2, aDC2, aDCC2);
       }
 
-      const gp_Vec aVec1(aP1, aP2), aVec2(aDC2 - aDC1);
+      gp_Vec aVec1(aP1, aP2);
+      myResidual.Value(theX, aVec1);
+      const gp_Vec aVec2(aDC2 - aDC1);
       //
       theDeriv1 = -2.0 * aVec1.Dot(aVec2);
 
@@ -332,6 +593,7 @@ private:
     return ((myFirst <= theParam) && (theParam <= myLast));
   }
 
+  const BSplineResidual  myResidual;
   const Adaptor3d_Curve& myCurve1;
   const Adaptor3d_Curve& myCurve2;
   const double           myFirst;

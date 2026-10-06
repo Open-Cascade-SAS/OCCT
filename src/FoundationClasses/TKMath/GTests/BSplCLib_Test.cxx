@@ -498,3 +498,74 @@ TEST(BSplCLibTest, InterpolationOppositeLargeCoordinates)
     EXPECT_DOUBLE_EQ(aBohmPoles[0], anExpected);
   }
 }
+
+TEST(BSplCLibTest, InterpolationRetainsSmallControlPolygonVariation)
+{
+  // The exact cubic is origin + 6*u. Rounding every intermediate point
+  // at the origin's magnitude erases increments smaller than its ulp.
+  double aKnots[] = {0.0, 0.0, 0.0, 1.0, 1.0, 1.0};
+  for (double anOrigin : {1.e16, -1.e16})
+  {
+    SCOPED_TRACE(anOrigin);
+    double aPoles[] = {anOrigin, anOrigin + 2.0, anOrigin + 4.0, anOrigin + 6.0};
+    BSplCLib::Eval(0.25, 3, aKnots[0], 1, aPoles[0]);
+    EXPECT_EQ(aPoles[0], anOrigin + 2.0);
+    double aDerivatives[] = {anOrigin, anOrigin + 2.0, anOrigin + 4.0, anOrigin + 6.0};
+    BSplCLib::Bohm(0.25, 3, 3, aKnots[0], 1, aDerivatives[0]);
+    EXPECT_EQ(aDerivatives[0], anOrigin + 2.0);
+    EXPECT_EQ(aDerivatives[1], 6.0);
+    EXPECT_EQ(aDerivatives[2], 0.0);
+    EXPECT_EQ(aDerivatives[3], 0.0);
+  }
+}
+
+TEST(BSplCLibTest, InterpolationRetainsEndpointsAtDifferentMagnitudes)
+{
+  double aKnots[] = {0.0, 0.0, 0.0, 1.0, 1.0, 1.0};
+  for (double aFirst : {1.e16, -1.e16})
+  {
+    double aPoles[] = {aFirst, aFirst, 1.0, 1.0};
+    BSplCLib::Eval(1.0, 3, aKnots[0], 1, aPoles[0]);
+    EXPECT_EQ(aPoles[0], 1.0);
+  }
+}
+
+TEST(BSplCLibTest, InterpolationPreservesSmallEndpointWeights)
+{
+  // A small parameter offset can give a finite coordinate contribution when
+  // the other pole is large. Computing the weight as 1 - the opposite weight
+  // loses that offset before interpolation.
+  for (const int aDegree : {1, 2, 3})
+  {
+    for (const int aDimension : {1, 2, 3, 4, 7})
+    {
+      SCOPED_TRACE(aDegree);
+      SCOPED_TRACE(aDimension);
+      NCollection_Array1<double> aKnots(0, 2 * aDegree - 1);
+      for (size_t aKnot = 0; aKnot < static_cast<size_t>(aDegree); ++aKnot)
+      {
+        aKnots.ChangeAt(aKnot)           = 0.0;
+        aKnots.ChangeAt(aKnot + aDegree) = 1.0;
+      }
+      const double               aParameter = 1.0e-16;
+      const double               aLastPole  = std::pow(1.0e16, aDegree);
+      NCollection_Array1<double> aPoles(0, (aDegree + 1) * aDimension - 1);
+      aPoles.Init(0.0);
+      for (size_t aCoordinate = 0; aCoordinate < static_cast<size_t>(aDimension); ++aCoordinate)
+      {
+        aPoles.ChangeAt(aDegree * aDimension + aCoordinate) = aLastPole;
+      }
+      NCollection_Array1<double> aValue = aPoles;
+      BSplCLib::Eval(aParameter, aDegree, aKnots.ChangeAt(0), aDimension, aValue.ChangeAt(0));
+      BSplCLib::Bohm(aParameter, aDegree, 1, aKnots.ChangeAt(0), aDimension, aPoles.ChangeAt(0));
+      const double anExpected  = aLastPole * std::pow(aParameter, aDegree);
+      const double aDerivative = aDegree * aLastPole * std::pow(aParameter, aDegree - 1);
+      for (size_t aCoordinate = 0; aCoordinate < static_cast<size_t>(aDimension); ++aCoordinate)
+      {
+        EXPECT_NEAR(aValue.At(aCoordinate), anExpected, 1.e-14 * anExpected);
+        EXPECT_NEAR(aPoles.At(aCoordinate), anExpected, 1.e-14 * anExpected);
+        EXPECT_NEAR(aPoles.At(aDimension + aCoordinate), aDerivative, 1.e-14 * aDerivative);
+      }
+    }
+  }
+}

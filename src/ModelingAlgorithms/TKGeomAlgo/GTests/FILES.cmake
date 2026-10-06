@@ -2,6 +2,9 @@
 set(OCCT_TKGeomAlgo_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKGeomAlgo_GTests_FILES
+  IntImpParGen_Test.cxx
+  IntPatch_SurfFunction_Test.cxx
+  IntPatch_Walking_Test.cxx
   Geom2dAPI_InterCurveCurve_Test.cxx
   Geom2dAPI_ExtremaCurveCurve_Test.cxx
   Geom2dAPI_Interpolate_Test.cxx

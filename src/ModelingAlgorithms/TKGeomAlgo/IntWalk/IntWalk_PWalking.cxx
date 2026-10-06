@@ -23,6 +23,7 @@
 #include <IntSurf_LineOn2S.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <IntWalk_PWalking.hxx>
+#include <MathSys_Newton.hxx>
 #include <IntWalk_StatusDeflection.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <Precision.hxx>
@@ -212,6 +213,242 @@ static bool AdjustToDomain(const int           theNbElem,
   }
 
   return aRetVal;
+}
+
+//=================================================================================================
+
+namespace
+{
+//! Surface coincidence and normal alignment, scaled by their geometric tolerances.
+class IntWalk_ContactFunction
+{
+public:
+  IntWalk_ContactFunction(const occ::handle<Adaptor3d_Surface>& theSurface1,
+                          const occ::handle<Adaptor3d_Surface>& theSurface2);
+  size_t NbVariables() const;
+  size_t NbEquations() const;
+  bool   Value(const math_Vector& theX, math_Vector& theF);
+  bool   Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theJacobian);
+
+private:
+  occ::handle<Adaptor3d_Surface> mySurface1, mySurface2;
+};
+
+//==================================================================================================
+
+IntWalk_ContactFunction::IntWalk_ContactFunction(const occ::handle<Adaptor3d_Surface>& theSurface1,
+                                                 const occ::handle<Adaptor3d_Surface>& theSurface2)
+    : mySurface1(theSurface1),
+      mySurface2(theSurface2)
+{
+}
+
+//==================================================================================================
+
+size_t IntWalk_ContactFunction::NbVariables() const
+{
+  return 4;
+}
+
+//==================================================================================================
+
+size_t IntWalk_ContactFunction::NbEquations() const
+{
+  return 6;
+}
+
+//==================================================================================================
+
+bool IntWalk_ContactFunction::Value(const math_Vector& theX, math_Vector& theF)
+{
+  const Geom_Surface::ResD1 aFirst   = mySurface1->EvalD1(theX.At(0), theX.At(1));
+  const Geom_Surface::ResD1 aSecond  = mySurface2->EvalD1(theX.At(2), theX.At(3));
+  gp_Vec                    aNormal1 = aFirst.D1U.Crossed(aFirst.D1V);
+  gp_Vec                    aNormal2 = aSecond.D1U.Crossed(aSecond.D1V);
+  if (aNormal1.Magnitude() <= gp::Resolution() || aNormal2.Magnitude() <= gp::Resolution())
+  {
+    return false;
+  }
+  aNormal1.Normalize();
+  aNormal2.Normalize();
+  const gp_Vec aGap(aSecond.Point, aFirst.Point);
+  const gp_Vec aNormalGap =
+    aNormal1.Dot(aNormal2) < 0.0 ? aNormal1 + aNormal2 : aNormal1 - aNormal2;
+  for (size_t aRow = 0; aRow < 3; ++aRow)
+  {
+    const int aCoordinate   = static_cast<int>(aRow) + 1;
+    theF.ChangeAt(aRow)     = aGap.Coord(aCoordinate) / Precision::Confusion();
+    theF.ChangeAt(aRow + 3) = aNormalGap.Coord(aCoordinate) / Precision::Angular();
+  }
+  return true;
+}
+
+//==================================================================================================
+
+bool IntWalk_ContactFunction::Values(const math_Vector& theX,
+                                     math_Vector&       theF,
+                                     math_Matrix&       theJacobian)
+{
+  const Geom_Surface::ResD2 aSurfaces[2] = {mySurface1->EvalD2(theX.At(0), theX.At(1)),
+                                            mySurface2->EvalD2(theX.At(2), theX.At(3))};
+  gp_Vec                    aNormals[2], aNormalDerivatives[4];
+  for (size_t aSurface = 0; aSurface < 2; ++aSurface)
+  {
+    const Geom_Surface::ResD2& aD = aSurfaces[aSurface];
+    const size_t               i  = 2 * aSurface;
+    aNormals[aSurface]            = aD.D1U.Crossed(aD.D1V);
+    const double aLength          = aNormals[aSurface].Magnitude();
+    if (!(aLength > gp::Resolution()))
+    {
+      return false;
+    }
+    aNormals[aSurface] /= aLength;
+    aNormalDerivatives[i]     = aD.D2U.Crossed(aD.D1V) + aD.D1U.Crossed(aD.D2UV);
+    aNormalDerivatives[i + 1] = aD.D2UV.Crossed(aD.D1V) + aD.D1U.Crossed(aD.D2V);
+    for (size_t aCoordinate = i; aCoordinate < i + 2; ++aCoordinate)
+    {
+      gp_Vec& aDerivative = aNormalDerivatives[aCoordinate];
+      aDerivative =
+        (aDerivative - aNormals[aSurface] * aNormals[aSurface].Dot(aDerivative)) / aLength;
+    }
+  }
+  const double aNormalSign = aNormals[0].Dot(aNormals[1]) < 0.0 ? -1.0 : 1.0;
+  const gp_Vec aGap(aSurfaces[1].Point, aSurfaces[0].Point);
+  const gp_Vec aNormalGap = aNormals[0] - aNormalSign * aNormals[1];
+
+  for (size_t aRow = 0; aRow < 3; ++aRow)
+  {
+    theF.ChangeAt(aRow)     = aGap.Coord(static_cast<int>(aRow) + 1) / Precision::Confusion();
+    theF.ChangeAt(aRow + 3) = aNormalGap.Coord(static_cast<int>(aRow) + 1) / Precision::Angular();
+  }
+  for (size_t i = 0; i < 4; ++i)
+  {
+    const double  aSign       = i < 2 ? 1.0 : -1.0;
+    const gp_Vec& aDerivative = i % 2 == 0 ? aSurfaces[i / 2].D1U : aSurfaces[i / 2].D1V;
+    for (size_t aRow = 0; aRow < 3; ++aRow)
+    {
+      const int aCoord              = static_cast<int>(aRow) + 1;
+      theJacobian.ChangeAt(aRow, i) = aSign * aDerivative.Coord(aCoord) / Precision::Confusion();
+      theJacobian.ChangeAt(aRow + 3, i) = aSign * (i < 2 ? 1.0 : aNormalSign)
+                                          * aNormalDerivatives[i].Coord(aCoord)
+                                          / Precision::Angular();
+    }
+  }
+  return true;
+}
+
+//==================================================================================================
+
+IntImp_ConstIsoparametric contactIso(const gp_Dir2d& theDirection1, const gp_Dir2d& theDirection2)
+{
+  const double aRates[4] = {std::abs(theDirection1.X()),
+                            std::abs(theDirection1.Y()),
+                            std::abs(theDirection2.X()),
+                            std::abs(theDirection2.Y())};
+  return static_cast<IntImp_ConstIsoparametric>(std::max_element(aRates, aRates + 4) - aRates);
+}
+
+//==================================================================================================
+
+bool refineContact(const occ::handle<Adaptor3d_Surface>& theSurface1,
+                   const occ::handle<Adaptor3d_Surface>& theSurface2,
+                   const IntImp_ConstIsoparametric       theIso,
+                   NCollection_Array1<double>&           theParameters,
+                   bool                                  theFixIso = true)
+{
+  const size_t            anIso = static_cast<size_t>(theIso);
+  IntWalk_ContactFunction aFunction(theSurface1, theSurface2);
+  math_Vector             aStart(size_t{4}), aTolX(size_t{4}), aMin(size_t{4}), aMax(size_t{4});
+  aMin.ChangeAt(0)  = theSurface1->FirstUParameter();
+  aMin.ChangeAt(1)  = theSurface1->FirstVParameter();
+  aMin.ChangeAt(2)  = theSurface2->FirstUParameter();
+  aMin.ChangeAt(3)  = theSurface2->FirstVParameter();
+  aMax.ChangeAt(0)  = theSurface1->LastUParameter();
+  aMax.ChangeAt(1)  = theSurface1->LastVParameter();
+  aMax.ChangeAt(2)  = theSurface2->LastUParameter();
+  aMax.ChangeAt(3)  = theSurface2->LastVParameter();
+  aTolX.ChangeAt(0) = theSurface1->UResolution(Precision::Confusion());
+  aTolX.ChangeAt(1) = theSurface1->VResolution(Precision::Confusion());
+  aTolX.ChangeAt(2) = theSurface2->UResolution(Precision::Confusion());
+  aTolX.ChangeAt(3) = theSurface2->VResolution(Precision::Confusion());
+  for (size_t i = 0; i < 4; ++i)
+  {
+    aStart.ChangeAt(i) = theParameters.At(i);
+  }
+  if (theFixIso)
+  {
+    aMin.ChangeAt(anIso) = aMax.ChangeAt(anIso) = theParameters.At(anIso);
+  }
+  const MathSys::SystemResult aResult =
+    MathSys::NewtonBounded(aFunction, aStart, aMin, aMax, aTolX, 1.0);
+  // Without a fixed parameter, the contact must be isolated in the four UV coordinates.
+  if (!aResult.IsDone() || !aResult.IsRoot || (!theFixIso && aResult.Rank != 4))
+  {
+    return false;
+  }
+  for (size_t i = 0; i < 4; ++i)
+  {
+    theParameters.ChangeAt(i) = aResult.Solution->At(i);
+  }
+  return true;
+}
+
+} // namespace
+
+//==================================================================================================
+
+IntImp_ConstIsoparametric IntWalk_PWalking::RefineContactPoint(
+  NCollection_Array1<double>&     theParameters,
+  math_FunctionSetRoot&           theSolver,
+  const IntImp_ConstIsoparametric theIso)
+{
+  if (!myIntersectionOn2S.IsDone()
+      || (!myIntersectionOn2S.IsEmpty() && !(previoustg || myIntersectionOn2S.IsTangent())))
+  {
+    return theIso;
+  }
+  const occ::handle<Adaptor3d_Surface>& aSurface1 =
+    myIntersectionOn2S.Function().AuxillarSurface1();
+  const occ::handle<Adaptor3d_Surface>& aSurface2 =
+    myIntersectionOn2S.Function().AuxillarSurface2();
+  gp_Dir                    aDirection = previousd;
+  gp_Dir2d                  aDirection1, aDirection2;
+  IntImp_ConstIsoparametric anIso = theIso;
+  IntSurf_PntOn2S           aSeed;
+  if (myIntersectionOn2S.IsEmpty())
+  {
+    aSeed.SetValue(aSurface1->EvalD0(theParameters.At(0), theParameters.At(1)),
+                   theParameters.At(0),
+                   theParameters.At(1),
+                   theParameters.At(2),
+                   theParameters.At(3));
+  }
+  else
+  {
+    aSeed = myIntersectionOn2S.Point();
+  }
+  if (myIntersectionOn2S.IsEmpty()
+      && ComputeContactDirection(aSurface1, aSurface2, aSeed, aDirection, aDirection1, aDirection2))
+  {
+    anIso = contactIso(aDirection1, aDirection2);
+  }
+  else if (myIntersectionOn2S.IsEmpty())
+  {
+    return theIso;
+  }
+  NCollection_Array1<double> aParameters(1, 4);
+  aSeed.Parameters(aParameters.ChangeAt(0),
+                   aParameters.ChangeAt(1),
+                   aParameters.ChangeAt(2),
+                   aParameters.ChangeAt(3));
+  if (refineContact(aSurface1, aSurface2, anIso, aParameters)
+      || (!myIntersectionOn2S.IsEmpty() && myIntersectionOn2S.IsTangent()
+          && refineContact(aSurface1, aSurface2, anIso, aParameters, false)))
+  {
+    theParameters = aParameters;
+    return myIntersectionOn2S.Perform(theParameters, theSolver, anIso);
+  }
+  return theIso;
 }
 
 //=================================================================================================
@@ -808,7 +1045,10 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
   //-- calculate the first solution point
   math_FunctionSetRoot Rsnld(myIntersectionOn2S.Function());
   //
-  ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld);
+  previoustg = false;
+  ChoixIso   = myIntersectionOn2S.Perform(Param, Rsnld);
+  ChoixIso   = RefineContactPoint(Param, Rsnld, ChoixIso);
+
   if (!myIntersectionOn2S.IsDone())
   {
     return;
@@ -820,7 +1060,13 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
     return;
   }
   //
-  if (myIntersectionOn2S.IsTangent())
+  if (myIntersectionOn2S.IsTangent()
+      && !ComputeContactDirection(Caro1,
+                                  Caro2,
+                                  myIntersectionOn2S.Point(),
+                                  previousd,
+                                  previousd1,
+                                  previousd2))
   {
     return;
   }
@@ -835,16 +1081,20 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
   RejectIndex = 0;
   //
   previousPoint = myIntersectionOn2S.Point();
-  previoustg    = false;
-  previousd     = myIntersectionOn2S.Direction();
-  previousd1    = myIntersectionOn2S.DirectionOnS1();
-  previousd2    = myIntersectionOn2S.DirectionOnS2();
-  myTangentIdx  = 1;
-  tgdir         = previousd;
-  firstd1       = previousd1;
-  firstd2       = previousd2;
-  tgfirst = tglast = false;
-  choixIsoSav      = ChoixIso;
+  previoustg    = myIntersectionOn2S.IsTangent();
+  if (!previoustg)
+  {
+    previousd  = myIntersectionOn2S.Direction();
+    previousd1 = myIntersectionOn2S.DirectionOnS1();
+    previousd2 = myIntersectionOn2S.DirectionOnS2();
+  }
+  myTangentIdx = 1;
+  tgdir        = previousd;
+  firstd1      = previousd1;
+  firstd2      = previousd2;
+  tgfirst      = previoustg;
+  tglast       = false;
+  choixIsoSav  = ChoixIso;
   //------------------------------------------------------------
   //-- Test if the first point of marching corresponds
   //-- to a point on borders.
@@ -880,6 +1130,11 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
   Arrive = false;
   while (!Arrive) // 010
   {
+    if (previoustg
+        && ComputeContactDirection(Caro1, Caro2, previousPoint, previousd, previousd1, previousd2))
+    {
+      ChoixIso = contactIso(previousd1, previousd2);
+    }
     aPrevStatus = aStatus;
 
     LevelOfIterWithoutAppend++;
@@ -970,6 +1225,7 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
       isBadPoint = false;
 
       ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, aBestIso);
+      ChoixIso = RefineContactPoint(Param, Rsnld, ChoixIso);
 
       if (myIntersectionOn2S.IsDone() && !myIntersectionOn2S.IsEmpty())
       {
@@ -1401,7 +1657,7 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                     // (bTestFirstPoint is false) and later returns near it, the intersection
                     // curve is closed in 3D. This catches cases where the UV-based closure
                     // check in TestArret fails (e.g., near-tangent surfaces with shared edges).
-                    else if (pf.SquareDistance(pl) < aSQDistMax)
+                    else if (!DejaReparti && pf.SquareDistance(pl) < aSQDistMax)
                     {
                       close  = true;
                       Arrive = true;
@@ -1466,6 +1722,8 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
 
                 IntImp_ConstIsoparametric SauvChoixIso = ChoixIso;
                 ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, ChoixIso);
+                ChoixIso = RefineContactPoint(Param, Rsnld, ChoixIso);
+
                 //
                 if (!myIntersectionOn2S.IsEmpty()) // 002
                 {
@@ -1475,6 +1733,7 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                   {
                     NbPasOKConseq = -10;
                     ChoixIso      = myIntersectionOn2S.Perform(Param, Rsnld, ChoixIso);
+                    ChoixIso      = RefineContactPoint(Param, Rsnld, ChoixIso);
 
                     if (!myIntersectionOn2S.IsEmpty())
                     {
@@ -1820,6 +2079,155 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
   done = true;
 }
 
+//==================================================================================================
+
+bool IntWalk_PWalking::ComputeContactDirection(const occ::handle<Adaptor3d_Surface>& theSurface1,
+                                               const occ::handle<Adaptor3d_Surface>& theSurface2,
+                                               const IntSurf_PntOn2S&                thePoint,
+                                               gp_Dir&                               theDirection,
+                                               gp_Dir2d&                             theDirection1,
+                                               gp_Dir2d&                             theDirection2)
+{
+  double aParameters[4];
+  thePoint.Parameters(aParameters[0], aParameters[1], aParameters[2], aParameters[3]);
+  const Geom_Surface::ResD2 aSurfaces[2] = {theSurface1->EvalD2(aParameters[0], aParameters[1]),
+                                            theSurface2->EvalD2(aParameters[2], aParameters[3])};
+  gp_Vec                    aNormals[2];
+  double                    aNormalLengths[2];
+  for (size_t aSurface = 0; aSurface < 2; ++aSurface)
+  {
+    aNormals[aSurface]       = aSurfaces[aSurface].D1U.Crossed(aSurfaces[aSurface].D1V);
+    aNormalLengths[aSurface] = aNormals[aSurface].Magnitude();
+    if (aNormalLengths[aSurface] <= gp::Resolution())
+    {
+      return false;
+    }
+    aNormals[aSurface] /= aNormalLengths[aSurface];
+  }
+  const gp_Vec aFirstAxis = aSurfaces[0].D1U.Normalized();
+  const gp_Vec aBasis[2]  = {aFirstAxis, aNormals[0].Crossed(aFirstAxis)};
+  double       aUV[2][2][2], aForm[2][3];
+  for (size_t aSurface = 0; aSurface < 2; ++aSurface)
+  {
+    const Geom_Surface::ResD2& aD            = aSurfaces[aSurface];
+    const gp_Vec&              aDU           = aD.D1U;
+    const gp_Vec&              aDV           = aD.D1V;
+    const gp_Vec&              aLocalNormal  = aNormals[aSurface];
+    const double               aNormalLength = aNormalLengths[aSurface];
+    for (size_t anAxis = 0; anAxis < 2; ++anAxis)
+    {
+      aUV[aSurface][anAxis][0] = aBasis[anAxis].Crossed(aDV).Dot(aLocalNormal) / aNormalLength;
+      aUV[aSurface][anAxis][1] = aDU.Crossed(aBasis[anAxis]).Dot(aLocalNormal) / aNormalLength;
+    }
+    const double aDUU       = aNormals[0].Dot(aD.D2U);
+    const double aDVV       = aNormals[0].Dot(aD.D2V);
+    const double aDUV       = aNormals[0].Dot(aD.D2UV);
+    const auto   aCurvature = [&](size_t i, size_t j) {
+      const double* u = aUV[aSurface][i];
+      const double* v = aUV[aSurface][j];
+      return aDUU * u[0] * v[0] + aDVV * u[1] * v[1] + aDUV * (u[0] * v[1] + u[1] * v[0]);
+    };
+    aForm[aSurface][0] = aCurvature(0, 0);
+    aForm[aSurface][1] = aCurvature(0, 1);
+    aForm[aSurface][2] = aCurvature(1, 1);
+  }
+
+  // A quadratic contact curve follows the null direction of the difference
+  // of the second fundamental forms in a common orthonormal tangent frame.
+  const double aXX           = aForm[0][0] - aForm[1][0];
+  const double aXY           = aForm[0][1] - aForm[1][1];
+  const double aYY           = aForm[0][2] - aForm[1][2];
+  const double aDiscriminant = std::hypot(aXX - aYY, 2.0 * aXY);
+  const double aLambda1      = 0.5 * (aXX + aYY + aDiscriminant);
+  const double aLambda2      = 0.5 * (aXX + aYY - aDiscriminant);
+  const double aLargest      = std::max(std::abs(aLambda1), std::abs(aLambda2));
+  if (aLargest == 0.0)
+  {
+    return false;
+  }
+  const double aProduct     = aXY * aXY;
+  const double aDeterminant = std::fma(aXX, aYY, -aProduct) - std::fma(aXY, aXY, -aProduct);
+  const double aSmallest    = std::abs(aDeterminant) / aLargest;
+  const double anAngle      = 0.5 * std::atan2(2.0 * aXY, aXX - aYY);
+  double       aX = -std::sin(anAngle), aY = std::cos(anAngle);
+  if (std::abs(aLambda2) > std::abs(aLambda1))
+  {
+    aX = std::cos(anAngle);
+    aY = std::sin(anAngle);
+  }
+  const double aRanges[4] = {theSurface1->LastUParameter() - theSurface1->FirstUParameter(),
+                             theSurface1->LastVParameter() - theSurface1->FirstVParameter(),
+                             theSurface2->LastUParameter() - theSurface2->FirstUParameter(),
+                             theSurface2->LastVParameter() - theSurface2->FirstVParameter()};
+  for (size_t i = 0; i < 4; ++i)
+  {
+    const gp_Vec& anOppositeNormal = aNormals[1 - i / 2];
+    const gp_Vec& aDerivative      = i % 2 == 0 ? aSurfaces[i / 2].D1U : aSurfaces[i / 2].D1V;
+    if (std::abs(aDerivative.Dot(anOppositeNormal)) * aRanges[i] > Precision::Confusion())
+    {
+      return false;
+    }
+  }
+  const auto aSpan = [&](double theX, double theY) {
+    double aLength = RealLast();
+    for (size_t aSurface = 0; aSurface < 2; ++aSurface)
+    {
+      for (size_t aCoordinate = 0; aCoordinate < 2; ++aCoordinate)
+      {
+        const double aRate =
+          theX * aUV[aSurface][0][aCoordinate] + theY * aUV[aSurface][1][aCoordinate];
+        if (aRate != 0.0)
+        {
+          aLength = std::min(aLength, aRanges[2 * aSurface + aCoordinate] / std::abs(aRate));
+        }
+      }
+    }
+    return aLength;
+  };
+  const double aContactSpan = aSpan(aX, aY), aCrossSpan = aSpan(-aY, aX);
+  if (aSmallest * aContactSpan * aContactSpan > 2.0 * Precision::Confusion()
+      || aLargest * aCrossSpan * aCrossSpan <= 2.0 * Precision::Confusion())
+  {
+    return false;
+  }
+  gp_Vec aTangent = aX * aBasis[0] + aY * aBasis[1];
+  if (aTangent.Dot(theDirection) < 0.0)
+  {
+    aX = -aX;
+    aY = -aY;
+    aTangent.Reverse();
+  }
+  theDirection = gp_Dir(aTangent);
+  theDirection1 =
+    gp_Dir2d(aX * aUV[0][0][0] + aY * aUV[0][1][0], aX * aUV[0][0][1] + aY * aUV[0][1][1]);
+  theDirection2 =
+    gp_Dir2d(aX * aUV[1][0][0] + aY * aUV[1][1][0], aX * aUV[1][0][1] + aY * aUV[1][1][1]);
+  return true;
+}
+
+//==================================================================================================
+
+bool IntWalk_PWalking::isSingularContact(const occ::handle<Adaptor3d_Surface>& theSurface1,
+                                         const occ::handle<Adaptor3d_Surface>& theSurface2,
+                                         const IntSurf_PntOn2S&                thePoint)
+{
+  gp_Dir      aDirection;
+  gp_Dir2d    aDirection1, aDirection2;
+  math_Vector aParameters(size_t{4}), aResidual(size_t{6});
+  thePoint.Parameters(aParameters.ChangeAt(0),
+                      aParameters.ChangeAt(1),
+                      aParameters.ChangeAt(2),
+                      aParameters.ChangeAt(3));
+  IntWalk_ContactFunction aFunction(theSurface1, theSurface2);
+  return aFunction.Value(aParameters, aResidual) && aResidual.Norm() <= 1.0
+         && !ComputeContactDirection(theSurface1,
+                                     theSurface2,
+                                     thePoint,
+                                     aDirection,
+                                     aDirection1,
+                                     aDirection2);
+}
+
 // ===========================================================================================================
 // function: ExtendLineInCommonZone
 // purpose:  Extends already computed line inside tangent zone in the direction given by
@@ -1828,12 +2236,19 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
 //           computed point is outside the tangent zone (but it is not put into the line). Otherwise
 //           returns false.
 // ===========================================================================================================
+
 bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric theChoixIso,
                                               const bool                      theDirectionFlag)
 {
+  IntImp_ConstIsoparametric aContactIso = theChoixIso;
+
   // Caro1 and Caro2
   const occ::handle<Adaptor3d_Surface>& Caro1 = myIntersectionOn2S.Function().AuxillarSurface1();
   const occ::handle<Adaptor3d_Surface>& Caro2 = myIntersectionOn2S.Function().AuxillarSurface2();
+  if (isSingularContact(Caro1, Caro2, previousPoint))
+  {
+    return false;
+  }
   //
   const double UFirst1 = Adaptor3d_HSurfaceTool::FirstUParameter(Caro1);
   const double VFirst1 = Adaptor3d_HSurfaceTool::FirstVParameter(Caro1);
@@ -1894,6 +2309,10 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
 
   while (!bStop)
   {
+    if (ComputeContactDirection(Caro1, Caro2, previousPoint, previousd, previousd1, previousd2))
+    {
+      aContactIso = contactIso(previousd1, previousd2);
+    }
     nbIterWithoutAppend++;
 
     if ((nbIterWithoutAppend > 20) || (nbEqualPoints > 20))
@@ -1906,7 +2325,7 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
     }
     double f = 0.;
 
-    switch (theChoixIso)
+    switch (aContactIso)
     {
       case IntImp_UIsoparametricOnCaro1:
         f = std::abs(previousd1.X());
@@ -1934,19 +2353,19 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
     double dP3 = sensCheminement * pasuv[2] * previousd2.X() / f;
     double dP4 = sensCheminement * pasuv[3] * previousd2.Y() / f;
 
-    if (theChoixIso == IntImp_UIsoparametricOnCaro1 && std::abs(dP1) < 1.e-7)
+    if (aContactIso == IntImp_UIsoparametricOnCaro1 && std::abs(dP1) < 1.e-7)
     {
       dP1 *= (5. * (double)dIncKey);
     }
-    if (theChoixIso == IntImp_VIsoparametricOnCaro1 && std::abs(dP2) < 1.e-7)
+    if (aContactIso == IntImp_VIsoparametricOnCaro1 && std::abs(dP2) < 1.e-7)
     {
       dP2 *= (5. * (double)dIncKey);
     }
-    if (theChoixIso == IntImp_UIsoparametricOnCaro2 && std::abs(dP3) < 1.e-7)
+    if (aContactIso == IntImp_UIsoparametricOnCaro2 && std::abs(dP3) < 1.e-7)
     {
       dP3 *= (5. * (double)dIncKey);
     }
-    if (theChoixIso == IntImp_VIsoparametricOnCaro2 && std::abs(dP4) < 1.e-7)
+    if (aContactIso == IntImp_VIsoparametricOnCaro2 && std::abs(dP4) < 1.e-7)
     {
       dP4 *= (5. * (double)dIncKey);
     }
@@ -1956,14 +2375,15 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
     Param(3) += dP3;
     Param(4) += dP4;
     double                    SvParam[4];
-    IntImp_ConstIsoparametric ChoixIso = theChoixIso;
+    IntImp_ConstIsoparametric ChoixIso = aContactIso;
 
     for (parit = 0; parit < 4; parit++)
     {
       SvParam[parit] = Param(parit + 1);
     }
     math_FunctionSetRoot Rsnld(myIntersectionOn2S.Function());
-    ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, theChoixIso);
+    ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, aContactIso);
+    ChoixIso = RefineContactPoint(Param, Rsnld, ChoixIso);
 
     if (!myIntersectionOn2S.IsDone())
     {
@@ -1978,7 +2398,7 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
 
       aStatus = TestDeflection(ChoixIso, aStatus);
 
-      if (aStatus == IntWalk_OK)
+      if (aStatus == IntWalk_OK || aStatus == IntWalk_StepTooSmall)
       {
 
         for (uvit = 0; uvit < 4; uvit++)
@@ -2030,6 +2450,7 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
           break;
         }
         case IntWalk_OK:
+        case IntWalk_StepTooSmall:
         case IntWalk_ArretSurPoint: {
           //
           bStop = TestArret(theDirectionFlag, Param, ChoixIso);
@@ -2072,6 +2493,15 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
 
             if (pointisvalid)
             {
+              if (myIntersectionOn2S.IsTangent())
+              {
+                ComputeContactDirection(Caro1,
+                                        Caro2,
+                                        myIntersectionOn2S.Point(),
+                                        previousd,
+                                        previousd1,
+                                        previousd2);
+              }
               previousPoint = myIntersectionOn2S.Point();
               previoustg    = myIntersectionOn2S.IsTangent();
 
@@ -2156,7 +2586,8 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
             }
             else
             {
-              ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, theChoixIso);
+              ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, aContactIso);
+              ChoixIso = RefineContactPoint(Param, Rsnld, ChoixIso);
 
               if (myIntersectionOn2S.IsEmpty())
               {
@@ -2274,19 +2705,19 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
                       LastParams.ChangeValue(3));
         int indexofiso = 0;
 
-        if (theChoixIso == IntImp_UIsoparametricOnCaro1)
+        if (aContactIso == IntImp_UIsoparametricOnCaro1)
         {
           indexofiso = 0;
         }
-        if (theChoixIso == IntImp_VIsoparametricOnCaro1)
+        if (aContactIso == IntImp_VIsoparametricOnCaro1)
         {
           indexofiso = 1;
         }
-        if (theChoixIso == IntImp_UIsoparametricOnCaro2)
+        if (aContactIso == IntImp_UIsoparametricOnCaro2)
         {
           indexofiso = 2;
         }
-        if (theChoixIso == IntImp_VIsoparametricOnCaro2)
+        if (aContactIso == IntImp_VIsoparametricOnCaro2)
         {
           indexofiso = 3;
         }
@@ -2571,8 +3002,9 @@ bool IntWalk_PWalking::DistanceMinimizeByExtrema(const occ::handle<Adaptor3d_Sur
     const double aF1 = aD1Su.Dot(aVec), aF2 = aD1Sv.Dot(aVec);
 
     // Derivatives
-    const double aDf1u = aD2Su.Dot(aVec) + aD1Su.Dot(aD1Su), aDf1v = aD2Su.Dot(aD1Sv),
-                 aDf2u = aDf1v, aDf2v = aD2Sv.Dot(aVec) + aD1Sv.Dot(aD1Sv);
+    const double aDf1u = aD2Su.Dot(aVec) + aD1Su.Dot(aD1Su),
+                 aDf1v = aD2SuvTemp.Dot(aVec) + aD1Su.Dot(aD1Sv), aDf2u = aDf1v,
+                 aDf2v = aD2Sv.Dot(aVec) + aD1Sv.Dot(aD1Sv);
 
     const double aDet = aDf1u * aDf2v - aDf1v * aDf2u;
     aU -= aStep0[0] * (aDf2v * aF1 - aDf1v * aF2) / aDet;
@@ -2721,6 +3153,11 @@ bool IntWalk_PWalking::SeekPointOnBoundary(const occ::handle<Adaptor3d_Surface>&
                                            const double                          theV2,
                                            const bool                            isTheFirst)
 {
+  if (isSingularContact(theASurf1, theASurf2, line->Value(isTheFirst ? 1 : line->NbPoints())))
+  {
+    return false;
+  }
+
   bool isOK = false;
 
   // u1, v1, u2, v2 order is used.
@@ -3312,7 +3749,7 @@ void IntWalk_PWalking::RepartirOuDiviser(bool&                      DejaReparti,
       Arrive        = false;
       DejaReparti   = true;
       previousPoint = line->Value(1);
-      previoustg    = false;
+      previoustg    = tgfirst;
       previousd1    = firstd1;
       previousd2    = firstd2;
       previousd     = tgdir;
@@ -3353,7 +3790,7 @@ void IntWalk_PWalking::RepartirOuDiviser(bool&                      DejaReparti,
       { // restart in the other direction
         DejaReparti   = true;
         previousPoint = line->Value(1);
-        previoustg    = false;
+        previoustg    = tgfirst;
         previousd1    = firstd1;
         previousd2    = firstd2;
         previousd     = tgdir;
@@ -3437,12 +3874,21 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
   //==================================================================================
   //=========               S t o p   o n   p o i n t                 ============
   //==================================================================================
+  gp_Dir   TgCourante = previousd;
+  gp_Dir2d aDir1 = previousd1, aDir2 = previousd2;
   if (myIntersectionOn2S.IsTangent())
   {
-    return IntWalk_ArretSurPoint;
+    if (!ComputeContactDirection(Caro1, Caro2, CurrentPoint, TgCourante, aDir1, aDir2))
+    {
+      return IntWalk_ArretSurPoint;
+    }
   }
-
-  const gp_Dir& TgCourante = myIntersectionOn2S.Direction();
+  else
+  {
+    TgCourante = myIntersectionOn2S.Direction();
+    aDir1      = myIntersectionOn2S.DirectionOnS1();
+    aDir2      = myIntersectionOn2S.DirectionOnS2();
+  }
 
   const double aCosBetweenTangent = TgCourante.Dot(previousd);
 
@@ -3643,8 +4089,8 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
         return (IntWalk_PasTropGrand);
       }
     }
-    const gp_Dir2d& Tg2dcourante1 = myIntersectionOn2S.DirectionOnS1();
-    const gp_Dir2d& Tg2dcourante2 = myIntersectionOn2S.DirectionOnS2();
+    const gp_Dir2d& Tg2dcourante1 = aDir1;
+    const gp_Dir2d& Tg2dcourante2 = aDir2;
     Cosi1                         = Du1 * Tg2dcourante1.X() + Dv1 * Tg2dcourante1.Y();
     Cosi2                         = Du2 * Tg2dcourante2.X() + Dv2 * Tg2dcourante2.Y();
     Ang1                          = std::abs(previousd1.Angle(Tg2dcourante1));

@@ -20,9 +20,31 @@
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_Position.hxx>
 #include <IntRes2d_Transition.hxx>
+#include <gp_Vec2d.hxx>
+
+#include <algorithm>
+#include <cmath>
+
+namespace
+{
+// A nonzero derivative defines a direction regardless of parameter speed.
+// Scale before normalizing to avoid overflow and underflow.
+//==================================================================================================
+
+bool normalizedDirection(const gp_Vec2d& theVector, gp_Vec2d& theDirection)
+{
+  const double aScale = std::max(std::abs(theVector.X()), std::abs(theVector.Y()));
+  if (aScale == 0.0)
+  {
+    return false;
+  }
+  theDirection.SetCoord(theVector.X() / aScale, theVector.Y() / aScale);
+  theDirection.Normalize();
+  return true;
+}
+} // namespace
 
 #define TOLERANCE_ANGULAIRE 0.00000001
-#define DERIVEE_PREMIERE_NULLE 0.000000000001
 
 //----------------------------------------------------------------------
 double IntImpParGen::NormalizeOnDomain(double& Param, const IntRes2d_Domain& TheDomain)
@@ -101,21 +123,22 @@ void IntImpParGen::DetermineTransition(const IntRes2d_Position Pos1,
   T1.SetPosition(Pos1);
   T2.SetPosition(Pos2);
 
-  if (Tan1.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+  gp_Vec2d aDirection1, aDirection2;
+  if (!normalizedDirection(Tan1, aDirection1))
   {
     Tan1      = Norm1;
     courbure1 = false;
-    if (Tan1.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+    if (!normalizedDirection(Tan1, aDirection1))
     { // transition undecided
       decide = false;
     }
   }
 
-  if (Tan2.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+  if (!normalizedDirection(Tan2, aDirection2))
   {
     Tan2      = Norm2;
     courbure2 = false;
-    if (Tan2.SquareMagnitude() <= DERIVEE_PREMIERE_NULLE)
+    if (!normalizedDirection(Tan2, aDirection2))
     { // transition undecided
       decide = false;
     }
@@ -128,12 +151,11 @@ void IntImpParGen::DetermineTransition(const IntRes2d_Position Pos1,
   }
   else
   {
-    double sgn  = Tan1.Crossed(Tan2);
-    double norm = Tan1.Magnitude() * Tan2.Magnitude();
+    const double sgn = aDirection1.Crossed(aDirection2);
 
-    if (std::abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
+    if (std::abs(sgn) <= TOLERANCE_ANGULAIRE)
     { // Transition TOUCH #########
-      bool opos = (Tan1.Dot(Tan2)) < 0;
+      bool opos = (aDirection1.Dot(aDirection2)) < 0;
       if (!(courbure1 || courbure2))
       {
         T1.SetValue(true, Pos1, IntRes2d_Unknown, opos);
@@ -218,22 +240,15 @@ bool IntImpParGen::DetermineTransition(const IntRes2d_Position Pos1,
   T1.SetPosition(Pos1);
   T2.SetPosition(Pos2);
 
-  double Tan1Magnitude = Tan1.Magnitude();
-  if (Tan1Magnitude <= DERIVEE_PREMIERE_NULLE)
+  gp_Vec2d aDirection1, aDirection2;
+  if (!normalizedDirection(Tan1, aDirection1) || !normalizedDirection(Tan2, aDirection2))
   {
-    return (false);
+    return false;
   }
 
-  double Tan2Magnitude = Tan2.Magnitude();
-  if (Tan2Magnitude <= DERIVEE_PREMIERE_NULLE)
-  {
-    return (false);
-  }
+  const double sgn = aDirection1.Crossed(aDirection2);
 
-  double sgn  = Tan1.Crossed(Tan2);
-  double norm = Tan1Magnitude * Tan2Magnitude;
-
-  if (std::abs(sgn) <= TOLERANCE_ANGULAIRE * norm)
+  if (std::abs(sgn) <= TOLERANCE_ANGULAIRE)
   { // Transition TOUCH #########
     return (false);
   }

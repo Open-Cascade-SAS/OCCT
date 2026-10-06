@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <GeomLProp_CurAndInf2d.hxx>
@@ -29,6 +30,60 @@
 #include <cmath>
 
 #include <gtest/gtest.h>
+
+TEST(GeomLProp_CurAndInf2dKnotTest, CurvatureMaximumAtC2Knot)
+{
+  for (double aSign : {-1.0, 1.0})
+  {
+    for (double anOrigin : {0.0, 0.37, 100.0})
+    {
+      for (double aRightCubic : {1.0, 4.0, 10.0})
+      {
+        SCOPED_TRACE(::testing::Message() << aSign << " " << anOrigin << " " << aRightCubic);
+        constexpr double             aSpan = 0.1;
+        const double                 aY[]  = {aSpan * aSpan - aSpan * aSpan * aSpan,
+                                              aSpan * aSpan / 3.0,
+                                              0.0,
+                                              0.0,
+                                              0.0,
+                                              aSpan * aSpan / 3.0,
+                                              aSpan * aSpan - aRightCubic * aSpan * aSpan * aSpan};
+        NCollection_Array1<gp_Pnt2d> aPoles(1, 7);
+        for (size_t i = 0; i < aPoles.Size(); ++i)
+        {
+          aPoles.ChangeAt(i) =
+            gp_Pnt2d((static_cast<double>(i) - 3.0) * aSpan / 3.0, aSign * aY[i]);
+        }
+        NCollection_Array1<double> aKnots(1, 3);
+        aKnots.ChangeAt(0) = anOrigin - aSpan;
+        aKnots.ChangeAt(1) = anOrigin;
+        aKnots.ChangeAt(2) = anOrigin + aSpan;
+        NCollection_Array1<int> aMultiplicities(1, 3);
+        aMultiplicities.ChangeAt(0) = 4;
+        aMultiplicities.ChangeAt(1) = 3;
+        aMultiplicities.ChangeAt(2) = 4;
+        occ::handle<Geom2d_BSplineCurve> aCurve =
+          new Geom2d_BSplineCurve(aPoles, aKnots, aMultiplicities, 3);
+        ASSERT_TRUE(aCurve->RemoveKnot(2, 1, 1.e-12));
+
+        GeomLProp_CurAndInf2d anAnalyzer;
+        anAnalyzer.PerformCurExt(aCurve);
+        ASSERT_TRUE(anAnalyzer.IsDone());
+        int aNbKnotExtrema = 0;
+        for (int i = 1; i <= anAnalyzer.NbPoints(); ++i)
+        {
+          if (std::abs(anAnalyzer.Parameter(i) - anOrigin) <= Precision::PConfusion())
+          {
+            ++aNbKnotExtrema;
+            EXPECT_DOUBLE_EQ(anAnalyzer.Parameter(i), anOrigin);
+            EXPECT_EQ(anAnalyzer.Type(i), LProp_MinCur);
+          }
+        }
+        EXPECT_EQ(aNbKnotExtrema, 1);
+      }
+    }
+  }
+}
 
 class GeomLProp_CurAndInf2dTest : public ::testing::Test
 {

@@ -122,12 +122,13 @@ protected:
       }
     }
 
+    const int aPreviousTriangles = this->getStructure()->ElementsOfDomain().Extent();
     theMesher.AddVertices(aVertexIndexes, theRange);
     if (!theRange.More())
     {
       return false;
     }
-    return !aVertexIndexes.IsEmpty();
+    return this->getStructure()->ElementsOfDomain().Extent() > aPreviousTriangles;
   }
 
 private:

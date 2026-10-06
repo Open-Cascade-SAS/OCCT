@@ -82,10 +82,9 @@ protected:
     myControlNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
     myCircles      = &theMesher.Circles();
 
-    const int             aIterationsNb = 11;
-    bool                  isInserted    = true;
-    Message_ProgressScope aPS(theRange, "Iteration", aIterationsNb);
-    for (int aPass = 1; aPass <= aIterationsNb && isInserted && !myIsAllDegenerated; ++aPass)
+    bool                  isInserted = true;
+    Message_ProgressScope aPS(theRange, "Iteration", 1, true);
+    while (isInserted && !myIsAllDegenerated)
     {
       if (!aPS.More())
       {
@@ -190,7 +189,7 @@ private:
                        const int (&theNodesIndices)[3],
                        TriangleNodeInfo (&theInfo)[3]) const
   {
-    const int (&e)[3] = theTriangle.myEdges;
+    const int(&e)[3] = theTriangle.myEdges;
     for (int i = 0; i < 3; ++i)
     {
       const BRepMesh_Vertex& aVertex = this->getStructure()->GetNode(theNodesIndices[i]);
@@ -222,11 +221,22 @@ private:
         const gp_XY aCenter2d =
           (aNodesInfo[0].Point2d + aNodesInfo[1].Point2d + aNodesInfo[2].Point2d) / 3.;
 
-        usePoint(aCenter2d, NormalDeviation(aNodesInfo[0].Point, aNormal));
+        const gp_Pnt          aReferencePoint(aNodesInfo[0].Point);
+        const NormalDeviation aDeviation(aReferencePoint, aNormal);
+        if (!usePoint(aCenter2d, aDeviation))
+        {
+          checkInteriorDeviation(aNodesInfo, aNormal, aCenter2d, aDeviation);
+        }
         splitLinks(aNodesInfo, aNodexIndices);
       }
     }
   }
+
+  //! Checks interior stationary points of the signed distance to the triangle plane.
+  void checkInteriorDeviation(const TriangleNodeInfo (&theNodes)[3],
+                              const gp_Vec&          theNormal,
+                              gp_XY                  theParameter,
+                              const NormalDeviation& theDeviation);
 
   //! Updates array of links vectors.
   //! @return False on degenerative triangle.
@@ -461,5 +471,59 @@ private:
   Handle(IMeshData::ListOfPnt2d)        myControlNodes;
   const BRepMesh_CircleTool*            myCircles;
 };
+
+//==================================================================================================
+
+template <class RangeSplitter, class BaseAlgo>
+void BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BaseAlgo>::checkInteriorDeviation(
+  const TriangleNodeInfo (&theNodes)[3],
+  const gp_Vec&          theNormal,
+  gp_XY                  theParameter,
+  const NormalDeviation& theDeviation)
+{
+  const occ::handle<BRepAdaptor_Surface>& aSurface = this->getDFace()->GetSurface();
+  if (aSurface->UContinuity() < GeomAbs_C2 || aSurface->VContinuity() < GeomAbs_C2)
+  {
+    return;
+  }
+  const gp_XY  aSide1       = theNodes[1].Point2d - theNodes[0].Point2d;
+  const gp_XY  aSide2       = theNodes[2].Point2d - theNodes[0].Point2d;
+  const double anArea       = aSide1.Crossed(aSide2);
+  double       aSqDeviation = theDeviation.SquareDeviation(getPoint3d(theParameter));
+  for (;;)
+  {
+    const auto [aPoint, aDU, aDV, aDUU, aDVV, aDUV] =
+      aSurface->EvalD2(theParameter.X(), theParameter.Y());
+    const double aUU = theNormal.Dot(aDUU), aUV = theNormal.Dot(aDUV);
+    const double aVV = theNormal.Dot(aDVV);
+    const double aU = theNormal.Dot(aDU), aV = theNormal.Dot(aDV);
+    const double aDeterminant = aUU * aVV - aUV * aUV;
+    if (aDeterminant == 0.0)
+    {
+      return;
+    }
+    const gp_XY aNext =
+      theParameter
+      - gp_XY((aVV * aU - aUV * aV) / aDeterminant, (aUU * aV - aUV * aU) / aDeterminant);
+    const gp_XY  aDelta        = aNext - theNodes[0].Point2d;
+    const double aBarycentricU = aDelta.Crossed(aSide2) / anArea;
+    const double aBarycentricV = aSide1.Crossed(aDelta) / anArea;
+    if (!(aBarycentricU >= 0.0 && aBarycentricV >= 0.0 && aBarycentricU + aBarycentricV <= 1.0))
+    {
+      return;
+    }
+    const double aNextSqDeviation = theDeviation.SquareDeviation(getPoint3d(aNext));
+    if (!(aNextSqDeviation > aSqDeviation))
+    {
+      return;
+    }
+    if (usePoint(aNext, theDeviation))
+    {
+      return;
+    }
+    theParameter = aNext;
+    aSqDeviation = aNextSqDeviation;
+  }
+}
 
 #endif

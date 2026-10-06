@@ -2,6 +2,7 @@
 set(OCCT_TKTopAlgo_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKTopAlgo_GTests_FILES
+  Bisector_BisecCC_Test.cxx
   BRepBuilderAPI_Copy_Test.cxx
   BRepBuilderAPI_MakeEdge_Test.cxx
   BRepBuilderAPI_MakeFace_Test.cxx
@@ -18,4 +19,5 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepLib_MakeWire_Test.cxx
   BRepOffsetAPI_ThruSections_Test.cxx
   BRepTopAdaptor_FClass2d_Test.cxx
+  MAT2d_Circuit_Test.cxx
 )
