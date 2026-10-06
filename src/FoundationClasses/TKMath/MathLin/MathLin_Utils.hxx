@@ -16,10 +16,10 @@
 
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
+#include <Precision.hxx>
 
 #include <algorithm>
 #include <cmath>
-#include <limits>
 #include <optional>
 
 namespace MathLin
@@ -95,6 +95,34 @@ inline std::optional<double> Norm(double theScale, double theSumSquares)
   return std::isfinite(aNorm) ? std::optional<double>(aNorm) : std::nullopt;
 }
 
+//! Computes ||A*x - b||_2 using scaled norm accumulation.
+//! Returns no value for incompatible dimensions or non-finite arithmetic.
+inline std::optional<double> ResidualNorm(const math_Matrix& theA,
+                                          const math_Vector& theX,
+                                          const math_Vector& theB)
+{
+  if (theA.ColSize() != theX.Size() || theA.RowSize() != theB.Size())
+  {
+    return std::nullopt;
+  }
+
+  double aScale      = 0.0;
+  double aSumSquares = 1.0;
+  for (size_t i = 0; i < theA.RowSize(); ++i)
+  {
+    double aResidual = -theB.At(i);
+    for (size_t j = 0; j < theA.ColSize(); ++j)
+    {
+      aResidual = std::fma(theA.At(i, j), theX.At(j), aResidual);
+    }
+    if (!AccumulateNorm(aResidual, aScale, aSumSquares))
+    {
+      return std::nullopt;
+    }
+  }
+  return Norm(aScale, aSumSquares);
+}
+
 //! Converts a user relative tolerance to a valid scale-relative threshold.
 inline double RelativeTolerance(double theTolerance, size_t theDimension)
 {
@@ -102,9 +130,10 @@ inline double RelativeTolerance(double theTolerance, size_t theDimension)
   {
     return -1.0;
   }
-  return std::max(theTolerance,
-                  std::numeric_limits<double>::epsilon()
-                    * static_cast<double>(std::max<size_t>(1, theDimension)));
+  // Retain the existing dimension-scaled floor for accumulated arithmetic error.
+  const double anArithmeticFloor =
+    Precision::Computational() * static_cast<double>(std::max<size_t>(1, theDimension));
+  return std::max(theTolerance, anArithmeticFloor);
 }
 
 } // namespace Utils

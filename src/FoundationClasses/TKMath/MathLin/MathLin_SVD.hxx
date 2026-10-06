@@ -198,6 +198,50 @@ inline SVDResult SVD(const math_Matrix& theA, double theTolerance = 1.0e-15)
   return aResult;
 }
 
+namespace SVDDetail
+{
+
+//! Solves using a successful SVD result and a finite RHS with matching dimensions.
+inline LinearResult SolveDecomposed(const SVDResult& theSVD, const math_Vector& theB)
+{
+  LinearResult       aResult;
+  const math_Matrix& aU = *theSVD.U;
+  const math_Vector& aW = *theSVD.SingularValues;
+  const math_Matrix& aV = *theSVD.V;
+  const size_t       aM = aU.RowSize();
+  const size_t       aN = aW.Size();
+
+  // Compute diag(1 / S) * U^T * b. Singular values are sorted in
+  // descending order, so the first Rank values are the retained ones.
+  math_Vector aTmp(aN, 0.0);
+  for (size_t j = 0; j < theSVD.Rank; ++j)
+  {
+    double aProjection = 0.0;
+    for (size_t i = 0; i < aM; ++i)
+    {
+      aProjection = std::fma(aU.At(i, j), theB.At(i), aProjection);
+    }
+    aTmp[j] = aProjection / aW[j];
+  }
+
+  // Compute x = V * tmp.
+  aResult.Solution = math_Vector(aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
+  {
+    double aValue = 0.0;
+    for (size_t j = 0; j < theSVD.Rank; ++j)
+    {
+      aValue = std::fma(aV.At(i, j), aTmp[j], aValue);
+    }
+    (*aResult.Solution)[i] = aValue;
+  }
+
+  aResult.Status = Utils::IsFinite(*aResult.Solution) ? Status::OK : Status::NumericalError;
+  return aResult;
+}
+
+} // namespace SVDDetail
+
 //! Solve linear system Ax = b using SVD decomposition.
 //! This is particularly useful for ill-conditioned or singular systems.
 //!
@@ -214,69 +258,20 @@ inline LinearResult SolveSVD(const math_Matrix& theA,
 {
   LinearResult aResult;
 
-  // Perform SVD
-  SVDResult aSVD = SVD(theA, theTolerance);
+  if (theB.Size() != theA.RowSize() || !Utils::IsFinite(theB))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
+  const SVDResult aSVD = SVD(theA, theTolerance);
   if (!aSVD.IsDone())
   {
     aResult.Status = aSVD.Status;
     return aResult;
   }
 
-  const size_t aM = theA.RowSize();
-  const size_t aN = theA.ColSize();
-
-  // Check dimensions
-  if (theB.Size() != aM || !Utils::IsFinite(theB))
-  {
-    aResult.Status = Status::InvalidInput;
-    return aResult;
-  }
-
-  const math_Matrix& aU = *aSVD.U;
-  const math_Vector& aW = *aSVD.SingularValues;
-  const math_Matrix& aV = *aSVD.V;
-
-  // Compute threshold for singular values
-  double aMaxSV = 0.0;
-  for (size_t i = 0; i < aN; ++i)
-  {
-    aMaxSV = std::max(aMaxSV, aW[i]);
-  }
-  const double aRelTol = Utils::RelativeTolerance(theTolerance, std::max(aM, aN));
-  const double aWMin   = aRelTol * aMaxSV;
-
-  // Solve: x = V * diag(1/w) * U^T * b
-  // First compute tmp = U^T * b
-  math_Vector aTmp(aN, 0.0);
-  for (size_t j = 0; j < aN; ++j)
-  {
-    double aSum = 0.0;
-    for (size_t i = 0; i < aM; ++i)
-    {
-      aSum += aU.At(i, j) * theB.At(i);
-    }
-    // Divide by singular value if above threshold
-    if (aW[j] > aWMin)
-    {
-      aTmp[j] = aSum / aW[j];
-    }
-    // else aTmp(j) remains 0 (regularization)
-  }
-
-  // Compute x = V * tmp
-  aResult.Solution = math_Vector(aN, 0.0);
-  for (size_t i = 0; i < aN; ++i)
-  {
-    double aSum = 0.0;
-    for (size_t j = 0; j < aN; ++j)
-    {
-      aSum += aV.At(i, j) * aTmp[j];
-    }
-    (*aResult.Solution)[i] = aSum;
-  }
-
-  aResult.Status = Utils::IsFinite(*aResult.Solution) ? Status::OK : Status::NumericalError;
-  return aResult;
+  return SVDDetail::SolveDecomposed(aSVD, theB);
 }
 
 //! Compute pseudo-inverse (Moore-Penrose inverse) of matrix A.

@@ -461,12 +461,12 @@ static void SearchDirection(const math_Matrix& DF,
         Solut.Solve(Direction);
       }
       else
-      { // we have to "forget" singular directions.
+      { // Discard numerically singular directions, retaining small full-rank Newton steps.
         FSR_DEBUG(" Matrice singuliere : On prend SVD");
         math_SVD SolvebySVD(DF);
         if (SolvebySVD.IsDone())
         {
-          SolvebySVD.Solve(-1 * FF, Direction);
+          SolvebySVD.Solve(-1 * FF, Direction, RealEpsilon() * std::max(Ninc, Neq));
         }
         else
         {
@@ -479,7 +479,7 @@ static void SearchDirection(const math_Matrix& DF,
       math_SVD Solut(DF);
       if (Solut.IsDone())
       {
-        Solut.Solve(-1 * FF, Direction);
+        Solut.Solve(-1 * FF, Direction, RealEpsilon() * std::max(Ninc, Neq));
       }
       else
       {

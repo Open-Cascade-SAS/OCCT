@@ -85,6 +85,37 @@ class gp_Vec;
 class BSplSLib
 {
 public:
+  //! Local knot interval and equivalent parameter for one surface direction.
+  struct LocalSpan
+  {
+    double Parameter;
+    int    First;
+    int    Last;
+    bool   IsKnot;
+  };
+
+  //! Select an interior interval from an already located parameter.
+  //! Periodic seam parameters are mapped to the requested derivative side.
+  //! Localization, trim tolerance and input validation belong to the caller.
+  //! @param[in] theParameter parameter before local side selection
+  //! @param[in] theSide -1 for left, +1 for right, 0 for default
+  //! @param[in] theLocatedFirst lower located distinct-knot index
+  //! @param[in] theLocatedLast upper located index; equal to first at a knot
+  //! @param[in] theFirstKnot first knot index of the active spline domain
+  //! @param[in] theLastKnot last knot index of the active spline domain
+  //! @param[in] theKnots distinct knots
+  //! @param[in] theIsPeriodic whether this direction is periodic
+  //! @return selected nonempty interval and whether localization identified a knot
+  [[nodiscard]] Standard_EXPORT static LocalSpan SelectLocalSpan(
+    const double                      theParameter,
+    const int                         theSide,
+    const int                         theLocatedFirst,
+    const int                         theLocatedLast,
+    const int                         theFirstKnot,
+    const int                         theLastKnot,
+    const NCollection_Array1<double>& theKnots,
+    const bool                        theIsPeriodic);
+
   DEFINE_STANDARD_ALLOC
 
   //! this is a one dimensional function

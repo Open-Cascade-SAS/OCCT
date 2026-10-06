@@ -1,6 +1,5 @@
-puts "TODO CR33225 Linux: Error : The command is not valid. The area is 0."
-puts "TODO CR33225 Linux: Error : The area of result shape is 0, expected 177462"
-puts "TODO CR33225 Linux: is WRONG because number of "
+puts "TODO ?OCC19071 Windows: ERROR: Process killed by elapsed limit \\(1000 sec\\)"
+puts "TODO ?OCC19071 Windows: TEST INCOMPLETE"
 
 puts "============"
 puts "OCC19071"
