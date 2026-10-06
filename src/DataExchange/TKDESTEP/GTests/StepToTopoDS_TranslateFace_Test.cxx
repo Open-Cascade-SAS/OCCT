@@ -33,6 +33,7 @@
 #include <TopLoc_Location.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <gp_XYZ.hxx>
+#include <gp_Vec.hxx>
 
 namespace
 {
@@ -549,4 +550,173 @@ TEST_F(StepToTopoDS_TranslateFaceTest, ComplexTriangulatedFace_DegenerateStrip)
   ASSERT_FALSE(aMesh.IsNull());
   // Only 1 non-degenerate triangle from strip [1,2,3,3].
   EXPECT_EQ(aMesh->NbTriangles(), 1);
+}
+
+TEST_F(StepToTopoDS_TranslateFaceTest, ComplexTriangleWinding_AgreesWithNormals)
+{
+  for (const bool isFan : {false, true})
+  {
+    NCollection_Array1<gp_XYZ> aPoints(1, 4);
+    aPoints(1) = gp_XYZ(0.0, 0.0, 0.0);
+    aPoints(2) = gp_XYZ(1.0, 0.0, 0.0);
+    aPoints(3) = isFan ? gp_XYZ(1.0, 1.0, 0.0) : gp_XYZ(0.0, 1.0, 0.0);
+    aPoints(4) = isFan ? gp_XYZ(0.0, 1.0, 0.0) : gp_XYZ(1.0, 1.0, 0.0);
+    NCollection_Array1<gp_XYZ> aNormals(1, 1);
+    aNormals(1)                                           = gp_XYZ(0.0, 0.0, 1.0);
+    const occ::handle<NCollection_HArray1<int>> anIndices = new NCollection_HArray1<int>(1, 4);
+    for (int anIndex = 1; anIndex <= 4; ++anIndex)
+    {
+      anIndices->SetValue(anIndex, anIndex);
+    }
+    const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aPrimitives =
+      new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+    aPrimitives->SetValue(1, anIndices);
+    const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+      new StepVisual_ComplexTriangulatedFace;
+    aFace->Init(new TCollection_HAsciiString("oriented face"),
+                createCoords(aPoints),
+                4,
+                createNormals(aNormals),
+                false,
+                StepVisual_FaceOrSurface(),
+                nullptr,
+                isFan ? nullptr : aPrimitives,
+                isFan ? aPrimitives : nullptr);
+    bool                                  hasGeometry = false;
+    const StepToTopoDS_TranslateFace      aTranslator(aFace, myTool, myNMTool, false, hasGeometry);
+    const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);
+    ASSERT_FALSE(aMesh.IsNull());
+    ASSERT_EQ(aMesh->NbTriangles(), 2);
+    for (int anIndex = 1; anIndex <= aMesh->NbTriangles(); ++anIndex)
+    {
+      int a, b, c;
+      aMesh->Triangle(anIndex).Get(a, b, c);
+      const gp_Vec aNormal =
+        gp_Vec(aMesh->Node(a), aMesh->Node(b)).Crossed(gp_Vec(aMesh->Node(a), aMesh->Node(c)));
+      EXPECT_GT(aNormal.Dot(gp_Vec(aMesh->Normal(a))), 0.0);
+    }
+  }
+}
+
+TEST_F(StepToTopoDS_TranslateFaceTest, ComplexStrip_CoincidentCoordinateConnectorHasNoTriangle)
+{
+  NCollection_Array1<gp_XYZ> aPoints(1, 3);
+  aPoints(1)                                           = gp_XYZ(0.0, 0.0, 0.0);
+  aPoints(2)                                           = gp_XYZ(1.0, 0.0, 0.0);
+  aPoints(3)                                           = gp_XYZ(0.0, 1.0, 0.0);
+  const occ::handle<NCollection_HArray1<int>> aPnindex = new NCollection_HArray1<int>(1, 4);
+  aPnindex->SetValue(1, 1);
+  aPnindex->SetValue(2, 1);
+  aPnindex->SetValue(3, 2);
+  aPnindex->SetValue(4, 3);
+  const occ::handle<NCollection_HArray1<int>> aStrip = new NCollection_HArray1<int>(1, 4);
+  for (int anIndex = 1; anIndex <= 4; ++anIndex)
+  {
+    aStrip->SetValue(anIndex, anIndex);
+  }
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aStrips =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+  aStrips->SetValue(1, aStrip);
+  const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+    new StepVisual_ComplexTriangulatedFace;
+  aFace->Init(new TCollection_HAsciiString("strip connector"),
+              createCoords(aPoints),
+              4,
+              nullptr,
+              false,
+              StepVisual_FaceOrSurface(),
+              aPnindex,
+              aStrips,
+              nullptr);
+  bool                                  hasGeometry = false;
+  const StepToTopoDS_TranslateFace      aTranslator(aFace, myTool, myNMTool, false, hasGeometry);
+  const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);
+  ASSERT_FALSE(aMesh.IsNull());
+  ASSERT_EQ(aMesh->NbTriangles(), 1);
+  int a, b, c;
+  aMesh->Triangle(1).Get(a, b, c);
+  EXPECT_GT(gp_Vec(aMesh->Node(a), aMesh->Node(b))
+              .Crossed(gp_Vec(aMesh->Node(a), aMesh->Node(c)))
+              .SquareMagnitude(),
+            0.0);
+}
+
+TEST_F(StepToTopoDS_TranslateFaceTest, ComplexStrip_RepeatedEndCoordinateHasNoTriangle)
+{
+  NCollection_Array1<gp_XYZ> aPoints(1, 3);
+  aPoints(1)                                           = gp_XYZ(154.273254, -109.82325, 9.267262);
+  aPoints(2)                                           = gp_XYZ(152.749252, -108.299248, 10.16);
+  aPoints(3)                                           = gp_XYZ(153.0, -108.0, 11.0);
+  const occ::handle<NCollection_HArray1<int>> aPnindex = new NCollection_HArray1<int>(1, 5);
+  aPnindex->SetValue(1, 1);
+  aPnindex->SetValue(2, 2);
+  aPnindex->SetValue(3, 2);
+  aPnindex->SetValue(4, 3);
+  aPnindex->SetValue(5, 1);
+  const occ::handle<NCollection_HArray1<int>> aStrip = new NCollection_HArray1<int>(1, 5);
+  for (int anIndex = 1; anIndex <= 5; ++anIndex)
+  {
+    aStrip->SetValue(anIndex, anIndex);
+  }
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aStrips =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+  aStrips->SetValue(1, aStrip);
+  const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+    new StepVisual_ComplexTriangulatedFace;
+  aFace->Init(new TCollection_HAsciiString("strip connector"),
+              createCoords(aPoints),
+              5,
+              nullptr,
+              false,
+              StepVisual_FaceOrSurface(),
+              aPnindex,
+              aStrips,
+              nullptr);
+  bool                                  hasGeometry = false;
+  const StepToTopoDS_TranslateFace      aTranslator(aFace, myTool, myNMTool, false, hasGeometry);
+  const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);
+  ASSERT_FALSE(aMesh.IsNull());
+  ASSERT_EQ(aMesh->NbTriangles(), 1);
+  int a, b, c;
+  aMesh->Triangle(1).Get(a, b, c);
+  EXPECT_GT(gp_Vec(aMesh->Node(a), aMesh->Node(b))
+              .Crossed(gp_Vec(aMesh->Node(a), aMesh->Node(c)))
+              .SquareMagnitude(),
+            0.0);
+}
+
+TEST_F(StepToTopoDS_TranslateFaceTest, ComplexFan_PreservesSmallNonDegenerateTriangle)
+{
+  NCollection_Array1<gp_XYZ> aPoints(1, 3);
+  aPoints(1)                                       = gp_XYZ(0.0, 0.0, 0.0);
+  aPoints(2)                                       = gp_XYZ(1.e-100, 0.0, 0.0);
+  aPoints(3)                                       = gp_XYZ(0.0, 1.e-100, 0.0);
+  const occ::handle<NCollection_HArray1<int>> aFan = new NCollection_HArray1<int>(1, 3);
+  aFan->SetValue(1, 1);
+  aFan->SetValue(2, 2);
+  aFan->SetValue(3, 3);
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aFans =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+  aFans->SetValue(1, aFan);
+  const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+    new StepVisual_ComplexTriangulatedFace;
+  aFace->Init(new TCollection_HAsciiString("small triangle"),
+              createCoords(aPoints),
+              3,
+              nullptr,
+              false,
+              StepVisual_FaceOrSurface(),
+              nullptr,
+              nullptr,
+              aFans);
+  bool                                  hasGeometry = false;
+  const StepToTopoDS_TranslateFace      aTranslator(aFace, myTool, myNMTool, false, hasGeometry);
+  const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);
+  ASSERT_FALSE(aMesh.IsNull());
+  ASSERT_EQ(aMesh->NbTriangles(), 1);
+  int a, b, c;
+  aMesh->Triangle(1).Get(a, b, c);
+  EXPECT_EQ(a, 1);
+  EXPECT_EQ(b, 2);
+  EXPECT_EQ(c, 3);
 }

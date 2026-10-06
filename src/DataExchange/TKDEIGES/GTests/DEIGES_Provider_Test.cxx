@@ -12,6 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <DEIGES_ConfigurationNode.hxx>
+#include <DE_Wrapper.hxx>
+#include <NCollection_Sequence.hxx>
 #include <DEIGES_Provider.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -390,4 +392,25 @@ TEST_F(DEIGES_ProviderTest, ReadStream_FailedStream_ReturnsFalse)
   TopoDS_Shape aReadShape;
   EXPECT_FALSE(aProvider->Read(aStreams, aReadShape));
   EXPECT_TRUE(aReadShape.IsNull());
+}
+
+TEST_F(DEIGES_ProviderTest, WrapperStreamDocumentWriteRead)
+{
+  occ::handle<DE_Wrapper> aWrapper = new DE_Wrapper();
+  ASSERT_TRUE(aWrapper->Bind(new DEIGES_ConfigurationNode()));
+  const occ::handle<TDocStd_Document> aDocument = createDocument();
+  XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->AddShape(createBoxShape());
+  std::stringstream            aStream;
+  DE_Provider::WriteStreamList aWriteStreams;
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("model.igs", aStream));
+  ASSERT_TRUE(aWrapper->Write(aWriteStreams, aDocument));
+  aStream.seekg(0);
+  const occ::handle<TDocStd_Document> aReadDocument = createDocument();
+  DE_Provider::ReadStreamList         aReadStreams;
+  aReadStreams.Append(DE_Provider::ReadStreamNode("model.igs", aStream));
+  ASSERT_TRUE(aWrapper->Read(aReadStreams, aReadDocument));
+  NCollection_Sequence<TDF_Label> aRoots;
+  XCAFDoc_DocumentTool::ShapeTool(aReadDocument->Main())->GetFreeShapes(aRoots);
+  ASSERT_EQ(aRoots.Size(), 1);
+  EXPECT_FALSE(XCAFDoc_ShapeTool::GetShape(aRoots.First()).IsNull());
 }

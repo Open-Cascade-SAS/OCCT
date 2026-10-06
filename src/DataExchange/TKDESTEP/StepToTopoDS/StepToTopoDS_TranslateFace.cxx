@@ -33,6 +33,9 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
+#include <gp_Vec.hxx>
+#include <algorithm>
+#include <cmath>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -187,50 +190,60 @@ static void SetTriangles(
   }
   else
   {
-    int aTriangleIndex = 1;
-    for (int aTrianStripIndex = 1; aTrianStripIndex <= theTrianStripsNum; ++aTrianStripIndex)
-    {
-      occ::handle<NCollection_HArray1<int>> aTriangleStrip =
-        occ::down_cast<NCollection_HArray1<int>>(theTrianStrips->Value(aTrianStripIndex));
-      for (int anIndex = 3; anIndex <= aTriangleStrip->Length(); anIndex += 2)
+    int        aTriangleIndex = 1;
+    const auto appendTriangle = [&](const int theFirst, const int theSecond, const int theThird) {
+      const gp_Pnt aFirst  = theMesh->Node(theFirst);
+      const gp_Pnt aSecond = theMesh->Node(theSecond);
+      const gp_Pnt aThird  = theMesh->Node(theThird);
+      // Strip connectors may repeat a coordinate through distinct normal indices.
+      // Their zero-area triangles have no geometric boundary.
+      const auto samePoint = [](const gp_Pnt& theA, const gp_Pnt& theB) {
+        return theA.X() == theB.X() && theA.Y() == theB.Y() && theA.Z() == theB.Z();
+      };
+      if (samePoint(aFirst, aSecond) || samePoint(aFirst, aThird) || samePoint(aSecond, aThird))
       {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-        {
-          theMesh->SetTriangle(aTriangleIndex++,
-                               Poly_Triangle(aTriangleStrip->Value(anIndex - 2),
-                                             aTriangleStrip->Value(anIndex),
-                                             aTriangleStrip->Value(anIndex - 1)));
-        }
+        return;
       }
-      for (int anIndex = 4; anIndex <= aTriangleStrip->Length(); anIndex += 2)
+      // Scale each edge before the cross product to avoid losing small valid
+      // triangles when the area or its squared magnitude underflows.
+      gp_Vec anEdge1(aFirst, aSecond);
+      gp_Vec anEdge2(aFirst, aThird);
+      anEdge1 /= std::max({std::abs(anEdge1.X()), std::abs(anEdge1.Y()), std::abs(anEdge1.Z())});
+      anEdge2 /= std::max({std::abs(anEdge2.X()), std::abs(anEdge2.Y()), std::abs(anEdge2.Z())});
+      const gp_Vec aNormal = anEdge1.Crossed(anEdge2);
+      if (aNormal.X() == 0.0 && aNormal.Y() == 0.0 && aNormal.Z() == 0.0)
       {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-        {
-          theMesh->SetTriangle(aTriangleIndex++,
-                               Poly_Triangle(aTriangleStrip->Value(anIndex - 2),
-                                             aTriangleStrip->Value(anIndex - 1),
-                                             aTriangleStrip->Value(anIndex)));
-        }
+        return;
+      }
+      theMesh->SetTriangle(aTriangleIndex++, Poly_Triangle(theFirst, theSecond, theThird));
+    };
+    for (int aStripIndex = 1; aStripIndex <= theTrianStripsNum; ++aStripIndex)
+    {
+      const occ::handle<NCollection_HArray1<int>> aStrip =
+        occ::down_cast<NCollection_HArray1<int>>(theTrianStrips->Value(aStripIndex));
+      for (int anIndex = 3; anIndex <= aStrip->Length(); anIndex += 2)
+      {
+        appendTriangle(aStrip->Value(anIndex - 2),
+                       aStrip->Value(anIndex - 1),
+                       aStrip->Value(anIndex));
+      }
+      for (int anIndex = 4; anIndex <= aStrip->Length(); anIndex += 2)
+      {
+        appendTriangle(aStrip->Value(anIndex - 1),
+                       aStrip->Value(anIndex - 2),
+                       aStrip->Value(anIndex));
       }
     }
-    for (int aTrianFanIndex = 1; aTrianFanIndex <= theTrianFansNum; ++aTrianFanIndex)
+    for (int aFanIndex = 1; aFanIndex <= theTrianFansNum; ++aFanIndex)
     {
-      occ::handle<NCollection_HArray1<int>> aTriangleFan =
-        occ::down_cast<NCollection_HArray1<int>>(theTrianFans->Value(aTrianFanIndex));
-      for (int anIndex = 3; anIndex <= aTriangleFan->Length(); ++anIndex)
+      const occ::handle<NCollection_HArray1<int>> aFan =
+        occ::down_cast<NCollection_HArray1<int>>(theTrianFans->Value(aFanIndex));
+      for (int anIndex = 3; anIndex <= aFan->Length(); ++anIndex)
       {
-        if (aTriangleFan->Value(anIndex) != aTriangleFan->Value(anIndex - 2)
-            && aTriangleFan->Value(anIndex - 1) != aTriangleFan->Value(anIndex - 2))
-        {
-          theMesh->SetTriangle(aTriangleIndex++,
-                               Poly_Triangle(aTriangleFan->Value(1),
-                                             aTriangleFan->Value(anIndex),
-                                             aTriangleFan->Value(anIndex - 1)));
-        }
+        appendTriangle(aFan->Value(1), aFan->Value(anIndex - 1), aFan->Value(anIndex));
       }
     }
+    theMesh->ResizeTriangles(aTriangleIndex - 1, true);
   }
 }
 
@@ -381,22 +394,7 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
     {
       occ::handle<NCollection_HArray1<int>> aTriangleStrip =
         occ::down_cast<NCollection_HArray1<int>>(aTriaStrips->Value(aTrianStripIndex));
-      for (int anIndex = 3; anIndex <= aTriangleStrip->Length(); anIndex += 2)
-      {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-        {
-          ++aNbTriaStrips;
-        }
-      }
-      for (int anIndex = 4; anIndex <= aTriangleStrip->Length(); anIndex += 2)
-      {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-        {
-          ++aNbTriaStrips;
-        }
-      }
+      aNbTriaStrips += std::max(0, aTriangleStrip->Length() - 2);
     }
 
     for (int aTrianFanIndex = 1; aTrianFanIndex <= aTrianFansNum; ++aTrianFanIndex)

@@ -34,6 +34,27 @@
 #include <TDocStd_PathParser.hxx>
 #include <OSD_Thread.hxx>
 
+namespace
+{
+struct TDocStd_ApplicationRestorer
+{
+  occ::handle<TDocStd_Document> Document; //!< Document being stored.
+  bool WasOpened; //!< Whether the document had an application before storage.
+
+  ~TDocStd_ApplicationRestorer();
+};
+
+//==================================================================================================
+
+TDocStd_ApplicationRestorer::~TDocStd_ApplicationRestorer()
+{
+  if (!WasOpened)
+  {
+    Document->Open(nullptr);
+  }
+}
+} // namespace
+
 IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Application, CDF_Application)
 
 // TDocStd_Owner attribute have pointer of closed TDocStd_Document
@@ -396,6 +417,15 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
     }
 
     aDocStorageDriver->SetFormat(theDoc->StorageFormat());
+    // Stream storage needs an application until the driver returns.
+    const bool wasOpened = theDoc->IsOpened();
+
+    const TDocStd_ApplicationRestorer aRestorer{theDoc, wasOpened};
+
+    if (!wasOpened)
+    {
+      theDoc->Open(this);
+    }
     aDocStorageDriver->Write(theDoc, theOStream, theRange);
 
     if (aDocStorageDriver->GetStoreStatus() == PCDM_SS_OK)

@@ -27,6 +27,7 @@
 #include <TNaming_Tool.hxx>
 #include <TNaming_Builder.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_AsciiString.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_GeomTolerance, TDataStd_GenericEmpty)
 
@@ -51,6 +52,8 @@ enum ChildLab
   ChildLab_PntText,
   ChildLab_Presentation,
   ChildLab_AffectedPlane,
+  ChildLab_UnequalDisplacement,
+  ChildLab_Description,
   ChildLab_End
 };
 
@@ -125,11 +128,21 @@ void XCAFDoc_GeomTolerance::SetObject(
       TDataStd_Integer::Set(Label().FindChild(ChildLab_ZoneModif), theObject->GetZoneModifier());
   }
 
-  if (theObject->GetValueOfZoneModifier() > 0)
+  if (theObject->GetZoneModifier() != XCAFDimTolObjects_GeomToleranceZoneModif_None)
   {
     occ::handle<TDataStd_Real> aValueOfZoneModif =
       TDataStd_Real::Set(Label().FindChild(ChildLab_ValueOfZoneModif),
                          theObject->GetValueOfZoneModifier());
+  }
+
+  if (!theObject->GetDescription().IsNull())
+    TDataStd_AsciiString::Set(Label().FindChild(ChildLab_Description),
+                              theObject->GetDescription()->String());
+
+  if (theObject->GetUnequalDisplacement())
+  {
+    TDataStd_Real::Set(Label().FindChild(ChildLab_UnequalDisplacement),
+                       *theObject->GetUnequalDisplacement());
   }
 
   if (theObject->GetModifiers().Length() > 0)
@@ -355,6 +368,20 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
         .FindAttribute(TDataStd_Real::GetID(), aValueOfZoneModif))
   {
     anObj->SetValueOfZoneModifier(aValueOfZoneModif->Get());
+  }
+
+  occ::handle<TDataStd_AsciiString> aDescription;
+  if (Label()
+        .FindChild(ChildLab_Description)
+        .FindAttribute(TDataStd_AsciiString::GetID(), aDescription))
+    anObj->SetDescription(new TCollection_HAsciiString(aDescription->Get()));
+
+  occ::handle<TDataStd_Real> aDisplacement;
+  if (Label()
+        .FindChild(ChildLab_UnequalDisplacement)
+        .FindAttribute(TDataStd_Real::GetID(), aDisplacement))
+  {
+    anObj->SetUnequalDisplacement(aDisplacement->Get());
   }
 
   occ::handle<TDataStd_IntegerArray> anArr;

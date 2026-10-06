@@ -178,6 +178,7 @@ public:
   Standard_EXPORT void SetPath(const TopoDS_Edge& thePath);
 
   //! Returns the orientation of the dimension in annotation plane.
+  //! Return false without changing the argument when no measuring direction was authored.
   Standard_EXPORT bool GetDirection(gp_Dir& theDir) const;
 
   //! Sets an orientation of the dimension in annotation plane.
@@ -366,6 +367,7 @@ private:
   NCollection_Sequence<XCAFDimTolObjects_DimensionModif> myModifiers;
   TopoDS_Edge                                            myPath;
   gp_Dir                                                 myDir;
+  bool                                                   myHasDirection = false;
   gp_Ax2                                                 myConnection1, myConnection2;
   bool                                                   myHasConnection1, myHasConnection2;
   bool                                                   myConnectionIsPoint1, myConnectionIsPoint2;

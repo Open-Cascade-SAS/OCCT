@@ -357,3 +357,58 @@ TEST(XCAFDoc_GDT_Test, GdtTolerances_A2_TwoDatums)
   EXPECT_EQ(aDatumObjectA->GetModifiers().Length(), 1);
   EXPECT_EQ(aDatumObjectB->GetModifiers().Length(), 0);
 }
+
+TEST(XCAFDoc_GDT_Test, DirectionPresenceSurvivesCopyAndLabelStorage)
+{
+  const occ::handle<XCAFDimTolObjects_DimensionObject> anObject =
+    new XCAFDimTolObjects_DimensionObject();
+  gp_Dir aDirection(0, 1, 0);
+  EXPECT_FALSE(anObject->GetDirection(aDirection));
+  EXPECT_DOUBLE_EQ(aDirection.Y(), 1.0);
+  anObject->SetType(XCAFDimTolObjects_DimensionType_Location_LinearDistance);
+  anObject->SetDirection(gp_Dir(1, 0, 0));
+  const occ::handle<XCAFDimTolObjects_DimensionObject> aCopy =
+    new XCAFDimTolObjects_DimensionObject(anObject);
+  ASSERT_TRUE(aCopy->GetDirection(aDirection));
+  EXPECT_DOUBLE_EQ(aDirection.X(), 1.0);
+  GdtContext                           aContext    = NewContext();
+  const TDF_Label                      aLabel      = AddDimension(aContext, true);
+  const occ::handle<XCAFDoc_Dimension> anAttribute = XCAFDoc_Dimension::Set(aLabel);
+  anAttribute->SetObject(aCopy);
+  ASSERT_TRUE(anAttribute->GetObject()->GetDirection(aDirection));
+  EXPECT_DOUBLE_EQ(aDirection.X(), 1.0);
+  anAttribute->SetObject(new XCAFDimTolObjects_DimensionObject());
+  EXPECT_FALSE(anAttribute->GetObject()->GetDirection(aDirection));
+}
+
+TEST(XCAFDoc_GDT_Test, UnequalDisplacementDescriptionAndZoneValueRoundTrip)
+{
+  GdtContext                               aContext    = NewContext();
+  const TDF_Label                          aLabel      = AddGeomTolerance(aContext);
+  const occ::handle<XCAFDoc_GeomTolerance> anAttribute = XCAFDoc_GeomTolerance::Set(aLabel);
+  const occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject =
+    new XCAFDimTolObjects_GeomToleranceObject();
+  anObject->SetDescription(new TCollection_HAsciiString("signed displacement"));
+  anObject->SetZoneModifier(XCAFDimTolObjects_GeomToleranceZoneModif_Runout);
+  anObject->SetValueOfZoneModifier(-0.25);
+  for (const double aValue : {-0.5, 0.0, 0.5})
+  {
+    anObject->SetUnequalDisplacement(aValue);
+    const occ::handle<XCAFDimTolObjects_GeomToleranceObject> aCopy =
+      new XCAFDimTolObjects_GeomToleranceObject(anObject);
+    ASSERT_TRUE(aCopy->GetUnequalDisplacement().has_value());
+    EXPECT_DOUBLE_EQ(*aCopy->GetUnequalDisplacement(), aValue);
+    ASSERT_FALSE(aCopy->GetDescription().IsNull());
+    EXPECT_STREQ(aCopy->GetDescription()->ToCString(), "signed displacement");
+    anAttribute->SetObject(aCopy);
+    const occ::handle<XCAFDimTolObjects_GeomToleranceObject> aStored = anAttribute->GetObject();
+    ASSERT_TRUE(aStored->GetUnequalDisplacement().has_value());
+    EXPECT_DOUBLE_EQ(*aStored->GetUnequalDisplacement(), aValue);
+    EXPECT_DOUBLE_EQ(aStored->GetValueOfZoneModifier(), -0.25);
+    ASSERT_FALSE(aStored->GetDescription().IsNull());
+    EXPECT_STREQ(aStored->GetDescription()->ToCString(), "signed displacement");
+  }
+  anAttribute->SetObject(new XCAFDimTolObjects_GeomToleranceObject());
+  EXPECT_FALSE(anAttribute->GetObject()->GetUnequalDisplacement().has_value());
+  EXPECT_TRUE(anAttribute->GetObject()->GetDescription().IsNull());
+}

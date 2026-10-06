@@ -19,6 +19,7 @@
 #include <Standard.hxx>
 
 #include <XCAFDimTolObjects_GeomToleranceType.hxx>
+#include <optional>
 #include <XCAFDimTolObjects_GeomToleranceTypeValue.hxx>
 #include <Standard_Real.hxx>
 #include <XCAFDimTolObjects_GeomToleranceMatReqModif.hxx>
@@ -192,6 +193,25 @@ public:
   //! Returns affected plane.
   const gp_Pln& GetAffectedPlane() const { return myAffectedPlane; }
 
+  //! Authored tolerance description, independent of its semantic name.
+  const occ::handle<TCollection_HAsciiString>& GetDescription() const { return myDescription; }
+
+  //! Set the source tolerance description.
+  void SetDescription(const occ::handle<TCollection_HAsciiString>& theDescription)
+  {
+    myDescription = theDescription;
+  }
+
+  //! Unequally disposed tolerance displacement in document length units.
+  //! An authored zero differs from an absent modifier.
+  const std::optional<double>& GetUnequalDisplacement() const { return myUnequalDisplacement; }
+
+  //! Set or remove the independently authored displacement.
+  void SetUnequalDisplacement(const std::optional<double>& theValue)
+  {
+    myUnequalDisplacement = theValue;
+  }
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
@@ -219,6 +239,8 @@ private:
   occ::handle<TCollection_HAsciiString>                      myPresentationName;
   XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType;
   gp_Pln                                                     myAffectedPlane;
+  std::optional<double>                                      myUnequalDisplacement;
+  occ::handle<TCollection_HAsciiString>                      myDescription;
 };
 
 #endif // _XCAFDimTolObjects_GeomToleranceObject_HeaderFile

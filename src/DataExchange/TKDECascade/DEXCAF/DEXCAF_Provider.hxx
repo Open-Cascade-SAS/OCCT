@@ -23,7 +23,9 @@
 //! Providers grouped by Vendor name and Format type.
 //! The Vendor name is "OCC"
 //! The Format type is "XCAF"
-//! The import process is supported.
+//! The import process supports files and caller-owned seekable streams.
+//! Stream operations use the first stream for a self-contained XBF document.
+//! The provider does not retain streams or use their names for file access.
 //! The export process is supported.
 class DEXCAF_Provider : public DE_Provider
 {
@@ -127,6 +129,97 @@ public:
     const TCollection_AsciiString& thePath,
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
+
+public:
+  //! Use the first caller-owned seekable stream to read a document.
+  //! Replace document data only after a successful read and set its data owner.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[out] theDocument document data
+  //! @param[in,out] theWS unused work session
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Use the first caller-owned seekable stream to read a document.
+  //! Replace document data only after a successful read and set its data owner.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[out] theDocument document data
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Use the first caller-owned seekable stream to write a document.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[in] theDocument document to write
+  //! @param[in,out] theWS unused work session
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Write(
+    WriteStreamList&                     theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Use the first caller-owned seekable stream to write a document.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[in] theDocument document to write
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Write(
+    WriteStreamList&                     theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Use the first caller-owned seekable stream to read free document shapes.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[out] theShape shape result, cleared on failure
+  //! @param[in,out] theWS unused work session
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&                     theStreams,
+    TopoDS_Shape&                       theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Use the first caller-owned seekable stream to read free document shapes.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[out] theShape shape result, cleared on failure
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&              theStreams,
+    TopoDS_Shape&                theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+
+  //! Use the first caller-owned seekable stream to write a shape in an XBF document.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[in] theShape non-null shape to write
+  //! @param[in,out] theWS unused work session
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Write(
+    WriteStreamList&                    theStreams,
+    const TopoDS_Shape&                 theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Use the first caller-owned seekable stream to write a shape in an XBF document.
+  //! @param[in,out] theStreams borrowed streams; names do not cause file access
+  //! @param[in] theShape non-null shape to write
+  //! @param[in] theProgress optional progress indicator
+  //! @return true on successful transfer; false on validation or driver failure
+  Standard_EXPORT bool Write(
+    WriteStreamList&             theStreams,
+    const TopoDS_Shape&          theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
 
 public:
   //! Gets CAD format name of associated provider

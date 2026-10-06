@@ -271,8 +271,12 @@ public:
            const TCollection_ExtendedString&    path,
            const Message_ProgressRange&         theRange = Message_ProgressRange());
 
-  //! Save theDoc to standard SEEKABLE stream theOStream.
-  //! the stream should support SEEK functionality
+  //! Save a document to a caller-owned seekable stream.
+  //! Keeps the document's application and open state. This application must have a handle owner.
+  //! @param[in] theDoc non-null document to save
+  //! @param[in,out] theOStream output stream with seeking support
+  //! @param[in] theRange optional progress indicator
+  //! @return storage driver status; an unavailable writer returns PCDM_SS_DriverFailure
   Standard_EXPORT PCDM_StoreStatus
     SaveAs(const occ::handle<TDocStd_Document>& theDoc,
            Standard_OStream&                    theOStream,

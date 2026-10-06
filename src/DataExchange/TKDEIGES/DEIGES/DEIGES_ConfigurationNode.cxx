@@ -390,6 +390,13 @@ bool DEIGES_ConfigurationNode::IsExportSupported() const
 
 //=================================================================================================
 
+bool DEIGES_ConfigurationNode::IsStreamSupported() const
+{
+  return true;
+}
+
+// ==================================================================================================
+
 TCollection_AsciiString DEIGES_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("IGES");

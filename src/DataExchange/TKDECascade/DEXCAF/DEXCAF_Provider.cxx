@@ -25,11 +25,136 @@
 #include <XmlXCAFDrivers.hxx>
 
 #include <BRep_Builder.hxx>
+#include <DE_ValidationUtils.hxx>
+#include <NCollection_Sequence.hxx>
 #include <DEXCAF_ConfigurationNode.hxx>
 #include <Message.hxx>
 #include <TDocStd_Application.hxx>
+#include <TDocStd_Owner.hxx>
+#include <TDF_Data.hxx>
+#include <Standard_Failure.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+
+namespace
+{
+// ==================================================================================================
+
+occ::handle<TDocStd_Application> makeReadApplication()
+{
+  const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  BinDrivers::DefineFormat(anApp);
+  BinLDrivers::DefineFormat(anApp);
+  BinTObjDrivers::DefineFormat(anApp);
+  BinXCAFDrivers::DefineFormat(anApp);
+  StdDrivers::DefineFormat(anApp);
+  StdLDrivers::DefineFormat(anApp);
+  XmlDrivers::DefineFormat(anApp);
+  XmlLDrivers::DefineFormat(anApp);
+  XmlTObjDrivers::DefineFormat(anApp);
+  XmlXCAFDrivers::DefineFormat(anApp);
+
+  return anApp;
+}
+
+// ==================================================================================================
+
+occ::handle<PCDM_ReaderFilter> makeReadFilter(const DEXCAF_ConfigurationNode& theNode)
+{
+  occ::handle<PCDM_ReaderFilter> aFilter =
+    new PCDM_ReaderFilter(theNode.InternalParameters.ReadAppendMode);
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(
+         theNode.InternalParameters.ReadSkipValues);
+       anIt.More();
+       anIt.Next())
+  {
+    aFilter->AddSkipped(anIt.Value());
+  }
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(
+         theNode.InternalParameters.ReadValues);
+       anIt.More();
+       anIt.Next())
+  {
+    if (anIt.Value().StartsWith("0"))
+    {
+      aFilter->AddPath(anIt.Value());
+    }
+    else
+    {
+      aFilter->AddRead(anIt.Value());
+    }
+  }
+  return aFilter;
+}
+
+// ==================================================================================================
+
+bool documentShape(const occ::handle<TDocStd_Document>& theDocument, TopoDS_Shape& theShape)
+{
+  NCollection_Sequence<TDF_Label>      aLabels; // Required XCAF output interface.
+  const occ::handle<XCAFDoc_ShapeTool> aShapeTool =
+    XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  aShapeTool->GetFreeShapes(aLabels);
+  if (aLabels.IsEmpty())
+  {
+    Message::SendFail("XCAF document has no free shapes");
+    return false;
+  }
+  TopoDS_Shape aResult;
+  if (aLabels.Size() == 1)
+  {
+    aResult = aShapeTool->GetShape(aLabels.First());
+  }
+  else
+  {
+    TopoDS_Compound aCompound;
+    BRep_Builder    aBuilder;
+    aBuilder.MakeCompound(aCompound);
+    for (const TDF_Label& aLabel : aLabels)
+    {
+      const TopoDS_Shape aShape = aShapeTool->GetShape(aLabel);
+      if (aShape.IsNull())
+      {
+        Message::SendFail("XCAF free-shape label has no shape");
+        return false;
+      }
+      aBuilder.Add(aCompound, aShape);
+    }
+    aResult = aCompound;
+  }
+  if (aResult.IsNull())
+  {
+    Message::SendFail("XCAF free-shape label has no shape");
+    return false;
+  }
+  theShape = aResult;
+  return true;
+}
+
+// ==================================================================================================
+
+void assignReadDocument(const occ::handle<TDocStd_Application>& theApplication,
+                        const occ::handle<TDocStd_Document>&    theSource,
+                        const occ::handle<TDocStd_Document>&    theTarget)
+{
+  // Close the temporary application document before assigning its data owner.
+  const occ::handle<TDF_Data> aData = theSource->GetData();
+  occ::handle<TDocStd_Owner>  anOwner;
+  if (!aData->Root().FindAttribute(TDocStd_Owner::GetID(), anOwner))
+  {
+    throw Standard_Failure("Loaded XCAF document has no data owner");
+  }
+  theApplication->Close(theSource);
+  occ::handle<TDocStd_Owner> aPreviousOwner;
+  if (theTarget->GetData()->Root().FindAttribute(TDocStd_Owner::GetID(), aPreviousOwner)
+      && aPreviousOwner->GetDocument() == theTarget)
+  {
+    aPreviousOwner->SetDocument(occ::handle<TDocStd_Document>());
+  }
+  theTarget->SetData(aData);
+  anOwner->SetDocument(theTarget);
+}
+} // namespace
 
 IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_Provider, DE_Provider)
 
@@ -86,48 +211,20 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&       thePath,
   }
   occ::handle<DEXCAF_ConfigurationNode> aNode = occ::down_cast<DEXCAF_ConfigurationNode>(GetNode());
   occ::handle<TDocStd_Document>         aDocument;
-  occ::handle<TDocStd_Application>      anApp = new TDocStd_Application();
-  BinDrivers::DefineFormat(anApp);
-  BinLDrivers::DefineFormat(anApp);
-  BinTObjDrivers::DefineFormat(anApp);
-  BinXCAFDrivers::DefineFormat(anApp);
-  StdDrivers::DefineFormat(anApp);
-  StdLDrivers::DefineFormat(anApp);
-  XmlDrivers::DefineFormat(anApp);
-  XmlLDrivers::DefineFormat(anApp);
-  XmlTObjDrivers::DefineFormat(anApp);
-  XmlXCAFDrivers::DefineFormat(anApp);
-  occ::handle<PCDM_ReaderFilter> aFilter =
-    new PCDM_ReaderFilter(aNode->InternalParameters.ReadAppendMode);
-  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(
-         aNode->InternalParameters.ReadSkipValues);
-       anIt.More();
-       anIt.Next())
-  {
-    aFilter->AddSkipped(anIt.Value());
-  }
-  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(
-         aNode->InternalParameters.ReadValues);
-       anIt.More();
-       anIt.Next())
-  {
-    if (anIt.Value().StartsWith("0"))
-    {
-      aFilter->AddPath(anIt.Value());
-    }
-    else
-    {
-      aFilter->AddRead(anIt.Value());
-    }
-  }
+  const occ::handle<TDocStd_Application> anApp   = makeReadApplication();
+  const occ::handle<PCDM_ReaderFilter>   aFilter = makeReadFilter(*aNode);
 
   if (anApp->Open(thePath, aDocument, aFilter, theProgress) != PCDM_RS_OK)
   {
+    if (!aDocument.IsNull() && aDocument->IsOpened())
+    {
+      anApp->Close(aDocument);
+    }
     Message::SendFail() << "Error in the DEXCAF_Provider during reading the file : " << thePath
                         << "\t: Cannot open XDE document";
     return false;
   }
-  theDocument->SetData(aDocument->GetData());
+  assignReadDocument(anApp, aDocument, theDocument);
   return true;
 }
 
@@ -243,34 +340,11 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString& thePath,
   occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
   BinXCAFDrivers::DefineFormat(anApp);
   anApp->NewDocument("BinXCAF", aDocument);
-  Read(thePath, aDocument, theProgress);
-  NCollection_Sequence<TDF_Label> aLabels;
-  occ::handle<XCAFDoc_ShapeTool>  aSTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
-  aSTool->GetFreeShapes(aLabels);
-  if (aLabels.Length() <= 0)
+  if (!Read(thePath, aDocument, theProgress))
   {
-    Message::SendFail() << "Error in the DEXCAF_Provider during reading the file : " << thePath
-                        << "\t: Document contain no shapes";
     return false;
   }
-
-  if (aLabels.Length() == 1)
-  {
-    theShape = aSTool->GetShape(aLabels.Value(1));
-  }
-  else
-  {
-    TopoDS_Compound aComp;
-    BRep_Builder    aBuilder;
-    aBuilder.MakeCompound(aComp);
-    for (int anIndex = 1; anIndex <= aLabels.Length(); anIndex++)
-    {
-      TopoDS_Shape aS = aSTool->GetShape(aLabels.Value(anIndex));
-      aBuilder.Add(aComp, aS);
-    }
-    theShape = aComp;
-  }
-  return true;
+  return documentShape(aDocument, theShape);
 }
 
 //=================================================================================================
@@ -297,4 +371,144 @@ TCollection_AsciiString DEXCAF_Provider::GetFormat() const
 TCollection_AsciiString DEXCAF_Provider::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           occ::handle<XSControl_WorkSession>&  theWS,
+                           const Message_ProgressRange&         theProgress)
+{
+  (void)theWS;
+  return Read(theStreams, theDocument, theProgress);
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            occ::handle<XSControl_WorkSession>&  theWS,
+                            const Message_ProgressRange&         theProgress)
+{
+  (void)theWS;
+  return Write(theStreams, theDocument, theProgress);
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Read(ReadStreamList&                      theStreams,
+                           const occ::handle<TDocStd_Document>& theDocument,
+                           const Message_ProgressRange&         theProgress)
+{
+  const TCollection_AsciiString aContext("reading an XCAF stream");
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext)
+      || !DE_ValidationUtils::ValidateDocument(theDocument, aContext)
+      || !DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                        STANDARD_TYPE(DEXCAF_ConfigurationNode),
+                                                        aContext))
+  {
+    return false;
+  }
+  const occ::handle<DEXCAF_ConfigurationNode> aNode =
+    occ::down_cast<DEXCAF_ConfigurationNode>(GetNode());
+  const occ::handle<TDocStd_Application> anApp   = makeReadApplication();
+  const occ::handle<PCDM_ReaderFilter>   aFilter = makeReadFilter(*aNode);
+  occ::handle<TDocStd_Document>          aDocument;
+  const PCDM_ReaderStatus                aStatus =
+    anApp->Open(theStreams.First().Stream, aDocument, aFilter, theProgress);
+  if (aStatus != PCDM_RS_OK)
+  {
+    if (!aDocument.IsNull() && aDocument->IsOpened())
+    {
+      anApp->Close(aDocument);
+    }
+    Message::SendFail() << "XCAF stream read failed, status " << static_cast<int>(aStatus);
+    return false;
+  }
+  assignReadDocument(anApp, aDocument, theDocument);
+  return true;
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Write(WriteStreamList&                     theStreams,
+                            const occ::handle<TDocStd_Document>& theDocument,
+                            const Message_ProgressRange&         theProgress)
+{
+  const TCollection_AsciiString aContext("writing an XCAF stream");
+  if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext)
+      || !DE_ValidationUtils::ValidateDocument(theDocument, aContext)
+      || !DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                        STANDARD_TYPE(DEXCAF_ConfigurationNode),
+                                                        aContext))
+  {
+    return false;
+  }
+  const occ::handle<DEXCAF_ConfigurationNode> aNode =
+    occ::down_cast<DEXCAF_ConfigurationNode>(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning(
+      "XCAF stream export preserves document units; target units do not rescale shapes");
+  }
+  const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  BinXCAFDrivers::DefineFormat(anApp);
+  const PCDM_StoreStatus aStatus =
+    anApp->SaveAs(theDocument, theStreams.First().Stream, theProgress);
+  if (aStatus != PCDM_SS_OK || !theStreams.First().Stream.good())
+  {
+    Message::SendFail() << "XCAF stream write failed, status " << static_cast<int>(aStatus);
+    return false;
+  }
+  return true;
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Read(ReadStreamList&                     theStreams,
+                           TopoDS_Shape&                       theShape,
+                           occ::handle<XSControl_WorkSession>& theWS,
+                           const Message_ProgressRange&        theProgress)
+{
+  (void)theWS;
+  return Read(theStreams, theShape, theProgress);
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Write(WriteStreamList&                    theStreams,
+                            const TopoDS_Shape&                 theShape,
+                            occ::handle<XSControl_WorkSession>& theWS,
+                            const Message_ProgressRange&        theProgress)
+{
+  (void)theWS;
+  return Write(theStreams, theShape, theProgress);
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Read(ReadStreamList&              theStreams,
+                           TopoDS_Shape&                theShape,
+                           const Message_ProgressRange& theProgress)
+{
+  theShape.Nullify();
+  const occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinXCAF");
+  return Read(theStreams, aDocument, theProgress) && documentShape(aDocument, theShape);
+}
+
+// ==================================================================================================
+
+bool DEXCAF_Provider::Write(WriteStreamList&             theStreams,
+                            const TopoDS_Shape&          theShape,
+                            const Message_ProgressRange& theProgress)
+{
+  if (theShape.IsNull())
+  {
+    Message::SendFail("Cannot write a null shape to an XCAF stream");
+    return false;
+  }
+  const occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinXCAF");
+  XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->AddShape(theShape);
+  return Write(theStreams, aDocument, theProgress);
 }

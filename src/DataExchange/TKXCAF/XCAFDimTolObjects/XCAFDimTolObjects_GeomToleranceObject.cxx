@@ -19,6 +19,13 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject, Standard_Trans
 
 XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject()
 {
+  myType              = XCAFDimTolObjects_GeomToleranceType_None;
+  myTypeOfValue       = XCAFDimTolObjects_GeomToleranceTypeValue_None;
+  myValue             = 0.0;
+  myMatReqModif       = XCAFDimTolObjects_GeomToleranceMatReqModif_None;
+  myZoneModif         = XCAFDimTolObjects_GeomToleranceZoneModif_None;
+  myValueOfZoneModif  = 0.0;
+  myMaxValueModif     = 0.0;
   myHasAxis           = false;
   myHasPlane          = false;
   myHasPnt            = false;
@@ -31,27 +38,29 @@ XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject()
 XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject(
   const occ::handle<XCAFDimTolObjects_GeomToleranceObject>& theObj)
 {
-  myType              = theObj->myType;
-  myTypeOfValue       = theObj->myTypeOfValue;
-  myValue             = theObj->myValue;
-  myMatReqModif       = theObj->myMatReqModif;
-  myZoneModif         = theObj->myZoneModif;
-  myValueOfZoneModif  = theObj->myValueOfZoneModif;
-  myModifiers         = theObj->myModifiers;
-  myMaxValueModif     = theObj->myMaxValueModif;
-  myAxis              = theObj->myAxis;
-  myHasAxis           = theObj->myHasAxis;
-  myPlane             = theObj->myPlane;
-  myPnt               = theObj->myPnt;
-  myPntText           = theObj->myPntText;
-  myHasPlane          = theObj->myHasPlane;
-  myHasPnt            = theObj->myHasPnt;
-  myHasPntText        = theObj->myHasPntText;
-  mySemanticName      = theObj->mySemanticName;
-  myAffectedPlaneType = theObj->myAffectedPlaneType;
-  myAffectedPlane     = theObj->myAffectedPlane;
-  myPresentation      = theObj->myPresentation;
-  myPresentationName  = theObj->myPresentationName;
+  myType                = theObj->myType;
+  myTypeOfValue         = theObj->myTypeOfValue;
+  myValue               = theObj->myValue;
+  myMatReqModif         = theObj->myMatReqModif;
+  myZoneModif           = theObj->myZoneModif;
+  myValueOfZoneModif    = theObj->myValueOfZoneModif;
+  myModifiers           = theObj->myModifiers;
+  myMaxValueModif       = theObj->myMaxValueModif;
+  myAxis                = theObj->myAxis;
+  myHasAxis             = theObj->myHasAxis;
+  myPlane               = theObj->myPlane;
+  myPnt                 = theObj->myPnt;
+  myPntText             = theObj->myPntText;
+  myHasPlane            = theObj->myHasPlane;
+  myHasPnt              = theObj->myHasPnt;
+  myHasPntText          = theObj->myHasPntText;
+  mySemanticName        = theObj->mySemanticName;
+  myAffectedPlaneType   = theObj->myAffectedPlaneType;
+  myAffectedPlane       = theObj->myAffectedPlane;
+  myPresentation        = theObj->myPresentation;
+  myPresentationName    = theObj->myPresentationName;
+  myUnequalDisplacement = theObj->myUnequalDisplacement;
+  myDescription         = theObj->myDescription;
 }
 
 //=================================================================================================
@@ -236,6 +245,10 @@ void XCAFDimTolObjects_GeomToleranceObject::DumpJson(Standard_OStream& theOStrea
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValueOfZoneModif)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxValueModif)
+  if (myUnequalDisplacement)
+  {
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, *myUnequalDisplacement)
+  }
   if (myHasAxis)
   {
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myAxis)
