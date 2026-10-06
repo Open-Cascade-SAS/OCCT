@@ -340,21 +340,16 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         shell: bash
         run: |
-          run_ids=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/build-and-test-multiplatform.yml/runs" \
-            -f branch="$BASE_REF" -f status=success \
-            --jq ".workflow_runs[] | select(.head_repository.full_name == \"$GITHUB_REPOSITORY\") | .id")
-          run_id=''
-          for candidate in $run_ids; do
-            run_id=$candidate
+          base_sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/$BASE_REF" --jq '.commit.sha')
+          run_id=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/build-and-test-multiplatform.yml/runs" \
+            -f head_sha="$base_sha" -f status=success \
+            --jq "[.workflow_runs[] | select(.head_repository.full_name == \"$GITHUB_REPOSITORY\")][0].id // empty")
+          if [ -n "$run_id" ]; then
             available=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/artifacts" | jq \
               '[.artifacts[] | select(.expired == false) | .name] |
                contains(["results-windows-x64", "results-macos-x64", "results-linux-clang-x64"])')
-            echo "Target branch run $run_id has comparison artifacts: $available"
-            if [ "$available" = true ]; then
-              break
-            fi
-            run_id=''
-          done
+            [ "$available" = true ] || run_id=''
+          fi
           echo "latest_run_id=$run_id" >> "$GITHUB_ENV"
           if [ -z "$run_id" ]; then
             echo "::notice::Test comparison skipped: target branch results are missing or expired."
