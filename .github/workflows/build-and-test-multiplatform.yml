@@ -340,7 +340,7 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         shell: bash
         run: |
-          run_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/build-and-test-multiplatform.yml/runs" \
+          run_id=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/build-and-test-multiplatform.yml/runs" \
             -f branch="$BASE_REF" -f status=success \
             --jq "[.workflow_runs[] | select(.head_repository.full_name == \"$GITHUB_REPOSITORY\")][0].id // empty")
           if [ -n "$run_id" ]; then
