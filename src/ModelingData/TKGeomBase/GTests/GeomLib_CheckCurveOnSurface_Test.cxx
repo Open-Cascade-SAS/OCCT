@@ -337,3 +337,64 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, SplineResidualFindsInteriorMaximum)
   EXPECT_NEAR(aCheck.MaxDistance(), 0.5 * (aCurvePoles.At(1).Z() - 1000.0), 1.0e-18);
   EXPECT_NEAR(aCheck.MaxParameter(), 0.5, Precision::PConfusion());
 }
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, SplineResidualWithTranslatedParameters)
+{
+  for (const double aUVOrigin : {0.0, 1.0e8, -1.0e8})
+  {
+    for (const double aMixedTerm : {0.0, 0.5})
+    {
+      SCOPED_TRACE(::testing::Message() << "UV origin=" << aUVOrigin << " mixed=" << aMixedTerm);
+      NCollection_Array1<double> aKnots(1, 2), aUKnots(1, 2), aVKnots(1, 2);
+      aKnots.ChangeAt(0)  = 0.0;
+      aKnots.ChangeAt(1)  = 1.0;
+      aUKnots.ChangeAt(0) = aUVOrigin - 2.0;
+      aUKnots.ChangeAt(1) = aUVOrigin + 2.0;
+      aVKnots.ChangeAt(0) = aUVOrigin + 4.0;
+      aVKnots.ChangeAt(1) = aUVOrigin + 6.0;
+      NCollection_Array1<int> aCurveMults(1, 2), aSurfaceMults(1, 2);
+      aCurveMults.Init(3);
+      aSurfaceMults.Init(2);
+      NCollection_Array1<gp_Pnt>   aCurvePoles(1, 3);
+      NCollection_Array1<gp_Pnt2d> aUVPoles(1, 3);
+      for (size_t anIndex = 0; anIndex < 3; ++anIndex)
+      {
+        const double aT               = 0.5 * double(anIndex);
+        aCurvePoles.ChangeAt(anIndex) = gp_Pnt(1.0e6 + 2.0 * aT, 1.0e6 + aT, 1000.0);
+        aUVPoles.ChangeAt(anIndex) =
+          gp_Pnt2d(aUVOrigin - 2.0 + 4.0 * aT, aUVOrigin + 4.0 + 2.0 * aT);
+      }
+      aCurvePoles.ChangeAt(1).SetZ(1000.0 + 2.0e-6);
+      aCurvePoles.ChangeAt(2).SetZ(1000.0 + aMixedTerm);
+      NCollection_Array2<gp_Pnt> aSurfacePoles(1, 2, 1, 2);
+      for (size_t aU = 0; aU < 2; ++aU)
+      {
+        for (size_t aV = 0; aV < 2; ++aV)
+        {
+          aSurfacePoles.ChangeAt(aU, aV) = gp_Pnt(1.0e6 + double(aU + aV),
+                                                  1.0e6 + 2.0 * double(aU) - double(aV),
+                                                  1000.0 + aMixedTerm * double(aU * aV));
+        }
+      }
+      const occ::handle<GeomAdaptor_Curve> aCurve =
+        new GeomAdaptor_Curve(new Geom_BSplineCurve(aCurvePoles, aKnots, aCurveMults, 2));
+      const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+        new Geom2dAdaptor_Curve(new Geom2d_BSplineCurve(aUVPoles, aKnots, aCurveMults, 2));
+      const occ::handle<GeomAdaptor_Surface> aSurface =
+        new GeomAdaptor_Surface(new Geom_BSplineSurface(aSurfacePoles,
+                                                        aUKnots,
+                                                        aVKnots,
+                                                        aSurfaceMults,
+                                                        aSurfaceMults,
+                                                        1,
+                                                        1));
+      const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
+        new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+      GeomLib_CheckCurveOnSurface aCheck(aCurve);
+      aCheck.Perform(aCoS);
+      ASSERT_TRUE(aCheck.IsDone());
+      EXPECT_NEAR(aCheck.MaxDistance(), 0.5 * (aCurvePoles.At(1).Z() - 1000.0), 1.0e-18);
+      EXPECT_NEAR(aCheck.MaxParameter(), 0.5, Precision::PConfusion());
+    }
+  }
+}

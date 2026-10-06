@@ -35,6 +35,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntPolyh_Point_Test.cxx
   IntSurf_LineOn2S_Test.cxx
   IntSurf_Quadric_Test.cxx
+  GeomInt_LineTool_Test.cxx
   GeomAPI_IntSS_Test.cxx
   GeomAPI_IntCS_Test.cxx
   GeomAPI_ExtremaCurveSurface_Test.cxx

@@ -525,6 +525,7 @@ void BRepMesh_Delaun::createTriangles(const int                       theVertexI
     double aDist23 = anEdgeDir ^ aLastLinkDir;
     if (std::abs(aDist12) < Precision || std::abs(aDist23) < Precision)
     {
+      aLoopEdges.Append(isPositive ? anEdgeId : -anEdgeId);
       continue;
     }
 

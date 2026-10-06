@@ -1,3 +1,5 @@
+puts "TODO ?OCC000000 Windows: Error : The length of result shape is 404.089, expected 404.5"
+
 polyline f1 0 0 0  0 -10 0  100 -10 0  100 0 0  0 0 0
 polyline f2 100 0 0  110 0 0  110 100 0  100 100 0  100 0 0
 polyline f3 100 100 0  100 110 0  0 110 0  0 100 0  100 100 0

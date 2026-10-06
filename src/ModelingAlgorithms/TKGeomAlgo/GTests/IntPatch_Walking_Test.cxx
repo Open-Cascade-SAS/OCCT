@@ -39,6 +39,7 @@
 #include <IntPatch_TheSurfFunction.hxx>
 #include <IntSurf_PathPoint.hxx>
 #include <IntSurf_Quadric.hxx>
+#include <IntImp_ComputeTangence.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <gp_Ax3.hxx>
@@ -320,57 +321,87 @@ TEST(IntPatch_WalkingTest, ExactSeedTraversesContactLine)
   }
 }
 
+TEST(IntPatch_WalkingTest, PoleDerivativeDoesNotDefineRegularIntersection)
+{
+  for (const double aScale : {1.0, 1.e6})
+  {
+    for (const double aUDerivative : {4.e-16, 1.e-6})
+    {
+      const gp_Vec              aDerivatives[4] = {gp_Vec(aScale * aUDerivative, 0.0, 0.0),
+                                                   gp_Vec(0.0, 0.0, 3.0),
+                                                   gp_Vec(0.0, aScale * aUDerivative, 0.0),
+                                                   gp_Vec(0.0, 0.0, 3.0)};
+      const double              aResolution     = Precision::Confusion() / 3.0;
+      const double              aResolutions[4] = {aResolution / aScale,
+                                                   aResolution,
+                                                   aResolution / aScale,
+                                                   aResolution};
+      double                    aTangent[4];
+      IntImp_ConstIsoparametric anIso[4];
+      EXPECT_EQ(IntImp_ComputeTangence(aDerivatives, aResolutions, aTangent, anIso),
+                aUDerivative == 4.e-16);
+    }
+  }
+}
+
 TEST(IntPatch_WalkingTest, SphereEllipsoidContactCoversCircleWithoutOverlap)
 {
-  const auto aSphere     = GeomConvert::SurfaceToBSplineSurface(new Geom_RectangularTrimmedSurface(
-    new Geom_SphericalSurface(gp_Ax3(gp::Origin(), gp::DZ()), 3.0),
-    0.0,
-    2.0 * M_PI,
-    -0.5 * M_PI,
-    0.5 * M_PI));
-  const auto anEllipsoid = occ::down_cast<Geom_BSplineSurface>(aSphere->Copy());
-  for (int i = 1; i <= anEllipsoid->NbUPoles(); ++i)
+  for (const double aStretch :
+       {1.5, 1.75, std::nextafter(2.0, 0.0), 2.0, std::nextafter(2.0, 3.0), 2.25, 2.5, 3.0})
   {
-    for (int j = 1; j <= anEllipsoid->NbVPoles(); ++j)
+    SCOPED_TRACE(aStretch);
+    const auto aSphere = GeomConvert::SurfaceToBSplineSurface(new Geom_RectangularTrimmedSurface(
+      new Geom_SphericalSurface(gp_Ax3(gp::Origin(), gp::DZ()), 3.0),
+      0.0,
+      2.0 * M_PI,
+      -0.5 * M_PI,
+      0.5 * M_PI));
+    const auto anEllipsoid = occ::down_cast<Geom_BSplineSurface>(aSphere->Copy());
+    for (int i = 1; i <= anEllipsoid->NbUPoles(); ++i)
     {
-      gp_Pnt aPole = anEllipsoid->Pole(i, j);
-      aPole.SetX(2.0 * aPole.X());
-      anEllipsoid->SetPole(i, j, aPole);
-    }
-  }
-  GeomAPI_IntSS anIntersection(aSphere, anEllipsoid, Precision::Confusion());
-  ASSERT_TRUE(anIntersection.IsDone());
-  ASSERT_GT(anIntersection.NbLines(), 0);
-  double aLength = 0.0;
-  for (int i = 1; i <= anIntersection.NbLines(); ++i)
-  {
-    const auto&             aCurve = anIntersection.Line(i);
-    const GeomAdaptor_Curve anAdaptor(aCurve);
-    aLength += GCPnts_AbscissaPoint::Length(anAdaptor, Precision::Confusion());
-    for (int j = 0; j <= 100; ++j)
-    {
-      const double aParameter =
-        aCurve->FirstParameter() + (aCurve->LastParameter() - aCurve->FirstParameter()) * j / 100.0;
-      const gp_Pnt aPoint = aCurve->Value(aParameter);
-      EXPECT_NEAR(aPoint.X(), 0.0, 2.e-4);
-      EXPECT_NEAR(std::hypot(aPoint.Y(), aPoint.Z()), 3.0, 2.e-4);
-    }
-  }
-  EXPECT_NEAR(aLength, 6.0 * M_PI, 2.e-4);
-  for (int i = 0; i < 100; ++i)
-  {
-    const double anAngle = 2.0 * M_PI * i / 100.0;
-    const gp_Pnt aPoint(0.0, 3.0 * std::cos(anAngle), 3.0 * std::sin(anAngle));
-    double       aDistance = RealLast();
-    for (int j = 1; j <= anIntersection.NbLines(); ++j)
-    {
-      GeomAPI_ProjectPointOnCurve aProjection(aPoint, anIntersection.Line(j));
-      if (aProjection.NbPoints() != 0)
+      for (int j = 1; j <= anEllipsoid->NbVPoles(); ++j)
       {
-        aDistance = std::min(aDistance, aProjection.LowerDistance());
+        gp_Pnt aPole = anEllipsoid->Pole(i, j);
+        aPole.SetX(aStretch * aPole.X());
+        anEllipsoid->SetPole(i, j, aPole);
       }
     }
-    EXPECT_LE(aDistance, 2.e-4);
+    GeomAPI_IntSS anIntersection;
+    ASSERT_NO_THROW(anIntersection.Perform(aSphere, anEllipsoid, Precision::Confusion()));
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_GT(anIntersection.NbLines(), 0);
+    double aLength = 0.0;
+    for (int i = 1; i <= anIntersection.NbLines(); ++i)
+    {
+      const auto&             aCurve = anIntersection.Line(i);
+      const GeomAdaptor_Curve anAdaptor(aCurve);
+      aLength += GCPnts_AbscissaPoint::Length(anAdaptor, Precision::Confusion());
+      for (int j = 0; j <= 100; ++j)
+      {
+        const double aParameter =
+          aCurve->FirstParameter()
+          + (aCurve->LastParameter() - aCurve->FirstParameter()) * j / 100.0;
+        const gp_Pnt aPoint = aCurve->Value(aParameter);
+        EXPECT_NEAR(aPoint.X(), 0.0, 2.e-4);
+        EXPECT_NEAR(std::hypot(aPoint.Y(), aPoint.Z()), 3.0, 2.e-4);
+      }
+    }
+    EXPECT_NEAR(aLength, 6.0 * M_PI, 2.e-4);
+    for (int i = 0; i < 100; ++i)
+    {
+      const double anAngle = 2.0 * M_PI * i / 100.0;
+      const gp_Pnt aPoint(0.0, 3.0 * std::cos(anAngle), 3.0 * std::sin(anAngle));
+      double       aDistance = RealLast();
+      for (int j = 1; j <= anIntersection.NbLines(); ++j)
+      {
+        GeomAPI_ProjectPointOnCurve aProjection(aPoint, anIntersection.Line(j));
+        if (aProjection.NbPoints() != 0)
+        {
+          aDistance = std::min(aDistance, aProjection.LowerDistance());
+        }
+      }
+      EXPECT_LE(aDistance, 2.e-4);
+    }
   }
 }
 

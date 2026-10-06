@@ -21,6 +21,7 @@
 #include <IntRes2d_Position.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <gp_Vec2d.hxx>
+#include <Precision.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -124,7 +125,11 @@ void IntImpParGen::DetermineTransition(const IntRes2d_Position Pos1,
   T2.SetPosition(Pos2);
 
   gp_Vec2d aDirection1, aDirection2;
-  if (!normalizedDirection(Tan1, aDirection1))
+  // At an endpoint, D2 defines the tangent when D1 is within parameter resolution of zero.
+  if ((Pos1 != IntRes2d_Middle
+       && std::hypot(Tan1.X(), Tan1.Y())
+            <= Precision::PConfusion() * std::hypot(Norm1.X(), Norm1.Y()))
+      || !normalizedDirection(Tan1, aDirection1))
   {
     Tan1      = Norm1;
     courbure1 = false;
@@ -134,7 +139,10 @@ void IntImpParGen::DetermineTransition(const IntRes2d_Position Pos1,
     }
   }
 
-  if (!normalizedDirection(Tan2, aDirection2))
+  if ((Pos2 != IntRes2d_Middle
+       && std::hypot(Tan2.X(), Tan2.Y())
+            <= Precision::PConfusion() * std::hypot(Norm2.X(), Norm2.Y()))
+      || !normalizedDirection(Tan2, aDirection2))
   {
     Tan2      = Norm2;
     courbure2 = false;

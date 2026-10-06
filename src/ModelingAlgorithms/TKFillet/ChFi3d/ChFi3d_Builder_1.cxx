@@ -269,7 +269,11 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
   }
   if (aBAcurve.IsClosed() /*HGuide->IsPeriodic()*/ /*HGuide->IsClosed()*/)
   {
-    Params[1] = GAcurve.LastParameter(); // temporary
+    Params[1] = GAcurve.LastParameter();
+    if (Params[0] == Params[1] && IntCurve->IsClosed())
+    {
+      Params[0] = GAcurve.FirstParameter();
+    }
   }
   if (Params[0] > Params[1])
   {

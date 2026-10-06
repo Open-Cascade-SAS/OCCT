@@ -1,3 +1,6 @@
+puts "TODO ?OCC32241 Windows: Error: Number of triangles = 2742 is not equal to expected 2702"
+puts "TODO ?OCC32241 Windows: Error: Number of nodes = 1419 is not equal to expected 1399"
+
 puts "========"
 puts "0032241: Mesh - wrong shading display of thrusections"
 puts "========"

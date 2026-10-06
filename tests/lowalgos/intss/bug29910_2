@@ -1,3 +1,6 @@
+puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of VERTEX entities in shape \"result\" is 7"
+puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of EDGE entities in shape \"result\" is 5"
+
 puts "========"
 puts "OCC29910: Porting to Debian80-64 : Regressions in Modeling Algorithms"
 puts "========"

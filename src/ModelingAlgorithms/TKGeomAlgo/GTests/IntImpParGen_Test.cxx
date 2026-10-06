@@ -14,6 +14,7 @@
 #include <IntImpParGen.hxx>
 #include <IntRes2d_Transition.hxx>
 #include <gp_Vec2d.hxx>
+#include <Precision.hxx>
 #include <gtest/gtest.h>
 
 TEST(IntImpParGenTest, TransitionIsIndependentOfParameterSpeed)
@@ -82,4 +83,81 @@ TEST(IntImpParGenTest, ZeroDerivativesRemainUndecided)
                                     1.e-7);
   EXPECT_EQ(aTransition1.TransitionType(), IntRes2d_Undecided);
   EXPECT_EQ(aTransition2.TransitionType(), IntRes2d_Undecided);
+}
+
+TEST(IntImpParGenTest, StationaryEndpointTransitionIsIndependentOfScale)
+{
+  for (const double aScale : {1.e-150, 1.0, 1.e150})
+  {
+    SCOPED_TRACE(aScale);
+    for (const IntRes2d_Position aPosition : {IntRes2d_Head, IntRes2d_End})
+    {
+      SCOPED_TRACE(aPosition);
+      for (const bool isFirst : {false, true})
+      {
+        SCOPED_TRACE(isFirst);
+        gp_Vec2d            aTangent(0.0, -1.e-15 * aScale);
+        gp_Vec2d            aLineTangent(0.0, aScale);
+        const gp_Vec2d      aSecondDerivative(6.0 * aScale, 0.0);
+        const gp_Vec2d      aLineSecondDerivative(0.0, 0.0);
+        IntRes2d_Transition aCurveTransition, aLineTransition;
+        if (isFirst)
+        {
+          IntImpParGen::DetermineTransition(aPosition,
+                                            aTangent,
+                                            aSecondDerivative,
+                                            aCurveTransition,
+                                            IntRes2d_Middle,
+                                            aLineTangent,
+                                            aLineSecondDerivative,
+                                            aLineTransition,
+                                            1.e-7);
+          EXPECT_EQ(aCurveTransition.TransitionType(), IntRes2d_Out);
+          EXPECT_EQ(aLineTransition.TransitionType(), IntRes2d_In);
+        }
+        else
+        {
+          IntImpParGen::DetermineTransition(IntRes2d_Middle,
+                                            aLineTangent,
+                                            aLineSecondDerivative,
+                                            aLineTransition,
+                                            aPosition,
+                                            aTangent,
+                                            aSecondDerivative,
+                                            aCurveTransition,
+                                            1.e-7);
+          EXPECT_EQ(aCurveTransition.TransitionType(), IntRes2d_Out);
+          EXPECT_EQ(aLineTransition.TransitionType(), IntRes2d_In);
+        }
+      }
+    }
+  }
+}
+
+TEST(IntImpParGenTest, RegularEndpointRetainsFirstDerivative)
+{
+  for (const double aScale : {1.e-150, 1.0, 1.e150})
+  {
+    SCOPED_TRACE(aScale);
+    for (const double aCurvature : {0.0, 0.5 / Precision::PConfusion()})
+    {
+      SCOPED_TRACE(aCurvature);
+      gp_Vec2d            aTangent1(aScale, 0.0), aTangent2(0.0, aScale);
+      const gp_Vec2d      aSecondDerivative(-aCurvature * aScale, 0.0);
+      IntRes2d_Transition aTransition1, aTransition2;
+      IntImpParGen::DetermineTransition(IntRes2d_Head,
+                                        aTangent1,
+                                        aSecondDerivative,
+                                        aTransition1,
+                                        IntRes2d_End,
+                                        aTangent2,
+                                        gp_Vec2d(),
+                                        aTransition2,
+                                        1.e-7);
+      EXPECT_EQ(aTransition1.TransitionType(), IntRes2d_Out);
+      EXPECT_EQ(aTransition2.TransitionType(), IntRes2d_In);
+      EXPECT_EQ(aTangent1.X(), aScale);
+      EXPECT_EQ(aTangent2.Y(), aScale);
+    }
+  }
 }
