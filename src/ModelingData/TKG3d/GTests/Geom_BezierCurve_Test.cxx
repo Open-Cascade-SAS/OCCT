@@ -21,6 +21,7 @@
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
 
 class Geom_BezierCurve_Test : public ::testing::Test
@@ -342,6 +343,33 @@ TEST_F(Geom_BezierCurve_Test, RationalCurveEvaluation)
 TEST_F(Geom_BezierCurve_Test, MaxDegree)
 {
   EXPECT_GE(Geom_BezierCurve::MaxDegree(), 25);
+}
+
+TEST_F(Geom_BezierCurve_Test, InsertPoleAfter_GrowsToTheConstructorLimit)
+{
+  // MaxDegree() bounds the degree, so MaxDegree() + 1 poles are legal, as the constructor allows.
+  const int aMaxPoles = Geom_BezierCurve::MaxDegree() + 1;
+
+  NCollection_Array1<gp_Pnt> aAllPoles(1, aMaxPoles);
+  for (int anIdx = 1; anIdx <= aMaxPoles; ++anIdx)
+  {
+    aAllPoles(anIdx) = gp_Pnt(anIdx, 0.0, 0.0);
+  }
+  EXPECT_NO_THROW(new Geom_BezierCurve(aAllPoles));
+
+  NCollection_Array1<gp_Pnt> aPoles(1, aMaxPoles - 1);
+  for (int anIdx = 1; anIdx < aMaxPoles; ++anIdx)
+  {
+    aPoles(anIdx) = aAllPoles(anIdx);
+  }
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+  EXPECT_NO_THROW(aCurve->InsertPoleAfter(aMaxPoles - 1, aAllPoles(aMaxPoles)));
+  EXPECT_EQ(aCurve->NbPoles(), aMaxPoles);
+  EXPECT_EQ(aCurve->Degree(), Geom_BezierCurve::MaxDegree());
+  EXPECT_NEAR(aCurve->EndPoint().X(), static_cast<double>(aMaxPoles), Precision::Confusion());
+
+  EXPECT_THROW(aCurve->InsertPoleAfter(aMaxPoles, aAllPoles(aMaxPoles)),
+               Standard_ConstructionError);
 }
 
 TEST_F(Geom_BezierCurve_Test, SetPoleWithWeight)
