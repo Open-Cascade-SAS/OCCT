@@ -151,6 +151,7 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   const Message_ProgressRange&     theRange)
 {
   SetIsError(false);
+  SetStoreStatus(PCDM_SS_OK);
   occ::handle<Message_Messenger> aMessageDriver = theDocument->Application()->MessageDriver();
   // 1. Write header information
   int                i;

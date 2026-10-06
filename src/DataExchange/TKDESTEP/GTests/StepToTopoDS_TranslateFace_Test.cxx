@@ -720,3 +720,146 @@ TEST_F(StepToTopoDS_TranslateFaceTest, ComplexFan_PreservesSmallNonDegenerateTri
   EXPECT_EQ(b, 2);
   EXPECT_EQ(c, 3);
 }
+
+TEST_F(StepToTopoDS_TranslateFaceTest,
+       ComplexPrimitives_RejectInvalidIndicesAndAcceptEmptyPrimitives)
+{
+  for (const bool isSurfaceSet : {false, true})
+  {
+    for (const bool isFan : {false, true})
+    {
+      for (int aCase = 0; aCase < 5; ++aCase)
+      {
+        SCOPED_TRACE(testing::Message() << isSurfaceSet << ", " << isFan << ", " << aCase);
+        NCollection_Array1<gp_XYZ> aPoints(1, 3);
+        aPoints(1)          = gp_XYZ(0, 0, 0);
+        aPoints(2)          = gp_XYZ(1, 0, 0);
+        aPoints(3)          = gp_XYZ(0, 1, 0);
+        const auto aIndices = new NCollection_HArray1<int>(1, aCase == 3 ? 2 : 3);
+        for (int i = 1; i <= aIndices->Length(); ++i)
+        {
+          aIndices->SetValue(i, i);
+        }
+        if (aCase < 3)
+        {
+          aIndices->SetValue(1, aCase == 0 ? 0 : aCase == 1 ? -1 : 4);
+        }
+        const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aPrimitives =
+          new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+        aPrimitives->SetValue(1, aCase == 4 ? nullptr : aIndices);
+        StepToTopoDS_TranslateFace aTranslator;
+        if (isSurfaceSet)
+        {
+          const occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> aSet =
+            new StepVisual_ComplexTriangulatedSurfaceSet;
+          aSet->Init(new TCollection_HAsciiString("invalid set"),
+                     createCoords(aPoints),
+                     3,
+                     nullptr,
+                     nullptr,
+                     isFan ? nullptr : aPrimitives,
+                     isFan ? aPrimitives : nullptr);
+          aTranslator.Init(aSet, myTool, myNMTool);
+        }
+        else
+        {
+          const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+            new StepVisual_ComplexTriangulatedFace;
+          aFace->Init(new TCollection_HAsciiString("invalid face"),
+                      createCoords(aPoints),
+                      3,
+                      nullptr,
+                      false,
+                      StepVisual_FaceOrSurface(),
+                      nullptr,
+                      isFan ? nullptr : aPrimitives,
+                      isFan ? aPrimitives : nullptr);
+          bool aHasGeometry = false;
+          aTranslator.Init(aFace, myTool, myNMTool, false, aHasGeometry);
+        }
+        if (aCase == 3)
+        {
+          ASSERT_TRUE(aTranslator.IsDone());
+          EXPECT_EQ(getMesh(aTranslator)->NbTriangles(), 0);
+        }
+        else
+        {
+          EXPECT_FALSE(aTranslator.IsDone());
+        }
+      }
+    }
+  }
+}
+
+TEST_F(StepToTopoDS_TranslateFaceTest, ComplexPrimitives_MixedAndCollinear)
+{
+  for (const bool isSurfaceSet : {false, true})
+  {
+    for (const bool isCollinear : {false, true})
+    {
+      SCOPED_TRACE(testing::Message() << isSurfaceSet << ", " << isCollinear);
+      NCollection_Array1<gp_XYZ> aPoints(1, 4);
+      aPoints(1) = gp_XYZ(0, 0, 0);
+      aPoints(2) = gp_XYZ(0, 1, 0);
+      aPoints(3) = isCollinear ? gp_XYZ(0, 2, 0) : gp_XYZ(0, 0, 1);
+      aPoints(4) = isCollinear ? gp_XYZ(0, 3, 0) : gp_XYZ(0, 1, 1);
+      const occ::handle<NCollection_HArray1<int>> aStrip = new NCollection_HArray1<int>(1, 4);
+      const occ::handle<NCollection_HArray1<int>> aFan   = new NCollection_HArray1<int>(1, 3);
+      for (int i = 1; i <= 4; ++i)
+      {
+        aStrip->SetValue(i, i);
+        if (i <= 3)
+        {
+          aFan->SetValue(i, i);
+        }
+      }
+      const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aStrips =
+        new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+      const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aFans =
+        new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+      aStrips->SetValue(1, aStrip);
+      aFans->SetValue(1, aFan);
+      StepToTopoDS_TranslateFace aTranslator;
+      if (isSurfaceSet)
+      {
+        const occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> aSet =
+          new StepVisual_ComplexTriangulatedSurfaceSet;
+        aSet->Init(new TCollection_HAsciiString("mixed set"),
+                   createCoords(aPoints),
+                   4,
+                   nullptr,
+                   nullptr,
+                   aStrips,
+                   aFans);
+        aTranslator.Init(aSet, myTool, myNMTool);
+      }
+      else
+      {
+        const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+          new StepVisual_ComplexTriangulatedFace;
+        aFace->Init(new TCollection_HAsciiString("mixed face"),
+                    createCoords(aPoints),
+                    4,
+                    nullptr,
+                    false,
+                    StepVisual_FaceOrSurface(),
+                    nullptr,
+                    aStrips,
+                    aFans);
+        bool aHasGeometry = false;
+        aTranslator.Init(aFace, myTool, myNMTool, false, aHasGeometry);
+      }
+      const auto aMesh = getMesh(aTranslator);
+      ASSERT_FALSE(aMesh.IsNull());
+      ASSERT_EQ(aMesh->NbTriangles(), isCollinear ? 0 : 3);
+      for (int i = 1; i <= aMesh->NbTriangles(); ++i)
+      {
+        int a, b, c;
+        aMesh->Triangle(i).Get(a, b, c);
+        const auto aNormal =
+          gp_Vec(aMesh->Node(a), aMesh->Node(b)).Crossed(gp_Vec(aMesh->Node(a), aMesh->Node(c)));
+        EXPECT_GT(aNormal.X(), 0.0);
+      }
+    }
+  }
+}

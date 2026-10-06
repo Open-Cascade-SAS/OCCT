@@ -17,21 +17,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject, Standard_Trans
 
 //=================================================================================================
 
-XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject()
-{
-  myType              = XCAFDimTolObjects_GeomToleranceType_None;
-  myTypeOfValue       = XCAFDimTolObjects_GeomToleranceTypeValue_None;
-  myValue             = 0.0;
-  myMatReqModif       = XCAFDimTolObjects_GeomToleranceMatReqModif_None;
-  myZoneModif         = XCAFDimTolObjects_GeomToleranceZoneModif_None;
-  myValueOfZoneModif  = 0.0;
-  myMaxValueModif     = 0.0;
-  myHasAxis           = false;
-  myHasPlane          = false;
-  myHasPnt            = false;
-  myHasPntText        = false;
-  myAffectedPlaneType = XCAFDimTolObjects_ToleranceZoneAffectedPlane_None;
-}
+XCAFDimTolObjects_GeomToleranceObject::XCAFDimTolObjects_GeomToleranceObject() = default;
 
 //=================================================================================================
 
@@ -248,6 +234,11 @@ void XCAFDimTolObjects_GeomToleranceObject::DumpJson(Standard_OStream& theOStrea
   if (myUnequalDisplacement)
   {
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, *myUnequalDisplacement)
+  }
+  if (!myDescription.IsNull())
+  {
+    const char* aDescription = myDescription->ToCString();
+    OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aDescription)
   }
   if (myHasAxis)
   {

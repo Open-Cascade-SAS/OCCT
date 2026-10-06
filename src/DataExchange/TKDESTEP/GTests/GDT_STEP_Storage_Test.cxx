@@ -33,7 +33,6 @@
 #include <NCollection_Sequence.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_ChildIterator.hxx>
-#include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -63,6 +62,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 
+#include <optional>
 #include <sstream>
 #include <string>
 
@@ -70,12 +70,9 @@
 
 namespace
 {
-static occ::handle<TDocStd_Document> NewDocument(occ::handle<TDocStd_Application>& theApplication)
+static occ::handle<TDocStd_Document> NewDocument()
 {
-  occ::handle<TDocStd_Document> aDocument;
-  theApplication->NewDocument("BinXCAF", aDocument);
-  EXPECT_FALSE(aDocument.IsNull());
-  return aDocument;
+  return new TDocStd_Document("BinXCAF");
 }
 
 static TDF_Label AddBoxAndDimension(const occ::handle<TDocStd_Document>& theDocument)
@@ -136,8 +133,7 @@ static occ::handle<TDocStd_Document> RoundTrip(const occ::handle<TDocStd_Documen
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("gdt.step", aStream));
 
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aRestored     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aRestored = NewDocument();
   if (!aProvider.Read(aReadStreams, aRestored))
   {
     ADD_FAILURE() << "DESTEP_Provider failed to read the GD&T stream";
@@ -161,10 +157,12 @@ static void ExpectDirection(const gp_Dir& theActual, const gp_Dir& theExpected)
 }
 
 static bool WriteStepStream(const occ::handle<TDocStd_Document>& theDocument,
-                            std::stringstream&                   theStream)
+                            std::stringstream&                   theStream,
+                            const double                         theLengthUnit = 1.0)
 {
   occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
   aNode->InternalParameters.WriteSchema       = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aNode->GlobalParameters.LengthUnit          = theLengthUnit;
   DESTEP_Provider              aProvider(aNode);
   DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("draw_step.stream", theStream));
@@ -203,9 +201,7 @@ static occ::handle<TDocStd_Document> RoundTripWithSTEPCAF(
   aStream.seekg(0);
   STEPCAFControl_Reader aReader;
   EXPECT_EQ(aReader.ReadStream("stepcaf_vertex.step", aStream), IFSelect_RetDone);
-  occ::handle<TDocStd_Application> aRestoredApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aRestoredDocument;
-  aRestoredApplication->NewDocument("BinXCAF", aRestoredDocument);
+  occ::handle<TDocStd_Document> aRestoredDocument = NewDocument();
   EXPECT_TRUE(aReader.Transfer(aRestoredDocument));
   return aRestoredDocument;
 }
@@ -293,8 +289,7 @@ static TCollection_ExtendedString FindFirstSubShapeName(
 
 static TCollection_AsciiString MakeStepNameTemplate()
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   if (aDocument.IsNull())
   {
     return TCollection_AsciiString();
@@ -416,8 +411,7 @@ static TCollection_ExtendedString ReadStepName(const TCollection_AsciiString& th
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("codepage_test.step", aStream));
 
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   if (aDocument.IsNull() || !aProvider.Read(aReadStreams, aDocument))
   {
     return TCollection_ExtendedString();
@@ -490,8 +484,7 @@ static double ShapeDiagonal(const TopoDS_Shape& theShape)
 // gdt/dimensions/A7: STEP AP242 preserves dimension descriptions.
 TEST(GDT_STEP_Storage_Test, A7_DimensionDescriptions)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
   occ::handle<XCAFDoc_Dimension> aDimension;
@@ -521,8 +514,7 @@ TEST(GDT_STEP_Storage_Test, A7_DimensionDescriptions)
 // gdt/dimensions/A8: STEP AP242 preserves the dimension annotation plane.
 TEST(GDT_STEP_Storage_Test, A8_DimensionAnnotationPlane)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
   occ::handle<XCAFDoc_Dimension> aDimension;
@@ -556,8 +548,7 @@ TEST(GDT_STEP_Storage_Test, A8_DimensionAnnotationPlane)
 // gdt/dimensions/A9: STEP AP242 preserves both dimension connection points.
 TEST(GDT_STEP_Storage_Test, A9_DimensionConnectionPoints)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
   occ::handle<XCAFDoc_Dimension> aDimension;
@@ -610,8 +601,7 @@ static TCollection_ExtendedString RestoredFirstShapeName(
 // quotes, backslashes, newlines, and tabs.
 TEST(GDT_STEP_Storage_Test, StepBug_32310_SpecialName)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label aShapeLabel = aShapeTool->AddShape(BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
@@ -715,8 +705,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_31923_CP850Name)
 // bugs/xde/bug22728: STEP export can write the result to a caller-owned stream.
 TEST(GDT_STEP_Storage_Test, XdeBug_22728_WriteStream)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   ASSERT_FALSE(aShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape()).IsNull());
@@ -732,8 +721,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_22728_WriteStream)
 // bugs/step/bug33815: non-manifold STEP export retains the same special name.
 TEST(GDT_STEP_Storage_Test, StepBug_33815_NonmanifoldSpecialName)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label aShapeLabel = aShapeTool->AddShape(BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
@@ -748,8 +736,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_33815_NonmanifoldSpecialName)
 
 static void ExpectStepEdgeExport(const TopoDS_Shape& theEdge)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   ASSERT_FALSE(aShapeTool->AddShape(theEdge).IsNull());
@@ -795,8 +782,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_32817_3_HugeStartParameter)
 // bugs/xde/bug25910: STEP writing accepts a material with zero density.
 TEST(GDT_STEP_Storage_Test, XdeBug_25910_ZeroDensityMaterial)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
@@ -825,8 +811,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_25910_ZeroDensityMaterial)
 // angularity tolerance.
 TEST(GDT_STEP_Storage_Test, StepBug_27313_PmiExport)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
@@ -865,8 +850,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_27313_PmiExport)
 // bugs/modalg_8/bug33165: STEP preserves names of assembly instances.
 TEST(GDT_STEP_Storage_Test, ModalgBug_33165_AssemblyInstanceNames)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
   const TopoDS_Shape aFirstBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
@@ -911,8 +895,7 @@ TEST(GDT_STEP_Storage_Test, ModalgBug_33165_AssemblyInstanceNames)
 // when the output is written to a caller-owned stream.
 TEST(GDT_STEP_Storage_Test, XdeBug_7141_LargeAssemblyExport)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
   const TopoDS_Compound          aCompound  = MakeLocatedBoxAssembly(20);
@@ -942,8 +925,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_7141_LargeAssemblyExport)
 // bugs/step/bug30189_2: STEP preserves the top-level assembly structure and sharing.
 TEST(GDT_STEP_Storage_Test, StepBug_30189_2_LocatedRootStructure)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
   const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
@@ -989,8 +971,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_30189_2_LocatedRootStructure)
 // bugs/xde/bug1669: STEP preserves names throughout a nested assembly.
 TEST(GDT_STEP_Storage_Test, XdeBug_1669_NestedAssemblyNames)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
   const TopoDS_Shape aBox1 =
@@ -1076,8 +1057,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_Ocp1949_2_TessellatedScaling)
   BRepMesh_IncrementalMesh aMesh(aBox, 1.0);
   ASSERT_TRUE(aMesh.IsDone());
 
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   XCAFDoc_DocumentTool::SetLengthUnit(aDocument, 1.0);
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
@@ -1096,8 +1076,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_Ocp1949_2_TessellatedScaling)
   EXPECT_NE(aStream.str().find("TESSELLATED_SHAPE_REPRESENTATION"), std::string::npos);
 
   aStream.seekg(0);
-  occ::handle<TDocStd_Application> aRestoredApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aRestoredDocument    = NewDocument(aRestoredApplication);
+  occ::handle<TDocStd_Document> aRestoredDocument = NewDocument();
   ASSERT_FALSE(aRestoredDocument.IsNull());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("ocp1949_2.step", aStream));
@@ -1113,8 +1092,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_Ocp1949_2_TessellatedScaling)
 // bugs/step/bug30189_3: STEP preserves names and sharing of located roots.
 TEST(GDT_STEP_Storage_Test, StepBug_30189_3_LocatedRootSharing)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
 
   const TopoDS_Shape             aBaseBox = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
@@ -1166,8 +1144,7 @@ TEST(GDT_STEP_Storage_Test, StepBug_30189_3_LocatedRootSharing)
 // bugs/xde/bug13175: STEP preserves a document containing a single vertex.
 TEST(GDT_STEP_Storage_Test, XdeBug_13175_SingleVertex)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<XCAFDoc_ShapeTool> aShapeTool   = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label                aVertexLabel = aShapeTool->NewShape();
@@ -1191,8 +1168,7 @@ TEST(GDT_STEP_Storage_Test, XdeBug_13175_SingleVertex)
 // bugs/xde/bug31851: STEP preserves Unicode shape names.
 TEST(GDT_STEP_Storage_Test, XdeBug_31851_UnicodeShapeName)
 {
-  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
   ASSERT_FALSE(aDocument.IsNull());
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TDF_Label aShapeLabel = aShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -1203,4 +1179,134 @@ TEST(GDT_STEP_Storage_Test, XdeBug_31851_UnicodeShapeName)
   occ::handle<TDocStd_Document> aRestored = RoundTrip(aDocument);
   ASSERT_FALSE(aRestored.IsNull());
   EXPECT_EQ(RestoredFirstShapeName(aRestored), anExpected);
+}
+
+// Unequal displacement is optional: zero, negative and positive values must all
+// survive STEP serialization, together with description, datums and modifiers.
+TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
+{
+  for (const auto aType : {XCAFDimTolObjects_GeomToleranceType_Flatness,
+                           XCAFDimTolObjects_GeomToleranceType_ProfileOfSurface})
+  {
+    for (const double aSourceUnit : {0.001, 0.0254})
+    {
+      for (const double aWriteUnit : {1.0, 25.4})
+      {
+        for (const std::optional<double> aDisplacement : {std::optional<double>(),
+                                                          std::optional<double>(-0.125),
+                                                          std::optional<double>(0.0),
+                                                          std::optional<double>(0.125)})
+        {
+          for (int aCombination = 0; aCombination < 6; ++aCombination)
+          {
+            SCOPED_TRACE(testing::Message() << "type=" << aType << ", sourceUnit=" << aSourceUnit
+                                            << ", writeUnit=" << aWriteUnit
+                                            << ", displacement=" << aDisplacement.value_or(0.0)
+                                            << ", present=" << aDisplacement.has_value()
+                                            << ", combination=" << aCombination);
+            const bool                    aWithDatum    = (aCombination % 2) != 0;
+            const bool                    aWithModifier = aCombination >= 2 && aCombination < 4;
+            const bool                    aWithMaximum  = aCombination >= 4;
+            occ::handle<TDocStd_Document> aDocument     = new TDocStd_Document("BinXCAF");
+            XCAFDoc_DocumentTool::SetLengthUnit(aDocument, aSourceUnit);
+            const auto aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+            const auto aShapeLabel = aShapeTool->AddShape(BRepPrimAPI_MakeBox(10, 10, 10).Shape());
+            const auto aTool       = XCAFDoc_DocumentTool::DimTolTool(aDocument->Main());
+            const auto aLabel      = aTool->AddGeomTolerance();
+            aTool->SetGeomTolerance(aShapeLabel, aLabel);
+            occ::handle<XCAFDoc_GeomTolerance> anAttribute;
+            ASSERT_TRUE(aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), anAttribute));
+            const auto anObject = anAttribute->GetObject();
+            anObject->SetType(aType);
+            anObject->SetValue(0.5);
+            anObject->SetDescription(new TCollection_HAsciiString("unequal profile"));
+            if (aDisplacement)
+            {
+              anObject->SetUnequalDisplacement(*aDisplacement);
+            }
+            if (aWithModifier)
+            {
+              anObject->AddModifier(XCAFDimTolObjects_GeomToleranceModif_Common_Zone);
+              anObject->SetMaxValueModifier(0.75);
+            }
+            else if (aWithMaximum)
+            {
+              anObject->SetMaxValueModifier(0.75);
+            }
+            anAttribute->SetObject(anObject);
+            if (aWithDatum)
+            {
+              const auto                      aDatumLabel = aTool->AddDatum();
+              NCollection_Sequence<TDF_Label> aShapes;
+              aShapes.Append(aShapeLabel);
+              aTool->SetDatum(aShapes, aDatumLabel);
+              occ::handle<XCAFDoc_Datum> aDatum;
+              ASSERT_TRUE(aDatumLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum));
+              const auto aDatumObject = aDatum->GetObject();
+              aDatumObject->SetName(new TCollection_HAsciiString("A"));
+              aDatumObject->SetPosition(1);
+              aDatum->SetObject(aDatumObject);
+              aTool->SetDatumToGeomTol(aDatumLabel, aLabel);
+            }
+            for (int aPass = 0; aPass < 2; ++aPass)
+            {
+              SCOPED_TRACE(aPass);
+              std::stringstream aStream;
+              ASSERT_TRUE(WriteStepStream(aDocument, aStream, aWriteUnit));
+              EXPECT_EQ(aStream.str().find("UNEQUALLY_DISPOSED_GEOMETRIC_TOLRANCE"),
+                        std::string::npos);
+              EXPECT_EQ(aStream.str().find("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE(")
+                          != std::string::npos,
+                        aDisplacement.has_value());
+              if (aWithDatum && aDisplacement && aPass == 0)
+              {
+                std::string       aContent   = aStream.str();
+                const std::string aDatumName = "GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE";
+                const auto        aPosition  = aContent.find(aDatumName);
+                ASSERT_NE(aPosition, std::string::npos);
+                aContent.replace(aPosition, aDatumName.length(), "GTWDR");
+                aStream.str(aContent);
+              }
+              occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
+              DESTEP_Provider                       aProvider(aNode);
+              DE_Provider::ReadStreamList           aStreams;
+              aStreams.Append(DE_Provider::ReadStreamNode("unequal.step", aStream));
+              aDocument = new TDocStd_Document("BinXCAF");
+              ASSERT_TRUE(aProvider.Read(aStreams, aDocument));
+              const auto aRestoredTool = XCAFDoc_DocumentTool::DimTolTool(aDocument->Main());
+              NCollection_Sequence<TDF_Label> aLabels;
+              aRestoredTool->GetGeomToleranceLabels(aLabels);
+              ASSERT_EQ(aLabels.Length(), 1);
+              occ::handle<XCAFDoc_GeomTolerance> aRestored;
+              ASSERT_TRUE(aLabels.First().FindAttribute(XCAFDoc_GeomTolerance::GetID(), aRestored));
+              const auto aResult = aRestored->GetObject();
+              EXPECT_EQ(aResult->GetType(), aType);
+              EXPECT_NEAR(aResult->GetValue(), 0.5 * aSourceUnit / 0.001, 1e-10);
+              ASSERT_EQ(aResult->GetUnequalDisplacement().has_value(), aDisplacement.has_value());
+              if (aDisplacement)
+              {
+                EXPECT_NEAR(*aResult->GetUnequalDisplacement(),
+                            *aDisplacement * aSourceUnit / 0.001,
+                            1e-10);
+              }
+              ASSERT_FALSE(aResult->GetDescription().IsNull());
+              EXPECT_STREQ(aResult->GetDescription()->ToCString(), "unequal profile");
+              EXPECT_EQ(aResult->GetModifiers().Length(), aWithModifier ? 1 : 0);
+              if (aWithModifier)
+              {
+                EXPECT_EQ(aResult->GetModifiers().First(),
+                          XCAFDimTolObjects_GeomToleranceModif_Common_Zone);
+              }
+              EXPECT_NEAR(aResult->GetMaxValueModifier(),
+                          aWithModifier || aWithMaximum ? 0.75 * aSourceUnit / 0.001 : 0.0,
+                          1e-10);
+              NCollection_Sequence<TDF_Label> aDatums;
+              aRestoredTool->GetDatumOfTolerLabels(aLabels.First(), aDatums);
+              EXPECT_EQ(aDatums.Length(), aWithDatum ? 1 : 0);
+            }
+          }
+        }
+      }
+    }
+  }
 }

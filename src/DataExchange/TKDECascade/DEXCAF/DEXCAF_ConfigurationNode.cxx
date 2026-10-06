@@ -17,8 +17,6 @@
 #include <DE_ConfigurationContext.hxx>
 #include <NCollection_Buffer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_ConfigurationNode, DE_ConfigurationNode)
-
 namespace
 {
 static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
@@ -28,6 +26,8 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 }
 
 } // namespace
+
+IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_ConfigurationNode, DE_ConfigurationNode)
 
 //=================================================================================================
 

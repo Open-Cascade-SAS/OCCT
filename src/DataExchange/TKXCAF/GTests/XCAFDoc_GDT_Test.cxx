@@ -16,7 +16,6 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
@@ -42,19 +41,17 @@ namespace
 {
 struct GdtContext
 {
-  occ::handle<TDocStd_Application> Application;
-  occ::handle<TDocStd_Document>    Document;
-  occ::handle<XCAFDoc_ShapeTool>   ShapeTool;
-  occ::handle<XCAFDoc_DimTolTool>  DimTolTool;
-  TDF_Label                        Shape1;
-  TDF_Label                        Shape2;
+  occ::handle<TDocStd_Document>   Document;
+  occ::handle<XCAFDoc_ShapeTool>  ShapeTool;
+  occ::handle<XCAFDoc_DimTolTool> DimTolTool;
+  TDF_Label                       Shape1;
+  TDF_Label                       Shape2;
 };
 
 static GdtContext NewContext()
 {
   GdtContext aContext;
-  aContext.Application = new TDocStd_Application();
-  aContext.Application->NewDocument("BinXCAF", aContext.Document);
+  aContext.Document   = new TDocStd_Document("BinXCAF");
   aContext.ShapeTool  = XCAFDoc_DocumentTool::ShapeTool(aContext.Document->Main());
   aContext.DimTolTool = XCAFDoc_DocumentTool::DimTolTool(aContext.Document->Main());
   aContext.Shape1     = aContext.ShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -377,7 +374,8 @@ TEST(XCAFDoc_GDT_Test, DirectionPresenceSurvivesCopyAndLabelStorage)
   anAttribute->SetObject(aCopy);
   ASSERT_TRUE(anAttribute->GetObject()->GetDirection(aDirection));
   EXPECT_DOUBLE_EQ(aDirection.X(), 1.0);
-  anAttribute->SetObject(new XCAFDimTolObjects_DimensionObject());
+  aCopy->ClearDirection();
+  anAttribute->SetObject(aCopy);
   EXPECT_FALSE(anAttribute->GetObject()->GetDirection(aDirection));
 }
 

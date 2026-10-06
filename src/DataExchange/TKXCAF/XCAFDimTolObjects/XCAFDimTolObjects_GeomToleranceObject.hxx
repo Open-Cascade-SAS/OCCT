@@ -218,26 +218,30 @@ public:
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject, Standard_Transient)
 
 private:
-  XCAFDimTolObjects_GeomToleranceType                        myType;
-  XCAFDimTolObjects_GeomToleranceTypeValue                   myTypeOfValue;
-  double                                                     myValue;
-  XCAFDimTolObjects_GeomToleranceMatReqModif                 myMatReqModif;
-  XCAFDimTolObjects_GeomToleranceZoneModif                   myZoneModif;
-  double                                                     myValueOfZoneModif;
+  XCAFDimTolObjects_GeomToleranceType      myType = XCAFDimTolObjects_GeomToleranceType_None;
+  XCAFDimTolObjects_GeomToleranceTypeValue myTypeOfValue =
+    XCAFDimTolObjects_GeomToleranceTypeValue_None;
+  double                                     myValue = 0.0;
+  XCAFDimTolObjects_GeomToleranceMatReqModif myMatReqModif =
+    XCAFDimTolObjects_GeomToleranceMatReqModif_None;
+  XCAFDimTolObjects_GeomToleranceZoneModif myZoneModif =
+    XCAFDimTolObjects_GeomToleranceZoneModif_None;
+  double                                                     myValueOfZoneModif = 0.0;
   NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> myModifiers;
-  double                                                     myMaxValueModif;
+  double                                                     myMaxValueModif = 0.0;
   gp_Ax2                                                     myAxis;
-  bool                                                       myHasAxis;
+  bool                                                       myHasAxis = false;
   gp_Ax2                                                     myPlane;
   gp_Pnt                                                     myPnt;
   gp_Pnt                                                     myPntText;
-  bool                                                       myHasPlane;
-  bool                                                       myHasPnt;
-  bool                                                       myHasPntText;
+  bool                                                       myHasPlane   = false;
+  bool                                                       myHasPnt     = false;
+  bool                                                       myHasPntText = false;
   TopoDS_Shape                                               myPresentation;
   occ::handle<TCollection_HAsciiString>                      mySemanticName;
   occ::handle<TCollection_HAsciiString>                      myPresentationName;
-  XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType;
+  XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType =
+    XCAFDimTolObjects_ToleranceZoneAffectedPlane_None;
   gp_Pln                                                     myAffectedPlane;
   std::optional<double>                                      myUnequalDisplacement;
   occ::handle<TCollection_HAsciiString>                      myDescription;

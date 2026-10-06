@@ -10,6 +10,7 @@
 #include <DEXCAF_Provider.hxx>
 #include <DE_Wrapper.hxx>
 #include <BinXCAFDrivers.hxx>
+#include <XmlXCAFDrivers.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
@@ -38,6 +39,10 @@
 #include <istream>
 #include <ostream>
 #include <streambuf>
+#include <sstream>
+#include <Message_ProgressIndicator.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Path.hxx>
 
 namespace
 {
@@ -130,12 +135,9 @@ std::streambuf::pos_type DEXCAF_TestOutputBuffer::seekpos(pos_type              
 
 // ==================================================================================================
 
-occ::handle<TDocStd_Document> makeDocument()
+occ::handle<TDocStd_Document> makeDocument(const char* theFormat = "BinXCAF")
 {
-  const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
-  BinXCAFDrivers::DefineFormat(anApp);
-  occ::handle<TDocStd_Document> aDocument;
-  anApp->NewDocument("BinXCAF", aDocument);
+  const occ::handle<TDocStd_Document>  aDocument = new TDocStd_Document(theFormat);
   const occ::handle<XCAFDoc_ShapeTool> aShapes = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
   const TopoDS_Shape                   aBox    = BRepPrimAPI_MakeBox(10, 20, 30).Shape();
   const TDF_Label                      aPart   = aShapes->AddShape(aBox, false);
@@ -183,6 +185,57 @@ void checkDocument(const occ::handle<TDocStd_Document>& theDocument)
   double aUnit = 0;
   ASSERT_TRUE(XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aUnit));
   EXPECT_NEAR(aUnit, 0.001, 1.e-12);
+}
+
+// ==================================================================================================
+
+class DEXCAF_FailingOutputBuffer : public std::stringbuf
+{
+protected:
+  std::streamsize xsputn(const char*, std::streamsize) override { return 0; }
+
+  int_type overflow(int_type) override { return traits_type::eof(); }
+};
+
+class DEXCAF_CancelProgress : public Message_ProgressIndicator
+{
+public:
+  bool UserBreak() override { return true; }
+
+  void Show(const Message_ProgressScope&, bool) override {}
+};
+
+class DEXCAF_CancelAfterAppend : public Message_ProgressIndicator
+{
+public:
+  explicit DEXCAF_CancelAfterAppend(const occ::handle<TDocStd_Document>& theDocument)
+      : myDocument(theDocument)
+  {
+  }
+
+  bool UserBreak() override
+  {
+    occ::handle<TDataStd_Name> aName;
+    return myDocument->Main().FindAttribute(TDataStd_Name::GetID(), aName)
+           && aName->Get() == TCollection_ExtendedString("source");
+  }
+
+  void Show(const Message_ProgressScope&, bool) override {}
+
+private:
+  occ::handle<TDocStd_Document> myDocument;
+};
+
+std::string documentBytes()
+{
+  const occ::handle<TDocStd_Document> aSource = new TDocStd_Document("BinXCAF");
+  TDataStd_Name::Set(aSource->Main(), TCollection_ExtendedString("source"));
+  TDataStd_Name::Set(aSource->Main().FindChild(10), TCollection_ExtendedString("new attribute"));
+  const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  BinXCAFDrivers::DefineFormat(anApp);
+  std::stringstream aStream;
+  EXPECT_EQ(anApp->SaveAs(aSource, aStream), PCDM_SS_OK);
+  return aStream.str();
 }
 } // namespace
 
@@ -337,6 +390,16 @@ TEST(DEXCAF_Provider_Test, StreamShapeReadRejectsEmptyDocument)
 TEST(DEXCAF_Provider_Test, StreamWritePreservesOwningApplication)
 {
   const occ::handle<TDocStd_Document> aSource = makeDocument();
+  const occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
+  anApplication->CDF_Application::Open(aSource);
+
+  struct DocumentCloser
+  {
+    occ::handle<TDocStd_Application> Application;
+    occ::handle<TDocStd_Document>    Document;
+
+    ~DocumentCloser() { Application->Close(Document); }
+  } aCloser{anApplication, aSource};
   const occ::handle<CDM_Application>  anOwner = aSource->Application();
   const occ::handle<DE_Provider> aProvider    = new DEXCAF_Provider(new DEXCAF_ConfigurationNode());
   DEXCAF_TestOutputBuffer        aBytes;
@@ -400,4 +463,207 @@ TEST(DEXCAF_Provider_Test, StreamRoundTripPreservesAuthoredToleranceMetadata)
   EXPECT_DOUBLE_EQ(*aResult->GetUnequalDisplacement(), -0.125);
   ASSERT_FALSE(aResult->GetDescription().IsNull());
   EXPECT_STREQ(aResult->GetDescription()->ToCString(), "unequally disposed tolerance");
+}
+
+TEST(DEXCAF_Provider_Test, ReplacementResetsHistoryAndPreservesModificationPolicy)
+{
+  const occ::handle<TDocStd_Document> aTarget = makeDocument();
+  aTarget->SetUndoLimit(10);
+  aTarget->SetModificationMode(true);
+  for (const char* aName : {"first edit", "second edit"})
+  {
+    aTarget->NewCommand();
+    TDataStd_Name::Set(aTarget->Main(), TCollection_ExtendedString(aName));
+    ASSERT_TRUE(aTarget->CommitCommand());
+  }
+  ASSERT_TRUE(aTarget->Undo());
+  ASSERT_EQ(aTarget->GetAvailableUndos(), 1);
+  ASSERT_EQ(aTarget->GetAvailableRedos(), 1);
+  aTarget->SetNestedTransactionMode();
+  aTarget->OpenCommand();
+  aTarget->OpenCommand();
+  TDataStd_Name::Set(aTarget->Main(), TCollection_ExtendedString("uncommitted edit"));
+  const occ::handle<TDF_Data> aPreviousData = aTarget->GetData();
+  std::stringstream           aStream(documentBytes());
+  DE_Provider::ReadStreamList aReads;
+  aReads.Append(DE_Provider::ReadStreamNode("virtual/model.xbf", aStream));
+  DEXCAF_Provider aProvider(new DEXCAF_ConfigurationNode());
+  ASSERT_TRUE(aProvider.Read(aReads, aTarget));
+  EXPECT_EQ(aTarget->GetAvailableUndos(), 0);
+  EXPECT_EQ(aTarget->GetAvailableRedos(), 0);
+  EXPECT_FALSE(aTarget->HasOpenCommand());
+  EXPECT_FALSE(aTarget->Undo());
+  EXPECT_FALSE(aTarget->Redo());
+  EXPECT_TRUE(aTarget->ModificationMode());
+  EXPECT_FALSE(aTarget->GetData()->IsModificationAllowed());
+  EXPECT_TRUE(aTarget->IsChanged());
+  EXPECT_TRUE(TDocStd_Document::Get(aPreviousData->Root()).IsNull());
+  EXPECT_EQ(TDocStd_Document::Get(aTarget->Main()), aTarget);
+  aTarget->NewCommand();
+  TDataStd_Name::Set(aTarget->Main(), TCollection_ExtendedString("new edit"));
+  EXPECT_TRUE(aTarget->CommitCommand());
+  EXPECT_TRUE(aTarget->Undo());
+}
+
+TEST(DEXCAF_Provider_Test, AppendModesPreserveDataAndSupportUndo)
+{
+  for (const auto aMode :
+       {PCDM_ReaderFilter::AppendMode_Protect, PCDM_ReaderFilter::AppendMode_Overwrite})
+  {
+    for (const int anUndoLimit : {0, 10})
+    {
+      const occ::handle<TDocStd_Document> aTarget = new TDocStd_Document("BinXCAF");
+      TDataStd_Name::Set(aTarget->Main(), TCollection_ExtendedString("target"));
+      aTarget->SetUndoLimit(anUndoLimit);
+      if (anUndoLimit > 0)
+      {
+        aTarget->SetModificationMode(true);
+        aTarget->OpenCommand();
+      }
+      const occ::handle<TDF_Data>                 aData = aTarget->GetData();
+      const occ::handle<DEXCAF_ConfigurationNode> aNode = new DEXCAF_ConfigurationNode();
+      aNode->InternalParameters.ReadAppendMode          = aMode;
+      DEXCAF_Provider             aProvider(aNode);
+      std::stringstream           aStream(documentBytes());
+      DE_Provider::ReadStreamList aReads;
+      aReads.Append(DE_Provider::ReadStreamNode("virtual/model.xbf", aStream));
+      ASSERT_TRUE(aProvider.Read(aReads, aTarget));
+      EXPECT_EQ(aTarget->GetData(), aData);
+      EXPECT_FALSE(aTarget->IsOpened());
+      EXPECT_EQ(aTarget->HasOpenCommand(), anUndoLimit > 0);
+      EXPECT_TRUE(aData->IsModificationAllowed());
+      occ::handle<TDataStd_Name> aName;
+      ASSERT_TRUE(aTarget->Main().FindAttribute(TDataStd_Name::GetID(), aName));
+      EXPECT_EQ(aName->Get(),
+                TCollection_ExtendedString(
+                  aMode == PCDM_ReaderFilter::AppendMode_Protect ? "target" : "source"));
+      ASSERT_TRUE(aTarget->Main().FindChild(10).FindAttribute(TDataStd_Name::GetID(), aName));
+      EXPECT_EQ(aName->Get(), TCollection_ExtendedString("new attribute"));
+      if (anUndoLimit > 0)
+      {
+        ASSERT_TRUE(aTarget->CommitCommand());
+        EXPECT_EQ(aTarget->GetAvailableUndos(), 1);
+        ASSERT_TRUE(aTarget->Undo());
+        EXPECT_FALSE(aTarget->Main().FindChild(10).FindAttribute(TDataStd_Name::GetID(), aName));
+        ASSERT_TRUE(aTarget->Main().FindAttribute(TDataStd_Name::GetID(), aName));
+        EXPECT_EQ(aName->Get(), TCollection_ExtendedString("target"));
+      }
+    }
+  }
+}
+
+TEST(DEXCAF_Provider_Test, CallerCanAbortCancelledAppend)
+{
+  const occ::handle<TDocStd_Document> aTarget = new TDocStd_Document("BinXCAF");
+  aTarget->SetUndoLimit(10);
+  TDataStd_Name::Set(aTarget->Main(), TCollection_ExtendedString("target"));
+  aTarget->SetModificationMode(true);
+  aTarget->NewCommand();
+  const occ::handle<TDF_Data>                 aData = aTarget->GetData();
+  const occ::handle<DEXCAF_ConfigurationNode> aNode = new DEXCAF_ConfigurationNode();
+  aNode->InternalParameters.ReadAppendMode          = PCDM_ReaderFilter::AppendMode_Overwrite;
+  DEXCAF_Provider             aProvider(aNode);
+  std::stringstream           aStream(documentBytes());
+  DE_Provider::ReadStreamList aReads;
+  aReads.Append(DE_Provider::ReadStreamNode("virtual/model.xbf", aStream));
+  const occ::handle<Message_ProgressIndicator> aProgress = new DEXCAF_CancelAfterAppend(aTarget);
+  EXPECT_FALSE(aProvider.Read(aReads, aTarget, aProgress->Start()));
+  EXPECT_EQ(aTarget->GetData(), aData);
+  EXPECT_TRUE(aTarget->HasOpenCommand());
+  aTarget->AbortCommand();
+  occ::handle<TDataStd_Name> aName;
+  ASSERT_TRUE(aTarget->Main().FindAttribute(TDataStd_Name::GetID(), aName));
+  EXPECT_EQ(aName->Get(), TCollection_ExtendedString("target"));
+  EXPECT_FALSE(aTarget->Main().FindChild(10).FindAttribute(TDataStd_Name::GetID(), aName));
+  EXPECT_FALSE(aTarget->HasOpenCommand());
+  EXPECT_EQ(aTarget->GetAvailableUndos(), 0);
+}
+
+TEST(DEXCAF_Provider_Test, StreamSaveOverloadsRestoreStateAndRecoverAfterCancellation)
+{
+  for (const char* aFormat : {"BinXCAF", "XmlXCAF"})
+  {
+    SCOPED_TRACE(aFormat);
+    const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+    BinXCAFDrivers::DefineFormat(anApp);
+    XmlXCAFDrivers::DefineFormat(anApp);
+    const occ::handle<TDocStd_Document>          aSource   = makeDocument(aFormat);
+    const occ::handle<Message_ProgressIndicator> aProgress = new DEXCAF_CancelProgress();
+    std::stringstream                            aCancelled;
+    EXPECT_EQ(anApp->SaveAs(aSource, aCancelled, aProgress->Start()), PCDM_SS_UserBreak);
+    EXPECT_FALSE(aSource->IsOpened());
+    std::stringstream          aValid;
+    TCollection_ExtendedString aStatusMessage("old message");
+    ASSERT_EQ(anApp->SaveAs(aSource, aValid, aStatusMessage), PCDM_SS_OK);
+    EXPECT_TRUE(aStatusMessage.IsEmpty());
+    EXPECT_FALSE(aSource->IsOpened());
+    EXPECT_FALSE(aValid.str().empty());
+    const occ::handle<TDocStd_Document> aRestored = new TDocStd_Document("BinXCAF");
+    DE_Provider::ReadStreamList         aReads;
+    aReads.Append(DE_Provider::ReadStreamNode("recovered.xcaf", aValid));
+    DEXCAF_Provider aProvider(new DEXCAF_ConfigurationNode());
+    ASSERT_TRUE(aProvider.Read(aReads, aRestored));
+    checkDocument(aRestored);
+  }
+}
+
+TEST(DEXCAF_Provider_Test, ThrowingOutputReportsFailureAndRestoresState)
+{
+  const occ::handle<TDocStd_Document> aSource = makeDocument();
+  DEXCAF_FailingOutputBuffer          aBuffer;
+  std::ostream                        aStream(&aBuffer);
+  aStream.exceptions(std::ios::badbit | std::ios::failbit);
+  DE_Provider::WriteStreamList aWrites;
+  aWrites.Append(DE_Provider::WriteStreamNode("virtual/model.xbf", aStream));
+  DEXCAF_Provider aProvider(new DEXCAF_ConfigurationNode());
+  EXPECT_FALSE(aProvider.Write(aWrites, aSource));
+  EXPECT_FALSE(aSource->IsOpened());
+  aStream.clear();
+  const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
+  BinXCAFDrivers::DefineFormat(anApp);
+  TCollection_ExtendedString aMessage;
+  EXPECT_EQ(anApp->SaveAs(aSource, aStream, aMessage), PCDM_SS_WriteFailure);
+  EXPECT_FALSE(aMessage.IsEmpty());
+  EXPECT_FALSE(aSource->IsOpened());
+  EXPECT_EQ(anApp->SaveAs(nullptr, aStream, aMessage), PCDM_SS_Doc_IsNull);
+}
+
+TEST(DEXCAF_Provider_Test, FileAppendPreservesExistingData)
+{
+  struct TemporaryFile
+  {
+    OSD_File File;
+
+    ~TemporaryFile() { File.Remove(); }
+  } aTemporary;
+
+  aTemporary.File.BuildTemporary();
+  ASSERT_FALSE(aTemporary.File.Failed());
+  std::string aBytes = documentBytes();
+  aTemporary.File.Write(aBytes.data(), static_cast<int>(aBytes.size()));
+  aTemporary.File.Close();
+  ASSERT_FALSE(aTemporary.File.Failed());
+  OSD_Path aPath;
+  aTemporary.File.Path(aPath);
+  TCollection_AsciiString aFileName;
+  aPath.SystemName(aFileName);
+  for (const auto aMode :
+       {PCDM_ReaderFilter::AppendMode_Protect, PCDM_ReaderFilter::AppendMode_Overwrite})
+  {
+    const occ::handle<TDocStd_Document> aTarget = new TDocStd_Document("BinXCAF");
+    TDataStd_Name::Set(aTarget->Main(), "existing");
+    const auto                                  aData = aTarget->GetData();
+    const occ::handle<DEXCAF_ConfigurationNode> aNode = new DEXCAF_ConfigurationNode();
+    aNode->InternalParameters.ReadAppendMode          = aMode;
+    DEXCAF_Provider aProvider(aNode);
+    ASSERT_TRUE(aProvider.Read(aFileName, aTarget));
+    EXPECT_EQ(aTarget->GetData(), aData);
+    occ::handle<TDataStd_Name> aName;
+    ASSERT_TRUE(aTarget->Main().FindAttribute(TDataStd_Name::GetID(), aName));
+    EXPECT_EQ(aName->Get(),
+              TCollection_ExtendedString(
+                aMode == PCDM_ReaderFilter::AppendMode_Protect ? "existing" : "source"));
+    EXPECT_TRUE(aTarget->Main().FindChild(10).FindAttribute(TDataStd_Name::GetID(), aName));
+    EXPECT_FALSE(aTarget->HasOpenCommand());
+  }
 }

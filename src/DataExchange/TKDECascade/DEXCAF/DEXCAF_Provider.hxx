@@ -132,9 +132,10 @@ public:
 
 public:
   //! Use the first caller-owned seekable stream to read a document.
-  //! Replace document data only after a successful read and set its data owner.
+  //! Replace data after success, reset history, and preserve application/modification policy.
+  //! Append modes merge into the target using the caller's modification and transaction policy.
   //! @param[in,out] theStreams borrowed streams; names do not cause file access
-  //! @param[out] theDocument document data
+  //! @param[in,out] theDocument document data
   //! @param[in,out] theWS unused work session
   //! @param[in] theProgress optional progress indicator
   //! @return true on successful transfer; false on validation or driver failure
@@ -145,9 +146,10 @@ public:
     const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
 
   //! Use the first caller-owned seekable stream to read a document.
-  //! Replace document data only after a successful read and set its data owner.
+  //! Replace data after success, reset history, and preserve application/modification policy.
+  //! Append modes merge into the target using the caller's modification and transaction policy.
   //! @param[in,out] theStreams borrowed streams; names do not cause file access
-  //! @param[out] theDocument document data
+  //! @param[in,out] theDocument document data
   //! @param[in] theProgress optional progress indicator
   //! @return true on successful transfer; false on validation or driver failure
   Standard_EXPORT bool Read(

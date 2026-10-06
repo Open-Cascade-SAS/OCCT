@@ -32,6 +32,7 @@
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Owner.hxx>
 #include <TDF_Data.hxx>
+#include <OSD_FileSystem.hxx>
 #include <Standard_Failure.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -145,6 +146,9 @@ void assignReadDocument(const occ::handle<TDocStd_Application>& theApplication,
     throw Standard_Failure("Loaded XCAF document has no data owner");
   }
   theApplication->Close(theSource);
+  const bool aModificationMode = theTarget->ModificationMode();
+  // Old deltas and nested commands refer to the previous data framework.
+  theTarget->BeforeClose();
   occ::handle<TDocStd_Owner> aPreviousOwner;
   if (theTarget->GetData()->Root().FindAttribute(TDocStd_Owner::GetID(), aPreviousOwner)
       && aPreviousOwner->GetDocument() == theTarget)
@@ -153,6 +157,9 @@ void assignReadDocument(const occ::handle<TDocStd_Application>& theApplication,
   }
   theTarget->SetData(aData);
   anOwner->SetDocument(theTarget);
+  theTarget->SetModificationMode(aModificationMode);
+  // Import changes the target, including when it already has a saved file.
+  theTarget->SetSavedTime(-1);
 }
 } // namespace
 
@@ -210,6 +217,19 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&       thePath,
     return false;
   }
   occ::handle<DEXCAF_ConfigurationNode> aNode = occ::down_cast<DEXCAF_ConfigurationNode>(GetNode());
+  if (aNode->InternalParameters.ReadAppendMode != PCDM_ReaderFilter::AppendMode_Forbid)
+  {
+    const std::shared_ptr<std::istream> aStream =
+      OSD_FileSystem::DefaultFileSystem()->OpenIStream(thePath, std::ios::in | std::ios::binary);
+    if (!aStream || !aStream->good())
+    {
+      Message::SendFail() << "Cannot open XCAF file for append: " << thePath;
+      return false;
+    }
+    ReadStreamList aStreams;
+    aStreams.Append(ReadStreamNode(thePath, *aStream));
+    return Read(aStreams, theDocument, theProgress);
+  }
   occ::handle<TDocStd_Document>         aDocument;
   const occ::handle<TDocStd_Application> anApp   = makeReadApplication();
   const occ::handle<PCDM_ReaderFilter>   aFilter = makeReadFilter(*aNode);
@@ -330,16 +350,14 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString& thePath,
                            TopoDS_Shape&                  theShape,
                            const Message_ProgressRange&   theProgress)
 {
+  theShape.Nullify();
   if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEXCAF_ConfigurationNode)))
   {
     Message::SendFail() << "Error in the DEXCAF_Provider during reading the file " << thePath
                         << "\t: Incorrect or empty Configuration Node";
     return false;
   }
-  occ::handle<TDocStd_Document>    aDocument;
-  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
-  BinXCAFDrivers::DefineFormat(anApp);
-  anApp->NewDocument("BinXCAF", aDocument);
+  const occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinXCAF");
   if (!Read(thePath, aDocument, theProgress))
   {
     return false;
@@ -414,19 +432,22 @@ bool DEXCAF_Provider::Read(ReadStreamList&                      theStreams,
     occ::down_cast<DEXCAF_ConfigurationNode>(GetNode());
   const occ::handle<TDocStd_Application> anApp   = makeReadApplication();
   const occ::handle<PCDM_ReaderFilter>   aFilter = makeReadFilter(*aNode);
-  occ::handle<TDocStd_Document>          aDocument;
-  const PCDM_ReaderStatus                aStatus =
+  occ::handle<TDocStd_Document> aDocument        = aFilter->IsAppendMode() ? theDocument : nullptr;
+  const PCDM_ReaderStatus       aStatus =
     anApp->Open(theStreams.First().Stream, aDocument, aFilter, theProgress);
   if (aStatus != PCDM_RS_OK)
   {
-    if (!aDocument.IsNull() && aDocument->IsOpened())
+    if (!aFilter->IsAppendMode() && !aDocument.IsNull() && aDocument->IsOpened())
     {
       anApp->Close(aDocument);
     }
     Message::SendFail() << "XCAF stream read failed, status " << static_cast<int>(aStatus);
     return false;
   }
-  assignReadDocument(anApp, aDocument, theDocument);
+  if (!aFilter->IsAppendMode())
+  {
+    assignReadDocument(anApp, aDocument, theDocument);
+  }
   return true;
 }
 

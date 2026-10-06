@@ -45,6 +45,8 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::Init(
                                             theGTWDR,
                                             theType);
   myUnequallyDisposedGeometricTolerance = theUDGT;
+  myModifiers.Nullify();
+  myMaxTolerance.Nullify();
 }
 
 //=================================================================================================
@@ -65,4 +67,6 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::Init(
                                             theGTWDR,
                                             theType);
   myUnequallyDisposedGeometricTolerance = theUDGT;
+  myModifiers.Nullify();
+  myMaxTolerance.Nullify();
 }

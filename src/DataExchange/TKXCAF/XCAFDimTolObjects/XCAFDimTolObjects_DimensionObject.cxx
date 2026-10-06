@@ -21,21 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject, Standard_Transient
 
 //=================================================================================================
 
-XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject()
-{
-  myType             = XCAFDimTolObjects_DimensionType_Location_None;
-  myQualifier        = XCAFDimTolObjects_DimensionQualifier_None;
-  myAngularQualifier = XCAFDimTolObjects_AngularQualifier_None;
-  myIsHole           = false;
-  myFormVariance     = XCAFDimTolObjects_DimensionFormVariance_None;
-  myGrade            = XCAFDimTolObjects_DimensionGrade_IT01;
-  myL = myR            = 0;
-  myConnectionIsPoint1 = myConnectionIsPoint2 = false;
-  myHasPlane                                  = false;
-  myHasPntText                                = false;
-  myHasConnection1                            = false;
-  myHasConnection2                            = false;
-}
+XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject() = default;
 
 //=================================================================================================
 
@@ -538,7 +524,11 @@ void XCAFDimTolObjects_DimensionObject::DumpJson(Standard_OStream& theOStream, i
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPath)
   }
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myDir)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasDirection)
+  if (myHasDirection)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myDir)
+  }
   if (myHasConnection1)
   {
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myConnection1)

@@ -35,7 +35,7 @@
 #include <Geom2d_Curve.hxx>
 #include <gp_Vec.hxx>
 #include <algorithm>
-#include <cmath>
+#include <limits>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -195,22 +195,8 @@ static void SetTriangles(
       const gp_Pnt aFirst  = theMesh->Node(theFirst);
       const gp_Pnt aSecond = theMesh->Node(theSecond);
       const gp_Pnt aThird  = theMesh->Node(theThird);
-      // Strip connectors may repeat a coordinate through distinct normal indices.
-      // Their zero-area triangles have no geometric boundary.
-      const auto samePoint = [](const gp_Pnt& theA, const gp_Pnt& theB) {
-        return theA.X() == theB.X() && theA.Y() == theB.Y() && theA.Z() == theB.Z();
-      };
-      if (samePoint(aFirst, aSecond) || samePoint(aFirst, aThird) || samePoint(aSecond, aThird))
-      {
-        return;
-      }
-      // Scale each edge before the cross product to avoid losing small valid
-      // triangles when the area or its squared magnitude underflows.
-      gp_Vec anEdge1(aFirst, aSecond);
-      gp_Vec anEdge2(aFirst, aThird);
-      anEdge1 /= std::max({std::abs(anEdge1.X()), std::abs(anEdge1.Y()), std::abs(anEdge1.Z())});
-      anEdge2 /= std::max({std::abs(anEdge2.X()), std::abs(anEdge2.Y()), std::abs(anEdge2.Z())});
-      const gp_Vec aNormal = anEdge1.Crossed(anEdge2);
+      // Repeated coordinates and collinear triples have no geometric boundary.
+      const gp_Vec aNormal = gp_Vec(aFirst, aSecond).Crossed(gp_Vec(aFirst, aThird));
       if (aNormal.X() == 0.0 && aNormal.Y() == 0.0 && aNormal.Z() == 0.0)
       {
         return;
@@ -221,17 +207,15 @@ static void SetTriangles(
     {
       const occ::handle<NCollection_HArray1<int>> aStrip =
         occ::down_cast<NCollection_HArray1<int>>(theTrianStrips->Value(aStripIndex));
-      for (int anIndex = 3; anIndex <= aStrip->Length(); anIndex += 2)
+      for (int anIndex = 3; anIndex <= aStrip->Length(); ++anIndex)
       {
-        appendTriangle(aStrip->Value(anIndex - 2),
-                       aStrip->Value(anIndex - 1),
-                       aStrip->Value(anIndex));
-      }
-      for (int anIndex = 4; anIndex <= aStrip->Length(); anIndex += 2)
-      {
-        appendTriangle(aStrip->Value(anIndex - 1),
-                       aStrip->Value(anIndex - 2),
-                       aStrip->Value(anIndex));
+        int aFirst  = aStrip->Value(anIndex - 2);
+        int aSecond = aStrip->Value(anIndex - 1);
+        if (anIndex % 2 == 0)
+        {
+          std::swap(aFirst, aSecond);
+        }
+        appendTriangle(aFirst, aSecond, aStrip->Value(anIndex));
       }
     }
     for (int aFanIndex = 1; aFanIndex <= theTrianFansNum; ++aFanIndex)
@@ -379,32 +363,56 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
 
   const bool aHasUVNodes = false;
   const bool aHasNormals = (aNormNum > 0);
+  if (aNodes.IsNull())
+  {
+    return nullptr;
+  }
   const int  aNbNodes    = !aPnindices.IsNull() ? aPnindices->Length() : aNodes->Length();
+  if (!aPnindices.IsNull())
+  {
+    for (const int anIndex : *aPnindices)
+    {
+      if (anIndex < 1 || anIndex > aNodes->Length())
+      {
+        return nullptr;
+      }
+    }
+  }
 
+  // Connectivity is used to access mesh nodes when filtering degenerate triangles.
+  const auto invalidNodeIndex = [aNbNodes](const int theIndex) {
+    return theIndex < 1 || theIndex > aNbNodes;
+  };
   if (aTrianStripsNum == 0 && aTrianFansNum == 0)
   {
     aMesh = new Poly_Triangulation(aNbNodes, aTrianNum, aHasUVNodes, aHasNormals);
   }
   else
   {
-    int aNbTriaStrips = 0;
-    int aNbTriaFans   = 0;
-
-    for (int aTrianStripIndex = 1; aTrianStripIndex <= aTrianStripsNum; ++aTrianStripIndex)
+    size_t aNbTriangles = 0;
+    for (const auto& aPrimitives : {aTriaStrips, aTriaFans})
     {
-      occ::handle<NCollection_HArray1<int>> aTriangleStrip =
-        occ::down_cast<NCollection_HArray1<int>>(aTriaStrips->Value(aTrianStripIndex));
-      aNbTriaStrips += std::max(0, aTriangleStrip->Length() - 2);
+      if (aPrimitives.IsNull())
+      {
+        continue;
+      }
+      for (const auto& aPrimitive : *aPrimitives)
+      {
+        const auto anIndices = occ::down_cast<NCollection_HArray1<int>>(aPrimitive);
+        if (anIndices.IsNull()
+            || std::any_of(anIndices->cbegin(), anIndices->cend(), invalidNodeIndex))
+        {
+          return nullptr;
+        }
+        aNbTriangles += std::max(0, anIndices->Length() - 2);
+      }
     }
-
-    for (int aTrianFanIndex = 1; aTrianFanIndex <= aTrianFansNum; ++aTrianFanIndex)
+    if (aNbTriangles > static_cast<size_t>(std::numeric_limits<int>::max()))
     {
-      occ::handle<NCollection_HArray1<int>> aTriangleFan =
-        occ::down_cast<NCollection_HArray1<int>>(aTriaFans->Value(aTrianFanIndex));
-      aNbTriaFans += aTriangleFan->Length() - 2;
+      return nullptr;
     }
-
-    aMesh = new Poly_Triangulation(aNbNodes, aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
+    aMesh =
+      new Poly_Triangulation(aNbNodes, static_cast<int>(aNbTriangles), aHasUVNodes, aHasNormals);
   }
 
   SetNodes(aMesh, aNodes, aPnindices, theLocalFactors.LengthFactor());

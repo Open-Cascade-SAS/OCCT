@@ -22,7 +22,6 @@
 #include <IGESFile_Read.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TDF_Label.hxx>
-#include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -63,10 +62,7 @@ occ::handle<DEIGES_Provider> createProvider()
 //! @return empty document
 occ::handle<TDocStd_Document> createDocument()
 {
-  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument;
-  anApp->NewDocument("BinXCAF", aDocument);
-  return aDocument;
+  return new TDocStd_Document("BinXCAF");
 }
 
 //! Creates a box shape.

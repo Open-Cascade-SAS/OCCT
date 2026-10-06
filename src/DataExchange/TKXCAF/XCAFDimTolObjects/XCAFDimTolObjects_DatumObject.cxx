@@ -17,20 +17,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject, Standard_Transient)
 
 //=================================================================================================
 
-XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject()
-{
-  myModifierWithValue = XCAFDimTolObjects_DatumModifWithValue_None;
-  myValueOfModifier   = 0.0;
-  myPosition          = 0;
-  myDTargetType       = XCAFDimTolObjects_DatumTargetType_Point;
-  myLength = myWidth  = 0.0;
-  myDatumTargetNumber = 0;
-  myIsDTarget         = false;
-  myIsValidDT         = false;
-  myHasPlane          = false;
-  myHasPnt            = false;
-  myHasPntText        = false;
-}
+XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject() = default;
 
 //=================================================================================================
 

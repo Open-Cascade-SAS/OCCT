@@ -76,6 +76,7 @@
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -5141,6 +5142,27 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
   XCAFDimTolObjects_GeomToleranceType aType = XCAFDimTolObjects_GeomToleranceType_None;
   getTolType(theEnt, aType);
   aTolObj->SetType(aType);
+  aTolObj->SetDescription(aTolEnt->Description());
+  occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> anUnequal =
+    occ::down_cast<StepDimTol_UnequallyDisposedGeometricTolerance>(aTolEnt);
+  const auto anUnequalComplex =
+    occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>(aTolEnt);
+  if (!anUnequalComplex.IsNull())
+  {
+    anUnequal = anUnequalComplex->GetUnequallyDisposedGeometricTolerance();
+  }
+  if (!anUnequal.IsNull() && !anUnequal->Displacement().IsNull())
+  {
+    const auto           aDisplacement = anUnequal->Displacement();
+    const StepBasic_Unit aUnit         = aDisplacement->UnitComponent();
+    if (!aUnit.IsNull() && aUnit.CaseNum(aUnit.Value()) == 1)
+    {
+      STEPConstruct_UnitContext aUnitContext;
+      aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+      aTolObj->SetUnequalDisplacement(aDisplacement->ValueComponent()
+                                      * aUnitContext.LengthFactor());
+    }
+  }
   if (!aTolEnt->Magnitude().IsNull())
   {
     // get value
@@ -5229,7 +5251,12 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
     }
   }
   occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers;
-  if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithModifiers)))
+  if (!anUnequalComplex.IsNull()
+      && !anUnequalComplex->GetGeometricToleranceWithModifiers().IsNull())
+  {
+    aModifiers = anUnequalComplex->GetGeometricToleranceWithModifiers()->Modifiers();
+  }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithModifiers)))
   {
     aModifiers = occ::down_cast<StepDimTol_GeometricToleranceWithModifiers>(aTolEnt)->Modifiers();
   }
@@ -5277,7 +5304,12 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
   }
   double         aVal = 0;
   StepBasic_Unit anUnit;
-  if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithMaximumTolerance)))
+  if (!anUnequalComplex.IsNull() && !anUnequalComplex->GetMaxTolerance().IsNull())
+  {
+    aVal   = anUnequalComplex->GetMaxTolerance()->ValueComponent();
+    anUnit = anUnequalComplex->GetMaxTolerance()->UnitComponent();
+  }
+  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithMaximumTolerance)))
   {
     occ::handle<StepDimTol_GeometricToleranceWithMaximumTolerance> aMax =
       occ::down_cast<StepDimTol_GeometricToleranceWithMaximumTolerance>(aTolEnt);
@@ -5303,7 +5335,7 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
     occ::handle<StepBasic_NamedUnit> NU = anUnit.NamedUnit();
     STEPConstruct_UnitContext        anUnitCtx;
     anUnitCtx.ComputeFactors(NU, theLocalFactors);
-    convertAngleValue(anUnitCtx, aVal);
+    aVal *= anUnitCtx.LengthFactor();
     aTolObj->SetMaxValueModifier(aVal);
   }
 

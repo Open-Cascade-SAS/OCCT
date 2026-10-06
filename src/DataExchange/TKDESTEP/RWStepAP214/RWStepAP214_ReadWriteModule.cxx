@@ -27,8 +27,6 @@
 #include <StepData_WriterLib.hxx>
 #include <TCollection_AsciiString.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule)
-
 #include <MoniTool_Macros.hxx>
 
 #include <StepBasic_Address.hxx>
@@ -4306,6 +4304,8 @@ static void initializeTypeshor(StringViewDataMap& theTypeshor)
 }
 } // namespace
 
+IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule)
+
 RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()
 {
   static std::mutex           THE_MUTEX;
@@ -4415,6 +4415,53 @@ int RWStepAP214_ReadWriteModule::CaseStep(
           types(i + 1) = tmpStr;
           isOK         = false;
         }
+      }
+    }
+
+    // Recognize unequal tolerances with optional datum, modifier and maximum constituents.
+    if (NbComp >= 3 && NbComp <= 6)
+    {
+      bool hasGeometry = false, hasUnequal = false, hasType = false;
+      bool hasDatum = false, hasMaximum = false, hasModifiers = false;
+      bool isSupported = true;
+      for (const auto& aName : types)
+      {
+        const int aType = CaseStep(aName);
+        if (aType == 625)
+        {
+          isSupported = isSupported && !hasGeometry;
+          hasGeometry = true;
+        }
+        else if (aType == 677)
+        {
+          isSupported = isSupported && !hasUnequal;
+          hasUnequal  = true;
+        }
+        else if (aType == 627)
+        {
+          isSupported = isSupported && !hasDatum;
+          hasDatum    = true;
+        }
+        else if (aType == 675)
+        {
+          isSupported = isSupported && !hasMaximum;
+          hasMaximum  = true;
+        }
+        else if (aType == 676)
+        {
+          isSupported  = isSupported && !hasModifiers;
+          hasModifiers = true;
+        }
+        else
+        {
+          const bool isToleranceType = aType == 609 || (aType >= 611 && aType <= 624);
+          isSupported                = isSupported && isToleranceType && !hasType;
+          hasType                    = true;
+        }
+      }
+      if (isSupported && hasGeometry && hasUnequal && hasType && (!hasMaximum || hasModifiers))
+      {
+        return 697;
       }
     }
 
@@ -4609,21 +4656,6 @@ int RWStepAP214_ReadWriteModule::CaseStep(
                        || types(4).IsEqual(StepType(624)))))
       {
         return 695;
-      }
-      else if (((types(1).IsEqual(StepType(609)) || types(1).IsEqual(StepType(611))
-                 || types(1).IsEqual(StepType(612)) || types(1).IsEqual(StepType(613))
-                 || types(1).IsEqual(StepType(614)) || types(1).IsEqual(StepType(615)))
-                && types(2).IsEqual(StepType(625)) && types(3).IsEqual(StepType(627))
-                && types(4).IsEqual(StepType(677)))
-               || (types(1).IsEqual(StepType(625)) && types(2).IsEqual(StepType(627))
-                   && types(4).IsEqual(StepType(677))
-                   && (types(3).IsEqual(StepType(616)) || types(3).IsEqual(StepType(617))
-                       || types(3).IsEqual(StepType(618)) || types(3).IsEqual(StepType(619))
-                       || types(3).IsEqual(StepType(620)) || types(3).IsEqual(StepType(621))
-                       || types(3).IsEqual(StepType(622)) || types(3).IsEqual(StepType(623))
-                       || types(3).IsEqual(StepType(624)))))
-      {
-        return 697;
       }
       else if (types(1).IsEqual(StepType(671)) && types(2).IsEqual(StepType(470))
                && types(3).IsEqual(StepType(630)) && types(4).IsEqual(StepType(258)))
