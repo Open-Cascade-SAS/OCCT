@@ -92,7 +92,7 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
 
   myZerParFunc.ComputeParameters(ChoixIso, Param, UVap, BornInf, BornSup, Tolerance);
   // Preserve valid tangent seeds; a singular solve can move them along the curve.
-  math_Vector aResidual(size_t{3});
+  math_Vector aResidual(1, 3);
   BestChoix = ChoixIso;
   if (myZerParFunc.Value(UVap, aResidual) && myZerParFunc.Root() <= tol
       && myZerParFunc.IsTangent(UVap, Uvres, BestChoix))
@@ -102,6 +102,8 @@ IntImp_ConstIsoparametric IntImp_Int2S::Perform(const NCollection_Array1<double>
     pint.SetValue(myZerParFunc.Point(), Uvres(1), Uvres(2), Uvres(3), Uvres(4));
     return BestChoix;
   }
+  // Restore the fixed coordinate after IsTangent() may have changed it.
+  myZerParFunc.ComputeParameters(ChoixIso, Param, UVap, BornInf, BornSup, Tolerance);
   Rsnld.SetTolerance(Tolerance);
   Rsnld.Perform(myZerParFunc, UVap, BornInf, BornSup);
   BestChoix = ChoixIso;

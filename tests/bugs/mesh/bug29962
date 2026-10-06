@@ -27,7 +27,7 @@ if { [llength $log2] != 0 } {
   puts "Mesh is OK"
 }
 
-checktrinfo result -tri 80054 -nod 40030 -defl 5.8384823176115326 -tol_abs_defl 1e-6
+checktrinfo result -tri 80070 -nod 40038 -defl 5.8384823176115326 -tol_abs_defl 1e-6
 
 don result
 isos result 0

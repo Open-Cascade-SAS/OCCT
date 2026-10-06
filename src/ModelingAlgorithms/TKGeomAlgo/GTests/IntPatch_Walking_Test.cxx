@@ -51,6 +51,33 @@
 #include <gp_Torus.hxx>
 #include <Precision.hxx>
 #include <math_Vector.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <IntWalk_TheInt2S.hxx>
+
+TEST(IntPatch_WalkingTest, RegularSeedPreservesFixedParameterAfterTangencyProbe)
+{
+  const occ::handle<Adaptor3d_Surface> aFirst =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Ax3(gp::Origin(), gp::DZ(), gp::DX())));
+  const occ::handle<Adaptor3d_Surface> aSecond =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Ax3(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX())));
+  IntWalk_TheInt2S           aIntersection(aFirst, aSecond, Precision::Confusion());
+  math_FunctionSetRoot       aSolver(aIntersection.Function());
+  NCollection_Array1<double> aSeed(1, 4);
+  aSeed(1) = 2.0;
+  aSeed(2) = 0.0;
+  aSeed(3) = -3.0;
+  aSeed(4) = 0.0;
+
+  // The tangency probe prefers U on the first plane; the requested fixed U is on the second.
+  ASSERT_NO_THROW(aIntersection.Perform(aSeed, aSolver, IntImp_UIsoparametricOnCaro2));
+  ASSERT_TRUE(aIntersection.IsDone());
+  ASSERT_FALSE(aIntersection.IsEmpty());
+  EXPECT_FALSE(aIntersection.IsTangent());
+  EXPECT_LE(aIntersection.Point().Value().Distance(gp_Pnt(2.0, 0.0, 0.0)), Precision::Confusion());
+  double aU1, aV1, aU2, aV2;
+  aIntersection.Point().Parameters(aU1, aV1, aU2, aV2);
+  EXPECT_DOUBLE_EQ(aU2, aSeed(3));
+}
 
 TEST(IntPatch_WalkingTest, ReachesBoundaryAtRegularAndSingularPoints)
 {
