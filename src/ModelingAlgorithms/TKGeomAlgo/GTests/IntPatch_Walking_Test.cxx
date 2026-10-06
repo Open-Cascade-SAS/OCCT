@@ -407,7 +407,7 @@ TEST(IntPatch_WalkingTest, SphereEllipsoidContactCoversCircleWithoutOverlap)
 
 TEST(IntPatch_WalkingTest, CrossingToriReachTheirSingularJunctions)
 {
-  for (double anAngle : {1.0, 1.57, 0.5 * M_PI})
+  for (double anAngle : {1.0, 1.56, 1.57, 1.58, 0.5 * M_PI})
   {
     SCOPED_TRACE(anAngle);
     const occ::handle<Geom_ToroidalSurface> aFirstSurface =
@@ -461,41 +461,48 @@ TEST(IntPatch_WalkingTest, CrossingToriReachTheirSingularJunctions)
 
 TEST(IntPatch_WalkingTest, SingularJunctionIsNotExtendedToNearbyBoundary)
 {
-  const gp_Torus aTorus1(gp_Ax3(gp::Origin(), gp::DZ()), 100.0, 10.0);
-  const gp_Torus aTorus2(gp_Ax3(gp_Pnt(100.0, 0.0, 0.0), gp::DZ()), 100.0, 10.0);
-  const double   aMargin = 1.e-6;
-  const occ::handle<Adaptor3d_Surface> aSurface1 =
-    new GeomAdaptor_Surface(new Geom_ToroidalSurface(aTorus1),
-                            M_PI / 3.0 - aMargin,
-                            5.0 * M_PI / 3.0 + aMargin,
-                            0.0,
-                            2.0 * M_PI);
-  const occ::handle<Adaptor3d_Surface> aSurface2 =
-    new GeomAdaptor_Surface(new Geom_ToroidalSurface(aTorus2),
-                            2.0 * M_PI / 3.0 - aMargin,
-                            4.0 * M_PI / 3.0 + aMargin,
-                            0.0,
-                            2.0 * M_PI);
-  const gp_Pnt               aSeed(40.0, -std::sqrt(7425.0), -std::sqrt(75.0));
-  const gp_Pnt               aJunction(50.0, -std::sqrt(7500.0), -10.0);
-  NCollection_Array1<double> aParameters(1, 4);
-  ElSLib::Parameters(aTorus1, aSeed, aParameters.ChangeAt(0), aParameters.ChangeAt(1));
-  ElSLib::Parameters(aTorus2, aSeed, aParameters.ChangeAt(2), aParameters.ChangeAt(3));
-  IntWalk_PWalking aWalking(aSurface1,
-                            aSurface2,
-                            Precision::Confusion(),
-                            Precision::Confusion(),
-                            0.01,
-                            0.01);
-  aWalking.Perform(aParameters);
-  ASSERT_TRUE(aWalking.IsDone());
-  ASSERT_GT(aWalking.NbPoints(), 2);
-  ASSERT_LE(std::min(aWalking.Value(1).Value().Distance(aJunction),
-                     aWalking.Value(aWalking.NbPoints()).Value().Distance(aJunction)),
-            Precision::Confusion());
+  for (double anOffset : {0.0, 100.0})
+  {
+    SCOPED_TRACE(anOffset);
+    const gp_Vec   aShift(anOffset, anOffset, anOffset);
+    const gp_Torus aTorus1(gp_Ax3(gp_Pnt(anOffset, anOffset, anOffset), gp::DZ()), 100.0, 10.0);
+    const gp_Torus aTorus2(gp_Ax3(gp_Pnt(100.0 + anOffset, anOffset, anOffset), gp::DZ()),
+                           100.0,
+                           10.0);
+    const double   aMargin = 1.e-6;
+    const occ::handle<Adaptor3d_Surface> aSurface1 =
+      new GeomAdaptor_Surface(new Geom_ToroidalSurface(aTorus1),
+                              M_PI / 3.0 - aMargin,
+                              5.0 * M_PI / 3.0 + aMargin,
+                              0.0,
+                              2.0 * M_PI);
+    const occ::handle<Adaptor3d_Surface> aSurface2 =
+      new GeomAdaptor_Surface(new Geom_ToroidalSurface(aTorus2),
+                              2.0 * M_PI / 3.0 - aMargin,
+                              4.0 * M_PI / 3.0 + aMargin,
+                              0.0,
+                              2.0 * M_PI);
+    const gp_Pnt aSeed     = gp_Pnt(40.0, -std::sqrt(7425.0), -std::sqrt(75.0)).Translated(aShift);
+    const gp_Pnt aJunction = gp_Pnt(50.0, -std::sqrt(7500.0), -10.0).Translated(aShift);
+    NCollection_Array1<double> aParameters(1, 4);
+    ElSLib::Parameters(aTorus1, aSeed, aParameters.ChangeAt(0), aParameters.ChangeAt(1));
+    ElSLib::Parameters(aTorus2, aSeed, aParameters.ChangeAt(2), aParameters.ChangeAt(3));
+    IntWalk_PWalking aWalking(aSurface1,
+                              aSurface2,
+                              Precision::Confusion(),
+                              Precision::Confusion(),
+                              0.01,
+                              0.01);
+    aWalking.Perform(aParameters);
+    ASSERT_TRUE(aWalking.IsDone());
+    ASSERT_GT(aWalking.NbPoints(), 2);
+    ASSERT_LE(std::min(aWalking.Value(1).Value().Distance(aJunction),
+                       aWalking.Value(aWalking.NbPoints()).Value().Distance(aJunction)),
+              Precision::Confusion());
 
-  aWalking.PutToBoundary(aSurface1, aSurface2);
-  EXPECT_LE(std::min(aWalking.Value(1).Value().Distance(aJunction),
-                     aWalking.Value(aWalking.NbPoints()).Value().Distance(aJunction)),
-            Precision::Confusion());
+    aWalking.PutToBoundary(aSurface1, aSurface2);
+    EXPECT_LE(std::min(aWalking.Value(1).Value().Distance(aJunction),
+                       aWalking.Value(aWalking.NbPoints()).Value().Distance(aJunction)),
+              Precision::Confusion());
+  }
 }

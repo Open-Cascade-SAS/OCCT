@@ -2635,7 +2635,15 @@ bool BRepMesh_Delaun::Contains(const int              theTriangleId,
     theEdgeOn = e[aEdgeOnId];
   }
 
-  return (aDistance[0] >= 0. && aDistance[1] >= 0. && aDistance[2] >= 0.);
+  // Apply the edge tolerance to signed distances, including rounded midpoints.
+  for (int i = 0; i < 3; ++i)
+  {
+    if (aDistance[i] < 0.0 && aDistance[i] * aDistance[i] > theSqTolerance * aSqModulus[i])
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 //=============================================================================
