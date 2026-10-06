@@ -1557,6 +1557,9 @@ bool ChFi3d_Builder::StartSol(
         }
         else
         {
+          // The obstacle face has no edge to follow, so HC holds no curve: this is not an obstacle.
+          HC.Nullify();
+          c1obstacle = false;
           prepareDefaultReturn();
           return false;
         }
