@@ -189,7 +189,7 @@ private:
                        const int (&theNodesIndices)[3],
                        TriangleNodeInfo (&theInfo)[3]) const
   {
-    const int(&e)[3] = theTriangle.myEdges;
+    const int (&e)[3] = theTriangle.myEdges;
     for (int i = 0; i < 3; ++i)
     {
       const BRepMesh_Vertex& aVertex = this->getStructure()->GetNode(theNodesIndices[i]);
