@@ -86,6 +86,18 @@ public:
   //! @note Constexpr-compatible when input is already normalized.
   constexpr gp_Dir(const double theXv, const double theYv, const double theZv);
 
+  //! Restore stored unit components without changing their binary values.
+  //! The caller must supply unit components from a valid gp_Dir.
+  //! Components are neither validated nor normalized.
+  [[nodiscard]] static gp_Dir FromUnitComponents(const double theXv,
+                                                 const double theYv,
+                                                 const double theZv)
+  {
+    gp_Dir aResult;
+    aResult.coord.SetCoord(theXv, theYv, theZv);
+    return aResult;
+  }
+
   constexpr gp_Dir(const gp_Dir&) noexcept = default;
   constexpr gp_Dir(gp_Dir&&) noexcept      = default;
 

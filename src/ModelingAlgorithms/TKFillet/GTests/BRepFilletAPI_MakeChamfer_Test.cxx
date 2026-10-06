@@ -12,6 +12,17 @@
 // commercial license or contractual agreement.
 
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepBuilderAPI_NurbsConvert.hxx>
+#include <BRepGProp.hxx>
+#include <ChFiDS_ChamfMode.hxx>
+#include <gp_Pnt.hxx>
+#include <GProp_GProps.hxx>
+#include <Precision.hxx>
+#include <TopLoc_Location.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -36,6 +47,7 @@
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <cmath>
 
 TEST(BRepFilletAPI_MakeChamferTest, SymmetricChamfer)
 {
@@ -296,4 +308,79 @@ TEST(BRepFilletAPI_MakeChamferTest, SequentialChamferNoCrash)
   // Verify at least one chamfer iteration succeeded, ensuring the test
   // meaningfully exercises topology changes rather than trivially passing.
   EXPECT_GE(aSuccessCount, 1);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, PenetrationChamferOnClosedSplineEdge)
+{
+  double aReferenceVolume = 0.0;
+  for (double aRadius : {10.0, std::nextafter(10.0, 0.0)})
+  {
+    SCOPED_TRACE(aRadius);
+    const double aScale    = aRadius / 10.0;
+    TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(aRadius, 50.0 * aScale).Shape();
+    gp_Trsf      aTransform;
+    aTransform.SetTranslation(gp_Vec(1.e-10, 0.0, 0.0));
+    aCylinder.Move(TopLoc_Location(aTransform));
+    const TopoDS_Shape aBox =
+      BRepPrimAPI_MakeBox(gp_Pnt(-20.0 * aScale, -20.0 * aScale, -20.0 * aScale),
+                          40.0 * aScale,
+                          40.0 * aScale,
+                          40.0 * aScale)
+        .Shape();
+    BRepAlgoAPI_Fuse aFuse(aCylinder, aBox);
+    ASSERT_TRUE(aFuse.IsDone());
+    BRepBuilderAPI_NurbsConvert aConversion(aFuse.Shape());
+    ASSERT_TRUE(aConversion.IsDone());
+    const TopoDS_Shape& aShape = aConversion.Shape();
+    TopoDS_Face         aFace;
+    TopoDS_Edge         anEdge;
+    for (TopExp_Explorer aFaceIt(aShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
+    {
+      const TopoDS_Face& aCandidateFace = TopoDS::Face(aFaceIt.Current());
+      if (!BRepAdaptor_Surface(aCandidateFace).IsUPeriodic())
+      {
+        continue;
+      }
+      for (TopExp_Explorer anEdgeIt(aCandidateFace, TopAbs_EDGE); anEdgeIt.More(); anEdgeIt.Next())
+      {
+        const TopoDS_Edge& aCandidateEdge = TopoDS::Edge(anEdgeIt.Current());
+        BRepAdaptor_Curve  aCurve(aCandidateEdge);
+        if (aCurve.IsClosed()
+            && std::abs(aCurve.Value(aCurve.FirstParameter()).Z() - 20.0 * aScale)
+                 <= Precision::Confusion())
+        {
+          aFace  = aCandidateFace;
+          anEdge = aCandidateEdge;
+        }
+      }
+    }
+    ASSERT_FALSE(anEdge.IsNull());
+    BRepFilletAPI_MakeChamfer aChamfer(aShape);
+    aChamfer.SetMode(ChFiDS_ConstThroatWithPenetrationChamfer);
+    ASSERT_NO_THROW(aChamfer.Add(aScale, 2.0 * aScale, anEdge, aFace));
+    aChamfer.Build();
+    ASSERT_TRUE(aChamfer.IsDone());
+    const TopoDS_Shape& aResult = aChamfer.Shape();
+    EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFaces, aSolids;
+    TopExp::MapShapes(aResult, TopAbs_FACE, aFaces);
+    TopExp::MapShapes(aResult, TopAbs_SOLID, aSolids);
+    EXPECT_EQ(aFaces.Extent(), 9);
+    EXPECT_EQ(aSolids.Extent(), 1);
+    GProp_GProps aProperties;
+    BRepGProp::VolumeProperties(aResult, aProperties, 1.e-9);
+    if (aRadius == 10.0)
+    {
+      aReferenceVolume = aProperties.Mass();
+    }
+    EXPECT_NEAR(aProperties.Mass(), aReferenceVolume, aReferenceVolume * 1.e-7);
+    for (TopExp_Explorer anEdgeIt(aResult, TopAbs_EDGE); anEdgeIt.More(); anEdgeIt.Next())
+    {
+      EXPECT_LE(BRep_Tool::Tolerance(TopoDS::Edge(anEdgeIt.Current())), 1.e-4);
+    }
+    for (TopExp_Explorer aVertexIt(aResult, TopAbs_VERTEX); aVertexIt.More(); aVertexIt.Next())
+    {
+      EXPECT_LE(BRep_Tool::Tolerance(TopoDS::Vertex(aVertexIt.Current())), 1.e-4);
+    }
+  }
 }

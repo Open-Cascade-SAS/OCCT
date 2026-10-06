@@ -1,7 +1,7 @@
 // Created on: 1991-09-09
 // Created by: Michel Chauvat
 // Copyright (c) 1991-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 1999-2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,8 +13,6 @@
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
-
-//  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620
 
 #ifndef No_Exception
   #define No_Exception
@@ -29,6 +27,9 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <Precision.hxx>
+
+#include <cmath>
 
 namespace
 {
@@ -55,6 +56,154 @@ static inline void normalizeAngle(double& theAngle)
   {
     theAngle = 0.;
   }
+}
+
+// Sine/cosine pair used by torus evaluators.
+struct ElSLib_TorusSinCos
+{
+  double Sin; //!< Sine of the stored parameter.
+  double Cos; //!< Cosine of the stored parameter.
+};
+
+//==================================================================================================
+
+// Evaluate the stored parameter without changing small valid components.
+static ElSLib_TorusSinCos torusSinCos(const double theParameter)
+{
+  return {std::sin(theParameter), std::cos(theParameter)};
+}
+
+struct ElSLib_TorusSection
+{
+  double Radius;   //!< Radial distance from the torus axis.
+  double MinorCos; //!< Minor radius times cos(V).
+};
+
+//==================================================================================================
+
+// One rounding preserves the section radius near a horn or spindle singularity.
+static ElSLib_TorusSection torusSection(const double theMajorRadius,
+                                        const double theMinorRadius,
+                                        const double theCosV)
+{
+  return {std::fma(theMinorRadius, theCosV, theMajorRadius), theMinorRadius * theCosV};
+}
+
+//==================================================================================================
+
+// Returns the requested derivative of cos(parameter) from a previously evaluated pair.
+static double torusCosDerivative(const ElSLib_TorusSinCos& theTrig, const int theOrder)
+{
+  switch (theOrder & 3)
+  {
+    case 0:
+      return theTrig.Cos;
+    case 1:
+      return -theTrig.Sin;
+    case 2:
+      return -theTrig.Cos;
+    default:
+      return theTrig.Sin;
+  }
+}
+
+//==================================================================================================
+
+// Returns the requested derivative of sin(parameter) from a previously evaluated pair.
+static double torusSinDerivative(const ElSLib_TorusSinCos& theTrig, const int theOrder)
+{
+  return torusCosDerivative(theTrig, (theOrder & 3) + 3);
+}
+
+//==================================================================================================
+
+// Returns d^order/du^order (cos(u) * X + sin(u) * Y).
+static gp_XYZ torusRadialDerivative(const gp_XYZ&             theXDirection,
+                                    const gp_XYZ&             theYDirection,
+                                    const ElSLib_TorusSinCos& theTrig,
+                                    const int                 theOrder)
+{
+  return theXDirection * torusCosDerivative(theTrig, theOrder)
+         + theYDirection * torusSinDerivative(theTrig, theOrder);
+}
+
+//==================================================================================================
+
+// Returns the requested derivative of cos(parameter), evaluating only the
+// trigonometric component required by the derivative order.
+static double torusCosDerivative(const double theParameter, const int theOrder)
+{
+  switch (theOrder & 3)
+  {
+    case 0:
+      return std::cos(theParameter);
+    case 1:
+      return -std::sin(theParameter);
+    case 2:
+      return -std::cos(theParameter);
+    default:
+      return std::sin(theParameter);
+  }
+}
+
+struct ElSLib_TorusEvaluation
+{
+  gp_XYZ Point;     //!< Point in the global frame.
+  gp_XYZ Radial;    //!< Radial direction in the global frame.
+  gp_XYZ Tangent;   //!< U tangent of the radial direction.
+  double Radius;    //!< Radial distance from the torus axis.
+  double MinorCosV; //!< Minor radius times cos(V).
+  double MinorSinV; //!< Minor radius times sin(V).
+};
+
+//==================================================================================================
+
+// Computes the common torus frame and scalar terms used by D1-D3.
+static ElSLib_TorusEvaluation torusEvaluation(const double  theU,
+                                              const double  theV,
+                                              const gp_Ax3& thePosition,
+                                              const double  theMajorRadius,
+                                              const double  theMinorRadius)
+{
+  const ElSLib_TorusSinCos aUTrig = torusSinCos(theU);
+  const ElSLib_TorusSinCos aVTrig = torusSinCos(theV);
+
+  const ElSLib_TorusSection aSection   = torusSection(theMajorRadius, theMinorRadius, aVTrig.Cos);
+  const gp_XYZ              aRadial    = torusRadialDerivative(thePosition.XDirection().XYZ(),
+                                               thePosition.YDirection().XYZ(),
+                                               aUTrig,
+                                               0);
+  const gp_XYZ              aTangent   = torusRadialDerivative(thePosition.XDirection().XYZ(),
+                                                thePosition.YDirection().XYZ(),
+                                                aUTrig,
+                                                1);
+  const double              aMinorSinV = theMinorRadius * aVTrig.Sin;
+  const gp_XYZ aPoint = aRadial * aSection.Radius + thePosition.Direction().XYZ() * aMinorSinV
+                        + thePosition.Location().XYZ();
+  return {aPoint, aRadial, aTangent, aSection.Radius, aSection.MinorCos, aMinorSinV};
+}
+
+//==================================================================================================
+
+// Computes a torus point without constructing the U-tangent required by derivative evaluators.
+static gp_XYZ torusPoint(const double  theU,
+                         const double  theV,
+                         const gp_Ax3& thePosition,
+                         const double  theMajorRadius,
+                         const double  theMinorRadius)
+{
+  const ElSLib_TorusSinCos aUTrig  = torusSinCos(theU);
+  const ElSLib_TorusSinCos aVTrig  = torusSinCos(theV);
+  const gp_XYZ             aRadial = torusRadialDerivative(thePosition.XDirection().XYZ(),
+                                               thePosition.YDirection().XYZ(),
+                                               aUTrig,
+                                               0);
+
+  const ElSLib_TorusSection aSection = torusSection(theMajorRadius, theMinorRadius, aVTrig.Cos);
+  gp_XYZ                    aPoint =
+    (aRadial * aSection.Radius + thePosition.Direction().XYZ() * (theMinorRadius * aVTrig.Sin));
+  aPoint.Add(thePosition.Location().XYZ());
+  return aPoint;
 }
 } // namespace
 
@@ -129,41 +278,7 @@ gp_Pnt ElSLib::TorusValue(const double  U,
                           const double  MajorRadius,
                           const double  MinorRadius)
 {
-  // M(U,V) =
-  //   Location +
-  //   (MajRadius+MinRadius*std::cos(V)) * (std::cos(U)*XDirection + std::sin(U)*YDirection) +
-  //   MinorRadius * std::sin(V) * Direction
-
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  const gp_XYZ& PLoc = Pos.Location().XYZ();
-  double        R    = MajorRadius + MinorRadius * cos(V);
-  double        A3   = MinorRadius * sin(V);
-  double        A1   = R * cos(U);
-  double        A2   = R * sin(U);
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-  return gp_Pnt(A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X() + PLoc.X(),
-                A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y() + PLoc.Y(),
-                A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z() + PLoc.Z());
+  return gp_Pnt(torusPoint(U, V, Pos, MajorRadius, MinorRadius));
 }
 
 gp_Vec ElSLib::PlaneDN(const double, const double, const gp_Ax3& Pos, const int Nu, const int Nv)
@@ -376,187 +491,30 @@ gp_Vec ElSLib::TorusDN(const double  U,
   {
     return gp_Vec();
   }
-  double        CosU = cos(U);
-  double        SinU = sin(U);
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  double        A1, A2, A3, X = 0, Y = 0, Z = 0;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 End
+
+  const ElSLib_TorusSinCos aUTrig = torusSinCos(U);
+  const gp_XYZ             aUDerivative =
+    torusRadialDerivative(Pos.XDirection().XYZ(), Pos.YDirection().XYZ(), aUTrig, Nu);
+
   if (Nv == 0)
   {
-    double R = MajorRadius + MinorRadius * cos(V);
-    if (IsOdd(Nu))
-    {
-      A1 = -R * SinU;
-      A2 = R * CosU;
-    }
-    else
-    {
-      A1 = -R * CosU;
-      A2 = -R * SinU;
-    }
-    //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-    if (std::abs(A1) <= eps)
-    {
-      A1 = 0.;
-    }
-
-    if (std::abs(A2) <= eps)
-    {
-      A2 = 0.;
-    }
-    //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-    X = A1 * XDir.X() + A2 * YDir.X();
-    Y = A1 * XDir.Y() + A2 * YDir.Y();
-    Z = A1 * XDir.Z() + A2 * YDir.Z();
-    if ((Nu + 2) % 4 != 0 && (Nu + 3) % 4 != 0)
-    {
-      X = -X;
-      Y = -Y;
-      Z = -Z;
-    }
+    // Pure U derivative requires only cos(V).
+    const double aRadius = torusSection(MajorRadius, MinorRadius, std::cos(V)).Radius;
+    return gp_Vec(aUDerivative * aRadius);
   }
-  else if (Nu == 0)
+
+  if (Nu > 0)
   {
-    double RCosV = MinorRadius * cos(V);
-    double RSinV = MinorRadius * sin(V);
-    if (IsOdd(Nv))
-    {
-      A1 = -RSinV * CosU;
-      A2 = -RSinV * SinU;
-      A3 = RCosV;
-    }
-    else
-    {
-      A1 = -RCosV * CosU;
-      A2 = -RCosV * SinU;
-      A3 = -RSinV;
-    }
-    //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-    if (std::abs(A1) <= eps)
-    {
-      A1 = 0.;
-    }
-
-    if (std::abs(A2) <= eps)
-    {
-      A2 = 0.;
-    }
-
-    if (std::abs(A3) <= eps)
-    {
-      A3 = 0.;
-    }
-    //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-    X = A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X();
-    Y = A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y();
-    Z = A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z();
-    if ((Nv + 2) % 4 != 0 && (Nv + 3) % 4 != 0)
-    {
-      X = -X;
-      Y = -Y;
-      Z = -Z;
-    }
+    // Mixed derivatives depend only on a derivative of cos(V).
+    const double aCosDerivative = MinorRadius * torusCosDerivative(V, Nv);
+    return gp_Vec(aUDerivative * aCosDerivative);
   }
-  else
-  {
-    if (IsOdd(Nu) && IsOdd(Nv))
-    {
-      double RSinV = MinorRadius * sin(V);
-      A1           = RSinV * SinU;
-      A2           = -RSinV * CosU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
 
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
-    }
-    else if (IsEven(Nu) && IsEven(Nv))
-    {
-      double RCosV = MinorRadius * cos(V);
-      A1           = RCosV * CosU;
-      A2           = RCosV * SinU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
-
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
-    }
-    else if (IsEven(Nv) && IsOdd(Nu))
-    {
-      double RCosV = MinorRadius * cos(V);
-      A1           = RCosV * SinU;
-      A2           = -RCosV * CosU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
-
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
-      if (((Nv + Nu + 3) % 4) == 0)
-      {
-        X = -X;
-        Y = -Y;
-        Z = -Z;
-      }
-    }
-    else if (IsOdd(Nv) && IsEven(Nu))
-    {
-      double RSinV = MinorRadius * sin(V);
-      A1           = RSinV * CosU;
-      A2           = RSinV * SinU;
-      //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-      if (std::abs(A1) <= eps)
-      {
-        A1 = 0.;
-      }
-
-      if (std::abs(A2) <= eps)
-      {
-        A2 = 0.;
-      }
-      //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-      X = A1 * XDir.X() + A2 * YDir.X();
-      Y = A1 * XDir.Y() + A2 * YDir.Y();
-      Z = A1 * XDir.Z() + A2 * YDir.Z();
-      if (((Nu + Nv + 3) % 4) == 0)
-      {
-        X = -X;
-        Y = -Y;
-        Z = -Z;
-      }
-    }
-  }
-  return gp_Vec(X, Y, Z);
+  // Pure V derivatives require both section components; evaluate the pair once.
+  const ElSLib_TorusSinCos aVTrig         = torusSinCos(V);
+  const double             aCosDerivative = MinorRadius * torusCosDerivative(aVTrig, Nv);
+  const double             aSinDerivative = MinorRadius * torusSinDerivative(aVTrig, Nv);
+  return gp_Vec(aUDerivative * aCosDerivative + Pos.Direction().XYZ() * aSinDerivative);
 }
 
 void ElSLib::PlaneD0(const double U, const double V, const gp_Ax3& Pos, gp_Pnt& P)
@@ -632,35 +590,7 @@ void ElSLib::TorusD0(const double  U,
                      const double  MinorRadius,
                      gp_Pnt&       P)
 {
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  const gp_XYZ& PLoc = Pos.Location().XYZ();
-  double        R    = MajorRadius + MinorRadius * cos(V);
-  double        A3   = MinorRadius * sin(V);
-  double        A1   = R * cos(U);
-  double        A2   = R * sin(U);
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-  P.SetX(A1 * XDir.X() + A2 * YDir.X() + A3 * ZDir.X() + PLoc.X());
-  P.SetY(A1 * XDir.Y() + A2 * YDir.Y() + A3 * ZDir.Y() + PLoc.Y());
-  P.SetZ(A1 * XDir.Z() + A2 * YDir.Z() + A3 * ZDir.Z() + PLoc.Z());
+  P.SetXYZ(torusPoint(U, V, Pos, MajorRadius, MinorRadius));
 }
 
 void ElSLib::PlaneD1(const double  U,
@@ -803,65 +733,11 @@ void ElSLib::TorusD1(const double  U,
                      gp_Vec&       Vu,
                      gp_Vec&       Vv)
 {
+  const ElSLib_TorusEvaluation aData = torusEvaluation(U, V, Pos, MajorRadius, MinorRadius);
 
-  // P(U,V) =
-  //   Location +
-  //   (MajorRadius+MinorRadius*std::cos(V)) *
-  //   (std::cos(U)*XDirection + std::sin(U)*YDirection) +
-  //   MinorRadius * std::sin(V) * Direction
-
-  // Vv = -MinorRadius * std::sin(V) * (std::cos(U)*XDirection + std::sin(U)*YDirection) +
-  //       MinorRadius * std::cos(V) * Direction
-
-  // Vu =
-  //  (MajorRadius+MinorRadius*std::cos(V)) *
-  //  (-std::sin(U)*XDirection + std::cos(U)*YDirection)
-
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  const gp_XYZ& PLoc = Pos.Location().XYZ();
-  double        CosU = cos(U);
-  double        SinU = sin(U);
-  double        R1   = MinorRadius * cos(V);
-  double        R2   = MinorRadius * sin(V);
-  double        R    = MajorRadius + R1;
-  double        A1   = R * CosU;
-  double        A2   = R * SinU;
-  double        A3   = R2 * CosU;
-  double        A4   = R2 * SinU;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  if (std::abs(A4) <= eps)
-  {
-    A4 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-  P.SetX(A1 * XDir.X() + A2 * YDir.X() + R2 * ZDir.X() + PLoc.X());
-  P.SetY(A1 * XDir.Y() + A2 * YDir.Y() + R2 * ZDir.Y() + PLoc.Y());
-  P.SetZ(A1 * XDir.Z() + A2 * YDir.Z() + R2 * ZDir.Z() + PLoc.Z());
-  Vu.SetX(-A2 * XDir.X() + A1 * YDir.X());
-  Vu.SetY(-A2 * XDir.Y() + A1 * YDir.Y());
-  Vu.SetZ(-A2 * XDir.Z() + A1 * YDir.Z());
-  Vv.SetX(-A3 * XDir.X() - A4 * YDir.X() + R1 * ZDir.X());
-  Vv.SetY(-A3 * XDir.Y() - A4 * YDir.Y() + R1 * ZDir.Y());
-  Vv.SetZ(-A3 * XDir.Z() - A4 * YDir.Z() + R1 * ZDir.Z());
+  P  = gp_Pnt(aData.Point);
+  Vu = gp_Vec(aData.Tangent * aData.Radius);
+  Vv = gp_Vec(aData.Radial * -aData.MinorSinV + Pos.Direction().XYZ() * aData.MinorCosV);
 }
 
 void ElSLib::ConeD2(const double  U,
@@ -1048,100 +924,14 @@ void ElSLib::TorusD2(const double  U,
                      gp_Vec&       Vvv,
                      gp_Vec&       Vuv)
 {
-  // P(U,V) =
-  //   Location +
-  //   (MajorRadius+MinorRadius*std::cos(V)) *
-  //   (std::cos(U)*XDirection + std::sin(U)*YDirection) +
-  //   MinorRadius * std::sin(V) * Direction
+  const ElSLib_TorusEvaluation aData = torusEvaluation(U, V, Pos, MajorRadius, MinorRadius);
 
-  // Vv = -MinorRadius * std::sin(V) * (std::cos(U)*XDirection + std::sin(U)*YDirection) +
-  //       MinorRadius * std::cos(V) * Direction
-
-  // Vu =
-  //  (MajorRadius+MinorRadius*std::cos(V)) *
-  //  (-std::sin(U)*XDirection + std::cos(U)*YDirection)
-
-  // Vvv = -MinorRadius * std::cos(V) * (std::cos(U)*XDirection + std::sin(U)*YDirection)
-  //       -MinorRadius * std::sin(V) * Direction
-
-  // Vuu =
-  //  -(MajorRadius+MinorRadius*std::cos(V)) *
-  //  (std::cos(U)*XDirection + std::sin(U)*YDirection)
-
-  // Vuv = MinorRadius * std::sin(V) * (std::sin(U)*XDirection - std::cos(U)*YDirection)
-
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  const gp_XYZ& PLoc = Pos.Location().XYZ();
-  double        CosU = cos(U);
-  double        SinU = sin(U);
-  double        R1   = MinorRadius * cos(V);
-  double        R2   = MinorRadius * sin(V);
-  double        R    = MajorRadius + R1;
-  double        A1   = R * CosU;
-  double        A2   = R * SinU;
-  double        A3   = R2 * CosU;
-  double        A4   = R2 * SinU;
-  double        A5   = R1 * CosU;
-  double        A6   = R1 * SinU;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  if (std::abs(A4) <= eps)
-  {
-    A4 = 0.;
-  }
-
-  if (std::abs(A5) <= eps)
-  {
-    A5 = 0.;
-  }
-
-  if (std::abs(A6) <= eps)
-  {
-    A6 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-  double Som1X = A1 * XDir.X() + A2 * YDir.X();
-  double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
-  double Som1Z = A1 * XDir.Z() + A2 * YDir.Z();
-  double R2ZX  = R2 * ZDir.X();
-  double R2ZY  = R2 * ZDir.Y();
-  double R2ZZ  = R2 * ZDir.Z();
-  P.SetX(Som1X + R2ZX + PLoc.X());
-  P.SetY(Som1Y + R2ZY + PLoc.Y());
-  P.SetZ(Som1Z + R2ZZ + PLoc.Z());
-  Vu.SetX(-A2 * XDir.X() + A1 * YDir.X());
-  Vu.SetY(-A2 * XDir.Y() + A1 * YDir.Y());
-  Vu.SetZ(-A2 * XDir.Z() + A1 * YDir.Z());
-  Vv.SetX(-A3 * XDir.X() - A4 * YDir.X() + R1 * ZDir.X());
-  Vv.SetY(-A3 * XDir.Y() - A4 * YDir.Y() + R1 * ZDir.Y());
-  Vv.SetZ(-A3 * XDir.Z() - A4 * YDir.Z() + R1 * ZDir.Z());
-  Vuu.SetX(-Som1X);
-  Vuu.SetY(-Som1Y);
-  Vuu.SetZ(-Som1Z);
-  Vvv.SetX(-A5 * XDir.X() - A6 * YDir.X() - R2ZX);
-  Vvv.SetY(-A5 * XDir.Y() - A6 * YDir.Y() - R2ZY);
-  Vvv.SetZ(-A5 * XDir.Z() - A6 * YDir.Z() - R2ZZ);
-  Vuv.SetX(A4 * XDir.X() - A3 * YDir.X());
-  Vuv.SetY(A4 * XDir.Y() - A3 * YDir.Y());
-  Vuv.SetZ(A4 * XDir.Z() - A3 * YDir.Z());
+  P   = gp_Pnt(aData.Point);
+  Vu  = gp_Vec(aData.Tangent * aData.Radius);
+  Vv  = gp_Vec(aData.Radial * -aData.MinorSinV + Pos.Direction().XYZ() * aData.MinorCosV);
+  Vuu = gp_Vec(aData.Radial * -aData.Radius);
+  Vvv = gp_Vec(aData.Radial * -aData.MinorCosV + Pos.Direction().XYZ() * -aData.MinorSinV);
+  Vuv = gp_Vec(aData.Tangent * -aData.MinorSinV);
 }
 
 void ElSLib::ConeD3(const double  U,
@@ -1416,130 +1206,18 @@ void ElSLib::TorusD3(const double  U,
                      gp_Vec&       Vuuv,
                      gp_Vec&       Vuvv)
 {
+  const ElSLib_TorusEvaluation aData = torusEvaluation(U, V, Pos, MajorRadius, MinorRadius);
 
-  // P(U,V) =
-  //   Location +
-  //   (MajorRadius+MinorRadius*std::cos(V)) *
-  //   (std::cos(U)*XDirection + std::sin(U)*YDirection) +
-  //    MinorRadius * std::sin(V) * Direction
-
-  // Vv = -MinorRadius * std::sin(V) * (std::cos(U)*XDirection + std::sin(U)*YDirection) +
-  //      MinorRadius * std::cos(V) * Direction
-
-  // Vvv = -MinorRadius * std::cos(V) * (std::cos(U)*XDirection + std::sin(U)*YDirection)
-  //       -MinorRadius * std::sin(V) * Direction
-
-  // Vvvv = - Vv
-
-  // Vu =
-  //  (MajorRadius+MinorRadius*std::cos(V)) *
-  //  (-std::sin(U)*XDirection + std::cos(U)*YDirection)
-
-  // Vuu =
-  //  -(MajorRadius+MinorRadius*std::cos(V)) *
-  //  (std::cos(U)*XDirection + std::sin(U)*YDirection)
-
-  // Vuuu = -Vu
-
-  // Vuv = MinorRadius * std::sin(V) * (std::sin(U)*XDirection - std::cos(U)*YDirection)
-
-  // Vuvv = MinorRadius * std::cos(V) * (std::sin(U)*XDirection - std::cos(U)*YDirection)
-
-  // Vuuv = MinorRadius * std::sin(V) * (std::cos(U)*XDirection + std::sin(U)*YDirection)
-
-  const gp_XYZ& XDir = Pos.XDirection().XYZ();
-  const gp_XYZ& YDir = Pos.YDirection().XYZ();
-  const gp_XYZ& ZDir = Pos.Direction().XYZ();
-  const gp_XYZ& PLoc = Pos.Location().XYZ();
-  double        CosU = cos(U);
-  double        SinU = sin(U);
-  double        R1   = MinorRadius * cos(V);
-  double        R2   = MinorRadius * sin(V);
-  double        R    = MajorRadius + R1;
-  double        A1   = R * CosU;
-  double        A2   = R * SinU;
-  double        A3   = R2 * CosU;
-  double        A4   = R2 * SinU;
-  double        A5   = R1 * CosU;
-  double        A6   = R1 * SinU;
-  //  Modified by skv - Tue Sep  9 15:10:34 2003 OCC620 Begin
-  double eps = 10. * (MinorRadius + MajorRadius) * RealEpsilon();
-
-  if (std::abs(A1) <= eps)
-  {
-    A1 = 0.;
-  }
-
-  if (std::abs(A2) <= eps)
-  {
-    A2 = 0.;
-  }
-
-  if (std::abs(A3) <= eps)
-  {
-    A3 = 0.;
-  }
-
-  if (std::abs(A4) <= eps)
-  {
-    A4 = 0.;
-  }
-
-  if (std::abs(A5) <= eps)
-  {
-    A5 = 0.;
-  }
-
-  if (std::abs(A6) <= eps)
-  {
-    A6 = 0.;
-  }
-  //  Modified by skv - Tue Sep  9 15:10:35 2003 OCC620 End
-  double Som1X = A1 * XDir.X() + A2 * YDir.X();
-  double Som1Y = A1 * XDir.Y() + A2 * YDir.Y();
-  double Som1Z = A1 * XDir.Z() + A2 * YDir.Z();
-  double Som3X = A3 * XDir.X() + A4 * YDir.X();
-  double Som3Y = A3 * XDir.Y() + A4 * YDir.Y();
-  double Som3Z = A3 * XDir.Z() + A4 * YDir.Z();
-  double Dif1X = A2 * XDir.X() - A1 * YDir.X();
-  double Dif1Y = A2 * XDir.Y() - A1 * YDir.Y();
-  double Dif1Z = A2 * XDir.Z() - A1 * YDir.Z();
-  double R1ZX  = R1 * ZDir.X();
-  double R1ZY  = R1 * ZDir.Y();
-  double R1ZZ  = R1 * ZDir.Z();
-  double R2ZX  = R2 * ZDir.X();
-  double R2ZY  = R2 * ZDir.Y();
-  double R2ZZ  = R2 * ZDir.Z();
-  P.SetX(Som1X + R2ZX + PLoc.X());
-  P.SetY(Som1Y + R2ZY + PLoc.Y());
-  P.SetZ(Som1Z + R2ZZ + PLoc.Z());
-  Vu.SetX(-Dif1X);
-  Vu.SetY(-Dif1Y);
-  Vu.SetZ(-Dif1Z);
-  Vv.SetX(-Som3X + R1ZX);
-  Vv.SetY(-Som3Y + R1ZY);
-  Vv.SetZ(-Som3Z + R1ZZ);
-  Vuu.SetX(-Som1X);
-  Vuu.SetY(-Som1Y);
-  Vuu.SetZ(-Som1Z);
-  Vvv.SetX(-A5 * XDir.X() - A6 * YDir.X() - R2ZX);
-  Vvv.SetY(-A5 * XDir.Y() - A6 * YDir.Y() - R2ZY);
-  Vvv.SetZ(-A5 * XDir.Z() - A6 * YDir.Z() - R2ZZ);
-  Vuv.SetX(A4 * XDir.X() - A3 * YDir.X());
-  Vuv.SetY(A4 * XDir.Y() - A3 * YDir.Y());
-  Vuv.SetZ(A4 * XDir.Z() - A3 * YDir.Z());
-  Vuuu.SetX(Dif1X);
-  Vuuu.SetY(Dif1Y);
-  Vuuu.SetZ(Dif1Z);
-  Vvvv.SetX(Som3X - R1ZX);
-  Vvvv.SetY(Som3Y - R1ZY);
-  Vvvv.SetZ(Som3Z - R1ZZ);
-  Vuuv.SetX(Som3X);
-  Vuuv.SetY(Som3Y);
-  Vuuv.SetZ(Som3Z);
-  Vuvv.SetX(A6 * XDir.X() - A5 * YDir.X());
-  Vuvv.SetY(A6 * XDir.Y() - A5 * YDir.Y());
-  Vuvv.SetZ(A6 * XDir.Z() - A5 * YDir.Z());
+  P    = gp_Pnt(aData.Point);
+  Vu   = gp_Vec(aData.Tangent * aData.Radius);
+  Vv   = gp_Vec(aData.Radial * -aData.MinorSinV + Pos.Direction().XYZ() * aData.MinorCosV);
+  Vuu  = gp_Vec(aData.Radial * -aData.Radius);
+  Vvv  = gp_Vec(aData.Radial * -aData.MinorCosV + Pos.Direction().XYZ() * -aData.MinorSinV);
+  Vuv  = gp_Vec(aData.Tangent * -aData.MinorSinV);
+  Vuuu = gp_Vec(aData.Tangent * -aData.Radius);
+  Vvvv = gp_Vec(aData.Radial * aData.MinorSinV + Pos.Direction().XYZ() * -aData.MinorCosV);
+  Vuuv = gp_Vec(aData.Radial * aData.MinorSinV);
+  Vuvv = gp_Vec(aData.Tangent * -aData.MinorCosV);
 }
 
 //=================================================================================================
@@ -1597,7 +1275,6 @@ void ElSLib::ConeParameters(const gp_Ax3& Pos,
     U = atan2(Ploc.Y(), Ploc.X());
   }
   normalizeAngle(U);
-
   // Evaluate V as follows :
   // P0 = Cone.Value(U,0)
   // P1 = Cone.Value(U,1)
@@ -1653,51 +1330,46 @@ void ElSLib::TorusParameters(const gp_Ax3& Pos,
                              double&       U,
                              double&       V)
 {
-  gp_Trsf Tref;
-  Tref.SetTransformation(Pos);
-  gp_Pnt Ploc = P.Transformed(Tref);
-  double x, y, z;
-  Ploc.Coord(x, y, z);
+  gp_Trsf aTransformation;
+  aTransformation.SetTransformation(Pos);
+  const gp_Pnt aLocalPoint = P.Transformed(aTransformation);
+  const double aX          = aLocalPoint.X();
+  const double aY          = aLocalPoint.Y();
+  const double aZ          = aLocalPoint.Z();
+  const double aRadial     = std::hypot(aX, aY);
 
-  // all that to process case of  Major < Minor.
-  U = atan2(y, x);
+  U = std::atan2(aY, aX);
+
+  // A spindle torus has two possible meridian branches for the direction returned by atan2().
+  // Select the branch whose tube-circle equation has the smaller residual.
+  double aSignedRadial = aRadial;
   if (MajorRadius < MinorRadius)
   {
-    const double cosu  = cos(U);
-    const double sinu  = sin(U);
-    const double z2    = z * z;
-    const double MinR2 = MinorRadius * MinorRadius;
-    const double RCosU = MajorRadius * cosu;
-    const double RSinU = MajorRadius * sinu;
-    const double xm    = x - RCosU;
-    const double ym    = y - RSinU;
-    const double xp    = x + RCosU;
-    const double yp    = y + RSinU;
-    const double D1    = xm * xm + ym * ym + z2 - MinR2;
-    const double D2    = xp * xp + yp * yp + z2 - MinR2;
-    const double AD1   = std::abs(D1);
-    const double AD2   = std::abs(D2);
-    if (AD2 < AD1)
+    const double aNearRadius   = aRadial - MajorRadius;
+    const double aFarRadius    = aRadial + MajorRadius;
+    const double aNearResidual = std::abs(std::hypot(aNearRadius, aZ) - MinorRadius);
+    const double aFarResidual  = std::abs(std::hypot(aFarRadius, aZ) - MinorRadius);
+    if (aFarResidual < aNearResidual)
     {
       U += M_PI;
+      aSignedRadial = -aRadial;
     }
   }
   normalizeAngle(U);
-  const double cosu = cos(U);
-  const double sinu = sin(U);
-  const gp_Dir dx(cosu, sinu, 0.);
-  const gp_XYZ dPV(x - MajorRadius * cosu, y - MajorRadius * sinu, z);
-  const double aMag = dPV.Modulus();
-  if (aMag <= gp::Resolution())
+
+  const double aSectionX    = aSignedRadial - MajorRadius;
+  const double aSectionNorm = std::hypot(aSectionX, aZ);
+  const double aScale       = std::abs(MajorRadius) + aRadial + std::abs(aZ);
+  if (aSectionNorm == 0.0
+      || (std::isfinite(aScale) && aSectionNorm <= Precision::Computational() * aScale))
   {
-    V = 0.;
+    V = 0.0;
   }
   else
   {
-    gp_Dir dP(dPV);
-    V = dx.AngleWithRef(dP, dx ^ gp::DZ());
+    V = std::atan2(aZ, aSectionX);
+    normalizeAngle(V);
   }
-  normalizeAngle(V);
 }
 
 //=================================================================================================
@@ -1753,16 +1425,13 @@ gp_Circ ElSLib::TorusUIso(const gp_Ax3& Pos,
                           const double  MinorRadius,
                           const double  U)
 {
-  gp_Vec dx = Pos.XDirection();
-  gp_Vec dy = Pos.YDirection();
-  gp_Dir dz = Pos.Direction();
-  gp_Dir cx = cos(U) * dx + sin(U) * dy;
-  gp_Ax2 axes(Pos.Location(), cx.Crossed(dz), cx);
-  gp_Vec Ve = cx;
-  Ve *= MajorRadius;
-  axes.Translate(Ve);
-  gp_Circ Circ(axes, MinorRadius);
-  return Circ;
+  const ElSLib_TorusSinCos aTrig = torusSinCos(U);
+  const gp_XYZ             aRadial =
+    torusRadialDerivative(Pos.XDirection().XYZ(), Pos.YDirection().XYZ(), aTrig, 0);
+  const gp_Dir aRadialDirection(aRadial);
+  gp_Ax2       anAxes(Pos.Location(), aRadialDirection.Crossed(Pos.Direction()), aRadialDirection);
+  anAxes.Translate(gp_Vec(aRadial * MajorRadius));
+  return gp_Circ(anAxes, MinorRadius);
 }
 
 //=================================================================================================
@@ -1838,17 +1507,16 @@ gp_Circ ElSLib::TorusVIso(const gp_Ax3& Pos,
                           const double  MinorRadius,
                           const double  V)
 {
-  gp_Ax3 axes = Pos.Ax2();
-  gp_Vec Ve(Pos.Direction());
-  Ve.Multiply(MinorRadius * sin(V));
-  axes.Translate(Ve);
-  double R = MajorRadius + MinorRadius * cos(V);
-  if (R < 0)
+  const ElSLib_TorusSinCos aTrig  = torusSinCos(V);
+  gp_Ax3                   anAxes = Pos.Ax2();
+  anAxes.Translate(gp_Vec(Pos.Direction().XYZ() * (MinorRadius * aTrig.Sin)));
+
+  double aRadius = torusSection(MajorRadius, MinorRadius, aTrig.Cos).Radius;
+  if (aRadius < 0.0)
   {
-    axes.XReverse();
-    axes.YReverse();
-    R = -R;
+    anAxes.XReverse();
+    anAxes.YReverse();
+    aRadius = -aRadius;
   }
-  gp_Circ Circ(axes.Ax2(), R);
-  return Circ;
+  return gp_Circ(anAxes.Ax2(), aRadius);
 }
