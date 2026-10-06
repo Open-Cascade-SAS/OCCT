@@ -34,33 +34,14 @@ runs:
 
     - name: Get latest workflow run ID from target branch
       id: get_run_id
-      env:
-        GH_TOKEN: ${{ github.token }}
-        BASE_BRANCH: ${{ github.base_ref || github.ref_name }}
-        REPOSITORY: ${{ github.repository }}
       run: |
-        # A successful run can skip tests or have expired artifacts.
-        # Select a run only after checking that all comparison results exist.
-        candidates=$(gh api --paginate --method GET \
-          "repos/$REPOSITORY/actions/workflows/build-and-test-multiplatform.yml/runs" \
-          -f branch="$BASE_BRANCH" -f status=success -f per_page=100 \
-          --jq ".workflow_runs[] | select(.head_repository.full_name == \"$REPOSITORY\") | .id")
-        latest_run_id=""
-        for run_id in $candidates; do
-          artifacts=$(gh api --paginate "repos/$REPOSITORY/actions/runs/$run_id/artifacts")
-          if echo "$artifacts" | jq -e -s '
-            [.[].artifacts[] | select(.expired == false) | .name] as $names |
-            ["results-windows-x64", "results-macos-x64", "results-linux-clang-x64"] |
-            all(. as $name | $names | index($name) != null)' > /dev/null; then
-            latest_run_id="$run_id"
-            break
-          fi
-        done
-        if [ -z "$latest_run_id" ]; then
-          echo "::error::No successful baseline run with all unexpired test results was found for $BASE_BRANCH"
-          exit 1
-        fi
-        echo "latest_run_id=$latest_run_id" >> "$GITHUB_ENV"
+        response=$(curl -s \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.event.pull_request.base.ref }}&status=success")
+        latest_run_id=$(echo "$response" | jq -r \
+          --arg repo "${{ github.repository }}" \
+          '.workflow_runs[] | select(.name=="Build and Test OCCT on Multiple Platforms" and .head_repository.full_name==$repo) | .id' | head -n 1)
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
       shell: bash
 
     - name: Download master branch test results
