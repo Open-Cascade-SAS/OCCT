@@ -126,6 +126,7 @@ bool IntImp_ZerImpFunc::IsTangent()
     if (!derived)
     {
       ThePSurfaceTool::D1(SURF, u, v, pntsol, d1u, d1v);
+      TheISurfaceTool::Gradient(FUNC, pntsol.X(), pntsol.Y(), pntsol.Z(), gradient);
       derived = true;
     }
 

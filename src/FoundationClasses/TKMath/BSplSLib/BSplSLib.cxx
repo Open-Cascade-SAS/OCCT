@@ -4148,3 +4148,114 @@ NCollection_Array2<double> BSplSLib::UnitWeights(const int theNbUPoles, const in
   aResult.Init(1.0);
   return aResult;
 }
+
+namespace
+{
+
+void selectLocalSpan(const int theSide,
+                     const int theFirst,
+                     const int theLast,
+                     int&      theFirstSpan,
+                     int&      theLastSpan,
+                     const int theFirstKnot,
+                     const int theLastKnot)
+{
+  if (theFirst != theLast) // not a knot
+  {
+    if (theFirst < theFirstKnot)
+    {
+      theFirstSpan = theFirstKnot;
+      theLastSpan  = theFirstKnot + 1;
+    }
+    else if (theLast > theLastKnot)
+    {
+      theFirstSpan = theLastKnot - 1;
+      theLastSpan  = theLastKnot;
+    }
+    else if (theFirst >= (theLastKnot - 1))
+    {
+      theFirstSpan = theLastKnot - 1;
+      theLastSpan  = theLastKnot;
+    }
+    else if (theLast <= theFirstKnot + 1)
+    {
+      theFirstSpan = theFirstKnot;
+      theLastSpan  = theFirstKnot + 1;
+    }
+    else if (theFirst > theLast)
+    {
+      theFirstSpan = theLast - 1;
+      theLastSpan  = theLast;
+    }
+    else
+    {
+      theFirstSpan = theFirst;
+      theLastSpan  = theLast;
+    }
+  }
+  else
+  {
+    if (theFirst <= theFirstKnot)
+    {
+      theFirstSpan = theFirstKnot;
+      theLastSpan  = theFirstKnot + 1;
+    } // first knot
+    else if (theLast >= theLastKnot)
+    {
+      theFirstSpan = theLastKnot - 1;
+      theLastSpan  = theLastKnot;
+    } // last knot
+    else
+    {
+      if (theSide == -1)
+      {
+        theFirstSpan = theFirst - 1;
+        theLastSpan  = theLast;
+      }
+      else
+      {
+        theFirstSpan = theFirst;
+        theLastSpan  = theLast + 1;
+      }
+    }
+  }
+}
+
+} // namespace
+
+BSplSLib::LocalSpan BSplSLib::SelectLocalSpan(const double                      theParameter,
+                                              const int                         theSide,
+                                              const int                         theLocatedFirst,
+                                              const int                         theLocatedLast,
+                                              const int                         theFirstKnot,
+                                              const int                         theLastKnot,
+                                              const NCollection_Array1<double>& theKnots,
+                                              const bool                        theIsPeriodic)
+{
+  LocalSpan aResult{theParameter,
+                    theLocatedFirst,
+                    theLocatedLast,
+                    theLocatedFirst == theLocatedLast};
+  if (aResult.IsKnot && theIsPeriodic
+      && (theLocatedFirst == theFirstKnot || theLocatedFirst == theLastKnot))
+  {
+    if (theSide < 0)
+    {
+      aResult.First = aResult.Last = theLastKnot;
+      aResult.Parameter            = theKnots.Value(theLastKnot);
+    }
+    else if (theSide > 0)
+    {
+      aResult.First = aResult.Last = theFirstKnot;
+      aResult.Parameter            = theKnots.Value(theFirstKnot);
+    }
+  }
+  selectLocalSpan(theSide,
+                  aResult.First,
+                  aResult.Last,
+                  aResult.First,
+                  aResult.Last,
+                  theFirstKnot,
+                  theLastKnot);
+  return aResult;
+}

@@ -21,8 +21,12 @@
 #include <MathLin_Householder.hxx>
 #include <MathUtils_Core.hxx>
 #include <MathLin_Utils.hxx>
+#include <Standard_Real.hxx>
 
+#include <algorithm>
 #include <cmath>
+#include <limits>
+#include <utility>
 
 namespace MathLin
 {
@@ -43,11 +47,13 @@ struct LeastSquaresResult
   std::optional<math_Vector> Solution;        //!< Least squares solution x
   std::optional<double>      Residual;        //!< ||Ax - b||_2 (L2 norm of residual)
   std::optional<double>      ResidualSq;      //!< ||Ax - b||_2^2 (squared residual)
-  size_t                     Rank = 0;        //!< Numerical rank of A (for SVD)
+  size_t                     Rank = 0;        //!< Rank estimate reported by the selected method
   std::optional<double>      ConditionNumber; //!< Decomposition-based conditioning diagnostic
 
+  //! Returns true when the computation completed successfully.
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
+  //! Returns the computation success status.
   explicit operator bool() const { return IsDone(); }
 };
 
@@ -77,7 +83,7 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
   const size_t aN = theA.ColSize();
 
   // Check dimensions
-  if (aM < aN || theB.Size() != aM || !Utils::IsFinite(theA) || !Utils::IsFinite(theB))
+  if (aN == 0 || aM < aN || theB.Size() != aM || !Utils::IsFinite(theA) || !Utils::IsFinite(theB))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -124,30 +130,38 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
     break;
 
     case LeastSquaresMethod::QR: {
-      const QRResult aQR = QR(theA, theTolerance);
-      if (!aQR.IsDone() || aQR.Rank != aN)
+      // Borrow the mutable copy as one column; preserve the caller's vector.
+      math_Vector    aRhs(theB);
+      math_Matrix    aTransformed(&aRhs.ChangeAt(0), 0, aRhs.Length() - 1, 0, 0);
+      const QRResult aQR = HouseholderDetail::TransformQR(theA, aTransformed, theTolerance);
+      if (!aQR.IsDone())
       {
-        aResult.Status = aQR.IsDone() ? Status::Singular : aQR.Status;
+        aResult.Status = aQR.Status;
         return aResult;
       }
-      aResult.Rank            = aQR.Rank;
-      aResult.ConditionNumber = aQR.ConditionEstimate;
-      aLinResult              = SolveQR(theA, theB, theTolerance);
+      aResult.Rank                    = aQR.Rank;
+      aResult.ConditionNumber         = aQR.ConditionEstimate;
+      const LinearMultipleResult aFit = HouseholderDetail::SolveTransformedQR(aQR, aTransformed);
+      aLinResult.Status               = aFit.Status;
+      if (aFit.IsDone())
+      {
+        // Copy the view before the temporary solution matrix leaves scope.
+        const math_Vector aSolution(&aFit.Solutions->At(0, 0), 0, theA.ColNumber() - 1);
+        aLinResult.Solution = aSolution;
+      }
     }
     break;
 
     case LeastSquaresMethod::SVD: {
-      aLinResult = SolveSVD(theA, theB, theTolerance);
-      if (aLinResult.IsDone())
+      const SVDResult aSVD = SVD(theA, theTolerance);
+      if (!aSVD.IsDone())
       {
-        // Get rank from SVD
-        SVDResult aSVD = SVD(theA, theTolerance);
-        aResult.Rank   = aSVD.IsDone() ? aSVD.Rank : 0;
-        if (aSVD.IsDone())
-        {
-          aResult.ConditionNumber = aSVD.ConditionNumber;
-        }
+        aResult.Status = aSVD.Status;
+        return aResult;
       }
+      aResult.Rank            = aSVD.Rank;
+      aResult.ConditionNumber = aSVD.ConditionNumber;
+      aLinResult              = SVDDetail::SolveDecomposed(aSVD, theB);
     }
     break;
   }
@@ -158,33 +172,15 @@ inline LeastSquaresResult LeastSquares(const math_Matrix& theA,
     return aResult;
   }
 
-  aResult.Solution = aLinResult.Solution;
+  aResult.Solution = std::move(aLinResult.Solution);
 
-  // Compute residual ||Ax - b||_2
-  const math_Vector& aX              = *aResult.Solution;
-  double             aResidualScale  = 0.0;
-  double             aResidualSumSq  = 1.0;
-  bool               isResidualValid = true;
-
-  for (size_t i = 0; i < aM; ++i)
-  {
-    double aAxi = 0.0;
-    for (size_t j = 0; j < aN; ++j)
-    {
-      aAxi += theA.At(i, j) * aX[j];
-    }
-    const double aRi = aAxi - theB.At(i);
-    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq) && isResidualValid;
-  }
-
-  const std::optional<double> aResidual =
-    isResidualValid ? Utils::Norm(aResidualScale, aResidualSumSq) : std::nullopt;
+  const std::optional<double> aResidual = Utils::ResidualNorm(theA, *aResult.Solution, theB);
   if (!aResidual.has_value())
   {
     aResult.Status = Status::NumericalError;
     return aResult;
   }
-  const double aMaxNormWithFiniteSquare = std::sqrt(std::numeric_limits<double>::max());
+  const double aMaxNormWithFiniteSquare = std::sqrt(RealLast());
   if (*aResidual <= aMaxNormWithFiniteSquare)
   {
     aResult.ResidualSq = *aResidual * *aResidual;
@@ -255,14 +251,16 @@ inline LeastSquaresResult WeightedLeastSquares(
 //! Solve regularized least squares (Tikhonov/Ridge regression):
 //! minimize ||Ax - b||_2^2 + lambda*||x||_2^2
 //!
-//! Adds regularization to stabilize ill-conditioned problems.
-//! The solution is: x = (A^T*A + lambda*I)^{-1} * A^T * b
+//! Positive regularization retains every nonzero singular mode. For zero lambda,
+//! the SVD rank threshold selects the minimum-norm least squares solution.
+//! The solution for positive lambda is: x = (A^T*A + lambda*I)^{-1} * A^T * b
 //!
-//! @param theA coefficient matrix (m x n)
-//! @param theB right-hand side vector (length m)
-//! @param theLambda regularization parameter (>= 0)
-//! @param theTolerance for singularity detection
-//! @return regularized least squares result
+//! @param[in] theA coefficient matrix (m x n)
+//! @param[in] theB right-hand side vector (length m)
+//! @param[in] theLambda regularization parameter (>= 0)
+//! @param[in] theTolerance relative rank threshold; also the cutoff when lambda is zero
+//! @return result with an owned solution and the numerical rank of A
+//! Invalid inputs and numerical failures are reported in Status.
 inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
                                                   const math_Vector& theB,
                                                   double             theLambda,
@@ -304,7 +302,9 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
       aProjection += aU.At(i, j) * theB.At(i);
     }
     const double aSigma  = aS[j];
-    const double aFilter = j >= aSVD.Rank ? 0.0 : 1.0 / (aSigma + theLambda / aSigma);
+    const double aFilter = aSigma == 0.0 || (theLambda == 0.0 && j >= aSVD.Rank)
+                             ? 0.0
+                             : 1.0 / (aSigma + theLambda / aSigma);
     aFiltered[j]         = aFilter * aProjection;
   }
   aResult.Solution = math_Vector(aN, 0.0);
@@ -318,31 +318,13 @@ inline LeastSquaresResult RegularizedLeastSquares(const math_Matrix& theA,
   aResult.Rank            = aSVD.Rank;
   aResult.ConditionNumber = aSVD.ConditionNumber;
 
-  // Compute residual
-  const math_Vector& aX              = *aResult.Solution;
-  double             aResidualScale  = 0.0;
-  double             aResidualSumSq  = 1.0;
-  bool               isResidualValid = true;
-
-  for (size_t i = 0; i < aM; ++i)
-  {
-    double aAxi = 0.0;
-    for (size_t j = 0; j < aN; ++j)
-    {
-      aAxi += theA.At(i, j) * aX[j];
-    }
-    const double aRi = aAxi - theB.At(i);
-    isResidualValid = Utils::AccumulateNorm(aRi, aResidualScale, aResidualSumSq) && isResidualValid;
-  }
-
-  const std::optional<double> aResidual =
-    isResidualValid ? Utils::Norm(aResidualScale, aResidualSumSq) : std::nullopt;
+  const std::optional<double> aResidual = Utils::ResidualNorm(theA, *aResult.Solution, theB);
   if (!aResidual.has_value() || !Utils::IsFinite(*aResult.Solution))
   {
     aResult.Status = Status::NumericalError;
     return aResult;
   }
-  const double aMaxNormWithFiniteSquare = std::sqrt(std::numeric_limits<double>::max());
+  const double aMaxNormWithFiniteSquare = std::sqrt(RealLast());
   if (*aResidual <= aMaxNormWithFiniteSquare)
   {
     aResult.ResidualSq = *aResidual * *aResidual;

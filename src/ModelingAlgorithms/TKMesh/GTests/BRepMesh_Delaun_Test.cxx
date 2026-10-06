@@ -16,6 +16,8 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepMesh_Delaun.hxx>
+#include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Geom_Plane.hxx>
@@ -29,6 +31,52 @@
 #include <gp_Vec2d.hxx>
 
 #include <gtest/gtest.h>
+
+TEST(BRepMesh_DelaunTest, ContainsUsesEdgeToleranceForRefinementNodes)
+{
+  for (BRepMesh_DegreeOfFreedom aMovability : {BRepMesh_Free, BRepMesh_Frontier})
+  {
+    SCOPED_TRACE(static_cast<int>(aMovability));
+    const occ::handle<BRepMesh_DataStructureOfDelaun> aStructure =
+      new BRepMesh_DataStructureOfDelaun(new NCollection_IncAllocator);
+    const int aNodes[3] = {aStructure->AddNode(BRepMesh_Vertex(0.0, 0.0, BRepMesh_Free)),
+                           aStructure->AddNode(BRepMesh_Vertex(1.0, 0.0, BRepMesh_Free)),
+                           aStructure->AddNode(BRepMesh_Vertex(0.0, 1.0, BRepMesh_Free))};
+    int       aEdges[3];
+    bool      anOrientations[3];
+    for (int i = 0; i < 3; ++i)
+    {
+      const int anEdge =
+        aStructure->AddLink(BRepMesh_Edge(aNodes[i], aNodes[(i + 1) % 3], aMovability));
+      aEdges[i]         = std::abs(anEdge);
+      anOrientations[i] = anEdge > 0;
+    }
+    const int aTriangle =
+      aStructure->AddElement(BRepMesh_Triangle(aEdges, anOrientations, BRepMesh_Free));
+    BRepMesh_Delaun  aMesher(aStructure, 2, 2, true);
+    int              anEdgeOn     = 0;
+    constexpr double aSqTolerance = 1.e-20;
+    for (double anOffset : {-1.e-12, 0.0, 1.e-12})
+    {
+      SCOPED_TRACE(anOffset);
+      const BRepMesh_Vertex aPoint(0.5, anOffset, BRepMesh_Free);
+      EXPECT_EQ(aMesher.Contains(aTriangle, aPoint, aSqTolerance, anEdgeOn),
+                aMovability == BRepMesh_Free);
+      if (aMovability == BRepMesh_Free)
+      {
+        EXPECT_EQ(anEdgeOn, aEdges[0]);
+      }
+    }
+    EXPECT_FALSE(aMesher.Contains(aTriangle,
+                                  BRepMesh_Vertex(0.5, -1.e-6, BRepMesh_Free),
+                                  aSqTolerance,
+                                  anEdgeOn));
+    EXPECT_TRUE(aMesher.Contains(aTriangle,
+                                 BRepMesh_Vertex(0.25, 0.25, BRepMesh_Free),
+                                 aSqTolerance,
+                                 anEdgeOn));
+  }
+}
 
 // Test for bug 0032395: BRepMesh_Delaun::isVertexInsidePolygon
 // The method uses winding number algorithm to check if a point is inside a polygon.

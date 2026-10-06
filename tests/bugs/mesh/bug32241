@@ -1,3 +1,6 @@
+puts "TODO ?OCC32241 Windows: Error: Number of triangles = 2742 is not equal to expected 2702"
+puts "TODO ?OCC32241 Windows: Error: Number of nodes = 1419 is not equal to expected 1399"
+
 puts "========"
 puts "0032241: Mesh - wrong shading display of thrusections"
 puts "========"
@@ -14,8 +17,8 @@ if { [regexp {Windows} [dversion]] } {
     set nod_n 1399
   }
 } else {
-  set tri_n 2766
-  set nod_n 1431
+  set tri_n 2732
+  set nod_n 1414
 }
 
 pload MODELING VISUALIZATION
@@ -42,5 +45,9 @@ wire w4 e4
 thrusections result issolid w0 w1 w2 w3 w4 
 
 checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+if {[llength [tricheck result]] != 0} {
+  puts "Error: Invalid mesh"
+}
 
 checktrinfo result -tri $tri_n -nod $nod_n

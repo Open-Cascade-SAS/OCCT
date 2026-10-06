@@ -525,6 +525,7 @@ void BRepMesh_Delaun::createTriangles(const int                       theVertexI
     double aDist23 = anEdgeDir ^ aLastLinkDir;
     if (std::abs(aDist12) < Precision || std::abs(aDist23) < Precision)
     {
+      aLoopEdges.Append(isPositive ? anEdgeId : -anEdgeId);
       continue;
     }
 
@@ -2634,7 +2635,15 @@ bool BRepMesh_Delaun::Contains(const int              theTriangleId,
     theEdgeOn = e[aEdgeOnId];
   }
 
-  return (aDistance[0] >= 0. && aDistance[1] >= 0. && aDistance[2] >= 0.);
+  // Apply the edge tolerance to signed distances, including rounded midpoints.
+  for (int i = 0; i < 3; ++i)
+  {
+    if (aDistance[i] < 0.0 && aDistance[i] * aDistance[i] > theSqTolerance * aSqModulus[i])
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 //=============================================================================
