@@ -127,9 +127,13 @@ void GCPnts_QuasiUniformAbscissa::initialize(const TheCurve& theC,
     return;
   }
 
-  Standard_ConstructionError_Raise_if(
-    theNbPoints <= 1,
-    "GCPnts_QuasiUniformAbscissa::Initialize(), number of points should be >= 2");
+  if (theNbPoints <= 1)
+  {
+    // Not-done in every build, independent of whether No_Exception is defined.
+    myDone     = false;
+    myNbPoints = 0;
+    return;
+  }
 
   // evaluate the approximative length of the 3dCurve
   myNbPoints           = theNbPoints;
