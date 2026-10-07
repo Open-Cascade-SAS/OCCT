@@ -52,6 +52,9 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
+#include <algorithm>
+#include <cmath>
+
 //=======================================================================
 // static methods declaration
 //=======================================================================
@@ -89,6 +92,10 @@ static void FindShape(const TopoDS_Shape& theSWhat,
 static void GetValidSolids(
   BOPAlgo_MakerVolume&                                          theMV,
   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theFacesToCheckOri,
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>&    theAdjFaces,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theAnchoredFaces,
   const NCollection_List<TopoDS_Shape>&                         aSharedFaces,
   const TopoDS_Shape&                                           theOrigFaces,
   const int                                                     theNbSol,
@@ -102,7 +109,8 @@ static void FindExtraShapes(
   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapesToCheckOri,
   BOPAlgo_Builder&                                              theBuilder,
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&       theShapesToAvoid,
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*       theValidShapes = nullptr);
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*       theValidShapes = nullptr,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theInternalOK  = nullptr);
 
 static void AvoidExtraSharedFaces(NCollection_List<TopoDS_Shape>&       theLSolids,
                                   const NCollection_List<TopoDS_Shape>& theLFSharedToAvoid,
@@ -374,7 +382,8 @@ public: //! @name Constructors
   //! Empty constructor
   FillGap()
       : myRunParallel(false),
-        myHasAdjacentFaces(false)
+        myHasAdjacentFaces(false),
+        myTrimDegenerated(false)
   {
   }
 
@@ -440,23 +449,93 @@ public: //! @name Perform the operation
         return;
       }
 
-      // Extend the adjacent faces keeping the connection to the original faces
-      NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
-        aFaceExtFaceMap;
-      ExtendAdjacentFaces(aMFAdjacent, aFaceExtFaceMap, aPS.Next());
-      if (!aPS.More())
+      // The extension length is derived from the size of the feature, which may be too
+      // small for the extended adjacent faces to reach each other. In that case trimming
+      // of the extended faces degenerates and the untrimmed extensions leak into the
+      // result, making the reconstruction unusable. Retry with a longer extension,
+      // keeping the result of the first attempt if none of them succeeds.
+      Bnd_Box aFeatureBox;
+      BRepBndLib::Add(myFeature, aFeatureBox);
+      const double aFeatureSize = sqrt(aFeatureBox.SquareExtent());
+
+      // The distance at which the adjacent surfaces meet is not related to the size of
+      // the feature - for faces meeting at a small angle it grows without bound - so the
+      // number of attempts is taken from the size of the solids the feature belongs to.
+      // The last attempt is then the first extension spanning the whole model; beyond
+      // that length the extended faces already cover it and doubling cannot bring them
+      // together anymore.
+      Bnd_Box aSolidsBox;
+      for (int i = 1; i <= mySolids.Extent(); ++i)
       {
-        return;
+        BRepBndLib::Add(mySolids(i), aSolidsBox);
+      }
+      const double aSolidsSize = aSolidsBox.IsVoid() ? 0.0 : sqrt(aSolidsBox.SquareExtent());
+      const int    aNbAttempts =
+        (aSolidsSize > aFeatureSize)
+             ? std::max(THE_NB_EXTENSION_ATTEMPTS,
+                     1 + static_cast<int>(std::ceil(std::log2(aSolidsSize / aFeatureSize))))
+             : THE_NB_EXTENSION_ATTEMPTS;
+
+      NCollection_IndexedDataMap<TopoDS_Shape,
+                                 NCollection_List<TopoDS_Shape>,
+                                 TopTools_ShapeMapHasher>
+                                                             aFacesFirst;
+      occ::handle<BRepTools_History>                         aHistoryFirst;
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anAnchoredFirst;
+
+      Message_ProgressScope aPSExt(aPS.Next(2), nullptr, aNbAttempts);
+      for (int anAttempt = 0; anAttempt < aNbAttempts; ++anAttempt)
+      {
+        myTrimDegenerated = false;
+        myFaces.Clear();
+        myAnchoredFaces.Clear();
+        myHistory = new BRepTools_History();
+
+        Message_ProgressScope aPSAttempt(aPSExt.Next(), nullptr, 2);
+
+        // Extend the adjacent faces keeping the connection to the original faces
+        NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
+          aFaceExtFaceMap;
+        ExtendAdjacentFaces(aMFAdjacent,
+                            aFeatureSize * (1 << anAttempt),
+                            aFaceExtFaceMap,
+                            aPSAttempt.Next());
+        if (!aPSAttempt.More())
+        {
+          return;
+        }
+
+        // Trim the extended faces
+        TrimExtendedFaces(aFaceExtFaceMap, aPSAttempt.Next());
+
+        if (!myTrimDegenerated)
+        {
+          break;
+        }
+
+        if (anAttempt == 0)
+        {
+          aFacesFirst     = myFaces;
+          anAnchoredFirst = myAnchoredFaces;
+          aHistoryFirst   = myHistory;
+        }
       }
 
-      // Trim the extended faces
-      TrimExtendedFaces(aFaceExtFaceMap, aPS.Next());
+      if (myTrimDegenerated)
+      {
+        // None of the attempts produced a properly trimmed reconstruction -
+        // keep the result of the first one.
+        myFaces         = aFacesFirst;
+        myAnchoredFaces = anAnchoredFirst;
+        myHistory       = aHistoryFirst;
+      }
     }
     catch (Standard_Failure const&)
     {
       // Make sure the warning will be given on the higher level
       myHasAdjacentFaces = true;
       myFaces.Clear();
+      myAnchoredFaces.Clear();
     }
   }
 
@@ -477,6 +556,13 @@ public: //! @name Obtain the result
     Faces() const
   {
     return myFaces;
+  }
+
+  //! Returns the reconstructed faces whose orientation is validated
+  //! by a non-feature edge of the original adjacent face
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& AnchoredFaces() const
+  {
+    return myAnchoredFaces;
   }
 
   //! Returns the initial solids participating in the feature removal
@@ -576,16 +662,11 @@ private: //! @name Private methods performing the operation
   //! Extends the found adjacent faces and binds them to the original faces.
   void ExtendAdjacentFaces(
     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMFAdjacent,
+    const double                                                         theExtLength,
     NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
                                  theFaceExtFaceMap,
     const Message_ProgressRange& theRange)
   {
-    // Get the extension value for the faces - half of the diagonal of bounding box of the feature
-    Bnd_Box aFeatureBox;
-    BRepBndLib::Add(myFeature, aFeatureBox);
-
-    const double anExtLength = sqrt(aFeatureBox.SquareExtent());
-
     const int             aNbFA = theMFAdjacent.Extent();
     Message_ProgressScope aPS(theRange, "Extending adjacent faces", aNbFA);
     for (int i = 1; i <= aNbFA && aPS.More(); ++i, aPS.Next())
@@ -593,7 +674,7 @@ private: //! @name Private methods performing the operation
       const TopoDS_Face& aF = TopoDS::Face(theMFAdjacent(i));
       // Extend the face
       TopoDS_Face aFExt;
-      BRepLib::ExtendFace(aF, anExtLength, true, true, true, true, aFExt);
+      BRepLib::ExtendFace(aF, theExtLength, true, true, true, true, aFExt);
       theFaceExtFaceMap.Add(aF, aFExt);
       myHistory->AddModified(aF, aFExt);
     }
@@ -657,7 +738,7 @@ private: //! @name Private methods performing the operation
     {
       const TopoDS_Face& aFOriginal = TopoDS::Face(theFaceExtFaceMap.FindKey(i));
       const TopoDS_Face& aFExt      = TopoDS::Face(theFaceExtFaceMap(i));
-      TrimFace(aFExt, aFOriginal, aFeatureEdgesMap, anEFExtMap, aGFInter);
+      TrimFace(aFExt, aFOriginal, aFeatureEdgesMap, anEFExtMap, theFaceExtFaceMap, aGFInter);
     }
   }
 
@@ -670,7 +751,9 @@ private: //! @name Private methods performing the operation
     const NCollection_IndexedDataMap<TopoDS_Shape,
                                      NCollection_List<TopoDS_Shape>,
                                      TopTools_ShapeMapHasher>&           theEFExtMap,
-    BOPAlgo_Builder&                                                     theGFInter)
+    const NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
+                     theFaceExtFaceMap,
+    BOPAlgo_Builder& theGFInter)
   {
     // Map all edges of the extended face, to filter the result of trim
     // from the faces containing these edges
@@ -707,6 +790,10 @@ private: //! @name Private methods performing the operation
 
     // Add edges of the original faces
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMEdgesToCheckOri;
+    // Edges whose other faces are all adjacent (reconstructed) or feature faces.
+    // A split containing such an edge as INTERNAL legitimately spans both its sides
+    // (e.g. two patches of one surface both adjacent to the feature).
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMInternalOK;
     anExpE.Init(theFOriginal, TopAbs_EDGE);
     for (; anExpE.More(); anExpE.Next())
     {
@@ -714,6 +801,29 @@ private: //! @name Private methods performing the operation
       if (!theFeatureEdgesMap.Contains(aE))
       {
         aGFTrim.AddArgument(aE);
+        const NCollection_List<TopoDS_Shape>* pLF = myEFMap->Seek(aE);
+        if (pLF)
+        {
+          bool                                     bOtherOK = false;
+          NCollection_List<TopoDS_Shape>::Iterator itLF(*pLF);
+          for (; itLF.More(); itLF.Next())
+          {
+            const TopoDS_Shape& aFOther = itLF.Value();
+            if (aFOther.IsSame(theFOriginal))
+            {
+              continue;
+            }
+            bOtherOK = theFaceExtFaceMap.Contains(aFOther) || myFeatureFacesMap.Contains(aFOther);
+            if (!bOtherOK)
+            {
+              break;
+            }
+          }
+          if (bOtherOK)
+          {
+            aMInternalOK.Add(aE);
+          }
+        }
         if (!BRep_Tool::Degenerated(aE) && !BRep_Tool::IsClosed(aE, theFOriginal))
         {
           if (!aMEdgesToCheckOri.Add(aE))
@@ -758,6 +868,10 @@ private: //! @name Private methods performing the operation
       }
     }
 
+    // Splits validated by the orientation of an edge of the original face
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aValidFaces;
+    const bool bSingleSplit = (aLFTrimmed.Extent() == 1);
+
     if (aLFTrimmed.Extent() > 1)
     {
       // Chose the correct faces - the ones that contains edges with proper
@@ -773,8 +887,13 @@ private: //! @name Private methods performing the operation
       }
 
       // Check edges orientations
-      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aFacesToAvoid, aValidFaces;
-      FindExtraShapes(anEFMap, aMEdgesToCheckOri, aGFTrim, aFacesToAvoid, &aValidFaces);
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aFacesToAvoid;
+      FindExtraShapes(anEFMap,
+                      aMEdgesToCheckOri,
+                      aGFTrim,
+                      aFacesToAvoid,
+                      &aValidFaces,
+                      &aMInternalOK);
 
       if (aLFTrimmed.Extent() - aFacesToAvoid.Extent() > 1)
       {
@@ -835,6 +954,11 @@ private: //! @name Private methods performing the operation
     }
     else if (aLFTrimmed.IsEmpty())
     {
+      // The extended face could not be trimmed by the bounds of the original face -
+      // most likely the extension is too small for the extended faces to intersect
+      // each other. Signal it, so that the extension can be retried with a greater
+      // length.
+      myTrimDegenerated = true;
       // Use all splits, including those having the bounds of extended face
       anExpF.ReInit();
       for (; anExpF.More(); anExpF.Next())
@@ -849,6 +973,18 @@ private: //! @name Private methods performing the operation
       RemoveInternalWires(aLFTrimmed);
 
       myFaces.Add(theFOriginal, aLFTrimmed);
+
+      // Remember the splits whose orientation is confirmed by an edge of the original face;
+      // they are the trusted evidence for classifying the cells built by MakerVolume.
+      const bool bAllAnchored = bSingleSplit && !aMEdgesToCheckOri.IsEmpty() && !myTrimDegenerated;
+      NCollection_List<TopoDS_Shape>::Iterator itLFA(aLFTrimmed);
+      for (; itLFA.More(); itLFA.Next())
+      {
+        if (bAllAnchored || aValidFaces.Contains(itLFA.Value()))
+        {
+          myAnchoredFaces.Add(itLFA.Value());
+        }
+      }
     }
 
     // Update history after intersection of the extended face with bounds
@@ -887,8 +1023,14 @@ private: //! @name Fields
   bool myHasAdjacentFaces;                //!< Flag to show whether the adjacent faces have been found or not
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mySolids;                //!< Solids participating in the feature removal
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myFaces;  //!< Reconstructed adjacent faces
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myAnchoredFaces; //!< Reconstructed faces validated by an edge of the original face
   occ::handle<BRepTools_History> myHistory;                //!< History of the adjacent faces reconstruction
+  bool myTrimDegenerated;                 //!< Flag to show that trimming of the extended faces has failed
   // clang-format on
+
+  //! Least number of attempts to extend the adjacent faces, each one doubling the
+  //! extension length; more are made when the model is much larger than the feature
+  static constexpr int THE_NB_EXTENSION_ATTEMPTS = 3;
 };
 
 typedef NCollection_DynamicArray<FillGap> VectorOfFillGap;
@@ -981,6 +1123,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeatures(const Message_ProgressRange& theRang
                   aFG.FeatureFacesMap(),
                   aFG.HasAdjacentFaces(),
                   aFG.Faces(),
+                  aFG.AnchoredFaces(),
                   aFG.History(),
                   isSolidsHistoryNeeded,
                   aPSLoop.Next());
@@ -997,6 +1140,7 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
   const NCollection_IndexedDataMap<TopoDS_Shape,
                                    NCollection_List<TopoDS_Shape>,
                                    TopTools_ShapeMapHasher>&           theAdjFaces,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&        theAnchoredFaces,
   const occ::handle<BRepTools_History>&                                theAdjFacesHistory,
   const bool                                                           theSolidsHistoryNeeded,
   const Message_ProgressRange&                                         theRange)
@@ -1204,6 +1348,8 @@ void BOPAlgo_RemoveFeatures::RemoveFeature(
   NCollection_List<TopoDS_Shape> aRemovedShapes;
   GetValidSolids(aMV,
                  aFacesToCheckOri,
+                 theAdjFaces,
+                 theAnchoredFaces,
                  aSharedFaces,
                  anOrigF,
                  theSolids.Extent(),
@@ -1654,6 +1800,10 @@ void FindShape(const TopoDS_Shape& theSWhat, const TopoDS_Shape& theSWhere, Topo
 void GetValidSolids(
   BOPAlgo_MakerVolume&                                          theMV,
   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theFacesToCheckOri,
+  const NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>&    theAdjFaces,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theAnchoredFaces,
   const NCollection_List<TopoDS_Shape>&                         aSharedFaces,
   const TopoDS_Shape&                                           theOrigFaces,
   const int                                                     theNbSol,
@@ -1675,7 +1825,8 @@ void GetValidSolids(
                                TopTools_ShapeMapHasher>
       aFSMap;
     TopExp::MapShapesAndAncestors(theMV.Shape(), TopAbs_FACE, TopAbs_SOLID, aFSMap);
-    FindExtraShapes(aFSMap, theFacesToCheckOri, theMV, aSolidsToAvoid);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aValidSolids;
+    FindExtraShapes(aFSMap, theFacesToCheckOri, theMV, aSolidsToAvoid, &aValidSolids);
 
     NCollection_List<TopoDS_Shape>::Iterator itLS(theLSRes);
     for (; itLS.More();)
@@ -1687,6 +1838,77 @@ void GetValidSolids(
       else
       {
         itLS.Next();
+      }
+    }
+
+    // The solids containing no faces of the original shape are classified by the
+    // reconstructed adjacent faces: a solid lying on the wrong side of any of them
+    // is a void (e.g. the inside of a pocket whose mouth got closed by an extension
+    // of the top face), unless a split validated by an edge of the original face
+    // confirms the solid as material. Without this check such a void would be
+    // merged into the result by AvoidExtraSharedFaces.
+    if (theLSRes.Extent() > theNbSol)
+    {
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aVoidSolids, aMaterialSolids;
+      const int                                              aNbAF = theAdjFaces.Extent();
+      for (int i = 1; i <= aNbAF; ++i)
+      {
+        NCollection_List<TopoDS_Shape>::Iterator itLFA(theAdjFaces(i));
+        for (; itLFA.More(); itLFA.Next())
+        {
+          const TopoDS_Face&             aFA       = TopoDS::Face(itLFA.Value());
+          const bool                     bAnchored = theAnchoredFaces.Contains(aFA);
+          NCollection_List<TopoDS_Shape> aLFIm;
+          TakeModified(aFA, theMV, aLFIm);
+          NCollection_List<TopoDS_Shape>::Iterator itLFIm(aLFIm);
+          for (; itLFIm.More(); itLFIm.Next())
+          {
+            const NCollection_List<TopoDS_Shape>* pLS = aFSMap.Seek(itLFIm.Value());
+            if (!pLS)
+            {
+              continue;
+            }
+            NCollection_List<TopoDS_Shape>::Iterator itLS1(*pLS);
+            for (; itLS1.More(); itLS1.Next())
+            {
+              const TopoDS_Shape& aSol = itLS1.Value();
+              if (aValidSolids.Contains(aSol))
+              {
+                continue;
+              }
+              TopoDS_Face aFInSol;
+              FindShape(itLFIm.Value(), aSol, aFInSol);
+              if (aFInSol.IsNull())
+              {
+                continue;
+              }
+              // Compare with the reconstructed face, not with the original one: the
+              // image usually lies outside the parametric bounds of the original face,
+              // where the projection used by IsSplitToReverse is unreliable.
+              if (BOPTools_AlgoTools::IsSplitToReverse(aFInSol, aFA, theMV.Context()))
+              {
+                aVoidSolids.Add(aSol);
+              }
+              else if (bAnchored)
+              {
+                aMaterialSolids.Add(aSol);
+              }
+            }
+          }
+        }
+      }
+
+      for (itLS.Initialize(theLSRes); itLS.More();)
+      {
+        if (aVoidSolids.Contains(itLS.Value()) && !aMaterialSolids.Contains(itLS.Value()))
+        {
+          theRemovedShapes.Append(itLS.Value());
+          theLSRes.Remove(itLS);
+        }
+        else
+        {
+          itLS.Next();
+        }
       }
     }
   }
@@ -1742,7 +1964,8 @@ void FindExtraShapes(
   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapesToCheckOri,
   BOPAlgo_Builder&                                              theBuilder,
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&       theShapesToAvoid,
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*       theValidShapes)
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*       theValidShapes,
+  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theInternalOK)
 {
   occ::handle<IntTools_Context>                           aCtx = theBuilder.Context();
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  aValidShapes;
@@ -1779,7 +2002,13 @@ void FindExtraShapes(
         TopoDS_Face aSInShape;
         FindShape(aSIm, aShapeToValidate, aSInShape);
 
-        bool bSameOri = !BOPTools_AlgoTools::IsSplitToReverse(aSInShape, aSToCheckOri, aCtx);
+        // An edge that is INTERNAL in a split is not shared with any other split, so its
+        // orientation says nothing about the split: the split spans both sides of the edge.
+        // It is legitimate only when the faces on the other side of the edge are themselves
+        // reconstructed or removed (see TrimFace), otherwise the split overlaps a kept face.
+        bool bSameOri = (aSInShape.Orientation() == TopAbs_INTERNAL && theInternalOK)
+                          ? theInternalOK->Contains(aSToCheckOri)
+                          : !BOPTools_AlgoTools::IsSplitToReverse(aSInShape, aSToCheckOri, aCtx);
 
         if (bSameOri)
         {
