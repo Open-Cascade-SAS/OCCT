@@ -277,7 +277,8 @@ double BRepGProp_Vinert::Perform(BRepGProp_Face&   theSurface,
 {
   double aCoeff[4];
   thePlane.Coefficients(aCoeff[0], aCoeff[1], aCoeff[2], aCoeff[3]);
-  aCoeff[3] = aCoeff[3] - aCoeff[0] * loc.X() - aCoeff[1] * loc.Y() - aCoeff[2] * loc.Z();
+  // The integrands subtract aCoeff[3], so store -d to measure about the plane as given.
+  aCoeff[3] = -aCoeff[3] - aCoeff[0] * loc.X() - aCoeff[1] * loc.Y() - aCoeff[2] * loc.Z();
 
   BRepGProp_Gauss aGauss(BRepGProp_Gauss::GaussType::Vinert);
 
@@ -294,7 +295,8 @@ void BRepGProp_Vinert::Perform(const BRepGProp_Face& theSurface, const gp_Pln& t
 
   thePlane.Coefficients(aCoeff[0], aCoeff[1], aCoeff[2], aCoeff[3]);
 
-  aCoeff[3] = aCoeff[3] - aCoeff[0] * loc.X() - aCoeff[1] * loc.Y() - aCoeff[2] * loc.Z();
+  // The integrands subtract aCoeff[3], so store -d to measure about the plane as given.
+  aCoeff[3] = -aCoeff[3] - aCoeff[0] * loc.X() - aCoeff[1] * loc.Y() - aCoeff[2] * loc.Z();
 
   myEpsilon = 1.0;
   aGauss.Compute(theSurface, loc, aCoeff, false, dim, g, inertia);
@@ -311,7 +313,8 @@ void BRepGProp_Vinert::Perform(BRepGProp_Face&   theSurface,
 
   thePlane.Coefficients(aCoeff[0], aCoeff[1], aCoeff[2], aCoeff[3]);
 
-  aCoeff[3] = aCoeff[3] - aCoeff[0] * loc.X() - aCoeff[1] * loc.Y() - aCoeff[2] * loc.Z();
+  // The integrands subtract aCoeff[3], so store -d to measure about the plane as given.
+  aCoeff[3] = -aCoeff[3] - aCoeff[0] * loc.X() - aCoeff[1] * loc.Y() - aCoeff[2] * loc.Z();
 
   myEpsilon = 1.0;
   aGauss.Compute(theSurface, theDomain, loc, aCoeff, false, dim, g, inertia);
