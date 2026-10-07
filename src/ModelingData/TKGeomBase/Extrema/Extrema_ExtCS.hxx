@@ -92,6 +92,8 @@ public:
   Standard_EXPORT double SquareDistance(const int N) const;
 
   //! Returns the point of the Nth resulting distance.
+  //! Raises Standard_OutOfRange if N is out of range, or for a parallel pair, which has a distance
+  //! but no points.
   Standard_EXPORT void Points(const int N, Extrema_POnCurv& P1, Extrema_POnSurf& P2) const;
 
 private:
