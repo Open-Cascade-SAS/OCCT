@@ -81,8 +81,14 @@
 #include <algorithm>
 
 // TODO - not thread-safe static variables
-static double                  thePrecision = Precision::Confusion();
-static occ::handle<Geom_Plane> thePlane;
+static double thePrecision = Precision::Confusion();
+
+// Created under the magic-static lock, as in Message::DefaultMessenger().
+static occ::handle<Geom_Plane>& thePlane()
+{
+  static occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp::XOY());
+  return aPlane;
+}
 
 static void InternalUpdateTolerances(const TopoDS_Shape& theOldShape,
                                      const bool          IsVerifyTolerance,
@@ -130,18 +136,14 @@ double BRepLib::Precision()
 
 void BRepLib::Plane(const occ::handle<Geom_Plane>& P)
 {
-  thePlane = P;
+  thePlane() = P.IsNull() ? occ::handle<Geom_Plane>(new Geom_Plane(gp::XOY())) : P;
 }
 
 //=================================================================================================
 
 const occ::handle<Geom_Plane>& BRepLib::Plane()
 {
-  if (thePlane.IsNull())
-  {
-    thePlane = new Geom_Plane(gp::XOY());
-  }
-  return thePlane;
+  return thePlane();
 }
 
 //=================================================================================================
