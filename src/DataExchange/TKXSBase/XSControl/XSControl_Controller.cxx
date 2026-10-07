@@ -51,12 +51,21 @@
 #include <XSControl_SignTransferStatus.hxx>
 #include <XSControl_WorkSession.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_Controller, Standard_Transient)
 
 //  ParamEditor
 //  Transferts
 
 static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> listad;
+
+//! Guards listad, the process-wide registry of controllers by name.
+static std::recursive_mutex& listadMutex()
+{
+  static std::recursive_mutex THE_MUTEX;
+  return THE_MUTEX;
+}
 
 //=================================================================================================
 
@@ -106,6 +115,7 @@ void XSControl_Controller::SetNames(const char* const theLongName, const char* c
 
 void XSControl_Controller::Record(const char* const theName) const
 {
+  std::lock_guard<std::recursive_mutex> aLock(listadMutex());
   if (listad.IsBound(theName))
   {
     occ::handle<Standard_Transient> thisadapt(this);
@@ -126,6 +136,8 @@ void XSControl_Controller::Record(const char* const theName) const
 
 occ::handle<XSControl_Controller> XSControl_Controller::Recorded(const char* const theName)
 {
+  std::lock_guard<std::recursive_mutex> aLock(listadMutex());
+
   occ::handle<Standard_Transient> recorded;
   return (listad.Find(theName, recorded) ? occ::down_cast<XSControl_Controller>(recorded)
                                          : occ::handle<XSControl_Controller>());
