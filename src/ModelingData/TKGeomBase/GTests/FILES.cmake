@@ -61,6 +61,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomLib_CheckCurveOnSurface_Test.cxx
   GProp_PEquation_Test.cxx
   GProp_PGProps_Test.cxx
+  GProp_SelGProps_Test.cxx
+  GProp_VelGProps_Test.cxx
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
   ProjLib_Cone_Test.cxx
