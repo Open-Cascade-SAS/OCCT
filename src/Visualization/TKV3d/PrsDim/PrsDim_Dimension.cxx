@@ -289,7 +289,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(
 
   // Get text style parameters
   occ::handle<Prs3d_TextAspect> aTextAspect = myDrawer->DimensionAspect()->TextAspect();
-  NCollection_UtfString<char>   anUTFString(aValueStr.ToExtString());
+  TCollection_UtfString<char>   anUTFString(aValueStr.ToExtString());
 
   theWidth = 0.0;
   theFont.Nullify();
@@ -330,7 +330,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(
                                      aFontParams,
                                      Font_StrictLevel_Any))
     {
-      for (NCollection_UtfIterator<char> anIter = anUTFString.Iterator(); *anIter != 0;)
+      for (TCollection_UtfIterator<char> anIter = anUTFString.Iterator(); anIter.More();)
       {
         char32_t aCurrChar = *anIter;
         char32_t aNextChar = *(++anIter);

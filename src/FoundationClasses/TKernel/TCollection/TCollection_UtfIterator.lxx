@@ -1,0 +1,160 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Independently authored from the encoding rules in RFC 3629, Sections 3-4,
+// and RFC 2781, Section 2. No encoding lookup tables are used.
+
+//=================================================================================================
+
+template <typename Type>
+constexpr auto TCollection_UtfIterator<Type>::decodeCharacter(const Type* theInput,
+                                                              size_t      theCodeUnits)
+  -> std::optional<std::pair<char32_t, size_t>>
+{
+  if constexpr (sizeof(Type) == 1)
+  {
+    const uint32_t aLead = static_cast<unsigned char>(*theInput);
+    if (aLead < 0x80)
+    {
+      return std::pair{static_cast<char32_t>(aLead), static_cast<size_t>(1)};
+    }
+
+    constexpr auto aSequenceFor =
+      [](uint32_t theLead) -> std::optional<std::pair<size_t, char32_t>> {
+      if (theLead >= 0xC2 && theLead <= 0xDF)
+      {
+        return std::pair{static_cast<size_t>(2), char32_t(0x80)};
+      }
+      if (theLead >= 0xE0 && theLead <= 0xEF)
+      {
+        return std::pair{static_cast<size_t>(3), char32_t(0x800)};
+      }
+      if (theLead >= 0xF0 && theLead <= 0xF4)
+      {
+        return std::pair{static_cast<size_t>(4), char32_t(0x10000)};
+      }
+      return std::nullopt;
+    };
+    const auto aSequence = aSequenceFor(aLead);
+    if (!aSequence)
+    {
+      return std::nullopt;
+    }
+
+    const auto [aLength, aMinimum] = *aSequence;
+    if (aLength > theCodeUnits)
+    {
+      return std::nullopt;
+    }
+    char32_t aValue = aLead & (0x7F >> aLength);
+    for (size_t anIndex = 1; anIndex < aLength; ++anIndex)
+    {
+      const uint32_t aUnit = static_cast<unsigned char>(theInput[anIndex]);
+      // A null fails this check before any later code unit is accessed.
+      if (aUnit < 0x80 || aUnit > 0xBF)
+      {
+        return std::nullopt;
+      }
+      aValue = (aValue << 6) | (aUnit & 0x3F);
+    }
+    if (aValue < aMinimum || aValue > THE_MAX_CODE_POINT
+        || (aValue >= THE_HIGH_SURROGATE_MIN && aValue <= THE_LOW_SURROGATE_MAX))
+    {
+      return std::nullopt;
+    }
+    return std::pair{aValue, aLength};
+  }
+  else if constexpr (sizeof(Type) == 2)
+  {
+    const char32_t aFirst = static_cast<char16_t>(*theInput);
+    if (aFirst < THE_HIGH_SURROGATE_MIN || aFirst > THE_LOW_SURROGATE_MAX)
+    {
+      return std::pair{aFirst, static_cast<size_t>(1)};
+    }
+    if (aFirst > THE_HIGH_SURROGATE_MAX || theCodeUnits < 2)
+    {
+      return std::nullopt;
+    }
+    const char32_t aSecond = static_cast<char16_t>(theInput[1]);
+    if (aSecond < THE_LOW_SURROGATE_MIN || aSecond > THE_LOW_SURROGATE_MAX)
+    {
+      return std::nullopt;
+    }
+    const char32_t aValue =
+      0x10000 + ((aFirst - THE_HIGH_SURROGATE_MIN) << 10) + (aSecond - THE_LOW_SURROGATE_MIN);
+    return std::pair{aValue, static_cast<size_t>(2)};
+  }
+  else
+  {
+    static_assert(sizeof(Type) == 4, "UTF code units must occupy 1, 2, or 4 bytes");
+    return std::pair{static_cast<char32_t>(*theInput), static_cast<size_t>(1)};
+  }
+}
+
+//=================================================================================================
+
+template <typename Type>
+constexpr size_t TCollection_UtfIterator<Type>::AdvanceBytesUtf8() const
+{
+  if (!IsValid())
+  {
+    return 0;
+  }
+  return myCharUtf32 < 0x80 ? 1 : myCharUtf32 < 0x800 ? 2 : myCharUtf32 <= THE_BMP_MAX ? 3 : 4;
+}
+
+//=================================================================================================
+
+template <typename Type>
+constexpr size_t TCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
+{
+  return !IsValid() ? 0 : myCharUtf32 <= THE_BMP_MAX ? 1 : 2;
+}
+
+//=================================================================================================
+
+template <typename Type>
+constexpr size_t TCollection_UtfIterator<Type>::AdvanceBytesUtf16() const
+{
+  return AdvanceCodeUnitsUtf16() * sizeof(char16_t);
+}
+
+//=================================================================================================
+
+template <typename Type>
+template <typename TypeWrite>
+constexpr TypeWrite* TCollection_UtfIterator<Type>::writeUTF8(TypeWrite* theBuffer) const
+{
+  static_assert(sizeof(TypeWrite) == 1, "UTF-8 output requires one-byte code units");
+  const size_t aLength = AdvanceBytesUtf8();
+  if (aLength == 0)
+  {
+    return theBuffer;
+  }
+  char32_t aValue = myCharUtf32;
+  if (aLength == 1)
+  {
+    *theBuffer = static_cast<TypeWrite>(aValue);
+  }
+  else
+  {
+    for (size_t anIndex = aLength - 1; anIndex > 0; --anIndex)
+    {
+      theBuffer[anIndex] = static_cast<TypeWrite>(0x80 | (aValue & 0x3F));
+      aValue >>= 6;
+    }
+    const uint32_t aPrefix = aLength == 2 ? 0xC0 : aLength == 3 ? 0xE0 : 0xF0;
+    *theBuffer             = static_cast<TypeWrite>(aPrefix | aValue);
+  }
+  return theBuffer + aLength;
+}

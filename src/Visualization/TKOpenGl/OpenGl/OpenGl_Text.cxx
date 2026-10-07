@@ -127,7 +127,7 @@ void OpenGl_Text::Init(const occ::handle<OpenGl_Context>& theCtx,
   Reset(theCtx);
   Set2D(false);
 
-  NCollection_String aText;
+  TCollection_UtfString<char> aText;
   aText.FromUnicode(theText);
   myText->SetText(aText);
   myText->SetPosition(gp_Pnt(thePoint.x(), thePoint.y(), thePoint.z()));
@@ -226,7 +226,7 @@ void OpenGl_Text::UpdateDrawStats(Graphic3d_FrameStatsDataTmp& theStats, bool th
 //=================================================================================================
 
 void OpenGl_Text::StringSize(const occ::handle<OpenGl_Context>& theCtx,
-                             const NCollection_String&          theText,
+                             const TCollection_UtfString<char>& theText,
                              const OpenGl_Aspects&              theTextAspect,
                              const float                        theHeight,
                              const unsigned int                 theResolution,
@@ -251,7 +251,7 @@ void OpenGl_Text::StringSize(const occ::handle<OpenGl_Context>& theCtx,
   theDescent = aFont->Descender();
 
   GLfloat aWidth = 0.0f;
-  for (NCollection_UtfIterator<char> anIter = theText.Iterator(); *anIter != 0;)
+  for (TCollection_UtfIterator<char> anIter = theText.Iterator(); anIter.More();)
   {
     const char32_t aCharThis = *anIter;
     const char32_t aCharNext = *++anIter;

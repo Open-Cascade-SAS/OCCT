@@ -25,7 +25,7 @@
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Image_PixMap.hxx>
-#include <NCollection_String.hxx>
+#include <TCollection_UtfString.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <array>
@@ -313,7 +313,7 @@ public:
   //! Note that bounding box takes into account the text alignment options.
   //! Its corners are relative to the text alignment anchor point, their coordinates can be
   //! negative.
-  Standard_EXPORT Font_Rect BoundingBox(const NCollection_String&               theString,
+  Standard_EXPORT Font_Rect BoundingBox(const TCollection_UtfString<char>&      theString,
                                         const Graphic3d_HorizontalTextAlignment theAlignX,
                                         const Graphic3d_VerticalTextAlignment   theAlignY);
 
@@ -325,7 +325,9 @@ public:
   //! @return true on success
   Standard_DEPRECATED("Deprecated method, Font_FTFont::Params should be used for passing "
                       "parameters")
-  bool Init(const NCollection_String& theFontPath, uint32_t thePointSize, uint32_t theResolution)
+  bool Init(const TCollection_UtfString<char>& theFontPath,
+            uint32_t                           thePointSize,
+            uint32_t                           theResolution)
   {
     Params aParams;
     aParams.PointSize  = thePointSize;
@@ -341,10 +343,10 @@ public:
   //! @return true on success
   Standard_DEPRECATED("Deprecated method, Font_FTFont::Params should be used for passing "
                       "parameters")
-  bool Init(const NCollection_String& theFontName,
-            Font_FontAspect           theFontAspect,
-            uint32_t                  thePointSize,
-            uint32_t                  theResolution)
+  bool Init(const TCollection_UtfString<char>& theFontName,
+            Font_FontAspect                    theFontAspect,
+            uint32_t                           thePointSize,
+            uint32_t                           theResolution)
   {
     Params aParams;
     aParams.PointSize  = thePointSize;

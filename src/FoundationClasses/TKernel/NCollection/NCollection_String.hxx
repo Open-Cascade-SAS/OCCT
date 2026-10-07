@@ -16,8 +16,9 @@
 #ifndef NCollection_String_HeaderFile
 #define NCollection_String_HeaderFile
 
-#include <NCollection_UtfString.hxx>
+#include <TCollection_UtfString.hxx>
 
-typedef NCollection_UtfString<char> NCollection_String;
+//! Compatibility alias; use TCollection_UtfString<char> in new code.
+using NCollection_String = TCollection_UtfString<char>;
 
 #endif // _NCollection_String_H__

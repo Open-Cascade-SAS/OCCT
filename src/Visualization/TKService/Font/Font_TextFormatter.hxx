@@ -21,7 +21,7 @@
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_DynamicArray.hxx>
-#include <NCollection_String.hxx>
+#include <TCollection_UtfString.hxx>
 
 class Font_FTFont;
 
@@ -107,7 +107,7 @@ public:
     int readNextSymbol(const int theSymbolStartingFrom, char32_t& theSymbolChar)
     {
       int aNextSymbol = theSymbolStartingFrom;
-      for (; *myIter != 0; ++myIter)
+      for (; myIter.More(); ++myIter)
       {
         const char32_t aCharCurr = *myIter;
         if (Font_TextFormatter::IsCommandSymbol(aCharCurr))
@@ -133,7 +133,7 @@ public:
   protected:
     IterationFilter myFilter;  //!< possibility to filter not-necessary symbols
                                // clang-format off
-    NCollection_UtfIterator<char> myIter; //!< the next symbol iterator value over the text formatter string
+    TCollection_UtfIterator<char> myIter; //!< the next symbol iterator value over the text formatter string
     int     mySymbolPosition; //!< the current position
     char32_t   mySymbolChar; //!< the current symbol
     int     mySymbolNext; //!< position of the next symbol in iterator, if zero, the iterator is finished
@@ -152,7 +152,7 @@ public:
   Standard_EXPORT void Reset();
 
   //! Render specified text to inner buffer.
-  Standard_EXPORT void Append(const NCollection_String& theString, Font_FTFont& theFont);
+  Standard_EXPORT void Append(const TCollection_UtfString<char>& theString, Font_FTFont& theFont);
 
   //! Perform formatting on the buffered text.
   //! Should not be called more than once after initialization!
@@ -168,7 +168,7 @@ public:
   }
 
   //! Returns current rendering string.
-  inline const NCollection_String& String() const { return myString; }
+  inline const TCollection_UtfString<char>& String() const { return myString; }
 
   //! Returns symbol bounding box
   //! @param bounding box.
@@ -290,9 +290,9 @@ protected:                                    //! @name configuration
   float                myMaxSymbolWidth; //!< maximum symbol width of the formatter string
   // clang-format on
 
-protected:                          //! @name input data
-  NCollection_String      myString; //!< currently rendered text
-  NCollection_Vec2<float> myPen;    //!< current pen position
+protected:                              //! @name input data
+  TCollection_UtfString<char> myString; //!< currently rendered text
+  NCollection_Vec2<float>     myPen;    //!< current pen position
   NCollection_DynamicArray<NCollection_Vec2<float>>
                                   myCorners; //!< The bottom left corners of a formatted rectangles.
   NCollection_DynamicArray<float> myNewLines; //!< position at LF

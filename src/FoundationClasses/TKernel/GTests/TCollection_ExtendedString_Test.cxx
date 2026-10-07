@@ -46,6 +46,15 @@ TEST(TCollection_ExtendedStringTest, ConstructorWithAsciiString)
   EXPECT_EQ(asciiString.Length(), extendedString.Length());
 }
 
+TEST(TCollection_ExtendedStringTest, Constructor_Utf8Disabled_PreservesBytes)
+{
+  const char*                      aSource = "\xC3\xA9";
+  const TCollection_ExtendedString anExpected(u"\u00C3\u00A9");
+  EXPECT_EQ(TCollection_ExtendedString(aSource, false), anExpected);
+  EXPECT_EQ(TCollection_ExtendedString(TCollection_AsciiString(aSource), false), anExpected);
+  EXPECT_EQ(TCollection_ExtendedString(aSource, true), TCollection_ExtendedString(u"\u00E9"));
+}
+
 TEST(TCollection_ExtendedStringTest, CopyConstructor)
 {
   TCollection_ExtendedString aString1("Original");
@@ -852,7 +861,7 @@ TEST(TCollection_ExtendedStringTest, IsSameString_DifferentLengths)
 // Tests for C++17 std::u16string_view support
 // ========================================
 
-#if __cplusplus >= 201703L
+#if Standard_CPP17_OR_HIGHER
 TEST(TCollection_ExtendedStringTest, StringView_Constructor)
 {
   std::u16string_view        aView(u"Hello World");
@@ -897,6 +906,29 @@ TEST(TCollection_ExtendedStringTest, StringView_EmptyConstructor)
   TCollection_ExtendedString aString(aView);
   EXPECT_TRUE(aString.IsEmpty());
 }
+
+TEST(TCollection_ExtendedStringTest, StringView_BoundedInput_PreservesCodeUnits)
+{
+  const char16_t                   aSource[] = {u'A', u'\0', 0xD800, 0xDC00, u'B'};
+  const std::u16string_view        aView(aSource, 5);
+  const TCollection_ExtendedString aString(aView);
+  EXPECT_EQ(aString.Length(), 5);
+  EXPECT_EQ(std::u16string_view(aString), aView);
+  EXPECT_EQ(aString.ToExtString()[aString.Length()], u'\0');
+}
+
+TEST(TCollection_ExtendedStringTest, StringView_IsolatedSurrogate_CopiesWithoutValidation)
+{
+  char16_t                         aSource[] = {u'A', 0xD800, 0xDC00};
+  const TCollection_ExtendedString aString(std::u16string_view(aSource, 2));
+  aSource[0] = u'B';
+  aSource[1] = u'C';
+  ASSERT_EQ(aString.Length(), 2);
+  EXPECT_EQ(aString.Value(1), u'A');
+  EXPECT_EQ(aString.Value(2), char16_t(0xD800));
+  EXPECT_EQ(aString.ToExtString()[2], u'\0');
+}
+
 #endif
 
 // ========================================

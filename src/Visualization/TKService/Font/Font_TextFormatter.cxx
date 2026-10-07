@@ -103,7 +103,7 @@ void Font_TextFormatter::Reset()
 
 //=================================================================================================
 
-void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont& theFont)
+void Font_TextFormatter::Append(const TCollection_UtfString<char>& theString, Font_FTFont& theFont)
 {
   if (theString.IsEmpty())
   {

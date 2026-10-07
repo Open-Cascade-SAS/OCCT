@@ -1230,7 +1230,7 @@ void Font_FTFont::GlyphRect(Font_Rect& theRect) const
 
 //=================================================================================================
 
-Font_Rect Font_FTFont::BoundingBox(const NCollection_String&               theString,
+Font_Rect Font_FTFont::BoundingBox(const TCollection_UtfString<char>&      theString,
                                    const Graphic3d_HorizontalTextAlignment theAlignX,
                                    const Graphic3d_VerticalTextAlignment   theAlignY)
 {

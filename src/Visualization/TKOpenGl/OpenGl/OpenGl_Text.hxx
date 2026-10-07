@@ -89,7 +89,7 @@ public: //! @name methods for compatibility with layers
 
   //! Compute text width
   Standard_EXPORT static void StringSize(const occ::handle<OpenGl_Context>& theCtx,
-                                         const NCollection_String&          theText,
+                                         const TCollection_UtfString<char>& theText,
                                          const OpenGl_Aspects&              theTextAspect,
                                          const float                        theHeight,
                                          const unsigned int                 theResolution,

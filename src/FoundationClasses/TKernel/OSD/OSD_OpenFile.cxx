@@ -69,7 +69,7 @@ int OSD_OpenFileDescriptor(const TCollection_ExtendedString& theName,
     return -1;
   }
 #else
-  NCollection_UtfString<char> aString(theName.ToExtString());
+  TCollection_UtfString<char> aString(theName.ToExtString());
   // Mode 0600 is used when O_CREAT is set
   // (owner read+write only, similar to Windows _S_IREAD | _S_IWRITE)
   aFileDesc = open(aString.ToCString(), aFlags, S_IRUSR | S_IWUSR);
@@ -103,7 +103,7 @@ FILE* OSD_OpenFile(const TCollection_ExtendedString& theName, const char* theMod
   aFile = ::_wfopen(theName.ToWideString(), aFileModeW.ToWideString());
 #else
   // conversion in UTF-8 for linux
-  NCollection_UtfString<char> aString(theName.ToExtString());
+  TCollection_UtfString<char> aString(theName.ToExtString());
   aFile = ::fopen(aString.ToCString(), theMode);
 #endif
   return aFile;

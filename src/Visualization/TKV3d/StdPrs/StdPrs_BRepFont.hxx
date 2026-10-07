@@ -19,7 +19,7 @@
 #include <Font_StrictLevel.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
-#include <NCollection_String.hxx>
+#include <TCollection_UtfString.hxx>
 #include <Standard_Transient.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Ax3.hxx>
@@ -73,19 +73,19 @@ public:
   //! @param[in] theFontPath font file path
   //! @param[in] theSize glyph size in model units
   //! @param[in] theFaceId face index within the file
-  Standard_EXPORT StdPrs_BRepFont(const NCollection_String& theFontPath,
-                                  const double              theSize,
-                                  const int                 theFaceId = 0);
+  Standard_EXPORT StdPrs_BRepFont(const TCollection_UtfString<char>& theFontPath,
+                                  const double                       theSize,
+                                  const int                          theFaceId = 0);
 
   //! Find and initialize a font by family name.
   //! @param[in] theFontName requested font family
   //! @param[in] theFontAspect requested font style
   //! @param[in] theSize glyph size in model units
   //! @param[in] theStrictLevel font matching strictness
-  Standard_EXPORT StdPrs_BRepFont(const NCollection_String& theFontName,
-                                  const Font_FontAspect     theFontAspect,
-                                  const double              theSize,
-                                  const Font_StrictLevel    theStrictLevel = Font_StrictLevel_Any);
+  Standard_EXPORT StdPrs_BRepFont(const TCollection_UtfString<char>& theFontName,
+                                  const Font_FontAspect              theFontAspect,
+                                  const double                       theSize,
+                                  const Font_StrictLevel theStrictLevel = Font_StrictLevel_Any);
 
   Standard_EXPORT ~StdPrs_BRepFont() override;
 
@@ -100,9 +100,9 @@ public:
   //! @param[in] theSize glyph size in model units
   //! @param[in] theFaceId face index within the file
   //! @return true on success; the current font is preserved on failure
-  Standard_EXPORT bool Init(const NCollection_String& theFontPath,
-                            const double              theSize,
-                            const int                 theFaceId = 0);
+  Standard_EXPORT bool Init(const TCollection_UtfString<char>& theFontPath,
+                            const double                       theSize,
+                            const int                          theFaceId = 0);
 
   //! Find and initialize a font by family name.
   //! @param[in] theFontName requested font family
@@ -130,15 +130,15 @@ public:
   //! Missing characters use the primary font's .notdef glyph when no fallback glyph is available.
   //! @param[in] theText UTF text
   //! @return generated compound, or a null shape when no text can be rendered
-  Standard_EXPORT TopoDS_Shape RenderText(const NCollection_String& theText);
+  Standard_EXPORT TopoDS_Shape RenderText(const TCollection_UtfString<char>& theText);
 
   //! Render text with explicit placement and contour options.
   //! Missing characters use the primary font's .notdef glyph when no fallback glyph is available.
   //! @param[in] theText UTF text
   //! @param[in] theOptions rendering options
   //! @return generated compound, or a null shape when no text can be rendered
-  Standard_EXPORT TopoDS_Shape RenderText(const NCollection_String& theText,
-                                          const TextOptions&        theOptions);
+  Standard_EXPORT TopoDS_Shape RenderText(const TCollection_UtfString<char>& theText,
+                                          const TextOptions&                 theOptions);
 
   //! Format text and load each unique planar glyph region.
   //! Missing characters use the primary font's .notdef glyph when no fallback glyph is available.
@@ -147,7 +147,7 @@ public:
   //! @param[in] theVerticalAlignment vertical layout alignment
   //! @return text plan including model-space bounds, or empty on failure or empty text
   [[nodiscard]] Standard_EXPORT std::optional<BRepFont_Builder::TextPlan> PlanText(
-    const NCollection_String&               theText,
+    const TCollection_UtfString<char>&      theText,
     const Graphic3d_HorizontalTextAlignment theHorizontalAlignment = Graphic3d_HTA_LEFT,
     const Graphic3d_VerticalTextAlignment   theVerticalAlignment   = Graphic3d_VTA_BOTTOM);
 
@@ -217,9 +217,9 @@ public:
   //! @param[in] theFontAspect requested font style
   //! @param[in] theSize glyph size in model units
   //! @return true if a suitable font was initialized; false leaves the current font unchanged
-  bool Init(const NCollection_String& theFontName,
-            const Font_FontAspect     theFontAspect,
-            const double              theSize)
+  bool Init(const TCollection_UtfString<char>& theFontName,
+            const Font_FontAspect              theFontAspect,
+            const double                       theSize)
   {
     return FindAndInit(theFontName.ToCString(), theFontAspect, theSize, Font_StrictLevel_Any);
   }
