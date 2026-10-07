@@ -18,6 +18,7 @@
 #define _BRepOffsetAPI_ThruSections_HeaderFile
 
 #include <Standard.hxx>
+#include <Geom_Curve.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
@@ -99,6 +100,23 @@ public:
   //! and update wires to have same number of edges.
   Standard_EXPORT void CheckCompatibility(const bool check = true);
 
+  //! Prescribes G1 continuity at the first section using an auxiliary curve.
+  //! After common profiling, the homogeneous difference Ht - H defines the
+  //! tangent direction. AppSurf determines its magnitude; C1/C2 are not imposed.
+  //! Null clears the constraint. Call CheckCompatibility(false) with aligned
+  //! profiles/fields; each profile edge occupies one U unit in traversal order.
+  //! Ruled, variational, punctual and V-periodic constrained lofts are unsupported.
+  void SetFirstSectionTangent(const occ::handle<Geom_Curve>& theTangent)
+  {
+    myFirstTangent = theTangent;
+  }
+
+  //! Prescribes G1 continuity at the last section; see SetFirstSectionTangent().
+  void SetLastSectionTangent(const occ::handle<Geom_Curve>& theTangent)
+  {
+    myLastTangent = theTangent;
+  }
+
   //! Define the approximation algorithm
   Standard_EXPORT void SetSmoothing(const bool UseSmoothing);
 
@@ -114,7 +132,7 @@ public:
   //! if Wi <= 0
   Standard_EXPORT void SetCriteriumWeight(const double W1, const double W2, const double W3);
 
-  //! Define the maximal U degree of result surface
+  //! Define the maximal loft (V) degree of result surface
   Standard_EXPORT void SetMaxDegree(const int MaxDeg);
 
   //! returns the type of parametrization used in the approximation
@@ -123,7 +141,7 @@ public:
   //! returns the Continuity used in the approximation
   Standard_EXPORT GeomAbs_Shape Continuity() const;
 
-  //! returns the maximal U degree of result surface
+  //! returns the maximal loft (V) degree of result surface
   Standard_EXPORT int MaxDegree() const;
 
   //! Define the approximation algorithm
@@ -180,7 +198,7 @@ private:
     const int                               NbEdges,
     const bool                              w1Point,
     const bool                              w2Point,
-    const bool                              vClosed) const;
+    const bool                              vClosed);
 
   NCollection_List<TopoDS_Shape>     myInputWires; //!< List of input wires
   NCollection_Sequence<TopoDS_Shape> myWires;      //!< Working wires
@@ -203,8 +221,9 @@ private:
   double                                                                   myCritWeights[3];
   bool                                                                     myUseSmoothing;
   bool                                                                     myMutableInput;
-  NCollection_Handle<BRepFill_Generator>                                   myBFGenerator;
-  BRepFill_ThruSectionErrorStatus                                          myStatus;
+  occ::handle<Geom_Curve>                myFirstTangent, myLastTangent;
+  NCollection_Handle<BRepFill_Generator> myBFGenerator;
+  BRepFill_ThruSectionErrorStatus        myStatus;
 };
 
 #endif // _BRepOffsetAPI_ThruSections_HeaderFile

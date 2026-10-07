@@ -1,0 +1,16 @@
+# G1 endpoint tangent fields supplied by the caller.
+circle c1 0 0 0 0 0 1 5
+mkedge e1 c1
+wire w1 e1
+circle c2 1 0 5 0 0 1 6
+mkedge e2 c2
+wire w2 e2
+circle c3 3 0 10 0 0 1 7
+mkedge e3 c3
+wire w3 e3
+# An auxiliary translated profile supplies the tangent direction.
+copy c1 t1
+copy c3 t3
+translate t1 t3 0 0 5
+thrusections -N result 0 0 w1 w2 w3 -param uniform -firstd1curve t1 -lastd1curve t3
+checkshape result

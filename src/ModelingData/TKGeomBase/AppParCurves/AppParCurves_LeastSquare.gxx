@@ -491,7 +491,7 @@ void AppParCurves_LeastSquare::Init(const MultiLine& SSP, const int FirstPoint, 
   }
 
   int Nincx = resfin - resinit + 1;
-  if (Nincx < 1)
+  if (Nincx < 0)
   { // Impossible d'aller plus loin
     isready = false;
     return;
@@ -513,6 +513,13 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
   done = false;
   if (!isready)
   {
+    return;
+  }
+  if (resinit > resfin)
+  {
+    // Positions alone fully determine a line; tangents also require their scales.
+    done =
+      FirstConstraint < AppParCurves_TangencyPoint && LastConstraint < AppParCurves_TangencyPoint;
     return;
   }
   int    i, j, k, Ci, i2, k1, k2;

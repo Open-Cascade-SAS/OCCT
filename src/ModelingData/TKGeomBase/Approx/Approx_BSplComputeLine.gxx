@@ -246,12 +246,14 @@ void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine& Line,
 
     // Search for a tangent vector by construction of a parabola:
     AppParCurves_Constraint firstC, lastC;
-    firstC = lastC      = AppParCurves_PassPoint;
-    int         nbpoles = 3;
-    math_Vector mypar(index, index + 2);
-    Parameters(Line, index, index + 2, mypar);
+    firstC = lastC = AppParCurves_PassPoint;
+    int nbpoles    = std::min(3, LineTool::LastPoint(Line) - index + 1);
+    if (nbpoles == 2)
+      firstC = lastC = AppParCurves_NoConstraint;
+    math_Vector mypar(index, index + nbpoles - 1);
+    Parameters(Line, index, index + nbpoles - 1, mypar);
     Approx_BSpParLeastSquareOfMyBSplGradient
-                            LSQ(Line, index, index + 2, firstC, lastC, mypar, nbpoles);
+                            LSQ(Line, index, index + nbpoles - 1, firstC, lastC, mypar, nbpoles);
     AppParCurves_MultiCurve C = LSQ.BezierValue();
 
     gp_Pnt   myP;
@@ -332,12 +334,14 @@ void Approx_BSplComputeLine::LastTangencyVector(const MultiLine& Line,
 
     // Search for a tangent vector by construction of a parabola:
     AppParCurves_Constraint firstC, lastC;
-    firstC = lastC      = AppParCurves_PassPoint;
-    int         nbpoles = 3;
-    math_Vector mypar(index - 2, index);
-    Parameters(Line, index - 2, index, mypar);
+    firstC = lastC = AppParCurves_PassPoint;
+    int nbpoles    = std::min(3, index - LineTool::FirstPoint(Line) + 1);
+    if (nbpoles == 2)
+      firstC = lastC = AppParCurves_NoConstraint;
+    math_Vector mypar(index - nbpoles + 1, index);
+    Parameters(Line, index - nbpoles + 1, index, mypar);
     Approx_BSpParLeastSquareOfMyBSplGradient
-                            LSQ(Line, index - 2, index, firstC, lastC, mypar, nbpoles);
+                            LSQ(Line, index - nbpoles + 1, index, firstC, lastC, mypar, nbpoles);
     AppParCurves_MultiCurve C = LSQ.BezierValue();
 
     gp_Pnt   myP;
@@ -774,6 +778,8 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
         alldone = Compute(Line, myfirstpt, mylastpt, TheParam, Theknots, TheMults);
       }
 
+      if (!alldone && nbknots >= Thelastpt - Thefirstpt + 1)
+        return;
       if (!alldone)
         nbknots++;
       else
@@ -952,8 +958,8 @@ bool Approx_BSplComputeLine::Compute(const MultiLine&                  Line,
     if (nbpolestocompare > nbp)
     {
       Interpol(Line);
-      tolreached = true;
-      return true;
+      tolreached = alldone;
+      return alldone;
     }
 
     AppParCurves_MultiBSpCurve mySCU(nbpoles);
@@ -1163,8 +1169,9 @@ void Approx_BSplComputeLine::SetTolerances(const double Tolerance3d, const doubl
 void Approx_BSplComputeLine::SetConstraints(const AppParCurves_Constraint FirstC,
                                             const AppParCurves_Constraint LastC)
 {
-  myfirstC = FirstC;
-  mylastC  = LastC;
+  myfirstC              = FirstC;
+  mylastC               = LastC;
+  myExplicitConstraints = true;
 }
 
 //=================================================================================================
@@ -1308,7 +1315,16 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
   int nbknots, nbpoles, nbpoints;
   nbpoints = Thelastpt - Thefirstpt + 1;
 
-  if (nbpoints == 2)
+  FindRealConstraints(Line);
+  // Default intersection tangents must retain the legacy interpolation behavior.
+  const bool hasFirstTangent = myExplicitConstraints && realfirstC >= AppParCurves_TangencyPoint;
+  const bool hasLastTangent  = myExplicitConstraints && reallastC >= AppParCurves_TangencyPoint;
+  if ((hasFirstTangent || hasLastTangent) && mydegremax < deg)
+  {
+    alldone = tolreached = false;
+    return;
+  }
+  if (nbpoints == 2 && !hasFirstTangent && !hasLastTangent)
   {
     Cons      = AppParCurves_NoConstraint;
     int mydeg = 1;
@@ -1346,7 +1362,7 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
     int         nbP = 3 * LineTool::NbP3d(Line) + 2 * LineTool::NbP2d(Line);
     math_Vector V1(1, nbP), V2(1, nbP);
 
-    if (nbpoints == 3 || nbpoints == 4)
+    if (nbpoints <= 4 || hasFirstTangent || hasLastTangent)
     {
       FirstTangencyVector(Line, Thefirstpt, V1);
       lambda1 = SearchFirstLambda(Line, TheParam, Theknots, V1, Thefirstpt);
@@ -1354,6 +1370,10 @@ void Approx_BSplComputeLine::Interpol(const MultiLine& Line)
       LastTangencyVector(Line, Thelastpt, V2);
       lambda2 = SearchLastLambda(Line, TheParam, Theknots, V2, Thelastpt);
 
+      if (hasFirstTangent)
+        lambda1 = std::abs(lambda1);
+      if (hasLastTangent)
+        lambda2 = std::abs(lambda2);
       lambda1 = lambda1 / deg;
       lambda2 = lambda2 / deg;
     }
