@@ -13,7 +13,9 @@
 
 #include <gtest/gtest.h>
 
+#include <BRepGProp.hxx>
 #include <BRepOffsetAPI_MakeOffset.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffset_MakeOffset.hxx>
@@ -26,6 +28,7 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <GProp_GProps.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -43,6 +46,8 @@
 #include <NCollection_List.hxx>
 
 #include <cmath>
+#include <memory>
+#include <vector>
 
 //=================================================================================================
 // Helper function to create a circular wire
@@ -1096,4 +1101,51 @@ TEST(BRepOffset_MakeOffsetTest, CollapsedCircularWireOffsetIsNotDone)
   bool isDone = true;
   ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(2.0, -1.0));
   EXPECT_FALSE(isDone);
+}
+
+//=================================================================================================
+// Test: the faces of an arc-join offset come out in the same order whatever the heap looks like
+//=================================================================================================
+
+TEST(BRepOffset_MakeOffsetTest, ArcJoin_FaceOrderDoesNotDependOnAddresses)
+{
+  // Hold a different amount of heap before each build, so that the shapes of each one get other
+  // addresses. BuildOffsetByArc must not let that reach the order of the faces it returns.
+  std::vector<std::unique_ptr<char[]>> aHeap;
+  std::vector<gp_Pnt>                  aRefCentres;
+  double                               aRefVolume = 0.0;
+  for (int aRun = 0; aRun < 32; ++aRun)
+  {
+    aHeap.emplace_back(new char[16 + 16 * aRun]);
+
+    const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(-5, -5, -5), 10, 10, 10).Shape();
+    BRepOffsetAPI_MakeOffsetShape aMaker;
+    aMaker.PerformByJoin(aBox, 1.0, 1.0e-7, BRepOffset_Skin, false, false, GeomAbs_Arc, false);
+    ASSERT_TRUE(aMaker.IsDone());
+
+    std::vector<gp_Pnt> aCentres;
+    for (TopExp_Explorer anExp(aMaker.Shape(), TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      GProp_GProps aProps;
+      BRepGProp::SurfaceProperties(anExp.Current(), aProps);
+      aCentres.push_back(aProps.CentreOfMass());
+    }
+    GProp_GProps aVolume;
+    BRepGProp::VolumeProperties(aMaker.Shape(), aVolume, true);
+
+    if (aRun == 0)
+    {
+      aRefCentres = aCentres;
+      aRefVolume  = aVolume.Mass();
+      continue;
+    }
+    ASSERT_EQ(aCentres.size(), aRefCentres.size());
+    for (size_t aFaceIdx = 0; aFaceIdx < aCentres.size(); ++aFaceIdx)
+    {
+      EXPECT_TRUE(aCentres[aFaceIdx].IsEqual(aRefCentres[aFaceIdx], 1.0e-9))
+        << "face " << aFaceIdx << " of run " << aRun << " is not where it was in run 0";
+    }
+    // The order the faces are summed in decides the last digits of the volume.
+    EXPECT_EQ(aVolume.Mass(), aRefVolume) << "volume of run " << aRun;
+  }
 }
