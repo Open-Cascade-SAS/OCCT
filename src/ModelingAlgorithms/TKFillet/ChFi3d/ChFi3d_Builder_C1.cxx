@@ -19,6 +19,7 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <Blend_FuncInv.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepExtrema_ExtCC.hxx>
@@ -885,6 +886,34 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       CPopArc = saveCPopArc;
       return;
     }
+    // A surface intersection on Arcprol splits the edge instead of extending it.
+    if (inters && !CPopArc.IsOnArc() && !BRep_Tool::Degenerated(Arcprol)
+        && BRep_Tool::IsGeometric(Arcprol))
+    {
+      BRepAdaptor_Curve aCurve(Arcprol);
+      const double      aTol    = std::max(CPopArc.Tolerance(), BRep_Tool::Tolerance(Arcprol));
+      const double      aParTol = aCurve.Resolution(aTol);
+      Extrema_ExtPC     anExt(CPopArc.Point(), aCurve);
+      const int         aNbExt = anExt.IsDone() ? anExt.NbExt() : 0;
+      for (int anExtIndex = 1; anExtIndex <= aNbExt; ++anExtIndex)
+      {
+        const double aPar             = anExt.Point(anExtIndex).Parameter();
+        const bool   isOnEdgeInterior = anExt.SquareDistance(anExtIndex) <= aTol * aTol
+                                      && aPar > aCurve.FirstParameter() + aParTol
+                                      && aPar < aCurve.LastParameter() - aParTol;
+        if (!isOnEdgeInterior)
+        {
+          continue;
+        }
+        // Orient the split away from the corner vertex.
+        const TopAbs_Orientation anOri =
+          TopExp::FirstVertex(TopoDS::Edge(Arcprol.Oriented(TopAbs_FORWARD))).IsSame(Vtx)
+            ? TopAbs_FORWARD
+            : TopAbs_REVERSED;
+        CPopArc.SetArc(aTol, Arcprol, aPar, anOri);
+        break;
+      }
+    }
   }
   else
   {
@@ -1395,7 +1424,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
 
   ChFi3d_EnlargeBox(HBs, Pc, Udeb, Ufin, box1, box2);
 
-  if (onsame && inters)
+  if (onsame && inters && !CPopArc.IsOnArc())
   {
 // VARIANT 1:
 // A small missing end of curve is added for the extension
