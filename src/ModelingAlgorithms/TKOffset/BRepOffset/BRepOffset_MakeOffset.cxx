@@ -1883,6 +1883,23 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
   {
     return;
   }
+  // MapSF is hashed on TShape addresses. Visit its entries in the order they were bound,
+  // otherwise the roots of myImageOffset, and so the faces of the result, change from run to run.
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aBindOrder;
+  {
+    // The order MakeOffsetFaces binds the faces in.
+    NCollection_List<TopoDS_Shape> aSortedFaces;
+    BRepLib::SortFaces(myFaceComp, aSortedFaces);
+    for (NCollection_List<TopoDS_Shape>::Iterator anIt(aSortedFaces); anIt.More(); anIt.Next())
+    {
+      aBindOrder.Add(anIt.Value());
+    }
+    for (NCollection_List<TopoDS_Shape>::Iterator anIt(myAnalyse.NewFaces()); anIt.More();
+         anIt.Next())
+    {
+      aBindOrder.Add(anIt.Value());
+    }
+  }
   //--------------------------------------------------------
   // Construction of tubes on edge.
   //--------------------------------------------------------
@@ -1956,6 +1973,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
           }
           BRepOffset_Offset OF(E, EOn1, EOn2, CurOffset, E1f, E1l);
           MapSF.Bind(E, OF);
+          aBindOrder.Add(E);
         }
       }
       else
@@ -2015,6 +2033,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
 
         BRepOffset_Offset OF(V, LOE, CurOffset);
         MapSF.Bind(V, OF);
+        aBindOrder.Add(V);
       }
       //--------------------------------------------------------------
       // Particular processing if V is at least a free border.
@@ -2058,17 +2077,22 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
   {
     RT = ChFiDS_Convex;
   }
-  NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>::Iterator It(MapSF);
-  Message_ProgressScope aPS3(aPSOuter.Next(), nullptr, MapSF.Length());
-  for (; It.More(); It.Next(), aPS3.Next())
+  Message_ProgressScope aPS3(aPSOuter.Next(), nullptr, aBindOrder.Extent());
+  for (int anIdx = 1; anIdx <= aBindOrder.Extent(); ++anIdx, aPS3.Next())
   {
     if (!aPS3.More())
     {
       myError = BRepOffset_UserBreak;
       return;
     }
-    const TopoDS_Shape&      SI = It.Key();
-    const BRepOffset_Offset& SF = It.Value();
+    const TopoDS_Shape&      SI     = aBindOrder(anIdx);
+    const BRepOffset_Offset* aSFPtr = MapSF.Seek(SI);
+    if (aSFPtr == nullptr)
+    {
+      // Unbound by ToContext.
+      continue;
+    }
+    const BRepOffset_Offset& SF = *aSFPtr;
     if (SF.Status() == BRepOffset_Reversed || SF.Status() == BRepOffset_Degenerated)
     {
       //------------------------------------------------
@@ -2077,7 +2101,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
       continue;
     }
 
-    const TopoDS_Face& OF = It.Value().Face();
+    const TopoDS_Face& OF = SF.Face();
     myInitOffsetFace.Bind(SI, OF);
     myInitOffsetFace.SetRoot(SI); // Initial<-> Offset
     myImageOffset.SetRoot(OF);    // FaceOffset root of images
@@ -2096,7 +2120,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
         if (!L.IsEmpty() && L.First().Type() != RT)
         {
           TopAbs_Orientation OO          = E.Orientation();
-          TopoDS_Shape       aLocalShape = It.Value().Generated(E);
+          TopoDS_Shape       aLocalShape = SF.Generated(E);
           TopoDS_Edge        OE          = TopoDS::Edge(aLocalShape);
           //          TopoDS_Edge        OE  = TopoDS::Edge(It.Value().Generated(E));
           myAsDes->Add(OF, OE.Oriented(OO));
