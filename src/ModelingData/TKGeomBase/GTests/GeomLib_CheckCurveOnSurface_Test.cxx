@@ -13,7 +13,9 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cmath>
+#include <utility>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -23,6 +25,8 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib_CheckCurveOnSurface.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -395,6 +399,175 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, SplineResidualWithTranslatedParameters)
       ASSERT_TRUE(aCheck.IsDone());
       EXPECT_NEAR(aCheck.MaxDistance(), 0.5 * (aCurvePoles.At(1).Z() - 1000.0), 1.0e-18);
       EXPECT_NEAR(aCheck.MaxParameter(), 0.5, Precision::PConfusion());
+    }
+  }
+}
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, AffineSplineResidualAcrossKnotSpans)
+{
+  for (const double aUVOrigin : {0.0, 1.0e8, -1.0e8})
+  {
+    SCOPED_TRACE(aUVOrigin);
+    NCollection_Array1<double> aKnots(1, 4), aUKnots(1, 2), aVKnots(1, 2);
+    NCollection_Array1<int>    aMults(1, 4), aSurfaceMults(1, 2);
+    for (size_t anIndex = 0; anIndex < 4; ++anIndex)
+    {
+      aKnots.ChangeAt(anIndex) = double(anIndex);
+      aMults.ChangeAt(anIndex) = anIndex == 0 || anIndex == 3 ? 3 : 1;
+    }
+    aUKnots.ChangeAt(0) = aUVOrigin;
+    aUKnots.ChangeAt(1) = aUVOrigin + 3.0;
+    aVKnots.ChangeAt(0) = 0.0;
+    aVKnots.ChangeAt(1) = 1.0;
+    aSurfaceMults.Init(2);
+
+    NCollection_Array1<gp_Pnt>   aPoles(1, 5);
+    NCollection_Array1<gp_Pnt2d> aUVPoles(1, 5);
+    const double                 aParameters[] = {0.0, 0.5, 1.5, 2.5, 3.0};
+    for (size_t anIndex = 0; anIndex < 5; ++anIndex)
+    {
+      aPoles.ChangeAt(anIndex)   = gp_Pnt(1.0e12 + 2.0 * aParameters[anIndex], 0.0, 1000.0);
+      aUVPoles.ChangeAt(anIndex) = gp_Pnt2d(aUVOrigin + aParameters[anIndex], 0.0);
+    }
+    aPoles.ChangeAt(2).SetZ(1000.0 + 2.0e-6);
+    NCollection_Array2<gp_Pnt> aSurfacePoles(1, 2, 1, 2);
+    for (size_t aU = 0; aU < 2; ++aU)
+    {
+      for (size_t aV = 0; aV < 2; ++aV)
+      {
+        aSurfacePoles.ChangeAt(aU, aV) = gp_Pnt(1.0e12 + 6.0 * double(aU), double(aV), 1000.0);
+      }
+    }
+    const occ::handle<GeomAdaptor_Curve> aCurve =
+      new GeomAdaptor_Curve(new Geom_BSplineCurve(aPoles, aKnots, aMults, 2));
+    const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+      new Geom2dAdaptor_Curve(new Geom2d_BSplineCurve(aUVPoles, aKnots, aMults, 2));
+    const occ::handle<GeomAdaptor_Surface> aSurface = new GeomAdaptor_Surface(
+      new Geom_BSplineSurface(aSurfacePoles, aUKnots, aVKnots, aSurfaceMults, aSurfaceMults, 1, 1));
+    const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
+      new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+    for (const bool isParallel : {false, true})
+    {
+      SCOPED_TRACE(isParallel);
+      GeomLib_CheckCurveOnSurface aCheck(aCurve);
+      aCheck.SetParallel(isParallel);
+      aCheck.Perform(aCoS);
+      ASSERT_TRUE(aCheck.IsDone());
+      // The middle basis peaks at 3/4 at t = 1.5.
+      EXPECT_NEAR(aCheck.MaxDistance(), 0.75 * (aPoles.At(2).Z() - 1000.0), 1.0e-18);
+      EXPECT_NEAR(aCheck.MaxParameter(), 1.5, Precision::PConfusion());
+    }
+  }
+}
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, SplineMaximumAcrossDegreesAndParameterRanges)
+{
+  for (const int aDegree : {3, 7, 15, 25})
+  {
+    for (const double anOffset : {2.0e-6, 0.02, 2.0})
+    {
+      for (const auto& aRange :
+           {std::pair{0.0, 1.0}, std::pair{-10000.0, 8.0}, std::pair{10000.0, 0.125}})
+      {
+        for (const int aPoleIndex : {0, aDegree / 2, aDegree})
+        {
+          const auto [aFirst, aSpan] = aRange;
+          SCOPED_TRACE(::testing::Message()
+                       << "degree=" << aDegree << " offset=" << anOffset << " first=" << aFirst
+                       << " span=" << aSpan << " pole=" << aPoleIndex);
+          NCollection_Array1<double> aKnots(1, 2), aSurfaceKnots(1, 2);
+          aKnots.ChangeAt(0)        = aFirst;
+          aKnots.ChangeAt(1)        = aFirst + aSpan;
+          aSurfaceKnots.ChangeAt(0) = 0.0;
+          aSurfaceKnots.ChangeAt(1) = 1.0;
+          NCollection_Array1<int> aMults(1, 2), aSurfaceMults(1, 2);
+          aMults.Init(aDegree + 1);
+          aSurfaceMults.Init(2);
+          NCollection_Array1<gp_Pnt>   aPoles(1, aDegree + 1);
+          NCollection_Array1<gp_Pnt2d> aUVPoles(1, aDegree + 1);
+          aPoles.Init(gp_Pnt(0.0, 0.0, 1000.0));
+          aUVPoles.Init(gp_Pnt2d(0.0, 0.0));
+          aPoles.ChangeAt(aPoleIndex).SetZ(1000.0 + anOffset);
+          NCollection_Array2<gp_Pnt> aSurfacePoles(1, 2, 1, 2);
+          for (size_t aU = 0; aU < 2; ++aU)
+          {
+            for (size_t aV = 0; aV < 2; ++aV)
+            {
+              aSurfacePoles.ChangeAt(aU, aV) = gp_Pnt(double(aU), double(aV), 1000.0);
+            }
+          }
+          const occ::handle<GeomAdaptor_Curve> aCurve =
+            new GeomAdaptor_Curve(new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree));
+          const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+            new Geom2dAdaptor_Curve(new Geom2d_BSplineCurve(aUVPoles, aKnots, aMults, aDegree));
+          const occ::handle<GeomAdaptor_Surface> aSurface =
+            new GeomAdaptor_Surface(new Geom_BSplineSurface(aSurfacePoles,
+                                                            aSurfaceKnots,
+                                                            aSurfaceKnots,
+                                                            aSurfaceMults,
+                                                            aSurfaceMults,
+                                                            1,
+                                                            1));
+          const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
+            new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+          GeomLib_CheckCurveOnSurface aCheck(aCurve);
+          aCheck.Perform(aCoS);
+          ASSERT_TRUE(aCheck.IsDone());
+          // A Bernstein basis peaks at index / degree.
+          const double aParameter = double(aPoleIndex) / aDegree;
+          double       aBinomial  = 1.0;
+          for (int anIndex = 1; anIndex <= aPoleIndex; ++anIndex)
+          {
+            aBinomial *= double(aDegree - anIndex + 1) / anIndex;
+          }
+          const double aMaximum = aBinomial * std::pow(aParameter, aPoleIndex)
+                                  * std::pow(1.0 - aParameter, aDegree - aPoleIndex);
+          const double anExpected = aMaximum * (aPoles.At(aPoleIndex).Z() - 1000.0);
+          EXPECT_NEAR(aCheck.MaxDistance(), anExpected, std::max(1.0e-18, 1.0e-14 * anExpected));
+          EXPECT_NEAR(aCheck.MaxParameter(),
+                      aFirst + aSpan * aParameter,
+                      aSpan * Precision::Confusion());
+        }
+      }
+    }
+  }
+}
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, BezierMaximumWithinTrimmedRange)
+{
+  for (const double anOffset : {2.0e-6, 0.02, 2.0})
+  {
+    for (const auto& aRange : {std::pair{0.0, 1.0}, std::pair{0.0, 0.25}, std::pair{0.5, 1.0}})
+    {
+      const auto [aFirst, aLast] = aRange;
+      SCOPED_TRACE(::testing::Message()
+                   << "offset=" << anOffset << " first=" << aFirst << " last=" << aLast);
+      NCollection_Array1<gp_Pnt> aPoles(1, 4);
+      for (size_t anIndex = 0; anIndex < 4; ++anIndex)
+      {
+        aPoles.ChangeAt(anIndex) = gp_Pnt(double(anIndex) / 3.0, 0.0, 0.0);
+      }
+      aPoles.ChangeAt(1).SetZ(anOffset);
+      NCollection_Array1<gp_Pnt2d> aUVPoles(1, 2);
+      aUVPoles.ChangeAt(0) = gp_Pnt2d(0.0, 0.0);
+      aUVPoles.ChangeAt(1) = gp_Pnt2d(1.0, 0.0);
+      const occ::handle<GeomAdaptor_Curve> aCurve =
+        new GeomAdaptor_Curve(new Geom_BezierCurve(aPoles), aFirst, aLast);
+      const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+        new Geom2dAdaptor_Curve(new Geom2d_BezierCurve(aUVPoles), aFirst, aLast);
+      const occ::handle<GeomAdaptor_Surface> aSurface = new GeomAdaptor_Surface(
+        new Geom_Plane(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0))));
+      const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
+        new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+      GeomLib_CheckCurveOnSurface aCheck(aCurve);
+      aCheck.Perform(aCoS);
+      ASSERT_TRUE(aCheck.IsDone());
+      // Deviation: 3 * offset * t * (1 - t)^2, peaking at 1/3.
+      const double aParameter = std::clamp(1.0 / 3.0, aFirst, aLast);
+      const double anExpected =
+        3.0 * anOffset * aParameter * (1.0 - aParameter) * (1.0 - aParameter);
+      EXPECT_NEAR(aCheck.MaxDistance(), anExpected, std::max(1.0e-18, 1.0e-14 * anExpected));
+      EXPECT_NEAR(aCheck.MaxParameter(), aParameter, Precision::Confusion());
     }
   }
 }
