@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
@@ -768,6 +769,90 @@ TEST(BRepFilletAPI_MakeFilletTest, OCC426_RevolveFuseUnifyFillet)
   GProp_GProps aResultProps;
   BRepGProp::SurfaceProperties(aResult, aResultProps);
   EXPECT_NEAR(aResultProps.Mass(), 7507.61, 7507.61 * 0.001) << "Surface area mismatch";
+}
+
+// Two concave fillets whose ends both cross the same edge of the end face, one beyond each of
+// its vertices. A plate (x in [-10, 10]) stands on a cylinder (R40 along Y, y in [0, 80]); each
+// end cap of the cylinder is unified with the plate's coplanar side, so it reaches z = 40, where
+// the plate's outline leans outwards. Fillets of radius > 5/3 on the two lines where the plate
+// meets the cylinder rise above z = 40 at y = 0 and y = 80, so each fillet end is trimmed by the
+// leaning face and crosses the edge z = 40 of the end face beyond one of its vertices: the first
+// fillet at x = 10.6, the second at x = -10.6. Each fillet alone is valid. Both together used to
+// leave the edge extended on one side only, and the shell open.
+TEST(BRepFilletAPI_MakeFilletTest, FilletEndsCrossingSharedEdgeBeyondBothVertices)
+{
+  const double aRadius = 5.0;
+
+  BRepPrimAPI_MakeCylinder aCylinder(gp_Ax2(gp::Origin(), gp::DY()), 40.0, 80.0);
+
+  // The plate's outline in the plane x = -10: up from inside the cylinder, vertical in the
+  // planes of the end caps up to z = 40, then leaning outwards up to z = 100.
+  BRepBuilderAPI_MakePolygon anOutline;
+  anOutline.Add(gp_Pnt(-10.0, 0.0, 0.0));
+  anOutline.Add(gp_Pnt(-10.0, 80.0, 0.0));
+  anOutline.Add(gp_Pnt(-10.0, 80.0, 40.0));
+  anOutline.Add(gp_Pnt(-10.0, 120.0, 100.0));
+  anOutline.Add(gp_Pnt(-10.0, -40.0, 100.0));
+  anOutline.Add(gp_Pnt(-10.0, 0.0, 40.0));
+  anOutline.Close();
+  BRepPrimAPI_MakePrism aPlate(BRepBuilderAPI_MakeFace(anOutline.Wire()).Face(),
+                               gp_Vec(20.0, 0.0, 0.0));
+
+  BRepAlgoAPI_Fuse aFuse(aCylinder.Shape(), aPlate.Shape());
+  ASSERT_TRUE(aFuse.IsDone());
+  ShapeUpgrade_UnifySameDomain anUnify(aFuse.Shape());
+  anUnify.Build();
+  const TopoDS_Shape& aSolid = anUnify.Shape();
+  ASSERT_TRUE(BRepCheck_Analyzer(aSolid).IsValid());
+
+  // The two lines along Y where the plate's sides (x = +-10) meet the cylinder.
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+  TopExp::MapShapes(aSolid, TopAbs_EDGE, anEdges);
+  NCollection_Sequence<TopoDS_Edge> aConcave;
+  for (int anIndex = 1; anIndex <= anEdges.Extent(); ++anIndex)
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdges(anIndex));
+    BRepAdaptor_Curve  aCurve(anEdge);
+    const gp_Pnt       aFirst = aCurve.Value(aCurve.FirstParameter());
+    const gp_Pnt       aLast  = aCurve.Value(aCurve.LastParameter());
+    if (aCurve.GetType() == GeomAbs_Line && std::abs(std::abs(aFirst.X()) - 10.0) < 1.e-6
+        && std::abs(aLast.X() - aFirst.X()) < 1.e-6 && std::abs(aLast.Z() - aFirst.Z()) < 1.e-6
+        && std::abs(aFirst.Z() - std::sqrt(1500.0)) < 1.e-6)
+    {
+      aConcave.Append(anEdge);
+    }
+  }
+  ASSERT_EQ(aConcave.Length(), 2);
+
+  const auto aVolume = [](const TopoDS_Shape& theShape) {
+    GProp_GProps aProps;
+    BRepGProp::VolumeProperties(theShape, aProps);
+    return aProps.Mass();
+  };
+
+  // Each fillet alone is valid and adds the same volume (the shape is symmetric in x).
+  double anExpectedVolume = aVolume(aSolid);
+  for (const TopoDS_Edge& anEdge : aConcave)
+  {
+    BRepFilletAPI_MakeFillet aFillet(aSolid);
+    aFillet.Add(aRadius, anEdge);
+    ASSERT_NO_THROW(aFillet.Build());
+    ASSERT_TRUE(aFillet.IsDone());
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid()) << "One fillet alone";
+    anExpectedVolume += aVolume(aFillet.Shape()) - aVolume(aSolid);
+  }
+
+  // Both: the fillets are 20 apart and don't meet, so each adds what it adds alone.
+  BRepFilletAPI_MakeFillet aFillet(aSolid);
+  for (const TopoDS_Edge& anEdge : aConcave)
+  {
+    aFillet.Add(aRadius, anEdge);
+  }
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid())
+    << "Both fillets: the edge both cross is extended on one side only, the shell is open";
+  EXPECT_NEAR(aVolume(aFillet.Shape()), anExpectedVolume, 1.e-6 * anExpectedVolume);
 }
 
 TEST(BRepFilletAPI_MakeFilletTest, ConeCornerIsInvariantUnderRotation)

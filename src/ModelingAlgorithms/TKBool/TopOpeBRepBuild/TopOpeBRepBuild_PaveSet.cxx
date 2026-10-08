@@ -134,6 +134,30 @@ static bool FUN_islook(const TopoDS_Edge& e)
   return islook;
 }
 
+// Returns true if an interference vertex of LV with orientation VEori lies
+// beyond parVE, outside the edge : the edge is extended past its vertex.
+static bool FUN_isextended(const NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>& LV,
+                           const TopAbs_Orientation                                   VEori,
+                           const double                                               parVE)
+{
+  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator it(LV);
+  for (; it.More(); it.Next())
+  {
+    const occ::handle<TopOpeBRepBuild_Pave>& PV = it.Value();
+    if (PV->IsShape() || PV->Vertex().Orientation() != VEori)
+    {
+      continue;
+    }
+    double d = PV->Parameter() - parVE;
+    if ((VEori == TopAbs_FORWARD && d < -Precision::PConfusion())
+        || (VEori == TopAbs_REVERSED && d > Precision::PConfusion()))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 //=================================================================================================
 
 void TopOpeBRepBuild_PaveSet::Prepare()
@@ -144,6 +168,8 @@ void TopOpeBRepBuild_PaveSet::Prepare()
   //  - if VI is INTERNAL, set VI orientation to VE orientation.
   //  - remove VI from the list if :
   //      VI is EXTERNAL or VE and VI have opposite orientations.
+  // if an interference vertex with the orientation of VE lies beyond VE,
+  // the edge is extended past VE : do not add VE in the list.
   //
   if (myPrepareDone)
   {
@@ -235,14 +261,19 @@ void TopOpeBRepBuild_PaveSet::Prepare()
           break;
         }
       }
-      // if VE not found in the list, add it
+      // if VE not found in the list, add it,
+      // unless the edge is extended beyond VE : VE is then inside the new edge
       if (addVE)
       {
-        double                            parVE = BRep_Tool::Parameter(VE, myEdge);
-        occ::handle<TopOpeBRepBuild_Pave> newPV = new TopOpeBRepBuild_Pave(VE, parVE, true);
-        myVertices.Prepend(newPV);
+        double parVE    = BRep_Tool::Parameter(VE, myEdge);
+        bool   extended = VEbound && FUN_islook(myEdge) && FUN_isextended(myVertices, VEori, parVE);
+        if (!extended)
+        {
+          occ::handle<TopOpeBRepBuild_Pave> newPV = new TopOpeBRepBuild_Pave(VE, parVE, true);
+          myVertices.Prepend(newPV);
 
-        EdgeVertexCount++;
+          EdgeVertexCount++;
+        }
       }
     }
   } // myRemovePV
