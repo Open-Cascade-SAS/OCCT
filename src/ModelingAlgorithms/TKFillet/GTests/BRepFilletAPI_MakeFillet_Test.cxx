@@ -27,6 +27,7 @@
 #include <BRepGProp.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
@@ -53,6 +54,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
@@ -61,6 +63,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_Failure.hxx>
+#include <Precision.hxx>
 
 #include <gtest/gtest.h>
 #include <algorithm>
@@ -850,4 +853,53 @@ TEST(BRepFilletAPI_MakeFilletTest, FilletEndsCrossingSharedEdgeBeyondBothVertice
   EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid())
     << "Both fillets: the edge both cross is extended on one side only, the shell is open";
   EXPECT_NEAR(aVolume(aFillet.Shape()), anExpectedVolume, 1.e-6 * anExpectedVolume);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, ConeCornerIsInvariantUnderRotation)
+{
+  double aReferenceArea = 0.0;
+  for (double anAngle : {0.0, 30.0, 90.0, 90.000000000001, 120.0, 180.0, 270.0})
+  {
+    SCOPED_TRACE(anAngle);
+    const TopoDS_Shape aCone = BRepPrimAPI_MakeCone(50.0, 0.0, 120.0, 0.5 * M_PI).Shape();
+    gp_Trsf            aRotation;
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
+                          anAngle * M_PI / 180.0);
+    const TopoDS_Shape aShape = BRepBuilderAPI_Transform(aCone, aRotation).Shape();
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+    TopExp::MapShapes(aShape, TopAbs_EDGE, anEdges);
+    BRepFilletAPI_MakeFillet aFillet(aShape);
+    int                      aNbEdges = 0;
+    for (const auto& aShapeEdge : anEdges)
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(aShapeEdge);
+      if (BRep_Tool::Degenerated(anEdge))
+      {
+        continue;
+      }
+      TopoDS_Vertex aFirst, aLast;
+      TopExp::Vertices(anEdge, aFirst, aLast);
+      if (BRep_Tool::Pnt(aFirst).Distance(gp_Pnt(0.0, 0.0, 120.0)) < Precision::Confusion()
+          || BRep_Tool::Pnt(aLast).Distance(gp_Pnt(0.0, 0.0, 120.0)) < Precision::Confusion())
+      {
+        aFillet.Add(10.0, anEdge);
+        ++aNbEdges;
+      }
+    }
+    ASSERT_EQ(aNbEdges, 3);
+    aFillet.Build();
+    ASSERT_TRUE(aFillet.IsDone());
+    ASSERT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+    GProp_GProps aProperties;
+    BRepGProp::SurfaceProperties(aFillet.Shape(), aProperties, 1.e-6);
+    EXPECT_NEAR(aProperties.Mass(), 9640.68, 0.1);
+    if (anAngle == 0.0)
+    {
+      aReferenceArea = aProperties.Mass();
+    }
+    else
+    {
+      EXPECT_NEAR(aProperties.Mass(), aReferenceArea, 1.e-3);
+    }
+  }
 }

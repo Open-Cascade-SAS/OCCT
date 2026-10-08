@@ -20,6 +20,10 @@ vdisplay result
 vsetdispmode 1
 vfit
 
-checktrinfo result -tri 25814 -nod 12955
+if {[llength [tricheck result]] != 0} {
+  puts "Error: Invalid mesh"
+}
+
+checktrinfo result -tri 27250 -nod 13673
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

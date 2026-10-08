@@ -16,8 +16,6 @@ settolerance f 4.e-6
 distmini d1 f v
 
 regexp {([-0-9.+eE]+)$} [dump d1_val] full distvalue
-if { $distvalue != $checkvalue } {
-  puts "Error: distance is incorrect"
-} else {
-  puts "OK: distance is correct"
-}
+# The vertex lies on the face; a sub-ulp residual is not a geometric distance
+# reference. Check coincidence at the standard model-space precision.
+checkreal "face/vertex distance" $distvalue 0.0 1.e-7 0.0

@@ -63,6 +63,23 @@ public:
   //! Returns the identity transformation.
   constexpr gp_Trsf() noexcept;
 
+  //! Restores the components of a valid transformation without renormalizing them.
+  //! The caller must supply mutually consistent components from a valid gp_Trsf.
+  //! @param[in] theMatrix homogeneous vectorial part, excluding the scale factor
+  //! @param[in] theTranslation translation part
+  //! @param[in] theScale nonzero scale factor
+  //! @param[in] theForm transformation form
+  constexpr gp_Trsf(const gp_Mat&     theMatrix,
+                    const gp_XYZ&     theTranslation,
+                    const double      theScale,
+                    const gp_TrsfForm theForm) noexcept
+      : scale(theScale),
+        shape(theForm),
+        matrix(theMatrix),
+        loc(theTranslation)
+  {
+  }
+
   //! Creates a 3D transformation from the 2D transformation theT.
   //! The resulting transformation has a homogeneous
   //! vectorial part, V3, and a translation part, T3, built from theT:

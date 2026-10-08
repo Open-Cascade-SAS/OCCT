@@ -16,9 +16,11 @@
 
 #include <ElCLib.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <GeomLProp_CurAndInf2d.hxx>
 #include <GeomLProp_NumericCurInf2d.pxx>
 #include <NCollection_Array1.hxx>
+#include <Precision.hxx>
 
 //=================================================================================================
 
@@ -106,12 +108,77 @@ void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCu
         const int                  aNbIntervals = anAdaptor.NbIntervals(GeomAbs_C3);
         NCollection_Array1<double> aParams(1, aNbIntervals + 1);
         anAdaptor.Intervals(aParams, GeomAbs_C3);
-        for (int i = 1; i <= aNbIntervals; i++)
+        LProp_CurAndInf aNumericResult;
+        for (size_t i = 0; i + 1 < aParams.Size(); ++i)
         {
-          aNumericInf.PerformCurExt(theCurve, aParams(i), aParams(i + 1), *this);
+          aNumericInf.PerformCurExt(theCurve, aParams.At(i), aParams.At(i + 1), aNumericResult);
           if (!aNumericInf.IsDone())
           {
             myIsDone = false;
+          }
+        }
+        LProp_CurAndInf                        aKnotExtrema;
+        const occ::handle<Geom2d_BSplineCurve> aSpline = anAdaptor.BSpline();
+        for (size_t i = 1; i + 1 < aParams.Size(); ++i)
+        {
+          const double aParameter = aParams.At(i);
+          int          aFirstKnot, aLastKnot;
+          aSpline->LocateU(aParameter, 0.0, aFirstKnot, aLastKnot);
+          if (aFirstKnot != aLastKnot || aSpline->Degree() - aSpline->Multiplicity(aFirstKnot) < 2)
+          {
+            continue;
+          }
+          // Curvature is continuous at a C2 knot, but its derivative can change sign there.
+          double aVariation[2];
+          bool   isRegular = true;
+          for (size_t aSide = 0; aSide < 2; ++aSide)
+          {
+            Geom2dAdaptor_Curve aLocal(theCurve, aParams.At(i - 1 + aSide), aParams.At(i + aSide));
+            gp_Pnt2d            aPoint;
+            gp_Vec2d            aD1, aD2, aD3;
+            aLocal.D3(aParameter, aPoint, aD1, aD2, aD3);
+            const double aSpeed = aD1.Magnitude();
+            if (aSpeed <= gp::Resolution())
+            {
+              isRegular = false;
+              break;
+            }
+            const gp_Vec2d aTangent = aD1 / aSpeed;
+            const double   aBend    = aTangent.Crossed(aD2);
+            if (aBend == 0.0)
+            {
+              isRegular = false;
+              break;
+            }
+            const double aRate = aTangent.Crossed(aD3) - 3.0 * aBend * aTangent.Dot(aD2) / aSpeed;
+            aVariation[aSide]  = aBend < 0.0 ? -aRate : aRate;
+          }
+          if (isRegular
+              && ((aVariation[0] > 0.0 && aVariation[1] < 0.0)
+                  || (aVariation[0] < 0.0 && aVariation[1] > 0.0)))
+          {
+            aKnotExtrema.AddExtCur(aParameter, aVariation[0] > 0.0);
+          }
+        }
+        for (int i = 1; i <= aKnotExtrema.NbPoints(); ++i)
+        {
+          AddExtCur(aKnotExtrema.Parameter(i), aKnotExtrema.Type(i) == LProp_MinCur);
+        }
+        for (int i = 1; i <= aNumericResult.NbPoints(); ++i)
+        {
+          const double aParameter = aNumericResult.Parameter(i);
+          bool         isKnot     = false;
+          for (int j = 1; j <= aKnotExtrema.NbPoints(); ++j)
+          {
+            if (std::abs(aKnotExtrema.Parameter(j) - aParameter) <= Precision::PConfusion())
+            {
+              isKnot = true;
+              break;
+            }
+          }
+          if (!isKnot)
+          {
+            AddExtCur(aParameter, aNumericResult.Type(i) == LProp_MinCur);
           }
         }
       }

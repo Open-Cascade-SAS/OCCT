@@ -16,6 +16,7 @@
 
 #include <Adaptor2d_OffsetCurve.hxx>
 #include <Geom2d_CartesianPoint.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
@@ -216,6 +217,14 @@ bool MAT2d_Circuit::IsSharpCorner(const occ::handle<Geom2d_Geometry>& Geom1,
 
   if (myJoinType == GeomAbs_Arc)
   {
+    // Nonparallel straight segments have a definite signed turn even near a reversal.
+    // Their bounded offset fragments need not reach the intersection of the offset lines.
+    if (DotProd < 0.0 && ProVec != 0.0 && C1->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line))
+        && C2->BasisCurve()->IsKind(STANDARD_TYPE(Geom2d_Line)))
+    {
+      return ProVec * Direction < 0.0;
+    }
+
     while (NbTest <= 10)
     {
       if ((ProVec)*Direction < -TolAng)

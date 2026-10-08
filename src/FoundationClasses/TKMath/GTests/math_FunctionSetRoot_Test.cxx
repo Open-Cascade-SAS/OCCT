@@ -192,7 +192,60 @@ public:
     return true;
   }
 };
+
+// Both equations are full rank; their different scales must not erase a root coordinate.
+class ScaledLinearSystem : public math_FunctionSetWithDerivatives
+{
+public:
+  int  NbVariables() const override;
+  int  NbEquations() const override;
+  bool Value(const math_Vector& theX, math_Vector& theF) override;
+  bool Derivatives(const math_Vector& theX, math_Matrix& theD) override;
+  bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override;
+};
+
+int ScaledLinearSystem::NbVariables() const
+{
+  return 2;
+}
+
+int ScaledLinearSystem::NbEquations() const
+{
+  return 2;
+}
+
+bool ScaledLinearSystem::Value(const math_Vector& theX, math_Vector& theF)
+{
+  theF.ChangeAt(0) = 1.0e-10 * (theX.At(0) - 2.0);
+  theF.ChangeAt(1) = theX.At(1) - 1.0;
+  return true;
+}
+
+bool ScaledLinearSystem::Derivatives(const math_Vector&, math_Matrix& theD)
+{
+  theD.Init(0.0);
+  theD(1, 1) = 1.0e-10;
+  theD(2, 2) = 1.0;
+  return true;
+}
+
+bool ScaledLinearSystem::Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD)
+{
+  return Value(theX, theF) && Derivatives(theX, theD);
+}
 } // namespace
+
+TEST(math_FunctionSetRoot, SmallNecessaryNewtonDirectionIsRetained)
+{
+  ScaledLinearSystem   aFunction;
+  math_Vector          aTolerance(1, 2, 1.0e-12);
+  math_Vector          aStart(1, 2, 0.0);
+  math_FunctionSetRoot aSolver(aFunction, aTolerance);
+  aSolver.Perform(aFunction, aStart);
+  ASSERT_TRUE(aSolver.IsDone());
+  EXPECT_NEAR(aSolver.Root().At(0), 2.0, 1.0e-12);
+  EXPECT_NEAR(aSolver.Root().At(1), 1.0, 1.0e-12);
+}
 
 TEST(math_FunctionSetRoot, LinearSystemBasic)
 {

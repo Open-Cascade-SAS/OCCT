@@ -31,6 +31,16 @@ TEST(gp_DirTest, CoordinateConstructor)
   EXPECT_NEAR(aDir.Z(), 1.0, Precision::Confusion());
 }
 
+TEST(gp_DirTest, StoredUnitComponentsPreserveBinaryValues)
+{
+  const gp_Dir aDirection(0.0, 1.0, 1.0);
+  const gp_Dir aRestored =
+    gp_Dir::FromUnitComponents(aDirection.X(), aDirection.Y(), aDirection.Z());
+  EXPECT_EQ(aRestored.X(), aDirection.X());
+  EXPECT_EQ(aRestored.Y(), aDirection.Y());
+  EXPECT_EQ(aRestored.Z(), aDirection.Z());
+}
+
 TEST(gp_DirTest, XYZConstructor)
 {
   gp_XYZ aXYZ(0.0, 3.0, 4.0);

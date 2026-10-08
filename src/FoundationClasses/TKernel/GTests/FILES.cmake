@@ -57,4 +57,5 @@ set(OCCT_TKernel_GTests_FILES
   TCollection_ExtendedString_Test.cxx
   TopLoc_Location_Test.cxx
   UnitsAPI_Test.cxx
+  Precision_Test.cxx
 )

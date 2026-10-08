@@ -1,13 +1,10 @@
+puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of VERTEX entities in shape \"result\" is 7"
+puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of EDGE entities in shape \"result\" is 5"
+
 puts "========"
 puts "OCC29910: Porting to Debian80-64 : Regressions in Modeling Algorithms"
 puts "========"
 puts ""
-
-# Different result between Debian 7 and Debian 8 and between MSVC 2010 and 2017.
-puts "TODO ?OCC29910 Windows: Error: Tolerance = 4.0169383828521568e-006 is not equal to expected"
-puts "TODO ?OCC29910 Linux: Error: Tolerance = 6.0392296447644325e-07 is not equal to expected"
-puts "TODO ?OCC29910 ALL: Error :  is WRONG because number of VERTEX entities in shape \"result\" is 7"
-puts "TODO ?OCC29910 ALL: Error :  is WRONG because number of EDGE entities in shape \"result\" is 5"
 
 restore [locate_data_file bug29910_f1.brep] f1
 restore [locate_data_file bug29910_f2.brep] f2
