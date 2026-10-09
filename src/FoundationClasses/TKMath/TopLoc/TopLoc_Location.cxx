@@ -24,6 +24,16 @@
 
 namespace
 {
+bool isIdentity(const gp_Trsf& T)
+{
+  const auto& loc = T.TranslationPart();
+  const auto& mat = T.HVectorialPart();
+  return T.ScaleFactor() == 1 && (loc.X() == 0 && loc.Y() == 0 && loc.Z() == 0)
+         && (mat.Value(1, 1) == 1 && mat.Value(1, 2) == 0 && mat.Value(1, 3) == 0)
+         && (mat.Value(2, 1) == 0 && mat.Value(2, 2) == 1 && mat.Value(2, 3) == 0)
+         && (mat.Value(3, 1) == 0 && mat.Value(3, 2) == 0 && mat.Value(3, 3) == 1);
+}
+
 //! Append a datum power, merging or cancelling an adjacent equal datum.
 //! theItems is the storage of theLocation, passed explicitly to keep this helper local.
 void multiplyDatum(const TopLoc_Location&             theLocation,
@@ -47,13 +57,16 @@ void multiplyDatum(const TopLoc_Location&             theLocation,
 
 TopLoc_Location::TopLoc_Location(const occ::handle<TopLoc_Datum3D>& D)
 {
-  myItems.Construct(TopLoc_ItemLocation(D, 1));
+  if (D && !isIdentity(D->Transformation()))
+  {
+    myItems.Construct(TopLoc_ItemLocation(D, 1));
+  }
 }
 
 //=================================================================================================
 
 TopLoc_Location::TopLoc_Location(const gp_Trsf& T)
-    : TopLoc_Location(new TopLoc_Datum3D(T))
+    : TopLoc_Location(!isIdentity(T) ? new TopLoc_Datum3D(T) : nullptr)
 {
 }
 
