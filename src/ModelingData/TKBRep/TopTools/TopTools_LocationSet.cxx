@@ -32,6 +32,7 @@ TopTools_LocationSet::TopTools_LocationSet() = default;
 void TopTools_LocationSet::Clear()
 {
   myMap.Clear();
+  myList.clear();
 }
 
 //=================================================================================================
@@ -50,9 +51,11 @@ int TopTools_LocationSet::Add(const TopLoc_Location& L)
   TopLoc_Location N = L;
   do
   {
+    myList.push_back(N.FirstDatum());
     myMap.Add(N.FirstDatum());
     N = N.NextLocation();
   } while (!N.IsIdentity());
+  myList.push_back(L);
   return myMap.Add(L);
 }
 
@@ -61,11 +64,11 @@ int TopTools_LocationSet::Add(const TopLoc_Location& L)
 const TopLoc_Location& TopTools_LocationSet::Location(const int I) const
 {
   static const TopLoc_Location identity;
-  if (I <= 0 || I > myMap.Extent())
+  if (I <= 0 || I > myList.size())
   {
     return identity;
   }
-  return myMap(I);
+  return myList.at(I - 1);
 }
 
 //=================================================================================================
@@ -250,6 +253,7 @@ static void ReadTrsf(gp_Trsf& T, Standard_IStream& IS)
 void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRange& theProgress)
 {
   myMap.Clear();
+  myList.clear();
 
   char buffer[255];
   int  l1, p;
@@ -261,15 +265,16 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
     return;
   }
 
-  int i, nbLoc;
+  int nbLoc;
   IS >> nbLoc;
 
   TopLoc_Location L;
   gp_Trsf         T;
+  bool            identity = true;
 
   // OCC19559
   Message_ProgressScope PS(theProgress, "Locations", nbLoc);
-  for (i = 1; i <= nbLoc && PS.More(); i++, PS.Next())
+  for (int i = 1; i <= nbLoc && PS.More(); i++, PS.Next())
   {
     int typLoc;
     IS >> typLoc;
@@ -277,25 +282,32 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
     if (typLoc == 1)
     {
       ReadTrsf(T, IS);
-      L = T;
+      L        = T;
+      identity = false;
     }
 
     else if (typLoc == 2)
     {
-      L = TopLoc_Location();
+      L        = TopLoc_Location();
+      identity = true;
       IS >> l1;
       while (l1 != 0)
       {
         IS >> p;
-        TopLoc_Location L1 = myMap(l1);
+        TopLoc_Location L1 = myList.at(l1 - 1);
         L                  = L1.Powered(p) * L;
+        identity           = false;
         IS >> l1;
       }
     }
 
-    if (!L.IsIdentity())
+    if (!identity)
     {
-      myMap.Add(L);
+      myList.push_back(L);
+      if (!L.IsIdentity())
+      {
+        myMap.Add(L);
+      }
     }
   }
 }

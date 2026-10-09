@@ -74,6 +74,7 @@ public:
 
 private:
   NCollection_IndexedMap<TopLoc_Location> myMap;
+  std::vector<TopLoc_Location>            myList;
 };
 
 #endif // _TopTools_LocationSet_HeaderFile
