@@ -19,6 +19,10 @@ inputs:
     description: 'Suffix for the GTest results artifact name'
     required: true
     default: 'x64'
+  build-type:
+    description: 'CMake build type (Release, Debug, etc)'
+    required: false
+    default: 'Release'
 
 outputs:
   has-failures:
@@ -115,7 +119,7 @@ runs:
         LIBGL_ALWAYS_SOFTWARE: 1
       run: |
         cd install/bin
-        source env.sh
+        source env.sh "${{ inputs.build-type }}"
         EXIT_CODE=0
         ./OpenCascadeGTest --gtest_output=xml:gtest_results.xml > gtest_output.log 2>&1 || EXIT_CODE=$?
         cat gtest_output.log
