@@ -190,7 +190,7 @@ static void SetTriangles(
   }
   else
   {
-    int aTriangleIndex = 1;
+    int        aTriangleIndex  = 1;
     const auto aAppendTriangle = [&](const int theFirst, const int theSecond, const int theThird) {
       const gp_Pnt aFirst  = theMesh->Node(theFirst);
       const gp_Pnt aSecond = theMesh->Node(theSecond);
