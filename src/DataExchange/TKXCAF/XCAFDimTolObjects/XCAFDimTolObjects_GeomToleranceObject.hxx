@@ -244,8 +244,9 @@ private:
   occ::handle<TCollection_HAsciiString>                      myPresentationName;
   XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType =
     XCAFDimTolObjects_ToleranceZoneAffectedPlane_None;
-  gp_Pln                                                     myAffectedPlane;
-  std::optional<double> myUnequalDisplacement; //!< Authored displacement; zero differs from absence.
+  gp_Pln myAffectedPlane;
+  std::optional<double>
+    myUnequalDisplacement; //!< Authored displacement; zero differs from absence.
   occ::handle<TCollection_HAsciiString> myDescription; //!< Authored tolerance description.
 };
 

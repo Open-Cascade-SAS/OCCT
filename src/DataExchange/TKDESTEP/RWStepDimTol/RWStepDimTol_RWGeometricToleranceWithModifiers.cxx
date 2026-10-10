@@ -156,7 +156,8 @@ bool RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifier(
   for (int anIndex = StepDimTol_GTMAnyCrossSection; anIndex <= StepDimTol_GTMTangentPlane;
        ++anIndex)
   {
-    const StepDimTol_GeometricToleranceModifier aModifier = static_cast<StepDimTol_GeometricToleranceModifier>(anIndex);
+    const StepDimTol_GeometricToleranceModifier aModifier =
+      static_cast<StepDimTol_GeometricToleranceModifier>(anIndex);
     if (strcmp(theName, GetModifierName(aModifier)) == 0)
     {
       theModifier = aModifier;

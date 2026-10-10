@@ -740,10 +740,11 @@ TEST_F(StepToTopoDS_TranslateFaceTest,
       {
         SCOPED_TRACE(testing::Message() << isSurfaceSet << ", " << isFan << ", " << aCase);
         NCollection_Array1<gp_XYZ> aPoints(1, 3);
-        aPoints(1)          = gp_XYZ(0, 0, 0);
-        aPoints(2)          = gp_XYZ(1, 0, 0);
-        aPoints(3)          = gp_XYZ(0, 1, 0);
-        const occ::handle<NCollection_HArray1<int>> aIndices = new NCollection_HArray1<int>(1, aCase == 3 ? 2 : 3);
+        aPoints(1) = gp_XYZ(0, 0, 0);
+        aPoints(2) = gp_XYZ(1, 0, 0);
+        aPoints(3) = gp_XYZ(0, 1, 0);
+        const occ::handle<NCollection_HArray1<int>> aIndices =
+          new NCollection_HArray1<int>(1, aCase == 3 ? 2 : 3);
         for (int i = 1; i <= aIndices->Length(); ++i)
         {
           aIndices->SetValue(i, i);

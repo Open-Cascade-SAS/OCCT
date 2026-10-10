@@ -412,8 +412,8 @@ TEST_F(DEIGES_ProviderTest, WrapperStreamDocumentWriteRead)
   ASSERT_TRUE(aWrapper->Bind(new DEIGES_ConfigurationNode()));
   const occ::handle<TDocStd_Document> aDocument = createDocument();
   XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->AddShape(createBoxShape());
-  std::stringstream aStream;
-  DE_Provider::WriteStreamList  aWriteStreams;
+  std::stringstream            aStream;
+  DE_Provider::WriteStreamList aWriteStreams;
   aWriteStreams.Append(DE_Provider::WriteStreamNode("model.igs", aStream));
   ASSERT_TRUE(aWrapper->Write(aWriteStreams, aDocument));
   aStream.seekg(0);

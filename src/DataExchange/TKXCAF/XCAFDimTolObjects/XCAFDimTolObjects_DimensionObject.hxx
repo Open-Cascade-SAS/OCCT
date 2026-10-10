@@ -358,11 +358,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject, Standard_Transient)
 
 private:
-  XCAFDimTolObjects_DimensionType myType = XCAFDimTolObjects_DimensionType_Location_None;
-  occ::handle<NCollection_HArray1<double>>               myVal;
-  XCAFDimTolObjects_DimensionQualifier myQualifier = XCAFDimTolObjects_DimensionQualifier_None;
-  XCAFDimTolObjects_AngularQualifier   myAngularQualifier = XCAFDimTolObjects_AngularQualifier_None;
-  bool                                 myIsHole           = false;
+  XCAFDimTolObjects_DimensionType          myType = XCAFDimTolObjects_DimensionType_Location_None;
+  occ::handle<NCollection_HArray1<double>> myVal;
+  XCAFDimTolObjects_DimensionQualifier     myQualifier  = XCAFDimTolObjects_DimensionQualifier_None;
+  XCAFDimTolObjects_AngularQualifier myAngularQualifier = XCAFDimTolObjects_AngularQualifier_None;
+  bool                               myIsHole           = false;
   XCAFDimTolObjects_DimensionFormVariance myFormVariance =
     XCAFDimTolObjects_DimensionFormVariance_None;
   XCAFDimTolObjects_DimensionGrade myGrade = XCAFDimTolObjects_DimensionGrade_IT01;
@@ -371,18 +371,18 @@ private:
   NCollection_Sequence<XCAFDimTolObjects_DimensionModif> myModifiers;
   TopoDS_Edge                                            myPath;
   gp_Dir                                                 myDir;
-  bool                                                   myHasDirection = false; //!< Whether a measuring direction was authored.
-  gp_Ax2                                                 myConnection1, myConnection2;
-  bool myHasConnection1 = false, myHasConnection2 = false;
-  bool myConnectionIsPoint1 = false, myConnectionIsPoint2 = false;
-  occ::handle<TCollection_HAsciiString>                  myConnectionName1, myConnectionName2;
-  gp_Ax2                                                 myPlane;
-  bool                                                   myHasPlane   = false;
-  bool                                                   myHasPntText = false;
-  gp_Pnt                                                 myPntText;
-  TopoDS_Shape                                           myPresentation;
-  occ::handle<TCollection_HAsciiString>                  mySemanticName;
-  occ::handle<TCollection_HAsciiString>                  myPresentationName;
+  bool   myHasDirection = false; //!< Whether a measuring direction was authored.
+  gp_Ax2 myConnection1, myConnection2;
+  bool   myHasConnection1 = false, myHasConnection2 = false;
+  bool   myConnectionIsPoint1 = false, myConnectionIsPoint2 = false;
+  occ::handle<TCollection_HAsciiString> myConnectionName1, myConnectionName2;
+  gp_Ax2                                myPlane;
+  bool                                  myHasPlane   = false;
+  bool                                  myHasPntText = false;
+  gp_Pnt                                myPntText;
+  TopoDS_Shape                          myPresentation;
+  occ::handle<TCollection_HAsciiString> mySemanticName;
+  occ::handle<TCollection_HAsciiString> myPresentationName;
   NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> myDescriptions;
   NCollection_DynamicArray<occ::handle<TCollection_HAsciiString>> myDescriptionNames;
 };
