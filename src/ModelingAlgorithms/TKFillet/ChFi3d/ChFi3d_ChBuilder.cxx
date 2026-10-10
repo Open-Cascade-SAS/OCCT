@@ -100,7 +100,6 @@ void SearchCommonFaces(const ChFiDS_Map&  EFMap,
 
 void ExtentSpineOnCommonFace(occ::handle<ChFiDS_Spine>& Spine1,
                              occ::handle<ChFiDS_Spine>& Spine2,
-                             const TopoDS_Vertex&       V,
                              const double               dis1,
                              const double               dis2,
                              const bool                 isfirst1,
@@ -115,8 +114,14 @@ void ExtentSpineOnCommonFace(occ::handle<ChFiDS_Spine>& Spine1,
 
   gp_Pnt tmp;
   gp_Vec tg1, tg2;
-  Spine1->D1(Spine1->Absc(V), tmp, tg1);
-  Spine2->D1(Spine2->Absc(V), tmp, tg2);
+  // At a sharp closure, the contour has two different tangents at the same vertex.
+  // Absc(V) identifies only its first occurrence, not the requested end.
+  Spine1->D1(isfirst1 ? Spine1->FirstParameter(1) : Spine1->LastParameter(Spine1->NbEdges()),
+             tmp,
+             tg1);
+  Spine2->D1(isfirst2 ? Spine2->FirstParameter(1) : Spine2->LastParameter(Spine2->NbEdges()),
+             tmp,
+             tg2);
   tg1.Normalize();
   tg2.Normalize();
   if (isfirst1)
@@ -1973,7 +1978,8 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
     ChFi3d_IndexOfSurfData(V, itel.Value(), Sens);
     if (!FF)
     {
-      if (Stripe[1] == itel.Value())
+      // A closed stripe occurs twice: the second occurrence is its other end.
+      if (Stripe[0] == itel.Value())
       {
         Sens = -Sens;
       }
@@ -2077,7 +2083,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
   else if ((State[0] == ChFiDS_OnSame) && (State[1] == ChFiDS_OnSame))
   {
 
-    ExtentSpineOnCommonFace(Spine[0], Spine[1], V, dis[0], dis[1], isfirst[0], isfirst[1]);
+    ExtentSpineOnCommonFace(Spine[0], Spine[1], dis[0], dis[1], isfirst[0], isfirst[1]);
   }
 }
 
@@ -2184,7 +2190,7 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex&                   
   for (i = 0; i < 3; i++)
   {
     j = (i + 1) % 3;
-    ExtentSpineOnCommonFace(Spine[i], Spine[j], V, dis[i][j], dis[j][i], isfirst[i], isfirst[j]);
+    ExtentSpineOnCommonFace(Spine[i], Spine[j], dis[i][j], dis[j][i], isfirst[i], isfirst[j]);
   }
 }
 

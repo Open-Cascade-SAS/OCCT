@@ -19,6 +19,7 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <Blend_FuncInv.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
 #include <BRepAlgo_NormalProjection.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepExtrema_ExtCC.hxx>
@@ -3893,15 +3894,7 @@ void ChFi3d_Builder::PerformMoreSurfdata(const int Index)
   }
 
   // determination of neighbor surface
-  int indSurface;
-  if (is1stCP1OnArc)
-  {
-    indSurface = myListStripe.First()->SetOfSurfData()->Value(anInd)->IndexOfS1();
-  }
-  else
-  {
-    indSurface = myListStripe.First()->SetOfSurfData()->Value(anInd)->IndexOfS2();
-  }
+  const int indSurface = aSurfData->Index(is1stCP1OnArc ? 1 : 2);
 
   aNeighborFace = TopoDS::Face(myDS->Shape(indSurface));
 
@@ -4335,6 +4328,7 @@ void ChFi3d_Builder::PerformMoreSurfdata(const int Index)
       anOrFace = anOrSurf;
     }
 
+    BOPTools_AlgoTools2D::AdjustPCurveOnFace(aFace, aCint2, aPCint21, aPCint21);
     anInterfc = ChFi3d_FilCurveInDS(indCurve, indaFace, aPCint21, anOrFace);
     DStr.ChangeShapeInterferences(indaFace).Append(anInterfc);
   }
@@ -4454,6 +4448,9 @@ void ChFi3d_Builder::PerformMoreSurfdata(const int Index)
     anOrFace = anOrSurf;
   }
 
+  // The intersection uses the surface's principal period, which need not match
+  // the face's trimming domain. Keep the new boundary in the same UV interval.
+  BOPTools_AlgoTools2D::AdjustPCurveOnFace(aFace, aCint1, aPCint11, aPCint11);
   anInterfc = ChFi3d_FilCurveInDS(indCurve, indaFace, aPCint11, anOrFace);
   DStr.ChangeShapeInterferences(indaFace).Append(anInterfc);
   // ---------------------------------------------------------------
@@ -4615,7 +4612,7 @@ bool ChFi3d_Builder::MoreSurfdata(const int Index) const
 
   int         num1, num2, nbsurf;
   TopoDS_Face Fv;
-  bool        inters, oksurf;
+  bool        inters;
   nbsurf = stripe->SetOfSurfData()->Length();
   // Fv is the face at end
   inters = FindFace(Vtx, CV1, CV2, Fv);
@@ -4629,8 +4626,6 @@ bool ChFi3d_Builder::MoreSurfdata(const int Index) const
     num1 = nbsurf;
     num2 = num1 - 1;
   }
-
-  oksurf = false;
 
   if (nbsurf != 1 && inters)
   {
@@ -4662,40 +4657,18 @@ bool ChFi3d_Builder::MoreSurfdata(const int Index) const
     ChFiDS_CommonPoint&          CV3 = Fd1->ChangeVertex(isfirst, 1);
     ChFiDS_CommonPoint&          CV4 = Fd1->ChangeVertex(isfirst, 2);
 
-    if (CV3.IsOnArc())
+    // Restriction traversal and support-point ordering are independent.
+    for (const ChFiDS_CommonPoint* aPoint : {&CV3, &CV4})
     {
-      if (CV3.Arc().IsSame(arc1))
+      if (aPoint->IsOnArc() && (aPoint->Arc().IsSame(arc1) || aPoint->Arc().IsSame(arc2))
+          && (aPoint->Point().Distance(CV1.Point()) < 1.e-4
+              || aPoint->Point().Distance(CV2.Point()) < 1.e-4))
       {
-        if (CV1.Point().Distance(CV3.Point()) < 1.e-4)
-        {
-          oksurf = true;
-        }
-      }
-      else if (CV3.Arc().IsSame(arc2))
-      {
-        if (CV2.Point().Distance(CV3.Point()) < 1.e-4)
-        {
-          oksurf = true;
-        }
-      }
-    }
-
-    if (CV4.IsOnArc())
-    {
-      if (CV1.Point().Distance(CV4.Point()) < 1.e-4)
-      {
-        oksurf = true;
-      }
-      else if (CV4.Arc().IsSame(arc2))
-      {
-        if (CV2.Point().Distance(CV4.Point()) < 1.e-4)
-        {
-          oksurf = true;
-        }
+        return true;
       }
     }
   }
-  return oksurf;
+  return false;
 }
 
 // Case of fillets on top with 4 edges, one of them is on the same geometry as the edgeof the fillet

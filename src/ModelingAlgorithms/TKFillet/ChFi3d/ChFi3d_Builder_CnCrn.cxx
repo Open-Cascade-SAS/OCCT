@@ -47,6 +47,7 @@
 #include <BRepTools.hxx>
 #include <ChFi3d_Builder.hxx>
 #include <ChFi3d_Builder_0.hxx>
+#include <ChFiDS_ChamfSpine.hxx>
 #include <ChFiDS_CommonPoint.hxx>
 #include <ChFiDS_FaceInterference.hxx>
 #include <ChFiDS_SurfData.hxx>
@@ -85,6 +86,7 @@
 #include <math_Matrix.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
+#include <ShapeAnalysis_Curve.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_HArray1.hxx>
@@ -114,6 +116,53 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <ChFi3d.hxx>
+
+#include <cmath>
+
+//=================================================================================================
+
+bool ChFi3d_ChooseProjectedRecoil(const BRepAdaptor_Curve& theCurve,
+                                  const gp_Pnt&            theAdjacentPoint,
+                                  const gp_Pnt&            theCornerPoint,
+                                  const double             theCornerParameter,
+                                  const double             theRecoilParameter,
+                                  double&                  theParameter)
+{
+  theParameter = theRecoilParameter;
+  const double aFirst =
+    std::max(theCurve.FirstParameter(), std::min(theCornerParameter, theRecoilParameter));
+  const double aLast =
+    std::min(theCurve.LastParameter(), std::max(theCornerParameter, theRecoilParameter));
+  if (aLast - aFirst <= Precision::PConfusion())
+  {
+    return false;
+  }
+  // Spatially close points can belong to a remote branch of a folded or near-closed edge.
+  const occ::handle<Adaptor3d_Curve> aLocalCurve =
+    theCurve.Trim(aFirst, aLast, Precision::PConfusion());
+  gp_Pnt       aProjectedPoint;
+  double       aBestParameter   = theRecoilParameter;
+  const double aBestDistance    = ShapeAnalysis_Curve().Project(*aLocalCurve,
+                                                             theAdjacentPoint,
+                                                             Precision::Confusion(),
+                                                             aProjectedPoint,
+                                                             aBestParameter,
+                                                             false);
+  const gp_Pnt aRecoilPoint     = theCurve.Value(theRecoilParameter);
+  const double aProjectedTravel = aProjectedPoint.Distance(theCornerPoint);
+  const double aRecoilTravel    = aRecoilPoint.Distance(theCornerPoint);
+  const double aRecoilError     = theAdjacentPoint.Distance(aRecoilPoint);
+  if (aBestParameter < aFirst || aBestParameter > aLast
+      || aProjectedTravel <= Precision::Confusion()
+      || aProjectedTravel > aRecoilTravel + Precision::Confusion()
+      || aBestDistance + Precision::Confusion() >= aRecoilError)
+  {
+    return false;
+  }
+
+  theParameter = aBestParameter;
+  return true;
+}
 
 //=================================================================================================
 
@@ -1314,6 +1363,21 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
   TopoDS_Face F1, F2;
   gp_Vec      SumFaceNormalAtV1(0, 0, 0); // is used to define Plate orientation
 
+  // The local endpoint projection below corrects the asymmetric construction of chamfer caps.
+  // Fillet stripes use the same generic corner routine but have different rolling-ball
+  // continuity constraints; changing their historical recoil path can disconnect an otherwise
+  // closed shell.  Determine the operation from the actual stripe types rather than from the
+  // surrounding topology so mixed geometric supports remain covered.
+  bool isChamferCorner = true;
+  for (It.Initialize(myVDataMap(Jndex)); It.More(); It.Next())
+  {
+    if (occ::down_cast<ChFiDS_ChamfSpine>(It.Value()->Spine()).IsNull())
+    {
+      isChamferCorner = false;
+      break;
+    }
+  }
+
   // it is determined if there is a sewing edge
   bool        couture = false;
   TopoDS_Face facecouture;
@@ -2105,7 +2169,8 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
         Indices(nedge, ic, icplus, icmoins);
         if (sharp.Value(ic))
         {
-          BRepAdaptor_Curve C(TopoDS::Edge(Evive.Value(ic)));
+          const TopoDS_Edge anEdge = TopoDS::Edge(Evive.Value(ic));
+          BRepAdaptor_Curve C(anEdge);
           // to pass from 3D distance to a parametric distance
           if (!tangentregul(ic))
           {
@@ -2115,16 +2180,54 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
           {
             ec = 0.0;
           }
-          if (TopExp::FirstVertex(TopoDS::Edge(Evive.Value(ic))).IsSame(V1))
+          const bool isForward = TopExp::FirstVertex(anEdge).IsSame(V1);
+          if (isForward)
           {
             para = p.Value(ic, icmoins) + ec;
-            p.SetValue(ic, icmoins, para);
           }
           else
           {
             para = p.Value(ic, icmoins) - ec;
-            p.SetValue(ic, icmoins, para);
           }
+
+          // When a living edge bounds exactly one stripe, locate the corner endpoint from that
+          // stripe instead of advancing every edge by the same 3D distance.  A shared recoil is
+          // only a scale estimate: its parameter conversion produces unrelated endpoints on
+          // geometrically different curves (for example, a line and a circle).  The nearest point
+          // on the corner-to-recoil interval gives the shortest local connector and respects the
+          // edge's parameterization.  Keep the historical recoil when there is no unique adjacent
+          // stripe or when the projection collapses back to the original vertex.
+          const bool hasPreviousStripe = !sharp.Value(icmoins);
+          const bool hasNextStripe     = !sharp.Value(icplus);
+          if (isChamferCorner && hasPreviousStripe != hasNextStripe)
+          {
+            ChFiDS_CommonPoint adjacentPoint;
+            if (hasPreviousStripe)
+            {
+              isfirst       = (sens.Value(icmoins) == 1);
+              adjacentPoint = CD.Value(icmoins)
+                                ->SetOfSurfData()
+                                ->Value(i.Value(icmoins, ic))
+                                ->ChangeVertex(isfirst, jf.Value(icmoins));
+            }
+            else
+            {
+              isfirst       = (sens.Value(icplus) == 1);
+              jfp           = 3 - jf.Value(icplus);
+              adjacentPoint = CD.Value(icplus)
+                                ->SetOfSurfData()
+                                ->Value(i.Value(icplus, ic))
+                                ->ChangeVertex(isfirst, jfp);
+            }
+
+            ChFi3d_ChooseProjectedRecoil(C,
+                                         adjacentPoint.Point(),
+                                         sommet,
+                                         p.Value(ic, icmoins),
+                                         para,
+                                         para);
+          }
+          p.SetValue(ic, icmoins, para);
           // it is necessary to be on to remain on the edge
           p.SetValue(ic, icplus, p.Value(ic, icmoins));
         }
@@ -3075,6 +3178,30 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
             }
           }
           bool contraint1 = true, contraint2 = true;
+          // A projected connector may cover a different portion of the supporting face than
+          // the two corner points selected above.  Using such a curve creates an open geometric
+          // boundary which is later hidden by very large vertex tolerances; the plate surface can
+          // then fold far outside its boundary.  Reject a projection unless both of its endpoints
+          // match the intended connector endpoints and let CalculBatten construct the local curve.
+          if (isChamferCorner && !raccordbatten && !pcurve.IsNull())
+          {
+            const gp_Pnt2d projectedFirst2d = pcurve->Value(pcurve->FirstParameter());
+            const gp_Pnt2d projectedLast2d  = pcurve->Value(pcurve->LastParameter());
+            const gp_Pnt projectedFirst = Asurf->Value(projectedFirst2d.X(), projectedFirst2d.Y());
+            const gp_Pnt projectedLast  = Asurf->Value(projectedLast2d.X(), projectedLast2d.Y());
+            const gp_Pnt targetFirst    = Asurf->Value(p2d1.X(), p2d1.Y());
+            const gp_Pnt targetLast     = Asurf->Value(p2d2.X(), p2d2.Y());
+            const double endpointTolerance = tolapp3d;
+            const bool   matchesForward    = projectedFirst.IsEqual(targetFirst, endpointTolerance)
+                                        && projectedLast.IsEqual(targetLast, endpointTolerance);
+            const bool matchesReverse = projectedFirst.IsEqual(targetLast, endpointTolerance)
+                                        && projectedLast.IsEqual(targetFirst, endpointTolerance);
+            if (!matchesForward && !matchesReverse)
+            {
+              raccordbatten = true;
+              curveint.Nullify();
+            }
+          }
           if (raccordbatten)
           {
             bool inverseic, inverseicplus;
