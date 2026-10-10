@@ -144,6 +144,22 @@ inline double Tol3d(const occ::handle<Adaptor2d_Curve2d>&   arc,
   return (Domain->Has3d() ? Domain->Tol3d(arc) : tolDef < Confusion ? Confusion : tolDef);
 }
 
+// Distance between two parameters on a closed (periodic) parametric range:
+// the shorter way round. A walking line that has just crossed the seam of
+// a closed surface carries parameters on the far side of the period, so a
+// plain |a - b| against a restriction point on the near side is off by the
+// whole period and a legitimate vertex gets rejected.
+static double ClosedDelta(const double a, const double b, const double period)
+{
+  double d = std::abs(a - b);
+  if (period > 0.0)
+  {
+    d = std::fmod(d, period);
+    d = std::min(d, period - d);
+  }
+  return d;
+}
+
 static bool CoincideOnArc(const gp_Pnt&                           Ptsommet,
                           const occ::handle<Adaptor2d_Curve2d>&   A,
                           const occ::handle<Adaptor3d_Surface>&   Surf,
@@ -502,7 +518,15 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
   const bool OSurfaceIsVClosed = OtherSurf->IsVClosed();
   const bool possiblyClosed =
     (SurfaceIsUClosed || SurfaceIsVClosed || OSurfaceIsUClosed || OSurfaceIsVClosed);
-  double tolUClosed = 0., tolVClosed = 0., tolOUClosed = 0., tolOVClosed = 0.;
+  double       tolUClosed = 0., tolVClosed = 0., tolOUClosed = 0., tolOVClosed = 0.;
+  const double perUClosed =
+    SurfaceIsUClosed ? (Surf->LastUParameter() - Surf->FirstUParameter()) : 0.;
+  const double perVClosed =
+    SurfaceIsVClosed ? (Surf->LastVParameter() - Surf->FirstVParameter()) : 0.;
+  const double perOUClosed =
+    OSurfaceIsUClosed ? (OtherSurf->LastUParameter() - OtherSurf->FirstUParameter()) : 0.;
+  const double perOVClosed =
+    OSurfaceIsVClosed ? (OtherSurf->LastVParameter() - OtherSurf->FirstVParameter()) : 0.;
   if (possiblyClosed)
   {
     if (SurfaceIsUClosed)
@@ -769,8 +793,8 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                 if (possiblyClosed)
                 {
                   locpt2(j).Coord(U, V);
-                  if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
-                      || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
+                  if ((OSurfaceIsUClosed && ClosedDelta(U, U2, perOUClosed) > tolOUClosed)
+                      || (OSurfaceIsVClosed && ClosedDelta(V, V2, perOVClosed) > tolOVClosed))
                   {
                     continue;
                   }
@@ -817,8 +841,8 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                 if (SurfaceIsUClosed || SurfaceIsVClosed)
                 {
                   GetLinePoint2d(L, paramline, OnFirst, U, V);
-                  if ((SurfaceIsUClosed && std::abs(U - U1) > tolUClosed)
-                      || (SurfaceIsVClosed && std::abs(V - V1) > tolVClosed))
+                  if ((SurfaceIsUClosed && ClosedDelta(U, U1, perUClosed) > tolUClosed)
+                      || (SurfaceIsVClosed && ClosedDelta(V, V1, perVClosed) > tolVClosed))
                   {
                     found = false;
                   }
@@ -826,8 +850,8 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                 if (found && (OSurfaceIsUClosed || OSurfaceIsVClosed))
                 {
                   GetLinePoint2d(L, paramline, !OnFirst, U, V);
-                  if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
-                      || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
+                  if ((OSurfaceIsUClosed && ClosedDelta(U, U2, perOUClosed) > tolOUClosed)
+                      || (OSurfaceIsVClosed && ClosedDelta(V, V2, perOVClosed) > tolOVClosed))
                   {
                     found = false;
                   }
@@ -880,8 +904,8 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                       {
                         Rptline.ParametersOnS2(U, V);
                       }
-                      if ((SurfaceIsUClosed && std::abs(U - U1) > tolUClosed)
-                          || (SurfaceIsVClosed && std::abs(V - V1) > tolVClosed))
+                      if ((SurfaceIsUClosed && ClosedDelta(U, U1, perUClosed) > tolUClosed)
+                          || (SurfaceIsVClosed && ClosedDelta(V, V1, perVClosed) > tolVClosed))
                       {
                         continue;
                       }
@@ -896,8 +920,8 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
                       {
                         Rptline.ParametersOnS1(U, V);
                       }
-                      if ((OSurfaceIsUClosed && std::abs(U - U2) > tolOUClosed)
-                          || (OSurfaceIsVClosed && std::abs(V - V2) > tolOVClosed))
+                      if ((OSurfaceIsUClosed && ClosedDelta(U, U2, perOUClosed) > tolOUClosed)
+                          || (OSurfaceIsVClosed && ClosedDelta(V, V2, perOVClosed) > tolOVClosed))
                       {
                         continue;
                       }
