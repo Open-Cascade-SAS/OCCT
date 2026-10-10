@@ -190,12 +190,18 @@ static void SetTriangles(
   }
   else
   {
-    int        aTriangleIndex  = 1;
+    int aTriangleIndex = 1;
     const auto aAppendTriangle = [&](const int theFirst, const int theSecond, const int theThird) {
       const gp_Pnt aFirst  = theMesh->Node(theFirst);
       const gp_Pnt aSecond = theMesh->Node(theSecond);
       const gp_Pnt aThird  = theMesh->Node(theThird);
-      // Repeated coordinates and collinear triples have no geometric boundary.
+      // Detect coincident coordinates without discarding small non-degenerate triangles.
+      if (aFirst.IsEqual(aSecond, 0.0) || aFirst.IsEqual(aThird, 0.0)
+          || aSecond.IsEqual(aThird, 0.0))
+      {
+        return;
+      }
+      // Collinear triples have no geometric boundary.
       const gp_Vec aNormal = gp_Vec(aFirst, aSecond).Crossed(gp_Vec(aFirst, aThird));
       if (aNormal.X() == 0.0 && aNormal.Y() == 0.0 && aNormal.Z() == 0.0)
       {

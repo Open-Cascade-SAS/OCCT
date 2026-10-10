@@ -30,10 +30,10 @@ namespace RWStepDimTol_LengthMeasure
 inline occ::handle<StepBasic_MeasureWithUnit> Value(
   const occ::handle<Standard_Transient>& theEntity)
 {
-  if (const occ::handle<StepBasic_LengthMeasureWithUnit> aSimple =
-        occ::down_cast<StepBasic_LengthMeasureWithUnit>(theEntity))
+  if (!theEntity.IsNull()
+      && theEntity->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit)))
   {
-    return aSimple;
+    return occ::down_cast<StepBasic_MeasureWithUnit>(theEntity);
   }
   if (const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnit> aComplex =
         occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnit>(theEntity))
