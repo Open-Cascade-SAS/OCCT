@@ -22,4 +22,6 @@ set(OCCT_TKDESTEP_GTests_FILES
     StepToTopoDS_TranslateFace_Test.cxx
     StepTransientReplacements_Test.cxx
     STEPCAFControl_Controller_Test.cxx
+    StepAP214_ExternallyDefinedGeneralProperty_Test.cxx
+    StepAP214_UnequalTolerance_Test.cxx
 )

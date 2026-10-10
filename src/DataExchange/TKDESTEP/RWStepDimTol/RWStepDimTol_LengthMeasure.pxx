@@ -1,0 +1,85 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepDimTol_LengthMeasure_HeaderFile
+#define _RWStepDimTol_LengthMeasure_HeaderFile
+
+#include <Interface_Check.hxx>
+#include <StepData_StepReaderData.hxx>
+#include <StepBasic_LengthMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
+#include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
+
+namespace
+{
+namespace RWStepDimTol_LengthMeasure
+{
+//==================================================================================================
+
+//! Retrieve the measure constituent while retaining the actual entity separately.
+inline occ::handle<StepBasic_MeasureWithUnit> Value(
+  const occ::handle<Standard_Transient>& theEntity)
+{
+  if (!theEntity.IsNull() && theEntity->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit)))
+  {
+    return occ::down_cast<StepBasic_MeasureWithUnit>(theEntity);
+  }
+  if (const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnit> aComplex =
+        occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnit>(theEntity))
+  {
+    return aComplex->GetMeasureWithUnit();
+  }
+  if (const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI> aQualified =
+        occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI>(theEntity))
+  {
+    return aQualified->GetMeasureWithUnit();
+  }
+  return nullptr;
+}
+
+//==================================================================================================
+
+//! Read a schema length_measure_with_unit reference without discarding complex constituents.
+inline bool Read(const occ::handle<StepData_StepReaderData>& theData,
+                 const int                                   theNum,
+                 const int                                   theParam,
+                 const char*                                 theName,
+                 occ::handle<Interface_Check>&               theCheck,
+                 occ::handle<Standard_Transient>&            theEntity)
+{
+  if (!theData->ReadEntity(theNum,
+                           theParam,
+                           theName,
+                           theCheck,
+                           STANDARD_TYPE(Standard_Transient),
+                           theEntity))
+  {
+    return false;
+  }
+  if (theEntity.IsNull())
+  {
+    return false;
+  }
+  if (theEntity->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit))
+      || theEntity->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))
+      || theEntity->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
+  {
+    return true;
+  }
+  theCheck->AddFail("Expected a length_measure_with_unit entity or complex subtype");
+  theEntity.Nullify();
+  return false;
+}
+} // namespace RWStepDimTol_LengthMeasure
+} // namespace
+#endif // _RWStepDimTol_LengthMeasure_HeaderFile

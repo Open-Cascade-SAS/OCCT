@@ -76,6 +76,12 @@
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -5051,6 +5057,11 @@ static bool getTolType(const occ::handle<Standard_Transient>& theEnt,
       occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>(theEnt);
     theType = STEPCAFControl_GDTProperty::GetGeomToleranceType(anE->GetToleranceType());
   }
+  else if (const occ::handle<StepDimTol_GeoTolAndUneqDisGeoTol> aComplex =
+             occ::down_cast<StepDimTol_GeoTolAndUneqDisGeoTol>(theEnt))
+  {
+    theType = STEPCAFControl_GDTProperty::GetGeomToleranceType(aComplex->GetToleranceType());
+  }
   else if (theEnt->IsKind(STANDARD_TYPE(StepDimTol_AngularityTolerance)))
   {
     theType = XCAFDimTolObjects_GeomToleranceType_Angularity;
@@ -5141,6 +5152,60 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
   XCAFDimTolObjects_GeomToleranceType aType = XCAFDimTolObjects_GeomToleranceType_None;
   getTolType(theEnt, aType);
   aTolObj->SetType(aType);
+  aTolObj->SetDescription(aTolEnt->Description());
+  occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> anUnequal =
+    occ::down_cast<StepDimTol_UnequallyDisposedGeometricTolerance>(aTolEnt);
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol> anUnequalComplex =
+    occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>(aTolEnt);
+  if (!anUnequalComplex.IsNull())
+  {
+    anUnequal = anUnequalComplex->GetUnequallyDisposedGeometricTolerance();
+  }
+  else if (const occ::handle<StepDimTol_GeoTolAndUneqDisGeoTol> aComplex =
+             occ::down_cast<StepDimTol_GeoTolAndUneqDisGeoTol>(aTolEnt))
+  {
+    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+  }
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol> aComplex =
+             occ::down_cast<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>(aTolEnt))
+  {
+    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+  }
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol> aComplex =
+             occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>(aTolEnt))
+  {
+    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+  }
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol>
+             aComplex =
+               occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol>(
+                 aTolEnt))
+  {
+    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+  }
+  else if (const occ::handle<
+             StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol> aComplex =
+             occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol>(
+               aTolEnt))
+  {
+    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+  }
+  if (!anUnequal.IsNull())
+  {
+    const occ::handle<StepBasic_MeasureWithUnit> aDisplacement =
+      GetMeasureWithUnit(anUnequal->Displacement());
+    if (!aDisplacement.IsNull())
+    {
+      const StepBasic_Unit aUnit = aDisplacement->UnitComponent();
+      if (!aUnit.IsNull() && aUnit.CaseNum(aUnit.Value()) == 1)
+      {
+        STEPConstruct_UnitContext aUnitContext;
+        aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+        aTolObj->SetUnequalDisplacement(aDisplacement->ValueComponent()
+                                        * aUnitContext.LengthFactor());
+      }
+    }
+  }
   if (!aTolEnt->Magnitude().IsNull())
   {
     // get value
@@ -5275,36 +5340,31 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
       }
     }
   }
-  double         aVal = 0;
-  StepBasic_Unit anUnit;
-  if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeometricToleranceWithMaximumTolerance)))
+  occ::handle<Standard_Transient> aMaximumEntity;
+  if (const occ::handle<StepDimTol_GeometricToleranceWithMaximumTolerance> aMax =
+        occ::down_cast<StepDimTol_GeometricToleranceWithMaximumTolerance>(aTolEnt))
   {
-    occ::handle<StepDimTol_GeometricToleranceWithMaximumTolerance> aMax =
-      occ::down_cast<StepDimTol_GeometricToleranceWithMaximumTolerance>(aTolEnt);
-    aVal   = aMax->MaximumUpperTolerance()->ValueComponent();
-    anUnit = aMax->MaximumUpperTolerance()->UnitComponent();
+    aMaximumEntity = aMax->MaximumUpperTolerance();
   }
-  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTol)))
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTol> aMax =
+             occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTol>(aTolEnt))
   {
-    occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTol> aMax =
-      occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTol>(aTolEnt);
-    aVal   = aMax->GetMaxTolerance()->ValueComponent();
-    anUnit = aMax->GetMaxTolerance()->UnitComponent();
+    aMaximumEntity = aMax->GetMaxTolerance();
   }
-  else if (aTolEnt->IsKind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol)))
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol> aMax =
+             occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol>(aTolEnt))
   {
-    occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol> aMax =
-      occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol>(aTolEnt);
-    aVal   = aMax->GetMaxTolerance()->ValueComponent();
-    anUnit = aMax->GetMaxTolerance()->UnitComponent();
+    aMaximumEntity = aMax->GetMaxTolerance();
   }
-  if (!anUnit.IsNull() && (anUnit.CaseNum(anUnit.Value()) == 1))
+  if (const occ::handle<StepBasic_MeasureWithUnit> aMaximum = GetMeasureWithUnit(aMaximumEntity))
   {
-    occ::handle<StepBasic_NamedUnit> NU = anUnit.NamedUnit();
-    STEPConstruct_UnitContext        anUnitCtx;
-    anUnitCtx.ComputeFactors(NU, theLocalFactors);
-    convertAngleValue(anUnitCtx, aVal);
-    aTolObj->SetMaxValueModifier(aVal);
+    const StepBasic_Unit aUnit = aMaximum->UnitComponent();
+    if (!aUnit.IsNull() && aUnit.CaseNum(aUnit.Value()) == 1)
+    {
+      STEPConstruct_UnitContext aUnitContext;
+      aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+      aTolObj->SetMaxValueModifier(aMaximum->ValueComponent() * aUnitContext.LengthFactor());
+    }
   }
 
   readAnnotation(aTR, theEnt, aTolObj, theLocalFactors);

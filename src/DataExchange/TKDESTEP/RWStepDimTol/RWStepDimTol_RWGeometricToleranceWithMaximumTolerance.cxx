@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include "RWStepDimTol_LengthMeasure.pxx"
 #include "RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.pxx"
 
 #include <Interface_Check.hxx>
@@ -156,13 +157,13 @@ void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::ReadStep(
 
   // own fields of GeometricToleranceWithMaximumTolerance
 
-  occ::handle<StepBasic_LengthMeasureWithUnit> aMaximumUpperTolerance;
-  data->ReadEntity(num,
-                   6,
-                   "maximum_upper_tolerance",
-                   ach,
-                   STANDARD_TYPE(StepBasic_LengthMeasureWithUnit),
-                   aMaximumUpperTolerance);
+  occ::handle<Standard_Transient> aMaximumUpperTolerance;
+  RWStepDimTol_LengthMeasure::Read(data,
+                                   num,
+                                   6,
+                                   "maximum_upper_tolerance",
+                                   ach,
+                                   aMaximumUpperTolerance);
 
   // Initialize entity
   ent->Init(aName,
@@ -263,4 +264,5 @@ void RWStepDimTol_RWGeometricToleranceWithMaximumTolerance::Share(
   iter.AddItem(ent->Magnitude());
 
   iter.AddItem(ent->TolerancedShapeAspect().Value());
+  iter.AddItem(ent->MaximumUpperTolerance());
 }

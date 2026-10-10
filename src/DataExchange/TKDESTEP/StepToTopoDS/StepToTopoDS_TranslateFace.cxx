@@ -33,6 +33,9 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
+#include <gp_Vec.hxx>
+#include <algorithm>
+#include <limits>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -187,50 +190,50 @@ static void SetTriangles(
   }
   else
   {
-    int aTriangleIndex = 1;
-    for (int aTrianStripIndex = 1; aTrianStripIndex <= theTrianStripsNum; ++aTrianStripIndex)
-    {
-      occ::handle<NCollection_HArray1<int>> aTriangleStrip =
-        occ::down_cast<NCollection_HArray1<int>>(theTrianStrips->Value(aTrianStripIndex));
-      for (int anIndex = 3; anIndex <= aTriangleStrip->Length(); anIndex += 2)
+    int        aTriangleIndex  = 1;
+    const auto aAppendTriangle = [&](const int theFirst, const int theSecond, const int theThird) {
+      const gp_Pnt aFirst  = theMesh->Node(theFirst);
+      const gp_Pnt aSecond = theMesh->Node(theSecond);
+      const gp_Pnt aThird  = theMesh->Node(theThird);
+      // Detect coincident coordinates without discarding small non-degenerate triangles.
+      if (aFirst.IsEqual(aSecond, 0.0) || aFirst.IsEqual(aThird, 0.0)
+          || aSecond.IsEqual(aThird, 0.0))
       {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-        {
-          theMesh->SetTriangle(aTriangleIndex++,
-                               Poly_Triangle(aTriangleStrip->Value(anIndex - 2),
-                                             aTriangleStrip->Value(anIndex),
-                                             aTriangleStrip->Value(anIndex - 1)));
-        }
+        return;
       }
-      for (int anIndex = 4; anIndex <= aTriangleStrip->Length(); anIndex += 2)
+      // Collinear triples have no geometric boundary.
+      const gp_Vec aNormal = gp_Vec(aFirst, aSecond).Crossed(gp_Vec(aFirst, aThird));
+      if (aNormal.X() == 0.0 && aNormal.Y() == 0.0 && aNormal.Z() == 0.0)
       {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
+        return;
+      }
+      theMesh->SetTriangle(aTriangleIndex++, Poly_Triangle(theFirst, theSecond, theThird));
+    };
+    for (int aStripIndex = 1; aStripIndex <= theTrianStripsNum; ++aStripIndex)
+    {
+      const occ::handle<NCollection_HArray1<int>> aStrip =
+        occ::down_cast<NCollection_HArray1<int>>(theTrianStrips->Value(aStripIndex));
+      for (int anIndex = 3; anIndex <= aStrip->Length(); ++anIndex)
+      {
+        int aFirst  = aStrip->Value(anIndex - 2);
+        int aSecond = aStrip->Value(anIndex - 1);
+        if (anIndex % 2 == 0)
         {
-          theMesh->SetTriangle(aTriangleIndex++,
-                               Poly_Triangle(aTriangleStrip->Value(anIndex - 2),
-                                             aTriangleStrip->Value(anIndex - 1),
-                                             aTriangleStrip->Value(anIndex)));
+          std::swap(aFirst, aSecond);
         }
+        aAppendTriangle(aFirst, aSecond, aStrip->Value(anIndex));
       }
     }
-    for (int aTrianFanIndex = 1; aTrianFanIndex <= theTrianFansNum; ++aTrianFanIndex)
+    for (int aFanIndex = 1; aFanIndex <= theTrianFansNum; ++aFanIndex)
     {
-      occ::handle<NCollection_HArray1<int>> aTriangleFan =
-        occ::down_cast<NCollection_HArray1<int>>(theTrianFans->Value(aTrianFanIndex));
-      for (int anIndex = 3; anIndex <= aTriangleFan->Length(); ++anIndex)
+      const occ::handle<NCollection_HArray1<int>> aFan =
+        occ::down_cast<NCollection_HArray1<int>>(theTrianFans->Value(aFanIndex));
+      for (int anIndex = 3; anIndex <= aFan->Length(); ++anIndex)
       {
-        if (aTriangleFan->Value(anIndex) != aTriangleFan->Value(anIndex - 2)
-            && aTriangleFan->Value(anIndex - 1) != aTriangleFan->Value(anIndex - 2))
-        {
-          theMesh->SetTriangle(aTriangleIndex++,
-                               Poly_Triangle(aTriangleFan->Value(1),
-                                             aTriangleFan->Value(anIndex),
-                                             aTriangleFan->Value(anIndex - 1)));
-        }
+        aAppendTriangle(aFan->Value(1), aFan->Value(anIndex - 1), aFan->Value(anIndex));
       }
     }
+    theMesh->ResizeTriangles(aTriangleIndex - 1, true);
   }
 }
 
@@ -366,47 +369,57 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
 
   const bool aHasUVNodes = false;
   const bool aHasNormals = (aNormNum > 0);
-  const int  aNbNodes    = !aPnindices.IsNull() ? aPnindices->Length() : aNodes->Length();
+  if (aNodes.IsNull())
+  {
+    return nullptr;
+  }
+  const int aNbNodes = !aPnindices.IsNull() ? aPnindices->Length() : aNodes->Length();
+  if (!aPnindices.IsNull())
+  {
+    for (const int anIndex : *aPnindices)
+    {
+      if (anIndex < 1 || anIndex > aNodes->Length())
+      {
+        return nullptr;
+      }
+    }
+  }
 
+  // Connectivity is used to access mesh nodes when filtering degenerate triangles.
+  const auto anInvalidNodeIndex = [aNbNodes](const int theIndex) {
+    return theIndex < 1 || theIndex > aNbNodes;
+  };
   if (aTrianStripsNum == 0 && aTrianFansNum == 0)
   {
     aMesh = new Poly_Triangulation(aNbNodes, aTrianNum, aHasUVNodes, aHasNormals);
   }
   else
   {
-    int aNbTriaStrips = 0;
-    int aNbTriaFans   = 0;
-
-    for (int aTrianStripIndex = 1; aTrianStripIndex <= aTrianStripsNum; ++aTrianStripIndex)
+    size_t aNbTriangles = 0;
+    for (const auto& aPrimitives : {aTriaStrips, aTriaFans})
     {
-      occ::handle<NCollection_HArray1<int>> aTriangleStrip =
-        occ::down_cast<NCollection_HArray1<int>>(aTriaStrips->Value(aTrianStripIndex));
-      for (int anIndex = 3; anIndex <= aTriangleStrip->Length(); anIndex += 2)
+      if (aPrimitives.IsNull())
       {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-        {
-          ++aNbTriaStrips;
-        }
+        continue;
       }
-      for (int anIndex = 4; anIndex <= aTriangleStrip->Length(); anIndex += 2)
+      for (const auto& aPrimitive : *aPrimitives)
       {
-        if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2)
-            && aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
+        const occ::handle<NCollection_HArray1<int>> anIndices =
+          occ::down_cast<NCollection_HArray1<int>>(aPrimitive);
+        if (anIndices.IsNull()
+            || std::any_of(anIndices->cbegin(), anIndices->cend(), anInvalidNodeIndex))
         {
-          ++aNbTriaStrips;
+          return nullptr;
         }
+        aNbTriangles += std::max(0, anIndices->Length() - 2);
       }
     }
-
-    for (int aTrianFanIndex = 1; aTrianFanIndex <= aTrianFansNum; ++aTrianFanIndex)
+    if (aNbTriangles > static_cast<size_t>(std::numeric_limits<int>::max()))
     {
-      occ::handle<NCollection_HArray1<int>> aTriangleFan =
-        occ::down_cast<NCollection_HArray1<int>>(aTriaFans->Value(aTrianFanIndex));
-      aNbTriaFans += aTriangleFan->Length() - 2;
+      return nullptr;
     }
-
-    aMesh = new Poly_Triangulation(aNbNodes, aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
+    aMesh =
+      new Poly_Triangulation(aNbNodes, static_cast<int>(aNbTriangles), aHasUVNodes, aHasNormals);
   }
 
   SetNodes(aMesh, aNodes, aPnindices, theLocalFactors.LengthFactor());
