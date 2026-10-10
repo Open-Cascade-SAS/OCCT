@@ -139,12 +139,13 @@ void SelectMgr_SelectionManager::Activate(const occ::handle<SelectMgr_Selectable
     return;
   }
 
-  bool isComputed = false;
+  bool toLoadInitially = true;
   if (const occ::handle<SelectMgr_Selection>& aSelOld = theObject->Selection(theMode))
   {
-    isComputed = !aSelOld->IsEmpty();
+    // Full updates reuse the selection; skip initial loading.
+    toLoadInitially = aSelOld->IsEmpty() && aSelOld->UpdateStatus() != SelectMgr_TOU_Full;
   }
-  if (!isComputed)
+  if (toLoadInitially)
   {
     loadMode(theObject, theMode);
   }
