@@ -223,12 +223,11 @@ TEST(BRepBndLibTest, OCC6503_InfinitePlaneBounds)
   BRepBndLib::Add(aFace, aBox);
   ASSERT_FALSE(aBox.IsVoid());
 
-  const Bnd_Box::Limits aLimits     = aBox.Get();
-  const double          anOpenBound = Precision::Infinite() / 2.0;
-  EXPECT_EQ(aLimits.Xmin, -anOpenBound);
-  EXPECT_EQ(aLimits.Xmax, anOpenBound);
-  EXPECT_EQ(aLimits.Ymin, -anOpenBound);
-  EXPECT_EQ(aLimits.Ymax, anOpenBound);
+  const Bnd_Box::Limits aLimits = aBox.Get();
+  EXPECT_EQ(aLimits.Xmin, -Precision::Infinite() / 2.0);
+  EXPECT_EQ(aLimits.Xmax, Precision::Infinite() / 2.0);
+  EXPECT_EQ(aLimits.Ymin, -Precision::Infinite() / 2.0);
+  EXPECT_EQ(aLimits.Ymax, Precision::Infinite() / 2.0);
   EXPECT_NEAR(aLimits.Zmin, -1.e-7, 1.e-12);
   EXPECT_NEAR(aLimits.Zmax, 1.e-7, 1.e-12);
 }

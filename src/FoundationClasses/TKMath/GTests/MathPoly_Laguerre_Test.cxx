@@ -409,8 +409,8 @@ TEST_F(MathPoly_LaguerreTest, GloballyScaledEquation)
 
 TEST_F(MathPoly_LaguerreTest, RejectsNonFiniteInputAndTolerance)
 {
-  const double aNan       = std::numeric_limits<double>::quiet_NaN();
-  const double aCoeffs[3] = {1.0, aNan, 1.0};
+  constexpr double aNan       = std::numeric_limits<double>::quiet_NaN();
+  const double     aCoeffs[3] = {1.0, aNan, 1.0};
   EXPECT_EQ(MathPoly::Laguerre(aCoeffs, 2).Status, MathUtils::Status::InvalidInput);
   const double aFiniteCoeffs[3] = {-1.0, 0.0, 1.0};
   EXPECT_EQ(MathPoly::Laguerre(aFiniteCoeffs, 2, aNan).Status, MathUtils::Status::InvalidInput);
@@ -423,4 +423,56 @@ TEST_F(MathPoly_LaguerreTest, ForcedNonConvergenceIsReported)
   MathPoly::PolyResult aResult    = MathPoly::Laguerre(aCoeffs, 5, 1.0e-12, 0);
   EXPECT_FALSE(aResult.IsDone());
   EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+}
+
+TEST_F(MathPoly_LaguerreTest, ScaledRadicalEliminationPolynomial)
+{
+  // Positive factors arise when eliminating a torus contour's radial radical.
+  // Only the last quartic contributes real roots. Variable scaling makes
+  // Horner magnitudes tiny near the small roots; an absolute residual floor
+  // must not accept a candidate far from these analytically known roots.
+  const std::array<std::array<double, 5>, 4> aFactors = {
+    {{1, 0, 2, 0, 1}, {1, 0, 102, 0, 1}, {1, 0, 102, 0, 1}, {391, 0, -1718, 0, 391}}};
+  std::array<double, 17> aCoefficients = {};
+  std::array<double, 17> aNext         = {};
+  aCoefficients[0]                     = 1;
+  int aDegree                          = 0;
+  for (const std::array<double, 5>& aFactor : aFactors)
+  {
+    aNext.fill(0);
+    for (int i = 0; i <= aDegree; ++i)
+    {
+      for (int j = 0; j < 5; ++j)
+      {
+        aNext[i + j] += aCoefficients[i] * aFactor[j];
+      }
+    }
+    aCoefficients = aNext;
+    aDegree += 4;
+  }
+  const MathPoly::PolyResult aResult = MathPoly::Laguerre(aCoefficients.data(), aDegree);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbRoots, 4u);
+  const double aSmall = std::sqrt(782.0 / (1718 + std::sqrt(1718.0 * 1718 - 4.0 * 391 * 391)));
+  for (const double anExpected : {-1 / aSmall, -aSmall, aSmall, 1 / aSmall})
+  {
+    double anError = 10;
+    for (size_t i = 0; i < aResult.NbRoots; ++i)
+    {
+      anError = std::min(anError, std::abs(aResult.Roots[i] - anExpected));
+    }
+    EXPECT_LT(anError, 1.e-9);
+  }
+  for (size_t i = 0; i < aResult.NbRoots; ++i)
+  {
+    const double aRoot      = aResult.Roots[i];
+    double       aValue     = aCoefficients[aDegree];
+    double       aMagnitude = std::abs(aValue);
+    for (int j = aDegree - 1; j >= 0; --j)
+    {
+      aValue     = aValue * aRoot + aCoefficients[j];
+      aMagnitude = aMagnitude * std::abs(aRoot) + std::abs(aCoefficients[j]);
+    }
+    EXPECT_LT(std::abs(aValue) / aMagnitude, 1.e-10);
+  }
 }

@@ -36,10 +36,6 @@
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 
-#ifdef OCCT_DEBUG
-TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB = NULL;
-#endif
-
 //=================================================================================================
 
 TopOpeBRepBuild_WireEdgeSet::TopOpeBRepBuild_WireEdgeSet(const TopoDS_Shape& F, void* const /*A*/)

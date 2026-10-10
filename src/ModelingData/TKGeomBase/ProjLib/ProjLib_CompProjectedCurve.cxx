@@ -54,29 +54,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ProjLib_CompProjectedCurve, Adaptor2d_Curve2d)
 
-#ifdef OCCT_DEBUG_CHRONO
-  #include <OSD_Timer.hxx>
-
-static OSD_Chronometer chr_init_point, chr_dicho_bound;
-
-Standard_EXPORT double t_init_point, t_dicho_bound;
-Standard_EXPORT int    init_point_count, dicho_bound_count;
-
-static void InitChron(OSD_Chronometer& ch)
-{
-  ch.Reset();
-  ch.Start();
-}
-
-static void ResultChron(OSD_Chronometer& ch, double& time)
-{
-  double tch;
-  ch.Stop();
-  ch.Show(tch);
-  time = time + tch;
-}
-#endif
-
 // Structure to perform splits computation.
 // This structure is not thread-safe since operations under mySplits should be performed in a
 // critical section. myPeriodicDir - 0 for U periodicity and 1 for V periodicity.
@@ -430,10 +407,6 @@ static void DichExactBound(gp_Pnt&                               Sol,
                            const occ::handle<Adaptor3d_Curve>&   Curve,
                            const occ::handle<Adaptor3d_Surface>& Surface)
 {
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_dicho_bound);
-#endif
-
   double   U0, V0, t;
   gp_Pnt2d POnS;
   U0 = Sol.Y();
@@ -465,10 +438,6 @@ static void DichExactBound(gp_Pnt&                               Sol,
       aNotSol = t;
     }
   }
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_dicho_bound, t_dicho_bound);
-  dicho_bound_count++;
-#endif
 }
 
 //=================================================================================================
@@ -768,15 +737,8 @@ void ProjLib_CompProjectedCurve::Init()
       if (!initpoint)
       {
         myCurve->D0(t, CPoint);
-#ifdef OCCT_DEBUG_CHRONO
-        InitChron(chr_init_point);
-#endif
         // PConfusion - use geometric tolerances in extrema / optimization.
         initpoint = InitialPoint(CPoint, t, myCurve, mySurface, myTolU, myTolV, U, V, myMaxDist);
-#ifdef OCCT_DEBUG_CHRONO
-        ResultChron(chr_init_point, t_init_point);
-        init_point_count++;
-#endif
       }
       if (initpoint)
       {

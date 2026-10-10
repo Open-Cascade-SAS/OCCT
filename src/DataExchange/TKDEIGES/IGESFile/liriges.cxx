@@ -41,7 +41,7 @@ static int iges_read_byte(IGES_InputState* theInput, char* theByte)
     return IGES_ReadStatus_Data;
   }
 
-  if (theInput->BufferOffset == theInput->BufferSize)
+  if (theInput->BufferOffset >= theInput->BufferSize)
   {
     const int aReadResult =
       theInput->ReadBytes(theInput->Context, theInput->Buffer, sizeof(theInput->Buffer));
@@ -57,7 +57,13 @@ static int iges_read_byte(IGES_InputState* theInput, char* theByte)
     theInput->BufferSize   = static_cast<std::size_t>(aReadResult);
   }
 
-  *theByte = theInput->Buffer[theInput->BufferOffset++];
+  const std::size_t anOffset = theInput->BufferOffset;
+  if (anOffset >= theInput->BufferSize || anOffset >= sizeof(theInput->Buffer))
+  {
+    return IGES_ReadStatus_Error;
+  }
+  *theByte               = theInput->Buffer[anOffset];
+  theInput->BufferOffset = anOffset + 1;
   return IGES_ReadStatus_Data;
 }
 

@@ -19,10 +19,6 @@
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 
-#ifdef OCCT_DEBUG
-static int doDebug = 0;
-#endif
-
 //=================================================================================================
 
 Poly_MakeLoops::Poly_MakeLoops(const Helper*                                 theHelper,
@@ -138,12 +134,6 @@ int Poly_MakeLoops::Perform()
     }
   }
 
-#ifdef OCCT_DEBUG
-  if (doDebug)
-    showBoundaryBreaks();
-  int aNbLoopsOnPass2 = 0;
-#endif
-
   int aResult = 0;
 
   occ::handle<NCollection_IncAllocator> aTempAlloc  = new NCollection_IncAllocator(4000);
@@ -161,16 +151,6 @@ int Poly_MakeLoops::Perform()
       aTempAlloc->Reset(false);
       NCollection_IndexedMap<int> aContour(100, aTempAlloc);
       int aStartNumber = findContour(aIndexS, aContour, aTempAlloc, aTempAlloc1);
-#ifdef OCCT_DEBUG
-      if (aStartNumber > 1)
-        if (doDebug)
-        {
-          std::cout << "--- found contour with hanging links:" << std::endl;
-          for (i = 1; i <= aContour.Extent(); i++)
-            std::cout << " " << aContour(i);
-          std::cout << std::endl;
-        }
-#endif
       if (aStartNumber == 0)
       { // error
         aResult |= RC_Failure;
@@ -179,10 +159,6 @@ int Poly_MakeLoops::Perform()
       if (aStartNumber <= aContour.Extent())
       {
         // there is a closed loop in the contour
-#ifdef OCCT_DEBUG
-        if (aPassNum == 1)
-          aNbLoopsOnPass2++;
-#endif
         acceptContour(aContour, aStartNumber);
       }
       if (aStartNumber > 1)
@@ -214,12 +190,6 @@ int Poly_MakeLoops::Perform()
       }
     }
   }
-#ifdef OCCT_DEBUG
-  if (doDebug && aNbLoopsOnPass2)
-    std::cout << "MakeLoops: " << aNbLoopsOnPass2 << " contours accepted on the second pass"
-              << std::endl;
-#endif
-
   if (!myLoops.IsEmpty())
   {
     aResult |= RC_LoopsDone;
@@ -511,78 +481,6 @@ bool Poly_MakeLoops::canLinkBeTaken(int theIndexS) const
 {
   return myStartIndices.Contains(theIndexS);
 }
-
-//=================================================================================================
-
-#ifdef OCCT_DEBUG
-void Poly_MakeLoops::showBoundaryBreaks() const
-{
-  // collect nodes of boundary links
-  TColStd_PackedMapOfInteger aNodesMap;
-  int                        i;
-  for (i = 1; i <= myMapLink.Extent(); i++)
-  {
-    const Link& aLink  = myMapLink(i);
-    int         aFlags = aLink.flags & LF_Both;
-    if (aFlags && aFlags != LF_Both)
-    {
-      // take only oriented links
-      aNodesMap.Add(aLink.node1);
-      aNodesMap.Add(aLink.node2);
-    }
-  }
-
-  // check each node if the number of input and output links are equal
-  bool                                 isFirst = true;
-  TColStd_PackedMapOfInteger::Iterator it(aNodesMap);
-  for (; it.More(); it.Next())
-  {
-    int                                  aNode  = it.Key();
-    int                                  nb     = 0;
-    const ListOfLink&                    aLinks = myHelper->GetAdjacentLinks(aNode);
-    Poly_MakeLoops::ListOfLink::Iterator itLinks(aLinks);
-    for (; itLinks.More(); itLinks.Next())
-    {
-      const Poly_MakeLoops::Link& aLink = itLinks.Value();
-      if (myMapLink.FindIndex(aLink) == 0)
-        continue;
-      int aFlags = aLink.flags & LF_Both;
-      if (aFlags && aFlags != LF_Both)
-      {
-        if (aNode == aLink.node1) // output?
-        {
-          if (aFlags & LF_Fwd)
-            nb++; // yes, output
-          else
-            nb--; // reversed, so input
-        }
-        else if (aNode == aLink.node2) // input?
-        {
-          if (aFlags & LF_Fwd)
-            nb--; // yes, input
-          else
-            nb++; // reversed, so output
-        }
-        else
-          // inconsistent
-          nb += 100;
-      }
-    }
-    if (nb != 0)
-    {
-      // indicate this node
-      if (isFirst)
-      {
-        isFirst = false;
-        std::cout << "boundary breaks are found in the following nodes:" << std::endl;
-      }
-      std::cout << aNode << " ";
-    }
-  }
-  if (!isFirst)
-    std::cout << std::endl;
-}
-#endif
 
 //=================================================================================================
 

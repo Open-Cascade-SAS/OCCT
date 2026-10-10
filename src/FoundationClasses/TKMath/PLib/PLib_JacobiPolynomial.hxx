@@ -92,6 +92,11 @@ public:
   //! MaxValue ( me ; TabMaxPointer : in  out  Real );
   Standard_EXPORT void MaxValue(NCollection_Array1<double>& theTabMax) const;
 
+  //! Returns the canonical table of maximum absolute values for the specified constraint order.
+  //! The returned zero-based view remains valid for the lifetime of the process.
+  Standard_EXPORT static const NCollection_Array1<double>& MaxValues(
+    const GeomAbs_Shape theConstraintOrder);
+
   //! This method computes the maximum error on the polynomial
   //! W(t) Q(t) obtained by missing the coefficients of JacCoeff from
   //! NewDegree +1 to Degree

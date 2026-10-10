@@ -62,6 +62,8 @@
 #include <Geom2d_VectorWithMagnitude.hxx>
 #include <Geom2dConvert.hxx>
 
+#include <BSplCLib.hxx>
+#include <gp.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Lin.hxx>
@@ -134,6 +136,11 @@
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
 #include <StepRepr_ReprItemAndMeasureWithUnit.hxx>
 #include <STEPConstruct_UnitContext.hxx>
+#include <NCollection_LinearVector.hxx>
+#include <Precision.hxx>
+
+#include <algorithm>
+#include <cmath>
 
 //=============================================================================
 // Creation d' un Ax1Placement de Geom a partir d' un axis1_placement de Step
@@ -747,6 +754,21 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 // Template function for use in MakeBSplineCurve / MakeBSplineCurve2d
 //=============================================================================
 
+static bool isValidReal(const double theValue)
+{
+  return std::isfinite(theValue) && !Precision::IsInfinite(theValue);
+}
+
+static bool isValidPoint(const gp_Pnt& thePoint)
+{
+  return isValidReal(thePoint.X()) && isValidReal(thePoint.Y()) && isValidReal(thePoint.Z());
+}
+
+static bool isValidPoint(const gp_Pnt2d& thePoint)
+{
+  return isValidReal(thePoint.X()) && isValidReal(thePoint.Y());
+}
+
 template <class TPntArray, class TCartesianPoint, class TGpPnt, class TBSplineCurve>
 occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   const occ::handle<StepGeom_BSplineCurve>& theStepGeom_BSplineCurve,
@@ -755,6 +777,11 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   occ::handle<TCartesianPoint> (*thePointMakerFunction)(const occ::handle<StepGeom_CartesianPoint>&,
                                                         const StepData_Factors&))
 {
+  if (theStepGeom_BSplineCurve.IsNull())
+  {
+    return nullptr;
+  }
+
   occ::handle<StepGeom_BSplineCurveWithKnots> aBSplineCurveWithKnots;
   occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>
     aBSplineCurveWithKnotsAndRationalBSplineCurve;
@@ -773,138 +800,186 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
       occ::down_cast<StepGeom_BSplineCurveWithKnots>(theStepGeom_BSplineCurve);
   }
 
-  const int aDegree = aBSplineCurveWithKnots->Degree();
-  const int NbPoles = aBSplineCurveWithKnots->NbControlPointsList();
-  const int NbKnots = aBSplineCurveWithKnots->NbKnotMultiplicities();
+  if (aBSplineCurveWithKnots.IsNull())
+  {
+    return nullptr;
+  }
 
   const occ::handle<NCollection_HArray1<int>>& aKnotMultiplicities =
     aBSplineCurveWithKnots->KnotMultiplicities();
   const occ::handle<NCollection_HArray1<double>>& aKnots = aBSplineCurveWithKnots->Knots();
-
-  // Count number of unique knots
-  int    NbUniqueKnots = 0;
-  double lastKnot      = RealFirst();
-  for (int i = 1; i <= NbKnots; ++i)
-  {
-    if (aKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
-    {
-      NbUniqueKnots++;
-      lastKnot = aKnots->Value(i);
-    }
-  }
-  if (NbUniqueKnots <= 1)
+  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList =
+    aBSplineCurveWithKnots->ControlPointsList();
+  if (aKnotMultiplicities.IsNull() || aKnots.IsNull() || aControlPointsList.IsNull()
+      || aKnotMultiplicities->Length() != aKnots->Length())
   {
     return nullptr;
   }
-  NCollection_Array1<double> aUniqueKnots(1, NbUniqueKnots);
-  NCollection_Array1<int>    aUniqueKnotMultiplicities(1, NbUniqueKnots);
-  lastKnot = aKnots->Value(1);
-  aUniqueKnots.SetValue(1, aKnots->Value(1));
-  aUniqueKnotMultiplicities.SetValue(1, aKnotMultiplicities->Value(1));
-  int aKnotPosition = 1;
-  for (int i = 2; i <= NbKnots; i++)
+  const int    aDegree  = aBSplineCurveWithKnots->Degree();
+  const size_t aNbPoles = static_cast<size_t>(aControlPointsList->Length());
+  if (aDegree < 1 || aDegree > TBSplineCurve::MaxDegree()
+      || aNbPoles <= static_cast<size_t>(aDegree))
   {
-    if (aKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
+    return nullptr;
+  }
+  const size_t aNbKnots = static_cast<size_t>(aKnotMultiplicities->Length());
+  if (aNbKnots == 0)
+  {
+    return nullptr;
+  }
+
+  const size_t                     aMaxMultiplicity         = static_cast<size_t>(aDegree) + 1;
+  const size_t                     aMaxRelevantMultiplicity = aNbPoles + aMaxMultiplicity;
+  const size_t                     aMergeCapacity = std::min(aNbKnots, aMaxRelevantMultiplicity);
+  NCollection_LinearVector<double> aUniqueKnotValues(aMergeCapacity);
+  NCollection_LinearVector<size_t> aMergedKnotMultiplicities(aMergeCapacity);
+  const double                     aFirstKnot = aKnots->At(0);
+  if (aKnotMultiplicities->At(0) <= 0 || !isValidReal(aFirstKnot))
+  {
+    return nullptr;
+  }
+  aUniqueKnotValues.Append(aFirstKnot);
+  aMergedKnotMultiplicities.Append(
+    std::min(static_cast<size_t>(aKnotMultiplicities->At(0)), aMaxRelevantMultiplicity));
+  for (size_t aKnotIdx = 1; aKnotIdx < aNbKnots; ++aKnotIdx)
+  {
+    const double aKnot           = aKnots->At(aKnotIdx);
+    const double aLastUniqueKnot = aUniqueKnotValues.Last();
+    if (aKnotMultiplicities->At(aKnotIdx) <= 0 || !isValidReal(aKnot)
+        || aKnot < aKnots->At(aKnotIdx - 1))
     {
-      aKnotPosition++;
-      aUniqueKnots.SetValue(aKnotPosition, aKnots->Value(i));
-      aUniqueKnotMultiplicities.SetValue(aKnotPosition, aKnotMultiplicities->Value(i));
-      lastKnot = aKnots->Value(i);
+      return nullptr;
+    }
+    if (aKnot - aLastUniqueKnot > Epsilon(std::abs(aLastUniqueKnot)))
+    {
+      aUniqueKnotValues.Append(aKnot);
+      aMergedKnotMultiplicities.Append(
+        std::min(static_cast<size_t>(aKnotMultiplicities->At(aKnotIdx)), aMaxRelevantMultiplicity));
     }
     else
     {
       // Knot not unique, increase multiplicity
-      int aCurrentMultiplicity = aUniqueKnotMultiplicities.Value(aKnotPosition);
-      aUniqueKnotMultiplicities.SetValue(aKnotPosition,
-                                         aCurrentMultiplicity + aKnotMultiplicities->Value(i));
+      const size_t aCurrentMultiplicity = aMergedKnotMultiplicities.Last();
+      const size_t anAddedMultiplicity  = static_cast<size_t>(aKnotMultiplicities->At(aKnotIdx));
+      aMergedKnotMultiplicities.ChangeLast() =
+        anAddedMultiplicity > aMaxRelevantMultiplicity - aCurrentMultiplicity
+          ? aMaxRelevantMultiplicity
+          : aCurrentMultiplicity + anAddedMultiplicity;
     }
   }
 
-  int aFirstMuultypisityDifference = 0;
-  int aLastMuultypisityDifference  = 0;
-  for (int i = 1; i <= NbUniqueKnots; ++i)
-  {
-    int aCurrentVal = aUniqueKnotMultiplicities.Value(i);
-    if (aCurrentVal > aDegree + 1)
-    {
-      if (i == 1)
-      {
-        aFirstMuultypisityDifference = aCurrentVal - aDegree - 1;
-      }
-      if (i == NbUniqueKnots)
-      {
-        aLastMuultypisityDifference = aCurrentVal - aDegree - 1;
-      }
-#ifdef OCCT_DEBUG
-      std::cout << "\nWrong multiplicity " << aCurrentVal << " on " << i << " knot!"
-                << "\nChanged to " << aDegree + 1 << std::endl;
-#endif
-      aCurrentVal = aDegree + 1;
-    }
-    aUniqueKnotMultiplicities.SetValue(i, aCurrentVal);
-  }
-
-  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList =
-    aBSplineCurveWithKnots->ControlPointsList();
-  int aSummaryMuultypisityDifference = aFirstMuultypisityDifference + aLastMuultypisityDifference;
-  int NbUniquePoles                  = NbPoles - aSummaryMuultypisityDifference;
-  if (NbUniquePoles <= 0)
+  const size_t aNbUniqueKnots = aUniqueKnotValues.Size();
+  if (aNbUniqueKnots <= 1)
   {
     return nullptr;
   }
-  TPntArray Poles(1, NbPoles - aSummaryMuultypisityDifference);
-
-  for (int i = 1 + aFirstMuultypisityDifference; i <= NbPoles - aLastMuultypisityDifference; ++i)
+  NCollection_LinearVector<int> aUniqueKnotMultiplicityValues(aNbUniqueKnots);
+  size_t                        aFirstMultiplicityExcess = 0;
+  size_t                        aLastMultiplicityExcess  = 0;
+  size_t                        aMultiplicitySum         = 0;
+  for (size_t aKnotIdx = 0; aKnotIdx < aNbUniqueKnots; ++aKnotIdx)
   {
-    occ::handle<TCartesianPoint> aPoint =
-      (*thePointMakerFunction)(aControlPointsList->Value(i), theLocalFactors);
-    if (!aPoint.IsNull())
+    const size_t aMultiplicity = aMergedKnotMultiplicities.Value(aKnotIdx);
+    if (aMultiplicity > aMaxMultiplicity)
     {
-      TCartesianPoint* pPoint = aPoint.get();
-      TGpPnt           aGpPnt = (pPoint->*thePntGetterFunction)();
-      Poles.SetValue(i - aFirstMuultypisityDifference, aGpPnt);
+      if (aKnotIdx == 0)
+      {
+        aFirstMultiplicityExcess = aMultiplicity - aMaxMultiplicity;
+      }
+      if (aKnotIdx == aNbUniqueKnots - 1)
+      {
+        aLastMultiplicityExcess = aMultiplicity - aMaxMultiplicity;
+      }
+#ifdef OCCT_DEBUG
+      std::cout << "\nWrong multiplicity " << aMultiplicity << " on " << aKnotIdx << " knot!"
+                << "\nChanged to " << aDegree + 1 << std::endl;
+#endif
     }
-    else
+    const size_t aClampedMultiplicity = std::min(aMultiplicity, aMaxMultiplicity);
+    if (aClampedMultiplicity > aMaxRelevantMultiplicity - aMultiplicitySum)
     {
       return nullptr;
     }
+    aMultiplicitySum += aClampedMultiplicity;
+    aUniqueKnotMultiplicityValues.Append(static_cast<int>(aClampedMultiplicity));
   }
 
-  // --- Does the Curve descriptor LOOKS like a periodic descriptor ? ---
-  int aSummaryMuultypisity = 0;
-  for (int i = 1; i <= NbUniqueKnots; i++)
+  NCollection_Array1<double> aUniqueKnots(aUniqueKnotValues.Data(), aNbUniqueKnots);
+  NCollection_Array1<int>    aUniqueKnotMultiplicities(aUniqueKnotMultiplicityValues.Data(),
+                                                    aNbUniqueKnots);
+
+  if (aFirstMultiplicityExcess > aNbPoles
+      || aLastMultiplicityExcess > aNbPoles - aFirstMultiplicityExcess)
   {
-    aSummaryMuultypisity += aUniqueKnotMultiplicities.Value(i);
+    return nullptr;
+  }
+  const size_t aTotalMultiplicityExcess = aFirstMultiplicityExcess + aLastMultiplicityExcess;
+  const size_t aNbUniquePoles           = aNbPoles - aTotalMultiplicityExcess;
+  if (aNbUniquePoles <= static_cast<size_t>(aDegree))
+  {
+    return nullptr;
+  }
+  if (aMultiplicitySum > aNbUniquePoles + aMaxMultiplicity)
+  {
+    return nullptr;
   }
 
-  bool shouldBePeriodic;
-  if (aSummaryMuultypisity == (NbPoles + aDegree + 1))
+  // Match the descriptor against the same pole-count contract used by the curve constructors.
+  const int  aNbExpectedPoles = static_cast<int>(aNbUniquePoles);
+  const bool shouldBePeriodic =
+    BSplCLib::NbPoles(aDegree, false, aUniqueKnotMultiplicities) != aNbExpectedPoles;
+  if (shouldBePeriodic
+      && BSplCLib::NbPoles(aDegree, true, aUniqueKnotMultiplicities) != aNbExpectedPoles)
   {
-    shouldBePeriodic = false;
+    return nullptr;
   }
-  else if ((aUniqueKnotMultiplicities.Value(1) == aUniqueKnotMultiplicities.Value(NbUniqueKnots))
-           && ((aSummaryMuultypisity - aUniqueKnotMultiplicities.Value(1)) == NbPoles))
+
+  occ::handle<NCollection_HArray1<double>> aWeights;
+  if (!aBSplineCurveWithKnotsAndRationalBSplineCurve.IsNull())
   {
-    shouldBePeriodic = true;
+    aWeights = aBSplineCurveWithKnotsAndRationalBSplineCurve->WeightsData();
+    if (aWeights.IsNull() || static_cast<size_t>(aWeights->Length()) != aNbPoles)
+    {
+      return nullptr;
+    }
+    for (size_t aPoleIdx = 0; aPoleIdx < aNbPoles; ++aPoleIdx)
+    {
+      const double aWeight = aWeights->At(aPoleIdx);
+      if (!isValidReal(aWeight) || aWeight <= gp::Resolution())
+      {
+        return nullptr;
+      }
+    }
   }
-  else
+
+  TPntArray aPoles(aNbUniquePoles);
+  for (size_t aPoleIdx = aFirstMultiplicityExcess; aPoleIdx < aNbPoles - aLastMultiplicityExcess;
+       ++aPoleIdx)
   {
-    // --- What is that ??? ---
-    shouldBePeriodic = false;
+    occ::handle<TCartesianPoint> aPoint =
+      (*thePointMakerFunction)(aControlPointsList->At(aPoleIdx), theLocalFactors);
+    if (aPoint.IsNull())
+    {
+      return nullptr;
+    }
+    const TGpPnt aPnt = ((*aPoint).*thePntGetterFunction)();
+    if (!isValidPoint(aPnt))
+    {
+      return nullptr;
+    }
+    aPoles.ChangeAt(aPoleIdx - aFirstMultiplicityExcess) = aPnt;
   }
 
   occ::handle<TBSplineCurve> aBSplineCurve;
-  if (theStepGeom_BSplineCurve->IsKind(
-        STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)))
+  if (!aWeights.IsNull())
   {
-    const occ::handle<NCollection_HArray1<double>>& aWeights =
-      aBSplineCurveWithKnotsAndRationalBSplineCurve->WeightsData();
-    NCollection_Array1<double> aUniqueWeights(1, NbPoles - aSummaryMuultypisityDifference);
-    for (int i = 1 + aFirstMuultypisityDifference; i <= NbPoles - aLastMuultypisityDifference; ++i)
+    NCollection_Array1<double> aUniqueWeights(aNbUniquePoles);
+    for (size_t aPoleIdx = aFirstMultiplicityExcess; aPoleIdx < aNbPoles - aLastMultiplicityExcess;
+         ++aPoleIdx)
     {
-      aUniqueWeights.SetValue(i - aFirstMuultypisityDifference, aWeights->Value(i));
+      aUniqueWeights.ChangeAt(aPoleIdx - aFirstMultiplicityExcess) = aWeights->At(aPoleIdx);
     }
-    aBSplineCurve = new TBSplineCurve(Poles,
+    aBSplineCurve = new TBSplineCurve(aPoles,
                                       aUniqueWeights,
                                       aUniqueKnots,
                                       aUniqueKnotMultiplicities,
@@ -914,7 +989,7 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   else
   {
     aBSplineCurve =
-      new TBSplineCurve(Poles, aUniqueKnots, aUniqueKnotMultiplicities, aDegree, shouldBePeriodic);
+      new TBSplineCurve(aPoles, aUniqueKnots, aUniqueKnotMultiplicities, aDegree, shouldBePeriodic);
   }
 
   // abv 04.07.00 CAX-IF TRJ4: trj4_k1_top-md-203.stp #716 (face #581):

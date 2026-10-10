@@ -14,7 +14,11 @@
 
 #include <IntImp_ComputeTangence.hxx>
 #include <IntImp_ConstIsoparametric.hxx>
+#include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Real.hxx>
+
+#include <cmath>
 
 static const IntImp_ConstIsoparametric staticChoixRef[4] = {
   IntImp_UIsoparametricOnCaro1,
@@ -73,7 +77,9 @@ bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
   for (i = 0; i < 4; ++i)
   {
     NormDuv[i] = DPuv[i].SquareMagnitude();
-    if (NormDuv[i] <= aTol2)
+    // Normalize only derivatives distinguishable from zero at the surface's parameter resolution.
+    if (NormDuv[i] <= aTol2
+        || std::sqrt(NormDuv[i]) * EpsUV[i] <= RealEpsilon() * Precision::Confusion())
     {
       return true;
     }

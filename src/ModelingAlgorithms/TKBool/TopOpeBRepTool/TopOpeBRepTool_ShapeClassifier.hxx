@@ -38,9 +38,8 @@ public:
 
   Standard_EXPORT TopOpeBRepTool_ShapeClassifier();
 
-  //! SRef is the reference shape.
-  //! StateShapeShape(S) calls will classify S with SRef.
-  Standard_EXPORT TopOpeBRepTool_ShapeClassifier(const TopoDS_Shape& SRef);
+  //! Creates a classifier using theReference as the reference shape.
+  Standard_EXPORT TopOpeBRepTool_ShapeClassifier(const TopoDS_Shape& theReference);
 
   //! reset all internal data (SolidClassifier included)
   Standard_EXPORT void ClearAll();

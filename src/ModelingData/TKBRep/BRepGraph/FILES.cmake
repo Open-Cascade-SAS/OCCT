@@ -15,6 +15,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_EditorView_Mut.cxx
   BRepGraph_EditorView_Setters.cxx
   BRepGraph_DefsIterator.hxx
+  BRepGraph_ChildIterator.cxx
+  BRepGraph_ChildIterator.hxx
   BRepGraph_ChildExplorer.cxx
   BRepGraph_ChildExplorer.hxx
   BRepGraph_Iterator.hxx
@@ -22,6 +24,8 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_ItemUID.hxx
   BRepGraph_ParentExplorer.cxx
   BRepGraph_ParentExplorer.hxx
+  BRepGraph_ParentIterator.cxx
+  BRepGraph_ParentIterator.hxx
   BRepGraph_Data.hxx
   BRepGraph_TopoView.cxx
   BRepGraph_TopoView.hxx
@@ -38,6 +42,12 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_LayerLock.hxx
   BRepGraph_LayerRegistry.cxx
   BRepGraph_LayerRegistry.hxx
+  BRepGraph_LayerSupplement.cxx
+  BRepGraph_LayerSupplement.hxx
+  BRepGraph_LayerSupplementBase.cxx
+  BRepGraph_LayerSupplementBase.hxx
+  BRepGraph_LayerSupplementRegistry.cxx
+  BRepGraph_LayerSupplementRegistry.hxx
   BRepGraph_DeferredScope.hxx
   BRepGraph_CacheMesh.cxx
   BRepGraph_CacheMesh.hxx
@@ -45,8 +55,6 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_MeshView.hxx
   BRepGraph_MutGuard.hxx
   BRepGraph_NodeId.hxx
-  BRepGraph_LayerTopoSupplement.cxx
-  BRepGraph_LayerTopoSupplement.hxx
   BRepGraph_ParallelPolicy.cxx
   BRepGraph_ParallelPolicy.hxx
   BRepGraph_RefId.hxx
@@ -59,18 +67,16 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_RefsView.hxx
   BRepGraph_ShapesView.cxx
   BRepGraph_ShapesView.hxx
-  BRepGraph_SupplementIterator.cxx
-  BRepGraph_SupplementIterator.hxx
-  BRepGraph_SupplementEditor.cxx
-  BRepGraph_SupplementEditor.hxx
+  BRepGraph_SupplementsView.cxx
+  BRepGraph_SupplementsView.hxx
   BRepGraph_Tool.cxx
   BRepGraph_Tool.hxx
   BRepGraph_UsagePath.cxx
   BRepGraph_UsagePath.hxx
   BRepGraph_UID.hxx
   BRepGraph_UIDsView.cxx
-  BRepGraph_VersionStamp.cxx
-  BRepGraph_VersionStamp.hxx
+  BRepGraph_ItemStamp.cxx
+  BRepGraph_ItemStamp.hxx
   BRepGraph_UIDsView.hxx
   BRepGraph_Deduplicate.cxx
   BRepGraph_Deduplicate.hxx
@@ -80,8 +86,21 @@ set(OCCT_BRepGraph_FILES
   BRepGraph_Copy.cxx
   BRepGraph_CopyRemap.hxx
   BRepGraph_CopyRemap.cxx
+  BRepGraph_Replace.hxx
+  BRepGraph_Replace.cxx
   BRepGraph_Transform.hxx
   BRepGraph_Transform.cxx
   BRepGraph_Validate.hxx
   BRepGraph_Validate.cxx
+  BRepGraph_RevisionDiff.hxx
+  BRepGraph_Transaction.hxx
+  BRepGraph_Transaction.cxx
+  BRepGraph_RevisionComponent.hxx
+  BRepGraph_RevisionComponent.cxx
+  BRepGraph_RevisionStatus.hxx
+  BRepGraph_RevisionHash.hxx
+  BRepGraph_RevisionHash.cxx
+  BRepGraph_Revision.hxx
+  BRepGraph_Revision.cxx
+  BRepGraph_RevisionDiff.cxx
 )

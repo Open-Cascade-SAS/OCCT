@@ -409,16 +409,16 @@ TEST(NCollection_LinearVectorTest, EraseRange_NonTrivial_HeapBuffers)
   NCollection_LinearVector<TCollection_AsciiString> aVec;
   for (int i = 0; i < 6; ++i)
   {
-    TCollection_AsciiString aEntry("payload-with-heap-allocation-");
+    TCollection_AsciiString aEntry("heap-backed-entry-");
     aEntry += TCollection_AsciiString(i);
     aVec.Append(std::move(aEntry));
   }
 
   aVec.Erase(1, 4);
   ASSERT_EQ(3u, aVec.Size());
-  EXPECT_STREQ("payload-with-heap-allocation-0", aVec(0).ToCString());
-  EXPECT_STREQ("payload-with-heap-allocation-4", aVec(1).ToCString());
-  EXPECT_STREQ("payload-with-heap-allocation-5", aVec(2).ToCString());
+  EXPECT_STREQ("heap-backed-entry-0", aVec(0).ToCString());
+  EXPECT_STREQ("heap-backed-entry-4", aVec(1).ToCString());
+  EXPECT_STREQ("heap-backed-entry-5", aVec(2).ToCString());
 }
 
 TEST(NCollection_LinearVectorTest, InsertBefore)

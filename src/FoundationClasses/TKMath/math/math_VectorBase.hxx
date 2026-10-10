@@ -26,7 +26,8 @@
 
 #include <math_Matrix.hxx>
 
-#include <array>
+#include <new>
+#include <type_traits>
 #include <utility>
 
 //! This class implements the real vector abstract data type.
@@ -61,6 +62,9 @@ template <typename TheItemType>
 class math_VectorBase
 {
   static const int THE_BUFFER_SIZE = 32;
+
+  static_assert(std::is_arithmetic<TheItemType>::value,
+                "math_VectorBase requires an arithmetic item type");
 
 public:
   //! Constructs a non-initialized zero-based vector of theSize elements.
@@ -345,8 +349,29 @@ protected:
   inline void SetLower(const int theLower);
 
 private:
-  std::array<TheItemType, THE_BUFFER_SIZE> myBuffer;
-  NCollection_Array1<TheItemType>          Array;
+  struct BufferStorage
+  {
+    struct Empty
+    {
+    };
+
+    union {
+      alignas(TheItemType) char myData[sizeof(TheItemType) * THE_BUFFER_SIZE];
+      Empty myEmpty;
+    };
+
+    BufferStorage() noexcept
+        : myEmpty()
+    {
+      // Default-initialize the arithmetic elements without zero-initializing them.
+      ::new (static_cast<void*>(myData)) TheItemType[THE_BUFFER_SIZE];
+    }
+  };
+
+  TheItemType* bufferData() noexcept { return reinterpret_cast<TheItemType*>(myBuffer.myData); }
+
+  BufferStorage                   myBuffer;
+  NCollection_Array1<TheItemType> Array;
 };
 
 #include <math_VectorBase.lxx>

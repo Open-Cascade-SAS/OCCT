@@ -111,7 +111,6 @@ set(OCCT_HLRBRep_FILES
   HLRBRep_ThePolygonOfInterCSurf.hxx
   HLRBRep_ThePolygonOfInterCSurf.cxx
   HLRBRep_ThePolygonToolOfInterCSurf.hxx
-  HLRBRep_ThePolygonToolOfInterCSurf_0.cxx
   HLRBRep_ThePolyhedronOfInterCSurf.hxx
   HLRBRep_ThePolyhedronOfInterCSurf.cxx
   HLRBRep_ThePolyhedronToolOfInterCSurf.hxx

@@ -495,7 +495,7 @@ TEST(BRepGraph_PermissionUpdateTest, RemoveSubgraph_NestedCascade_FinalStateVali
   EXPECT_TRUE(aGraph.ValidateRelations());
 
   BRepGraph_SolidId aSolidId;
-  for (BRepGraph_SolidIterator aIt(aGraph); aIt.More(); aIt.Next())
+  for (BRepGraph_SolidIterator aIt(aGraph); aIt.More();)
   {
     aSolidId = aIt.CurrentId();
     break;
@@ -514,7 +514,7 @@ TEST(BRepGraph_PermissionUpdateTest, MutGuard_DirtyFlag_RespectsExplicitMarkAndC
   ASSERT_FALSE(aGraph.IsEmpty());
 
   BRepGraph_EdgeId aEdgeId;
-  for (BRepGraph_EdgeIterator anIt(aGraph); anIt.More(); anIt.Next())
+  for (BRepGraph_EdgeIterator anIt(aGraph); anIt.More();)
   {
     aEdgeId = anIt.CurrentId();
     break;

@@ -3622,9 +3622,10 @@ Standard_EXPORT bool FDS_stateEwithF2d(const TopOpeBRepDS_DataStructure& BDS,
     return false;
   }
 
-  TopOpeBRepTool_ShapeClassifier& PSC  = FSC_GetPSC(F1);
-  TopAbs_State                    sta1 = FSC_StatePonFace(P1, F1, PSC);
-  TopAbs_State                    sta2 = FSC_StatePonFace(P2, F1, PSC);
+  TopOpeBRepTool_ShapeClassifier PSC;
+  PSC.SetReference(F1);
+  TopAbs_State sta1 = FSC_StatePonFace(P1, F1, PSC);
+  TopAbs_State sta2 = FSC_StatePonFace(P2, F1, PSC);
 
   // xpu190898 : cto014I2 (e5,fTRASHA14,vG7,eS10)
   if (sta1 == TopAbs_ON)

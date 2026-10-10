@@ -30,29 +30,39 @@
 #include <algorithm>
 #include <utility>
 
-// Template traits for 2D/3D point and vector operations
+// Template traits for scalar/2D/3D point and vector operations
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
 struct BSplCLib_CurveTraits
 {
+  static_assert(Dimension >= 1 && Dimension <= 3, "Unsupported B-spline curve dimension");
+
   // Coordinate operations
-  static void PointToCoords(double* carr, const Point& pnt, double op)
+  static void PointToCoords(double* carr, const Point& pnt)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
     {
-      carr[0] = pnt.X() + op;
-      carr[1] = pnt.Y() + op;
+      carr[0] = pnt;
+    }
+    else if constexpr (Dimension == 2)
+    {
+      carr[0] = pnt.X();
+      carr[1] = pnt.Y();
     }
     else if constexpr (Dimension == 3)
     {
-      carr[0] = pnt.X() + op;
-      carr[1] = pnt.Y() + op;
-      carr[2] = pnt.Z() + op;
+      carr[0] = pnt.X();
+      carr[1] = pnt.Y();
+      carr[2] = pnt.Z();
     }
   }
 
   static void PointToCoordsScaled(double* carr, const Point& pnt, double scale)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      carr[0] = pnt * scale;
+    }
+    else if constexpr (Dimension == 2)
     {
       carr[0] = pnt.X() * scale;
       carr[1] = pnt.Y() * scale;
@@ -67,7 +77,11 @@ struct BSplCLib_CurveTraits
 
   static void CoordsToPointMultiplied(Point& pnt, const double* carr, double factor)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      pnt = carr[0] * factor;
+    }
+    else if constexpr (Dimension == 2)
     {
       pnt.SetX(carr[0] * factor);
       pnt.SetY(carr[1] * factor);
@@ -82,7 +96,11 @@ struct BSplCLib_CurveTraits
 
   static void CoordsToPointScaled(Point& pnt, const double* carr, double scale)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      pnt = carr[0] / scale;
+    }
+    else if constexpr (Dimension == 2)
     {
       pnt.SetX(carr[0] / scale);
       pnt.SetY(carr[1] / scale);
@@ -97,7 +115,11 @@ struct BSplCLib_CurveTraits
 
   static void CoordsToPointDirect(Point& pnt, const double* carr)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      pnt = carr[0];
+    }
+    else if constexpr (Dimension == 2)
     {
       pnt.SetX(carr[0]);
       pnt.SetY(carr[1]);
@@ -112,7 +134,11 @@ struct BSplCLib_CurveTraits
 
   static void CoordsToVectorDirect(Vector& vec, const double* carr)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      vec = carr[0];
+    }
+    else if constexpr (Dimension == 2)
     {
       vec.SetX(carr[0]);
       vec.SetY(carr[1]);
@@ -127,7 +153,11 @@ struct BSplCLib_CurveTraits
 
   static void NullifyPoint(Point& pnt)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      pnt = 0.0;
+    }
+    else if constexpr (Dimension == 2)
     {
       pnt.SetCoord(0., 0.);
     }
@@ -139,7 +169,11 @@ struct BSplCLib_CurveTraits
 
   static void NullifyVector(Vector& vec)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      vec = 0.0;
+    }
+    else if constexpr (Dimension == 2)
     {
       vec.SetCoord(0., 0.);
     }
@@ -151,7 +185,11 @@ struct BSplCLib_CurveTraits
 
   static void NullifyCoords(double* carr)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      carr[0] = 0.0;
+    }
+    else if constexpr (Dimension == 2)
     {
       carr[0] = carr[1] = 0.;
     }
@@ -163,7 +201,11 @@ struct BSplCLib_CurveTraits
 
   static void CopyCoords(double* carr, const double* carr2)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      carr[0] = carr2[0];
+    }
+    else if constexpr (Dimension == 2)
     {
       carr[0] = carr2[0];
       carr[1] = carr2[1];
@@ -178,7 +220,11 @@ struct BSplCLib_CurveTraits
 
   static void ModifyCoordsScale(double* carr, double scale)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      carr[0] *= scale;
+    }
+    else if constexpr (Dimension == 2)
     {
       carr[0] *= scale;
       carr[1] *= scale;
@@ -193,7 +239,11 @@ struct BSplCLib_CurveTraits
 
   static void ModifyCoordsDivide(double* carr, double divisor)
   {
-    if constexpr (Dimension == 2)
+    if constexpr (Dimension == 1)
+    {
+      carr[0] /= divisor;
+    }
+    else if constexpr (Dimension == 2)
     {
       carr[0] /= divisor;
       carr[1] /= divisor;
@@ -725,37 +775,33 @@ void BSplCLib_BuildEval(const int                         Degree,
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
-  double w, *pole = &LP;
-  int    PLower = Poles.Lower();
-  int    PUpper = Poles.Upper();
-  int    i;
-  int    ip = PLower + Index - 1;
+  double* pole       = &LP;
+  size_t  aPoleIndex = static_cast<size_t>(Index);
   if (Weights == nullptr)
   {
-    for (i = 0; i <= Degree; i++)
+    for (int i = 0; i <= Degree; ++i)
     {
-      ip++;
-      if (ip > PUpper)
+      if (aPoleIndex >= Poles.Size())
       {
-        ip = PLower;
+        aPoleIndex = 0;
       }
-      const Point& P = Poles(ip);
-      Traits::PointToCoords(pole, P, 0);
+      const Point& P = Poles.At(aPoleIndex++);
+      Traits::PointToCoords(pole, P);
       pole += Dimension;
     }
   }
   else
   {
-    for (i = 0; i <= Degree; i++)
+    for (int i = 0; i <= Degree; ++i)
     {
-      ip++;
-      if (ip > PUpper)
+      if (aPoleIndex >= Poles.Size())
       {
-        ip = PLower;
+        aPoleIndex = 0;
       }
-      const Point& P  = Poles(ip);
-      pole[Dimension] = w = (*Weights)(ip);
-      Traits::PointToCoordsScaled(pole, P, w);
+      const Point& P       = Poles.At(aPoleIndex);
+      const double aWeight = Weights->At(aPoleIndex++);
+      pole[Dimension]      = aWeight;
+      Traits::PointToCoordsScaled(pole, P, aWeight);
       pole += Dimension + 1;
     }
   }

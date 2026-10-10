@@ -17,7 +17,7 @@
 #include <BRepGraph_TopoView.hxx>
 #include <BRepGraph_ShapesView.hxx>
 #include <BRepGraph_UIDsView.hxx>
-#include <BRepGraph_VersionStamp.hxx>
+#include <BRepGraph_ItemStamp.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
@@ -104,10 +104,10 @@ TEST(BRepGraph_MutationGenEditorTest, ProductAppendRegistersBothProductsAndOccur
   const BRepGraph_ProductId aChild  = aGraph.Editor().Products().Add();
   aGraph.Editor().Products().AppendDocumentRoot(aChild);
 
-  const BRepGraph_VersionStamp aParentStamp  = aGraph.UIDs().StampOf(aParent);
-  const BRepGraph_VersionStamp aChildStamp   = aGraph.UIDs().StampOf(aChild);
-  const uint32_t               aParentOwnGen = aGraph.Topo().Products().Definition(aParent).OwnGen;
-  const uint32_t               aChildOwnGen  = aGraph.Topo().Products().Definition(aChild).OwnGen;
+  const BRepGraph_ItemStamp aParentStamp  = aGraph.UIDs().StampOf(aParent);
+  const BRepGraph_ItemStamp aChildStamp   = aGraph.UIDs().StampOf(aChild);
+  const uint32_t            aParentOwnGen = aGraph.Topo().Products().Definition(aParent).OwnGen;
+  const uint32_t            aChildOwnGen  = aGraph.Topo().Products().Definition(aChild).OwnGen;
 
   const BRepGraph_OccurrenceId anOccurrence =
     aGraph.Editor().Products().Append(aParent, aChild, TopLoc_Location());
@@ -215,6 +215,20 @@ TEST_F(BRepGraph_MutationGenTest, SubtreeGen_PropagatedParent_Incremented)
   {
     EXPECT_EQ(aSolidIt.Current().OwnGen, 0u);
   }
+}
+
+TEST(BRepGraph_MutationGenEditorTest, SubtreeGen_UsesReverseCompoundReferenceIndex)
+{
+  BRepGraph                aGraph;
+  const BRepGraph_VertexId aVertex = aGraph.Editor().Vertices().Add(gp_Pnt(), 1.0e-7);
+  NCollection_LinearVector<BRepGraph_NodeId> aChildren;
+  aChildren.Append(aVertex);
+  const BRepGraph_CompoundId aCompound = aGraph.Editor().Compounds().Add(aChildren.ToArray1());
+  const uint32_t aCompoundSubtreeGen   = aGraph.Topo().Compounds().Definition(aCompound).SubtreeGen;
+
+  aGraph.Editor().Vertices().SetTolerance(aVertex, 1.0e-6);
+
+  EXPECT_GT(aGraph.Topo().Compounds().Definition(aCompound).SubtreeGen, aCompoundSubtreeGen);
 }
 
 TEST_F(BRepGraph_MutationGenTest, SubtreeGen_DeferredPropagatedParent_Incremented)
@@ -351,7 +365,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve3DPropagatesSubtreeGenToEdge)
 
 TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdge)
 {
-  for (BRepGraph_CoEdgeIterator aCoEdgeIt(myGraph); aCoEdgeIt.More(); aCoEdgeIt.Next())
+  for (BRepGraph_CoEdgeIterator aCoEdgeIt(myGraph); aCoEdgeIt.More();)
   {
     const BRepGraph_CoEdgeId aCoEdgeId = aCoEdgeIt.CurrentId();
     EXPECT_EQ(aCoEdgeIt.Current().OwnGen, 0u);
@@ -367,7 +381,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_Curve2DPropagatesSubtreeGenToCoEdg
 
 TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenToFace)
 {
-  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More(); aFaceIt.Next())
+  for (BRepGraph_FaceIterator aFaceIt(myGraph); aFaceIt.More();)
   {
     const BRepGraph_FaceId aFaceId = aFaceIt.CurrentId();
     EXPECT_EQ(aFaceIt.Current().OwnGen, 0u);
@@ -383,7 +397,7 @@ TEST_F(BRepGraph_MutationGenTest, RepMutation_TriangulationPropagatesSubtreeGenT
 
 TEST_F(BRepGraph_MutationGenTest, RepMutation_Polygon3DPropagatesSubtreeGenToEdge)
 {
-  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More(); anEdgeIt.Next())
+  for (BRepGraph_EdgeIterator anEdgeIt(myGraph); anEdgeIt.More();)
   {
     const BRepGraph_EdgeId anEdgeId = anEdgeIt.CurrentId();
     EXPECT_EQ(anEdgeIt.Current().OwnGen, 0u);

@@ -27,7 +27,7 @@ algorithm runtime services:
 
 - `BRepGraphAlgo_Parameters`
 - `BRepGraphAlgo_Regularity`
-- `BRepGraph_LayerTopoSupplement`
+- `BRepGraphSupInc_TopologyStore`
 
 These services do not make derived data part of backend storage. Core
 reconstruction does not replay parameter or regularity cache values.
@@ -439,7 +439,7 @@ Key difference: TopoDS expresses context through shape occurrences. GraphInc kee
 | `BRepGraphInc_Populate.hxx/.cxx` | TopoDS -> incidence build and append |
 | `BRepGraphInc_Reconstruct.hxx/.cxx` | Incidence -> TopoDS reconstruction |
 | `BRepGraphInc_Storage.lxx` | Late-include implementation: `TypedStorePlanes` specializations and template method definitions |
-| `BRepGraphInc_BitFlags.hxx` | Bit-plane storage for per-entity boolean flags |
+| `NCollection_BitDynamicArray.hxx` | Copy-on-write bit-plane storage for per-entity boolean flags |
 | `BRepGraphInc_BoundaryBuilder.pxx` | Boundary construction helpers (`.pxx` late-include extension) |
 | `BRepGraphInc_Instance.hxx` | Instance location handling |
 | `BRepGraphInc_Load.hxx` | Indexed load preparation |

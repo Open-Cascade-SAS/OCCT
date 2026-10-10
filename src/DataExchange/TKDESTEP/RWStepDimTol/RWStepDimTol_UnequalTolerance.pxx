@@ -1,0 +1,400 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepDimTol_UnequalTolerance_HeaderFile
+#define _RWStepDimTol_UnequalTolerance_HeaderFile
+#include "RWStepDimTol_LengthMeasure.pxx"
+#include <Interface_Check.hxx>
+#include <Interface_EntityIterator.hxx>
+#include "RWStepDimTol_RWGeometricToleranceWithModifiers.pxx"
+#include <StepData_StepReaderData.hxx>
+#include <StepData_StepWriter.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
+#include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+#include <StepDimTol_DatumSystemOrReference.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <StepDimTol_GeometricToleranceTarget.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
+
+namespace
+{
+namespace RWStepDimTol_UnequalTolerance
+{
+// Names follow StepDimTol_GeometricToleranceType and are alphabetically ordered.
+static constexpr const char* THE_TOLERANCE_NAMES[] = {"ANGULARITY_TOLERANCE",
+                                                      "CIRCULAR_RUNOUT_TOLERANCE",
+                                                      "COAXIALITY_TOLERANCE",
+                                                      "CONCENTRICITY_TOLERANCE",
+                                                      "CYLINDRICITY_TOLERANCE",
+                                                      "FLATNESS_TOLERANCE",
+                                                      "LINE_PROFILE_TOLERANCE",
+                                                      "PARALLELISM_TOLERANCE",
+                                                      "PERPENDICULARITY_TOLERANCE",
+                                                      "POSITION_TOLERANCE",
+                                                      "ROUNDNESS_TOLERANCE",
+                                                      "STRAIGHTNESS_TOLERANCE",
+                                                      "SURFACE_PROFILE_TOLERANCE",
+                                                      "SYMMETRY_TOLERANCE",
+                                                      "TOTAL_RUNOUT_TOLERANCE"};
+
+// Short names use the same order as the concrete tolerance enumeration.
+static constexpr const char* THE_TOLERANCE_SHORT_NAMES[] = {"ANGTLR",
+                                                            "CRRNTL",
+                                                            "CXLTLR",
+                                                            "CNCTLR",
+                                                            "CYLTLR",
+                                                            "FLTTLR",
+                                                            "LNP0",
+                                                            "PRLTLR",
+                                                            "PRPTLR",
+                                                            "PSTTLR",
+                                                            "RNDTLR",
+                                                            "STRTLR",
+                                                            "SRPRTL",
+                                                            "SYMTLR",
+                                                            "TTRNTL"};
+
+//! Parsed attributes shared by the fixed unequal-tolerance complex combinations.
+//! Each RW component initializes its own entity from these schema constituents.
+struct Parameters
+{
+  occ::handle<TCollection_HAsciiString> Name;                         //!< Geometric tolerance name.
+  occ::handle<TCollection_HAsciiString> Description;                  //!< Authored description.
+  occ::handle<Standard_Transient>       Magnitude;                    //!< Magnitude measure entity.
+  StepDimTol_GeometricToleranceTarget   Target;                       //!< Toleranced shape or item.
+  occ::handle<StepDimTol_GeometricToleranceWithDatumReference> Datum; //!< Datum constituent.
+  occ::handle<StepDimTol_GeometricToleranceWithModifiers>      Modifiers; //!< Modifier constituent.
+  occ::handle<Standard_Transient>   Maximum; //!< Maximum length measure entity.
+  StepDimTol_GeometricToleranceType Type;    //!< Concrete tolerance subtype.
+  occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> Unequal; //!< Unequal constituent.
+};
+
+//==================================================================================================
+
+//! Read the constituents required by one fixed complex combination.
+//! Return false on invalid constituent structure; report attribute errors in the check.
+template <bool HasDatum, bool HasModifiers, bool HasMaximum>
+bool ReadStep(const occ::handle<StepData_StepReaderData>& theData,
+              const int                                   theNum0,
+              occ::handle<Interface_Check>&               theCheck,
+              Parameters&                                 theParameters)
+{
+  static_assert(!HasMaximum || HasModifiers, "Maximum tolerance inherits modifiers");
+  int aNum = 0;
+  theData->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", theNum0, aNum, theCheck);
+  if (!theData->CheckNbParams(aNum, 4, theCheck, "geometric_tolerance"))
+  {
+    return false;
+  }
+  // Own fields of GeometricTolerance
+  occ::handle<TCollection_HAsciiString> aName;
+  theData->ReadString(aNum, 1, "name", theCheck, aName);
+  occ::handle<TCollection_HAsciiString> aDescription;
+  theData->ReadString(aNum, 2, "description", theCheck, aDescription);
+  occ::handle<Standard_Transient> aMagnitude;
+  theData
+    ->ReadEntity(aNum, 3, "magnitude", theCheck, STANDARD_TYPE(Standard_Transient), aMagnitude);
+  StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
+  theData->ReadEntity(aNum, 4, "toleranced_shape_aspect", theCheck, aTolerancedShapeAspect);
+
+  NCollection_Sequence<TCollection_AsciiString> aTypes;
+  theData->ComplexType(theNum0, aTypes);
+  const auto aHasComponent = [&aTypes](const char* theName, const char* theShortName = "") {
+    for (const auto& aName : aTypes)
+    {
+      if (aName.IsEqual(theName) || aName.IsEqual(theShortName))
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+  occ::handle<StepDimTol_GeometricToleranceWithDatumReference> aGTWDR;
+  if constexpr (HasDatum)
+  {
+    theData->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE",
+                             "GTWDR",
+                             theNum0,
+                             aNum,
+                             theCheck);
+    if (!theData->CheckNbParams(aNum, 1, theCheck, "datum reference"))
+    {
+      return false;
+    }
+    // Own fields of GeometricToleranceWithDatumReference
+    occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> aDatumSystem;
+    int                                                                 aSubList = 0;
+    if (theData->ReadSubList(aNum, 1, "datum_system", theCheck, aSubList))
+    {
+      int aCount = theData->NbParams(aSubList);
+      if (aCount == 0)
+      {
+        theCheck->AddFail("Datum system must not be empty");
+        return false;
+      }
+      aDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, aCount);
+      int aSubNum  = aSubList;
+      for (int anIndex = 1; anIndex <= aCount; anIndex++)
+      {
+        StepDimTol_DatumSystemOrReference aReference;
+        theData->ReadEntity(aSubNum, anIndex, "datum_system_or_reference", theCheck, aReference);
+        aDatumSystem->SetValue(anIndex, aReference);
+      }
+    }
+    // Initialize entity
+    aGTWDR = new StepDimTol_GeometricToleranceWithDatumReference;
+    aGTWDR->SetDatumSystem(aDatumSystem);
+  }
+  occ::handle<Standard_Transient> aMaxTolerance;
+  if constexpr (HasMaximum)
+  {
+    theData->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE", theNum0, aNum, theCheck);
+    if (!theData->CheckNbParams(aNum, 1, theCheck, "maximum tolerance"))
+    {
+      return false;
+    }
+    RWStepDimTol_LengthMeasure::Read(theData,
+                                     aNum,
+                                     1,
+                                     "maximum_upper_tolerance",
+                                     theCheck,
+                                     aMaxTolerance);
+  }
+  occ::handle<StepDimTol_GeometricToleranceWithModifiers> aWithModifiers;
+  if constexpr (HasModifiers)
+  {
+    theData->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MODIFIERS", theNum0, aNum, theCheck);
+    if (!theData->CheckNbParams(aNum, 1, theCheck, "modifiers"))
+    {
+      return false;
+    }
+    int aSubList = 0;
+    if (theData->ReadSubList(aNum, 1, "modifiers", theCheck, aSubList))
+    {
+      const int aCount = theData->NbParams(aSubList);
+      if (aCount == 0)
+      {
+        theCheck->AddFail("Geometric tolerance modifiers must not be empty");
+        return false;
+      }
+      const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers =
+        new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, aCount);
+      for (int anIndex = 1; anIndex <= aCount; ++anIndex)
+      {
+        const char*                           aModifier = theData->ParamCValue(aSubList, anIndex);
+        StepDimTol_GeometricToleranceModifier aValue    = StepDimTol_GTMMaximumMaterialRequirement;
+        if (theData->ParamType(aSubList, anIndex) != Interface_ParamEnum
+            || !RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifier(aModifier, aValue))
+        {
+          theCheck->AddFail("Unknown geometric tolerance modifier");
+        }
+        aModifiers->SetValue(anIndex, aValue);
+      }
+      aWithModifiers = new StepDimTol_GeometricToleranceWithModifiers();
+      aWithModifiers->SetModifiers(aModifiers);
+    }
+  }
+  if constexpr (HasMaximum)
+  {
+    bool aHasMaterialRequirement = false;
+    if (!aWithModifiers.IsNull() && !aWithModifiers->Modifiers().IsNull())
+    {
+      for (const auto aModifier : *aWithModifiers->Modifiers())
+      {
+        aHasMaterialRequirement = aHasMaterialRequirement
+                                  || aModifier == StepDimTol_GTMMaximumMaterialRequirement
+                                  || aModifier == StepDimTol_GTMLeastMaterialRequirement;
+      }
+    }
+    if (!aHasMaterialRequirement)
+    {
+      theCheck->AddFail("Maximum tolerance requires maximum or least material requirement");
+    }
+    const occ::handle<StepBasic_MeasureWithUnit> aLengthMagnitude =
+      RWStepDimTol_LengthMeasure::Value(aMagnitude);
+    const occ::handle<StepBasic_MeasureWithUnit> aMaximum =
+      RWStepDimTol_LengthMeasure::Value(aMaxTolerance);
+    // Compare values only when units reference the same entity. Distinct unit entities
+    // may be EXPRESS value-equal; identity alone cannot establish a unit mismatch.
+    if (!aMaximum.IsNull() && !aLengthMagnitude.IsNull()
+        && aMaximum->UnitComponent().Value() == aLengthMagnitude->UnitComponent().Value()
+        && aMaximum->ValueComponent() <= aLengthMagnitude->ValueComponent())
+    {
+      theCheck->AddFail("Maximum tolerance must exceed magnitude");
+    }
+  }
+  theData->NamedForComplex("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE", theNum0, aNum, theCheck);
+  if (!theData->CheckNbParams(aNum, 1, theCheck, "unequal displacement"))
+  {
+    return false;
+  }
+  occ::handle<Standard_Transient> aDisplacement;
+  RWStepDimTol_LengthMeasure::Read(theData, aNum, 1, "displacement", theCheck, aDisplacement);
+  // Initialize entity
+  occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> anUDGT =
+    new StepDimTol_UnequallyDisposedGeometricTolerance;
+  anUDGT->SetDisplacement(aDisplacement);
+
+  // Find the concrete subtype among the fixed constituents of this complex entity.
+  StepDimTol_GeometricToleranceType aType    = StepDimTol_GTTPositionTolerance;
+  bool                              aHasType = false;
+  for (int anIndex = StepDimTol_GTTAngularityTolerance;
+       anIndex <= StepDimTol_GTTTotalRunoutTolerance;
+       ++anIndex)
+  {
+    if (aHasComponent(THE_TOLERANCE_NAMES[anIndex], THE_TOLERANCE_SHORT_NAMES[anIndex]))
+    {
+      aType    = static_cast<StepDimTol_GeometricToleranceType>(anIndex);
+      aHasType = true;
+      break;
+    }
+  }
+  if (!aHasType)
+  {
+    theCheck->AddFail("The type of geometric tolerance is not supported");
+    return false;
+  }
+  theData->NamedForComplex(THE_TOLERANCE_NAMES[aType],
+                           THE_TOLERANCE_SHORT_NAMES[aType],
+                           theNum0,
+                           aNum,
+                           theCheck);
+  if (!theData->CheckNbParams(aNum, 0, theCheck, THE_TOLERANCE_NAMES[aType]))
+  {
+    return false;
+  }
+
+  theParameters = {aName,
+                   aDescription,
+                   aMagnitude,
+                   aTolerancedShapeAspect,
+                   aGTWDR,
+                   aWithModifiers,
+                   aMaxTolerance,
+                   aType,
+                   anUDGT};
+  return true;
+}
+
+//==================================================================================================
+
+template <bool HasDatum, bool HasModifiers, bool HasMaximum, typename Entity>
+void WriteStep(StepData_StepWriter& theWriter, const occ::handle<Entity>& theEntity)
+{
+  const StepDimTol_GeometricToleranceType aType = theEntity->GetToleranceType();
+  if (aType < StepDimTol_GTTAngularityTolerance || aType > StepDimTol_GTTTotalRunoutTolerance)
+  {
+    throw Standard_OutOfRange("Unsupported geometric tolerance subtype");
+  }
+  // STEP complex constituents must be written in alphabetical order.
+  if (aType < StepDimTol_GTTLineProfileTolerance)
+  {
+    theWriter.StartEntity(THE_TOLERANCE_NAMES[aType]);
+  }
+
+  theWriter.StartEntity("GEOMETRIC_TOLERANCE");
+  theWriter.Send(theEntity->Name());
+  theWriter.Send(theEntity->Description());
+  theWriter.Send(theEntity->Magnitude());
+  theWriter.Send(theEntity->TolerancedShapeAspect().Value());
+  if constexpr (HasDatum)
+  {
+    theWriter.StartEntity("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
+    theWriter.OpenSub();
+    for (int anIndex = 1;
+         anIndex
+         <= theEntity->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length();
+         anIndex++)
+    {
+      StepDimTol_DatumSystemOrReference aReference =
+        theEntity->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(anIndex);
+      theWriter.Send(aReference.Value());
+    }
+    theWriter.CloseSub();
+  }
+  if constexpr (HasMaximum)
+  {
+    theWriter.StartEntity("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
+    theWriter.Send(theEntity->GetMaxTolerance());
+  }
+  if constexpr (HasModifiers)
+  {
+    theWriter.StartEntity("GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
+    theWriter.OpenSub();
+    const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers =
+      theEntity->GetGeometricToleranceWithModifiers()->Modifiers();
+    if (!aModifiers.IsNull())
+    {
+      for (const auto aModifier : *aModifiers)
+      {
+        const char* aName =
+          RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifierName(aModifier);
+        if (aName != nullptr)
+        {
+          theWriter.SendEnum(aName);
+        }
+        else
+        {
+          theWriter.SendUndef();
+        }
+      }
+    }
+    theWriter.CloseSub();
+  }
+
+  if (aType >= StepDimTol_GTTLineProfileTolerance)
+  {
+    theWriter.StartEntity(THE_TOLERANCE_NAMES[aType]);
+  }
+
+  theWriter.StartEntity("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE");
+  theWriter.Send(theEntity->GetUnequallyDisposedGeometricTolerance()->Displacement());
+}
+
+//==================================================================================================
+
+template <bool HasDatum, bool HasMaximum, typename Entity>
+void Share(const occ::handle<Entity>& theEntity, Interface_EntityIterator& theIterator)
+{
+  // Own fields of GeometricTolerance
+  theIterator.AddItem(theEntity->Magnitude());
+  theIterator.AddItem(theEntity->TolerancedShapeAspect().Value());
+  if (!theEntity->GetUnequallyDisposedGeometricTolerance().IsNull())
+  {
+    theIterator.AddItem(theEntity->GetUnequallyDisposedGeometricTolerance()->Displacement());
+  }
+  if constexpr (HasMaximum)
+  {
+    theIterator.AddItem(theEntity->GetMaxTolerance());
+  }
+  if constexpr (HasDatum)
+  {
+    const occ::handle<StepDimTol_GeometricToleranceWithDatumReference> aDatum =
+      theEntity->GetGeometricToleranceWithDatumReference();
+    if (!aDatum.IsNull() && !aDatum->DatumSystemAP242().IsNull())
+    {
+      for (const auto& aReference : *aDatum->DatumSystemAP242())
+      {
+        theIterator.AddItem(aReference.Value());
+      }
+    }
+  }
+}
+
+} // namespace RWStepDimTol_UnequalTolerance
+} // namespace
+#endif // _RWStepDimTol_UnequalTolerance_HeaderFile

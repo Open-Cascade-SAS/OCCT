@@ -179,9 +179,9 @@ TEST(MathLin_EigenSearch_Test, AcceptsDocumentedSubdiagonalShape)
 
 TEST(MathLin_EigenSearch_Test, LargeFiniteDiagonalDoesNotDeflateCoupling)
 {
-  const double aMagnitude = std::numeric_limits<double>::max() / 2.0;
-  math_Vector  aDiag(size_t{2}, aMagnitude);
-  math_Vector  aSubdiag(size_t{1}, aMagnitude / 4.0);
+  constexpr double aMagnitude = std::numeric_limits<double>::max() / 2.0;
+  math_Vector      aDiag(size_t{2}, aMagnitude);
+  math_Vector      aSubdiag(size_t{1}, aMagnitude / 4.0);
 
   const MathLin::EigenResult aResult = MathLin::EigenTridiagonal(aDiag, aSubdiag);
   ASSERT_TRUE(aResult.IsDone());

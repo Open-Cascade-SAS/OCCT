@@ -18,18 +18,18 @@
 #include <BRepGraph_NodeId.hxx>
 #include <BRepGraph_RefUID.hxx>
 #include <BRepGraph_UID.hxx>
-#include <BRepGraphInc_BitFlags.hxx>
 #include <BRepGraphInc_Definition.hxx>
 #include <BRepGraphInc_Load.hxx>
 #include <BRepGraphInc_Reference.hxx>
 #include <BRepGraphInc_Relations.hxx>
 #include <BRepGraphInc_Representation.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_IncAllocator.hxx>
-#include <NCollection_DataMap.hxx>
+#include <NCollection_BitDynamicArray.hxx>
 #include <NCollection_FlatDataMap.hxx>
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_LinearVector.hxx>
+#include <NCollection_PagedArray.hxx>
+#include <NCollection_PagedDataMap.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Assert.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -69,14 +69,16 @@ public:
   //! Construct an empty storage with no entities or representations.
   Standard_EXPORT BRepGraphInc_Storage();
 
+  //! Create a page-sharing storage fork.
+  //!
+  //! Persistent typed pages are shared until changed. Runtime caches, active
+  //! mutation guards, deferred queues, and lock state are not inherited.
+  Standard_EXPORT BRepGraphInc_Storage(const BRepGraphInc_Storage& theOther);
+
+  BRepGraphInc_Storage& operator=(const BRepGraphInc_Storage&) = delete;
+
   //! Clear allocator-backed containers before member destructors walk them.
   Standard_EXPORT ~BRepGraphInc_Storage();
-
-  //! Return the allocator used for backend storage.
-  [[nodiscard]] const occ::handle<NCollection_BaseAllocator>& Allocator() const
-  {
-    return myAllocator;
-  }
 
   //! Return products not referenced by any active occurrence.
   [[nodiscard]] const NCollection_LinearVector<BRepGraph_ProductId>& RootProductIds() const
@@ -117,25 +119,32 @@ public:
   [[nodiscard]] Standard_EXPORT bool IsEmpty() const;
 
   //! Return the next UID counter for a given node kind.
-  [[nodiscard]] Standard_EXPORT uint32_t NextNodeUIDCounter(BRepGraph_NodeId::Kind theKind) const;
+  [[nodiscard]] Standard_EXPORT uint32_t
+    NextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Override the next UID counter for a given node kind.
-  Standard_EXPORT void SetNextNodeUIDCounter(BRepGraph_NodeId::Kind theKind, uint32_t theCounter);
+  Standard_EXPORT void SetNextNodeUIDCounter(const BRepGraph_NodeId::Kind theKind,
+                                             const uint32_t               theCounter);
 
   //! Return the next UID counter for a given reference kind.
-  [[nodiscard]] Standard_EXPORT uint32_t NextRefUIDCounter(BRepGraph_RefId::Kind theKind) const;
+  [[nodiscard]] Standard_EXPORT uint32_t
+    NextRefUIDCounter(const BRepGraph_RefId::Kind theKind) const;
 
   //! Override the next UID counter for a given reference kind.
-  Standard_EXPORT void SetNextRefUIDCounter(BRepGraph_RefId::Kind theKind, uint32_t theCounter);
+  Standard_EXPORT void SetNextRefUIDCounter(const BRepGraph_RefId::Kind theKind,
+                                            const uint32_t              theCounter);
 
   //! Allocate a node UID: write counter into the entity, bind reverse map, advance counter.
-  Standard_EXPORT BRepGraph_UID AllocateNodeUID(BRepGraph_NodeId theNodeId);
+  Standard_EXPORT BRepGraph_UID AllocateNodeUID(const BRepGraph_NodeId theNodeId);
 
   //! Allocate a reference UID: write counter into the ref, bind reverse map, advance counter.
-  Standard_EXPORT BRepGraph_RefUID AllocateRefUID(BRepGraph_RefId theRefId);
+  Standard_EXPORT BRepGraph_RefUID AllocateRefUID(const BRepGraph_RefId theRefId);
 
-  //! Return the current graph generation used by VersionStamp staleness checks.
+  //! Return the current graph generation used by ItemStamp staleness checks.
   [[nodiscard]] uint32_t Generation() const { return myGeneration.load(std::memory_order_relaxed); }
+
+  //! Return the process-local identity of this storage branch.
+  [[nodiscard]] const Standard_GUID& RuntimeIdentity() const noexcept { return myRuntimeIdentity; }
 
   //! Override the current graph generation.
   void SetGeneration(const uint32_t theGeneration)
@@ -1026,6 +1035,18 @@ public:
                                                 const BRepGraph_CoEdgeId theNewFirstCoEdgeId,
                                                 const BRepGraph_CoEdgeId theNewSecondCoEdgeId);
 
+  //! Replace an ordered consecutive coedge run with one new coedge.
+  //! The old run may wrap around a closed wire; in that case the stored wire
+  //! order is rotated so the replacement becomes its first entry.
+  //! @param[in] theParentWireId owning wire identifier
+  //! @param[in] theOldCoEdgeIds ordered coedges to replace
+  //! @param[in] theNewCoEdgeId free replacement coedge
+  //! @return true if the relation tables were updated
+  Standard_EXPORT bool ReplaceCoEdgeUsesWithOne(
+    const BRepGraph_WireId                        theParentWireId,
+    const NCollection_Array1<BRepGraph_CoEdgeId>& theOldCoEdgeIds,
+    const BRepGraph_CoEdgeId                      theNewCoEdgeId);
+
   //! Detach a wire reference from its parent face.
   //! @param[in] theParentFaceId parent face identifier
   //! @param[in] theRefId        wire reference identifier to detach
@@ -1259,12 +1280,9 @@ public:
   void ForEachShapeBinding(FuncT&& theFunc) const
   {
     std::shared_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
-    for (NCollection_FlatDataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher>::Iterator
-           anIt(myShapeToNodeId);
-         anIt.More();
-         anIt.Next())
+    for (auto anIt = myShapeToNodeId.cbegin(); anIt != myShapeToNodeId.cend(); ++anIt)
     {
-      theFunc(anIt.Key(), anIt.Value());
+      theFunc(anIt.Key(), *anIt);
     }
   }
 
@@ -1274,11 +1292,9 @@ public:
   void ForEachOriginalBinding(FuncT&& theFunc) const
   {
     std::shared_lock<std::shared_mutex> aLock(myShapeBindingsMutex);
-    for (NCollection_FlatDataMap<BRepGraph_NodeId, TopoDS_Shape>::Iterator anIt(myOriginalShapes);
-         anIt.More();
-         anIt.Next())
+    for (auto anIt = myOriginalShapes.cbegin(); anIt != myOriginalShapes.cend(); ++anIt)
     {
-      theFunc(anIt.Key(), anIt.Value());
+      theFunc(anIt.Key(), *anIt);
     }
   }
 
@@ -1402,7 +1418,9 @@ public:
 
   //! Copy all forward/reverse relation vectors directly from theSource.
   //! Used by identity copy to avoid the clear+rebuild cycle.
-  Standard_EXPORT void CopyDerivedRelationsFrom(const BRepGraphInc_Storage& theSource);
+  //! @return false if source and destination topology address spaces differ
+  [[nodiscard]] Standard_EXPORT bool CopyDerivedRelationsFrom(
+    const BRepGraphInc_Storage& theSource);
 
 private:
   friend class BRepGraphInc_Populate;
@@ -1412,6 +1430,11 @@ private:
   Standard_EXPORT void ClearUIDIndexes();
   Standard_EXPORT void ClearShapeCache();
   Standard_EXPORT void ClearRelations();
+
+  //! Deep-copy independently mutable geometry, mesh, and TopoDS representations at an
+  //! immutable publication or compatibility-projection boundary. Shape maps
+  //! are rebuilt with the detached TopoDS shapes rather than left page-shared.
+  Standard_EXPORT bool cloneMutableRepresentations();
 
   BRepGraphInc::FaceRelations& ChangeFaceRelationsInternal(const BRepGraph_FaceId theId)
   {
@@ -1490,10 +1513,10 @@ private:
   void SetHasOccurrenceParentTyped(const T theId, const bool theVal);
 
   //! Set or clear the "has parent compound" flag for a generic NodeId (internal dispatch).
-  Standard_EXPORT void SetHasCompoundParent(const BRepGraph_NodeId theNode, bool theVal);
+  Standard_EXPORT void SetHasCompoundParent(const BRepGraph_NodeId theNode, const bool theVal);
 
   //! Set or clear the "has parent occurrence" flag for a generic NodeId (internal dispatch).
-  Standard_EXPORT void SetHasOccurrenceParent(const BRepGraph_NodeId theNode, bool theVal);
+  Standard_EXPORT void SetHasOccurrenceParent(const BRepGraph_NodeId theNode, const bool theVal);
 
   //! Template store for topology entity kinds.
   template <typename EntityT>
@@ -1503,22 +1526,22 @@ private:
     using ValueType = EntityT;
 
     //! Entity representations stored by typed id index.
-    NCollection_DynamicArray<EntityT> Entities;
+    NCollection_PagedArray<EntityT> Entities;
 
     //! Bit-flag plane for soft-removal status.
-    BRepGraphInc_BitFlags RemovedFlags;
+    NCollection_BitDynamicArray RemovedFlags;
 
     //! Bit-flag plane for ownership status.
-    BRepGraphInc_BitFlags OwnedFlags;
+    NCollection_BitDynamicArray OwnedFlags;
 
     //! Bit-flag plane for active MutGuard tracking.
-    BRepGraphInc_BitFlags GuardFlags;
+    NCollection_BitDynamicArray GuardFlags;
 
     //! Bit-flag plane: node has at least one parent compound (ChildRef).
-    BRepGraphInc_BitFlags HasCompoundParentFlags;
+    NCollection_BitDynamicArray HasCompoundParentFlags;
 
     //! Bit-flag plane: node has at least one parent occurrence (OccurrenceRef).
-    BRepGraphInc_BitFlags HasOccurrenceParentFlags;
+    NCollection_BitDynamicArray HasOccurrenceParentFlags;
 
     //! Number of non-removed entities currently present in the store.
     uint32_t NbActive = 0;
@@ -1528,9 +1551,21 @@ private:
 
     DefStore() = delete;
 
-    DefStore(const int theBlockSize, const occ::handle<NCollection_BaseAllocator>& theAlloc)
-        : Entities(theBlockSize, theAlloc)
+    explicit DefStore(const size_t thePageSize)
+        : Entities(thePageSize)
     {
+    }
+
+    DefStore(const DefStore& theOther)
+        : Entities(theOther.Entities),
+          RemovedFlags(theOther.RemovedFlags),
+          OwnedFlags(theOther.OwnedFlags),
+          HasCompoundParentFlags(theOther.HasCompoundParentFlags),
+          HasOccurrenceParentFlags(theOther.HasOccurrenceParentFlags),
+          NbActive(theOther.NbActive),
+          NextUIDCounter(theOther.NextUIDCounter.load(std::memory_order_relaxed))
+    {
+      GuardFlags.Resize(theOther.GuardFlags.Size());
     }
 
     uint32_t Nb() const { return static_cast<uint32_t>(Entities.Size()); }
@@ -1584,9 +1619,9 @@ private:
       return true;
     }
 
-    void Clear(const bool theReleaseMemory = false)
+    void Clear()
     {
-      Entities.Clear(theReleaseMemory);
+      Entities.Clear();
       RemovedFlags.ClearAll();
       OwnedFlags.ClearAll();
       GuardFlags.ClearAll();
@@ -1606,24 +1641,16 @@ private:
     using ValueType = RefT;
 
     //! Reference representations stored by typed id index.
-    NCollection_DynamicArray<RefT> Refs;
+    NCollection_PagedArray<RefT> Refs;
 
     //! Bit-flag plane for soft-removal status.
-    BRepGraphInc_BitFlags RemovedFlags;
+    NCollection_BitDynamicArray RemovedFlags;
 
     //! Bit-flag plane for ownership status.
-    BRepGraphInc_BitFlags OwnedFlags;
+    NCollection_BitDynamicArray OwnedFlags;
 
     //! Bit-flag plane for active MutGuard tracking.
-    BRepGraphInc_BitFlags GuardFlags;
-
-    //! Bit-flag plane: ref has at least one parent compound (unused for refs, kept for macro
-    //! uniformity).
-    BRepGraphInc_BitFlags HasCompoundParentFlags;
-
-    //! Bit-flag plane: ref has at least one parent occurrence (unused for refs, kept for macro
-    //! uniformity).
-    BRepGraphInc_BitFlags HasOccurrenceParentFlags;
+    NCollection_BitDynamicArray GuardFlags;
 
     //! Number of non-removed references currently present in the store.
     uint32_t NbActive = 0;
@@ -1633,9 +1660,19 @@ private:
 
     RefStore() = delete;
 
-    RefStore(const int theBlockSize, const occ::handle<NCollection_BaseAllocator>& theAlloc)
-        : Refs(theBlockSize, theAlloc)
+    explicit RefStore(const size_t thePageSize)
+        : Refs(thePageSize)
     {
+    }
+
+    RefStore(const RefStore& theOther)
+        : Refs(theOther.Refs),
+          RemovedFlags(theOther.RemovedFlags),
+          OwnedFlags(theOther.OwnedFlags),
+          NbActive(theOther.NbActive),
+          NextUIDCounter(theOther.NextUIDCounter.load(std::memory_order_relaxed))
+    {
+      GuardFlags.Resize(theOther.GuardFlags.Size());
     }
 
     uint32_t Nb() const { return static_cast<uint32_t>(Refs.Size()); }
@@ -1656,8 +1693,6 @@ private:
       RemovedFlags.Resize(static_cast<size_t>(anId.Index) + 1);
       OwnedFlags.Resize(static_cast<size_t>(anId.Index) + 1);
       GuardFlags.Resize(static_cast<size_t>(anId.Index) + 1);
-      HasCompoundParentFlags.Resize(static_cast<size_t>(anId.Index) + 1);
-      HasOccurrenceParentFlags.Resize(static_cast<size_t>(anId.Index) + 1);
       return anId;
     }
 
@@ -1686,14 +1721,12 @@ private:
       return true;
     }
 
-    void Clear(const bool theReleaseMemory = false)
+    void Clear()
     {
-      Refs.Clear(theReleaseMemory);
+      Refs.Clear();
       RemovedFlags.ClearAll();
       OwnedFlags.ClearAll();
       GuardFlags.ClearAll();
-      HasCompoundParentFlags.ClearAll();
-      HasOccurrenceParentFlags.ClearAll();
       NbActive = 0;
       // Note: NextUIDCounter is NOT reset. UIDs stay monotonic across Clear() cycles.
     }
@@ -1761,24 +1794,24 @@ private:
   //! Occurrence reference store.
   RefStore<BRepGraphInc::OccurrenceRef> myOccurrenceRefs;
 
-  //! Centralized relation tables parallel to entity stores.
-  NCollection_DynamicArray<BRepGraphInc::FaceRelations>       myFaceRelations;
-  NCollection_DynamicArray<BRepGraphInc::WireRelations>       myWireRelations;
-  NCollection_DynamicArray<BRepGraphInc::EdgeRelations>       myEdgeRelations;
-  NCollection_DynamicArray<BRepGraphInc::ShellRelations>      myShellRelations;
-  NCollection_DynamicArray<BRepGraphInc::SolidRelations>      mySolidRelations;
-  NCollection_DynamicArray<BRepGraphInc::CompoundRelations>   myCompoundRelations;
-  NCollection_DynamicArray<BRepGraphInc::CompSolidRelations>  myCompSolidRelations;
-  NCollection_DynamicArray<BRepGraphInc::VertexRelations>     myVertexRelations;
-  NCollection_DynamicArray<BRepGraphInc::ProductRelations>    myProductRelations;
-  NCollection_DynamicArray<BRepGraphInc::OccurrenceRelations> myOccurrenceRelations;
+  //! Relation records parallel to entity stores.
+  NCollection_PagedArray<BRepGraphInc::FaceRelations>       myFaceRelations;
+  NCollection_PagedArray<BRepGraphInc::WireRelations>       myWireRelations;
+  NCollection_PagedArray<BRepGraphInc::EdgeRelations>       myEdgeRelations;
+  NCollection_PagedArray<BRepGraphInc::ShellRelations>      myShellRelations;
+  NCollection_PagedArray<BRepGraphInc::SolidRelations>      mySolidRelations;
+  NCollection_PagedArray<BRepGraphInc::CompoundRelations>   myCompoundRelations;
+  NCollection_PagedArray<BRepGraphInc::CompSolidRelations>  myCompSolidRelations;
+  NCollection_PagedArray<BRepGraphInc::VertexRelations>     myVertexRelations;
+  NCollection_PagedArray<BRepGraphInc::ProductRelations>    myProductRelations;
+  NCollection_PagedArray<BRepGraphInc::OccurrenceRelations> myOccurrenceRelations;
 
   //! Sparse incoming compound child refs keyed by referenced node.
-  NCollection_DataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_ChildRefId>>
+  NCollection_PagedDataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_ChildRefId>>
     myNodeToCompounds;
 
   //! Sparse incoming product occurrence refs keyed by occurrence child node.
-  NCollection_DataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_OccurrenceRefId>>
+  NCollection_PagedDataMap<BRepGraph_NodeId, NCollection_LinearVector<BRepGraph_OccurrenceRefId>>
     myNodeToOccurrences;
 
   //! Representation-use store with removal tracking.
@@ -1787,16 +1820,18 @@ private:
   {
     using TypeId = typename UseT::TypeId;
 
-    NCollection_DynamicArray<UseT> Uses;
-    BRepGraphInc_BitFlags          RemovedFlags;
-    uint32_t                       NbActive = 0;
+    NCollection_PagedArray<UseT> Uses;
+    NCollection_BitDynamicArray  RemovedFlags;
+    uint32_t                     NbActive = 0;
 
     RepStore() = delete;
 
-    RepStore(const int theBlockSize, const occ::handle<NCollection_BaseAllocator>& theAlloc)
-        : Uses(theBlockSize, theAlloc)
+    explicit RepStore(const size_t thePageSize)
+        : Uses(thePageSize)
     {
     }
+
+    RepStore(const RepStore&) = default;
 
     uint32_t Nb() const { return static_cast<uint32_t>(Uses.Size()); }
 
@@ -1845,9 +1880,9 @@ private:
       return theId.IsValid(Nb()) && RemovedFlags.Test(theId.Index);
     }
 
-    void Clear(const bool theReleaseMemory = false)
+    void Clear()
     {
-      Uses.Clear(theReleaseMemory);
+      Uses.Clear();
       RemovedFlags.ClearAll();
       NbActive = 0;
     }
@@ -1875,20 +1910,21 @@ private:
   RepStore<BRepGraphInc::FaceTriangulationRep> myFaceTriangulations;
 
   //! UID reverse indexes: eagerly maintained on allocate/remove, rebuilt on compact/load.
-  mutable NCollection_FlatDataMap<BRepGraph_UID, BRepGraph_NodeId>   myUIDToNodeId;
-  mutable std::shared_mutex                                          myUIDToNodeIdMutex;
-  mutable NCollection_FlatDataMap<BRepGraph_RefUID, BRepGraph_RefId> myRefUIDToRefId;
-  mutable std::shared_mutex                                          myRefUIDToRefIdMutex;
-  mutable std::atomic<bool>                                          myUIDToNodeIdDirty{false};
-  mutable std::atomic<bool>                                          myRefUIDToRefIdDirty{false};
+  mutable NCollection_PagedDataMap<BRepGraph_UID, BRepGraph_NodeId>   myUIDToNodeId;
+  mutable std::shared_mutex                                           myUIDToNodeIdMutex;
+  mutable NCollection_PagedDataMap<BRepGraph_RefUID, BRepGraph_RefId> myRefUIDToRefId;
+  mutable std::shared_mutex                                           myRefUIDToRefIdMutex;
+  mutable std::atomic<bool>                                           myUIDToNodeIdDirty{false};
+  mutable std::atomic<bool>                                           myRefUIDToRefIdDirty{false};
 
   //! Bindings from reconstructed / source OCCT shapes back to backend ids.
-  NCollection_FlatDataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> myShapeToNodeId;
-  NCollection_FlatDataMap<BRepGraph_NodeId, TopoDS_Shape>                          myOriginalShapes;
-  mutable std::shared_mutex myShapeBindingsMutex;
+  NCollection_PagedDataMap<TopoDS_Shape, BRepGraph_NodeId, TopTools_ShapeMapHasher> myShapeToNodeId;
+  NCollection_PagedDataMap<BRepGraph_NodeId, TopoDS_Shape> myOriginalShapes;
+  mutable std::shared_mutex                                myShapeBindingsMutex;
 
   //! Persistent backend identity state.
   std::atomic<uint32_t> myGeneration{0};
+  Standard_GUID         myRuntimeIdentity;
   Standard_GUID         myGraphGUID;
 
   //! Transient mutation-control state used by EditorView invalidation paths.

@@ -111,7 +111,7 @@ int BinTools_LocationSet::Add(const TopLoc_Location& L)
 
 const TopLoc_Location& BinTools_LocationSet::Location(const int I) const
 {
-  static TopLoc_Location identity;
+  static const TopLoc_Location identity;
   if (I == 0)
   {
     return identity;

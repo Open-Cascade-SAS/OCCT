@@ -81,28 +81,42 @@ public:
   using const_pointer   = const TheKeyType*;
 
 private:
+  //! Raw storage for a key which is constructed only when its slot is used.
+  template <typename TheType>
+  struct UninitializedStorage
+  {
+    struct Empty
+    {
+    };
+
+    union {
+      alignas(TheType) char myData[sizeof(TheType)];
+      Empty myEmpty;
+    };
+
+    UninitializedStorage() noexcept
+        : myEmpty()
+    {
+    }
+  };
+
   //! Internal slot structure holding key and metadata.
   //! Key storage is uninitialized until state becomes Used.
   struct Slot
   {
-    alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)]; //!< Uninitialized key storage
-    size_t myHash;                                             //!< Cached hash code
-    //! Distance from ideal bucket plus one; 0 means Empty, otherwise Used.
-    size_t myProbeDistancePlus1;
+    using KeyStorage = UninitializedStorage<TheKeyType>;
 
-    Slot() noexcept
-        : myHash(0),
-          myProbeDistancePlus1(0)
-    {
-      // Key is NOT constructed - myKeyStorage is uninitialized
-    }
+    KeyStorage myKeyStorage; //!< Uninitialized key storage
+    size_t     myHash = 0;   //!< Cached hash code
+    //! Distance from ideal bucket plus one; 0 means Empty, otherwise Used.
+    size_t myProbeDistancePlus1 = 0;
 
     //! Access the key (only valid when IsUsed() == true)
-    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
+    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage.myData); }
 
     const TheKeyType& Key() const noexcept
     {
-      return *reinterpret_cast<const TheKeyType*>(myKeyStorage);
+      return *reinterpret_cast<const TheKeyType*>(myKeyStorage.myData);
     }
 
     bool IsEmpty() const noexcept { return myProbeDistancePlus1 == 0; }

@@ -555,7 +555,8 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
     BB.MakeSolid(so);
     BB.Add(sh, FS);
     BB.Add(so, sh);
-    TopOpeBRepTool_ShapeClassifier& PSC = FSC_GetPSC(so);
+    TopOpeBRepTool_ShapeClassifier PSC;
+    PSC.SetReference(so);
     PSC.StateP3DReference(Pb);
     TopAbs_State stateb = PSC.State();
     PSC.StateP3DReference(Pa);

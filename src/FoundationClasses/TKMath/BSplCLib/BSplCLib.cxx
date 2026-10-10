@@ -35,6 +35,7 @@
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_DomainError.hxx>
 #include <BSplCLib_CurveComputation.pxx>
 #include <math_Vector.hxx>
 
@@ -44,6 +45,18 @@ typedef gp_Pnt                     Pnt;
 typedef gp_Vec                     Vec;
 typedef NCollection_Array1<double> Array1OfReal;
 typedef NCollection_Array1<int>    Array1OfInteger;
+
+//! Corrects tolerance-based location to the actual flat-knot span.
+static void locateFlatSpan(const Array1OfReal& theKnots,
+                           const int           theFirst,
+                           int&                theKnotIndex,
+                           const double        theParameter)
+{
+  while (theKnotIndex > theFirst && theParameter < theKnots.Value(theKnotIndex))
+  {
+    --theKnotIndex;
+  }
+}
 
 //=======================================================================
 // class : BSplCLib_LocalMatrix
@@ -182,6 +195,7 @@ void BSplCLib::LocateParameter(const int, // Degree,
     ul = Knots(Knots.Upper());
   }
   BSplCLib::LocateParameter(Knots, U, IsPeriodic, FromK1, ToK2, KnotIndex, NewU, uf, ul);
+  locateFlatSpan(Knots, std::min(FromK1, ToK2), KnotIndex, NewU);
 }
 
 //=================================================================================================
@@ -211,6 +225,8 @@ void BSplCLib::LocateParameter(const int           Degree,
   {
     BSplCLib::LocateParameter(Knots, U, IsPeriodic, FromK1, ToK2, KnotIndex, NewU, 0., 1.);
   }
+
+  locateFlatSpan(Knots, std::min(FromK1, ToK2), KnotIndex, NewU);
 }
 
 //=================================================================================================
@@ -360,6 +376,11 @@ void BSplCLib::LocateParameter(const int                         Degree,
   else
   {
     NewU = U;
+  }
+
+  if (Mults == nullptr)
+  {
+    locateFlatSpan(Knots, first, KnotIndex, NewU);
   }
 }
 
@@ -868,139 +889,67 @@ void BSplCLib::Eval(const double U,
                     const int    Dimension,
                     double&      Poles)
 {
-  int    step, i, Dms, Dm1, Dpi, Sti;
-  double X, Y, *poles, *knots = &Knots;
-  Dm1 = Dms = Degree;
-  Dm1--;
-  Dms++;
-  switch (Dimension)
+  // Keep the common coordinate outside the recursion. Rounding each level
+  // at that coordinate's magnitude can erase valid control-polygon variation.
+  NCollection_LocalArray<double, 16> anOrigin(Dimension);
+  const size_t                       aDimension = static_cast<size_t>(Dimension);
+  for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
   {
-
-    case 1: {
-
-      for (step = -1; step < Dm1; step++)
+    anOrigin[aCoordinate] = (&Poles)[aCoordinate];
+    // Sterbenz's lemma makes these differences exact for like-signed poles
+    // within a factor of two. Otherwise keep the original coordinates: an
+    // inexact difference can lose a small endpoint or overflow.
+    for (size_t aPole = 1; anOrigin[aCoordinate] != 0.0 && aPole <= static_cast<size_t>(Degree);
+         ++aPole)
+    {
+      const double aRatio = (&Poles)[aPole * aDimension + aCoordinate] / anOrigin[aCoordinate];
+      if (aRatio < 0.5 || aRatio > 2.0)
       {
-        Dms--;
-        poles = &Poles;
-        Dpi   = Dm1;
-        Sti   = step;
-
-        for (i = 0; i < Dms; i++)
-        {
-          Dpi++;
-          Sti++;
-          X = (knots[Dpi] - U) / (knots[Dpi] - knots[Sti]);
-          Y = 1 - X;
-          poles[0] *= X;
-          poles[0] += Y * poles[1];
-          poles += 1;
-        }
+        anOrigin[aCoordinate] = 0.0;
+        break;
       }
-      break;
     }
-    case 2: {
-
-      for (step = -1; step < Dm1; step++)
-      {
-        Dms--;
-        poles = &Poles;
-        Dpi   = Dm1;
-        Sti   = step;
-
-        for (i = 0; i < Dms; i++)
-        {
-          Dpi++;
-          Sti++;
-          X = (knots[Dpi] - U) / (knots[Dpi] - knots[Sti]);
-          Y = 1 - X;
-          poles[0] *= X;
-          poles[0] += Y * poles[2];
-          poles[1] *= X;
-          poles[1] += Y * poles[3];
-          poles += 2;
-        }
-      }
-      break;
+    for (size_t aPole = 0; aPole <= static_cast<size_t>(Degree); ++aPole)
+    {
+      (&Poles)[aPole * aDimension + aCoordinate] -= anOrigin[aCoordinate];
     }
-    case 3: {
-
-      for (step = -1; step < Dm1; step++)
+  }
+  const double* aKnots = &Knots;
+  for (int aLevel = 0; aLevel < Degree; ++aLevel)
+  {
+    double* aPoles = &Poles;
+    for (int aPole = 0; aPole < Degree - aLevel; ++aPole)
+    {
+      const double aKnotDistance = aKnots[Degree + aPole] - aKnots[aLevel + aPole];
+      const double aLeftWeight   = (aKnots[Degree + aPole] - U) / aKnotDistance;
+      // Anchor interpolation at the nearer pole to retain constant coordinates
+      // and exact endpoints, including when the other pole is much larger.
+      const bool isRightNear = aLeftWeight <= 0.5;
+      // Compute the small weight from its own knot distance. Subtracting a
+      // weight rounded to one would discard a valid endpoint contribution.
+      const double aWeight =
+        isRightNear ? aLeftWeight : (U - aKnots[aLevel + aPole]) / aKnotDistance;
+      const double* aBase   = isRightNear ? aPoles + Dimension : aPoles;
+      const double* anOther = isRightNear ? aPoles : aPoles + Dimension;
+      for (int aCoordinate = 0; aCoordinate < Dimension; ++aCoordinate)
       {
-        Dms--;
-        poles = &Poles;
-        Dpi   = Dm1;
-        Sti   = step;
-
-        for (i = 0; i < Dms; i++)
-        {
-          Dpi++;
-          Sti++;
-          X = (knots[Dpi] - U) / (knots[Dpi] - knots[Sti]);
-          Y = 1 - X;
-          poles[0] *= X;
-          poles[0] += Y * poles[3];
-          poles[1] *= X;
-          poles[1] += Y * poles[4];
-          poles[2] *= X;
-          poles[2] += Y * poles[5];
-          poles += 3;
-        }
+        const double aBaseValue   = aBase[aCoordinate];
+        const double anOtherValue = anOther[aCoordinate];
+        // Opposite signs can overflow the difference despite a finite interpolation.
+        const bool hasOppositeSigns =
+          (aBaseValue < 0.0 && anOtherValue > 0.0) || (aBaseValue > 0.0 && anOtherValue < 0.0);
+        aPoles[aCoordinate] = hasOppositeSigns
+                                ? (1.0 - aWeight) * aBaseValue + aWeight * anOtherValue
+                                : std::fma(aWeight, anOtherValue - aBaseValue, aBaseValue);
       }
-      break;
+      aPoles += Dimension;
     }
-    case 4: {
-
-      for (step = -1; step < Dm1; step++)
-      {
-        Dms--;
-        poles = &Poles;
-        Dpi   = Dm1;
-        Sti   = step;
-
-        for (i = 0; i < Dms; i++)
-        {
-          Dpi++;
-          Sti++;
-          X = (knots[Dpi] - U) / (knots[Dpi] - knots[Sti]);
-          Y = 1 - X;
-          poles[0] *= X;
-          poles[0] += Y * poles[4];
-          poles[1] *= X;
-          poles[1] += Y * poles[5];
-          poles[2] *= X;
-          poles[2] += Y * poles[6];
-          poles[3] *= X;
-          poles[3] += Y * poles[7];
-          poles += 4;
-        }
-      }
-      break;
-    }
-    default: {
-      int k;
-
-      for (step = -1; step < Dm1; step++)
-      {
-        Dms--;
-        poles = &Poles;
-        Dpi   = Dm1;
-        Sti   = step;
-
-        for (i = 0; i < Dms; i++)
-        {
-          Dpi++;
-          Sti++;
-          X = (knots[Dpi] - U) / (knots[Dpi] - knots[Sti]);
-          Y = 1 - X;
-
-          for (k = 0; k < Dimension; k++)
-          {
-            poles[k] *= X;
-            poles[k] += Y * poles[k + Dimension];
-          }
-          poles += Dimension;
-        }
-      }
+  }
+  for (size_t aPole = 0; aPole <= static_cast<size_t>(Degree); ++aPole)
+  {
+    for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
+    {
+      (&Poles)[aPole * aDimension + aCoordinate] += anOrigin[aCoordinate];
     }
   }
 }
@@ -1201,351 +1150,40 @@ void BSplCLib::Bohm(const double U,
                     const int    Dimension,
                     double&      Poles)
 {
-  // First phase independent of U, compute the poles of the derivatives
-  int     i, j, iDim, min, Dmi, DDmi, jDmi, Degm1;
-  double *knot = &Knots, *pole, coef, *tbis, *psav, *psDD, *psDDmDim;
-  psav         = &Poles;
-  if (N < Degree)
+  if (Degree == 0)
   {
-    min = N;
+    return;
   }
-  else
+  const double* aKnots = &Knots;
+  if (aKnots[Degree] <= aKnots[Degree - 1])
   {
-    min = Degree;
+    throw Standard_DomainError("BSplCLib::Bohm: invalid local knot span");
   }
-  Degm1 = Degree - 1;
-  DDmi  = (Degree << 1) + 1;
-  switch (Dimension)
+  if (N == 0)
   {
-    case 1: {
-      psDD     = psav + Degree;
-      psDDmDim = psDD - 1;
-
-      for (i = 0; i < Degree; i++)
-      {
-        DDmi--;
-        pole = psDD;
-        tbis = psDDmDim;
-        jDmi = DDmi;
-
-        for (j = Degm1; j >= i; j--)
-        {
-          jDmi--;
-          *pole -= *tbis;
-          *pole = (knot[jDmi] == knot[j]) ? 0.0 : *pole / (knot[jDmi] - knot[j]);
-          pole--;
-          tbis--;
-        }
-      }
-      // Second phase, dependant of U
-      iDim = -1;
-
-      for (i = 0; i < Degree; i++)
-      {
-        iDim += 1;
-        pole = psav + iDim;
-        tbis = pole + 1;
-        coef = U - knot[i];
-
-        for (j = i; j >= 0; j--)
-        {
-          *pole += coef * (*tbis);
-          pole--;
-          tbis--;
-        }
-      }
-      // multiply by the degrees
-      coef = Degree;
-      Dmi  = Degree;
-      pole = psav + 1;
-
-      for (i = 1; i <= min; i++)
-      {
-        *pole *= coef;
-        pole++;
-        Dmi--;
-        coef *= Dmi;
-      }
-      break;
-    }
-    case 2: {
-      psDD     = psav + (Degree << 1);
-      psDDmDim = psDD - 2;
-
-      for (i = 0; i < Degree; i++)
-      {
-        DDmi--;
-        pole = psDD;
-        tbis = psDDmDim;
-        jDmi = DDmi;
-
-        for (j = Degm1; j >= i; j--)
-        {
-          jDmi--;
-          coef = (knot[jDmi] == knot[j]) ? 0.0 : 1. / (knot[jDmi] - knot[j]);
-          *pole -= *tbis;
-          *pole *= coef;
-          pole++;
-          tbis++;
-          *pole -= *tbis;
-          *pole *= coef;
-          pole -= 3;
-          tbis -= 3;
-        }
-      }
-      // Second phase, dependant of U
-      iDim = -2;
-
-      for (i = 0; i < Degree; i++)
-      {
-        iDim += 2;
-        pole = psav + iDim;
-        tbis = pole + 2;
-        coef = U - knot[i];
-
-        for (j = i; j >= 0; j--)
-        {
-          *pole += coef * (*tbis);
-          pole++;
-          tbis++;
-          *pole += coef * (*tbis);
-          pole -= 3;
-          tbis -= 3;
-        }
-      }
-      // multiply by the degrees
-      coef = Degree;
-      Dmi  = Degree;
-      pole = psav + 2;
-
-      for (i = 1; i <= min; i++)
-      {
-        *pole *= coef;
-        pole++;
-        *pole *= coef;
-        pole++;
-        Dmi--;
-        coef *= Dmi;
-      }
-      break;
-    }
-    case 3: {
-      psDD     = psav + (Degree << 1) + Degree;
-      psDDmDim = psDD - 3;
-
-      for (i = 0; i < Degree; i++)
-      {
-        DDmi--;
-        pole = psDD;
-        tbis = psDDmDim;
-        jDmi = DDmi;
-
-        for (j = Degm1; j >= i; j--)
-        {
-          jDmi--;
-          coef = (knot[jDmi] == knot[j]) ? 0.0 : 1. / (knot[jDmi] - knot[j]);
-          *pole -= *tbis;
-          *pole *= coef;
-          pole++;
-          tbis++;
-          *pole -= *tbis;
-          *pole *= coef;
-          pole++;
-          tbis++;
-          *pole -= *tbis;
-          *pole *= coef;
-          pole -= 5;
-          tbis -= 5;
-        }
-      }
-      // Second phase, dependant of U
-      iDim = -3;
-
-      for (i = 0; i < Degree; i++)
-      {
-        iDim += 3;
-        pole = psav + iDim;
-        tbis = pole + 3;
-        coef = U - knot[i];
-
-        for (j = i; j >= 0; j--)
-        {
-          *pole += coef * (*tbis);
-          pole++;
-          tbis++;
-          *pole += coef * (*tbis);
-          pole++;
-          tbis++;
-          *pole += coef * (*tbis);
-          pole -= 5;
-          tbis -= 5;
-        }
-      }
-      // multiply by the degrees
-      coef = Degree;
-      Dmi  = Degree;
-      pole = psav + 3;
-
-      for (i = 1; i <= min; i++)
-      {
-        *pole *= coef;
-        pole++;
-        *pole *= coef;
-        pole++;
-        *pole *= coef;
-        pole++;
-        Dmi--;
-        coef *= Dmi;
-      }
-      break;
-    }
-    case 4: {
-      psDD     = psav + (Degree << 2);
-      psDDmDim = psDD - 4;
-
-      for (i = 0; i < Degree; i++)
-      {
-        DDmi--;
-        pole = psDD;
-        tbis = psDDmDim;
-        jDmi = DDmi;
-
-        for (j = Degm1; j >= i; j--)
-        {
-          jDmi--;
-          coef = (knot[jDmi] == knot[j]) ? 0.0 : 1. / (knot[jDmi] - knot[j]);
-          *pole -= *tbis;
-          *pole *= coef;
-          pole++;
-          tbis++;
-          *pole -= *tbis;
-          *pole *= coef;
-          pole++;
-          tbis++;
-          *pole -= *tbis;
-          *pole *= coef;
-          pole++;
-          tbis++;
-          *pole -= *tbis;
-          *pole *= coef;
-          pole -= 7;
-          tbis -= 7;
-        }
-      }
-      // Second phase, dependant of U
-      iDim = -4;
-
-      for (i = 0; i < Degree; i++)
-      {
-        iDim += 4;
-        pole = psav + iDim;
-        tbis = pole + 4;
-        coef = U - knot[i];
-
-        for (j = i; j >= 0; j--)
-        {
-          *pole += coef * (*tbis);
-          pole++;
-          tbis++;
-          *pole += coef * (*tbis);
-          pole++;
-          tbis++;
-          *pole += coef * (*tbis);
-          pole++;
-          tbis++;
-          *pole += coef * (*tbis);
-          pole -= 7;
-          tbis -= 7;
-        }
-      }
-      // multiply by the degrees
-      coef = Degree;
-      Dmi  = Degree;
-      pole = psav + 4;
-
-      for (i = 1; i <= min; i++)
-      {
-        *pole *= coef;
-        pole++;
-        *pole *= coef;
-        pole++;
-        *pole *= coef;
-        pole++;
-        *pole *= coef;
-        pole++;
-        Dmi--;
-        coef *= Dmi;
-      }
-      break;
-    }
-    default: {
-      int k;
-      int Dim2 = Dimension << 1;
-      psDD     = psav + Degree * Dimension;
-      psDDmDim = psDD - Dimension;
-
-      for (i = 0; i < Degree; i++)
-      {
-        DDmi--;
-        pole = psDD;
-        tbis = psDDmDim;
-        jDmi = DDmi;
-
-        for (j = Degm1; j >= i; j--)
-        {
-          jDmi--;
-          coef = (knot[jDmi] == knot[j]) ? 0.0 : 1. / (knot[jDmi] - knot[j]);
-
-          for (k = 0; k < Dimension; k++)
-          {
-            *pole -= *tbis;
-            *pole *= coef;
-            pole++;
-            tbis++;
-          }
-          pole -= Dim2;
-          tbis -= Dim2;
-        }
-      }
-      // Second phase, dependant of U
-      iDim = -Dimension;
-
-      for (i = 0; i < Degree; i++)
-      {
-        iDim += Dimension;
-        pole = psav + iDim;
-        tbis = pole + Dimension;
-        coef = U - knot[i];
-
-        for (j = i; j >= 0; j--)
-        {
-
-          for (k = 0; k < Dimension; k++)
-          {
-            *pole += coef * (*tbis);
-            pole++;
-            tbis++;
-          }
-          pole -= Dim2;
-          tbis -= Dim2;
-        }
-      }
-      // multiply by the degrees
-      coef = Degree;
-      Dmi  = Degree;
-      pole = psav + Dimension;
-
-      for (i = 1; i <= min; i++)
-      {
-
-        for (k = 0; k < Dimension; k++)
-        {
-          *pole *= coef;
-          pole++;
-        }
-        Dmi--;
-        coef *= Dmi;
-      }
+    Eval(U, Degree, Knots, Dimension, Poles);
+    return;
+  }
+  // Evaluate each derivative control polygon by de Boor interpolation.
+  // This keeps point evaluation consistent and avoids polynomial reconstruction.
+  const int    aDerivativeOrder = std::min(N, Degree);
+  const size_t aNbCoordinates   = static_cast<size_t>(Degree + 1) * Dimension;
+  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aDerivativePoles(aNbCoordinates);
+  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aWorkPoles(aNbCoordinates);
+  NCollection_LocalArray<double, 2 * (MaxDegree() + 1)> aKnotData(2 * (Degree + 1));
+  aKnotData[0] = aKnots[0];
+  std::copy_n(aKnots, 2 * Degree, aKnotData + 1);
+  aKnotData[2 * Degree + 1] = aKnots[2 * Degree - 1];
+  std::copy_n(&Poles, aNbCoordinates, &aDerivativePoles[0]);
+  for (int aDerivative = 0; aDerivative <= aDerivativeOrder; ++aDerivative)
+  {
+    const int aDegree = Degree - aDerivative;
+    std::copy_n(&aDerivativePoles[0], static_cast<size_t>(aDegree + 1) * Dimension, &aWorkPoles[0]);
+    Eval(U, aDegree, aKnotData[aDerivative + 1], Dimension, aWorkPoles[0]);
+    std::copy_n(&aWorkPoles[0], Dimension, &Poles + aDerivative * Dimension);
+    if (aDerivative < aDerivativeOrder)
+    {
+      Derivative(aDegree, aKnotData[aDerivative], Dimension, aDegree + 1, 1, aDerivativePoles[0]);
     }
   }
 }

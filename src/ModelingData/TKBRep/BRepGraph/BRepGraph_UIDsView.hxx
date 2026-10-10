@@ -15,7 +15,7 @@
 #define _BRepGraph_UIDsView_HeaderFile
 
 #include <BRepGraph.hxx>
-#include <BRepGraph_VersionStamp.hxx>
+#include <BRepGraph_ItemStamp.hxx>
 
 class Standard_GUID;
 
@@ -86,38 +86,34 @@ public:
   //! @return reference to the graph identity GUID
   [[nodiscard]] Standard_EXPORT const Standard_GUID& GraphGUID() const;
 
-  //! Produce a version stamp for the given node.
+  //! Produce a item stamp for the given node.
   //! Combines the node's UID with its current OwnGen and graph Generation.
   //! @param[in] theNode node identifier
-  //! @return version stamp, or invalid stamp if theNode is invalid, removed, or out of bounds
-  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
-    StampOf(const BRepGraph_NodeId theNode) const;
+  //! @return item stamp, or invalid stamp if theNode is invalid, removed, or out of bounds
+  [[nodiscard]] Standard_EXPORT BRepGraph_ItemStamp StampOf(const BRepGraph_NodeId theNode) const;
 
-  //! Produce a version stamp for the given reference.
+  //! Produce a item stamp for the given reference.
   //! Combines the reference's RefUID with its current OwnGen and graph Generation.
   //! @param[in] theRefId reference identifier
-  //! @return version stamp, or invalid stamp if theRefId is invalid, removed, or out of bounds
-  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
-    StampOf(const BRepGraph_RefId theRefId) const;
+  //! @return item stamp, or invalid stamp if theRefId is invalid, removed, or out of bounds
+  [[nodiscard]] Standard_EXPORT BRepGraph_ItemStamp StampOf(const BRepGraph_RefId theRefId) const;
 
-  //! Produce a version stamp for an owner-scoped use record.
+  //! Produce a item stamp for an owner-scoped use record.
   //! Use records have no durable UID or mutation generation; the stamp uses the owning
   //! definition-node UID, OwnGen, and graph Generation.
   //! @param[in] theRepId use-record identifier
-  //! @return version stamp, or invalid stamp if theRepId is invalid, removed, or out of bounds
-  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
-    StampOf(const BRepGraph_RepId theRepId) const;
+  //! @return item stamp, or invalid stamp if theRepId is invalid, removed, or out of bounds
+  [[nodiscard]] Standard_EXPORT BRepGraph_ItemStamp StampOf(const BRepGraph_RepId theRepId) const;
 
-  //! Produce a version stamp for the given definition-node or reference-entry item.
-  [[nodiscard]] Standard_EXPORT BRepGraph_VersionStamp
-    StampOf(const BRepGraph_ItemId theItem) const;
+  //! Produce a item stamp for the given definition-node or reference-entry item.
+  [[nodiscard]] Standard_EXPORT BRepGraph_ItemStamp StampOf(const BRepGraph_ItemId theItem) const;
 
   //! Check if a previously-taken stamp is stale.
   //! A stamp is stale when the stamped item has been mutated,
   //! removed, or the graph was rebuilt since the stamp was taken.
-  //! @param[in] theStamp version stamp to check
-  //! @return true if the stamp no longer matches the current graph state
-  [[nodiscard]] Standard_EXPORT bool IsStale(const BRepGraph_VersionStamp& theStamp) const;
+  //! @param[in] theStamp item stamp to check
+  //! @return true if the stamp no longer matches the current graph data
+  [[nodiscard]] Standard_EXPORT bool IsStale(const BRepGraph_ItemStamp& theStamp) const;
 
 private:
   friend class BRepGraph;

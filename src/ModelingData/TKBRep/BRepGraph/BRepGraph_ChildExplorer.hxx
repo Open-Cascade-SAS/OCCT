@@ -121,7 +121,7 @@ public:
   //! @param[in] theMode  traversal strategy (recursive or direct children)
   Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
                                           const BRepGraph_NodeId theRoot,
-                                          TraversalMode          theMode);
+                                          const TraversalMode    theMode);
 
   //! Explore descendants while pruning branches at the avoid kind.
   //! @param[in] theGraph        graph to walk
@@ -132,26 +132,26 @@ public:
   Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&                             theGraph,
                                           const BRepGraph_NodeId                       theRoot,
                                           const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
-                                          bool          theEmitAvoidKind,
-                                          TraversalMode theMode = TraversalMode::Recursive);
+                                          const bool          theEmitAvoidKind,
+                                          const TraversalMode theMode = TraversalMode::Recursive);
 
   //! Explore only descendants of the given target kind.
   //! @param[in] theGraph     graph to walk
   //! @param[in] theRoot      root node where the walk begins
   //! @param[in] theTargetKind kind of nodes to emit
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
-                                          const BRepGraph_NodeId theRoot,
-                                          BRepGraph_NodeId::Kind theTargetKind);
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&             theGraph,
+                                          const BRepGraph_NodeId       theRoot,
+                                          const BRepGraph_NodeId::Kind theTargetKind);
 
   //! Explore only descendants of the given target kind using the given traversal mode.
   //! @param[in] theGraph     graph to walk
   //! @param[in] theRoot      root node where the walk begins
   //! @param[in] theTargetKind kind of nodes to emit
   //! @param[in] theMode      traversal strategy
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
-                                          const BRepGraph_NodeId theRoot,
-                                          BRepGraph_NodeId::Kind theTargetKind,
-                                          TraversalMode          theMode);
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&             theGraph,
+                                          const BRepGraph_NodeId       theRoot,
+                                          const BRepGraph_NodeId::Kind theTargetKind,
+                                          const TraversalMode          theMode);
 
   //! Explore descendants of the given target kind while pruning branches at the avoid kind.
   //! @param[in] theGraph        graph to walk
@@ -160,23 +160,23 @@ public:
   //! @param[in] theAvoidKind    node kind to avoid descending into
   //! @param[in] theEmitAvoidKind if true, emit matching avoid-kind nodes once before skipping
   //! @param[in] theMode         traversal strategy
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
-                                          const BRepGraph_NodeId theRoot,
-                                          BRepGraph_NodeId::Kind theTargetKind,
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&             theGraph,
+                                          const BRepGraph_NodeId       theRoot,
+                                          const BRepGraph_NodeId::Kind theTargetKind,
                                           const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
-                                          bool          theEmitAvoidKind,
-                                          TraversalMode theMode = TraversalMode::Recursive);
+                                          const bool          theEmitAvoidKind,
+                                          const TraversalMode theMode = TraversalMode::Recursive);
 
   //! Explore only descendants of the given target kind starting from a product.
   //! @param[in] theGraph     graph to walk
   //! @param[in] theProduct   product whose occurrences and topology are explored
   //! @param[in] theTargetKind kind of nodes to emit
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&          theGraph,
-                                          const BRepGraph_ProductId theProduct,
-                                          BRepGraph_NodeId::Kind    theTargetKind);
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&             theGraph,
+                                          const BRepGraph_ProductId    theProduct,
+                                          const BRepGraph_NodeId::Kind theTargetKind);
 
   //! Disambiguates non-product typed ids from the ProductId-specific overload
-  //! family above and keeps them on the generic NodeId traversal path.
+  //! type above and keeps them on the generic NodeId traversal path.
   //! @param[in] theGraph     graph to walk
   //! @param[in] theRoot      typed root node where the walk begins
   //! @param[in] theTargetKind kind of nodes to emit
@@ -184,7 +184,7 @@ public:
             typename std::enable_if_t<TheKind != BRepGraph_NodeId::Kind::Product, int> = 0>
   BRepGraph_ChildExplorer(const BRepGraph&                       theGraph,
                           const BRepGraph_NodeId::Typed<TheKind> theRoot,
-                          BRepGraph_NodeId::Kind                 theTargetKind)
+                          const BRepGraph_NodeId::Kind           theTargetKind)
       : BRepGraph_ChildExplorer(theGraph, BRepGraph_NodeId(theRoot), theTargetKind)
   {
   }
@@ -195,13 +195,13 @@ public:
   //! @param[in] theProduct   product whose occurrences and topology are explored
   //! @param[in] theTargetKind kind of nodes to emit
   //! @param[in] theMode      traversal strategy
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&          theGraph,
-                                          const BRepGraph_ProductId theProduct,
-                                          BRepGraph_NodeId::Kind    theTargetKind,
-                                          TraversalMode             theMode);
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&             theGraph,
+                                          const BRepGraph_ProductId    theProduct,
+                                          const BRepGraph_NodeId::Kind theTargetKind,
+                                          const TraversalMode          theMode);
 
   //! Disambiguates non-product typed ids from the ProductId-specific overload
-  //! family above and keeps them on the generic NodeId traversal path.
+  //! type above and keeps them on the generic NodeId traversal path.
   //! @param[in] theGraph     graph to walk
   //! @param[in] theRoot      typed root node where the walk begins
   //! @param[in] theTargetKind kind of nodes to emit
@@ -210,8 +210,8 @@ public:
             typename std::enable_if_t<TheKind != BRepGraph_NodeId::Kind::Product, int> = 0>
   BRepGraph_ChildExplorer(const BRepGraph&                       theGraph,
                           const BRepGraph_NodeId::Typed<TheKind> theRoot,
-                          BRepGraph_NodeId::Kind                 theTargetKind,
-                          TraversalMode                          theMode)
+                          const BRepGraph_NodeId::Kind           theTargetKind,
+                          const TraversalMode                    theMode)
       : BRepGraph_ChildExplorer(theGraph, BRepGraph_NodeId(theRoot), theTargetKind, theMode)
   {
   }
@@ -223,12 +223,12 @@ public:
   //! @param[in] theCumLoc    if true, accumulate location down the walk
   //! @param[in] theCumOri    if true, accumulate orientation down the walk
   //! @param[in] theMode      traversal strategy
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
-                                          const BRepGraph_NodeId theRoot,
-                                          BRepGraph_NodeId::Kind theTargetKind,
-                                          bool                   theCumLoc,
-                                          bool                   theCumOri,
-                                          TraversalMode theMode = TraversalMode::Recursive);
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&             theGraph,
+                                          const BRepGraph_NodeId       theRoot,
+                                          const BRepGraph_NodeId::Kind theTargetKind,
+                                          const bool                   theCumLoc,
+                                          const bool                   theCumOri,
+                                          const TraversalMode theMode = TraversalMode::Recursive);
 
   //! Explore only descendants of the given target kind starting from a product,
   //! with explicit location/orientation control.
@@ -238,15 +238,15 @@ public:
   //! @param[in] theCumLoc    if true, accumulate location down the walk
   //! @param[in] theCumOri    if true, accumulate orientation down the walk
   //! @param[in] theMode      traversal strategy
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&          theGraph,
-                                          const BRepGraph_ProductId theProduct,
-                                          BRepGraph_NodeId::Kind    theTargetKind,
-                                          bool                      theCumLoc,
-                                          bool                      theCumOri,
-                                          TraversalMode theMode = TraversalMode::Recursive);
+  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&             theGraph,
+                                          const BRepGraph_ProductId    theProduct,
+                                          const BRepGraph_NodeId::Kind theTargetKind,
+                                          const bool                   theCumLoc,
+                                          const bool                   theCumOri,
+                                          const TraversalMode theMode = TraversalMode::Recursive);
 
   //! Disambiguates non-product typed ids from the ProductId-specific overload
-  //! family above and keeps them on the generic NodeId traversal path.
+  //! type above and keeps them on the generic NodeId traversal path.
   //! @param[in] theGraph     graph to walk
   //! @param[in] theRoot      typed root node where the walk begins
   //! @param[in] theTargetKind kind of nodes to emit
@@ -257,10 +257,10 @@ public:
             typename std::enable_if_t<TheKind != BRepGraph_NodeId::Kind::Product, int> = 0>
   BRepGraph_ChildExplorer(const BRepGraph&                       theGraph,
                           const BRepGraph_NodeId::Typed<TheKind> theRoot,
-                          BRepGraph_NodeId::Kind                 theTargetKind,
-                          bool                                   theCumLoc,
-                          bool                                   theCumOri,
-                          TraversalMode                          theMode = TraversalMode::Recursive)
+                          const BRepGraph_NodeId::Kind           theTargetKind,
+                          const bool                             theCumLoc,
+                          const bool                             theCumOri,
+                          const TraversalMode                    theMode = TraversalMode::Recursive)
       : BRepGraph_ChildExplorer(theGraph,
                                 BRepGraph_NodeId(theRoot),
                                 theTargetKind,
@@ -277,12 +277,13 @@ public:
   //! @param[in] theStartLoc  initial accumulated location
   //! @param[in] theStartOri  initial accumulated orientation
   //! @param[in] theMode      traversal strategy
-  Standard_EXPORT BRepGraph_ChildExplorer(const BRepGraph&       theGraph,
-                                          const BRepGraph_NodeId theRoot,
-                                          BRepGraph_NodeId::Kind theTargetKind,
-                                          const TopLoc_Location& theStartLoc,
-                                          TopAbs_Orientation     theStartOri,
-                                          TraversalMode theMode = TraversalMode::DirectChildren);
+  Standard_EXPORT BRepGraph_ChildExplorer(
+    const BRepGraph&             theGraph,
+    const BRepGraph_NodeId       theRoot,
+    const BRepGraph_NodeId::Kind theTargetKind,
+    const TopLoc_Location&       theStartLoc,
+    const TopAbs_Orientation     theStartOri,
+    const TraversalMode          theMode = TraversalMode::DirectChildren);
 
   //! Returns the traversal configuration this explorer was constructed with.
   //! Read-only - configuration is fixed for the lifetime of the explorer.
@@ -295,10 +296,16 @@ public:
   Standard_EXPORT void Next();
 
   //! Current matching descendant node with accumulated location and orientation.
-  [[nodiscard]] BRepGraphInc::NodeInstance Current() const
-  {
-    return {myCurrent, myLocation, myOrientation};
-  }
+  [[nodiscard]] Standard_EXPORT BRepGraphInc::NodeInstance Current() const;
+
+  //! Current matching definition without copying accumulated placement state.
+  [[nodiscard]] BRepGraph_NodeId CurrentNode() const noexcept { return myCurrent; }
+
+  //! Current accumulated location. The reference remains valid until Next().
+  [[nodiscard]] Standard_EXPORT const TopLoc_Location& CurrentLocation() const;
+
+  //! Current accumulated orientation.
+  [[nodiscard]] Standard_EXPORT TopAbs_Orientation CurrentOrientation() const;
 
   //! Returns the immediate parent of Current() in the explored path.
   //! Returns invalid NodeId when Current() is the root/self match.
@@ -312,6 +319,10 @@ public:
   //! links without a dedicated ref entry such as CoEdge->Edge,
   //! Occurrence->Product/topology-root.
   [[nodiscard]] Standard_EXPORT BRepGraph_RefId CurrentRef() const;
+
+  //! Returns the parent-local child step index already stored by the traversal.
+  //! The root/self match returns THE_INVALID_STEP_INDEX.
+  [[nodiscard]] Standard_EXPORT uint32_t CurrentStepIndex() const;
 
   //! Returns the explicit concrete traversal path from the explorer root to Current().
   [[nodiscard]] Standard_EXPORT BRepGraph_UsagePath CurrentUsagePath() const;
@@ -328,19 +339,25 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeOf(const BRepGraph_NodeId::Kind theKind) const;
 
   //! Returns the accumulated location at the given stack level.
-  //! @param[in] theLevel zero-based stack depth (0 = root)
+  //! @param[in] theLevel zero-based path depth (0 = root)
   //! @return accumulated location at the specified level
-  [[nodiscard]] Standard_EXPORT TopLoc_Location LocationAt(const int theLevel) const;
+  [[nodiscard]] Standard_EXPORT TopLoc_Location LocationAt(const size_t theLevel) const;
 
   //! Returns the node id at the given stack level.
-  //! @param[in] theLevel zero-based stack depth (0 = root)
+  //! @param[in] theLevel zero-based path depth (0 = root)
   //! @return node id at the specified level
-  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeAt(const int theLevel) const;
+  [[nodiscard]] Standard_EXPORT BRepGraph_NodeId NodeAt(const size_t theLevel) const;
 
-  //! Number of valid ancestor frames currently on the stack (excluding the
-  //! sentinel below the root). O(1); avoids the O(depth^2) NodeAt(i) walk used
-  //! to compute container priority in selection-mode building.
-  [[nodiscard]] int Depth() const noexcept { return myStackTop < 0 ? 0 : myStackTop + 1; }
+  //! Returns the parent-owned reference at the given traversal step.
+  //! @param[in] theLevel zero-based path depth (0 = root)
+  //! @return reference at the specified level, or invalid for a structural step
+  [[nodiscard]] Standard_EXPORT BRepGraph_RefId RefAt(const size_t theLevel) const;
+
+  //! Number of valid frames in the current path, including the root.
+  [[nodiscard]] size_t Depth() const noexcept
+  {
+    return myHasMore && myCurrentFrame >= 0 ? static_cast<size_t>(myCurrentFrame + 1) : 0;
+  }
 
   //! Returns an STL-compatible iterator for range-based for loops.
   NCollection_ForwardRangeIterator<BRepGraph_ChildExplorer> begin()
@@ -356,24 +373,25 @@ private:
   {
     BRepGraph_NodeId   Node;
     uint32_t           NextChildIdx   = 0;
-    int                StepFromParent = -1;
+    uint32_t           StepFromParent = BRepGraph_UsagePath::Step::THE_INVALID_STEP_INDEX;
     BRepGraph_RefId    Ref; //!< RefId resolved at push time (O(1) in CurrentRef)
-    TopLoc_Location    AccLocation;
+    int                LocationIndex  = -1;
+    bool               OwnsLocation   = false;
     TopAbs_Orientation AccOrientation = TopAbs_FORWARD;
   };
 
   Standard_EXPORT void advance();
 
-  void startTraversal(const TopLoc_Location& theStartLoc, TopAbs_Orientation theStartOri);
+  void startTraversal(const TopLoc_Location& theStartLoc, const TopAbs_Orientation theStartOri);
 
   static std::optional<BRepGraph_NodeId::Kind> normalizeAvoidKind(
     const std::optional<BRepGraph_NodeId::Kind>& theAvoidKind,
     const std::optional<BRepGraph_NodeId::Kind>& theTargetKind);
 
-  static bool canContainTarget(BRepGraph_NodeId::Kind theParentKind,
-                               BRepGraph_NodeId::Kind theTargetKind);
+  static bool canContainTarget(const BRepGraph_NodeId::Kind theParentKind,
+                               const BRepGraph_NodeId::Kind theTargetKind);
 
-  static bool canHaveChildren(BRepGraph_NodeId::Kind theNodeKind);
+  static bool canHaveChildren(const BRepGraph_NodeId::Kind theNodeKind);
 
   void setCurrentFromFrame(const int theFrameIndex);
 
@@ -397,28 +415,45 @@ private:
     return myConfig.EmitAvoidKind ? (isFind || isAvoid) : (isFind && !isAvoid);
   }
 
-  void pushFrame(const StackFrame& theFrame);
+  bool pushFrame(StackFrame&& theFrame);
+
+  bool pushChildFrame(const BRepGraph_NodeId   theNode,
+                      const uint32_t           theStepIndex,
+                      const BRepGraph_RefId    theRef,
+                      const TopLoc_Location&   theLocalLocation,
+                      const TopAbs_Orientation theOrientation);
 
   void popFrame();
+
+  int pushLocation(TopLoc_Location theLocation);
+
+  [[nodiscard]] const TopLoc_Location& frameLocation(const StackFrame& theFrame) const
+  {
+    static const TopLoc_Location THE_IDENTITY;
+    return theFrame.LocationIndex >= 0 ? myLocations[theFrame.LocationIndex] : THE_IDENTITY;
+  }
 
   StackFrame& topFrame() { return myStack[myStackTop]; }
 
   const StackFrame& topFrame() const { return myStack[myStackTop]; }
 
   static constexpr int THE_INLINE_STACK_SIZE = 16;
+  //! Inline fast path; deeper non-identity ChildRef/OccurrenceRef chains grow dynamically.
+  static constexpr int THE_INLINE_LOCATION_SIZE = 2;
 
   const BRepGraph* myGraph = nullptr;
   BRepGraph_NodeId myRoot;
   Config           myConfig; //!< Traversal configuration - single source of truth.
 
-  NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE> myStack;
-  int                                                       myStackTop     = -1;
-  int                                                       myCurrentFrame = -1;
+  NCollection_LocalArray<StackFrame, THE_INLINE_STACK_SIZE>         myStack;
+  NCollection_LocalArray<TopLoc_Location, THE_INLINE_LOCATION_SIZE> myLocations;
+  int                                                               myStackTop     = -1;
+  int                                                               myLocationTop  = -1;
+  int                                                               myCurrentFrame = -1;
+  uint32_t                                                          myMaxDepth     = 0;
 
-  BRepGraph_NodeId   myCurrent;
-  TopLoc_Location    myLocation;
-  TopAbs_Orientation myOrientation = TopAbs_FORWARD;
-  bool               myHasMore     = false;
+  BRepGraph_NodeId myCurrent;
+  bool             myHasMore = false;
 };
 
 #endif // _BRepGraph_ChildExplorer_HeaderFile

@@ -100,18 +100,7 @@
 #include <cstdio>
 // POP for NT
 #ifdef OCCT_DEBUG
-  #include <OSD_Chronometer.hxx>
 // #define DEB_VERB
-bool                   AffichInt2d = false;
-bool                   AffichOffC  = false;
-bool                   ChronBuild  = false;
-int                    NbAE        = 0;
-int                    NbAF        = 0;
-int                    NVP         = 0;
-int                    NVM         = 0;
-int                    NVN         = 0;
-static OSD_Chronometer Clock;
-char                   name[100];
 
 //=================================================================================================
 
@@ -1276,15 +1265,6 @@ void BRepOffset_MakeOffset::MakeOffsetFaces(
 
 void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theRange)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " CONSTRUCTION OF OFFSETS :" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
-
   Message_ProgressScope aPSOuter(theRange, "Connect offset faces by intersection", 100);
 
   // just for better management and visualization of the progress steps
@@ -1815,8 +1795,6 @@ void BRepOffset_MakeOffset::BuildOffsetByInter(const Message_ProgressRange& theR
 
 #ifdef OCCT_DEBUG
   DEBVerticesControl(COES, myAsDes);
-  if (ChronBuild)
-    Clock.Show();
 #endif
 }
 
@@ -1892,15 +1870,6 @@ void BRepOffset_MakeOffset::BuildFaceComp()
 
 void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRange)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " CONSTRUCTION OF OFFSETS :" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
-
   TopExp_Explorer                                        Exp;
   NCollection_List<TopoDS_Shape>::Iterator               itLF;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Done;
@@ -2142,11 +2111,6 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
       }
     }
   }
-
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-    Clock.Show();
-#endif
 }
 
 //=================================================================================================
@@ -2154,15 +2118,6 @@ void BRepOffset_MakeOffset::BuildOffsetByArc(const Message_ProgressRange& theRan
 void BRepOffset_MakeOffset::SelfInter(
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& /*Modif*/)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " AUTODEBOUCLAGE:" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
-
   throw Standard_NotImplemented();
 }
 
@@ -2322,7 +2277,7 @@ void BRepOffset_MakeOffset::ToContext(
     if (myInitOffsetEdge.IsImage(OE))
     {
       TopoDS_Shape E = myInitOffsetEdge.ImageFrom(OE);
-      Or             = myInitOffsetEdge.Image(E).First().Orientation();
+      Or             = myInitOffsetEdge.FirstImage(E).Orientation();
       if (NE.Orientation() == TopAbs_REVERSED)
       {
         NE.Orientation(TopAbs::Reverse(Or));
@@ -2855,14 +2810,6 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
 void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d&          Inter,
                                            const Message_ProgressRange& theRange)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " INTERSECTION 3D:" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
   Message_ProgressScope aPS(theRange, nullptr, (myFaces.Extent() && myJoin == GeomAbs_Arc) ? 2 : 1);
 
   // In the Complete Intersection mode, implemented currently for planar
@@ -2930,10 +2877,6 @@ void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d&          Inter,
       return;
     }
   }
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-    Clock.Show();
-#endif
 }
 
 //=================================================================================================
@@ -2943,14 +2886,6 @@ void BRepOffset_MakeOffset::Intersection2D(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& NewEdges,
   const Message_ProgressRange&                                         theRange)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " INTERSECTION 2D:" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
   //--------------------------------------------------------
   // calculate intersections2d on faces concerned by
   // intersection3d
@@ -2976,14 +2911,6 @@ void BRepOffset_MakeOffset::Intersection2D(
   //
   BRepOffset_Inter2d::FuseVertices(aDMVV, myAsDes, myImageVV);
   //
-#ifdef OCCT_DEBUG
-  if (AffichInt2d)
-  {
-    DEBVerticesControl(NewEdges, myAsDes);
-  }
-  if (ChronBuild)
-    Clock.Show();
-#endif
 }
 
 //=================================================================================================
@@ -2992,14 +2919,6 @@ void BRepOffset_MakeOffset::MakeLoops(
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif,
   const Message_ProgressRange&                                   theRange)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " DEBOUCLAGE 2D:" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
   // NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator    it(Modif);
   NCollection_List<TopoDS_Shape> LF, LC;
   //-----------------------------------------
@@ -3043,11 +2962,6 @@ void BRepOffset_MakeOffset::MakeLoops(
     InSide = false;
   }
   myMakeLoops.BuildOnContext(LC, myAnalyse, myAsDes, myImageOffset, InSide, aPS.Next(LC.Extent()));
-
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-    Clock.Show();
-#endif
 }
 
 //=======================================================================
@@ -3060,14 +2974,6 @@ void BRepOffset_MakeOffset::MakeFaces(
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& /*Modif*/,
   const Message_ProgressRange& theRange)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " RECONSTRUCTION OF FACES:" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
   NCollection_List<TopoDS_Shape>::Iterator itr;
   const NCollection_List<TopoDS_Shape>&    Roots = myInitOffsetFace.Roots();
   NCollection_List<TopoDS_Shape>           LOF;
@@ -3076,7 +2982,7 @@ void BRepOffset_MakeOffset::MakeFaces(
   //----------------------------------
   for (itr.Initialize(Roots); itr.More(); itr.Next())
   {
-    TopoDS_Face F = TopoDS::Face(myInitOffsetFace.Image(itr.Value()).First());
+    TopoDS_Face F = TopoDS::Face(myInitOffsetFace.FirstImage(itr.Value()));
     if (!myImageOffset.HasImage(F))
     {
       LOF.Append(F);
@@ -3097,10 +3003,6 @@ void BRepOffset_MakeOffset::MakeFaces(
     myError = BRepOffset_UserBreak;
     return;
   }
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-    Clock.Show();
-#endif
 }
 
 //=======================================================================
@@ -3690,14 +3592,6 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
 
 void BRepOffset_MakeOffset::MakeShells(const Message_ProgressRange& theRange)
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " RECONSTRUCTION OF SHELLS:" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
   //
   Message_ProgressScope aPS(theRange, "Making shells", 1);
   // Prepare list of splits of the offset faces to make the shells
@@ -3961,14 +3855,6 @@ const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& BRepOffset_
 
 void BRepOffset_MakeOffset::EncodeRegularity()
 {
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-  {
-    std::cout << " CODING OF REGULARITIES:" << std::endl;
-    Clock.Reset();
-    Clock.Start();
-  }
-#endif
 
   if (myOffsetShape.IsNull())
   {
@@ -4155,11 +4041,6 @@ void BRepOffset_MakeOffset::EncodeRegularity()
       }
     }
   }
-
-#ifdef OCCT_DEBUG
-  if (ChronBuild)
-    Clock.Show();
-#endif
 }
 
 //=================================================================================================

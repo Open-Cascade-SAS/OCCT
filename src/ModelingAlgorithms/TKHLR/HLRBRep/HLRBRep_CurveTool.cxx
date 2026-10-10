@@ -21,7 +21,7 @@
 int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C)
 {
   GeomAbs_CurveType typC     = ((HLRBRep_Curve*)C)->GetType();
-  static double     nbsOther = 10.0;
+  constexpr double  nbsOther = 10.0;
   double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
@@ -53,7 +53,7 @@ int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C)
 int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C, const double u1, const double u2)
 {
   GeomAbs_CurveType typC     = ((HLRBRep_Curve*)C)->GetType();
-  static double     nbsOther = 10.0;
+  constexpr double  nbsOther = 10.0;
   double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)

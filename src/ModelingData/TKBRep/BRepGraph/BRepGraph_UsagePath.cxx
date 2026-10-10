@@ -13,6 +13,8 @@
 
 #include <BRepGraph_UsagePath.hxx>
 
+#include <Standard_HashUtils.hxx>
+
 //=================================================================================================
 
 bool BRepGraph_UsagePath::IsEqual(const BRepGraph_UsagePath& theOther) const
@@ -35,27 +37,30 @@ bool BRepGraph_UsagePath::IsEqual(const BRepGraph_UsagePath& theOther) const
 
 size_t BRepGraph_UsagePath::HashCode() const
 {
-  const size_t aSize = Size();
+  const size_t aSize = mySteps.Size();
   if (aSize == 0)
   {
     return opencascade::hash(aSize);
   }
-  const Step& aFirst = First();
-  if (aSize == 1)
-  {
-    size_t aCombination[] = {opencascade::hash(aSize),
-                             opencascade::hash(aFirst.Node),
-                             opencascade::hash(aFirst.Ref),
-                             opencascade::hash(aFirst.StepIndex)};
-    return opencascade::hashBytes(aCombination, sizeof(aCombination));
-  }
-  const Step& aLast          = Last();
-  size_t      aCombination[] = {opencascade::hash(aSize),
-                                opencascade::hash(aFirst.Node),
-                                opencascade::hash(aFirst.Ref),
-                                opencascade::hash(aFirst.StepIndex),
-                                opencascade::hash(aLast.Node),
-                                opencascade::hash(aLast.Ref),
-                                opencascade::hash(aLast.StepIndex)};
-  return opencascade::hashBytes(aCombination, sizeof(aCombination));
+
+  const Step&  aFirst    = mySteps.First();
+  const Step&  aMiddle   = mySteps.Value(aSize / 2);
+  const Step&  aLast     = mySteps.Last();
+  const size_t aValues[] = {aSize,
+                            static_cast<size_t>(aFirst.Node.NodeKind),
+                            static_cast<size_t>(aFirst.Node.Index),
+                            static_cast<size_t>(aFirst.Ref.RefKind),
+                            static_cast<size_t>(aFirst.Ref.Index),
+                            static_cast<size_t>(aFirst.StepIndex),
+                            static_cast<size_t>(aMiddle.Node.NodeKind),
+                            static_cast<size_t>(aMiddle.Node.Index),
+                            static_cast<size_t>(aMiddle.Ref.RefKind),
+                            static_cast<size_t>(aMiddle.Ref.Index),
+                            static_cast<size_t>(aMiddle.StepIndex),
+                            static_cast<size_t>(aLast.Node.NodeKind),
+                            static_cast<size_t>(aLast.Node.Index),
+                            static_cast<size_t>(aLast.Ref.RefKind),
+                            static_cast<size_t>(aLast.Ref.Index),
+                            static_cast<size_t>(aLast.StepIndex)};
+  return opencascade::hashBytes(aValues, sizeof(aValues));
 }

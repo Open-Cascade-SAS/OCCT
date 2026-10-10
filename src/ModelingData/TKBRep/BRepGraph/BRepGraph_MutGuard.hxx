@@ -57,6 +57,8 @@ class BRepGraph_MutGuard
   using TypeId = typename T::TypeId;
 
   //! Call the appropriate notification method on the graph.
+  //! Notification is best-effort: guard destruction and noexcept move assignment must not
+  //! propagate failures after the guarded bit has been cleared.
   void notify() noexcept
   {
     try
@@ -72,6 +74,7 @@ class BRepGraph_MutGuard
     }
     catch (...)
     {
+      // Destruction and noexcept move assignment cannot surface notification failures safely.
     }
   }
 

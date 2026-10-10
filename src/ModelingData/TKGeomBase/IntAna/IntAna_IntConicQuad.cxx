@@ -41,8 +41,9 @@
 #include <IntAna_ResultType.hxx>
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
+#include <MathUtils_Core.hxx>
 
-static double PIpPI = M_PI + M_PI;
+constexpr double PIpPI = MathUtils::THE_2PI;
 
 //=============================================================================
 //==                                          E m p t y   C o n s t r u c t o r

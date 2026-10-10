@@ -172,7 +172,7 @@ void BRepGraph::EditorView::VertexOps::SetPoint(BRepGraph_MutGuard<BRepGraphInc:
 //=================================================================================================
 
 void BRepGraph::EditorView::EdgeOps::SetTolerance(const BRepGraph_EdgeId theEdge,
-                                                  double                 theTolerance)
+                                                  const double           theTolerance)
 {
   myGraph->Editor().requireUnlocked(theEdge, "BRepGraph::EditorView: locked item");
   myGraph->myData->myIncStorage.ChangeEdge(theEdge).Tolerance = theTolerance;
@@ -182,7 +182,7 @@ void BRepGraph::EditorView::EdgeOps::SetTolerance(const BRepGraph_EdgeId theEdge
 //=================================================================================================
 
 void BRepGraph::EditorView::EdgeOps::SetTolerance(BRepGraph_MutGuard<BRepGraphInc::EdgeDef>& theMut,
-                                                  double theTolerance)
+                                                  const double theTolerance)
 {
   theMut.Internal().Tolerance = theTolerance;
 }
@@ -190,8 +190,8 @@ void BRepGraph::EditorView::EdgeOps::SetTolerance(BRepGraph_MutGuard<BRepGraphIn
 //=================================================================================================
 
 void BRepGraph::EditorView::CoEdgeOps::SetParamRange(const BRepGraph_CoEdgeId theCoEdge,
-                                                     double                   theFirst,
-                                                     double                   theLast)
+                                                     const double             theFirst,
+                                                     const double             theLast)
 {
   myGraph->Editor().requireUnlocked(theCoEdge, "BRepGraph::EditorView: locked item");
   BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
@@ -209,8 +209,8 @@ void BRepGraph::EditorView::CoEdgeOps::SetParamRange(const BRepGraph_CoEdgeId th
 
 void BRepGraph::EditorView::CoEdgeOps::SetParamRange(
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-  double                                       theFirst,
-  double                                       theLast)
+  const double                                 theFirst,
+  const double                                 theLast)
 {
   BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
   BRepGraphInc::CoEdgeDef& aDef     = theMut.Internal();
@@ -225,7 +225,7 @@ void BRepGraph::EditorView::CoEdgeOps::SetParamRange(
 //=================================================================================================
 
 void BRepGraph::EditorView::FaceOps::SetTolerance(const BRepGraph_FaceId theFace,
-                                                  double                 theTolerance)
+                                                  const double           theTolerance)
 {
   myGraph->Editor().requireUnlocked(theFace, "BRepGraph::EditorView: locked item");
   myGraph->myData->myIncStorage.ChangeFace(theFace).Tolerance = theTolerance;
@@ -235,7 +235,7 @@ void BRepGraph::EditorView::FaceOps::SetTolerance(const BRepGraph_FaceId theFace
 //=================================================================================================
 
 void BRepGraph::EditorView::FaceOps::SetTolerance(BRepGraph_MutGuard<BRepGraphInc::FaceDef>& theMut,
-                                                  double theTolerance)
+                                                  const double theTolerance)
 {
   theMut.Internal().Tolerance = theTolerance;
 }
@@ -243,8 +243,8 @@ void BRepGraph::EditorView::FaceOps::SetTolerance(BRepGraph_MutGuard<BRepGraphIn
 //=================================================================================================
 
 void BRepGraph::EditorView::FaceOps::SetRefOrientation(
-  const BRepGraph_FaceRefId       theFaceRef,
-  BRepGraphInc::ParityOrientation theOrientation)
+  const BRepGraph_FaceRefId             theFaceRef,
+  const BRepGraphInc::ParityOrientation theOrientation)
 {
   myGraph->Editor().requireUnlocked(theFaceRef, "BRepGraph::EditorView: locked item");
   myGraph->myData->myIncStorage.ChangeFaceRef(theFaceRef).Orientation = theOrientation;
@@ -255,7 +255,7 @@ void BRepGraph::EditorView::FaceOps::SetRefOrientation(
 
 void BRepGraph::EditorView::FaceOps::SetRefOrientation(
   BRepGraph_MutGuard<BRepGraphInc::FaceRef>& theMut,
-  BRepGraphInc::ParityOrientation            theOrientation)
+  const BRepGraphInc::ParityOrientation      theOrientation)
 {
   theMut.Internal().Orientation = theOrientation;
 }
@@ -802,7 +802,8 @@ void BRepGraph::EditorView::CoEdgeOps::SetChildEdgeId(
 //=================================================================================================
 
 void BRepGraph::EditorView::CoEdgeOps::SetFaceId(const BRepGraph_CoEdgeId theCoEdge,
-                                                 const BRepGraph_FaceId   theFace)
+                                                 const BRepGraph_FaceId   theFace,
+                                                 const bool               theResetFaceScopedReps)
 {
   BRepGraphInc_Storage& aStorage = myGraph->myData->myIncStorage;
   myGraph->Editor().requireUnlocked(theCoEdge, "BRepGraph::EditorView: locked item");
@@ -812,13 +813,17 @@ void BRepGraph::EditorView::CoEdgeOps::SetFaceId(const BRepGraph_CoEdgeId theCoE
     return;
   }
   aDef.FaceId = theFace;
-  clearCoEdgeFaceScopedRepresentations(aStorage, aDef);
+  if (theResetFaceScopedReps)
+  {
+    clearCoEdgeFaceScopedRepresentations(aStorage, aDef);
+  }
   myGraph->markModified(theCoEdge);
 }
 
 void BRepGraph::EditorView::CoEdgeOps::SetFaceId(
   BRepGraph_MutGuard<BRepGraphInc::CoEdgeDef>& theMut,
-  const BRepGraph_FaceId                       theFace)
+  const BRepGraph_FaceId                       theFace,
+  const bool                                   theResetFaceScopedReps)
 {
   if (theMut->FaceId == theFace)
   {
@@ -827,7 +832,10 @@ void BRepGraph::EditorView::CoEdgeOps::SetFaceId(
   BRepGraphInc_Storage&    aStorage = myGraph->myData->myIncStorage;
   BRepGraphInc::CoEdgeDef& aCoEdge  = theMut.Internal();
   aCoEdge.FaceId                    = theFace;
-  clearCoEdgeFaceScopedRepresentations(aStorage, aCoEdge);
+  if (theResetFaceScopedReps)
+  {
+    clearCoEdgeFaceScopedRepresentations(aStorage, aCoEdge);
+  }
 }
 
 //=================================================================================================
@@ -1264,6 +1272,13 @@ void BRepGraph::EditorView::CoEdgeOps::SetPersistentPolygon2D(
 
 //=================================================================================================
 
+void BRepGraph::EditorView::CoEdgeOps::ClearPersistentPolygon2D(const BRepGraph_CoEdgeId theCoEdge)
+{
+  SetPersistentPolygon2D(theCoEdge, occ::handle<Poly_Polygon2D>());
+}
+
+//=================================================================================================
+
 void BRepGraph::EditorView::CoEdgeOps::SetPersistentPolygonOnTri(
   const BRepGraph_CoEdgeId                        theCoEdge,
   const occ::handle<Poly_PolygonOnTriangulation>& thePolygon)
@@ -1298,6 +1313,14 @@ void BRepGraph::EditorView::CoEdgeOps::SetPersistentPolygonOnTri(
   }
 
   myGraph->markModified(theCoEdge);
+}
+
+//=================================================================================================
+
+void BRepGraph::EditorView::CoEdgeOps::ClearPersistentPolygonOnTri(
+  const BRepGraph_CoEdgeId theCoEdge)
+{
+  SetPersistentPolygonOnTri(theCoEdge, occ::handle<Poly_PolygonOnTriangulation>());
 }
 
 //=================================================================================================

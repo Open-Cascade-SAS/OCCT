@@ -55,6 +55,8 @@ BlendFunc_ConstRad::BlendFunc_ConstRad(const occ::handle<Adaptor3d_Surface>& S1,
       ray2(0.0),
       choix(0),
       xval(1, 4),
+      invnormtg(0.0),
+      dinvnormtg(0.0),
       E(1, 4),
       DEDX(1, 4, 1, 4),
       DEDT(1, 4),
@@ -138,12 +140,7 @@ bool BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
                                        const bool         byParam,
                                        const double       Param)
 {
-  // Per-thread scratch, reused across calls via the t_OK / myX_OK guards below.
-  static thread_local gp_Vec d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
-  static thread_local gp_Vec d1gui, d2gui, d3gui;
-  static thread_local gp_Pnt ptgui;
-  static thread_local double invnormtg, dinvnormtg;
-  double                     T = Param, aux;
+  double T = Param, aux;
 
   // Case of implicite parameter
   if (!byParam)

@@ -625,7 +625,7 @@ public:
     //! Return true if the node id is valid and not soft-removed.
     [[nodiscard]] Standard_EXPORT bool IsActive(const BRepGraph_NodeId theNode) const;
 
-    //! Return true if the given node is invalid or has been soft-removed.
+    //! Return true if the node id is valid and has been soft-removed.
     //! @param[in] theNode node identifier
     [[nodiscard]] Standard_EXPORT bool IsRemoved(const BRepGraph_NodeId theNode) const;
 

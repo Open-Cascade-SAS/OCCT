@@ -646,7 +646,7 @@ void OpenGl_Text::drawRect(const occ::handle<OpenGl_Context>& theCtx,
   setupMatrix(theCtx, theTextAspect, NCollection_Vec3<float>(0.0f, 0.0f, 0.0f));
   myBndVertsVbo->BindAttribute(theCtx, Graphic3d_TOA_POS);
 
-  theCtx->core20fwd->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  theCtx->core11fwd->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   myBndVertsVbo->UnbindAttribute(theCtx, Graphic3d_TOA_POS);
   theCtx->BindProgram(aPrevProgram);

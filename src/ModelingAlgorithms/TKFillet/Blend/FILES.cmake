@@ -6,7 +6,6 @@ set(OCCT_Blend_FILES
   Blend_AppFunction.hxx
   Blend_CurvPointFuncInv.cxx
   Blend_CurvPointFuncInv.hxx
-  Blend_Debug.cxx
   Blend_DecrochStatus.hxx
   Blend_FuncInv.cxx
   Blend_FuncInv.hxx

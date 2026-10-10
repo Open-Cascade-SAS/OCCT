@@ -555,11 +555,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     }
     else if (aLeftY != 0.0 || aRightY != 0.0)
     {
-      double                  aRootValue         = 0.0;
-      const MathUtils::Status anEvaluationStatus = EvaluateValue(theFunc, aZeroX, aRootValue);
-      if (anEvaluationStatus != MathUtils::Status::OK)
+      double                  aRootValue            = 0.0;
+      const MathUtils::Status aZeroEvaluationStatus = EvaluateValue(theFunc, aZeroX, aRootValue);
+      if (aZeroEvaluationStatus != MathUtils::Status::OK)
       {
-        aResult.Status = anEvaluationStatus;
+        aResult.Status = aZeroEvaluationStatus;
         return aResult;
       }
       AddRoot(aResult, aEpsX, aZeroX, aRootValue);
@@ -629,11 +629,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
         if (!isRediscretize)
         {
           aProbeX = std::min(aUpper, aMidX + aDx);
-          const MathUtils::Status anEvaluationStatus =
+          const MathUtils::Status aPositiveRightProbeStatus =
             EvaluateShiftedValues(theFunc, aProbeX, theConfig.Offset, aProbeY, aProbeDy);
-          if (anEvaluationStatus != MathUtils::Status::OK)
+          if (aPositiveRightProbeStatus != MathUtils::Status::OK)
           {
-            aResult.Status = anEvaluationStatus;
+            aResult.Status = aPositiveRightProbeStatus;
             return aResult;
           }
 
@@ -675,11 +675,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
         if (!isRediscretize)
         {
           aProbeX = std::min(aUpper, aMidX + aDx);
-          const MathUtils::Status anEvaluationStatus =
+          const MathUtils::Status aNegativeRightProbeStatus =
             EvaluateShiftedValues(theFunc, aProbeX, theConfig.Offset, aProbeY, aProbeDy);
-          if (anEvaluationStatus != MathUtils::Status::OK)
+          if (aNegativeRightProbeStatus != MathUtils::Status::OK)
           {
-            aResult.Status = anEvaluationStatus;
+            aResult.Status = aNegativeRightProbeStatus;
             return aResult;
           }
 
@@ -734,11 +734,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
       if (aVal1 < theConfig.FTolerance)
       {
         hasRoot1 = true;
-        const MathUtils::Status anEvaluationStatus =
+        const MathUtils::Status aRootEvaluationStatus =
           EvaluateShiftedValues(theFunc, aRoot1, theConfig.Offset, aOriginalValue, aDer1);
-        if (anEvaluationStatus != MathUtils::Status::OK)
+        if (aRootEvaluationStatus != MathUtils::Status::OK)
         {
-          aResult.Status = anEvaluationStatus;
+          aResult.Status = aRootEvaluationStatus;
           return aResult;
         }
       }
@@ -790,11 +790,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
             (1.0 - MathUtils::THE_GOLDEN_SECTION) * aXProbe1 + MathUtils::THE_GOLDEN_SECTION * aX3;
           aF0 = aF1;
           aF1 = aF2;
-          const MathUtils::Status anEvaluationStatus =
+          const MathUtils::Status aMinimumProbeStatus =
             EvaluateShiftedValue(theFunc, aXProbe2, theConfig.Offset, aF2);
-          if (anEvaluationStatus != MathUtils::Status::OK)
+          if (aMinimumProbeStatus != MathUtils::Status::OK)
           {
-            aResult.Status = anEvaluationStatus;
+            aResult.Status = aMinimumProbeStatus;
             return aResult;
           }
         }
@@ -806,11 +806,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
             (1.0 - MathUtils::THE_GOLDEN_SECTION) * aXProbe2 + MathUtils::THE_GOLDEN_SECTION * aX0;
           aF3 = aF2;
           aF2 = aF1;
-          const MathUtils::Status anEvaluationStatus =
+          const MathUtils::Status aMaximumProbeStatus =
             EvaluateShiftedValue(theFunc, aXProbe1, theConfig.Offset, aF1);
-          if (anEvaluationStatus != MathUtils::Status::OK)
+          if (aMaximumProbeStatus != MathUtils::Status::OK)
           {
-            aResult.Status = anEvaluationStatus;
+            aResult.Status = aMaximumProbeStatus;
             return aResult;
           }
         }
@@ -825,11 +825,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
             (1.0 - MathUtils::THE_GOLDEN_SECTION) * aXProbe1 + MathUtils::THE_GOLDEN_SECTION * aX3;
           aF0 = aF1;
           aF1 = aF2;
-          const MathUtils::Status anEvaluationStatus =
+          const MathUtils::Status aMinimumProbeStatus =
             EvaluateShiftedValue(theFunc, aXProbe2, theConfig.Offset, aF2);
-          if (anEvaluationStatus != MathUtils::Status::OK)
+          if (aMinimumProbeStatus != MathUtils::Status::OK)
           {
-            aResult.Status = anEvaluationStatus;
+            aResult.Status = aMinimumProbeStatus;
             return aResult;
           }
         }
@@ -841,11 +841,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
             (1.0 - MathUtils::THE_GOLDEN_SECTION) * aXProbe2 + MathUtils::THE_GOLDEN_SECTION * aX0;
           aF3 = aF2;
           aF2 = aF1;
-          const MathUtils::Status anEvaluationStatus =
+          const MathUtils::Status aMaximumProbeStatus =
             EvaluateShiftedValue(theFunc, aXProbe1, theConfig.Offset, aF1);
-          if (anEvaluationStatus != MathUtils::Status::OK)
+          if (aMaximumProbeStatus != MathUtils::Status::OK)
           {
-            aResult.Status = anEvaluationStatus;
+            aResult.Status = aMaximumProbeStatus;
             return aResult;
           }
         }
@@ -912,22 +912,24 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     {
       if (aVal2 - aVal1 > theConfig.FTolerance)
       {
-        double                  aRootValue         = 0.0;
-        const MathUtils::Status anEvaluationStatus = EvaluateValue(theFunc, aRoot1, aRootValue);
-        if (anEvaluationStatus != MathUtils::Status::OK)
+        double                  aRootValue = 0.0;
+        const MathUtils::Status aFirstRootEvaluationStatus =
+          EvaluateValue(theFunc, aRoot1, aRootValue);
+        if (aFirstRootEvaluationStatus != MathUtils::Status::OK)
         {
-          aResult.Status = anEvaluationStatus;
+          aResult.Status = aFirstRootEvaluationStatus;
           return aResult;
         }
         AddRoot(aResult, aEpsX, aRoot1, aRootValue);
       }
       else if (aVal1 - aVal2 > theConfig.FTolerance)
       {
-        double                  aRootValue         = 0.0;
-        const MathUtils::Status anEvaluationStatus = EvaluateValue(theFunc, aRoot2, aRootValue);
-        if (anEvaluationStatus != MathUtils::Status::OK)
+        double                  aRootValue = 0.0;
+        const MathUtils::Status aSecondRootEvaluationStatus =
+          EvaluateValue(theFunc, aRoot2, aRootValue);
+        if (aSecondRootEvaluationStatus != MathUtils::Status::OK)
         {
-          aResult.Status = anEvaluationStatus;
+          aResult.Status = aSecondRootEvaluationStatus;
           return aResult;
         }
         AddRoot(aResult, aEpsX, aRoot2, aRootValue);
@@ -935,11 +937,11 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
       else
       {
         double                  aShiftedValue = 0.0;
-        const MathUtils::Status anEvaluationStatus =
+        const MathUtils::Status aSecondRootDerivativeStatus =
           EvaluateShiftedValues(theFunc, aRoot2, theConfig.Offset, aShiftedValue, aDer2);
-        if (anEvaluationStatus != MathUtils::Status::OK)
+        if (aSecondRootDerivativeStatus != MathUtils::Status::OK)
         {
-          aResult.Status = anEvaluationStatus;
+          aResult.Status = aSecondRootDerivativeStatus;
           return aResult;
         }
 
@@ -957,22 +959,24 @@ MultipleResult FindAllRootsWithDerivativeImpl(Function&             theFunc,
     }
     else if (hasRoot1)
     {
-      double                  aRootValue         = 0.0;
-      const MathUtils::Status anEvaluationStatus = EvaluateValue(theFunc, aRoot1, aRootValue);
-      if (anEvaluationStatus != MathUtils::Status::OK)
+      double                  aRootValue = 0.0;
+      const MathUtils::Status aSingleRoot1EvaluationStatus =
+        EvaluateValue(theFunc, aRoot1, aRootValue);
+      if (aSingleRoot1EvaluationStatus != MathUtils::Status::OK)
       {
-        aResult.Status = anEvaluationStatus;
+        aResult.Status = aSingleRoot1EvaluationStatus;
         return aResult;
       }
       AddRoot(aResult, aEpsX, aRoot1, aRootValue);
     }
     else if (hasRoot2)
     {
-      double                  aRootValue         = 0.0;
-      const MathUtils::Status anEvaluationStatus = EvaluateValue(theFunc, aRoot2, aRootValue);
-      if (anEvaluationStatus != MathUtils::Status::OK)
+      double                  aRootValue = 0.0;
+      const MathUtils::Status aSingleRoot2EvaluationStatus =
+        EvaluateValue(theFunc, aRoot2, aRootValue);
+      if (aSingleRoot2EvaluationStatus != MathUtils::Status::OK)
       {
-        aResult.Status = anEvaluationStatus;
+        aResult.Status = aSingleRoot2EvaluationStatus;
         return aResult;
       }
       AddRoot(aResult, aEpsX, aRoot2, aRootValue);

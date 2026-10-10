@@ -26,6 +26,7 @@
 #include <Precision.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <Poly.hxx>
 #include <Standard_ShortReal.hxx>
 #include <NCollection_Array1.hxx>
@@ -100,50 +101,58 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
     return myTShape;
   }
 
-  // list of nodes:
-  const gp_XYZ* arrNodes = myCoords->Values();
-  const int     nNodes   = (int)myCoords->Length();
+  if (myCoords.IsNull() || myArrPolygons == nullptr)
+  {
+    myTShape.Nullify();
+    return myTShape;
+  }
 
-  NCollection_Map<int>                        mapNodeId;
-  NCollection_Map<int>                        mapPolyId;
+  const size_t aNbNodes = myCoords->Length();
+
+  NCollection_FlatMap<size_t>                 aNodeIds;
+  NCollection_FlatMap<size_t>                 aPolygonIds;
   NCollection_List<NCollection_Sequence<int>> aPolygons;
   NCollection_List<gp_Dir>                    aNorms;
-  int                                         i = 0;
-  for (; i < (int)myNbPolygons; i++)
+  for (size_t aPolygonIdx = 0; aPolygonIdx < myNbPolygons; ++aPolygonIdx)
   {
-    const int* arrIndice = myArrPolygons[i];
-    int        nn        = arrIndice[0];
-    if (nn < 3)
+    const int* aPolygonData = myArrPolygons[aPolygonIdx];
+    if (aPolygonData == nullptr)
+    {
+      continue;
+    }
+    const int aNbPolygonNodes = aPolygonData[0];
+    if (aNbPolygonNodes < 3)
     {
       // bad polygon
       continue;
     }
     NCollection_Sequence<int> aPolygon;
-    int                       in = 1;
-    for (; in <= nn; in++)
+    int                       aPolygonNodeIdx = 1;
+    for (; aPolygonNodeIdx <= aNbPolygonNodes; ++aPolygonNodeIdx)
     {
-      if (arrIndice[in] > nNodes)
+      const int aCoordIdx = aPolygonData[aPolygonNodeIdx];
+      if (aCoordIdx < 0 || static_cast<size_t>(aCoordIdx) >= aNbNodes)
       {
         break;
       }
-      aPolygon.Append(arrIndice[in]);
+      aPolygon.Append(aCoordIdx);
     }
-    if (in <= nn)
+    if (aPolygonNodeIdx <= aNbPolygonNodes)
     {
       // bad index of node in polygon
       continue;
     }
     // calculate normal
     gp_XYZ aSum;
-    gp_XYZ aPrevP = arrNodes[aPolygon(1)];
-    for (in = 2; in < aPolygon.Length(); in++)
+    gp_XYZ aPrevP = myCoords->Coordinate(static_cast<size_t>(aPolygon.First()));
+    for (int aNodeIdx = 2; aNodeIdx < aPolygon.Length(); ++aNodeIdx)
     {
-      gp_XYZ aP1 = arrNodes[aPolygon(in)];
-      gp_XYZ aP2 = arrNodes[aPolygon(in + 1)];
-      gp_XYZ aV1 = aP1 - aPrevP;
-      gp_XYZ aV2 = aP2 - aPrevP;
-      gp_XYZ S   = aV1.Crossed(aV2);
-      aSum += S;
+      gp_XYZ aP1           = myCoords->Coordinate(static_cast<size_t>(aPolygon(aNodeIdx)));
+      gp_XYZ aP2           = myCoords->Coordinate(static_cast<size_t>(aPolygon(aNodeIdx + 1)));
+      gp_XYZ aV1           = aP1 - aPrevP;
+      gp_XYZ aV2           = aP2 - aPrevP;
+      gp_XYZ aCrossProduct = aV1.Crossed(aV2);
+      aSum += aCrossProduct;
     }
     if (aSum.Modulus() < Precision::Confusion())
     {
@@ -151,18 +160,17 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
       continue;
     }
     gp_Dir aNormal(aSum);
-    mapPolyId.Add(i);
+    aPolygonIds.Add(aPolygonIdx);
     aPolygons.Append(aPolygon);
     aNorms.Append(aNormal);
     // collect info about used indices
-    for (in = 1; in <= aPolygon.Length(); in++)
+    for (int aNodeIdx = 1; aNodeIdx <= aPolygon.Length(); ++aNodeIdx)
     {
-      mapNodeId.Add(arrIndice[in]);
+      aNodeIds.Add(static_cast<size_t>(aPolygonData[aNodeIdx]));
     }
   }
 
-  const int nbNodes(mapNodeId.Extent());
-  if (!nbNodes)
+  if (aNodeIds.IsEmpty())
   {
     myIsModified = false;
     myTShape.Nullify();
@@ -170,38 +178,38 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
   }
   // prepare vector of nodes
   NCollection_DynamicArray<gp_XYZ> aNodes;
-  NCollection_DataMap<int, int>    mapIdId;
-  for (i = 0; i < nNodes; i++)
+  NCollection_DataMap<size_t, int> aNodeIdMap;
+  for (size_t aNodeIdx = 0; aNodeIdx < aNbNodes; ++aNodeIdx)
   {
-    if (mapNodeId.Contains(i))
+    if (aNodeIds.Contains(aNodeIdx))
     {
-      const gp_XYZ& aN1 = arrNodes[i];
-      mapIdId.Bind(i, aNodes.Length());
-      aNodes.Append(aN1);
+      aNodeIdMap.Bind(aNodeIdx, aNodes.Length());
+      aNodes.Append(myCoords->Coordinate(aNodeIdx));
     }
   }
   // update polygon indices
-  NCollection_List<NCollection_Sequence<int>>::Iterator itP(aPolygons);
-  for (; itP.More(); itP.Next())
+  NCollection_List<NCollection_Sequence<int>>::Iterator aPolygonIter(aPolygons);
+  for (; aPolygonIter.More(); aPolygonIter.Next())
   {
-    NCollection_Sequence<int>& aPolygon = itP.ChangeValue();
-    for (int in = 1; in <= aPolygon.Length(); in++)
+    NCollection_Sequence<int>& aPolygon = aPolygonIter.ChangeValue();
+    for (int aNodeIdx = 1; aNodeIdx <= aPolygon.Length(); ++aNodeIdx)
     {
-      int newIdx               = mapIdId.Find(aPolygon.Value(in));
-      aPolygon.ChangeValue(in) = newIdx;
+      const int aNewNodeIdx = aNodeIdMap.Find(static_cast<size_t>(aPolygon.Value(aNodeIdx)));
+      aPolygon.ChangeValue(aNodeIdx) = aNewNodeIdx;
     }
   }
   // calculate triangles
   NCollection_List<Poly_Triangle> aTriangles;
-  itP.Init(aPolygons);
-  for (NCollection_List<gp_Dir>::Iterator itN(aNorms); itP.More(); itP.Next(), itN.Next())
+  aPolygonIter.Init(aPolygons);
+  for (NCollection_List<gp_Dir>::Iterator aNormalIter(aNorms); aPolygonIter.More();
+       aPolygonIter.Next(), aNormalIter.Next())
   {
     NCollection_List<Poly_Triangle> aTrias;
     try
     {
       NCollection_List<NCollection_Sequence<int>> aPList;
-      aPList.Append(itP.Value());
-      BRepMesh_Triangulator aTriangulator(aNodes, aPList, itN.Value());
+      aPList.Append(aPolygonIter.Value());
+      BRepMesh_Triangulator aTriangulator(aNodes, aPList, aNormalIter.Value());
       aTriangulator.Perform(aTrias);
       aTriangles.Append(aTrias);
     }
@@ -219,15 +227,15 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
   occ::handle<Poly_Triangulation> aTriangulation =
     new Poly_Triangulation(aNodes.Length(), aTriangles.Extent(), false);
   // Copy the triangulation vertices
-  for (i = 0; i < aNodes.Length(); i++)
+  for (int aNodeIdx = 0; aNodeIdx < aNodes.Length(); ++aNodeIdx)
   {
-    aTriangulation->SetNode(i + 1, gp_Pnt(aNodes(i)));
+    aTriangulation->SetNode(aNodeIdx + 1, gp_Pnt(aNodes(aNodeIdx)));
   }
   // Copy the triangles.
-  NCollection_List<Poly_Triangle>::Iterator itT(aTriangles);
-  for (i = 1; itT.More(); itT.Next(), i++)
+  NCollection_List<Poly_Triangle>::Iterator aTriangleIter(aTriangles);
+  for (int aTriangleIdx = 1; aTriangleIter.More(); aTriangleIter.Next(), ++aTriangleIdx)
   {
-    aTriangulation->SetTriangle(i, itT.Value());
+    aTriangulation->SetTriangle(aTriangleIdx, aTriangleIter.Value());
   }
 
   occ::handle<BRep_TFace> aFace = new BRep_TFace();
@@ -244,29 +252,88 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
     // Copy the normals. Currently only normals-per-vertex are supported.
     if (myNormalPerVertex)
     {
-      aTriangulation->AddNormals();
+      bool hasValidNormals = true;
       if (myArrNormalInd == nullptr)
       {
-        for (i = 0; i < nbNodes; i++)
+        for (size_t aNodeIdx = 0; aNodeIdx < aNbNodes; ++aNodeIdx)
         {
-          const gp_XYZ& aNormal = myNormals->Normal(i);
-          aTriangulation->SetNormal(i + 1, aNormal);
+          if (aNodeIdMap.IsBound(aNodeIdx) && aNodeIdx >= myNormals->Length())
+          {
+            hasValidNormals = false;
+            break;
+          }
         }
       }
       else
       {
-        for (i = 0; i < (int)myNbPolygons; i++)
+        for (size_t aPolygonIdx = 0; aPolygonIdx < myNbPolygons && hasValidNormals; ++aPolygonIdx)
         {
-          if (mapPolyId.Contains(i)) // check to avoid previously skipped faces
+          if (!aPolygonIds.Contains(aPolygonIdx))
           {
-            const int* anArrNodes;
-            Polygon(i, anArrNodes);
-            const int* arrIndice;
-            int        nbn = IndiceNormals(i, arrIndice);
-            for (int j = 0; j < nbn; j++)
+            continue;
+          }
+          if (aPolygonIdx >= myNbNormals || myArrNormalInd[aPolygonIdx] == nullptr)
+          {
+            hasValidNormals = false;
+            break;
+          }
+          const int* aCoordIndices;
+          const int  aNbPolygonNodes = Polygon(aPolygonIdx, aCoordIndices);
+          const int* aNormalIndices;
+          const int  aNbNormalIndices = IndiceNormals(aPolygonIdx, aNormalIndices);
+          if (aNbNormalIndices != aNbPolygonNodes)
+          {
+            hasValidNormals = false;
+            break;
+          }
+          for (size_t aNodeIdx = 0; aNodeIdx < static_cast<size_t>(aNbNormalIndices); ++aNodeIdx)
+          {
+            const int aNormalIdx = aNormalIndices[aNodeIdx];
+            if (aNormalIdx < 0 || static_cast<size_t>(aNormalIdx) >= myNormals->Length())
             {
-              const gp_XYZ& aNormal = myNormals->Normal(arrIndice[j]);
-              aTriangulation->SetNormal(mapIdId(anArrNodes[j]) + 1, aNormal);
+              hasValidNormals = false;
+              break;
+            }
+          }
+        }
+      }
+
+      if (!hasValidNormals)
+      {
+        Poly::ComputeNormals(aTriangulation);
+      }
+      else
+      {
+        aTriangulation->AddNormals();
+        if (myArrNormalInd == nullptr)
+        {
+          for (size_t aNodeIdx = 0; aNodeIdx < aNbNodes; ++aNodeIdx)
+          {
+            if (aNodeIdMap.IsBound(aNodeIdx))
+            {
+              aTriangulation->SetNormal(aNodeIdMap.Find(aNodeIdx) + 1, myNormals->Normal(aNodeIdx));
+            }
+          }
+        }
+        else
+        {
+          for (size_t aPolygonIdx = 0; aPolygonIdx < myNbPolygons; ++aPolygonIdx)
+          {
+            if (aPolygonIds.Contains(aPolygonIdx)) // check to avoid previously skipped faces
+            {
+              const int* aCoordIndices;
+              Polygon(aPolygonIdx, aCoordIndices);
+              const int* aNormalIndices;
+              const int  aNbNormalIndices = IndiceNormals(aPolygonIdx, aNormalIndices);
+              for (size_t aNodeIdx = 0; aNodeIdx < static_cast<size_t>(aNbNormalIndices);
+                   ++aNodeIdx)
+              {
+                const gp_XYZ& aNormal =
+                  myNormals->Normal(static_cast<size_t>(aNormalIndices[aNodeIdx]));
+                aTriangulation->SetNormal(aNodeIdMap(static_cast<size_t>(aCoordIndices[aNodeIdx]))
+                                            + 1,
+                                          aNormal);
+              }
             }
           }
         }

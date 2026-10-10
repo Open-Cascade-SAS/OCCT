@@ -29,18 +29,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Approx_CurvlinFunc, Standard_Transient)
 
-#ifdef OCCT_DEBUG_CHRONO
-  #include <OSD_Timer.hxx>
-static OSD_Chronometer chr_uparam;
-Standard_EXPORT int    uparam_count;
-Standard_EXPORT double t_uparam;
-
-// Standard_IMPORT extern void InitChron(OSD_Chronometer& ch);
-Standard_IMPORT void InitChron(OSD_Chronometer& ch);
-// Standard_IMPORT extern void ResultChron( OSD_Chronometer & ch, double & time);
-Standard_IMPORT void ResultChron(OSD_Chronometer& ch, double& time);
-#endif
-
 static double cubic(const double X, const double* Xi, const double* Yi)
 {
   double I1, I2, I3, I21, I22, I31, Result;
@@ -495,9 +483,6 @@ double Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve& C,
   double                                   deltaS, base, U, Length;
   int                                      NbInt, NInterval, i;
   occ::handle<NCollection_HArray1<double>> InitUArray, InitSArray;
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_uparam);
-#endif
   if (S < 0 || S > 1)
   {
     throw Standard_ConstructionError("Approx_CurvlinFunc::GetUParameter");
@@ -562,11 +547,6 @@ double Approx_CurvlinFunc::GetUParameter(Adaptor3d_Curve& C,
   // TODO - fields should be mutable
   const_cast<Approx_CurvlinFunc*>(this)->myPrevS = S;
   const_cast<Approx_CurvlinFunc*>(this)->myPrevU = U;
-
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_uparam, t_uparam);
-  uparam_count++;
-#endif
 
   return U;
 }

@@ -35,48 +35,6 @@
 #define M_INTERNAL(sta) (sta == TopAbs_INTERNAL)
 #define M_EXTERNAL(sta) (sta == TopAbs_EXTERNAL)
 
-#ifdef OCCT_DEBUG
-extern bool TopOpeBRepTool_GettraceREGUFA();
-static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> STATIC_mapw, STATIC_mapf;
-
-static int FUN_adds(const TopoDS_Shape& s)
-{
-  TopAbs_ShapeEnum        typ = s.ShapeType();
-  TCollection_AsciiString aa;
-  int                     is = 0;
-  if (typ == TopAbs_WIRE)
-  {
-    aa = TCollection_AsciiString("wi");
-    is = STATIC_mapw.Add(s);
-  }
-  if (typ == TopAbs_FACE)
-  {
-    aa = TCollection_AsciiString("fa");
-    is = STATIC_mapf.Add(s);
-  }
-  return is;
-}
-
-Standard_EXPORT void FUN_tool_coutsta(const int& sta, const int& i1, const int& i2)
-{
-  switch (sta)
-  {
-    case SAME:
-      std::cout << i1 << " gives SAME bnd with " << i2 << std::endl;
-      break;
-    case DIFF:
-      std::cout << i1 << " gives  OUT bnd with " << i2 << std::endl;
-      break;
-    case oneINtwo:
-      std::cout << i1 << " is IN " << i2 << std::endl;
-      break;
-    case twoINone:
-      std::cout << i2 << " is IN " << i1 << std::endl;
-      break;
-  }
-}
-#endif
-
 Standard_EXPORT void FUN_addOwlw(const TopoDS_Shape&                   Ow,
                                  const NCollection_List<TopoDS_Shape>& lw,
                                  NCollection_List<TopoDS_Shape>&       lresu);
@@ -216,15 +174,6 @@ bool TopOpeBRepTool::Regularize(
     //      (Umin(i), Vmin(i), Umax(i), Vmax(i))
     B(i).Get(UV(i,1), UV(i,3), UV(i,2), UV(i,4));
 
-#ifdef OCCT_DEBUG
-  bool trc = false;
-  if (trc) {
-    for (int i = 1; i <= 2; i++)
-      std::cout<<"B("<<i<<") = ("<<UV(i,1)<<" "<<UV(i,3)<<" "<<UV(i,2)<<"
-"<<UV(i,4)<<")"<<std::endl;
-  }
-#endif
-
   bool smaller, same;
   int ii, jj;
   double tol = 1.e-6;
@@ -363,12 +312,6 @@ NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapWlow)
 {
   // NYI : create maps to store Bnd_Box2d, and faces.
 
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc) std::cout<<"** ClassifW :"<<std::endl;
-  STATIC_mapw.Clear();
-#endif
-
   // Purpose :
   // --------
   // Filling the map <mapWlow> : with (key + item) = new face,
@@ -430,9 +373,6 @@ TopTools_ShapeMapHasher>::Iterator itmap(complWoldw); wi(1) = itmap.Key(); if (n
     int sta = FUN_tool_classiBnd2d(Bnd2d);
     nite++;
     if ((sta == SAME)||(sta == UNKNOWN)) sta = FUN_tool_classiwithp2d(wi);
-#ifdef OCCT_DEBUG
-    if (trc) {std::cout<<"#wi :";FUN_tool_coutsta(sta,FUN_adds(wi(1)),FUN_adds(wi(2)));}
-#endif
     if ((sta == SAME)||(sta == UNKNOWN)) return false;
     if ((sta == DIFF) && itmap.More()) {OUTall = true; continue;}// w(1) OUT w(2)
     sma = (sta == oneINtwo) ? 1 : 2;
@@ -514,9 +454,6 @@ TopTools_ShapeMapHasher>::Iterator itmap(complWoldw); wi(1) = itmap.Key(); if (n
       // Classifying Ow<i> with Ow<j> :
       osta = FUN_tool_classiBnd2d(OBnd2d);
       if ((osta == SAME)||(osta == UNKNOWN)) osta = FUN_tool_classiwithp2d(Owi);
-#ifdef OCCT_DEBUG
-      if (trc) {std::cout<<"wi : "; FUN_tool_coutsta(osta,FUN_adds(Owi(1)),FUN_adds(Owi(2)));}
-#endif
       if ((osta == SAME)||(osta == UNKNOWN)) return false;
       if (osta == DIFF)                    continue; // Ow(1), Ow(2) are disjoint
       // Owi<sma> is IN Owi<grea>
@@ -564,10 +501,6 @@ TopTools_ShapeMapHasher>::Iterator itmap(complWoldw); wi(1) = itmap.Key(); if (n
 
       // Classifying wi(1)  with wi(2) :
       sta = FUN_tool_classiBnd2d(Bnd2d);
-#ifdef OCCT_DEBUG
-      if (trc) {std::cout<<"wi : "; FUN_tool_coutsta(sta,STATIC_mapw.FindIndex(wi(1)),
-                            STATIC_mapw.FindIndex(wi(2)));}
-#endif
       if ((sta == SAME)||(sta == UNKNOWN)) sta = FUN_tool_classiwithp2d(wi);
       if ((sta == SAME)||(sta == UNKNOWN)) return false;
       if (sta == DIFF)                   continue;
@@ -601,10 +534,6 @@ Standard_EXPORT bool FUN_tool_MakeFaces(const TopoDS_Face& theFace,
                        NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
 TopTools_ShapeMapHasher>& mapWlow, NCollection_List<TopoDS_Shape>& aListOfFaces)
 {
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc) std::cout<<"** MakeFaces :"<<std::endl;
-#endif
   bool toreverse = M_REVERSED(theFace.Orientation());
   TopoDS_Face F = TopoDS::Face(theFace.Oriented(TopAbs_FORWARD));
   BRep_Builder BB;
@@ -624,15 +553,6 @@ wi = TopoDS::Wire(itm.Key()); TopoDS_Shape FF = F.EmptyCopied(); BB.Add(FF,wi);
     aListOfFaces.Append(FF);
   }
 
-#ifdef OCCT_DEBUG
-  if (trc) {
-    std::cout<<"sp(fa"<<FUN_adds(theFace)<<")=";
-    NCollection_List<TopoDS_Shape>::Iterator it(aListOfFaces);
-    for (; it.More(); it.Next()) std::cout<<" fa"<<FUN_adds(it.Value());
-    std::cout<<std::endl;
-  }
-#endif
-
   return true;
 }*/
 
@@ -643,11 +563,6 @@ Standard_EXPORT bool FUN_tool_ClassifW(
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
     mapWlow)
 {
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc)
-    std::cout << "** ClassifW :" << std::endl;
-#endif
   double       tolF        = BRep_Tool::Tolerance(F);
   double       toluv       = TopOpeBRepTool_TOOL::TolUV(F, tolF);
   TopoDS_Shape aLocalShape = F.Oriented(TopAbs_FORWARD);
@@ -755,22 +670,10 @@ Standard_EXPORT bool FUN_tool_ClassifW(
       {
         mapdone.Add(itw.Value());
       }
-#ifdef OCCT_DEBUG
-      if (trc)
-        std::cout << "old wires :wi" << FUN_adds(Ow1) << " is OUT all old wires" << std::endl;
-#endif
       lOws.RemoveFirst();
     } // OUTall
     else
     {
-#ifdef OCCT_DEBUG
-      if (trc)
-      {
-        std::cout << "old wires :wi -> ";
-        FUN_tool_coutsta(sta12, FUN_adds(Ow1), FUN_adds(Ow2));
-        std::cout << std::endl;
-      }
-#endif
       const NCollection_List<TopoDS_Shape>& lw2 = mapOwNw.Find(Ow2);
 
       NCollection_List<TopoDS_Shape> lw1r;
@@ -813,15 +716,6 @@ Standard_EXPORT bool FUN_tool_ClassifW(
 
           int stabnd2d = CLASSI.ClassiBnd2d(wsma, wgre, toluv, true);
           int sta      = CLASSI.Classip2d(wsma, wgre, stabnd2d);
-#ifdef OCCT_DEBUG
-          if (trc)
-          {
-            std::cout << " wires :wi -> ";
-            FUN_tool_coutsta(sta, FUN_adds(wsma), FUN_adds(wgre));
-            std::cout << std::endl;
-          }
-#endif
-
           if (sta == DIFF)
           {
             continue;

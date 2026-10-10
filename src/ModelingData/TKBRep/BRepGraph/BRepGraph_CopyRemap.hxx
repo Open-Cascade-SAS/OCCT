@@ -37,7 +37,14 @@ public:
   enum class Mode : std::uint8_t
   {
     Copy    = 0, //!< Full graph copy: source and target are distinct graphs.
-    Compact = 1  //!< In-place compaction: layers migrate into the same (rebuilt) graph.
+    Compact = 1  //!< Structural migration into a rebuilt graph.
+  };
+
+  //! Cache migration validation independent from structural copy semantics.
+  enum class FreshnessPolicy : std::uint8_t
+  {
+    SourceOnly  = 0, //!< Source freshness is sufficient (copy and compaction).
+    MatchTarget = 1  //!< Source and target generations must match (graph replacement).
   };
 
   //! Distinguishes explicit item map vs. identity mapping.
@@ -49,17 +56,21 @@ public:
 
   using ItemMap = NCollection_FlatDataMap<BRepGraph_ItemId, BRepGraph_ItemId>;
 
-  BRepGraph_CopyRemap(const BRepGraph& theSourceGraph,
-                      BRepGraph&       theTargetGraph,
-                      const ItemMap&   theItemRemap,
-                      const Mode       theMode) noexcept;
+  Standard_EXPORT BRepGraph_CopyRemap(
+    const BRepGraph&      theSourceGraph,
+    BRepGraph&            theTargetGraph,
+    const ItemMap&        theItemRemap,
+    const Mode            theMode,
+    const FreshnessPolicy theFreshnessPolicy = FreshnessPolicy::SourceOnly) noexcept;
 
   //! Identity-mapping constructor for full identity copy into an empty target.
   //! Source item ids are returned directly as target item ids after validation.
-  BRepGraph_CopyRemap(const BRepGraph& theSourceGraph,
-                      BRepGraph&       theTargetGraph,
-                      MappingKind      theMappingKind,
-                      Mode             theMode) noexcept;
+  Standard_EXPORT BRepGraph_CopyRemap(
+    const BRepGraph&      theSourceGraph,
+    BRepGraph&            theTargetGraph,
+    const MappingKind     theMappingKind,
+    const Mode            theMode,
+    const FreshnessPolicy theFreshnessPolicy = FreshnessPolicy::SourceOnly) noexcept;
 
   //! Migration mode of this context.
   [[nodiscard]] Mode CopyMode() const noexcept { return myMode; }
@@ -102,12 +113,35 @@ public:
   [[nodiscard]] Standard_EXPORT BRepGraph_ItemUID
     TargetUIDFromSource(const BRepGraph_ItemId theSourceItem) const;
 
+  //! Return true when source and mapped target have the same own generation.
+  //! Runtime services use this to avoid carrying stale derived values across
+  //! persistent graph replacement.
+  [[nodiscard]] Standard_EXPORT bool HasSameOwnGeneration(
+    const BRepGraph_ItemId theSourceItem) const;
+
+  //! Return true when source and mapped target nodes have the same subtree generation.
+  [[nodiscard]] Standard_EXPORT bool HasSameSubtreeGeneration(
+    const BRepGraph_NodeId theSourceNode) const;
+
+  //! Return true when an own-generation cache dependency may be copied to the target.
+  //! Source-only migrations accept the mapped item; target-matching migrations also
+  //! require the source and target item identity and own generation to match.
+  [[nodiscard]] Standard_EXPORT bool IsOwnGenerationCompatible(
+    const BRepGraph_ItemId theSourceItem) const;
+
+  //! Return true when a subtree-generation cache dependency may be copied to the target.
+  //! Source-only migrations accept the mapped node; target-matching migrations also
+  //! require the source and target node identity and subtree generation to match.
+  [[nodiscard]] Standard_EXPORT bool IsSubtreeGenerationCompatible(
+    const BRepGraph_NodeId theSourceNode) const;
+
 private:
-  const BRepGraph* mySourceGraph = nullptr;
-  BRepGraph*       myTargetGraph = nullptr;
-  const ItemMap*   myItemRemap   = nullptr;
-  Mode             myMode        = Mode::Copy;
-  MappingKind      myMappingKind = MappingKind::Explicit;
+  const BRepGraph* mySourceGraph     = nullptr;
+  BRepGraph*       myTargetGraph     = nullptr;
+  const ItemMap*   myItemRemap       = nullptr;
+  Mode             myMode            = Mode::Copy;
+  MappingKind      myMappingKind     = MappingKind::Explicit;
+  FreshnessPolicy  myFreshnessPolicy = FreshnessPolicy::SourceOnly;
 };
 
 #endif // _BRepGraph_CopyRemap_HeaderFile

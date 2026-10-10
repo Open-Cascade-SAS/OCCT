@@ -150,6 +150,19 @@ void SelectMgr_SelectableObject::ClearSelections(const bool theToUpdate)
   }
 }
 
+//==================================================================================================
+
+void SelectMgr_SelectableObject::ClearSelection(const int theMode)
+{
+  const occ::handle<SelectMgr_Selection>& aSelection = Selection(theMode);
+  if (!aSelection.IsNull())
+  {
+    aSelection->Clear();
+    aSelection->UpdateBVHStatus(SelectMgr_TBU_Remove);
+    aSelection->UpdateStatus(SelectMgr_TOU_Full);
+  }
+}
+
 //=================================================================================================
 
 const occ::handle<SelectMgr_Selection>& SelectMgr_SelectableObject::Selection(

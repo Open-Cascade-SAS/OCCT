@@ -29,8 +29,6 @@ public:
 
   Standard_EXPORT static int mmfmcb5_(int*, int*, int*, double*, int*, int*, int*, double*, int*);
 
-  Standard_EXPORT static void mmwprcs_(double*, double*, double*, double*, int*, int*);
-  ///
   Standard_EXPORT static int mmcglc1_(int*    ndimax,
                                       int*    ndimen,
                                       int*    ncoeff,

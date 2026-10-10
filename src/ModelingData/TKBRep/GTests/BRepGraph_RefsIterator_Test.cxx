@@ -36,17 +36,6 @@
 
 namespace
 {
-template <typename IteratorT>
-static uint32_t countIterator(IteratorT theIterator)
-{
-  uint32_t aCount = 0;
-  for (; theIterator.More(); theIterator.Next())
-  {
-    ++aCount;
-  }
-  return aCount;
-}
-
 static TopoDS_Edge makeEdgeWithInternalVertex()
 {
   BRep_Builder            aBuilder;
@@ -89,11 +78,40 @@ protected:
 
 TEST_F(BRepGraph_RefsIteratorTest, BoxHierarchy_YieldsReferenceIds)
 {
-  EXPECT_EQ(countIterator(BRepGraph_RefsShellOfSolid(myGraph, BRepGraph_SolidId::Start())), 1);
-  EXPECT_EQ(countIterator(BRepGraph_RefsFaceOfShell(myGraph, BRepGraph_ShellId::Start())), 6);
-  EXPECT_EQ(countIterator(BRepGraph_RefsWireOfFace(myGraph, BRepGraph_FaceId::Start())), 1);
-  EXPECT_EQ(countIterator(BRepGraph_CoEdgesOfWire(myGraph, BRepGraph_WireId::Start())), 4);
-  EXPECT_EQ(countIterator(BRepGraph_RefsVertexOfEdge(myGraph, BRepGraph_EdgeId::Start())), 2);
+  EXPECT_EQ(BRepGraph_RefsShellOfSolid(myGraph, BRepGraph_SolidId::Start()).Count(), 1u);
+  EXPECT_EQ(BRepGraph_RefsFaceOfShell(myGraph, BRepGraph_ShellId::Start()).Count(), 6u);
+  EXPECT_EQ(BRepGraph_RefsWireOfFace(myGraph, BRepGraph_FaceId::Start()).Count(), 1u);
+  EXPECT_EQ(BRepGraph_CoEdgesOfWire(myGraph, BRepGraph_WireId::Start()).Count(), 4u);
+  EXPECT_EQ(BRepGraph_RefsVertexOfEdge(myGraph, BRepGraph_EdgeId::Start()).Count(), 2u);
+}
+
+TEST_F(BRepGraph_RefsIteratorTest, Count_ReturnsRemainingActiveRefs)
+{
+  BRepGraph_CoEdgesOfWire anIt(myGraph, BRepGraph_WireId::Start());
+  EXPECT_EQ(anIt.Count(), 4u);
+  ASSERT_TRUE(anIt.More());
+  anIt.Next();
+  EXPECT_EQ(anIt.Count(), 3u);
+
+  BRepGraph_RefsVertexOfEdge aVertexIt(myGraph, BRepGraph_EdgeId::Start());
+  EXPECT_EQ(aVertexIt.Count(), 2u);
+  ASSERT_TRUE(aVertexIt.More());
+  aVertexIt.Next();
+  EXPECT_EQ(aVertexIt.Count(), 1u);
+}
+
+TEST_F(BRepGraph_RefsIteratorTest, RefIteratorCount_SkipsRemovedEntries)
+{
+  myGraph.Editor().Gen().RemoveRef(BRepGraph_FaceRefId::Start());
+
+  BRepGraph_FaceRefIterator anIt(myGraph);
+  EXPECT_EQ(anIt.Count(), myGraph.Refs().Faces().Nb() - 1u);
+  ASSERT_TRUE(anIt.More());
+  anIt.Next();
+  EXPECT_EQ(anIt.Count(), myGraph.Refs().Faces().Nb() - 2u);
+
+  BRepGraph_FullFaceRefIterator aFullIt(myGraph);
+  EXPECT_EQ(aFullIt.Count(), myGraph.Refs().Faces().Nb());
 }
 
 TEST_F(BRepGraph_RefsIteratorTest, CurrentId_ResolvesToExpectedEntry)
@@ -199,7 +217,7 @@ TEST_F(BRepGraph_RefsIteratorTest, ChildOfCompound_SkipsRemovedChildNode)
   myGraph.Editor().Gen().RemoveNode(aLooseVertex);
 
   ASSERT_TRUE(BRepGraph_RefsChildOfCompound(myGraph, aCompound).More());
-  EXPECT_EQ(countIterator(BRepGraph_RefsChildOfCompound(myGraph, aCompound)), 1u);
+  EXPECT_EQ(BRepGraph_RefsChildOfCompound(myGraph, aCompound).Count(), 1u);
 }
 
 TEST_F(BRepGraph_RefsIteratorTest, OccurrenceOfProduct_EnumeratesOccurrenceRefs)
@@ -214,7 +232,7 @@ TEST_F(BRepGraph_RefsIteratorTest, OccurrenceOfProduct_EnumeratesOccurrenceRefs)
   EXPECT_TRUE(myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
   EXPECT_TRUE(myGraph.Editor().Products().Append(anAssembly, aPart, TopLoc_Location()).IsValid());
 
-  EXPECT_EQ(countIterator(BRepGraph_RefsOccurrenceOfProduct(myGraph, anAssembly)), 2);
+  EXPECT_EQ(BRepGraph_RefsOccurrenceOfProduct(myGraph, anAssembly).Count(), 2u);
 }
 
 TEST_F(BRepGraph_RefsIteratorTest, RemovedWireRef_IsSkipped)
@@ -225,5 +243,5 @@ TEST_F(BRepGraph_RefsIteratorTest, RemovedWireRef_IsSkipped)
 
   myGraph.Editor().Gen().RemoveRef(aWireRefs.Value(0));
 
-  EXPECT_EQ(countIterator(BRepGraph_RefsWireOfFace(myGraph, BRepGraph_FaceId::Start())), 0);
+  EXPECT_EQ(BRepGraph_RefsWireOfFace(myGraph, BRepGraph_FaceId::Start()).Count(), 0u);
 }

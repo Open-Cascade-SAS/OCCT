@@ -102,14 +102,15 @@ bool TopOpeBRepBuild_HasCompleteCoincidence(const Geom2dInt_GInter&    theInters
   const double aLastOnFirst   = aSegment.LastPoint().ParamOnFirst();
   const double aFirstOnSecond = aSegment.FirstPoint().ParamOnSecond();
   const double aLastOnSecond  = aSegment.LastPoint().ParamOnSecond();
-  const double aTolerance     = Precision::PConfusion();
   const bool   isComplete =
-    std::abs(std::min(aFirstOnFirst, aLastOnFirst) - theFirstCurve.FirstParameter()) <= aTolerance
-    && std::abs(std::max(aFirstOnFirst, aLastOnFirst) - theFirstCurve.LastParameter()) <= aTolerance
+    std::abs(std::min(aFirstOnFirst, aLastOnFirst) - theFirstCurve.FirstParameter())
+      <= Precision::PConfusion()
+    && std::abs(std::max(aFirstOnFirst, aLastOnFirst) - theFirstCurve.LastParameter())
+         <= Precision::PConfusion()
     && std::abs(std::min(aFirstOnSecond, aLastOnSecond) - theSecondCurve.FirstParameter())
-         <= aTolerance
+         <= Precision::PConfusion()
     && std::abs(std::max(aFirstOnSecond, aLastOnSecond) - theSecondCurve.LastParameter())
-         <= aTolerance;
+         <= Precision::PConfusion();
   if (isComplete)
   {
     theIsReversed = (aLastOnFirst - aFirstOnFirst) * (aLastOnSecond - aFirstOnSecond) < 0.0;

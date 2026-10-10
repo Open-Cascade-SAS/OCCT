@@ -22,6 +22,31 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepGraph_LayerDeferred, BRepGraph_Layer)
 
+namespace
+{
+bool isSameRepresentation(const BRepGraph_LayerDeferred::Representation& theLeft,
+                          const BRepGraph_LayerDeferred::Representation& theRight)
+{
+  return theLeft.Kind == theRight.Kind && theLeft.Role == theRight.Role
+         && theLeft.Name == theRight.Name && theLeft.SourceIndex == theRight.SourceIndex;
+}
+
+bool containsRepresentation(
+  const BRepGraph_LayerDeferred::Entry::RepresentationStorage& theRepresentations,
+  const BRepGraph_LayerDeferred::Representation&               theRepresentation)
+{
+  for (size_t aRepresentationIdx = 0; aRepresentationIdx < theRepresentations.Size();
+       ++aRepresentationIdx)
+  {
+    if (isSameRepresentation(theRepresentations.Value(aRepresentationIdx), theRepresentation))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+} // namespace
+
 //=================================================================================================
 
 bool BRepGraph_LayerDeferred::Entry::RepresentationStorage::ContainsKind(
@@ -153,7 +178,7 @@ const BRepGraph_LayerDeferred::Entry* BRepGraph_LayerDeferred::FindFirstDeferred
   const RepresentationKind theKind,
   BRepGraph_ItemId*        theItem) const
 {
-  for (NCollection_DataMap<BRepGraph_ItemId, Entry>::Iterator anIt(myEntries); anIt.More();
+  for (NCollection_FlatDataMap<BRepGraph_ItemId, Entry>::Iterator anIt(myEntries); anIt.More();
        anIt.Next())
   {
     if (!anIt.Value().Representations.ContainsKind(theKind))
@@ -220,24 +245,16 @@ void BRepGraph_LayerDeferred::RegisterDeferredRepresentations(
   for (size_t aSrcRepresentationIdx = 0; aSrcRepresentationIdx < theNbRepresentations;
        ++aSrcRepresentationIdx)
   {
-    const Representation& aSrcRepresentation = theRepresentations[aSrcRepresentationIdx];
-    bool                  isKnown            = false;
-    for (size_t aStoredRepresentationIdx = 0;
-         aStoredRepresentationIdx < anEntry.Representations.Size();
-         ++aStoredRepresentationIdx)
+    Representation aSrcRepresentation = theRepresentations[aSrcRepresentationIdx];
+    if (aSrcRepresentation.Provider.IsEmpty())
     {
-      const Representation& aRepresentation =
-        anEntry.Representations.Value(aStoredRepresentationIdx);
-      if (aRepresentation.Kind == aSrcRepresentation.Kind
-          && aRepresentation.Role == aSrcRepresentation.Role
-          && aRepresentation.Name == aSrcRepresentation.Name
-          && aRepresentation.SourceIndex == aSrcRepresentation.SourceIndex)
-      {
-        isKnown = true;
-        break;
-      }
+      aSrcRepresentation.Provider = theProvider;
     }
-    if (isKnown)
+    if (aSrcRepresentation.SourceKey.IsEmpty())
+    {
+      aSrcRepresentation.SourceKey = theSourceKey;
+    }
+    if (containsRepresentation(anEntry.Representations, aSrcRepresentation))
     {
       continue;
     }
@@ -284,7 +301,16 @@ void BRepGraph_LayerDeferred::RegisterDeferredRepresentationsDirect(
   for (size_t aRepresentationIdx = 0; aRepresentationIdx < theNbRepresentations;
        ++aRepresentationIdx)
   {
-    anEntry.Representations.Append(theRepresentations[aRepresentationIdx]);
+    Representation aRepresentation = theRepresentations[aRepresentationIdx];
+    if (aRepresentation.Provider.IsEmpty())
+    {
+      aRepresentation.Provider = theProvider;
+    }
+    if (aRepresentation.SourceKey.IsEmpty())
+    {
+      aRepresentation.SourceKey = theSourceKey;
+    }
+    anEntry.Representations.Append(aRepresentation);
   }
 
   myEntries.Bind(theItem, std::move(anEntry));
@@ -319,7 +345,7 @@ void BRepGraph_LayerDeferred::UnregisterDeferred(const BRepGraph_ItemId theItem)
 
 void BRepGraph_LayerDeferred::ReserveDeferredItems(const size_t theNbItems)
 {
-  myEntries.ReSize(myEntries.Extent() + theNbItems);
+  myEntries.Reserve(myEntries.Size() + theNbItems);
   if (BRepGraph* aGraph = AttachedGraph())
   {
     occ::handle<BRepGraph_LayerLock> aLockLayer =
@@ -404,7 +430,11 @@ void BRepGraph_LayerDeferred::OnNodeReplaced(const BRepGraph_NodeId theOldNode,
   {
     for (size_t i = 0; i < anEntry.Representations.Size(); ++i)
     {
-      aTarget->Representations.Append(anEntry.Representations.Value(i));
+      const Representation& aRepresentation = anEntry.Representations.Value(i);
+      if (!containsRepresentation(aTarget->Representations, aRepresentation))
+      {
+        aTarget->Representations.Append(aRepresentation);
+      }
     }
   }
   else
@@ -425,9 +455,9 @@ void BRepGraph_LayerDeferred::CopyTo(const BRepGraph_CopyRemap& theCopy) const
 
   occ::handle<BRepGraph_LayerDeferred> aTarget =
     theCopy.TargetGraph().LayerRegistry().Ensure<BRepGraph_LayerDeferred>();
-  aTarget->ReserveDeferredItems(static_cast<size_t>(myEntries.Extent()));
+  aTarget->ReserveDeferredItems(myEntries.Size());
   aTarget->BeginBulkRegistration();
-  for (NCollection_DataMap<BRepGraph_ItemId, Entry>::Iterator anIt(myEntries); anIt.More();
+  for (NCollection_FlatDataMap<BRepGraph_ItemId, Entry>::Iterator anIt(myEntries); anIt.More();
        anIt.Next())
   {
     const BRepGraph_ItemId aTargetItem = theCopy.TargetItem(anIt.Key());
@@ -470,7 +500,7 @@ void BRepGraph_LayerDeferred::InvalidateAll() noexcept
 
 void BRepGraph_LayerDeferred::Clear() noexcept
 {
-  for (NCollection_DataMap<BRepGraph_ItemId, Entry>::Iterator anIt(myEntries); anIt.More();
+  for (NCollection_FlatDataMap<BRepGraph_ItemId, Entry>::Iterator anIt(myEntries); anIt.More();
        anIt.Next())
   {
     unlockItem(anIt.Key());

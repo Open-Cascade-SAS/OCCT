@@ -21,7 +21,64 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
-static double uinf, vinf, usup, vsup;
+#include <utility>
+
+namespace
+{
+struct SurfaceBounds
+{
+  double UMin;
+  double VMin;
+  double UMax;
+  double VMax;
+};
+
+SurfaceBounds getSurfaceBounds(const occ::handle<Adaptor3d_Surface>& theSurface)
+{
+  SurfaceBounds aBounds = {theSurface->FirstUParameter(),
+                           theSurface->FirstVParameter(),
+                           theSurface->LastUParameter(),
+                           theSurface->LastVParameter()};
+
+  if (aBounds.UMax < aBounds.UMin)
+  {
+    std::swap(aBounds.UMin, aBounds.UMax);
+  }
+  if (aBounds.VMax < aBounds.VMin)
+  {
+    std::swap(aBounds.VMin, aBounds.VMax);
+  }
+
+  if (aBounds.UMin == RealFirst() && aBounds.UMax == RealLast())
+  {
+    aBounds.UMin = -1.e5;
+    aBounds.UMax = 1.e5;
+  }
+  else if (aBounds.UMin == RealFirst())
+  {
+    aBounds.UMin = aBounds.UMax - 2.e5;
+  }
+  else if (aBounds.UMax == RealLast())
+  {
+    aBounds.UMax = aBounds.UMin + 2.e5;
+  }
+
+  if (aBounds.VMin == RealFirst() && aBounds.VMax == RealLast())
+  {
+    aBounds.VMin = -1.e5;
+    aBounds.VMax = 1.e5;
+  }
+  else if (aBounds.VMin == RealFirst())
+  {
+    aBounds.VMin = aBounds.VMax - 2.e5;
+  }
+  else if (aBounds.VMax == RealLast())
+  {
+    aBounds.VMax = aBounds.VMin + 2.e5;
+  }
+  return aBounds;
+}
+} // namespace
 
 int Contap_HContTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
                                  const double,
@@ -116,53 +173,11 @@ int Contap_HContTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
 
 int Contap_HContTool::NbSamplePoints(const occ::handle<Adaptor3d_Surface>& S)
 {
-  uinf = S->FirstUParameter();
-  usup = S->LastUParameter();
-  vinf = S->FirstVParameter();
-  vsup = S->LastVParameter();
-
-  if (usup < uinf)
-  {
-    double temp = uinf;
-    uinf        = usup;
-    usup        = temp;
-  }
-  if (vsup < vinf)
-  {
-    double temp = vinf;
-    vinf        = vsup;
-    vsup        = temp;
-  }
-  if (uinf == RealFirst() && usup == RealLast())
-  {
-    uinf = -1.e5;
-    usup = 1.e5;
-  }
-  else if (uinf == RealFirst())
-  {
-    uinf = usup - 2.e5;
-  }
-  else if (usup == RealLast())
-  {
-    usup = uinf + 2.e5;
-  }
-
-  if (vinf == RealFirst() && vsup == RealLast())
-  {
-    vinf = -1.e5;
-    vsup = 1.e5;
-  }
-  else if (vinf == RealFirst())
-  {
-    vinf = vsup - 2.e5;
-  }
-  else if (vsup == RealLast())
-  {
-    vsup = vinf + 2.e5;
-  }
+  const SurfaceBounds aBounds = getSurfaceBounds(S);
   if (S->GetType() == GeomAbs_BSplineSurface)
   {
-    int m = (NbSamplesU(S, uinf, usup) / 3) * (NbSamplesV(S, vinf, vsup) / 3);
+    int m = (NbSamplesU(S, aBounds.UMin, aBounds.UMax) / 3)
+            * (NbSamplesV(S, aBounds.VMin, aBounds.VMax) / 3);
     if (m > 5)
     {
       return (m);
@@ -183,17 +198,20 @@ void Contap_HContTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
                                    double&                               U,
                                    double&                               V)
 {
+  const SurfaceBounds aBounds = getSurfaceBounds(S);
   if (S->GetType() == GeomAbs_BSplineSurface)
   {
-    int nbIntU = NbSamplesU(S, uinf, usup) / 3;
-    int nbIntV = NbSamplesV(S, vinf, vsup) / 3;
+    int nbIntU = NbSamplesU(S, aBounds.UMin, aBounds.UMax) / 3;
+    int nbIntV = NbSamplesV(S, aBounds.VMin, aBounds.VMax) / 3;
     if (nbIntU * nbIntV > 5)
     {
       int indU = (Index - 1) / nbIntU;        //----   0 --> nbIntV
       int indV = (Index - 1) - indU * nbIntU; //----   0 --> nbIntU
 
-      U = uinf + ((usup - uinf) / ((double)(nbIntU + 1))) * (double)(indU + 1);
-      V = vinf + ((vsup - vinf) / ((double)(nbIntV + 2))) * (double)(indV + 1);
+      U = aBounds.UMin
+          + ((aBounds.UMax - aBounds.UMin) / ((double)(nbIntU + 1))) * (double)(indU + 1);
+      V = aBounds.VMin
+          + ((aBounds.VMax - aBounds.VMin) / ((double)(nbIntV + 2))) * (double)(indV + 1);
 
       //-- std::cout<<"Index :"<<Index<<"  uinf:"<<uinf<<"  usup:"<<usup<<"  vinf:"<<vinf<<"
       // vsup:"<<vsup<<"  ";
@@ -206,24 +224,24 @@ void Contap_HContTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
   switch (Index)
   {
     case 1:
-      U = 0.75 * uinf + 0.25 * usup; // 0.25;
-      V = 0.75 * vinf + 0.25 * vsup; // 0.25;
+      U = 0.75 * aBounds.UMin + 0.25 * aBounds.UMax; // 0.25;
+      V = 0.75 * aBounds.VMin + 0.25 * aBounds.VMax; // 0.25;
       break;
     case 2:
-      U = 0.75 * uinf + 0.25 * usup; // 0.25;
-      V = 0.25 * vinf + 0.75 * vsup; // 0.75;
+      U = 0.75 * aBounds.UMin + 0.25 * aBounds.UMax; // 0.25;
+      V = 0.25 * aBounds.VMin + 0.75 * aBounds.VMax; // 0.75;
       break;
     case 3:
-      U = 0.25 * uinf + 0.75 * usup; // 0.75;
-      V = 0.75 * vinf + 0.25 * vsup; // 0.25;
+      U = 0.25 * aBounds.UMin + 0.75 * aBounds.UMax; // 0.75;
+      V = 0.75 * aBounds.VMin + 0.25 * aBounds.VMax; // 0.25;
       break;
     case 4:
-      U = 0.25 * uinf + 0.75 * usup; // 0.75;
-      V = 0.25 * vinf + 0.75 * vsup; // 0.75;
+      U = 0.25 * aBounds.UMin + 0.75 * aBounds.UMax; // 0.75;
+      V = 0.25 * aBounds.VMin + 0.75 * aBounds.VMax; // 0.75;
       break;
     default:
-      U = 0.5 * (uinf + usup); // 0.5;
-      V = 0.5 * (vinf + vsup); // 0.5;
+      U = 0.5 * (aBounds.UMin + aBounds.UMax); // 0.5;
+      V = 0.5 * (aBounds.VMin + aBounds.VMax); // 0.5;
   }
 }
 

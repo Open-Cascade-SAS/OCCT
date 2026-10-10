@@ -963,7 +963,7 @@ TEST(MathSys_LM_Test, NonFiniteConfigIsInvalidInput)
   LinearSystem2D    aFunc;
   math_Vector       aStart(1, 2, 0.0);
   MathSys::LMConfig aConfigs[11];
-  const double      aNaN        = std::numeric_limits<double>::quiet_NaN();
+  constexpr double  aNaN        = std::numeric_limits<double>::quiet_NaN();
   aConfigs[0].Tolerance         = aNaN;
   aConfigs[1].XTolerance        = aNaN;
   aConfigs[2].FTolerance        = aNaN;

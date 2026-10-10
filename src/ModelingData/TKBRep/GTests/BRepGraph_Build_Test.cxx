@@ -1324,4 +1324,8 @@ TEST(BRepGraph_BuildTest, NaturalBound_PlaneSynthesis_SkipsPCurves)
       EXPECT_TRUE(aPCurveAdaptor.IsInitialized()) << "Plane PCurves should be generated on-the-fly";
     }
   }
+
+  const BRepGraph_Validate::Result anAudit =
+    BRepGraph_Validate::Perform(aGraph, BRepGraph_Validate::Options::Audit());
+  EXPECT_EQ(anAudit.NbIssues(BRepGraph_Validate::Severity::Error), 0);
 }

@@ -922,8 +922,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&  P,
   //-- Difficult to handle further (Value ProjLib, Params ... )
   //-- hyperbolas that are too extreme
   //-- Return False -> Treatment by biparametric method
-  static double EllipseLimit   = 1.0E+9; // OCC513(apo) 1000000
-  static double HyperbolaLimit = 2.0E+6; // OCC537(apo) 50000
+  constexpr double EllipseLimit   = 1.0E+9; // OCC513(apo) 1000000
+  constexpr double HyperbolaLimit = 2.0E+6; // OCC537(apo) 50000
   if (typeres == IntAna_Ellipse && nbint >= 1)
   {
     if (std::abs(param1) > EllipseLimit || std::abs(param1bis) > EllipseLimit)

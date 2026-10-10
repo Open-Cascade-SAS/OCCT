@@ -16,6 +16,8 @@
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
 #include <Convert_CompBezierCurves2dToBSplineCurve2d.hxx>
 #include <gp_Pnt.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 
@@ -194,4 +196,60 @@ TEST(Convert_CompBezierCurves2dToBSplineCurve2dTest, TwoAdjacent2d_C1)
   NCollection_Array1<double> aKnots(1, aConv.NbKnots());
   aConv.KnotsAndMults(aKnots, aMults);
   EXPECT_EQ(aMults(2), aConv.Degree() - 1);
+}
+
+//==================================================================================================
+
+TEST(Convert_CompBezierCurvesToBSplineCurveTest, OppositeTangentsKeepCusp3d)
+{
+  NCollection_Array1<gp_Pnt> aFirst(1, 3);
+  NCollection_Array1<gp_Pnt> aSecond(1, 3);
+  aFirst(1)  = gp_Pnt(0, 0, 0);
+  aFirst(2)  = gp_Pnt(0.5, 0, 0);
+  aFirst(3)  = gp_Pnt(1, 0, 0);
+  aSecond(1) = aFirst(3);
+  aSecond(2) = aFirst(2);
+  aSecond(3) = aFirst(1);
+  Convert_CompBezierCurvesToBSplineCurve aConverter;
+  aConverter.AddCurve(aFirst);
+  aConverter.AddCurve(aSecond);
+  aConverter.Perform();
+  ASSERT_EQ(aConverter.NbKnots(), 3);
+  NCollection_Array1<double> aKnots(1, 3);
+  NCollection_Array1<int>    aMults(1, 3);
+  aConverter.KnotsAndMults(aKnots, aMults);
+  EXPECT_EQ(aMults(2), 2);
+  NCollection_Array1<gp_Pnt> aPoles(1, aConverter.NbPoles());
+  aConverter.Poles(aPoles);
+  const occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aKnots, aMults, aConverter.Degree());
+  EXPECT_DOUBLE_EQ(aCurve->EvalD0(aKnots(2)).X(), 1.0);
+}
+
+//==================================================================================================
+
+TEST(Convert_CompBezierCurvesToBSplineCurveTest, OppositeTangentsKeepCusp2d)
+{
+  NCollection_Array1<gp_Pnt2d> aFirst(1, 3);
+  NCollection_Array1<gp_Pnt2d> aSecond(1, 3);
+  aFirst(1)  = gp_Pnt2d(0, 0);
+  aFirst(2)  = gp_Pnt2d(0.5, 0);
+  aFirst(3)  = gp_Pnt2d(1, 0);
+  aSecond(1) = aFirst(3);
+  aSecond(2) = aFirst(2);
+  aSecond(3) = aFirst(1);
+  Convert_CompBezierCurves2dToBSplineCurve2d aConverter;
+  aConverter.AddCurve(aFirst);
+  aConverter.AddCurve(aSecond);
+  aConverter.Perform();
+  ASSERT_EQ(aConverter.NbKnots(), 3);
+  NCollection_Array1<double> aKnots(1, 3);
+  NCollection_Array1<int>    aMults(1, 3);
+  aConverter.KnotsAndMults(aKnots, aMults);
+  EXPECT_EQ(aMults(2), 2);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, aConverter.NbPoles());
+  aConverter.Poles(aPoles);
+  const occ::handle<Geom2d_BSplineCurve> aCurve =
+    new Geom2d_BSplineCurve(aPoles, aKnots, aMults, aConverter.Degree());
+  EXPECT_DOUBLE_EQ(aCurve->EvalD0(aKnots(2)).X(), 1.0);
 }

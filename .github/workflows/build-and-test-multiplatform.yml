@@ -146,6 +146,7 @@ jobs:
     name: Test on Windows (x64)
     runs-on: windows-2025
     needs: prepare-and-build-windows-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -164,6 +165,7 @@ jobs:
     name: Regression Test on Windows (x64)
     runs-on: windows-2025
     needs: test-windows-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -182,6 +184,7 @@ jobs:
     name: Test on macOS (x64)
     runs-on: macos-15
     needs: prepare-and-build-macos-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -200,6 +203,7 @@ jobs:
     name: Regression Test on macOS (x64)
     runs-on: macos-15
     needs: test-macos-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -218,6 +222,7 @@ jobs:
     name: Test on Linux with Clang (x64)
     runs-on: ubuntu-24.04
     needs: prepare-and-build-linux-clang-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -236,6 +241,7 @@ jobs:
     name: Regression Test on Linux with Clang (x64)
     runs-on: ubuntu-24.04
     needs: test-linux-clang-x64
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -328,5 +334,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
       
+      - name: Check target branch test results
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        shell: bash
+        run: |
+          base_sha=$(gh api "repos/$GITHUB_REPOSITORY/branches/$BASE_REF" --jq '.commit.sha')
+          run_id=$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/build-and-test-multiplatform.yml/runs" \
+            -f head_sha="$base_sha" -f status=success \
+            --jq "[.workflow_runs[] | select(.head_repository.full_name == \"$GITHUB_REPOSITORY\")][0].id // empty")
+          if [ -n "$run_id" ]; then
+            available=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/artifacts" | jq \
+              '[.artifacts[] | select(.expired == false) | .name] |
+               contains(["results-windows-x64", "results-macos-x64", "results-linux-clang-x64"])')
+            [ "$available" = true ] || run_id=''
+          fi
+          echo "latest_run_id=$run_id" >> "$GITHUB_ENV"
+          if [ -z "$run_id" ]; then
+            echo "::notice::Test comparison skipped: target branch results are missing or expired."
+          fi
+
       - name: Generate Test Summary
+        if: env.latest_run_id != ''
         uses: ./.github/actions/test-summary

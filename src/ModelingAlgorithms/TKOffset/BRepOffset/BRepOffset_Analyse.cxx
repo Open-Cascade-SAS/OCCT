@@ -830,9 +830,8 @@ const TopoDS_Edge& BRepOffset_Analyse::EdgeReplacement(const TopoDS_Face& theF,
 
 TopoDS_Shape BRepOffset_Analyse::Generated(const TopoDS_Shape& theS) const
 {
-  static TopoDS_Shape aNullShape;
   const TopoDS_Shape* pGenS = myGenerated.Seek(theS);
-  return pGenS ? *pGenS : aNullShape;
+  return pGenS ? *pGenS : TopoDS_Shape();
 }
 
 //=================================================================================================

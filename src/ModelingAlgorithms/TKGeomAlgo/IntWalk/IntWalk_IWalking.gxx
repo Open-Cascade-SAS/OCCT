@@ -130,6 +130,10 @@ void IntWalk_IWalking::Clear()
 
   done = false;
   seqAjout.Clear();
+  seqAlone.Clear();
+  seqSingle.Clear();
+  mySRangeU.SetVoid();
+  mySRangeV.SetVoid();
   lines.Clear();
 }
 
@@ -325,6 +329,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   int    nbPnts1 = Pnts1.Length();
   double U, V;
 
+  Clear();
   reversed = Reversed;
 
   // Loading of etat1 as well as ustart1 and vstart1.
@@ -1676,8 +1681,13 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
                 }
               }
             }
-            aStatus =
-              TestDeflection(Func, Arrive, UVap, StatusPrecedent, NbDivision, PasC, StepSign);
+            aStatus         = TestDeflection(Func,
+                                     Arrive || Cadre || ArretAjout,
+                                     UVap,
+                                     StatusPrecedent,
+                                     NbDivision,
+                                     PasC,
+                                     StepSign);
             StatusPrecedent = aStatus;
             if (aStatus == IntWalk_PasTropGrand)
             {
@@ -2340,8 +2350,13 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 Arrive = (wd2[I].etat == 12); // the line is open
               }
             }
-            aStatus =
-              TestDeflection(Func, Arrive, Uvap, StatusPrecedent, NbDivision, PasC, StepSign);
+            aStatus = TestDeflection(Func,
+                                     Arrive || Cadre || ArretAjout,
+                                     Uvap,
+                                     StatusPrecedent,
+                                     NbDivision,
+                                     PasC,
+                                     StepSign);
 
             if (isOnDegeneratedBorder && Tgtend)
               aStatus = IntWalk_ArretSurPoint;
@@ -2779,14 +2794,29 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     Cosi2 = Cosi * Cosi / Duv;
     if (Cosi2 < CosRef2D || sp.Direction2d() * previousd2d < 0)
     {
-      // angle 2d too great or change the side
-      Step         = Step / 2.;
-      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
-      if (StepU < tolerance(1) && StepV < tolerance(2))
-        aStatus = IntWalk_ArretSurPointPrecedent;
-      else
-        aStatus = IntWalk_PasTropGrand;
-      return aStatus;
+      bool isDegeneratedEnd = false;
+      if (Finished)
+      {
+        gp_Pnt aPoint;
+        gp_Vec aD1U, aD1V;
+        ThePSurfaceTool::D1(sp.PSurface(), UV(1), UV(2), aPoint, aD1U, aD1V);
+        // Scale by the parameter range to test the displacement in model units.
+        // At a pole, a collapsed parameter direction cannot constrain the UV turn.
+        aD1U.Multiply(UM - Um);
+        aD1V.Multiply(VM - Vm);
+        isDegeneratedEnd = aD1U.SquareMagnitude() <= Precision::SquareConfusion()
+                           || aD1V.SquareMagnitude() <= Precision::SquareConfusion();
+      }
+      if (!isDegeneratedEnd)
+      {
+        Step         = Step / 2.;
+        double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
+        if (StepU < tolerance(1) && StepV < tolerance(2))
+          aStatus = IntWalk_ArretSurPointPrecedent;
+        else
+          aStatus = IntWalk_PasTropGrand;
+        return aStatus;
+      }
     }
   }
 

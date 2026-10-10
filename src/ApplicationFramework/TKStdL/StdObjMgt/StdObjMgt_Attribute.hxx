@@ -58,7 +58,7 @@ public:
     const char* PName() const override { return "StdObjMgt_Attribute::undefined"; }
 
   protected:
-    DataType myData;
+    DataType myData{};
   };
 
   struct SingleInt : Simple<int>
