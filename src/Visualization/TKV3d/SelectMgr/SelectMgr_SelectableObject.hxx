@@ -88,6 +88,12 @@ public:
   //! completely) when some selection mode is activated not for the first time.
   Standard_EXPORT void ClearSelections(const bool update = false);
 
+  //! Clears a mode's entities, retaining the selection for recomputation.
+  //! For managed objects, first deactivate the mode and call
+  //! SelectMgr_SelectionManager::ClearSelectionStructures().
+  //! @param[in] theMode selection mode to clear; a missing mode has no effect
+  Standard_EXPORT void ClearSelection(const int theMode);
+
   //! Returns the selection having specified selection mode or NULL.
   Standard_EXPORT const occ::handle<SelectMgr_Selection>& Selection(const int theMode) const;
 
