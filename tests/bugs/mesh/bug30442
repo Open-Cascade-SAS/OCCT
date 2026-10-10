@@ -24,6 +24,7 @@ if {[llength [tricheck result]] != 0} {
   puts "Error: Invalid mesh"
 }
 
-checktrinfo result -tri 27250 -nod 13673
+checkshape result
+checktrinfo result -tri 27030 -nod 13563
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

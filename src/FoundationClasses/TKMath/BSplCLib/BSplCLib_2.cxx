@@ -27,6 +27,7 @@
 #include <fstream>
 
 #include <BSplCLib.hxx>
+#include <BSplCLib_Basis.pxx>
 #include <gp_Mat2d.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -289,140 +290,21 @@ int BSplCLib::FactorBandedMatrix(math_Matrix& Matrix,
 
 //=================================================================================================
 
-int BSplCLib::EvalBsplineBasis(const int                         DerivativeRequest,
-                               const int                         Order,
-                               const NCollection_Array1<double>& FlatKnots,
-                               const double                      Parameter,
-                               int&                              FirstNonZeroBsplineIndex,
-                               math_Matrix&                      BsplineBasis,
-                               bool                              isPeriodic)
+int BSplCLib::EvalBsplineBasis(const int                         theDerivativeRequest,
+                               const int                         theOrder,
+                               const NCollection_Array1<double>& theFlatKnots,
+                               const double                      theParameter,
+                               int&                              theFirstIndex,
+                               math_Matrix&                      theBasis,
+                               bool                              thePeriodic)
 {
-  // the matrix must have at least DerivativeRequest + 1
-  //   row and Order columns
-  // the result are stored in the following way in
-  // the Bspline matrix
-  // Let i be the FirstNonZeroBsplineIndex and
-  // t be the parameter value, k the order of the
-  // knot vector, r the DerivativeRequest :
-  //
-  //   B (t)   B (t)                     B (t)
-  //    i       i+1                       i+k-1
-  //
-  //    (1)     (1)                       (1)
-  //   B (t)   B (t)                     B (t)
-  //    i       i+1                       i+k-1
-  //
-  //
-  //
-  //
-  //    (r)     (r)                       (r)
-  //   B (t)   B (t)                     B (t)
-  //    i       i+1                       i+k-1
-  //
-  FirstNonZeroBsplineIndex = 0;
-  int aLocalRequest        = DerivativeRequest;
-  if (DerivativeRequest >= Order)
-  {
-    aLocalRequest = Order - 1;
-  }
-
-  if (BsplineBasis.LowerCol() != 1 || BsplineBasis.UpperCol() < Order
-      || BsplineBasis.LowerRow() != 1 || BsplineBasis.UpperRow() <= aLocalRequest)
-  {
-    return 1;
-  }
-
-  const int aNumPoles = FlatKnots.Upper() - FlatKnots.Lower() + 1 - Order;
-  int       ii        = 0;
-  double    aNewParam = 0.0;
-  BSplCLib::LocateParameter(Order - 1,
-                            FlatKnots,
-                            Parameter,
-                            isPeriodic,
-                            Order,
-                            aNumPoles + 1,
-                            ii,
-                            aNewParam);
-
-  FirstNonZeroBsplineIndex = ii - Order + 1;
-
-  // Use raw pointers for BsplineBasis and FlatKnots to bypass accessor overhead
-  // (math_Matrix::Value -> math_DoubleTab::Value -> NCollection_Array2::Value ->
-  // NCollection_Array1::at with bounds checks and DYLD stubs in tight loops).
-  const int        aBasisNCols = BsplineBasis.ColNumber();
-  double*          aBasisData  = &BsplineBasis(1, 1);
-  const double*    aKnotsData  = &FlatKnots(FlatKnots.Lower());
-  constexpr double aResolution = gp::Resolution();
-  ii -= FlatKnots.Lower(); // rebase to zero-based indexing into aKnotsData
-
-  aBasisData[0] = 1.0;
-  aLocalRequest = DerivativeRequest;
-  if (DerivativeRequest >= Order)
-  {
-    aLocalRequest = Order - 1;
-  }
-
-  for (int qq = 2; qq <= Order - aLocalRequest; qq++)
-  {
-    aBasisData[qq - 1] = 0.0;
-
-    for (int pp = 1; pp <= qq - 1; pp++)
-    {
-      const double aScale = aKnotsData[ii + pp] - aKnotsData[ii - qq + pp + 1];
-      if (std::abs(aScale) < aResolution)
-      {
-        return 2;
-      }
-
-      const double aFactor = (Parameter - aKnotsData[ii - qq + pp + 1]) / aScale;
-      const double aSaved  = aFactor * aBasisData[pp - 1];
-      aBasisData[pp - 1] *= (1.0 - aFactor);
-      aBasisData[pp - 1] += aBasisData[qq - 1];
-      aBasisData[qq - 1] = aSaved;
-    }
-  }
-
-  for (int qq = Order - aLocalRequest + 1; qq <= Order; qq++)
-  {
-    for (int pp = 1; pp <= qq - 1; pp++)
-    {
-      aBasisData[(Order - qq + 1) * aBasisNCols + (pp - 1)] = aBasisData[pp - 1];
-    }
-    aBasisData[qq - 1] = 0.0;
-
-    for (int ss = Order - aLocalRequest + 1; ss <= qq; ss++)
-    {
-      aBasisData[(Order - ss + 1) * aBasisNCols + (qq - 1)] = 0.0;
-    }
-
-    for (int pp = 1; pp <= qq - 1; pp++)
-    {
-      const double aScale = aKnotsData[ii + pp] - aKnotsData[ii - qq + pp + 1];
-      if (std::abs(aScale) < aResolution)
-      {
-        return 2;
-      }
-
-      const double anInverse = 1.0 / aScale;
-      const double aFactor   = (Parameter - aKnotsData[ii - qq + pp + 1]) * anInverse;
-      double       aSaved    = aFactor * aBasisData[pp - 1];
-      aBasisData[pp - 1] *= (1.0 - aFactor);
-      aBasisData[pp - 1] += aBasisData[qq - 1];
-      aBasisData[qq - 1]         = aSaved;
-      const double aLocalInverse = static_cast<double>(qq - 1) * anInverse;
-
-      for (int ss = Order - aLocalRequest + 1; ss <= qq; ss++)
-      {
-        double* aRowS = aBasisData + (Order - ss + 1) * aBasisNCols;
-        aSaved        = aLocalInverse * aRowS[pp - 1];
-        aRowS[pp - 1] *= -aLocalInverse;
-        aRowS[pp - 1] += aRowS[qq - 1];
-        aRowS[qq - 1] = aSaved;
-      }
-    }
-  }
-
-  return 0;
+  return evalBsplineBasis<false>(theDerivativeRequest,
+                                 theOrder,
+                                 theFlatKnots,
+                                 theParameter,
+                                 theFirstIndex,
+                                 theBasis,
+                                 thePeriodic);
 }
 
 //=================================================================================================

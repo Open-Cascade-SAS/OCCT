@@ -1,0 +1,189 @@
+// Created on: 1995-01-17
+// Created by: Laurent BOURESCHE
+// Copyright (c) 1995-1999 Matra Datavision
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _BSplCLib_Basis_HeaderFile
+#define _BSplCLib_Basis_HeaderFile
+
+#include <BSplCLib.hxx>
+#include <gp.hxx>
+#include <math_Matrix.hxx>
+#include <Standard_Real.hxx>
+
+#include <algorithm>
+#include <cmath>
+
+namespace
+{
+//==================================================================================================
+
+// Evaluate the shared basis recurrence. Local knots use exact knot distances for both weights.
+// Local callers provide an order-by-order matrix and a positive middle knot span.
+// This mode stores degree d in row d + 1; it requires derivative request zero.
+// Local evaluation returns 3 when a scalar basis product loses its normal exponent range.
+template <bool TheLocalSpan>
+int evalBsplineBasis(const int                         theDerivativeRequest,
+                     const int                         theOrder,
+                     const NCollection_Array1<double>& theFlatKnots,
+                     const double                      theParameter,
+                     int&                              theFirstIndex,
+                     math_Matrix&                      theBasis,
+                     bool                              thePeriodic)
+{
+  // Rows hold values followed by derivatives; columns hold the nonzero basis functions.
+  theFirstIndex           = 0;
+  const int aLocalRequest = std::min(theDerivativeRequest, theOrder - 1);
+
+  if constexpr (!TheLocalSpan)
+  {
+    if (theBasis.LowerCol() != 1 || theBasis.UpperCol() < theOrder || theBasis.LowerRow() != 1
+        || theBasis.UpperRow() <= aLocalRequest)
+    {
+      return 1;
+    }
+  }
+
+  const int aNumPoles = theFlatKnots.Upper() - theFlatKnots.Lower() + 1 - theOrder;
+  int       ii        = 0;
+  double    aNewParam = 0.0;
+  if constexpr (TheLocalSpan)
+  {
+    ii = theFlatKnots.Lower() + theOrder - 1;
+  }
+  else
+  {
+    BSplCLib::LocateParameter(theOrder - 1,
+                              theFlatKnots,
+                              theParameter,
+                              thePeriodic,
+                              theOrder,
+                              aNumPoles + 1,
+                              ii,
+                              aNewParam);
+  }
+
+  theFirstIndex = ii - theOrder + 1;
+
+  // Use raw pointers for theBasis and theFlatKnots to bypass accessor overhead
+  // (math_Matrix::Value -> math_DoubleTab::Value -> NCollection_Array2::Value ->
+  // NCollection_Array1::at with bounds checks and DYLD stubs in tight loops).
+  const int        aBasisNCols = theBasis.ColNumber();
+  double*          aBasisData  = &theBasis(1, 1);
+  const double*    aKnotsData  = &theFlatKnots(theFlatKnots.Lower());
+  constexpr double aResolution = gp::Resolution();
+  ii -= theFlatKnots.Lower(); // rebase to zero-based indexing into aKnotsData
+
+  double* const aRowsData = aBasisData;
+  if constexpr (TheLocalSpan)
+  {
+    aBasisData += (theOrder - 1) * aBasisNCols;
+    aRowsData[0] = 1.0;
+  }
+  aBasisData[0] = 1.0;
+  for (int qq = 2; qq <= theOrder - aLocalRequest; qq++)
+  {
+    aBasisData[qq - 1] = 0.0;
+
+    for (int pp = 1; pp <= qq - 1; pp++)
+    {
+      const double aScale = aKnotsData[ii + pp] - aKnotsData[ii - qq + pp + 1];
+      if constexpr (!TheLocalSpan)
+      {
+        if (std::abs(aScale) < aResolution)
+        {
+          return 2;
+        }
+      }
+
+      const double aFactor = (theParameter - aKnotsData[ii - qq + pp + 1]) / aScale;
+      const double aLeftFactor =
+        TheLocalSpan ? (aKnotsData[ii + pp] - theParameter) / aScale : (1.0 - aFactor);
+      const double aValue = aBasisData[pp - 1];
+      const double aSaved = aFactor * aValue;
+      const double aLeft  = aLeftFactor * aValue;
+      if constexpr (TheLocalSpan)
+      {
+        // A small basis product can still give a finite coordinate after pole scaling.
+        if (aValue != 0.0
+            && ((aFactor != 0.0 && aSaved < RealSmall())
+                || (aLeftFactor != 0.0 && aLeft < RealSmall())))
+        {
+          return 3;
+        }
+      }
+      aBasisData[pp - 1] = aLeft + aBasisData[qq - 1];
+      aBasisData[qq - 1] = aSaved;
+    }
+    if constexpr (TheLocalSpan)
+    {
+      if (qq < theOrder)
+      {
+        std::copy_n(aBasisData, qq, aRowsData + (qq - 1) * aBasisNCols);
+      }
+    }
+  }
+
+  for (int qq = theOrder - aLocalRequest + 1; qq <= theOrder; qq++)
+  {
+    for (int pp = 1; pp <= qq - 1; pp++)
+    {
+      aBasisData[(theOrder - qq + 1) * aBasisNCols + (pp - 1)] = aBasisData[pp - 1];
+    }
+    aBasisData[qq - 1] = 0.0;
+
+    for (int ss = theOrder - aLocalRequest + 1; ss <= qq; ss++)
+    {
+      aBasisData[(theOrder - ss + 1) * aBasisNCols + (qq - 1)] = 0.0;
+    }
+
+    for (int pp = 1; pp <= qq - 1; pp++)
+    {
+      const double aScale = aKnotsData[ii + pp] - aKnotsData[ii - qq + pp + 1];
+      if constexpr (!TheLocalSpan)
+      {
+        if (std::abs(aScale) < aResolution)
+        {
+          return 2;
+        }
+      }
+
+      const double anInverse = 1.0 / aScale;
+      const double aFactor   = TheLocalSpan
+                                 ? (theParameter - aKnotsData[ii - qq + pp + 1]) / aScale
+                                 : (theParameter - aKnotsData[ii - qq + pp + 1]) * anInverse;
+      double       aSaved    = aFactor * aBasisData[pp - 1];
+      aBasisData[pp - 1] *=
+        TheLocalSpan ? (aKnotsData[ii + pp] - theParameter) / aScale : (1.0 - aFactor);
+      aBasisData[pp - 1] += aBasisData[qq - 1];
+      aBasisData[qq - 1]         = aSaved;
+      const double aLocalInverse = static_cast<double>(qq - 1) * anInverse;
+
+      for (int ss = theOrder - aLocalRequest + 1; ss <= qq; ss++)
+      {
+        double* aRowS = aBasisData + (theOrder - ss + 1) * aBasisNCols;
+        aSaved        = aLocalInverse * aRowS[pp - 1];
+        aRowS[pp - 1] *= -aLocalInverse;
+        aRowS[pp - 1] += aRowS[qq - 1];
+        aRowS[qq - 1] = aSaved;
+      }
+    }
+  }
+
+  return 0;
+}
+
+} // namespace
+
+#endif // _BSplCLib_Basis_HeaderFile

@@ -37,6 +37,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_HArray1.hxx>
 
+#include <algorithm>
+
 // for null derivatives
 static constexpr double BSplSLib_zero[3] = {0.0, 0.0, 0.0};
 
@@ -71,6 +73,51 @@ struct BSplSLib_DataContainer
   double knots2[2 * THE_MAX_DEGREE];
   double ders[48];
 };
+
+//==================================================================================================
+
+// Evaluate each direction once, with the other direction stored as coordinates.
+void evaluateCache(const double            theU,
+                   const double            theV,
+                   const int               theUDegree,
+                   const int               theVDegree,
+                   const size_t            theDimension,
+                   BSplSLib_DataContainer& theData)
+{
+  const size_t aNbU = static_cast<size_t>(theUDegree + 1);
+  const size_t aNbV = static_cast<size_t>(theVDegree + 1);
+  BSplCLib::Bohm(theU,
+                 theUDegree,
+                 theUDegree,
+                 theData.knots1[0],
+                 static_cast<int>(theDimension * aNbV),
+                 theData.poles[0]);
+  NCollection_LocalArray<double, 4 * (THE_MAX_DEGREE + 1)> aTransposed(aNbU * aNbV * theDimension);
+  for (size_t aU = 0; aU < aNbU; ++aU)
+  {
+    for (size_t aV = 0; aV < aNbV; ++aV)
+    {
+      std::copy_n(theData.poles + (aU * aNbV + aV) * theDimension,
+                  theDimension,
+                  &aTransposed[(aV * aNbU + aU) * theDimension]);
+    }
+  }
+  BSplCLib::Bohm(theV,
+                 theVDegree,
+                 theVDegree,
+                 theData.knots2[0],
+                 static_cast<int>(theDimension * aNbU),
+                 aTransposed[0]);
+  for (size_t aU = 0; aU < aNbU; ++aU)
+  {
+    for (size_t aV = 0; aV < aNbV; ++aV)
+    {
+      std::copy_n(&aTransposed[(aV * aNbU + aU) * theDimension],
+                  theDimension,
+                  theData.poles + (aU * aNbV + aV) * theDimension);
+    }
+  }
+}
 } // namespace
 
 //**************************************************************************
@@ -2404,7 +2451,7 @@ void BSplSLib::BuildCache(const double                      U,
                           NCollection_Array2<double>*       CacheWeights)
 {
   bool   rational, rational_u, rational_v, flag_u_or_v;
-  int    kk, d1, d1p1, d2, d2p1, ii, jj, iii, jjj, Index;
+  int    d1, d1p1, d2, d2p1, ii, jj, iii, jjj, Index;
   double u1, min_degree_domain, max_degree_domain, f, factor[2], u2;
   if (Weights != nullptr)
   {
@@ -2442,12 +2489,7 @@ void BSplSLib::BuildCache(const double                      U,
   d2p1        = d2 + 1;
   if (rational)
   {
-    BSplCLib::Bohm(u1, d1, d1, *dc.knots1, 4 * d2p1, *dc.poles);
-
-    for (kk = 0; kk <= d1; kk++)
-    {
-      BSplCLib::Bohm(u2, d2, d2, *dc.knots2, 4, *(dc.poles + kk * 4 * d2p1));
-    }
+    evaluateCache(u1, u2, d1, d2, 4, dc);
     if (flag_u_or_v)
     {
       min_degree_domain = USpanDomain;
@@ -2486,12 +2528,7 @@ void BSplSLib::BuildCache(const double                      U,
   }
   else
   {
-    BSplCLib::Bohm(u1, d1, d1, *dc.knots1, 3 * d2p1, *dc.poles);
-
-    for (kk = 0; kk <= d1; kk++)
-    {
-      BSplCLib::Bohm(u2, d2, d2, *dc.knots2, 3, *(dc.poles + kk * 3 * d2p1));
-    }
+    evaluateCache(u1, u2, d1, d2, 3, dc);
     if (flag_u_or_v)
     {
       min_degree_domain = USpanDomain;
@@ -2613,11 +2650,7 @@ void BSplSLib::BuildCache(const double                      theU,
     aDomains[1] = theUSpanDomain;
   }
 
-  BSplCLib::Bohm(u1, d1, d1, *dc.knots1, aDimension * d2p1, *dc.poles);
-  for (int kk = 0; kk <= d1; kk++)
-  {
-    BSplCLib::Bohm(u2, d2, d2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
-  }
+  evaluateCache(u1, u2, d1, d2, static_cast<size_t>(aDimension), dc);
 
   double* aCache = (double*)&(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
 
