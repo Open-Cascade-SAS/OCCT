@@ -1152,6 +1152,11 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule, StepData_GeneralModule)
 #include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod.pxx"
 #include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthMod.pxx"
 #include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.pxx"
 #include "../RWStepRepr/RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp.pxx"
 #include "../RWStepRepr/RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.pxx"
 #include "../RWStepAP242/RWStepAP242_RWDraughtingModelItemAssociation.pxx"
@@ -1196,6 +1201,11 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule, StepData_GeneralModule)
 #include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_BooleanRepresentationItem.hxx>
@@ -4574,6 +4584,40 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       tool.Share(anent, iter);
     }
     break;
+    case 827: {
+      DeclareAndCast(StepDimTol_GeoTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 828: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 829: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 830: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 831: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
     case 698: {
       DeclareAndCast(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp, anent, ent);
       RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp tool;
@@ -7227,6 +7271,21 @@ bool RWStepAP214_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Trans
     case 697:
       ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol;
       break;
+    case 827:
+      ent = new StepDimTol_GeoTolAndUneqDisGeoTol;
+      break;
+    case 828:
+      ent = new StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol;
+      break;
+    case 829:
+      ent = new StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol;
+      break;
+    case 830:
+      ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol;
+      break;
+    case 831:
+      ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol;
+      break;
     case 698:
       ent = new StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp;
       break;
@@ -8320,6 +8379,11 @@ int RWStepAP214_GeneralModule::CategoryNumber(const int CN,
     case 695:
     case 696:
     case 697:
+    case 827:
+    case 828:
+    case 829:
+    case 830:
+    case 831:
       return cataux;
     case 698:
     case 699:

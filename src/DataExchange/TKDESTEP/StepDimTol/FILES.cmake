@@ -30,9 +30,9 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_DatumReferenceElement.hxx
   StepDimTol_DatumReferenceModifier.cxx
   StepDimTol_DatumReferenceModifier.hxx
+  StepDimTol_DatumReferenceModifierType.hxx
   StepDimTol_DatumReferenceModifierWithValue.cxx
   StepDimTol_DatumReferenceModifierWithValue.hxx
-  StepDimTol_DatumReferenceModifierType.hxx
   StepDimTol_DatumSystem.cxx
   StepDimTol_DatumSystem.hxx
   StepDimTol_DatumSystemOrReference.cxx
@@ -43,6 +43,30 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_FlatnessTolerance.hxx
   StepDimTol_GeneralDatumReference.cxx
   StepDimTol_GeneralDatumReference.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRef.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRef.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthMaxTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthMod.cxx
+  StepDimTol_GeoTolAndGeoTolWthMod.hxx
+  StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.hxx
+  StepDimTol_GeoTolAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndUneqDisGeoTol.hxx
   StepDimTol_GeometricTolerance.cxx
   StepDimTol_GeometricTolerance.hxx
   StepDimTol_GeometricToleranceModifier.hxx
@@ -51,6 +75,7 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_GeometricToleranceTarget.cxx
   StepDimTol_GeometricToleranceTarget.hxx
   StepDimTol_GeometricToleranceType.hxx
+
   StepDimTol_GeometricToleranceWithDatumReference.cxx
   StepDimTol_GeometricToleranceWithDatumReference.hxx
   StepDimTol_GeometricToleranceWithDefinedAreaUnit.cxx
@@ -61,21 +86,6 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_GeometricToleranceWithMaximumTolerance.hxx
   StepDimTol_GeometricToleranceWithModifiers.cxx
   StepDimTol_GeometricToleranceWithModifiers.hxx
-  StepDimTol_GeoTolAndGeoTolWthDatRef.cxx
-  StepDimTol_GeoTolAndGeoTolWthDatRef.hxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.cxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.cxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.cxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.cxx
-  StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx
-  StepDimTol_GeoTolAndGeoTolWthMaxTol.cxx
-  StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx
-  StepDimTol_GeoTolAndGeoTolWthMod.cxx
-  StepDimTol_GeoTolAndGeoTolWthMod.hxx
-
   StepDimTol_LimitCondition.hxx
   StepDimTol_LineProfileTolerance.cxx
   StepDimTol_LineProfileTolerance.hxx

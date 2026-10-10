@@ -1,6 +1,4 @@
-// Created on: 2015-08-11
-// Created by: Irina KRYLOVA
-// Copyright (c) 2015 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,38 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.pxx"
-#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include "RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.pxx"
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
 #include "RWStepDimTol_UnequalTolerance.pxx"
 
-RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::
-  RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol() = default;
+RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol::
+  RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol() = default;
 
 //=================================================================================================
 
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::ReadStep(
+void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol::ReadStep(
   const occ::handle<StepData_StepReaderData>&                             data,
   const int                                                               num,
   occ::handle<Interface_Check>&                                           ach,
-  const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>& ent) const
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& ent) const
 {
-  RWStepDimTol_UnequalTolerance::ReadStep<true, false, false>(data, num, ach, ent);
+  RWStepDimTol_UnequalTolerance::ReadStep<false, true, true>(data, num, ach, ent);
 }
 
 //=================================================================================================
 
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::WriteStep(
+void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol::WriteStep(
   StepData_StepWriter&                                                    SW,
-  const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>& ent) const
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& ent) const
 {
-  RWStepDimTol_UnequalTolerance::WriteStep<true, false, false>(SW, ent);
+  RWStepDimTol_UnequalTolerance::WriteStep<false, true, true>(SW, ent);
 }
 
 //=================================================================================================
 
-void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::Share(
-  const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>& ent,
+void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol::Share(
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& ent,
   Interface_EntityIterator&                                               iter) const
 {
-  RWStepDimTol_UnequalTolerance::Share<true, false, false>(ent, iter);
+  RWStepDimTol_UnequalTolerance::Share<false, true, true>(ent, iter);
 }

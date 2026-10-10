@@ -20,15 +20,12 @@
 #include <Standard_Type.hxx>
 
 #include <StepDimTol_GeoTolAndGeoTolWthDatRef.hxx>
-#include <StepDimTol_GeometricToleranceWithModifiers.hxx>
-#include <StepBasic_LengthMeasureWithUnit.hxx>
 class StepDimTol_GeometricToleranceTarget;
 class StepDimTol_GeometricToleranceWithDatumReference;
 class StepDimTol_UnequallyDisposedGeometricTolerance;
 class TCollection_HAsciiString;
 class StepRepr_ShapeAspect;
 
-//! Complex unequal tolerance; datum references, modifiers and maximum tolerance are optional.
 class StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol
     : public StepDimTol_GeoTolAndGeoTolWthDatRef
 {
@@ -66,38 +63,10 @@ public:
     return myUnequallyDisposedGeometricTolerance;
   }
 
-  //! @return optional modifiers constituent
-  const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&
-    GetGeometricToleranceWithModifiers() const
-  {
-    return myModifiers;
-  }
-
-  //! @param[in] theModifiers optional modifiers constituent
-  void SetGeometricToleranceWithModifiers(
-    const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& theModifiers)
-  {
-    myModifiers = theModifiers;
-  }
-
-  //! @return optional maximum tolerance
-  const occ::handle<StepBasic_LengthMeasureWithUnit>& GetMaxTolerance() const
-  {
-    return myMaxTolerance;
-  }
-
-  //! @param[in] theTolerance optional maximum tolerance
-  void SetMaxTolerance(const occ::handle<StepBasic_LengthMeasureWithUnit>& theTolerance)
-  {
-    myMaxTolerance = theTolerance;
-  }
-
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol,
                           StepDimTol_GeoTolAndGeoTolWthDatRef)
 
 private:
   occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> myUnequallyDisposedGeometricTolerance;
-  occ::handle<StepDimTol_GeometricToleranceWithModifiers>     myModifiers;
-  occ::handle<StepBasic_LengthMeasureWithUnit>                myMaxTolerance;
 };
 #endif // _StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol_HeaderFile

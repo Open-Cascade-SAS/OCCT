@@ -34,7 +34,7 @@ void StepDimTol_GeometricToleranceWithMaximumTolerance::Init(
   const occ::handle<Standard_Transient>&       theMagnitude,
   const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
   const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers,
-  const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaximumUpperTolerance)
+  const occ::handle<Standard_Transient>& theMaximumUpperTolerance)
 {
   StepDimTol_GeometricToleranceWithModifiers::Init(theName,
                                                    theDescription,

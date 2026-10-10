@@ -63,6 +63,10 @@
 #include <TopLoc_Location.hxx>
 
 #include <optional>
+#include <cstdlib>
+#include <filesystem>
+#include <algorithm>
+#include <vector>
 #include <sstream>
 #include <string>
 
@@ -1197,16 +1201,23 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
                                                           std::optional<double>(0.0),
                                                           std::optional<double>(0.125)})
         {
-          for (int aCombination = 0; aCombination < 6; ++aCombination)
+          for (int aCombination = 0; aCombination < 12; ++aCombination)
           {
             SCOPED_TRACE(testing::Message() << "type=" << aType << ", sourceUnit=" << aSourceUnit
                                             << ", writeUnit=" << aWriteUnit
                                             << ", displacement=" << aDisplacement.value_or(0.0)
                                             << ", present=" << aDisplacement.has_value()
                                             << ", combination=" << aCombination);
+            if (aType == XCAFDimTolObjects_GeomToleranceType_Flatness && aCombination % 2 != 0)
+            {
+              continue; // Flatness forbids datum references in EXPRESS.
+            }
             const bool                    aWithDatum    = (aCombination % 2) != 0;
-            const bool                    aWithModifier = aCombination >= 2 && aCombination < 4;
+            const bool                    aWithModifier =
+              (aCombination >= 2 && aCombination < 4) || aCombination >= 10;
             const bool                    aWithMaximum  = aCombination >= 4;
+            const bool                    aValidMaximum =
+              (aCombination >= 4 && aCombination < 6) || aCombination >= 10;
             occ::handle<TDocStd_Document> aDocument     = new TDocStd_Document("BinXCAF");
             XCAFDoc_DocumentTool::SetLengthUnit(aDocument, aSourceUnit);
             const auto aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
@@ -1227,11 +1238,16 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
             if (aWithModifier)
             {
               anObject->AddModifier(XCAFDimTolObjects_GeomToleranceModif_Common_Zone);
-              anObject->SetMaxValueModifier(0.75);
             }
-            else if (aWithMaximum)
+            if (aWithMaximum)
             {
-              anObject->SetMaxValueModifier(0.75);
+              anObject->SetMaxValueModifier(aCombination >= 8 && aCombination < 10 ? 0.25 : 0.75);
+              if (aValidMaximum || aCombination >= 8)
+              {
+                anObject->SetMaterialRequirementModifier(
+                  aCombination >= 10 ? XCAFDimTolObjects_GeomToleranceMatReqModif_L
+                                     : XCAFDimTolObjects_GeomToleranceMatReqModif_M);
+              }
             }
             anAttribute->SetObject(anObject);
             if (aWithDatum)
@@ -1253,6 +1269,11 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
               SCOPED_TRACE(aPass);
               std::stringstream aStream;
               ASSERT_TRUE(WriteStepStream(aDocument, aStream, aWriteUnit));
+              EXPECT_EQ(aStream.str().find("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE(")
+                          != std::string::npos,
+                        aValidMaximum);
+              EXPECT_EQ(aStream.str().find("GEOMETRIC_TOLERANCE_WITH_MODIFIERS(())"),
+                        std::string::npos);
               EXPECT_EQ(aStream.str().find("UNEQUALLY_DISPOSED_GEOMETRIC_TOLRANCE"),
                         std::string::npos);
               EXPECT_EQ(aStream.str().find("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE(")
@@ -1265,6 +1286,24 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
                 const auto        aPosition  = aContent.find(aDatumName);
                 ASSERT_NE(aPosition, std::string::npos);
                 aContent.replace(aPosition, aDatumName.length(), "GTWDR");
+                aStream.str(aContent);
+              }
+              if (aDisplacement && aPass == 0)
+              {
+                std::string       aContent  = aStream.str();
+                const std::string aTypeName = aType == XCAFDimTolObjects_GeomToleranceType_Flatness
+                                                ? "FLATNESS_TOLERANCE"
+                                                : "SURFACE_PROFILE_TOLERANCE";
+                const auto        aTypePosition = aContent.find(aTypeName);
+                ASSERT_NE(aTypePosition, std::string::npos);
+                aContent.replace(aTypePosition,
+                                 aTypeName.length(),
+                                 aType == XCAFDimTolObjects_GeomToleranceType_Flatness ? "FLTTLR"
+                                                                                       : "SRPRTL");
+                const std::string aBaseName     = "GEOMETRIC_TOLERANCE(";
+                const auto        aBasePosition = aContent.find(aBaseName);
+                ASSERT_NE(aBasePosition, std::string::npos);
+                aContent.replace(aBasePosition, aBaseName.length(), "GMTTLR(");
                 aStream.str(aContent);
               }
               occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
@@ -1292,13 +1331,18 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
               ASSERT_FALSE(aResult->GetDescription().IsNull());
               EXPECT_STREQ(aResult->GetDescription()->ToCString(), "unequal profile");
               EXPECT_EQ(aResult->GetModifiers().Length(), aWithModifier ? 1 : 0);
+              EXPECT_EQ(aResult->GetMaterialRequirementModifier(),
+                        aValidMaximum || aCombination >= 8
+                          ? (aCombination >= 10 ? XCAFDimTolObjects_GeomToleranceMatReqModif_L
+                                                : XCAFDimTolObjects_GeomToleranceMatReqModif_M)
+                          : XCAFDimTolObjects_GeomToleranceMatReqModif_None);
               if (aWithModifier)
               {
                 EXPECT_EQ(aResult->GetModifiers().First(),
                           XCAFDimTolObjects_GeomToleranceModif_Common_Zone);
               }
               EXPECT_NEAR(aResult->GetMaxValueModifier(),
-                          aWithModifier || aWithMaximum ? 0.75 * aSourceUnit / 0.001 : 0.0,
+                          aValidMaximum ? 0.75 * aSourceUnit / 0.001 : 0.0,
                           1e-10);
               NCollection_Sequence<TDF_Label> aDatums;
               aRestoredTool->GetDatumOfTolerLabels(aLabels.First(), aDatums);
@@ -1309,4 +1353,93 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
       }
     }
   }
+}
+
+// External NIST PMI corpus is optional; keep its path outside the repository.
+TEST(GDT_STEP_Storage_Test, NistCtc02UnequalToleranceRoundTrip)
+{
+  const char* aDirectory = std::getenv("OCCT_NIST_PMI_STEP_DIR");
+  if (aDirectory == nullptr)
+  {
+    GTEST_SKIP() << "Set OCCT_NIST_PMI_STEP_DIR to the NIST PMI STEP collection";
+  }
+  const std::string aPath = std::string(aDirectory) + "/nist_ctc_02_asme1_ap242-e2.stp";
+  occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
+  DESTEP_Provider                       aProvider(aNode);
+  auto                                  aDocument = NewDocument();
+  ASSERT_TRUE(aProvider.Read(TCollection_AsciiString(aPath.c_str()), aDocument));
+  for (int aPass = 0; aPass < 2; ++aPass)
+  {
+    SCOPED_TRACE(aPass);
+    const auto                      aTool = XCAFDoc_DocumentTool::DimTolTool(aDocument->Main());
+    NCollection_Sequence<TDF_Label> aLabels;
+    aTool->GetGeomToleranceLabels(aLabels);
+    std::vector<double> aDisplacements;
+    for (const auto& aLabel : aLabels)
+    {
+      occ::handle<XCAFDoc_GeomTolerance> anAttribute;
+      ASSERT_TRUE(aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), anAttribute));
+      const auto anObject = anAttribute->GetObject();
+      if (anObject->GetUnequalDisplacement())
+      {
+        aDisplacements.push_back(*anObject->GetUnequalDisplacement());
+        EXPECT_EQ(anObject->GetType(), XCAFDimTolObjects_GeomToleranceType_ProfileOfSurface);
+        EXPECT_DOUBLE_EQ(anObject->GetValue(), 2.5);
+        NCollection_Sequence<TDF_Label> aDatums;
+        aTool->GetDatumOfTolerLabels(aLabel, aDatums);
+        EXPECT_FALSE(aDatums.IsEmpty());
+      }
+    }
+    std::sort(aDisplacements.begin(), aDisplacements.end());
+    ASSERT_EQ(aDisplacements.size(), 3u);
+    EXPECT_DOUBLE_EQ(aDisplacements[0], 0.0);
+    EXPECT_DOUBLE_EQ(aDisplacements[1], 0.5);
+    EXPECT_DOUBLE_EQ(aDisplacements[2], 2.5);
+    if (aPass == 0)
+    {
+      std::stringstream aStream;
+      ASSERT_TRUE(WriteStepStream(aDocument, aStream));
+      aDocument = NewDocument();
+      DE_Provider::ReadStreamList aStreams;
+      aStreams.Append(DE_Provider::ReadStreamNode("nist-roundtrip.step", aStream));
+      ASSERT_TRUE(aProvider.Read(aStreams, aDocument));
+    }
+  }
+}
+
+TEST(GDT_STEP_Storage_Test, NistCorpusImport)
+{
+  const char* aDirectory = std::getenv("OCCT_NIST_PMI_STEP_DIR");
+  if (aDirectory == nullptr)
+  {
+    GTEST_SKIP() << "Set OCCT_NIST_PMI_STEP_DIR to the NIST PMI STEP collection";
+  }
+  std::vector<std::filesystem::path> aFiles;
+  for (const auto& anEntry : std::filesystem::directory_iterator(aDirectory))
+  {
+    if (anEntry.is_regular_file() && anEntry.path().extension() == ".stp")
+    {
+      aFiles.push_back(anEntry.path());
+    }
+  }
+  ASSERT_FALSE(aFiles.empty());
+  std::sort(aFiles.begin(), aFiles.end());
+  int aToleranceCount = 0;
+  for (const auto& aFile : aFiles)
+  {
+    SCOPED_TRACE(aFile.filename().string());
+    const occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
+    DESTEP_Provider                             aProvider(aNode);
+    const auto                                  aDocument = NewDocument();
+    ASSERT_TRUE(aProvider.Read(TCollection_AsciiString(aFile.string().c_str()), aDocument));
+    NCollection_Sequence<TDF_Label> aShapes;
+    XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->GetFreeShapes(aShapes);
+    EXPECT_FALSE(aShapes.IsEmpty());
+    NCollection_Sequence<TDF_Label> aTolerances;
+    XCAFDoc_DocumentTool::DimTolTool(aDocument->Main())->GetGeomToleranceLabels(aTolerances);
+    aToleranceCount += aTolerances.Length();
+  }
+  EXPECT_GT(aToleranceCount, 0);
+  RecordProperty("NistToleranceCount", aToleranceCount);
+  RecordProperty("NistModelCount", static_cast<int>(aFiles.size()));
 }
