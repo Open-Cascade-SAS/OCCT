@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>

@@ -355,6 +355,8 @@ TEST(XCAFDoc_GDT_Test, GdtTolerances_A2_TwoDatums)
   EXPECT_EQ(aDatumObjectB->GetModifiers().Length(), 0);
 }
 
+//==================================================================================================
+
 TEST(XCAFDoc_GDT_Test, DirectionPresenceSurvivesCopyAndLabelStorage)
 {
   const occ::handle<XCAFDimTolObjects_DimensionObject> anObject =
@@ -378,6 +380,8 @@ TEST(XCAFDoc_GDT_Test, DirectionPresenceSurvivesCopyAndLabelStorage)
   anAttribute->SetObject(aCopy);
   EXPECT_FALSE(anAttribute->GetObject()->GetDirection(aDirection));
 }
+
+//==================================================================================================
 
 TEST(XCAFDoc_GDT_Test, UnequalDisplacementDescriptionAndZoneValueRoundTrip)
 {

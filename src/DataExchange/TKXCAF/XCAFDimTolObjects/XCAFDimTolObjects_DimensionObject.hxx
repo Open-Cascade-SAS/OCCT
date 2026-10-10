@@ -371,7 +371,7 @@ private:
   NCollection_Sequence<XCAFDimTolObjects_DimensionModif> myModifiers;
   TopoDS_Edge                                            myPath;
   gp_Dir                                                 myDir;
-  bool                                                   myHasDirection = false;
+  bool                                                   myHasDirection = false; //!< Whether a measuring direction was authored.
   gp_Ax2                                                 myConnection1, myConnection2;
   bool myHasConnection1 = false, myHasConnection2 = false;
   bool myConnectionIsPoint1 = false, myConnectionIsPoint2 = false;

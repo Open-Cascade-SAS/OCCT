@@ -23,10 +23,15 @@
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
 #include <StepDimTol_DatumSystemOrReference.hxx>
-#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
 
+namespace
+{
 namespace RWStepDimTol_UnequalTolerance
 {
 // Names follow StepDimTol_GeometricToleranceType and are alphabetically ordered.
@@ -63,32 +68,52 @@ static constexpr const char* THE_TOLERANCE_SHORT_NAMES[] = {"ANGTLR",
                                                             "SYMTLR",
                                                             "TTRNTL"};
 
-template <bool HasDatum, bool HasModifiers, bool HasMaximum, typename Entity>
-void ReadStep(const occ::handle<StepData_StepReaderData>& data,
-              const int                                   num0,
-              occ::handle<Interface_Check>&               ach,
-              const occ::handle<Entity>&                  ent)
+//! Parsed attributes shared by the fixed unequal-tolerance complex combinations.
+//! Each RW component initializes its own entity from these schema constituents.
+struct Parameters
+{
+  occ::handle<TCollection_HAsciiString> Name;                         //!< Geometric tolerance name.
+  occ::handle<TCollection_HAsciiString> Description;                  //!< Authored description.
+  occ::handle<Standard_Transient>       Magnitude;                    //!< Magnitude measure entity.
+  StepDimTol_GeometricToleranceTarget   Target;                       //!< Toleranced shape or item.
+  occ::handle<StepDimTol_GeometricToleranceWithDatumReference> Datum; //!< Datum constituent.
+  occ::handle<StepDimTol_GeometricToleranceWithModifiers>      Modifiers; //!< Modifier constituent.
+  occ::handle<Standard_Transient>   Maximum; //!< Maximum length measure entity.
+  StepDimTol_GeometricToleranceType Type;    //!< Concrete tolerance subtype.
+  occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> Unequal; //!< Unequal constituent.
+};
+
+//==================================================================================================
+
+//! Read the constituents required by one fixed complex combination.
+//! Return false on invalid constituent structure; report attribute errors in the check.
+template <bool HasDatum, bool HasModifiers, bool HasMaximum>
+bool ReadStep(const occ::handle<StepData_StepReaderData>& theData,
+              const int                                   theNum0,
+              occ::handle<Interface_Check>&               theCheck,
+              Parameters&                                 theParameters)
 {
   static_assert(!HasMaximum || HasModifiers, "Maximum tolerance inherits modifiers");
-  int num = 0;
-  data->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", num0, num, ach);
-  if (!data->CheckNbParams(num, 4, ach, "geometric_tolerance"))
+  int aNum = 0;
+  theData->NamedForComplex("GEOMETRIC_TOLERANCE", "GMTTLR", theNum0, aNum, theCheck);
+  if (!theData->CheckNbParams(aNum, 4, theCheck, "geometric_tolerance"))
   {
-    return;
+    return false;
   }
   // Own fields of GeometricTolerance
   occ::handle<TCollection_HAsciiString> aName;
-  data->ReadString(num, 1, "name", ach, aName);
+  theData->ReadString(aNum, 1, "name", theCheck, aName);
   occ::handle<TCollection_HAsciiString> aDescription;
-  data->ReadString(num, 2, "description", ach, aDescription);
+  theData->ReadString(aNum, 2, "description", theCheck, aDescription);
   occ::handle<Standard_Transient> aMagnitude;
-  data->ReadEntity(num, 3, "magnitude", ach, STANDARD_TYPE(Standard_Transient), aMagnitude);
+  theData
+    ->ReadEntity(aNum, 3, "magnitude", theCheck, STANDARD_TYPE(Standard_Transient), aMagnitude);
   StepDimTol_GeometricToleranceTarget aTolerancedShapeAspect;
-  data->ReadEntity(num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
+  theData->ReadEntity(aNum, 4, "toleranced_shape_aspect", theCheck, aTolerancedShapeAspect);
 
   NCollection_Sequence<TCollection_AsciiString> aTypes;
-  data->ComplexType(num0, aTypes);
-  const auto hasComponent = [&aTypes](const char* theName, const char* theShortName = "") {
+  theData->ComplexType(theNum0, aTypes);
+  const auto aHasComponent = [&aTypes](const char* theName, const char* theShortName = "") {
     for (const auto& aName : aTypes)
     {
       if (aName.IsEqual(theName) || aName.IsEqual(theShortName))
@@ -101,29 +126,33 @@ void ReadStep(const occ::handle<StepData_StepReaderData>& data,
   occ::handle<StepDimTol_GeometricToleranceWithDatumReference> aGTWDR;
   if constexpr (HasDatum)
   {
-    data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE", "GTWDR", num0, num, ach);
-    if (!data->CheckNbParams(num, 1, ach, "datum reference"))
+    theData->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE",
+                             "GTWDR",
+                             theNum0,
+                             aNum,
+                             theCheck);
+    if (!theData->CheckNbParams(aNum, 1, theCheck, "datum reference"))
     {
-      return;
+      return false;
     }
     // Own fields of GeometricToleranceWithDatumReference
     occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> aDatumSystem;
-    int                                                                 sub5 = 0;
-    if (data->ReadSubList(num, 1, "datum_system", ach, sub5))
+    int                                                                 aSubList = 0;
+    if (theData->ReadSubList(aNum, 1, "datum_system", theCheck, aSubList))
     {
-      int nb0 = data->NbParams(sub5);
-      if (nb0 == 0)
+      int aCount = theData->NbParams(aSubList);
+      if (aCount == 0)
       {
-        ach->AddFail("Datum system must not be empty");
-        return;
+        theCheck->AddFail("Datum system must not be empty");
+        return false;
       }
-      aDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, nb0);
-      int num2     = sub5;
-      for (int i0 = 1; i0 <= nb0; i0++)
+      aDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, aCount);
+      int aSubNum  = aSubList;
+      for (int anIndex = 1; anIndex <= aCount; anIndex++)
       {
-        StepDimTol_DatumSystemOrReference anIt0;
-        data->ReadEntity(num2, i0, "datum_system_or_reference", ach, anIt0);
-        aDatumSystem->SetValue(i0, anIt0);
+        StepDimTol_DatumSystemOrReference aReference;
+        theData->ReadEntity(aSubNum, anIndex, "datum_system_or_reference", theCheck, aReference);
+        aDatumSystem->SetValue(anIndex, aReference);
       }
     }
     // Initialize entity
@@ -133,40 +162,45 @@ void ReadStep(const occ::handle<StepData_StepReaderData>& data,
   occ::handle<Standard_Transient> aMaxTolerance;
   if constexpr (HasMaximum)
   {
-    data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE", num0, num, ach);
-    if (!data->CheckNbParams(num, 1, ach, "maximum tolerance"))
+    theData->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE", theNum0, aNum, theCheck);
+    if (!theData->CheckNbParams(aNum, 1, theCheck, "maximum tolerance"))
     {
-      return;
+      return false;
     }
-    RWStepDimTol_LengthMeasure::Read(data, num, 1, "maximum_upper_tolerance", ach, aMaxTolerance);
+    RWStepDimTol_LengthMeasure::Read(theData,
+                                     aNum,
+                                     1,
+                                     "maximum_upper_tolerance",
+                                     theCheck,
+                                     aMaxTolerance);
   }
   occ::handle<StepDimTol_GeometricToleranceWithModifiers> aWithModifiers;
   if constexpr (HasModifiers)
   {
-    data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MODIFIERS", num0, num, ach);
-    if (!data->CheckNbParams(num, 1, ach, "modifiers"))
+    theData->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MODIFIERS", theNum0, aNum, theCheck);
+    if (!theData->CheckNbParams(aNum, 1, theCheck, "modifiers"))
     {
-      return;
+      return false;
     }
     int aSubList = 0;
-    if (data->ReadSubList(num, 1, "modifiers", ach, aSubList))
+    if (theData->ReadSubList(aNum, 1, "modifiers", theCheck, aSubList))
     {
-      const int aCount = data->NbParams(aSubList);
+      const int aCount = theData->NbParams(aSubList);
       if (aCount == 0)
       {
-        ach->AddFail("Geometric tolerance modifiers must not be empty");
-        return;
+        theCheck->AddFail("Geometric tolerance modifiers must not be empty");
+        return false;
       }
       const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers =
         new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, aCount);
       for (int anIndex = 1; anIndex <= aCount; ++anIndex)
       {
-        const char*                           aModifier = data->ParamCValue(aSubList, anIndex);
+        const char*                           aModifier = theData->ParamCValue(aSubList, anIndex);
         StepDimTol_GeometricToleranceModifier aValue    = StepDimTol_GTMMaximumMaterialRequirement;
-        if (data->ParamType(aSubList, anIndex) != Interface_ParamEnum
+        if (theData->ParamType(aSubList, anIndex) != Interface_ParamEnum
             || !RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifier(aModifier, aValue))
         {
-          ach->AddFail("Unknown geometric tolerance modifier");
+          theCheck->AddFail("Unknown geometric tolerance modifier");
         }
         aModifiers->SetValue(anIndex, aValue);
       }
@@ -176,123 +210,92 @@ void ReadStep(const occ::handle<StepData_StepReaderData>& data,
   }
   if constexpr (HasMaximum)
   {
-    bool hasMaterialRequirement = false;
+    bool aHasMaterialRequirement = false;
     if (!aWithModifiers.IsNull() && !aWithModifiers->Modifiers().IsNull())
     {
       for (const auto aModifier : *aWithModifiers->Modifiers())
       {
-        hasMaterialRequirement = hasMaterialRequirement
-                                 || aModifier == StepDimTol_GTMMaximumMaterialRequirement
-                                 || aModifier == StepDimTol_GTMLeastMaterialRequirement;
+        aHasMaterialRequirement = aHasMaterialRequirement
+                                  || aModifier == StepDimTol_GTMMaximumMaterialRequirement
+                                  || aModifier == StepDimTol_GTMLeastMaterialRequirement;
       }
     }
-    if (!hasMaterialRequirement)
+    if (!aHasMaterialRequirement)
     {
-      ach->AddFail("Maximum tolerance requires maximum or least material requirement");
+      theCheck->AddFail("Maximum tolerance requires maximum or least material requirement");
     }
-    const auto aLengthMagnitude = RWStepDimTol_LengthMeasure::Value(aMagnitude);
-    const auto aMaximum         = RWStepDimTol_LengthMeasure::Value(aMaxTolerance);
+    const occ::handle<StepBasic_MeasureWithUnit> aLengthMagnitude =
+      RWStepDimTol_LengthMeasure::Value(aMagnitude);
+    const occ::handle<StepBasic_MeasureWithUnit> aMaximum =
+      RWStepDimTol_LengthMeasure::Value(aMaxTolerance);
     // Compare values only when units reference the same entity. Distinct unit entities
     // may be EXPRESS value-equal; identity alone cannot establish a unit mismatch.
     if (!aMaximum.IsNull() && !aLengthMagnitude.IsNull()
         && aMaximum->UnitComponent().Value() == aLengthMagnitude->UnitComponent().Value()
         && aMaximum->ValueComponent() <= aLengthMagnitude->ValueComponent())
     {
-      ach->AddFail("Maximum tolerance must exceed magnitude");
+      theCheck->AddFail("Maximum tolerance must exceed magnitude");
     }
   }
-  data->NamedForComplex("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE", num0, num, ach);
-  if (!data->CheckNbParams(num, 1, ach, "unequal displacement"))
+  theData->NamedForComplex("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE", theNum0, aNum, theCheck);
+  if (!theData->CheckNbParams(aNum, 1, theCheck, "unequal displacement"))
   {
-    return;
+    return false;
   }
   occ::handle<Standard_Transient> aDisplacement;
-  RWStepDimTol_LengthMeasure::Read(data, num, 1, "displacement", ach, aDisplacement);
+  RWStepDimTol_LengthMeasure::Read(theData, aNum, 1, "displacement", theCheck, aDisplacement);
   // Initialize entity
   occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> anUDGT =
     new StepDimTol_UnequallyDisposedGeometricTolerance;
   anUDGT->SetDisplacement(aDisplacement);
 
   // Find the concrete subtype among the fixed constituents of this complex entity.
-  StepDimTol_GeometricToleranceType aType   = StepDimTol_GTTPositionTolerance;
-  bool                              hasType = false;
+  StepDimTol_GeometricToleranceType aType    = StepDimTol_GTTPositionTolerance;
+  bool                              aHasType = false;
   for (int anIndex = StepDimTol_GTTAngularityTolerance;
        anIndex <= StepDimTol_GTTTotalRunoutTolerance;
        ++anIndex)
   {
-    if (hasComponent(THE_TOLERANCE_NAMES[anIndex], THE_TOLERANCE_SHORT_NAMES[anIndex]))
+    if (aHasComponent(THE_TOLERANCE_NAMES[anIndex], THE_TOLERANCE_SHORT_NAMES[anIndex]))
     {
-      aType   = static_cast<StepDimTol_GeometricToleranceType>(anIndex);
-      hasType = true;
+      aType    = static_cast<StepDimTol_GeometricToleranceType>(anIndex);
+      aHasType = true;
       break;
     }
   }
-  if (!hasType)
+  if (!aHasType)
   {
-    ach->AddFail("The type of geometric tolerance is not supported");
+    theCheck->AddFail("The type of geometric tolerance is not supported");
+    return false;
+  }
+  theData->NamedForComplex(THE_TOLERANCE_NAMES[aType],
+                           THE_TOLERANCE_SHORT_NAMES[aType],
+                           theNum0,
+                           aNum,
+                           theCheck);
+  if (!theData->CheckNbParams(aNum, 0, theCheck, THE_TOLERANCE_NAMES[aType]))
+  {
+    return false;
   }
 
-  // Initialize entity
-  if constexpr (HasDatum && !HasModifiers && !HasMaximum)
-  {
-    ent->Init(aName, aDescription, aMagnitude, aTolerancedShapeAspect, aGTWDR, aType, anUDGT);
-  }
-  else if constexpr (!HasDatum && !HasModifiers && !HasMaximum)
-  {
-    ent->Init(aName, aDescription, aMagnitude, aTolerancedShapeAspect, aType, anUDGT);
-  }
-  else if constexpr (!HasDatum && HasModifiers && !HasMaximum)
-  {
-    ent->Init(aName,
-              aDescription,
-              aMagnitude,
-              aTolerancedShapeAspect,
-              aWithModifiers,
-              aType,
-              anUDGT);
-  }
-  else if constexpr (!HasDatum && HasModifiers && HasMaximum)
-  {
-    ent->Init(aName,
-              aDescription,
-              aMagnitude,
-              aTolerancedShapeAspect,
-              aWithModifiers,
-              aMaxTolerance,
-              aType,
-              anUDGT);
-  }
-  else if constexpr (HasDatum && HasModifiers && !HasMaximum)
-  {
-    ent->Init(aName,
-              aDescription,
-              aMagnitude,
-              aTolerancedShapeAspect,
-              aGTWDR,
-              aWithModifiers,
-              aType,
-              anUDGT);
-  }
-  else if constexpr (HasDatum && HasModifiers && HasMaximum)
-  {
-    ent->Init(aName,
-              aDescription,
-              aMagnitude,
-              aTolerancedShapeAspect,
-              aGTWDR,
-              aWithModifiers,
-              aMaxTolerance,
-              aType,
-              anUDGT);
-  }
+  theParameters = {aName,
+                   aDescription,
+                   aMagnitude,
+                   aTolerancedShapeAspect,
+                   aGTWDR,
+                   aWithModifiers,
+                   aMaxTolerance,
+                   aType,
+                   anUDGT};
+  return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 template <bool HasDatum, bool HasModifiers, bool HasMaximum, typename Entity>
-void WriteStep(StepData_StepWriter& SW, const occ::handle<Entity>& ent)
+void WriteStep(StepData_StepWriter& theWriter, const occ::handle<Entity>& theEntity)
 {
-  const StepDimTol_GeometricToleranceType aType = ent->GetToleranceType();
+  const StepDimTol_GeometricToleranceType aType = theEntity->GetToleranceType();
   if (aType < StepDimTol_GTTAngularityTolerance || aType > StepDimTol_GTTTotalRunoutTolerance)
   {
     throw Standard_OutOfRange("Unsupported geometric tolerance subtype");
@@ -300,38 +303,40 @@ void WriteStep(StepData_StepWriter& SW, const occ::handle<Entity>& ent)
   // STEP complex constituents must be written in alphabetical order.
   if (aType < StepDimTol_GTTLineProfileTolerance)
   {
-    SW.StartEntity(THE_TOLERANCE_NAMES[aType]);
+    theWriter.StartEntity(THE_TOLERANCE_NAMES[aType]);
   }
 
-  SW.StartEntity("GEOMETRIC_TOLERANCE");
-  SW.Send(ent->Name());
-  SW.Send(ent->Description());
-  SW.Send(ent->Magnitude());
-  SW.Send(ent->TolerancedShapeAspect().Value());
+  theWriter.StartEntity("GEOMETRIC_TOLERANCE");
+  theWriter.Send(theEntity->Name());
+  theWriter.Send(theEntity->Description());
+  theWriter.Send(theEntity->Magnitude());
+  theWriter.Send(theEntity->TolerancedShapeAspect().Value());
   if constexpr (HasDatum)
   {
-    SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
-    SW.OpenSub();
-    for (int i4 = 1;
-         i4 <= ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length();
-         i4++)
+    theWriter.StartEntity("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
+    theWriter.OpenSub();
+    for (int anIndex = 1;
+         anIndex
+         <= theEntity->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Length();
+         anIndex++)
     {
-      StepDimTol_DatumSystemOrReference Var0 =
-        ent->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(i4);
-      SW.Send(Var0.Value());
+      StepDimTol_DatumSystemOrReference aReference =
+        theEntity->GetGeometricToleranceWithDatumReference()->DatumSystemAP242()->Value(anIndex);
+      theWriter.Send(aReference.Value());
     }
-    SW.CloseSub();
+    theWriter.CloseSub();
   }
   if constexpr (HasMaximum)
   {
-    SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
-    SW.Send(ent->GetMaxTolerance());
+    theWriter.StartEntity("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
+    theWriter.Send(theEntity->GetMaxTolerance());
   }
   if constexpr (HasModifiers)
   {
-    SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
-    SW.OpenSub();
-    const auto aModifiers = ent->GetGeometricToleranceWithModifiers()->Modifiers();
+    theWriter.StartEntity("GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
+    theWriter.OpenSub();
+    const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers =
+      theEntity->GetGeometricToleranceWithModifiers()->Modifiers();
     if (!aModifiers.IsNull())
     {
       for (const auto aModifier : *aModifiers)
@@ -340,54 +345,56 @@ void WriteStep(StepData_StepWriter& SW, const occ::handle<Entity>& ent)
           RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifierName(aModifier);
         if (aName != nullptr)
         {
-          SW.SendEnum(aName);
+          theWriter.SendEnum(aName);
         }
         else
         {
-          SW.SendUndef();
+          theWriter.SendUndef();
         }
       }
     }
-    SW.CloseSub();
+    theWriter.CloseSub();
   }
 
   if (aType >= StepDimTol_GTTLineProfileTolerance)
   {
-    SW.StartEntity(THE_TOLERANCE_NAMES[aType]);
+    theWriter.StartEntity(THE_TOLERANCE_NAMES[aType]);
   }
 
-  SW.StartEntity("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE");
-  SW.Send(ent->GetUnequallyDisposedGeometricTolerance()->Displacement());
+  theWriter.StartEntity("UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE");
+  theWriter.Send(theEntity->GetUnequallyDisposedGeometricTolerance()->Displacement());
 }
 
-//=================================================================================================
+//==================================================================================================
 
-template <bool HasDatum, bool HasModifiers, bool HasMaximum, typename Entity>
-void Share(const occ::handle<Entity>& ent, Interface_EntityIterator& iter)
+template <bool HasDatum, bool HasMaximum, typename Entity>
+void Share(const occ::handle<Entity>& theEntity, Interface_EntityIterator& theIterator)
 {
   // Own fields of GeometricTolerance
-  iter.AddItem(ent->Magnitude());
-  iter.AddItem(ent->TolerancedShapeAspect().Value());
-  if (!ent->GetUnequallyDisposedGeometricTolerance().IsNull())
+  theIterator.AddItem(theEntity->Magnitude());
+  theIterator.AddItem(theEntity->TolerancedShapeAspect().Value());
+  if (!theEntity->GetUnequallyDisposedGeometricTolerance().IsNull())
   {
-    iter.AddItem(ent->GetUnequallyDisposedGeometricTolerance()->Displacement());
+    theIterator.AddItem(theEntity->GetUnequallyDisposedGeometricTolerance()->Displacement());
   }
   if constexpr (HasMaximum)
   {
-    iter.AddItem(ent->GetMaxTolerance());
+    theIterator.AddItem(theEntity->GetMaxTolerance());
   }
   if constexpr (HasDatum)
   {
-    const auto aDatum = ent->GetGeometricToleranceWithDatumReference();
+    const occ::handle<StepDimTol_GeometricToleranceWithDatumReference> aDatum =
+      theEntity->GetGeometricToleranceWithDatumReference();
     if (!aDatum.IsNull() && !aDatum->DatumSystemAP242().IsNull())
     {
       for (const auto& aReference : *aDatum->DatumSystemAP242())
       {
-        iter.AddItem(aReference.Value());
+        theIterator.AddItem(aReference.Value());
       }
     }
   }
 }
 
 } // namespace RWStepDimTol_UnequalTolerance
-#endif
+} // namespace
+#endif // _RWStepDimTol_UnequalTolerance_HeaderFile

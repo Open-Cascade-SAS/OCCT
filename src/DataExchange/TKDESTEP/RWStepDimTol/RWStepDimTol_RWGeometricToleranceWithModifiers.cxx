@@ -147,7 +147,7 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::Share(
   iter.AddItem(ent->TolerancedShapeAspect().Value());
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifier(
   const char*                            theName,
@@ -156,7 +156,7 @@ bool RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifier(
   for (int anIndex = StepDimTol_GTMAnyCrossSection; anIndex <= StepDimTol_GTMTangentPlane;
        ++anIndex)
   {
-    const auto aModifier = static_cast<StepDimTol_GeometricToleranceModifier>(anIndex);
+    const StepDimTol_GeometricToleranceModifier aModifier = static_cast<StepDimTol_GeometricToleranceModifier>(anIndex);
     if (strcmp(theName, GetModifierName(aModifier)) == 0)
     {
       theModifier = aModifier;
@@ -166,7 +166,7 @@ bool RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifier(
   return false;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 const char* RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifierName(
   const StepDimTol_GeometricToleranceModifier theModifier)

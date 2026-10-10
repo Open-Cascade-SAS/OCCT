@@ -1,6 +1,18 @@
 // Copyright (c) 2026 OPEN CASCADE SAS
-// Distributed under the OCCT LGPL exception; see LICENSE_LGPL_21.txt.
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
 
+#include <NCollection_Sequence.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_GeneralLib.hxx>
 #include <Interface_GeneralModule.hxx>
@@ -27,6 +39,36 @@
 
 namespace
 {
+//! Reduced NIST CTC 02 qualified displacement, with only semantic dependencies.
+static constexpr const char* THE_QUALIFIED_TOLERANCE_STEP = R"STEP(ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION((''),'2;1');
+FILE_NAME('','',(''),(''),'','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF'));
+ENDSEC;
+DATA;
+#1=SHAPE_ASPECT('','',#2,.T.);
+#2=PRODUCT_DEFINITION_SHAPE('','',#3);
+#3=PRODUCT_DEFINITION('','',#4,#5);
+#4=PRODUCT_DEFINITION_FORMATION('','',#6);
+#5=PRODUCT_DEFINITION_CONTEXT('',#7,'design');
+#6=PRODUCT('','','',(#8));
+#7=APPLICATION_CONTEXT('');
+#8=PRODUCT_CONTEXT('',#7,'');
+#9=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#10=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.5),#9);
+#11=TYPE_QUALIFIER('basic');
+#12=(LENGTH_MEASURE_WITH_UNIT()MEASURE_REPRESENTATION_ITEM()
+MEASURE_WITH_UNIT(LENGTH_MEASURE(0.5),#9)
+QUALIFIED_REPRESENTATION_ITEM((#11))REPRESENTATION_ITEM(''));
+#13=(GEOMETRIC_TOLERANCE('nist','',#10,#1)SURFACE_PROFILE_TOLERANCE()
+UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE(#12));
+ENDSEC;
+END-ISO-10303-21;
+)STEP";
+
+//==================================================================================================
+
 occ::handle<StepData_ReadWriteModule> readWriteModule()
 {
   STEPCAFControl_Controller::Init();
@@ -40,6 +82,8 @@ occ::handle<StepData_ReadWriteModule> readWriteModule()
   }
   return nullptr;
 }
+
+//==================================================================================================
 
 NCollection_Sequence<TCollection_AsciiString> constituents(const char* theType,
                                                            bool        theDatum,
@@ -67,12 +111,14 @@ NCollection_Sequence<TCollection_AsciiString> constituents(const char* theType,
 }
 } // namespace
 
+//==================================================================================================
+
 TEST(StepAP214_UnequalToleranceTest, DispatchAndCreationAgree)
 {
-  const auto aModule = readWriteModule();
+  const occ::handle<StepData_ReadWriteModule> aModule = readWriteModule();
   ASSERT_FALSE(aModule.IsNull());
-  const auto                       aProtocol   = StepAP214::Protocol();
-  const occ::handle<Standard_Type> aExpected[] = {
+  const occ::handle<StepAP214_Protocol> aProtocol   = StepAP214::Protocol();
+  const occ::handle<Standard_Type>      aExpected[] = {
     STANDARD_TYPE(StepDimTol_GeoTolAndUneqDisGeoTol),
     STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol),
     STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol),
@@ -80,15 +126,16 @@ TEST(StepAP214_UnequalToleranceTest, DispatchAndCreationAgree)
     STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol),
     STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol)};
   Interface_GeneralLib aGeneral(aProtocol);
-  for (int i = 0; i < 6; ++i)
+  for (int anIndex = 0; anIndex < 6; ++anIndex)
   {
-    SCOPED_TRACE(i);
-    const auto aTypes = constituents("SURFACE_PROFILE_TOLERANCE", i % 2 != 0, i >= 2, i >= 4);
-    const int  aCase  = aModule->CaseStep(aTypes);
+    SCOPED_TRACE(anIndex);
+    const NCollection_Sequence<TCollection_AsciiString> aTypes =
+      constituents("SURFACE_PROFILE_TOLERANCE", anIndex % 2 != 0, anIndex >= 2, anIndex >= 4);
+    const int aCase = aModule->CaseStep(aTypes);
     ASSERT_GT(aCase, 0);
-    EXPECT_EQ(aCase, aProtocol->TypeNumber(aExpected[i]));
+    EXPECT_EQ(aCase, aProtocol->TypeNumber(aExpected[anIndex]));
     EXPECT_TRUE(aModule->IsComplex(aCase));
-    bool hasCreated = false;
+    bool aHasCreated = false;
     for (aGeneral.Start(); aGeneral.More(); aGeneral.Next())
     {
       if (aGeneral.Protocol() != aProtocol)
@@ -98,16 +145,18 @@ TEST(StepAP214_UnequalToleranceTest, DispatchAndCreationAgree)
       occ::handle<Standard_Transient> anEntity;
       ASSERT_TRUE(aGeneral.Module()->NewVoid(aCase, anEntity));
       ASSERT_FALSE(anEntity.IsNull());
-      EXPECT_EQ(anEntity->DynamicType(), aExpected[i]);
-      hasCreated = true;
+      EXPECT_EQ(anEntity->DynamicType(), aExpected[anIndex]);
+      aHasCreated = true;
     }
-    EXPECT_TRUE(hasCreated);
+    EXPECT_TRUE(aHasCreated);
   }
 }
 
+//==================================================================================================
+
 TEST(StepAP214_UnequalToleranceTest, RejectsIncompatibleConstituents)
 {
-  const auto aModule = readWriteModule();
+  const occ::handle<StepData_ReadWriteModule> aModule = readWriteModule();
   ASSERT_FALSE(aModule.IsNull());
   EXPECT_EQ(aModule->CaseStep(constituents("SURFACE_PROFILE_TOLERANCE", false, false, true)), 0);
   for (const char* aType : {"FLATNESS_TOLERANCE",
@@ -117,11 +166,11 @@ TEST(StepAP214_UnequalToleranceTest, RejectsIncompatibleConstituents)
   {
     for (int aVariant = 0; aVariant < 3; ++aVariant)
     {
-      const bool hasModifiers = aVariant >= 1;
-      const bool hasMaximum   = aVariant >= 2;
-      EXPECT_EQ(aModule->CaseStep(constituents(aType, true, hasModifiers, hasMaximum)), 0)
+      const bool aHasModifiers = aVariant >= 1;
+      const bool aHasMaximum   = aVariant >= 2;
+      EXPECT_EQ(aModule->CaseStep(constituents(aType, true, aHasModifiers, aHasMaximum)), 0)
         << aType << ", variant=" << aVariant;
-      EXPECT_GT(aModule->CaseStep(constituents(aType, false, hasModifiers, hasMaximum)), 0)
+      EXPECT_GT(aModule->CaseStep(constituents(aType, false, aHasModifiers, aHasMaximum)), 0)
         << aType << ", variant=" << aVariant;
     }
   }
@@ -136,15 +185,16 @@ TEST(StepAP214_UnequalToleranceTest, RejectsIncompatibleConstituents)
   {
     for (int aVariant = 0; aVariant < 3; ++aVariant)
     {
-      const bool hasModifiers = aVariant >= 1;
-      const bool hasMaximum   = aVariant >= 2;
-      EXPECT_EQ(aModule->CaseStep(constituents(aType, false, hasModifiers, hasMaximum)), 0)
+      const bool aHasModifiers = aVariant >= 1;
+      const bool aHasMaximum   = aVariant >= 2;
+      EXPECT_EQ(aModule->CaseStep(constituents(aType, false, aHasModifiers, aHasMaximum)), 0)
         << aType << ", variant=" << aVariant;
-      EXPECT_GT(aModule->CaseStep(constituents(aType, true, hasModifiers, hasMaximum)), 0)
+      EXPECT_GT(aModule->CaseStep(constituents(aType, true, aHasModifiers, aHasMaximum)), 0)
         << aType << ", variant=" << aVariant;
     }
   }
-  auto aTypes = constituents("SURFACE_PROFILE_TOLERANCE", false, false, false);
+  NCollection_Sequence<TCollection_AsciiString> aTypes =
+    constituents("SURFACE_PROFILE_TOLERANCE", false, false, false);
   aTypes.Append("GEOMETRIC_TOLERANCE");
   EXPECT_EQ(aModule->CaseStep(aTypes), 0);
   aTypes = constituents("SURFACE_PROFILE_TOLERANCE", false, false, false);
@@ -155,90 +205,67 @@ TEST(StepAP214_UnequalToleranceTest, RejectsIncompatibleConstituents)
   EXPECT_EQ(aModule->CaseStep(aTypes), 0);
 }
 
+//==================================================================================================
+
 // Qualified measure structure from NIST CTC 02, reduced to its semantic dependencies.
 TEST(StepAP214_UnequalToleranceTest, PreservesQualifiedLengthMeasureReference)
 {
   readWriteModule();
-  for (const bool hasMaximum : {false, true})
+  for (const bool aHasMaximum : {false, true})
   {
-    SCOPED_TRACE(hasMaximum);
-    std::stringstream aStream(R"STEP(ISO-10303-21;
-HEADER;
-FILE_DESCRIPTION((''),'2;1');
-FILE_NAME('','',(''),(''),'','','');
-FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF'));
-ENDSEC;
-DATA;
-#1=SHAPE_ASPECT('','',#2,.T.);
-#2=PRODUCT_DEFINITION_SHAPE('','',#3);
-#3=PRODUCT_DEFINITION('','',#4,#5);
-#4=PRODUCT_DEFINITION_FORMATION('','',#6);
-#5=PRODUCT_DEFINITION_CONTEXT('',#7,'design');
-#6=PRODUCT('','','',(#8));
-#7=APPLICATION_CONTEXT('');
-#8=PRODUCT_CONTEXT('',#7,'');
-#9=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
-#10=LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(2.5),#9);
-#11=TYPE_QUALIFIER('basic');
-#12=(LENGTH_MEASURE_WITH_UNIT()MEASURE_REPRESENTATION_ITEM()
-MEASURE_WITH_UNIT(LENGTH_MEASURE(0.5),#9)
-QUALIFIED_REPRESENTATION_ITEM((#11))REPRESENTATION_ITEM(''));
-#13=(GEOMETRIC_TOLERANCE('nist','',#10,#1)SURFACE_PROFILE_TOLERANCE()
-UNEQUALLY_DISPOSED_GEOMETRIC_TOLERANCE(#12));
-ENDSEC;
-END-ISO-10303-21;
-)STEP");
-    if (hasMaximum)
+    SCOPED_TRACE(aHasMaximum);
+    std::stringstream aStream(THE_QUALIFIED_TOLERANCE_STEP);
+    if (aHasMaximum)
     {
-      std::string       aText = aStream.str();
-      const std::string aMaximum =
+      TCollection_AsciiString       aText(aStream.str().c_str());
+      const TCollection_AsciiString aMaximum =
         "#14=(LENGTH_MEASURE_WITH_UNIT()MEASURE_REPRESENTATION_ITEM()"
         "MEASURE_WITH_UNIT(LENGTH_MEASURE(3.0),#9)"
         "QUALIFIED_REPRESENTATION_ITEM((#11))REPRESENTATION_ITEM(''));\n";
-      aText.insert(aText.find("#13="), aMaximum);
-      aText.insert(aText.find("SURFACE_PROFILE_TOLERANCE()"),
+      aText.Insert(aText.Search("#13="), aMaximum);
+      aText.Insert(aText.Search("SURFACE_PROFILE_TOLERANCE()"),
                    "GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE(#14)"
                    "GEOMETRIC_TOLERANCE_WITH_MODIFIERS((.MAXIMUM_MATERIAL_REQUIREMENT.))");
-      aStream.str(aText);
+      aStream.str(aText.ToCString());
     }
     for (int aPass = 0; aPass < 2; ++aPass)
     {
       SCOPED_TRACE(aPass);
       STEPControl_Reader aReader;
       ASSERT_EQ(aReader.ReadStream("qualified.step", aStream), IFSelect_RetDone);
-      const auto aModel = aReader.StepModel();
-      for (int i = 1; i <= aModel->NbEntities(); ++i)
+      const occ::handle<StepData_StepModel> aModel = aReader.StepModel();
+      for (int anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
       {
-        EXPECT_EQ(aModel->Check(i, true)->NbFails(), 0) << i;
+        EXPECT_EQ(aModel->Check(anIndex, true)->NbFails(), 0) << anIndex;
       }
       aModel->InternalParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
       occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> anUnequal;
       occ::handle<Standard_Transient>                             aMaximum;
-      for (int i = 1; i <= aModel->NbEntities(); ++i)
+      for (int anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
       {
-        if (const auto anEntity =
-              occ::down_cast<StepDimTol_GeoTolAndUneqDisGeoTol>(aModel->Value(i)))
+        if (const occ::handle<StepDimTol_GeoTolAndUneqDisGeoTol> anEntity =
+              occ::down_cast<StepDimTol_GeoTolAndUneqDisGeoTol>(aModel->Value(anIndex)))
         {
           anUnequal = anEntity->GetUnequallyDisposedGeometricTolerance();
         }
-        else if (const auto anEntity =
+        else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol> anEntity =
                    occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>(
-                     aModel->Value(i)))
+                     aModel->Value(anIndex)))
         {
           anUnequal = anEntity->GetUnequallyDisposedGeometricTolerance();
           aMaximum  = anEntity->GetMaxTolerance();
         }
       }
       ASSERT_FALSE(anUnequal.IsNull());
-      if (hasMaximum)
+      if (aHasMaximum)
       {
-        const auto aQualified =
+        const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI> aQualified =
           occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI>(aMaximum);
         ASSERT_FALSE(aQualified.IsNull());
         ASSERT_FALSE(aQualified->GetMeasureWithUnit().IsNull());
         EXPECT_DOUBLE_EQ(aQualified->GetMeasureWithUnit()->ValueComponent(), 3.0);
       }
-      const auto aMeasure =
+      const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI> aMeasure =
         occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI>(anUnequal->Displacement());
       ASSERT_FALSE(aMeasure.IsNull());
       ASSERT_FALSE(aMeasure->GetMeasureWithUnit().IsNull());
@@ -251,4 +278,26 @@ END-ISO-10303-21;
       ASSERT_TRUE(aWriter.Print(aStream));
     }
   }
+}
+
+//==================================================================================================
+
+TEST(StepAP214_UnequalToleranceTest, RejectsConcreteSubtypeParameters)
+{
+  readWriteModule();
+  TCollection_AsciiString       aText(THE_QUALIFIED_TOLERANCE_STEP);
+  const TCollection_AsciiString aTypePrefix("SURFACE_PROFILE_TOLERANCE(");
+  const int                     aPosition = aText.Search(aTypePrefix);
+  ASSERT_GT(aPosition, 0);
+  aText.Insert(aPosition + aTypePrefix.Length(), "1");
+  std::stringstream  aStream(aText.ToCString());
+  STEPControl_Reader aReader;
+  ASSERT_EQ(aReader.ReadStream("invalid-tolerance.step", aStream), IFSelect_RetDone);
+  const occ::handle<StepData_StepModel> aModel    = aReader.StepModel();
+  int                                   aFailures = 0;
+  for (int anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
+  {
+    aFailures += aModel->Check(anIndex, true)->NbFails();
+  }
+  EXPECT_GT(aFailures, 0);
 }

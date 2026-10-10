@@ -15,7 +15,6 @@
 
 #include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
 
-#include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeometricToleranceWithMaximumTolerance,

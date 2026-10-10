@@ -23,8 +23,18 @@ class StepDimTol_UnequallyDisposedGeometricTolerance;
 class StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol : public StepDimTol_GeoTolAndGeoTolWthMod
 {
 public:
+  //! Construct an uninitialized complex tolerance.
   Standard_EXPORT StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol();
 
+  //! Initialize the geometric tolerance and all required complex constituents.
+  //! Entity handles are retained; the caller must provide schema-compatible constituents.
+  //! @param[in] theName geometric tolerance name
+  //! @param[in] theDescription authored description
+  //! @param[in] theMagnitude magnitude measure entity; complex constituents are retained
+  //! @param[in] theTarget toleranced shape aspect or geometric tolerance target
+  //! @param[in] theModifiers required non-empty modifiers constituent
+  //! @param[in] theType concrete subtype compatible with the datum constituents
+  //! @param[in] theUnequal required unequal-displacement constituent
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&                       theName,
     const occ::handle<TCollection_HAsciiString>&                       theDescription,
@@ -34,6 +44,15 @@ public:
     const StepDimTol_GeometricToleranceType                            theType,
     const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>& theUnequal);
 
+  //! Initialize the geometric tolerance and all required complex constituents.
+  //! Entity handles are retained; the caller must provide schema-compatible constituents.
+  //! @param[in] theName geometric tolerance name
+  //! @param[in] theDescription authored description
+  //! @param[in] theMagnitude magnitude measure entity; complex constituents are retained
+  //! @param[in] theTarget toleranced shape aspect or geometric tolerance target
+  //! @param[in] theModifiers required non-empty modifiers constituent
+  //! @param[in] theType concrete subtype compatible with the datum constituents
+  //! @param[in] theUnequal required unequal-displacement constituent
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&                       theName,
     const occ::handle<TCollection_HAsciiString>&                       theDescription,
@@ -43,22 +62,25 @@ public:
     const StepDimTol_GeometricToleranceType                            theType,
     const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>& theUnequal);
 
+  //! Set the required unequal-displacement constituent; retain the supplied handle.
   void SetUnequallyDisposedGeometricTolerance(
     const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>& theUnequal)
   {
-    myUnequal = theUnequal;
+    myUnequallyDisposedGeometricTolerance = theUnequal;
   }
 
+  //! Return the unequal-displacement constituent retained by this entity.
   const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>&
     GetUnequallyDisposedGeometricTolerance() const
   {
-    return myUnequal;
+    return myUnequallyDisposedGeometricTolerance;
   }
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol,
                           StepDimTol_GeoTolAndGeoTolWthMod)
 
 private:
-  occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance> myUnequal;
+  occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>
+    myUnequallyDisposedGeometricTolerance; //!< Required unequal-displacement constituent.
 };
-#endif
+#endif // _StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol_HeaderFile

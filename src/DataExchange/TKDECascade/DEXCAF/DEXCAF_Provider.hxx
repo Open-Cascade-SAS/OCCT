@@ -130,7 +130,6 @@ public:
     const TopoDS_Shape&            theShape,
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
-public:
   //! Use the first caller-owned seekable stream to read a document.
   //! Replace data after success, reset history, and preserve application/modification policy.
   //! Append modes merge into the target using the caller's modification and transaction policy.

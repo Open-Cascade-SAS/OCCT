@@ -37,9 +37,11 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_Provider, DE_Provider)
+
 namespace
 {
-// ==================================================================================================
+//==================================================================================================
 
 occ::handle<TDocStd_Application> makeReadApplication()
 {
@@ -58,7 +60,7 @@ occ::handle<TDocStd_Application> makeReadApplication()
   return anApp;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 occ::handle<PCDM_ReaderFilter> makeReadFilter(const DEXCAF_ConfigurationNode& theNode)
 {
@@ -88,7 +90,7 @@ occ::handle<PCDM_ReaderFilter> makeReadFilter(const DEXCAF_ConfigurationNode& th
   return aFilter;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool documentShape(const occ::handle<TDocStd_Document>& theDocument, TopoDS_Shape& theShape)
 {
@@ -132,7 +134,7 @@ bool documentShape(const occ::handle<TDocStd_Document>& theDocument, TopoDS_Shap
   return true;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 void assignReadDocument(const occ::handle<TDocStd_Application>& theApplication,
                         const occ::handle<TDocStd_Document>&    theSource,
@@ -163,20 +165,18 @@ void assignReadDocument(const occ::handle<TDocStd_Application>& theApplication,
 }
 } // namespace
 
-IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_Provider, DE_Provider)
-
-//=================================================================================================
+//==================================================================================================
 
 DEXCAF_Provider::DEXCAF_Provider() = default;
 
-//=================================================================================================
+//==================================================================================================
 
 DEXCAF_Provider::DEXCAF_Provider(const occ::handle<DE_ConfigurationNode>& theNode)
     : DE_Provider(theNode)
 {
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Read(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
@@ -187,7 +187,7 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&       thePath,
   return Read(thePath, theDocument, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Write(const TCollection_AsciiString&       thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
@@ -198,7 +198,7 @@ bool DEXCAF_Provider::Write(const TCollection_AsciiString&       thePath,
   return Write(thePath, theDocument, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Read(const TCollection_AsciiString&       thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
@@ -230,7 +230,7 @@ bool DEXCAF_Provider::Read(const TCollection_AsciiString&       thePath,
     aStreams.Append(ReadStreamNode(thePath, *aStream));
     return Read(aStreams, theDocument, theProgress);
   }
-  occ::handle<TDocStd_Document>         aDocument;
+  occ::handle<TDocStd_Document>          aDocument;
   const occ::handle<TDocStd_Application> anApp   = makeReadApplication();
   const occ::handle<PCDM_ReaderFilter>   aFilter = makeReadFilter(*aNode);
 
@@ -391,7 +391,7 @@ TCollection_AsciiString DEXCAF_Provider::GetVendor() const
   return TCollection_AsciiString("OCC");
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Read(ReadStreamList&                      theStreams,
                            const occ::handle<TDocStd_Document>& theDocument,
@@ -402,7 +402,7 @@ bool DEXCAF_Provider::Read(ReadStreamList&                      theStreams,
   return Read(theStreams, theDocument, theProgress);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Write(WriteStreamList&                     theStreams,
                             const occ::handle<TDocStd_Document>& theDocument,
@@ -413,7 +413,7 @@ bool DEXCAF_Provider::Write(WriteStreamList&                     theStreams,
   return Write(theStreams, theDocument, theProgress);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Read(ReadStreamList&                      theStreams,
                            const occ::handle<TDocStd_Document>& theDocument,
@@ -451,7 +451,7 @@ bool DEXCAF_Provider::Read(ReadStreamList&                      theStreams,
   return true;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Write(WriteStreamList&                     theStreams,
                             const occ::handle<TDocStd_Document>& theDocument,
@@ -485,7 +485,7 @@ bool DEXCAF_Provider::Write(WriteStreamList&                     theStreams,
   return true;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Read(ReadStreamList&                     theStreams,
                            TopoDS_Shape&                       theShape,
@@ -496,7 +496,7 @@ bool DEXCAF_Provider::Read(ReadStreamList&                     theStreams,
   return Read(theStreams, theShape, theProgress);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Write(WriteStreamList&                    theStreams,
                             const TopoDS_Shape&                 theShape,
@@ -507,7 +507,7 @@ bool DEXCAF_Provider::Write(WriteStreamList&                    theStreams,
   return Write(theStreams, theShape, theProgress);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Read(ReadStreamList&              theStreams,
                            TopoDS_Shape&                theShape,
@@ -518,7 +518,7 @@ bool DEXCAF_Provider::Read(ReadStreamList&              theStreams,
   return Read(theStreams, aDocument, theProgress) && documentShape(aDocument, theShape);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_Provider::Write(WriteStreamList&             theStreams,
                             const TopoDS_Shape&          theShape,

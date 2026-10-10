@@ -196,7 +196,8 @@ public:
   //! Authored tolerance description, independent of its semantic name.
   const occ::handle<TCollection_HAsciiString>& GetDescription() const { return myDescription; }
 
-  //! Set the source tolerance description.
+  //! Retain the source tolerance description; a null handle clears it.
+  //! @param[in] theDescription authored description, independent of the semantic name
   void SetDescription(const occ::handle<TCollection_HAsciiString>& theDescription)
   {
     myDescription = theDescription;
@@ -207,6 +208,7 @@ public:
   const std::optional<double>& GetUnequalDisplacement() const { return myUnequalDisplacement; }
 
   //! Set or remove the independently authored displacement.
+  //! @param[in] theValue displacement in document length units, or nullopt to remove it
   void SetUnequalDisplacement(const std::optional<double>& theValue)
   {
     myUnequalDisplacement = theValue;
@@ -243,8 +245,8 @@ private:
   XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType =
     XCAFDimTolObjects_ToleranceZoneAffectedPlane_None;
   gp_Pln                                                     myAffectedPlane;
-  std::optional<double>                                      myUnequalDisplacement;
-  occ::handle<TCollection_HAsciiString>                      myDescription;
+  std::optional<double> myUnequalDisplacement; //!< Authored displacement; zero differs from absence.
+  occ::handle<TCollection_HAsciiString> myDescription; //!< Authored tolerance description.
 };
 
 #endif // _XCAFDimTolObjects_GeomToleranceObject_HeaderFile

@@ -17,6 +17,8 @@
 #include <DE_ConfigurationContext.hxx>
 #include <NCollection_Buffer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DEIGES_ConfigurationNode, DE_ShapeFixConfigurationNode)
+
 namespace
 {
 static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
@@ -26,8 +28,6 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 }
 
 } // namespace
-
-IMPLEMENT_STANDARD_RTTIEXT(DEIGES_ConfigurationNode, DE_ShapeFixConfigurationNode)
 
 //=================================================================================================
 
@@ -395,7 +395,7 @@ bool DEIGES_ConfigurationNode::IsStreamSupported() const
   return true;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 TCollection_AsciiString DEIGES_ConfigurationNode::GetFormat() const
 {

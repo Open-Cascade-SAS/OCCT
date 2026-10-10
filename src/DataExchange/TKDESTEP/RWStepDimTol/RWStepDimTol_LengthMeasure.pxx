@@ -20,27 +20,35 @@
 #include <StepRepr_ReprItemAndLengthMeasureWithUnit.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
 
+namespace
+{
 namespace RWStepDimTol_LengthMeasure
 {
+//==================================================================================================
+
 //! Retrieve the measure constituent while retaining the actual entity separately.
 inline occ::handle<StepBasic_MeasureWithUnit> Value(
   const occ::handle<Standard_Transient>& theEntity)
 {
-  if (const auto aSimple = occ::down_cast<StepBasic_LengthMeasureWithUnit>(theEntity))
+  if (const occ::handle<StepBasic_LengthMeasureWithUnit> aSimple =
+        occ::down_cast<StepBasic_LengthMeasureWithUnit>(theEntity))
   {
     return aSimple;
   }
-  if (const auto aComplex = occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnit>(theEntity))
+  if (const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnit> aComplex =
+        occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnit>(theEntity))
   {
     return aComplex->GetMeasureWithUnit();
   }
-  if (const auto aQualified =
+  if (const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI> aQualified =
         occ::down_cast<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI>(theEntity))
   {
     return aQualified->GetMeasureWithUnit();
   }
   return nullptr;
 }
+
+//==================================================================================================
 
 //! Read a schema length_measure_with_unit reference without discarding complex constituents.
 inline bool Read(const occ::handle<StepData_StepReaderData>& theData,
@@ -74,4 +82,5 @@ inline bool Read(const occ::handle<StepData_StepReaderData>& theData,
   return false;
 }
 } // namespace RWStepDimTol_LengthMeasure
-#endif
+} // namespace
+#endif // _RWStepDimTol_LengthMeasure_HeaderFile

@@ -191,7 +191,7 @@ static void SetTriangles(
   else
   {
     int        aTriangleIndex = 1;
-    const auto appendTriangle = [&](const int theFirst, const int theSecond, const int theThird) {
+    const auto aAppendTriangle = [&](const int theFirst, const int theSecond, const int theThird) {
       const gp_Pnt aFirst  = theMesh->Node(theFirst);
       const gp_Pnt aSecond = theMesh->Node(theSecond);
       const gp_Pnt aThird  = theMesh->Node(theThird);
@@ -215,7 +215,7 @@ static void SetTriangles(
         {
           std::swap(aFirst, aSecond);
         }
-        appendTriangle(aFirst, aSecond, aStrip->Value(anIndex));
+        aAppendTriangle(aFirst, aSecond, aStrip->Value(anIndex));
       }
     }
     for (int aFanIndex = 1; aFanIndex <= theTrianFansNum; ++aFanIndex)
@@ -224,7 +224,7 @@ static void SetTriangles(
         occ::down_cast<NCollection_HArray1<int>>(theTrianFans->Value(aFanIndex));
       for (int anIndex = 3; anIndex <= aFan->Length(); ++anIndex)
       {
-        appendTriangle(aFan->Value(1), aFan->Value(anIndex - 1), aFan->Value(anIndex));
+        aAppendTriangle(aFan->Value(1), aFan->Value(anIndex - 1), aFan->Value(anIndex));
       }
     }
     theMesh->ResizeTriangles(aTriangleIndex - 1, true);
@@ -380,7 +380,7 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
   }
 
   // Connectivity is used to access mesh nodes when filtering degenerate triangles.
-  const auto invalidNodeIndex = [aNbNodes](const int theIndex) {
+  const auto anInvalidNodeIndex = [aNbNodes](const int theIndex) {
     return theIndex < 1 || theIndex > aNbNodes;
   };
   if (aTrianStripsNum == 0 && aTrianFansNum == 0)
@@ -398,9 +398,10 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
       }
       for (const auto& aPrimitive : *aPrimitives)
       {
-        const auto anIndices = occ::down_cast<NCollection_HArray1<int>>(aPrimitive);
+        const occ::handle<NCollection_HArray1<int>> anIndices =
+          occ::down_cast<NCollection_HArray1<int>>(aPrimitive);
         if (anIndices.IsNull()
-            || std::any_of(anIndices->cbegin(), anIndices->cend(), invalidNodeIndex))
+            || std::any_of(anIndices->cbegin(), anIndices->cend(), anInvalidNodeIndex))
         {
           return nullptr;
         }

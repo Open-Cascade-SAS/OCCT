@@ -33,18 +33,21 @@ public:
 
   Standard_HIDDEN RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol();
 
+  //! Read the fixed complex constituents, reporting malformed data to the check.
   Standard_HIDDEN void ReadStep(
-    const occ::handle<StepData_StepReaderData>&                             data,
-    const int                                                               num,
-    occ::handle<Interface_Check>&                                           ach,
-    const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& ent) const;
+    const occ::handle<StepData_StepReaderData>&                             theData,
+    const int                                                               theNum,
+    occ::handle<Interface_Check>&                                           theCheck,
+    const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& theEntity) const;
 
+  //! Write the complex constituents in STEP alphabetical order.
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                                    SW,
-    const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& ent) const;
+    StepData_StepWriter&                                                    theWriter,
+    const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& theEntity) const;
 
+  //! Add all referenced entities required for transfer and serialization.
   Standard_HIDDEN void Share(
-    const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& ent,
-    Interface_EntityIterator&                                               iter) const;
+    const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>& theEntity,
+    Interface_EntityIterator&                                               theIterator) const;
 };
 #endif // _RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol_HeaderFile

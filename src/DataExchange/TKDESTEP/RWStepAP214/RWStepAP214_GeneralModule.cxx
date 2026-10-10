@@ -4584,40 +4584,6 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       tool.Share(anent, iter);
     }
     break;
-    case 827: {
-      DeclareAndCast(StepDimTol_GeoTolAndUneqDisGeoTol, anent, ent);
-      RWStepDimTol_RWGeoTolAndUneqDisGeoTol tool;
-      tool.Share(anent, iter);
-    }
-    break;
-    case 828: {
-      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol, anent, ent);
-      RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol tool;
-      tool.Share(anent, iter);
-    }
-    break;
-    case 829: {
-      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol, anent, ent);
-      RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
-      tool.Share(anent, iter);
-    }
-    break;
-    case 830: {
-      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol,
-                     anent,
-                     ent);
-      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol tool;
-      tool.Share(anent, iter);
-    }
-    break;
-    case 831: {
-      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol,
-                     anent,
-                     ent);
-      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
-      tool.Share(anent, iter);
-    }
-    break;
     case 698: {
       DeclareAndCast(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp, anent, ent);
       RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp tool;
@@ -5342,6 +5308,40 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular, anEnt, ent);
       RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular aTool;
       aTool.Share(anEnt, iter);
+    }
+    break;
+    case 827: {
+      DeclareAndCast(StepDimTol_GeoTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 828: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 829: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 830: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
+    }
+    break;
+    case 831: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.Share(anent, iter);
     }
     break;
     default:
@@ -7271,21 +7271,6 @@ bool RWStepAP214_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Trans
     case 697:
       ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol;
       break;
-    case 827:
-      ent = new StepDimTol_GeoTolAndUneqDisGeoTol;
-      break;
-    case 828:
-      ent = new StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol;
-      break;
-    case 829:
-      ent = new StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol;
-      break;
-    case 830:
-      ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol;
-      break;
-    case 831:
-      ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol;
-      break;
     case 698:
       ent = new StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp;
       break;
@@ -7669,6 +7654,21 @@ bool RWStepAP214_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Trans
       break;
     case 826:
       ent = new StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular;
+      break;
+    case 827:
+      ent = new StepDimTol_GeoTolAndUneqDisGeoTol;
+      break;
+    case 828:
+      ent = new StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol;
+      break;
+    case 829:
+      ent = new StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol;
+      break;
+    case 830:
+      ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol;
+      break;
+    case 831:
+      ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol;
       break;
     default:
       return false;

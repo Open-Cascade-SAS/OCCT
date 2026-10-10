@@ -552,6 +552,8 @@ TEST_F(StepToTopoDS_TranslateFaceTest, ComplexTriangulatedFace_DegenerateStrip)
   EXPECT_EQ(aMesh->NbTriangles(), 1);
 }
 
+//==================================================================================================
+
 TEST_F(StepToTopoDS_TranslateFaceTest, ComplexTriangleWinding_AgreesWithNormals)
 {
   for (const bool isFan : {false, true})
@@ -598,6 +600,8 @@ TEST_F(StepToTopoDS_TranslateFaceTest, ComplexTriangleWinding_AgreesWithNormals)
   }
 }
 
+//==================================================================================================
+
 TEST_F(StepToTopoDS_TranslateFaceTest, ComplexStrip_CoincidentCoordinateConnectorHasNoTriangle)
 {
   NCollection_Array1<gp_XYZ> aPoints(1, 3);
@@ -640,6 +644,8 @@ TEST_F(StepToTopoDS_TranslateFaceTest, ComplexStrip_CoincidentCoordinateConnecto
               .SquareMagnitude(),
             0.0);
 }
+
+//==================================================================================================
 
 TEST_F(StepToTopoDS_TranslateFaceTest, ComplexStrip_RepeatedEndCoordinateHasNoTriangle)
 {
@@ -684,6 +690,8 @@ TEST_F(StepToTopoDS_TranslateFaceTest, ComplexStrip_RepeatedEndCoordinateHasNoTr
               .SquareMagnitude(),
             0.0);
 }
+
+//==================================================================================================
 
 TEST_F(StepToTopoDS_TranslateFaceTest, ComplexFan_PreservesSmallNonDegenerateTriangle)
 {
@@ -735,7 +743,7 @@ TEST_F(StepToTopoDS_TranslateFaceTest,
         aPoints(1)          = gp_XYZ(0, 0, 0);
         aPoints(2)          = gp_XYZ(1, 0, 0);
         aPoints(3)          = gp_XYZ(0, 1, 0);
-        const auto aIndices = new NCollection_HArray1<int>(1, aCase == 3 ? 2 : 3);
+        const occ::handle<NCollection_HArray1<int>> aIndices = new NCollection_HArray1<int>(1, aCase == 3 ? 2 : 3);
         for (int i = 1; i <= aIndices->Length(); ++i)
         {
           aIndices->SetValue(i, i);
@@ -790,6 +798,8 @@ TEST_F(StepToTopoDS_TranslateFaceTest,
     }
   }
 }
+
+//==================================================================================================
 
 TEST_F(StepToTopoDS_TranslateFaceTest, ComplexPrimitives_MixedAndCollinear)
 {
@@ -849,14 +859,14 @@ TEST_F(StepToTopoDS_TranslateFaceTest, ComplexPrimitives_MixedAndCollinear)
         bool aHasGeometry = false;
         aTranslator.Init(aFace, myTool, myNMTool, false, aHasGeometry);
       }
-      const auto aMesh = getMesh(aTranslator);
+      const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);
       ASSERT_FALSE(aMesh.IsNull());
       ASSERT_EQ(aMesh->NbTriangles(), isCollinear ? 0 : 3);
       for (int i = 1; i <= aMesh->NbTriangles(); ++i)
       {
         int a, b, c;
         aMesh->Triangle(i).Get(a, b, c);
-        const auto aNormal =
+        const gp_Vec aNormal =
           gp_Vec(aMesh->Node(a), aMesh->Node(b)).Crossed(gp_Vec(aMesh->Node(a), aMesh->Node(c)));
         EXPECT_GT(aNormal.X(), 0.0);
       }

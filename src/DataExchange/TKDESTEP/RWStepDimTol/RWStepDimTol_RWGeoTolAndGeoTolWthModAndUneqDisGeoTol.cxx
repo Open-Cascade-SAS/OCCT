@@ -15,34 +15,49 @@
 #include <StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.hxx>
 #include "RWStepDimTol_UnequalTolerance.pxx"
 
+//==================================================================================================
+
 RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol::
   RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol() = default;
 
-//=================================================================================================
+//==================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol::ReadStep(
-  const occ::handle<StepData_StepReaderData>&                          data,
-  const int                                                            num,
-  occ::handle<Interface_Check>&                                        ach,
-  const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>& ent) const
+  const occ::handle<StepData_StepReaderData>&                          theData,
+  const int                                                            theNum,
+  occ::handle<Interface_Check>&                                        theCheck,
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>& theEntity) const
 {
-  RWStepDimTol_UnequalTolerance::ReadStep<false, true, false>(data, num, ach, ent);
+  RWStepDimTol_UnequalTolerance::Parameters aParameters;
+  if (RWStepDimTol_UnequalTolerance::ReadStep<false, true, false>(theData,
+                                                                  theNum,
+                                                                  theCheck,
+                                                                  aParameters))
+  {
+    theEntity->Init(aParameters.Name,
+                    aParameters.Description,
+                    aParameters.Magnitude,
+                    aParameters.Target,
+                    aParameters.Modifiers,
+                    aParameters.Type,
+                    aParameters.Unequal);
+  }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol::WriteStep(
-  StepData_StepWriter&                                                 SW,
-  const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>& ent) const
+  StepData_StepWriter&                                                 theWriter,
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>& theEntity) const
 {
-  RWStepDimTol_UnequalTolerance::WriteStep<false, true, false>(SW, ent);
+  RWStepDimTol_UnequalTolerance::WriteStep<false, true, false>(theWriter, theEntity);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol::Share(
-  const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>& ent,
-  Interface_EntityIterator&                                            iter) const
+  const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>& theEntity,
+  Interface_EntityIterator&                                            theIterator) const
 {
-  RWStepDimTol_UnequalTolerance::Share<false, true, false>(ent, iter);
+  RWStepDimTol_UnequalTolerance::Share<false, false>(theEntity, theIterator);
 }

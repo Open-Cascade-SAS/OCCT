@@ -34,6 +34,20 @@ set(OCCT_RWStepDimTol_FILES
   RWStepDimTol_RWFlatnessTolerance.pxx
   RWStepDimTol_RWGeneralDatumReference.cxx
   RWStepDimTol_RWGeneralDatumReference.pxx
+  RWStepDimTol_RWGeometricTolerance.cxx
+  RWStepDimTol_RWGeometricTolerance.pxx
+  RWStepDimTol_RWGeometricToleranceRelationship.cxx
+  RWStepDimTol_RWGeometricToleranceRelationship.pxx
+  RWStepDimTol_RWGeometricToleranceWithDatumReference.cxx
+  RWStepDimTol_RWGeometricToleranceWithDatumReference.pxx
+  RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.cxx
+  RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.pxx
+  RWStepDimTol_RWGeometricToleranceWithDefinedUnit.cxx
+  RWStepDimTol_RWGeometricToleranceWithDefinedUnit.pxx
+  RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.cxx
+  RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.pxx
+  RWStepDimTol_RWGeometricToleranceWithModifiers.cxx
+  RWStepDimTol_RWGeometricToleranceWithModifiers.pxx
   RWStepDimTol_RWGeoTolAndGeoTolWthDatRef.cxx
   RWStepDimTol_RWGeoTolAndGeoTolWthDatRef.pxx
   RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.cxx
@@ -54,24 +68,10 @@ set(OCCT_RWStepDimTol_FILES
   RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.pxx
   RWStepDimTol_RWGeoTolAndGeoTolWthMod.cxx
   RWStepDimTol_RWGeoTolAndGeoTolWthMod.pxx
-  RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol.cxx
-  RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol.pxx
   RWStepDimTol_RWGeoTolAndUneqDisGeoTol.cxx
   RWStepDimTol_RWGeoTolAndUneqDisGeoTol.pxx
-  RWStepDimTol_RWGeometricTolerance.cxx
-  RWStepDimTol_RWGeometricTolerance.pxx
-  RWStepDimTol_RWGeometricToleranceRelationship.cxx
-  RWStepDimTol_RWGeometricToleranceRelationship.pxx
-  RWStepDimTol_RWGeometricToleranceWithDatumReference.cxx
-  RWStepDimTol_RWGeometricToleranceWithDatumReference.pxx
-  RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.cxx
-  RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.pxx
-  RWStepDimTol_RWGeometricToleranceWithDefinedUnit.cxx
-  RWStepDimTol_RWGeometricToleranceWithDefinedUnit.pxx
-  RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.cxx
-  RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.pxx
-  RWStepDimTol_RWGeometricToleranceWithModifiers.cxx
-  RWStepDimTol_RWGeometricToleranceWithModifiers.pxx
+  RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol.cxx
+  RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol.pxx
   RWStepDimTol_RWLineProfileTolerance.cxx
   RWStepDimTol_RWLineProfileTolerance.pxx
   RWStepDimTol_RWModifiedGeometricTolerance.cxx

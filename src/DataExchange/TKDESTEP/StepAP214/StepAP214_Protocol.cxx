@@ -1447,13 +1447,6 @@ StepAP214_Protocol::StepAP214_Protocol()
   types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod), 695);
   types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMod), 696);
   types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol), 697);
-  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndUneqDisGeoTol), 827);
-  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol), 828);
-  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol), 829);
-  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol),
-             830);
-  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol),
-             831);
   types.Bind(STANDARD_TYPE(StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp), 698);
   types.Bind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp), 699);
   types.Bind(STANDARD_TYPE(StepRepr_IntegerRepresentationItem), 700);
@@ -1585,6 +1578,13 @@ StepAP214_Protocol::StepAP214_Protocol()
   types.Bind(STANDARD_TYPE(StepRepr_MechanicalDesignAndDraughtingRelationship), 824);
   types.Bind(STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbientDiffuse), 825);
   types.Bind(STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular), 826);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndUneqDisGeoTol), 827);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol), 828);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol), 829);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol),
+             830);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol),
+             831);
 }
 
 //=================================================================================================

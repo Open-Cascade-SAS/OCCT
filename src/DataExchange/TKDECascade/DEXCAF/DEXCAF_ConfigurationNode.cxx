@@ -17,6 +17,8 @@
 #include <DE_ConfigurationContext.hxx>
 #include <NCollection_Buffer.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_ConfigurationNode, DE_ConfigurationNode)
+
 namespace
 {
 static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
@@ -26,8 +28,6 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 }
 
 } // namespace
-
-IMPLEMENT_STANDARD_RTTIEXT(DEXCAF_ConfigurationNode, DE_ConfigurationNode)
 
 //=================================================================================================
 
@@ -177,7 +177,7 @@ bool DEXCAF_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer
   return ::strncmp(aBytes, "BINFILE", 7) == 0;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 bool DEXCAF_ConfigurationNode::IsStreamSupported() const
 {

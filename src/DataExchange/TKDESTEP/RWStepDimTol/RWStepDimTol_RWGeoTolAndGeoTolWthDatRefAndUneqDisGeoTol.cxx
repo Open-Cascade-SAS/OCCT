@@ -28,7 +28,17 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::ReadStep(
   occ::handle<Interface_Check>&                                           ach,
   const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>& ent) const
 {
-  RWStepDimTol_UnequalTolerance::ReadStep<true, false, false>(data, num, ach, ent);
+  RWStepDimTol_UnequalTolerance::Parameters aParameters;
+  if (RWStepDimTol_UnequalTolerance::ReadStep<true, false, false>(data, num, ach, aParameters))
+  {
+    ent->Init(aParameters.Name,
+              aParameters.Description,
+              aParameters.Magnitude,
+              aParameters.Target,
+              aParameters.Datum,
+              aParameters.Type,
+              aParameters.Unequal);
+  }
 }
 
 //=================================================================================================
@@ -46,5 +56,5 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol::Share(
   const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol>& ent,
   Interface_EntityIterator&                                               iter) const
 {
-  RWStepDimTol_UnequalTolerance::Share<true, false, false>(ent, iter);
+  RWStepDimTol_UnequalTolerance::Share<true, false>(ent, iter);
 }

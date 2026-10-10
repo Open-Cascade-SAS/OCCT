@@ -37,6 +37,7 @@
 
 namespace
 {
+// Restore the standalone state after temporarily associating a storage application.
 struct TDocStd_ApplicationRestorer
 {
   occ::handle<TDocStd_Document> Document; //!< Document being stored.

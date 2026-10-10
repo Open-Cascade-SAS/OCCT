@@ -4310,20 +4310,21 @@ void STEPCAFControl_Writer::writeGeomTolerance(
   // Datum Reference
   const bool isWithDatRef = !theDatumSystem.IsNull() && theDatumSystem->Length() > 0;
 
-  const auto aToleranceType = STEPCAFControl_GDTProperty::GetGeomToleranceType(anObject->GetType());
-  const bool requiresDatum  = aToleranceType == StepDimTol_GTTAngularityTolerance
-                             || aToleranceType == StepDimTol_GTTCircularRunoutTolerance
-                             || aToleranceType == StepDimTol_GTTCoaxialityTolerance
-                             || aToleranceType == StepDimTol_GTTConcentricityTolerance
-                             || aToleranceType == StepDimTol_GTTParallelismTolerance
-                             || aToleranceType == StepDimTol_GTTPerpendicularityTolerance
-                             || aToleranceType == StepDimTol_GTTSymmetryTolerance
-                             || aToleranceType == StepDimTol_GTTTotalRunoutTolerance;
-  const bool forbidsDatum = aToleranceType == StepDimTol_GTTCylindricityTolerance
-                            || aToleranceType == StepDimTol_GTTFlatnessTolerance
-                            || aToleranceType == StepDimTol_GTTRoundnessTolerance
-                            || aToleranceType == StepDimTol_GTTStraightnessTolerance;
-  if ((requiresDatum && !isWithDatRef) || (forbidsDatum && isWithDatRef))
+  const StepDimTol_GeometricToleranceType aToleranceType =
+    STEPCAFControl_GDTProperty::GetGeomToleranceType(anObject->GetType());
+  const bool aRequiresDatum = aToleranceType == StepDimTol_GTTAngularityTolerance
+                              || aToleranceType == StepDimTol_GTTCircularRunoutTolerance
+                              || aToleranceType == StepDimTol_GTTCoaxialityTolerance
+                              || aToleranceType == StepDimTol_GTTConcentricityTolerance
+                              || aToleranceType == StepDimTol_GTTParallelismTolerance
+                              || aToleranceType == StepDimTol_GTTPerpendicularityTolerance
+                              || aToleranceType == StepDimTol_GTTSymmetryTolerance
+                              || aToleranceType == StepDimTol_GTTTotalRunoutTolerance;
+  const bool aForbidsDatum = aToleranceType == StepDimTol_GTTCylindricityTolerance
+                             || aToleranceType == StepDimTol_GTTFlatnessTolerance
+                             || aToleranceType == StepDimTol_GTTRoundnessTolerance
+                             || aToleranceType == StepDimTol_GTTStraightnessTolerance;
+  if ((aRequiresDatum && !isWithDatRef) || (aForbidsDatum && isWithDatRef))
   {
     Message::SendWarning("STEPCAFControl_Writer: geometric tolerance omitted: "
                          "datum references conflict with its tolerance subtype");
@@ -4429,7 +4430,8 @@ void STEPCAFControl_Writer::writeGeomTolerance(
   // EXPRESS requires an MMC/LMC modifier and an upper value exceeding magnitude.
   if (anObject->GetMaxValueModifier() != 0)
   {
-    const auto aMaterial = anObject->GetMaterialRequirementModifier();
+    const XCAFDimTolObjects_GeomToleranceMatReqModif aMaterial =
+      anObject->GetMaterialRequirementModifier();
     if ((aMaterial == XCAFDimTolObjects_GeomToleranceMatReqModif_L
          || aMaterial == XCAFDimTolObjects_GeomToleranceMatReqModif_M)
         && anObject->GetMaxValueModifier() > anObject->GetValue())
@@ -4494,28 +4496,28 @@ void STEPCAFControl_Writer::writeGeomTolerance(
       aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWDR, aGTWM, aType, anUnequal);
       aGeomTol = aResult;
     }
-    else if (isWithDatRef && !isWithModif)
+    else if (isWithDatRef)
     {
       const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol> aResult =
         new StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol();
       aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWDR, aType, anUnequal);
       aGeomTol = aResult;
     }
-    else if (!isWithDatRef && isWithMaxTol)
+    else if (isWithMaxTol)
     {
       const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol> aResult =
         new StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol();
       aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWM, aMaxLMWU, aType, anUnequal);
       aGeomTol = aResult;
     }
-    else if (!isWithDatRef && isWithModif)
+    else if (isWithModif)
     {
       const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol> aResult =
         new StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol();
       aResult->Init(aName, aDescription, aLMWU, aGTTarget, aGTWM, aType, anUnequal);
       aGeomTol = aResult;
     }
-    else if (!isWithDatRef && !isWithModif)
+    else
     {
       const occ::handle<StepDimTol_GeoTolAndUneqDisGeoTol> aResult =
         new StepDimTol_GeoTolAndUneqDisGeoTol();

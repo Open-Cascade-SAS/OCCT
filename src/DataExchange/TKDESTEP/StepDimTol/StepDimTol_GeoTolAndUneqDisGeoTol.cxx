@@ -17,11 +17,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_GeoTolAndUneqDisGeoTol, StepDimTol_GeometricTolerance)
 
-//=================================================================================================
+//==================================================================================================
 
 StepDimTol_GeoTolAndUneqDisGeoTol::StepDimTol_GeoTolAndUneqDisGeoTol() = default;
 
-//=================================================================================================
+//==================================================================================================
 
 void StepDimTol_GeoTolAndUneqDisGeoTol::Init(
   const occ::handle<TCollection_HAsciiString>&                       theName,
@@ -32,11 +32,11 @@ void StepDimTol_GeoTolAndUneqDisGeoTol::Init(
   const occ::handle<StepDimTol_UnequallyDisposedGeometricTolerance>& theUnequal)
 {
   StepDimTol_GeometricTolerance::Init(theName, theDescription, theMagnitude, theTarget);
-  myType    = theType;
-  myUnequal = theUnequal;
+  myToleranceType                       = theType;
+  myUnequallyDisposedGeometricTolerance = theUnequal;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void StepDimTol_GeoTolAndUneqDisGeoTol::Init(
   const occ::handle<TCollection_HAsciiString>&                       theName,

@@ -136,8 +136,10 @@ void XCAFDoc_GeomTolerance::SetObject(
   }
 
   if (!theObject->GetDescription().IsNull())
+  {
     TDataStd_AsciiString::Set(Label().FindChild(ChildLab_Description),
                               theObject->GetDescription()->String());
+  }
 
   if (theObject->GetUnequalDisplacement())
   {
@@ -374,7 +376,9 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
   if (Label()
         .FindChild(ChildLab_Description)
         .FindAttribute(TDataStd_AsciiString::GetID(), aDescription))
+  {
     anObj->SetDescription(new TCollection_HAsciiString(aDescription->Get()));
+  }
 
   occ::handle<TDataStd_Real> aDisplacement;
   if (Label()

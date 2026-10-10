@@ -63,11 +63,11 @@ protected:
   pos_type seekpos(pos_type thePosition, std::ios_base::openmode theMode) override;
 
 private:
-  NCollection_Array1<char> myBytes;    //< Output storage.
-  size_t                   mySize = 0; //< Highest initialized output position.
+  NCollection_Array1<char> myBytes;    //!< Output storage.
+  size_t                   mySize = 0; //!< Highest initialized output position.
 };
 
-// ==================================================================================================
+//==================================================================================================
 
 DEXCAF_TestOutputBuffer::DEXCAF_TestOutputBuffer()
     : myBytes(size_t(1024 * 1024))
@@ -76,7 +76,7 @@ DEXCAF_TestOutputBuffer::DEXCAF_TestOutputBuffer()
   setp(myBytes.Data(), myBytes.Data() + myBytes.Size());
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 size_t DEXCAF_TestOutputBuffer::Size()
 {
@@ -84,14 +84,14 @@ size_t DEXCAF_TestOutputBuffer::Size()
   return mySize;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 const char* DEXCAF_TestOutputBuffer::Data() const
 {
   return myBytes.Data();
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 std::streambuf::pos_type DEXCAF_TestOutputBuffer::seekoff(off_type                theOffset,
                                                           std::ios_base::seekdir  theOrigin,
@@ -125,7 +125,7 @@ std::streambuf::pos_type DEXCAF_TestOutputBuffer::seekoff(off_type              
   return pos_type(aPosition);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 std::streambuf::pos_type DEXCAF_TestOutputBuffer::seekpos(pos_type                thePosition,
                                                           std::ios_base::openmode theMode)
@@ -133,7 +133,7 @@ std::streambuf::pos_type DEXCAF_TestOutputBuffer::seekpos(pos_type              
   return seekoff(static_cast<off_type>(thePosition), std::ios_base::beg, theMode);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 occ::handle<TDocStd_Document> makeDocument(const char* theFormat = "BinXCAF")
 {
@@ -154,7 +154,7 @@ occ::handle<TDocStd_Document> makeDocument(const char* theFormat = "BinXCAF")
   return aDocument;
 }
 
-// ==================================================================================================
+//==================================================================================================
 
 void checkDocument(const occ::handle<TDocStd_Document>& theDocument)
 {
@@ -187,57 +187,116 @@ void checkDocument(const occ::handle<TDocStd_Document>& theDocument)
   EXPECT_NEAR(aUnit, 0.001, 1.e-12);
 }
 
-// ==================================================================================================
+//==================================================================================================
 
-class DEXCAF_FailingOutputBuffer : public std::stringbuf
+//! Simulate an output stream that rejects all writes.
+class DEXCAF_FailingOutputBuffer : public std::streambuf
 {
 protected:
-  std::streamsize xsputn(const char*, std::streamsize) override { return 0; }
+  std::streamsize xsputn(const char*, std::streamsize) override;
 
-  int_type overflow(int_type) override { return traits_type::eof(); }
+  int_type overflow(int_type) override;
 };
 
+//! Cancel a transfer at its first progress check.
 class DEXCAF_CancelProgress : public Message_ProgressIndicator
 {
 public:
-  bool UserBreak() override { return true; }
+  bool UserBreak() override;
 
-  void Show(const Message_ProgressScope&, bool) override {}
+  void Show(const Message_ProgressScope&, bool) override;
 };
 
+//! Cancel after the source root attribute has been merged into the target.
 class DEXCAF_CancelAfterAppend : public Message_ProgressIndicator
 {
 public:
-  explicit DEXCAF_CancelAfterAppend(const occ::handle<TDocStd_Document>& theDocument)
-      : myDocument(theDocument)
-  {
-  }
-
-  bool UserBreak() override
-  {
-    occ::handle<TDataStd_Name> aName;
-    return myDocument->Main().FindAttribute(TDataStd_Name::GetID(), aName)
-           && aName->Get() == TCollection_ExtendedString("source");
-  }
-
-  void Show(const Message_ProgressScope&, bool) override {}
+  explicit DEXCAF_CancelAfterAppend(const occ::handle<TDocStd_Document>& theDocument);
+  bool UserBreak() override;
+  void Show(const Message_ProgressScope&, bool) override;
 
 private:
-  occ::handle<TDocStd_Document> myDocument;
+  occ::handle<TDocStd_Document> myDocument; //!< Document observed for the append checkpoint.
 };
 
-std::string documentBytes()
+//! Remove the temporary file used by file append tests.
+struct DEXCAF_TemporaryFile
+{
+  OSD_File File; //!< Temporary fixture file.
+  ~DEXCAF_TemporaryFile();
+};
+
+//==================================================================================================
+
+std::streamsize DEXCAF_FailingOutputBuffer::xsputn(const char*, std::streamsize)
+{
+  return 0;
+}
+
+//==================================================================================================
+
+std::streambuf::int_type DEXCAF_FailingOutputBuffer::overflow(int_type)
+{
+  return traits_type::eof();
+}
+
+//==================================================================================================
+
+bool DEXCAF_CancelProgress::UserBreak()
+{
+  return true;
+}
+
+//==================================================================================================
+
+void DEXCAF_CancelProgress::Show(const Message_ProgressScope&, bool) {}
+
+//==================================================================================================
+
+DEXCAF_CancelAfterAppend::DEXCAF_CancelAfterAppend(const occ::handle<TDocStd_Document>& theDocument)
+    : myDocument(theDocument)
+{
+}
+
+//==================================================================================================
+
+bool DEXCAF_CancelAfterAppend::UserBreak()
+{
+  occ::handle<TDataStd_Name> aName;
+  return myDocument->Main().FindAttribute(TDataStd_Name::GetID(), aName)
+         && aName->Get() == TCollection_ExtendedString("source");
+}
+
+//==================================================================================================
+
+void DEXCAF_CancelAfterAppend::Show(const Message_ProgressScope&, bool) {}
+
+//==================================================================================================
+
+DEXCAF_TemporaryFile::~DEXCAF_TemporaryFile()
+{
+  File.Remove();
+}
+
+//==================================================================================================
+
+NCollection_Array1<char> documentBytes()
 {
   const occ::handle<TDocStd_Document> aSource = new TDocStd_Document("BinXCAF");
   TDataStd_Name::Set(aSource->Main(), TCollection_ExtendedString("source"));
   TDataStd_Name::Set(aSource->Main().FindChild(10), TCollection_ExtendedString("new attribute"));
   const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
   BinXCAFDrivers::DefineFormat(anApp);
-  std::stringstream aStream;
+  DEXCAF_TestOutputBuffer aBuffer;
+  std::ostream            aStream(&aBuffer);
   EXPECT_EQ(anApp->SaveAs(aSource, aStream), PCDM_SS_OK);
-  return aStream.str();
+  NCollection_Array1<char> aBytes(aBuffer.Size());
+  std::copy_n(aBuffer.Data(), aBytes.Size(), aBytes.Data());
+  return aBytes;
 }
 } // namespace
+
+//==================================================================================================
 
 TEST(DEXCAF_Provider_Test, ReadSeekableStreamPreservesAssemblyAndMetadata)
 {
@@ -259,6 +318,8 @@ TEST(DEXCAF_Provider_Test, ReadSeekableStreamPreservesAssemblyAndMetadata)
   checkDocument(aTarget);
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, WrapperStreamRoundTrip)
 {
   const occ::handle<TDocStd_Document> aSource = makeDocument();
@@ -278,6 +339,8 @@ TEST(DEXCAF_Provider_Test, WrapperStreamRoundTrip)
   ASSERT_TRUE(aWrapper.Read(aReads, aTarget));
   checkDocument(aTarget);
 }
+
+//==================================================================================================
 
 TEST(DEXCAF_Provider_Test, StreamShapeOverloads)
 {
@@ -307,6 +370,8 @@ TEST(DEXCAF_Provider_Test, StreamShapeOverloads)
   EXPECT_TRUE(aSession.IsNull());
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, InvalidReadDoesNotReplaceDocumentData)
 {
   constexpr char              THE_INVALID[] = "Invalid XCAF bytes";
@@ -321,6 +386,8 @@ TEST(DEXCAF_Provider_Test, InvalidReadDoesNotReplaceDocumentData)
   EXPECT_EQ(aTarget->GetData(), aData);
   checkDocument(aTarget);
 }
+
+//==================================================================================================
 
 TEST(DEXCAF_Provider_Test, InvalidStreamAndConfiguration)
 {
@@ -339,6 +406,8 @@ TEST(DEXCAF_Provider_Test, InvalidStreamAndConfiguration)
   EXPECT_FALSE(aProvider->Write(aWrites, occ::handle<TDocStd_Document>()));
   EXPECT_FALSE(aProvider->Write(aWrites, TopoDS_Shape()));
 }
+
+//==================================================================================================
 
 TEST(DEXCAF_Provider_Test, StreamShapeReadCombinesFreeRoots)
 {
@@ -368,6 +437,8 @@ TEST(DEXCAF_Provider_Test, StreamShapeReadCombinesFreeRoots)
   EXPECT_EQ(aSolids, 3);
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, StreamShapeReadRejectsEmptyDocument)
 {
   const occ::handle<TDocStd_Document> aSource = new TDocStd_Document("BinXCAF");
@@ -387,9 +458,11 @@ TEST(DEXCAF_Provider_Test, StreamShapeReadRejectsEmptyDocument)
   EXPECT_TRUE(aResult.IsNull());
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, StreamWritePreservesOwningApplication)
 {
-  const occ::handle<TDocStd_Document> aSource = makeDocument();
+  const occ::handle<TDocStd_Document>    aSource       = makeDocument();
   const occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
   anApplication->CDF_Application::Open(aSource);
 
@@ -400,8 +473,9 @@ TEST(DEXCAF_Provider_Test, StreamWritePreservesOwningApplication)
 
     ~DocumentCloser() { Application->Close(Document); }
   } aCloser{anApplication, aSource};
-  const occ::handle<CDM_Application>  anOwner = aSource->Application();
-  const occ::handle<DE_Provider> aProvider    = new DEXCAF_Provider(new DEXCAF_ConfigurationNode());
+
+  const occ::handle<CDM_Application> anOwner = aSource->Application();
+  const occ::handle<DE_Provider> aProvider   = new DEXCAF_Provider(new DEXCAF_ConfigurationNode());
   DEXCAF_TestOutputBuffer        aBytes;
   std::ostream                   anOutput(&aBytes);
   DE_Provider::WriteStreamList   aWrites;
@@ -409,6 +483,8 @@ TEST(DEXCAF_Provider_Test, StreamWritePreservesOwningApplication)
   ASSERT_TRUE(aProvider->Write(aWrites, aSource));
   EXPECT_EQ(aSource->Application(), anOwner);
 }
+
+//==================================================================================================
 
 TEST(DEXCAF_Provider_Test, StreamSaveDoesNotOpenDetachedDocument)
 {
@@ -423,6 +499,8 @@ TEST(DEXCAF_Provider_Test, StreamSaveDoesNotOpenDetachedDocument)
   EXPECT_FALSE(aSource->IsOpened());
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, FailedStreamSaveDoesNotOpenDetachedDocument)
 {
   const occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
@@ -433,6 +511,8 @@ TEST(DEXCAF_Provider_Test, FailedStreamSaveDoesNotOpenDetachedDocument)
   EXPECT_NE(anApp->SaveAs(aSource, anOutput), PCDM_SS_OK);
   EXPECT_FALSE(aSource->IsOpened());
 }
+
+//==================================================================================================
 
 TEST(DEXCAF_Provider_Test, StreamRoundTripPreservesAuthoredToleranceMetadata)
 {
@@ -465,6 +545,8 @@ TEST(DEXCAF_Provider_Test, StreamRoundTripPreservesAuthoredToleranceMetadata)
   EXPECT_STREQ(aResult->GetDescription()->ToCString(), "unequally disposed tolerance");
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, ReplacementResetsHistoryAndPreservesModificationPolicy)
 {
   const occ::handle<TDocStd_Document> aTarget = makeDocument();
@@ -483,9 +565,11 @@ TEST(DEXCAF_Provider_Test, ReplacementResetsHistoryAndPreservesModificationPolic
   aTarget->OpenCommand();
   aTarget->OpenCommand();
   TDataStd_Name::Set(aTarget->Main(), TCollection_ExtendedString("uncommitted edit"));
-  const occ::handle<TDF_Data> aPreviousData = aTarget->GetData();
-  std::stringstream           aStream(documentBytes());
-  DE_Provider::ReadStreamList aReads;
+  const occ::handle<TDF_Data>    aPreviousData = aTarget->GetData();
+  const NCollection_Array1<char> aBytes        = documentBytes();
+  Standard_ArrayStreamBuffer     aBuffer(aBytes.Data(), aBytes.Size());
+  std::istream                   aStream(&aBuffer);
+  DE_Provider::ReadStreamList    aReads;
   aReads.Append(DE_Provider::ReadStreamNode("virtual/model.xbf", aStream));
   DEXCAF_Provider aProvider(new DEXCAF_ConfigurationNode());
   ASSERT_TRUE(aProvider.Read(aReads, aTarget));
@@ -505,6 +589,8 @@ TEST(DEXCAF_Provider_Test, ReplacementResetsHistoryAndPreservesModificationPolic
   EXPECT_TRUE(aTarget->Undo());
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, AppendModesPreserveDataAndSupportUndo)
 {
   for (const auto aMode :
@@ -523,9 +609,11 @@ TEST(DEXCAF_Provider_Test, AppendModesPreserveDataAndSupportUndo)
       const occ::handle<TDF_Data>                 aData = aTarget->GetData();
       const occ::handle<DEXCAF_ConfigurationNode> aNode = new DEXCAF_ConfigurationNode();
       aNode->InternalParameters.ReadAppendMode          = aMode;
-      DEXCAF_Provider             aProvider(aNode);
-      std::stringstream           aStream(documentBytes());
-      DE_Provider::ReadStreamList aReads;
+      DEXCAF_Provider                aProvider(aNode);
+      const NCollection_Array1<char> aBytes = documentBytes();
+      Standard_ArrayStreamBuffer     aBuffer(aBytes.Data(), aBytes.Size());
+      std::istream                   aStream(&aBuffer);
+      DE_Provider::ReadStreamList    aReads;
       aReads.Append(DE_Provider::ReadStreamNode("virtual/model.xbf", aStream));
       ASSERT_TRUE(aProvider.Read(aReads, aTarget));
       EXPECT_EQ(aTarget->GetData(), aData);
@@ -552,6 +640,8 @@ TEST(DEXCAF_Provider_Test, AppendModesPreserveDataAndSupportUndo)
   }
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, CallerCanAbortCancelledAppend)
 {
   const occ::handle<TDocStd_Document> aTarget = new TDocStd_Document("BinXCAF");
@@ -562,9 +652,11 @@ TEST(DEXCAF_Provider_Test, CallerCanAbortCancelledAppend)
   const occ::handle<TDF_Data>                 aData = aTarget->GetData();
   const occ::handle<DEXCAF_ConfigurationNode> aNode = new DEXCAF_ConfigurationNode();
   aNode->InternalParameters.ReadAppendMode          = PCDM_ReaderFilter::AppendMode_Overwrite;
-  DEXCAF_Provider             aProvider(aNode);
-  std::stringstream           aStream(documentBytes());
-  DE_Provider::ReadStreamList aReads;
+  DEXCAF_Provider                aProvider(aNode);
+  const NCollection_Array1<char> aBytes = documentBytes();
+  Standard_ArrayStreamBuffer     aBuffer(aBytes.Data(), aBytes.Size());
+  std::istream                   aStream(&aBuffer);
+  DE_Provider::ReadStreamList    aReads;
   aReads.Append(DE_Provider::ReadStreamNode("virtual/model.xbf", aStream));
   const occ::handle<Message_ProgressIndicator> aProgress = new DEXCAF_CancelAfterAppend(aTarget);
   EXPECT_FALSE(aProvider.Read(aReads, aTarget, aProgress->Start()));
@@ -578,6 +670,8 @@ TEST(DEXCAF_Provider_Test, CallerCanAbortCancelledAppend)
   EXPECT_FALSE(aTarget->HasOpenCommand());
   EXPECT_EQ(aTarget->GetAvailableUndos(), 0);
 }
+
+//==================================================================================================
 
 TEST(DEXCAF_Provider_Test, StreamSaveOverloadsRestoreStateAndRecoverAfterCancellation)
 {
@@ -607,6 +701,8 @@ TEST(DEXCAF_Provider_Test, StreamSaveOverloadsRestoreStateAndRecoverAfterCancell
   }
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, ThrowingOutputReportsFailureAndRestoresState)
 {
   const occ::handle<TDocStd_Document> aSource = makeDocument();
@@ -628,19 +724,16 @@ TEST(DEXCAF_Provider_Test, ThrowingOutputReportsFailureAndRestoresState)
   EXPECT_EQ(anApp->SaveAs(nullptr, aStream, aMessage), PCDM_SS_Doc_IsNull);
 }
 
+//==================================================================================================
+
 TEST(DEXCAF_Provider_Test, FileAppendPreservesExistingData)
 {
-  struct TemporaryFile
-  {
-    OSD_File File;
-
-    ~TemporaryFile() { File.Remove(); }
-  } aTemporary;
+  DEXCAF_TemporaryFile aTemporary;
 
   aTemporary.File.BuildTemporary();
   ASSERT_FALSE(aTemporary.File.Failed());
-  std::string aBytes = documentBytes();
-  aTemporary.File.Write(aBytes.data(), static_cast<int>(aBytes.size()));
+  NCollection_Array1<char> aBytes = documentBytes();
+  aTemporary.File.Write(aBytes.Data(), static_cast<int>(aBytes.Size()));
   aTemporary.File.Close();
   ASSERT_FALSE(aTemporary.File.Failed());
   OSD_Path aPath;
@@ -652,7 +745,7 @@ TEST(DEXCAF_Provider_Test, FileAppendPreservesExistingData)
   {
     const occ::handle<TDocStd_Document> aTarget = new TDocStd_Document("BinXCAF");
     TDataStd_Name::Set(aTarget->Main(), "existing");
-    const auto                                  aData = aTarget->GetData();
+    const occ::handle<TDF_Data>                 aData = aTarget->GetData();
     const occ::handle<DEXCAF_ConfigurationNode> aNode = new DEXCAF_ConfigurationNode();
     aNode->InternalParameters.ReadAppendMode          = aMode;
     DEXCAF_Provider aProvider(aNode);
