@@ -28,6 +28,8 @@
 //                   in TangExtendToConstraint; Continuity can be equal to 0
 
 #include <BSplCLib.hxx>
+#include <BSplCLib_Basis.pxx>
+#include <Standard_Real.hxx>
 #include <ElCLib.hxx>
 #include <gp_Pnt.hxx>
 #include <math_Matrix.hxx>
@@ -40,11 +42,98 @@
 #include <math_Vector.hxx>
 
 #include <algorithm>
+#include <cmath>
+#include <optional>
 
 typedef gp_Pnt                     Pnt;
 typedef gp_Vec                     Vec;
 typedef NCollection_Array1<double> Array1OfReal;
 typedef NCollection_Array1<int>    Array1OfInteger;
+
+namespace
+{
+//==================================================================================================
+
+// Keep exact common coordinates outside interpolation and derivative differences.
+template <bool TheWeightedSum>
+bool translateControlPolygon(const size_t theDegree,
+                             const size_t theDimension,
+                             double*      thePoles,
+                             double*      theOrigin)
+{
+  bool isSafe = true;
+  // Exact translation cannot increase the largest absolute coordinate.
+  // Reserve room for every weighted pole and the restored origin.
+  const double aLimit = RealLast() / static_cast<double>(theDegree + 2);
+  for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+  {
+    double anOffset = thePoles[aCoordinate];
+    if constexpr (TheWeightedSum)
+    {
+      isSafe = isSafe && std::abs(anOffset) <= aLimit;
+    }
+    // Sterbenz's lemma makes subtraction exact for like-signed coordinates
+    // within a factor of two. Other coordinates keep their original values.
+    for (size_t aPole = 1; (TheWeightedSum || anOffset != 0.0) && aPole <= theDegree; ++aPole)
+    {
+      const double aValue = thePoles[aPole * theDimension + aCoordinate];
+      if constexpr (TheWeightedSum)
+      {
+        isSafe = isSafe && std::abs(aValue) <= aLimit;
+      }
+      if (anOffset != 0.0
+          && (anOffset > 0.0 ? (aValue < 0.5 * anOffset || 0.5 * aValue > anOffset)
+                             : (aValue > 0.5 * anOffset || 0.5 * aValue < anOffset)))
+      {
+        anOffset = 0.0;
+        if constexpr (!TheWeightedSum)
+        {
+          break;
+        }
+      }
+    }
+    theOrigin[aCoordinate] = anOffset;
+    if (anOffset != 0.0)
+    {
+      for (size_t aPole = 0; aPole <= theDegree; ++aPole)
+      {
+        thePoles[aPole * theDimension + aCoordinate] -= anOffset;
+      }
+    }
+  }
+  return isSafe;
+}
+
+//==================================================================================================
+
+void evalControlPolygon(const size_t  theDegree,
+                        const size_t  theDimension,
+                        const double* thePoles,
+                        const double* theWeights,
+                        const double* theOrigin,
+                        double*       theResult)
+{
+  // Accumulate coordinates together for contiguous access to each pole.
+  std::fill_n(theResult, theDimension, 0.0);
+  for (size_t aPole = 0; aPole <= theDegree; ++aPole)
+  {
+    const double aWeight = theWeights[aPole];
+    if (aWeight == 0.0)
+    {
+      continue;
+    }
+    const double* aPoleData = thePoles + aPole * theDimension;
+    for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+    {
+      theResult[aCoordinate] += aWeight * aPoleData[aCoordinate];
+    }
+  }
+  for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+  {
+    theResult[aCoordinate] += theOrigin[aCoordinate];
+  }
+}
+} // namespace
 
 //! Corrects tolerance-based location to the actual flat-knot span.
 static void locateFlatSpan(const Array1OfReal& theKnots,
@@ -889,31 +978,9 @@ void BSplCLib::Eval(const double U,
                     const int    Dimension,
                     double&      Poles)
 {
-  // Keep the common coordinate outside the recursion. Rounding each level
-  // at that coordinate's magnitude can erase valid control-polygon variation.
   NCollection_LocalArray<double, 16> anOrigin(Dimension);
   const size_t                       aDimension = static_cast<size_t>(Dimension);
-  for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
-  {
-    anOrigin[aCoordinate] = (&Poles)[aCoordinate];
-    // Sterbenz's lemma makes these differences exact for like-signed poles
-    // within a factor of two. Otherwise keep the original coordinates: an
-    // inexact difference can lose a small endpoint or overflow.
-    for (size_t aPole = 1; anOrigin[aCoordinate] != 0.0 && aPole <= static_cast<size_t>(Degree);
-         ++aPole)
-    {
-      const double aRatio = (&Poles)[aPole * aDimension + aCoordinate] / anOrigin[aCoordinate];
-      if (aRatio < 0.5 || aRatio > 2.0)
-      {
-        anOrigin[aCoordinate] = 0.0;
-        break;
-      }
-    }
-    for (size_t aPole = 0; aPole <= static_cast<size_t>(Degree); ++aPole)
-    {
-      (&Poles)[aPole * aDimension + aCoordinate] -= anOrigin[aCoordinate];
-    }
-  }
+  translateControlPolygon<false>(static_cast<size_t>(Degree), aDimension, &Poles, anOrigin);
   const double* aKnots = &Knots;
   for (int aLevel = 0; aLevel < Degree; ++aLevel)
   {
@@ -931,6 +998,12 @@ void BSplCLib::Eval(const double U,
         isRightNear ? aLeftWeight : (U - aKnots[aLevel + aPole]) / aKnotDistance;
       const double* aBase   = isRightNear ? aPoles + Dimension : aPoles;
       const double* anOther = isRightNear ? aPoles : aPoles + Dimension;
+      if (aWeight == 0.0)
+      {
+        std::copy_n(aBase, aDimension, aPoles);
+        aPoles += Dimension;
+        continue;
+      }
       for (int aCoordinate = 0; aCoordinate < Dimension; ++aCoordinate)
       {
         const double aBaseValue   = aBase[aCoordinate];
@@ -1164,27 +1237,85 @@ void BSplCLib::Bohm(const double U,
     Eval(U, Degree, Knots, Dimension, Poles);
     return;
   }
-  // Evaluate each derivative control polygon by de Boor interpolation.
-  // This keeps point evaluation consistent and avoids polynomial reconstruction.
+  if (N < 0)
+  {
+    return;
+  }
   const int    aDerivativeOrder = std::min(N, Degree);
-  const size_t aNbCoordinates   = static_cast<size_t>(Degree + 1) * Dimension;
-  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aDerivativePoles(aNbCoordinates);
-  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aWorkPoles(aNbCoordinates);
+  const size_t aDimension       = static_cast<size_t>(Dimension);
+  const size_t aNbCoordinates   = static_cast<size_t>(Degree + 1) * aDimension;
   NCollection_LocalArray<double, 2 * (MaxDegree() + 1)> aKnotData(2 * (Degree + 1));
   aKnotData[0] = aKnots[0];
   std::copy_n(aKnots, 2 * Degree, aKnotData + 1);
   aKnotData[2 * Degree + 1] = aKnots[2 * Degree - 1];
-  std::copy_n(&Poles, aNbCoordinates, &aDerivativePoles[0]);
-  for (int aDerivative = 0; aDerivative <= aDerivativeOrder; ++aDerivative)
+  // Low-degree evaluation has little repeated work to offset basis setup.
+  const bool toUseBasis = Degree > 3 && U >= aKnots[Degree - 1] && U <= aKnots[Degree];
+  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aBasisData(
+    toUseBasis ? static_cast<size_t>(Degree + 1) * (Degree + 1) : 0);
+  std::optional<math_Matrix> aBasis;
+  if (toUseBasis)
   {
-    const int aDegree = Degree - aDerivative;
-    std::copy_n(&aDerivativePoles[0], static_cast<size_t>(aDegree + 1) * Dimension, &aWorkPoles[0]);
-    Eval(U, aDegree, aKnotData[aDerivative + 1], Dimension, aWorkPoles[0]);
-    std::copy_n(&aWorkPoles[0], Dimension, &Poles + aDerivative * Dimension);
-    if (aDerivative < aDerivativeOrder)
+    aBasis.emplace(aBasisData, 1, Degree + 1, 1, Degree + 1);
+    // Derivative control polygons share the basis for every lower degree.
+    const NCollection_Array1<double> aFlatKnots(aKnotData[0], 1, 2 * (Degree + 1));
+    int                              aFirstBasis = 0;
+    if (evalBsplineBasis<true>(0, Degree + 1, aFlatKnots, U, aFirstBasis, *aBasis, false) != 0)
     {
-      Derivative(aDegree, aKnotData[aDerivative], Dimension, aDegree + 1, 1, aDerivativePoles[0]);
+      aBasis.reset();
     }
+  }
+  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> anOrigin(aDimension);
+  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aResult(aDimension);
+  NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aWorkPoles;
+  for (size_t aDerivative = 0; aDerivative <= static_cast<size_t>(aDerivativeOrder); ++aDerivative)
+  {
+    const int aDegree = Degree - static_cast<int>(aDerivative);
+    bool      isSafe  = false;
+    if (aBasis)
+    {
+      isSafe =
+        translateControlPolygon<true>(static_cast<size_t>(aDegree), aDimension, &Poles, anOrigin);
+    }
+    double* aResultData = &aResult[0];
+    if (isSafe)
+    {
+      evalControlPolygon(static_cast<size_t>(aDegree),
+                         aDimension,
+                         &Poles,
+                         &(*aBasis)(aDegree + 1, 1),
+                         anOrigin,
+                         aResult);
+    }
+    else
+    {
+      if (aWorkPoles.Size() == 0)
+      {
+        aWorkPoles.Allocate(aNbCoordinates);
+      }
+      std::copy_n(&Poles, static_cast<size_t>(aDegree + 1) * aDimension, &aWorkPoles[0]);
+      Eval(U, aDegree, aKnotData[aDerivative + 1], Dimension, aWorkPoles[0]);
+      aResultData = &aWorkPoles[0];
+      if (aBasis)
+      {
+        for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
+        {
+          aResultData[aCoordinate] += anOrigin[aCoordinate];
+        }
+      }
+    }
+    if (aDerivative < static_cast<size_t>(aDerivativeOrder))
+    {
+      Derivative(aDegree, aKnotData[aDerivative], Dimension, aDegree + 1, 1, Poles);
+    }
+    // Differentiation frees the last pole for the current result.
+    std::copy_n(aResultData, aDimension, &Poles + static_cast<size_t>(aDegree) * aDimension);
+  }
+  // Results were stored from the last pole to the first pole.
+  for (size_t aPole = 0; aPole < static_cast<size_t>(Degree + 1) / 2; ++aPole)
+  {
+    std::swap_ranges(&Poles + aPole * aDimension,
+                     &Poles + (aPole + 1) * aDimension,
+                     &Poles + (static_cast<size_t>(Degree) - aPole) * aDimension);
   }
 }
 

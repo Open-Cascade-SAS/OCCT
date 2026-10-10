@@ -512,13 +512,15 @@ void BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BaseAlgo>::checkI
     {
       return;
     }
-    const double aNextSqDeviation = theDeviation.SquareDeviation(getPoint3d(aNext));
+    const gp_Pnt aNextPoint       = getPoint3d(aNext);
+    const double aNextSqDeviation = theDeviation.SquareDeviation(aNextPoint);
     if (!(aNextSqDeviation > aSqDeviation))
     {
       return;
     }
-    if (usePoint(aNext, theDeviation))
+    if (!checkDeflectionOfPointAndUpdateCache(aNext, aNextPoint, aNextSqDeviation))
     {
+      myControlNodes->Append(aNext);
       return;
     }
     theParameter = aNext;

@@ -1058,3 +1058,67 @@ TEST_F(BSplSLib_CacheTest, RationalD1AsymmetricDegreesAndWeightScale)
     }
   }
 }
+
+//==================================================================================================
+
+TEST_F(BSplSLib_CacheTest, HighDegreeCacheMatchesPolynomialDerivatives)
+{
+  for (const size_t aUDegree : {5u, 8u})
+  {
+    for (const size_t aVDegree : {5u, 8u})
+    {
+      NCollection_Array2<gp_Pnt> aPoles(aUDegree + 1, aVDegree + 1);
+      for (size_t aU = 0; aU <= aUDegree; ++aU)
+      {
+        for (size_t aV = 0; aV <= aVDegree; ++aV)
+        {
+          aPoles.ChangeAt(aU, aV) =
+            gp_Pnt(static_cast<double>(aU) / aUDegree,
+                   static_cast<double>(aV) / aVDegree,
+                   (aU == aUDegree ? 1.0 : 0.0) + (aV == aVDegree ? 1.0 : 0.0));
+        }
+      }
+      NCollection_Array1<double> aUKnots(2 * (aUDegree + 1));
+      NCollection_Array1<double> aVKnots(2 * (aVDegree + 1));
+      for (size_t aU = 0; aU < aUKnots.Size(); ++aU)
+      {
+        aUKnots.ChangeAt(aU) = aU <= aUDegree ? 0.0 : 1.0;
+      }
+      for (size_t aV = 0; aV < aVKnots.Size(); ++aV)
+      {
+        aVKnots.ChangeAt(aV) = aV <= aVDegree ? 0.0 : 1.0;
+      }
+      BSplSLib_Cache aCache(static_cast<int>(aUDegree),
+                            false,
+                            aUKnots,
+                            static_cast<int>(aVDegree),
+                            false,
+                            aVKnots,
+                            nullptr);
+      for (size_t aSample = 0; aSample <= 200; ++aSample)
+      {
+        const double aU = static_cast<double>(aSample) / 200.0;
+        const double aV = 1.0 - aU;
+        aCache.BuildCache(aU, aV, aUKnots, aVKnots, aPoles, nullptr);
+        gp_Pnt aPoint;
+        gp_Vec aDU, aDV, aDUU, aDVV, aDUV;
+        aCache.D2(aU, aV, aPoint, aDU, aDV, aDUU, aDVV, aDUV);
+        // The tensor-product surface is (u, v, u^p + v^q).
+        EXPECT_NEAR(aPoint.X(), aU, THE_TOLERANCE);
+        EXPECT_NEAR(aPoint.Y(), aV, THE_TOLERANCE);
+        EXPECT_NEAR(aPoint.Z(), std::pow(aU, aUDegree) + std::pow(aV, aVDegree), THE_TOLERANCE);
+        EXPECT_LE((aDU - gp_Vec(1.0, 0.0, aUDegree * std::pow(aU, aUDegree - 1))).Magnitude(),
+                  THE_TOLERANCE);
+        EXPECT_LE((aDV - gp_Vec(0.0, 1.0, aVDegree * std::pow(aV, aVDegree - 1))).Magnitude(),
+                  THE_TOLERANCE);
+        EXPECT_NEAR(aDUU.Z(),
+                    aUDegree * (aUDegree - 1) * std::pow(aU, aUDegree - 2),
+                    THE_TOLERANCE);
+        EXPECT_NEAR(aDVV.Z(),
+                    aVDegree * (aVDegree - 1) * std::pow(aV, aVDegree - 2),
+                    THE_TOLERANCE);
+        EXPECT_LE(aDUV.Magnitude(), THE_TOLERANCE);
+      }
+    }
+  }
+}
