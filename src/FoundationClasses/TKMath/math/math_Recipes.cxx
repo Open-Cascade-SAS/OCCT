@@ -688,10 +688,10 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
           c = 1.0;
           s = 0.0;
         }
-        f      = x * c + g * s;
-        g      = g * c - x * s;
-        h      = y * s;
-        y      = y * c;
+        f = x * c + g * s;
+        g = g * c - x * s;
+        h = y * s;
+        y = y * c;
         for (jj = 1; jj <= n; jj++)
         {
           x        = v(jj, j);
