@@ -28,6 +28,7 @@
 #include <NCollection_Array2.hxx>
 #include <IntTools_FaceFace.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRep_Tool.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Curve.hxx>
@@ -48,6 +49,7 @@
 #include <Geom_Plane.hxx>
 #include <gp.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Torus.hxx>
 #include <Precision.hxx>
 #include <math_Vector.hxx>
@@ -168,6 +170,122 @@ TEST(IntPatch_WalkingTest, PathOnlyPerformInitializesAndResetsItsState)
   EXPECT_EQ(aWalking.NbSinglePnts(), 0);
 }
 
+namespace
+{
+class IntPatch_PassageWalking : public IntPatch_TheIWalking
+{
+public:
+  using IntPatch_TheIWalking::Cadrage;
+  using IntPatch_TheIWalking::IntPatch_TheIWalking;
+  using IntPatch_TheIWalking::TestArretPassage;
+};
+} // namespace
+
+TEST(IntPatch_WalkingTest, SelectedStopUpdatesSurfaceFunction)
+{
+  const occ::handle<Adaptor3d_Surface> aSurface =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pln(gp::Origin(), gp::DZ())), -1.0, 1.0, -1.0, 1.0);
+  const IntSurf_Quadric aPlane(gp_Pln(gp::Origin(), gp::DX()));
+  for (const double aStartV : {-1.0, 1.0})
+  {
+    SCOPED_TRACE(aStartV);
+    IntPatch_TheSurfFunction aFunction(aSurface, aPlane);
+    aFunction.Set(Precision::Confusion());
+    math_Vector aParameters(1, 2), aValue(1, 1);
+    aParameters(1) = 0.0;
+    aParameters(2) = aStartV;
+    ASSERT_TRUE(aFunction.Value(aParameters, aValue));
+    ASSERT_FALSE(aFunction.IsTangent());
+    IntSurf_PathPoint aPath(aFunction.Point(), 0.0, aStartV);
+    if (aFunction.Direction2d().Y() * aStartV > 0.0)
+    {
+      aPath.SetDirections(-aFunction.Direction3d(), aFunction.Direction2d().Reversed());
+    }
+    else
+    {
+      aPath.SetDirections(aFunction.Direction3d(), aFunction.Direction2d());
+    }
+    aPath.SetTangency(false);
+    aPath.SetPassing(false);
+    NCollection_Sequence<IntSurf_PathPoint> aPaths;
+    aPaths.Append(aPath);
+    IntPatch_PassageWalking aWalking(Precision::Confusion(), 1.e-3, 0.01);
+    aWalking.Perform(aPaths, aFunction, aSurface);
+    ASSERT_TRUE(aWalking.IsDone());
+    ASSERT_EQ(aWalking.NbLines(), 1);
+
+    // Crossing the processed path point selects its parameters from the candidate list.
+    aParameters(2) = 1.5 * aStartV;
+    ASSERT_TRUE(aFunction.Value(aParameters, aValue));
+    NCollection_Sequence<double> aMultipleU, aMultipleV;
+    int                          aStopIndex = 0;
+    ASSERT_TRUE(
+      aWalking.TestArretPassage(aMultipleU, aMultipleV, aFunction, aParameters, aStopIndex));
+    EXPECT_EQ(aStopIndex, 1);
+    EXPECT_DOUBLE_EQ(aParameters(2), aStartV);
+    EXPECT_LE(aFunction.Point().Distance(aSurface->EvalD0(aParameters(1), aParameters(2))),
+              Precision::Confusion());
+    EXPECT_FALSE(aFunction.IsTangent());
+  }
+}
+
+TEST(IntPatch_WalkingTest, CorrectionPreservesPredictedMarchParameter)
+{
+  for (const double aSkew : {0.25, 0.75, 1.0, 2.0})
+  {
+    SCOPED_TRACE(aSkew);
+    NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+    for (size_t aU = 0; aU < 2; ++aU)
+    {
+      for (size_t aV = 0; aV < 2; ++aV)
+      {
+        aPoles.ChangeAt(aU, aV) =
+          gp_Pnt(2.0 * aU - 1.0 + aSkew * (2.0 * aV - 1.0), 2.0 * aV - 1.0, 0.0);
+      }
+    }
+    const occ::handle<Adaptor3d_Surface> aSurface =
+      new GeomAdaptor_Surface(new Geom_BezierSurface(aPoles));
+    const IntSurf_Quadric    aPlane(gp_Pln(gp::Origin(), gp::DX()));
+    IntPatch_TheSurfFunction aFunction(aSurface, aPlane);
+    aFunction.Set(Precision::Confusion());
+    math_Vector aParameters(1, 2), aValue(1, 1);
+    aParameters(1) = aSkew <= 1.0 ? 0.5 * (1.0 - aSkew) : 0.0;
+    aParameters(2) = aSkew <= 1.0 ? 1.0 : 0.5 * (1.0 + 1.0 / aSkew);
+    ASSERT_TRUE(aFunction.Value(aParameters, aValue));
+    ASSERT_FALSE(aFunction.IsTangent());
+    IntSurf_PathPoint aPath(aFunction.Point(), aParameters(1), aParameters(2));
+    aPath.SetDirections(aFunction.Direction3d(), aFunction.Direction2d());
+    aPath.SetTangency(false);
+    aPath.SetPassing(false);
+    NCollection_Sequence<IntSurf_PathPoint> aPaths;
+    aPaths.Append(aPath);
+    IntPatch_PassageWalking aWalking(Precision::Confusion(), 1.e-3, 0.01);
+    aWalking.Perform(aPaths, aFunction, aSurface);
+    ASSERT_TRUE(aWalking.IsDone());
+    ASSERT_EQ(aWalking.NbLines(), 1);
+
+    math_Vector aLower(1, 2), anUpper(1, 2), aTolerance(1, 2);
+    aLower.Init(0.0);
+    anUpper.Init(1.0);
+    aTolerance.Init(Precision::PConfusion());
+    double aStep = 0.1;
+    ASSERT_FALSE(aWalking.Cadrage(aLower, anUpper, aParameters, aStep, -1));
+    const int    aFixedIndex     = aSkew >= 1.0 ? 1 : 2;
+    const int    aCorrectedIndex = 3 - aFixedIndex;
+    const double aPredicted      = aParameters(aFixedIndex);
+    // Correct a normal error while retaining the parameter that advances the walk.
+    aParameters(aCorrectedIndex) += 0.01;
+    math_FunctionSetRoot aSolver(aFunction, aTolerance);
+    aSolver.Perform(aFunction, aParameters, aLower, anUpper);
+    ASSERT_TRUE(aSolver.IsDone());
+    aSolver.Root(aParameters);
+    EXPECT_DOUBLE_EQ(aParameters(aFixedIndex), aPredicted);
+    EXPECT_NEAR(aParameters(1) - 0.5 * (1.0 - aSkew * (2.0 * aParameters(2) - 1.0)),
+                0.0,
+                Precision::PConfusion());
+  }
+}
+
 TEST(IntPatch_WalkingTest, RegularBoundaryTangencyKeepsBranchEndpointsTogether)
 {
   const occ::handle<Geom_SurfaceOfRevolution> aSurface =
@@ -190,6 +308,27 @@ TEST(IntPatch_WalkingTest, RegularBoundaryTangencyKeepsBranchEndpointsTogether)
   const occ::handle<Geom_Curve>& aSecond = anIntersection.Lines()(2).Curve();
   ASSERT_FALSE(aFirst.IsNull());
   ASSERT_FALSE(aSecond.IsNull());
+  const double aTolerance = BRep_Tool::Tolerance(aPlaneFace) + BRep_Tool::Tolerance(aRevolutionFace)
+                            + anIntersection.FuzzyValue();
+  const gp_Pnt aJoin(-25.0, 0.0, -25.0);
+  const gp_Lin aPositiveBranch(aJoin, gp_Dir(0.0, 1.0, 2.0));
+  const gp_Lin aNegativeBranch(aJoin, gp_Dir(0.0, -1.0, 2.0));
+  for (const auto& aCurve : {aFirst, aSecond})
+  {
+    const double aJoinError = std::min(aCurve->EvalD0(aCurve->FirstParameter()).Distance(aJoin),
+                                       aCurve->EvalD0(aCurve->LastParameter()).Distance(aJoin));
+    EXPECT_LE(aJoinError, aTolerance);
+    const GeomAdaptor_Curve anAdaptor(aCurve);
+    for (size_t anIndex = 0; anIndex <= 8; ++anIndex)
+    {
+      const double aParameter =
+        aCurve->FirstParameter()
+        + anIndex * (aCurve->LastParameter() - aCurve->FirstParameter()) / 8;
+      const gp_Pnt aPoint = anAdaptor.EvalD0(aParameter);
+      EXPECT_LE(std::min(aPositiveBranch.Distance(aPoint), aNegativeBranch.Distance(aPoint)),
+                aTolerance);
+    }
+  }
   double aJoinDistance = RealLast();
   for (double aFirstParameter : {aFirst->FirstParameter(), aFirst->LastParameter()})
   {
@@ -200,7 +339,8 @@ TEST(IntPatch_WalkingTest, RegularBoundaryTangencyKeepsBranchEndpointsTogether)
                  aFirst->Value(aFirstParameter).Distance(aSecond->Value(aSecondParameter)));
     }
   }
-  EXPECT_LE(aJoinDistance, Precision::Confusion());
+  // The two endpoints can each differ from the exact join by the intersection tolerance.
+  EXPECT_LE(aJoinDistance, 2.0 * aTolerance);
 }
 
 namespace

@@ -747,7 +747,7 @@ TEST(BSplCLibTest, AllDerivativesRetainContributionsBelowBasisExponentRange)
   BSplCLib::Eval(aParameter, aDegree, aKnots.ChangeAt(0), 1, aValue.ChangeAt(0));
   BSplCLib::Bohm(aParameter, aDegree, aDegree, aKnots.ChangeAt(0), 1, aPoles.ChangeAt(0));
   // The basis weight underflows in double, but the coordinate and derivatives are finite.
-  double aFactor = A;
+  double aFactor = aLastPole;
   for (size_t aDerivative = 0; aDerivative <= aDegree; ++aDerivative)
   {
     // Scale the coordinate before its small parameter factors to keep finite contributions.

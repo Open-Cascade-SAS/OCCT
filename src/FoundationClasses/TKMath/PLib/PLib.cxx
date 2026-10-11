@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <PLib.hxx>
+#include <PLib_EvalPolynomial.pxx>
 
 #include <GeomAbs_Shape.hxx>
 #include <math.hxx>
@@ -720,20 +721,12 @@ template <int dim>
 inline void eval_poly0(double* theResult, const double* theCoeffs, int theDegree, double thePar)
 {
   std::array<double, dim> aLocal;
-  for (int i = 0; i < dim; ++i)
-  {
-    aLocal[i] = theCoeffs[i];
-  }
-
-  const double* aCoeffs = theCoeffs;
-  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
-  {
-    aCoeffs -= dim;
-    for (int i = 0; i < dim; ++i)
-    {
-      aLocal[i] = aLocal[i] * thePar + aCoeffs[i];
-    }
-  }
+  evalPolynomialValue(
+    static_cast<size_t>(std::max(theDegree, 0)),
+    static_cast<size_t>(dim),
+    thePar,
+    [&](size_t theStep) { return theCoeffs - theStep * dim; },
+    aLocal.data());
 
   for (int i = 0; i < dim; ++i)
   {
@@ -819,20 +812,13 @@ inline void eval_poly0_runtime(double*       theResult,
                                double        thePar,
                                int           theDimension)
 {
-  for (int i = 0; i < theDimension; ++i)
-  {
-    theResult[i] = theCoeffs[i];
-  }
-
-  const double* aCoeffs = theCoeffs;
-  for (int aDeg = 0; aDeg < theDegree; ++aDeg)
-  {
-    aCoeffs -= theDimension;
-    for (int i = 0; i < theDimension; ++i)
-    {
-      theResult[i] = theResult[i] * thePar + aCoeffs[i];
-    }
-  }
+  const size_t aDimension = static_cast<size_t>(std::max(theDimension, 0));
+  evalPolynomialValue(
+    static_cast<size_t>(std::max(theDegree, 0)),
+    aDimension,
+    thePar,
+    [&](size_t theStep) { return theCoeffs - theStep * aDimension; },
+    theResult);
 }
 
 // Runtime evaluation for dimension > THE_MAX_OPT_DIM (value + 1st derivative)

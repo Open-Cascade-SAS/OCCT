@@ -54,58 +54,6 @@ namespace
 {
 //==================================================================================================
 
-// Keep exact common coordinates outside interpolation and derivative differences.
-template <bool TheWeightedSum>
-bool translateControlPolygon(const size_t theDegree,
-                             const size_t theDimension,
-                             double*      thePoles,
-                             double*      theOrigin)
-{
-  bool isSafe = true;
-  // Exact translation cannot increase the largest absolute coordinate.
-  // Reserve room for every weighted pole and the restored origin.
-  const double aLimit = RealLast() / static_cast<double>(theDegree + 2);
-  for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
-  {
-    double anOffset = thePoles[aCoordinate];
-    if constexpr (TheWeightedSum)
-    {
-      isSafe = isSafe && std::abs(anOffset) <= aLimit;
-    }
-    // Sterbenz's lemma makes subtraction exact for like-signed coordinates
-    // within a factor of two. Other coordinates keep their original values.
-    for (size_t aPole = 1; (TheWeightedSum || anOffset != 0.0) && aPole <= theDegree; ++aPole)
-    {
-      const double aValue = thePoles[aPole * theDimension + aCoordinate];
-      if constexpr (TheWeightedSum)
-      {
-        isSafe = isSafe && std::abs(aValue) <= aLimit;
-      }
-      if (anOffset != 0.0
-          && (anOffset > 0.0 ? (aValue < 0.5 * anOffset || 0.5 * aValue > anOffset)
-                             : (aValue > 0.5 * anOffset || 0.5 * aValue < anOffset)))
-      {
-        anOffset = 0.0;
-        if constexpr (!TheWeightedSum)
-        {
-          break;
-        }
-      }
-    }
-    theOrigin[aCoordinate] = anOffset;
-    if (anOffset != 0.0)
-    {
-      for (size_t aPole = 0; aPole <= theDegree; ++aPole)
-      {
-        thePoles[aPole * theDimension + aCoordinate] -= anOffset;
-      }
-    }
-  }
-  return isSafe;
-}
-
-//==================================================================================================
-
 void evalControlPolygon(const size_t  theDegree,
                         const size_t  theDimension,
                         const double* thePoles,
@@ -984,7 +932,13 @@ void BSplCLib::Eval(const double U,
   }
   NCollection_LocalArray<double, 16> anOrigin(Dimension);
   const size_t                       aDimension = static_cast<size_t>(Dimension);
-  translateControlPolygon<false>(static_cast<size_t>(Degree), aDimension, &Poles, anOrigin);
+  translateControlPolygon<false>(
+    static_cast<size_t>(Degree) + 1,
+    aDimension,
+    [&](size_t thePole, size_t theCoordinate) -> double& {
+      return (&Poles)[thePole * aDimension + theCoordinate];
+    },
+    &anOrigin[0]);
   const double* aKnots = &Knots;
   for (int aLevel = 0; aLevel < Degree; ++aLevel)
   {
@@ -1277,8 +1231,13 @@ void BSplCLib::Bohm(const double U,
     bool      isSafe  = false;
     if (aBasis)
     {
-      isSafe =
-        translateControlPolygon<true>(static_cast<size_t>(aDegree), aDimension, &Poles, anOrigin);
+      isSafe = translateControlPolygon<true>(
+        static_cast<size_t>(aDegree) + 1,
+        aDimension,
+        [&](size_t thePole, size_t theCoordinate) -> double& {
+          return (&Poles)[thePole * aDimension + theCoordinate];
+        },
+        &anOrigin[0]);
     }
     double* aResultData = &aResult[0];
     if (isSafe)

@@ -457,6 +457,15 @@ bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
   {
     UVap(1) = U1;
     UVap(2) = V1;
+    // Keep the predicted march parameter fixed while correcting the other coordinate.
+    if (std::abs(Duvx) >= std::abs(Duvy))
+    {
+      BornInf(1) = BornSup(1) = U1;
+    }
+    else
+    {
+      BornInf(2) = BornSup(2) = V1;
+    }
     return false;
   }
 
@@ -753,10 +762,6 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
           }
           if (Arrive)
           {
-            double      abidF[1], abidD[1][2];
-            math_Vector bidF(abidF, 1, 1);
-            math_Matrix bidD(abidD, 1, 1, 1, 2);
-            sp.Values(UV, bidF, bidD);
             break;
           }
         }
@@ -776,6 +781,14 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
       UV(2)  = wd1[Irang].vstart;
     }
   } // end of for (l = 1; l <= 2 && !Arrive; l++)
+  if (Arrive)
+  {
+    // The point and derivatives must belong to the selected stop parameters.
+    double      aF[1], aD[1][2];
+    math_Vector aValue(aF, 1, 1);
+    math_Matrix aDerivative(aD, 1, 1, 1, 2);
+    sp.Values(UV, aValue, aDerivative);
+  }
   return Arrive;
 }
 
@@ -1587,13 +1600,10 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
         Chronrsnld.Stop();
 #endif
 
-        if (Cadre)
-        {
-          BornInf(1) = Um;
-          BornSup(1) = UM;
-          BornInf(2) = Vm;
-          BornSup(2) = VM;
-        }
+        BornInf(1) = Um;
+        BornSup(1) = UM;
+        BornInf(2) = Vm;
+        BornSup(2) = VM;
         if (Rsnld.IsDone())
         {
           if (std::abs(Func.Root()) > Func.Tolerance())
@@ -2187,13 +2197,10 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
 #endif
         bool isOnDegeneratedBorder = false;
 
-        if (Cadre)
-        { // update of limits.
-          BornInf(1) = Um;
-          BornSup(1) = UM;
-          BornInf(2) = Vm;
-          BornSup(2) = VM;
-        }
+        BornInf(1) = Um;
+        BornSup(1) = UM;
+        BornInf(2) = Vm;
+        BornSup(2) = VM;
         if (Rsnld.IsDone())
         {
           if (std::abs(Func.Root()) > Func.Tolerance())
