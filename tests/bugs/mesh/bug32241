@@ -1,6 +1,3 @@
-puts "TODO ?OCC32241 Windows: Error: Number of triangles = 2742 is not equal to expected 2702"
-puts "TODO ?OCC32241 Windows: Error: Number of nodes = 1419 is not equal to expected 1399"
-
 puts "========"
 puts "0032241: Mesh - wrong shading display of thrusections"
 puts "========"
@@ -13,12 +10,12 @@ if { [regexp {Windows} [dversion]] } {
     set nod_n 1397
   } else {
     # Windows x64/x86
-    set tri_n 2702
-    set nod_n 1399
+    set tri_n 2744
+    set nod_n 1420
   }
 } else {
-  set tri_n 2732
-  set nod_n 1414
+  set tri_n 2736
+  set nod_n 1416
 }
 
 pload MODELING VISUALIZATION

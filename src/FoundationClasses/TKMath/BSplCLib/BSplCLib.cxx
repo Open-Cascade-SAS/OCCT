@@ -978,6 +978,10 @@ void BSplCLib::Eval(const double U,
                     const int    Dimension,
                     double&      Poles)
 {
+  if (Degree == 0)
+  {
+    return;
+  }
   NCollection_LocalArray<double, 16> anOrigin(Dimension);
   const size_t                       aDimension = static_cast<size_t>(Dimension);
   translateControlPolygon<false>(static_cast<size_t>(Degree), aDimension, &Poles, anOrigin);

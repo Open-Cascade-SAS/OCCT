@@ -747,17 +747,20 @@ TEST(BSplCLibTest, AllDerivativesRetainContributionsBelowBasisExponentRange)
   BSplCLib::Eval(aParameter, aDegree, aKnots.ChangeAt(0), 1, aValue.ChangeAt(0));
   BSplCLib::Bohm(aParameter, aDegree, aDegree, aKnots.ChangeAt(0), 1, aPoles.ChangeAt(0));
   // The basis weight underflows in double, but the coordinate and derivatives are finite.
-  long double aFactor = static_cast<long double>(aLastPole);
+  double aFactor = A;
   for (size_t aDerivative = 0; aDerivative <= aDegree; ++aDerivative)
   {
-    const double anExpected = static_cast<double>(
-      aFactor
-      * std::pow(static_cast<long double>(aParameter), static_cast<int>(aDegree - aDerivative)));
+    // Scale the coordinate before its small parameter factors to keep finite contributions.
+    double anExpected = aFactor;
+    for (size_t aPower = aDerivative; aPower < aDegree; ++aPower)
+    {
+      anExpected *= aParameter;
+    }
     EXPECT_NEAR(aPoles.At(aDerivative), anExpected, 1.e-13 * std::abs(anExpected));
     if (aDerivative == 0)
     {
       EXPECT_NEAR(aValue.At(0), anExpected, 1.e-13 * std::abs(anExpected));
     }
-    aFactor *= static_cast<long double>(aDegree - aDerivative);
+    aFactor *= static_cast<double>(aDegree - aDerivative);
   }
 }

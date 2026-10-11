@@ -24,6 +24,8 @@
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
 
+#include <algorithm>
+
 namespace
 {
 // Helper function for comparing points with tolerance
@@ -565,6 +567,46 @@ TEST_F(PLibTest, FirstDerivativeAcrossComponentDimensions)
           }
           EXPECT_NEAR(aResult.At(aComponent), double(aValue), 1.e-12);
           EXPECT_NEAR(aResult.At(aDimension + aComponent), double(aDerivative), 1.e-11);
+        }
+      }
+    }
+  }
+}
+
+TEST_F(PLibTest, FirstDerivativeInPlaceAcrossComponentDimensions)
+{
+  for (const int aDimension : {1, 15, 16, 24, 32, 33, 84})
+  {
+    for (const int aDegree : {0, 1, 3, 8, 25})
+    {
+      const size_t aResultSize = 2 * static_cast<size_t>(aDimension);
+      const size_t aStorageSize =
+        std::max(aResultSize, static_cast<size_t>(aDegree + 1) * aDimension);
+      for (const double aParameter : {-1.0, -0.25, 0.0, 0.5, 1.0})
+      {
+        SCOPED_TRACE(::testing::Message() << "dimension=" << aDimension << " degree=" << aDegree
+                                          << " parameter=" << aParameter);
+        NCollection_Array1<double> aCoefficients(aStorageSize);
+        NCollection_Array1<double> aResult(aResultSize);
+        for (size_t anIndex = 0; anIndex < aCoefficients.Size(); ++anIndex)
+        {
+          aCoefficients.ChangeAt(anIndex) = double(int(anIndex % 17) - 8) / 16.0;
+        }
+        PLib::EvalPolynomial(aParameter,
+                             1,
+                             aDegree,
+                             aDimension,
+                             aCoefficients.First(),
+                             aResult.ChangeFirst());
+        PLib::EvalPolynomial(aParameter,
+                             1,
+                             aDegree,
+                             aDimension,
+                             aCoefficients.First(),
+                             aCoefficients.ChangeFirst());
+        for (size_t anIndex = 0; anIndex < aResultSize; ++anIndex)
+        {
+          EXPECT_DOUBLE_EQ(aCoefficients.At(anIndex), aResult.At(anIndex));
         }
       }
     }

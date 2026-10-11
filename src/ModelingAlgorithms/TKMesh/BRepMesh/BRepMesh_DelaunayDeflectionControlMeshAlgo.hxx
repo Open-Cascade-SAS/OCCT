@@ -82,7 +82,8 @@ protected:
     myControlNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
     myCircles      = &theMesher.Circles();
 
-    bool                  isInserted = true;
+    size_t                aFirstTriangle = 1;
+    bool                  isInserted     = true;
     Message_ProgressScope aPS(theRange, "Iteration", 1, true);
     while (isInserted && !myIsAllDegenerated)
     {
@@ -99,15 +100,31 @@ protected:
       {
         break;
       }
-      // Iterate on current triangles
+      const size_t aNbTriangles = static_cast<size_t>(this->getStructure()->NbElements());
+      // Insertions append triangles and leave surviving triangles unchanged.
+      // Recheck the whole mesh when incremental refinement stops.
       IMeshData::IteratorOfMapOfInteger aTriangleIt(this->getStructure()->ElementsOfDomain());
       for (; aTriangleIt.More(); aTriangleIt.Next())
       {
+        if (static_cast<size_t>(aTriangleIt.Key()) < aFirstTriangle)
+        {
+          continue;
+        }
         const BRepMesh_Triangle& aTriangle = this->getStructure()->GetElement(aTriangleIt.Key());
         splitTriangleGeometry(aTriangle);
       }
 
       isInserted = this->insertNodes(myControlNodes, theMesher, aPS.Next());
+      if (isInserted && !myIsAllDegenerated)
+      {
+        aFirstTriangle = aNbTriangles + 1;
+      }
+      else if (aFirstTriangle > 1)
+      {
+        aFirstTriangle     = 1;
+        isInserted         = true;
+        myIsAllDegenerated = false;
+      }
     }
 
     myCouplesMap.Nullify();
@@ -189,7 +206,7 @@ private:
                        const int (&theNodesIndices)[3],
                        TriangleNodeInfo (&theInfo)[3]) const
   {
-    const int (&e)[3] = theTriangle.myEdges;
+    const int(&e)[3] = theTriangle.myEdges;
     for (int i = 0; i < 3; ++i)
     {
       const BRepMesh_Vertex& aVertex = this->getStructure()->GetNode(theNodesIndices[i]);
@@ -223,9 +240,10 @@ private:
 
         const gp_Pnt          aReferencePoint(aNodesInfo[0].Point);
         const NormalDeviation aDeviation(aReferencePoint, aNormal);
-        if (!usePoint(aCenter2d, aDeviation))
+        const gp_Pnt          aCenterPoint = getPoint3d(aCenter2d);
+        if (!usePoint(aCenter2d, aCenterPoint, aDeviation))
         {
-          checkInteriorDeviation(aNodesInfo, aNormal, aCenter2d, aDeviation);
+          checkInteriorDeviation(aNodesInfo, aNormal, aCenter2d, aDeviation, aCenterPoint);
         }
         splitLinks(aNodesInfo, aNodexIndices);
       }
@@ -233,10 +251,12 @@ private:
   }
 
   //! Checks interior stationary points of the signed distance to the triangle plane.
+  //! thePoint is the surface point at the initial theParameter.
   void checkInteriorDeviation(const TriangleNodeInfo (&theNodes)[3],
                               const gp_Vec&          theNormal,
                               gp_XY                  theParameter,
-                              const NormalDeviation& theDeviation);
+                              const NormalDeviation& theDeviation,
+                              const gp_Pnt&          thePoint);
 
   //! Updates array of links vectors.
   //! @return False on degenerative triangle.
@@ -331,9 +351,12 @@ private:
       {
         const gp_XY aMidPnt2d = (theNodesInfo[i].Point2d + theNodesInfo[j].Point2d) / 2.;
 
-        if (!usePoint(aMidPnt2d, LineDeviation(theNodesInfo[i].Point, theNodesInfo[j].Point)))
+        const gp_Pnt aMidPoint = getPoint3d(aMidPnt2d);
+        if (!usePoint(aMidPnt2d,
+                      aMidPoint,
+                      LineDeviation(theNodesInfo[i].Point, theNodesInfo[j].Point)))
         {
-          if (!rejectSplitLinksForMinSize(theNodesInfo[i], theNodesInfo[j], aMidPnt2d))
+          if (!rejectSplitLinksForMinSize(theNodesInfo[i], theNodesInfo[j], aMidPoint))
           {
             if (!checkLinkEndsForAngularDeviation(theNodesInfo[i], theNodesInfo[j], aMidPnt2d))
             {
@@ -349,11 +372,10 @@ private:
   //! the given link by the middle point fit MinSize requirement.
   bool rejectSplitLinksForMinSize(const TriangleNodeInfo& theNodeInfo1,
                                   const TriangleNodeInfo& theNodeInfo2,
-                                  const gp_XY&            theMidPoint)
+                                  const gp_Pnt&           theMidPoint)
   {
-    const gp_Pnt aPnt = getPoint3d(theMidPoint);
-    return ((theNodeInfo1.Point - aPnt.XYZ()).SquareModulus() < mySqMinSize
-            || (theNodeInfo2.Point - aPnt.XYZ()).SquareModulus() < mySqMinSize);
+    return ((theNodeInfo1.Point - theMidPoint.XYZ()).SquareModulus() < mySqMinSize
+            || (theNodeInfo2.Point - theMidPoint.XYZ()).SquareModulus() < mySqMinSize);
   }
 
   //! Checks the given point (located between the given nodes)
@@ -390,12 +412,13 @@ private:
   //! insertion in case if it overflows deflection.
   //! @return True if point has been cached for insertion.
   template <class DeflectionFunctor>
-  bool usePoint(const gp_XY& thePnt2d, const DeflectionFunctor& theDeflectionFunctor)
+  bool usePoint(const gp_XY&             thePnt2d,
+                const gp_Pnt&            thePnt3d,
+                const DeflectionFunctor& theDeflectionFunctor)
   {
-    const gp_Pnt aPnt = getPoint3d(thePnt2d);
     if (!checkDeflectionOfPointAndUpdateCache(thePnt2d,
-                                              aPnt,
-                                              theDeflectionFunctor.SquareDeviation(aPnt)))
+                                              thePnt3d,
+                                              theDeflectionFunctor.SquareDeviation(thePnt3d)))
     {
       myControlNodes->Append(thePnt2d);
       return true;
@@ -479,7 +502,8 @@ void BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BaseAlgo>::checkI
   const TriangleNodeInfo (&theNodes)[3],
   const gp_Vec&          theNormal,
   gp_XY                  theParameter,
-  const NormalDeviation& theDeviation)
+  const NormalDeviation& theDeviation,
+  const gp_Pnt&          thePoint)
 {
   const occ::handle<BRepAdaptor_Surface>& aSurface = this->getDFace()->GetSurface();
   if (aSurface->UContinuity() < GeomAbs_C2 || aSurface->VContinuity() < GeomAbs_C2)
@@ -489,7 +513,7 @@ void BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BaseAlgo>::checkI
   const gp_XY  aSide1       = theNodes[1].Point2d - theNodes[0].Point2d;
   const gp_XY  aSide2       = theNodes[2].Point2d - theNodes[0].Point2d;
   const double anArea       = aSide1.Crossed(aSide2);
-  double       aSqDeviation = theDeviation.SquareDeviation(getPoint3d(theParameter));
+  double       aSqDeviation = theDeviation.SquareDeviation(thePoint);
   for (;;)
   {
     const auto [aPoint, aDU, aDV, aDUU, aDVV, aDUV] =

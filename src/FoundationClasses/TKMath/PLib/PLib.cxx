@@ -24,6 +24,7 @@
 #include <NCollection_LocalArray.hxx>
 #include <Standard_ConstructionError.hxx>
 
+#include <algorithm>
 #include <array>
 
 // To convert points array into Real ..
@@ -841,19 +842,32 @@ inline void eval_poly1_runtime(double*       theResult,
                                double        thePar,
                                int           theDimension)
 {
-  for (int aComponent = 0; aComponent < theDimension; ++aComponent)
+  // Keep coefficient traversal contiguous and retain coefficients until
+  // each component block is complete, including in-place evaluation.
+  constexpr size_t                    aBlockDimension = 32;
+  const size_t                        aDimension      = static_cast<size_t>(theDimension);
+  const size_t                        aDegree         = static_cast<size_t>(theDegree);
+  std::array<double, aBlockDimension> aValues;
+  std::array<double, aBlockDimension> aDerivatives;
+  for (size_t aFirst = 0; aFirst < aDimension; aFirst += aBlockDimension)
   {
-    const double* aCoefficients = theCoeffs + aComponent;
-    double        aValue        = *aCoefficients;
-    double        aDerivative   = 0.0;
-    for (int aDegree = 0; aDegree < theDegree; ++aDegree)
+    const size_t aNbComponents = std::min(aBlockDimension, aDimension - aFirst);
+    std::copy_n(theCoeffs + aFirst, aNbComponents, aValues.begin());
+    std::fill_n(aDerivatives.begin(), aNbComponents, 0.0);
+
+    const double* aCoefficients = theCoeffs + aFirst;
+    for (size_t aStep = 0; aStep < aDegree; ++aStep)
     {
-      aCoefficients -= theDimension;
-      aDerivative = aDerivative * thePar + aValue;
-      aValue      = aValue * thePar + *aCoefficients;
+      aCoefficients -= aDimension;
+      for (size_t aComponent = 0; aComponent < aNbComponents; ++aComponent)
+      {
+        const double aValue      = aValues[aComponent];
+        aDerivatives[aComponent] = aDerivatives[aComponent] * thePar + aValue;
+        aValues[aComponent]      = aValue * thePar + aCoefficients[aComponent];
+      }
     }
-    theResult[aComponent]                = aValue;
-    theResult[theDimension + aComponent] = aDerivative;
+    std::copy_n(aValues.begin(), aNbComponents, theResult + aFirst);
+    std::copy_n(aDerivatives.begin(), aNbComponents, theResult + aDimension + aFirst);
   }
 }
 

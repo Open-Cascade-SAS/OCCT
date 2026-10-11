@@ -142,7 +142,13 @@ CompensatedReal operator*(const CompensatedReal& theA, const CompensatedReal& th
 
 CompensatedReal operator/(const CompensatedReal& theA, const CompensatedReal& theB)
 {
-  const double          aQuotient  = theA.myHigh / theB.myHigh;
+  const double aQuotient = theA.myHigh / theB.myHigh;
+  // A scalar divisor needs only the exact product remainder.
+  if (theB.myLow == 0.0)
+  {
+    const double aRemainder = std::fma(-aQuotient, theB.myHigh, theA.myHigh) + theA.myLow;
+    return CompensatedReal(aQuotient, aRemainder / theB.myHigh);
+  }
   const CompensatedReal aRemainder = theA - theB * aQuotient;
   return CompensatedReal(aQuotient, (aRemainder.myHigh + aRemainder.myLow) / theB.myHigh);
 }
