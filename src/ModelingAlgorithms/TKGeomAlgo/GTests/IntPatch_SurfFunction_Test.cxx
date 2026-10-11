@@ -16,6 +16,7 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
@@ -26,6 +27,8 @@
 #include <IntWalk_TheFunctionOfTheInt2S.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <gtest/gtest.h>
+#include <Standard_Real.hxx>
+#include <cmath>
 
 TEST(IntPatch_SurfFunctionTest, TangentAfterValueUsesCurrentImplicitGradient)
 {
@@ -89,4 +92,20 @@ TEST(IntWalk_SurfaceFunctionTest, TangencyAfterValueUsesCurrentDerivatives)
   EXPECT_NEAR(aFunction.Direction().Z(), 0.0, 1.e-14);
   EXPECT_NEAR(aFunction.Direction().X(), 0.0, 1.e-14);
   EXPECT_NEAR(std::abs(aFunction.Direction().Y()), 1.0, 1.e-14);
+}
+
+TEST(IntPatch_SurfFunctionTest, TangencyUsesDoublePrecisionAngularThreshold)
+{
+  const double          aRoundoffAngle = std::sqrt(RealEpsilon());
+  const IntSurf_Quadric aPlane(gp_Pln(gp::Origin(), gp::DZ()));
+  for (const double aFactor : {0.75, 2.0})
+  {
+    const occ::handle<Adaptor3d_Surface> aSurface = new GeomAdaptor_Surface(
+      new Geom_Plane(gp_Pln(gp::Origin(), gp_Dir(aFactor * aRoundoffAngle, 0.0, 1.0))));
+    IntPatch_TheSurfFunction aFunction(aSurface, aPlane);
+    math_Vector              aParameters(1, 2), aValue(1, 1);
+    aParameters.Init(0.0);
+    ASSERT_TRUE(aFunction.Value(aParameters, aValue));
+    EXPECT_EQ(aFunction.IsTangent(), aFactor < 1.0) << "Angular factor " << aFactor;
+  }
 }
