@@ -19,6 +19,11 @@
 #include <BRepOffset_MakeOffset.hxx>
 #include <BRepOffset_Error.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Trsf.hxx>
+#include <gp.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -1096,4 +1101,47 @@ TEST(BRepOffset_MakeOffsetTest, CollapsedCircularWireOffsetIsNotDone)
   bool isDone = true;
   ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(2.0, -1.0));
   EXPECT_FALSE(isDone);
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidDoesNotReportOpenShellsAsSuccess)
+{
+  const occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(gp_Ax2(), 15.0, 10.0);
+  gp_Trsf                         aRotation;
+  aRotation.SetRotation(gp_Ax1(gp::Origin(), gp::DX()), M_PI / 2.0);
+  anEllipse->Transform(aRotation);
+  BRepBuilderAPI_MakeEdge anEdge(anEllipse, 0.0, M_PI / 2.0);
+  ASSERT_TRUE(anEdge.IsDone());
+  BRepBuilderAPI_MakePolygon aPolygon(gp_Pnt(0.0, 0.0, 10.0),
+                                      gp_Pnt(0.0, 0.0, -10.0),
+                                      gp_Pnt(25.0, 0.0, -10.0),
+                                      gp_Pnt(15.0, 0.0, 0.0));
+  ASSERT_TRUE(aPolygon.IsDone());
+  BRepBuilderAPI_MakeWire aWire(anEdge.Edge());
+  aWire.Add(aPolygon.Wire());
+  ASSERT_TRUE(aWire.IsDone());
+  BRepBuilderAPI_MakeFace aFace(aWire.Wire(), true);
+  ASSERT_TRUE(aFace.IsDone());
+  BRepPrimAPI_MakeRevol aRevolution(aFace.Face(), gp_Ax1(gp::Origin(), gp::DZ()), M_PI / 2.0);
+  ASSERT_TRUE(aRevolution.IsDone());
+  ASSERT_TRUE(BRepCheck_Analyzer(aRevolution.Shape()).IsValid());
+
+  BRepOffset_MakeOffset anOffset;
+  anOffset.Initialize(aRevolution.Shape(),
+                      1.0,
+                      1.0e-7,
+                      BRepOffset_Skin,
+                      true,
+                      false,
+                      GeomAbs_Intersection);
+  anOffset.AddFace(TopoDS::Face(aRevolution.FirstShape()));
+  anOffset.AddFace(TopoDS::Face(aRevolution.LastShape()));
+  anOffset.MakeThickSolid();
+  if (anOffset.IsDone())
+  {
+    EXPECT_TRUE(BRepCheck_Analyzer(anOffset.Shape()).IsValid());
+  }
+  else
+  {
+    EXPECT_NE(anOffset.Error(), BRepOffset_NoError);
+  }
 }

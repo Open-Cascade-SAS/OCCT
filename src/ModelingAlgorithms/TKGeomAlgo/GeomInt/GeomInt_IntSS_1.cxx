@@ -55,22 +55,48 @@ namespace
 {
 //==================================================================================================
 
-occ::handle<Geom_Curve> buildSurfaceCurve(const occ::handle<Adaptor2d_Curve2d>&   theCurve,
-                                          const occ::handle<GeomAdaptor_Surface>& theSurface,
-                                          const double                            theFirst,
-                                          const double                            theLast,
-                                          const double                            theTolerance,
-                                          double&                                 theError)
+occ::handle<Geom_BSplineCurve> buildSurfaceCurve(const occ::handle<Adaptor2d_Curve2d>&   theCurve,
+                                                 const occ::handle<GeomAdaptor_Surface>& theSurface,
+                                                 const double                            theFirst,
+                                                 const double                            theLast,
+                                                 const double theTolerance,
+                                                 double&      theError)
 {
   // Use the same approximation limits for walking and restriction lines.
   Approx_CurveOnSurface anApproximation(theCurve, theSurface, theFirst, theLast, theTolerance);
   anApproximation.Perform(1000, 8, GeomAbs_C1, true, false);
   if (!anApproximation.HasResult())
   {
-    return occ::handle<Geom_Curve>();
+    return occ::handle<Geom_BSplineCurve>();
   }
   theError = anApproximation.MaxError3d();
   return anApproximation.Curve3d();
+}
+
+//==================================================================================================
+
+// Close coincident end poles; reject a coincident linear curve.
+bool closeCurve(const occ::handle<Geom_BSplineCurve>& theCurve)
+{
+  const gp_Pnt aFirst       = theCurve->StartPoint();
+  const gp_Pnt aLast        = theCurve->EndPoint();
+  const double aSquareScale = std::max(aFirst.XYZ().SquareModulus(), aLast.XYZ().SquareModulus());
+  if (aFirst.SquareDistance(aLast) < 2.0 * Epsilon(aSquareScale))
+  {
+    if (theCurve->Degree() == 1 && theCurve->NbPoles() == 2)
+    {
+      return false;
+    }
+
+    if (!theCurve->IsClosed() && !theCurve->IsPeriodic())
+    {
+      const gp_Pnt aMiddle((theCurve->Pole(1).XYZ() + theCurve->Pole(theCurve->NbPoles()).XYZ())
+                           / 2.0);
+      theCurve->SetPole(1, aMiddle);
+      theCurve->SetPole(theCurve->NbPoles(), aMiddle);
+    }
+  }
+  return true;
 }
 } // namespace
 
@@ -717,10 +743,8 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
         else if (!myApprox1 && !myApprox2
                  && (typs1 == GeomAbs_Cylinder || typs2 == GeomAbs_Cylinder))
         {
-          // Fit UV on a cylinder before building its 3D curve.
-          // A fit of only the 3D walking points can leave the surface between points.
+          // Keep 3D error control for the distance to the other surface.
           aCurveSurface = typs1 == GeomAbs_Cylinder ? myHS1 : myHS2;
-          anApprox      = false;
           anApprox1     = aCurveSurface == myHS1;
           anApprox2     = aCurveSurface == myHS2;
           tol2d         = std::min(myTolApprox,
@@ -750,15 +774,15 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
 
           theapp3d.Perform(myHS1, myHS2, WL, anApprox, anApprox1, anApprox2, ifprm, ilprm);
 
-          occ::handle<Geom_Curve> aSurfaceCurve;
-          double                  aSurfaceError = 0.0;
-          bool                    aIsDone       = theapp3d.IsDone();
+          occ::handle<Geom_BSplineCurve> aSurfaceCurve;
+          double                         aSurfaceError = 0.0;
+          bool                           aIsDone       = theapp3d.IsDone();
           if (aIsDone && !aCurveSurface.IsNull())
           {
             // WLApprox joins the fitted segments into one multi-curve.
             const AppParCurves_MultiBSpCurve& aMultiCurve = theapp3d.Value(1);
             NCollection_Array1<gp_Pnt2d>      aPoles(1, aMultiCurve.NbPoles());
-            aMultiCurve.Curve(1, aPoles);
+            aMultiCurve.Curve(2, aPoles);
             const occ::handle<Geom2d_BSplineCurve> aPCurve =
               new Geom2d_BSplineCurve(aPoles,
                                       aMultiCurve.Knots(),
@@ -821,6 +845,10 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
             {
               if (!aCurveSurface.IsNull())
               {
+                if (!closeCurve(aSurfaceCurve))
+                {
+                  continue;
+                }
                 sline.Append(aSurfaceCurve);
                 slineS1.Append(H1);
                 slineS2.Append(H1);
@@ -974,28 +1002,11 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
                                                                           mbspc.Knots(),
                                                                           mbspc.Multiplicities(),
                                                                           mbspc.Degree());
-                GeomLib_CheckBSplineCurve      Check(BS, myTolCheck, myTolAngCheck);
-                Check.FixTangent(true, true);
-                //
-                // Check IsClosed()
-                double aDist = std::max(BS->StartPoint().XYZ().SquareModulus(),
-                                        BS->EndPoint().XYZ().SquareModulus());
-                double eps   = Epsilon(aDist);
-                if (BS->StartPoint().SquareDistance(BS->EndPoint()) < 2. * eps)
+                GeomLib_CheckBSplineCurve      aCheck(BS, myTolCheck, myTolAngCheck);
+                aCheck.FixTangent(true, true);
+                if (!closeCurve(BS))
                 {
-                  // Avoid creating B-splines containing two coincident poles only
-                  if (mbspc.Degree() == 1 && nbpoles == 2)
-                  {
-                    continue;
-                  }
-
-                  if (!BS->IsClosed() && !BS->IsPeriodic())
-                  {
-                    // force Closed()
-                    gp_Pnt aPm((BS->Pole(1).XYZ() + BS->Pole(BS->NbPoles()).XYZ()) / 2.);
-                    BS->SetPole(1, aPm);
-                    BS->SetPole(BS->NbPoles(), aPm);
-                  }
+                  continue;
                 }
                 sline.Append(BS);
 

@@ -755,3 +755,74 @@ TEST(IntPatch_WalkingTest, ApproximationPreservesConeCylinderIntersection)
     }
   }
 }
+
+namespace
+{
+//==================================================================================================
+
+void checkCurveDistances(const GeomInt_IntSS&   theIntersection,
+                         const IntSurf_Quadric& theFirst,
+                         const IntSurf_Quadric& theSecond,
+                         const double           theTolerance,
+                         const size_t           theSampleCount)
+{
+  for (int aLine = 1; aLine <= theIntersection.NbLines(); ++aLine)
+  {
+    const occ::handle<Geom_Curve>& aCurve = theIntersection.Line(aLine);
+    ASSERT_FALSE(aCurve.IsNull());
+    GeomAdaptor_Curve anAdaptor(aCurve);
+    const double      aFirst    = aCurve->FirstParameter();
+    const double      aRange    = aCurve->LastParameter() - aFirst;
+    double            aMaxError = 0.0;
+    for (size_t aSample = 0; aSample <= theSampleCount; ++aSample)
+    {
+      const gp_Pnt aPoint =
+        anAdaptor.EvalD0(aFirst + aRange * double(aSample) / double(theSampleCount));
+      aMaxError = std::max(aMaxError, std::abs(theFirst.Distance(aPoint)));
+      aMaxError = std::max(aMaxError, std::abs(theSecond.Distance(aPoint)));
+    }
+    EXPECT_LE(aMaxError, theTolerance) << "Line " << aLine;
+  }
+}
+} // namespace
+
+TEST(IntPatch_WalkingTest, ApproximationPreservesBothCylinderSurfaces)
+{
+  const gp_Cylinder aFirstCylinder(
+    gp_Ax3(gp_Pnt(4.999999999813, 1.35836143386791, 0.20975890778078), -gp::DX(), gp::DZ()),
+    10.0);
+  const gp_Cylinder aSecondCylinder(
+    gp_Ax3(gp_Pnt(9.999999999813, 9.1401960568287, 0.11837300583107),
+           gp_Dir(0.0, -0.75870713028692, 0.651431877061437),
+           gp_Dir(0.0, -0.651431877061437, -0.75870713028692)),
+    5.0);
+  const occ::handle<Geom_Surface> aFirst  = new Geom_CylindricalSurface(aFirstCylinder);
+  const occ::handle<Geom_Surface> aSecond = new Geom_CylindricalSurface(aSecondCylinder);
+  const IntSurf_Quadric           aFirstQuadric(aFirstCylinder), aSecondQuadric(aSecondCylinder);
+  for (const bool aReverse : {false, true})
+  {
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(aReverse ? aSecond : aFirst, aReverse ? aFirst : aSecond, 1.0e-7);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_EQ(anIntersection.NbLines(), 6);
+    checkCurveDistances(anIntersection, aFirstQuadric, aSecondQuadric, 2.0e-7, 360);
+  }
+}
+
+TEST(IntPatch_WalkingTest, ApproximationRejectsCoincidentLinearCurves)
+{
+  const gp_Torus    aTorus(gp_Ax3(gp_Pnt(-127.0, 84.0, 100.0), -gp::DZ(), gp::DX()), 23.0, 10.0);
+  const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(-132.0, 61.5500556793564, 131.0), -gp::DZ(), gp::DX()),
+                              10.0);
+  const occ::handle<Geom_Surface> aFirst  = new Geom_ToroidalSurface(aTorus);
+  const occ::handle<Geom_Surface> aSecond = new Geom_CylindricalSurface(aCylinder);
+  const IntSurf_Quadric           aFirstQuadric(aTorus), aSecondQuadric(aCylinder);
+  for (const bool aReverse : {false, true})
+  {
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(aReverse ? aSecond : aFirst, aReverse ? aFirst : aSecond, 1.0e-4);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_EQ(anIntersection.NbLines(), 6);
+    checkCurveDistances(anIntersection, aFirstQuadric, aSecondQuadric, 6.0e-7, 297);
+  }
+}
