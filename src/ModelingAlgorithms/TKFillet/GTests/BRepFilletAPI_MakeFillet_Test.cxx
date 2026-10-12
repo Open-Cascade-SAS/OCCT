@@ -68,6 +68,114 @@
 #include <algorithm>
 #include <cmath>
 
+//==================================================================================================
+
+// Regression for https://github.com/FreeCAD/FreeCAD/issues/29476.
+static void testTangentBoundaryTrim(const bool theBothEnds)
+{
+  for (const bool isReversed : {false, true})
+  {
+    SCOPED_TRACE(isReversed);
+    const gp_Dir        aDirection(0, 0, isReversed ? -1 : 1);
+    const gp_Ax2        aBoxAxes(gp_Pnt(-60, isReversed ? 25 : -25, isReversed ? 12 : 0),
+                          aDirection,
+                          gp_Dir(1, 0, 0));
+    BRepPrimAPI_MakeBox aBoxMaker(aBoxAxes, 120, 50, 12);
+    aBoxMaker.Build();
+    ASSERT_TRUE(aBoxMaker.IsDone());
+    TopoDS_Shape aFused = aBoxMaker.Shape();
+
+    const double aCylinderZ   = isReversed ? 32.0 : 0.0;
+    const int    aNbCylinders = theBothEnds ? 2 : 1;
+    for (int i = 0; i < aNbCylinders; ++i)
+    {
+      const gp_Ax2             anAxes(gp_Pnt(i == 0 ? -60.0 : 60.0, 0, aCylinderZ), aDirection);
+      BRepPrimAPI_MakeCylinder aCylinderMaker(anAxes, 25, 32);
+      aCylinderMaker.Build();
+      ASSERT_TRUE(aCylinderMaker.IsDone());
+      BRepAlgoAPI_Fuse aFuse(aFused, aCylinderMaker.Shape());
+      ASSERT_TRUE(aFuse.IsDone());
+      aFused = aFuse.Shape();
+    }
+    ShapeUpgrade_UnifySameDomain anUnify(aFused, true, true, true);
+    anUnify.Build();
+    const TopoDS_Shape& aBase = anUnify.Shape();
+    ASSERT_TRUE(BRepCheck_Analyzer(aBase).IsValid());
+    GProp_GProps aBefore;
+    BRepGProp::VolumeProperties(aBase, aBefore);
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+    TopExp::MapShapes(aBase, TopAbs_EDGE, anEdges);
+    int aSelected = 0;
+    for (const TopoDS_Shape& aShape : anEdges)
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(aShape);
+      GProp_GProps       aLength;
+      BRepGProp::LinearProperties(anEdge, aLength);
+      const gp_Pnt aCenter = aLength.CentreOfMass();
+      if (std::abs(aLength.Mass() - 120) > 1.e-7 || std::abs(aCenter.Z() - 12) > 1.e-7
+          || std::abs(std::abs(aCenter.Y()) - 25) > 1.e-7)
+      {
+        continue;
+      }
+      ++aSelected;
+      SCOPED_TRACE(aCenter.Y());
+      // 11.999 leaves 0.001 on the 12-unit edge before its far vertex.
+      for (const double aRadius : {1.0, 2.0, 11.999})
+      {
+        SCOPED_TRACE(aRadius);
+        BRepFilletAPI_MakeFillet aFillet(aBase);
+        aFillet.Add(aRadius, anEdge);
+        ASSERT_NO_THROW(aFillet.Build());
+        ASSERT_TRUE(aFillet.IsDone());
+        const TopoDS_Shape& aResult = aFillet.Shape();
+        EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSolids;
+        TopExp::MapShapes(aResult, TopAbs_SOLID, aSolids);
+        EXPECT_EQ(aSolids.Extent(), 1);
+        GProp_GProps anAfter;
+        BRepGProp::VolumeProperties(aResult, anAfter);
+        EXPECT_GT(anAfter.Mass(), 0.0);
+        EXPECT_LT(anAfter.Mass(), aBefore.Mass());
+
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aResultShapes;
+        TopExp::MapShapes(aResult, aResultShapes);
+        EXPECT_FALSE(aFillet.Generated(anEdge).IsEmpty());
+        for (NCollection_List<TopoDS_Shape>::Iterator anIt(aFillet.Generated(anEdge)); anIt.More();
+             anIt.Next())
+        {
+          EXPECT_TRUE(aResultShapes.Contains(anIt.Value()));
+        }
+        for (TopExp_Explorer anExp(aBase, TopAbs_FACE); anExp.More(); anExp.Next())
+        {
+          for (NCollection_List<TopoDS_Shape>::Iterator anIt(aFillet.Modified(anExp.Current()));
+               anIt.More();
+               anIt.Next())
+          {
+            EXPECT_TRUE(aResultShapes.Contains(anIt.Value()));
+          }
+        }
+      }
+    }
+    EXPECT_EQ(aSelected, 2);
+  }
+}
+
+//==================================================================================================
+
+TEST(BRepFilletAPI_MakeFilletTest, TangentBoundaryTrim_OneEnd_ProducesValidShape)
+{
+  testTangentBoundaryTrim(false);
+}
+
+//==================================================================================================
+
+TEST(BRepFilletAPI_MakeFilletTest, TangentBoundaryTrim_BothEnds_ProducesValidShape)
+{
+  testTangentBoundaryTrim(true);
+}
+
 // Regression for fillets that must remove an intervening face or meet on opposite
 // edges of a prism. Related reports:
 // - https://github.com/Open-Cascade-SAS/OCCT/issues/1177
