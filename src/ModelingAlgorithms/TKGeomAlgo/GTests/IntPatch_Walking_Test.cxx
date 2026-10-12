@@ -14,6 +14,15 @@
 #include <gtest/gtest.h>
 #include <ElSLib.hxx>
 #include <GeomAPI_IntSS.hxx>
+#include <GeomInt_IntSS.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -28,6 +37,7 @@
 #include <NCollection_Array2.hxx>
 #include <IntTools_FaceFace.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRep_Tool.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Curve.hxx>
@@ -48,6 +58,7 @@
 #include <Geom_Plane.hxx>
 #include <gp.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Torus.hxx>
 #include <Precision.hxx>
 #include <math_Vector.hxx>
@@ -168,6 +179,116 @@ TEST(IntPatch_WalkingTest, PathOnlyPerformInitializesAndResetsItsState)
   EXPECT_EQ(aWalking.NbSinglePnts(), 0);
 }
 
+namespace
+{
+class IntPatch_PassageWalking : public IntPatch_TheIWalking
+{
+public:
+  using IntPatch_TheIWalking::IntPatch_TheIWalking;
+  using IntPatch_TheIWalking::TestArretPassage;
+};
+} // namespace
+
+TEST(IntPatch_WalkingTest, SelectedStopUpdatesSurfaceFunction)
+{
+  const occ::handle<Adaptor3d_Surface> aSurface =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pln(gp::Origin(), gp::DZ())), -1.0, 1.0, -1.0, 1.0);
+  const IntSurf_Quadric aPlane(gp_Pln(gp::Origin(), gp::DX()));
+  for (const double aStartV : {-1.0, 1.0})
+  {
+    SCOPED_TRACE(aStartV);
+    IntPatch_TheSurfFunction aFunction(aSurface, aPlane);
+    aFunction.Set(Precision::Confusion());
+    math_Vector aParameters(1, 2), aValue(1, 1);
+    aParameters(1) = 0.0;
+    aParameters(2) = aStartV;
+    ASSERT_TRUE(aFunction.Value(aParameters, aValue));
+    ASSERT_FALSE(aFunction.IsTangent());
+    IntSurf_PathPoint aPath(aFunction.Point(), 0.0, aStartV);
+    if (aFunction.Direction2d().Y() * aStartV > 0.0)
+    {
+      aPath.SetDirections(-aFunction.Direction3d(), aFunction.Direction2d().Reversed());
+    }
+    else
+    {
+      aPath.SetDirections(aFunction.Direction3d(), aFunction.Direction2d());
+    }
+    aPath.SetTangency(false);
+    aPath.SetPassing(false);
+    NCollection_Sequence<IntSurf_PathPoint> aPaths;
+    aPaths.Append(aPath);
+    IntPatch_PassageWalking aWalking(Precision::Confusion(), 1.e-3, 0.01);
+    aWalking.Perform(aPaths, aFunction, aSurface);
+    ASSERT_TRUE(aWalking.IsDone());
+    ASSERT_EQ(aWalking.NbLines(), 1);
+
+    // Crossing the processed path point selects its parameters from the candidate list.
+    aParameters(2) = 1.5 * aStartV;
+    ASSERT_TRUE(aFunction.Value(aParameters, aValue));
+    NCollection_Sequence<double> aMultipleU, aMultipleV;
+    int                          aStopIndex = 0;
+    ASSERT_TRUE(
+      aWalking.TestArretPassage(aMultipleU, aMultipleV, aFunction, aParameters, aStopIndex));
+    EXPECT_EQ(aStopIndex, 1);
+    EXPECT_DOUBLE_EQ(aParameters(2), aStartV);
+    EXPECT_LE(aFunction.Point().Distance(aSurface->EvalD0(aParameters(1), aParameters(2))),
+              Precision::Confusion());
+    EXPECT_FALSE(aFunction.IsTangent());
+  }
+}
+
+TEST(IntPatch_WalkingTest, MarchingPreservesDirectionOnSkewSurface)
+{
+  for (const double aSkew : {0.25, 0.75, 1.0, 2.0})
+  {
+    SCOPED_TRACE(aSkew);
+    NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+    for (size_t aU = 0; aU < 2; ++aU)
+    {
+      for (size_t aV = 0; aV < 2; ++aV)
+      {
+        aPoles.ChangeAt(aU, aV) =
+          gp_Pnt(2.0 * aU - 1.0 + aSkew * (2.0 * aV - 1.0), 2.0 * aV - 1.0, 0.0);
+      }
+    }
+    const occ::handle<Adaptor3d_Surface> aSurface =
+      new GeomAdaptor_Surface(new Geom_BezierSurface(aPoles));
+    const IntSurf_Quadric    aPlane(gp_Pln(gp::Origin(), gp::DX()));
+    IntPatch_TheSurfFunction aFunction(aSurface, aPlane);
+    aFunction.Set(Precision::Confusion());
+    math_Vector aParameters(1, 2), aValue(1, 1);
+    aParameters(1) = aSkew <= 1.0 ? 0.5 * (1.0 - aSkew) : 0.0;
+    aParameters(2) = aSkew <= 1.0 ? 1.0 : 0.5 * (1.0 + 1.0 / aSkew);
+    ASSERT_TRUE(aFunction.Value(aParameters, aValue));
+    ASSERT_FALSE(aFunction.IsTangent());
+    IntSurf_PathPoint aPath(aFunction.Point(), aParameters(1), aParameters(2));
+    aPath.SetDirections(aFunction.Direction3d(), aFunction.Direction2d());
+    aPath.SetTangency(false);
+    aPath.SetPassing(false);
+    NCollection_Sequence<IntSurf_PathPoint> aPaths;
+    aPaths.Append(aPath);
+    IntPatch_PassageWalking aWalking(Precision::Confusion(), 1.e-3, 0.01);
+    aWalking.Perform(aPaths, aFunction, aSurface);
+    ASSERT_TRUE(aWalking.IsDone());
+    ASSERT_EQ(aWalking.NbLines(), 1);
+
+    const occ::handle<IntPatch_TheIWLineOfTheIWalking>& aLine = aWalking.Value(1);
+    ASSERT_GT(aLine->NbPoints(), 2);
+    double aPreviousU, aPreviousV;
+    aLine->Value(1).ParametersOnS2(aPreviousU, aPreviousV);
+    for (int aPointIndex = 2; aPointIndex <= aLine->NbPoints(); ++aPointIndex)
+    {
+      double aU, aV;
+      aLine->Value(aPointIndex).ParametersOnS2(aU, aV);
+      EXPECT_NEAR(aU - 0.5 * (1.0 - aSkew * (2.0 * aV - 1.0)), 0.0, Precision::PConfusion());
+      EXPECT_GT(aPreviousV - aV, 0.0);
+      EXPECT_NEAR((aU - aPreviousU) + aSkew * (aV - aPreviousV), 0.0, Precision::PConfusion());
+      aPreviousU = aU;
+      aPreviousV = aV;
+    }
+  }
+}
+
 TEST(IntPatch_WalkingTest, RegularBoundaryTangencyKeepsBranchEndpointsTogether)
 {
   const occ::handle<Geom_SurfaceOfRevolution> aSurface =
@@ -190,6 +311,27 @@ TEST(IntPatch_WalkingTest, RegularBoundaryTangencyKeepsBranchEndpointsTogether)
   const occ::handle<Geom_Curve>& aSecond = anIntersection.Lines()(2).Curve();
   ASSERT_FALSE(aFirst.IsNull());
   ASSERT_FALSE(aSecond.IsNull());
+  const double aTolerance = BRep_Tool::Tolerance(aPlaneFace) + BRep_Tool::Tolerance(aRevolutionFace)
+                            + anIntersection.FuzzyValue();
+  const gp_Pnt aJoin(-25.0, 0.0, -25.0);
+  const gp_Lin aPositiveBranch(aJoin, gp_Dir(0.0, 1.0, 2.0));
+  const gp_Lin aNegativeBranch(aJoin, gp_Dir(0.0, -1.0, 2.0));
+  for (const auto& aCurve : {aFirst, aSecond})
+  {
+    const double aJoinError = std::min(aCurve->EvalD0(aCurve->FirstParameter()).Distance(aJoin),
+                                       aCurve->EvalD0(aCurve->LastParameter()).Distance(aJoin));
+    EXPECT_LE(aJoinError, aTolerance);
+    const GeomAdaptor_Curve anAdaptor(aCurve);
+    for (size_t anIndex = 0; anIndex <= 8; ++anIndex)
+    {
+      const double aParameter =
+        aCurve->FirstParameter()
+        + anIndex * (aCurve->LastParameter() - aCurve->FirstParameter()) / 8;
+      const gp_Pnt aPoint = anAdaptor.EvalD0(aParameter);
+      EXPECT_LE(std::min(aPositiveBranch.Distance(aPoint), aNegativeBranch.Distance(aPoint)),
+                aTolerance);
+    }
+  }
   double aJoinDistance = RealLast();
   for (double aFirstParameter : {aFirst->FirstParameter(), aFirst->LastParameter()})
   {
@@ -200,7 +342,8 @@ TEST(IntPatch_WalkingTest, RegularBoundaryTangencyKeepsBranchEndpointsTogether)
                  aFirst->Value(aFirstParameter).Distance(aSecond->Value(aSecondParameter)));
     }
   }
-  EXPECT_LE(aJoinDistance, Precision::Confusion());
+  // The two endpoints can each differ from the exact join by the intersection tolerance.
+  EXPECT_LE(aJoinDistance, 2.0 * aTolerance);
 }
 
 namespace
@@ -531,5 +674,155 @@ TEST(IntPatch_WalkingTest, SingularJunctionIsNotExtendedToNearbyBoundary)
     EXPECT_LE(std::min(aWalking.Value(1).Value().Distance(aJunction),
                        aWalking.Value(aWalking.NbPoints()).Value().Distance(aJunction)),
               Precision::Confusion());
+  }
+}
+
+TEST(IntPatch_WalkingTest, ApproximationPreservesCylinderIntersection)
+{
+  const double                  aRadius = 0.249128788767645;
+  const occ::handle<Geom_Curve> anEllipse =
+    new Geom_Ellipse(gp_Elips(gp_Ax2(gp::Origin(), gp::DZ()), 6.03031367203927, 3.11993062568844));
+  const occ::handle<Geom_Surface> anExtrusion =
+    new Geom_SurfaceOfLinearExtrusion(anEllipse, gp::DZ());
+  const occ::handle<Geom_Surface> aCylinder =
+    new Geom_CylindricalSurface(gp_Ax3(gp::Origin(), gp::DX()), aRadius);
+
+  for (const bool aIsReversed : {false, true})
+  {
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(aIsReversed ? aCylinder : anExtrusion,
+                           aIsReversed ? anExtrusion : aCylinder,
+                           Precision::Confusion(),
+                           true);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_EQ(anIntersection.NbLines(), 4);
+    for (int aLine = 1; aLine <= anIntersection.NbLines(); ++aLine)
+    {
+      const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(aLine);
+      ASSERT_FALSE(aCurve.IsNull());
+      GeomAdaptor_Curve anAdaptor(aCurve);
+      double            aMaxError = 0.0;
+      for (size_t aSample = 0; aSample <= 300; ++aSample)
+      {
+        const double aParameter =
+          aCurve->FirstParameter()
+          + (aCurve->LastParameter() - aCurve->FirstParameter()) * double(aSample) / 300.0;
+        const gp_Pnt aPoint = anAdaptor.EvalD0(aParameter);
+        aMaxError = std::max(aMaxError, std::abs(std::hypot(aPoint.Y(), aPoint.Z()) - aRadius));
+      }
+      // Check the continuous approximation between the walking points.
+      EXPECT_LE(aMaxError, 1.0e-5) << "Line " << aLine << ", reversed " << aIsReversed;
+    }
+  }
+}
+
+TEST(IntPatch_WalkingTest, ApproximationPreservesConeCylinderIntersection)
+{
+  const gp_Cone aCone(gp_Ax3(gp_Pnt(320.178553907536, 4365.68326149859, 2.0), gp::DZ(), gp::DX()),
+                      0.122173047639603,
+                      4365.0);
+  const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(120.7, -50.0, 103.15), gp::DY(), -gp::DZ()), 97.5);
+  const occ::handle<Geom_Surface> aFirst  = new Geom_ConicalSurface(aCone);
+  const occ::handle<Geom_Surface> aSecond = new Geom_CylindricalSurface(aCylinder);
+  const IntSurf_Quadric           aFirstQuadric(aCone), aSecondQuadric(aCylinder);
+
+  for (const bool aIsReversed : {false, true})
+  {
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(aIsReversed ? aSecond : aFirst,
+                           aIsReversed ? aFirst : aSecond,
+                           1.0e-4,
+                           true);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_EQ(anIntersection.NbLines(), 2);
+    for (int aLine = 1; aLine <= anIntersection.NbLines(); ++aLine)
+    {
+      const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(aLine);
+      ASSERT_FALSE(aCurve.IsNull());
+      GeomAdaptor_Curve anAdaptor(aCurve);
+      double            aMaxError = 0.0;
+      for (size_t aSample = 0; aSample <= 300; ++aSample)
+      {
+        const double aParameter =
+          aCurve->FirstParameter()
+          + (aCurve->LastParameter() - aCurve->FirstParameter()) * double(aSample) / 300.0;
+        const gp_Pnt aPoint = anAdaptor.EvalD0(aParameter);
+        aMaxError           = std::max(aMaxError, std::abs(aFirstQuadric.Distance(aPoint)));
+        aMaxError           = std::max(aMaxError, std::abs(aSecondQuadric.Distance(aPoint)));
+      }
+      // The 3D fit must retain the accuracy of the intersection walking points.
+      EXPECT_LE(aMaxError, 2.0e-7) << "Line " << aLine << ", reversed " << aIsReversed;
+    }
+  }
+}
+
+namespace
+{
+//==================================================================================================
+
+void checkCurveDistances(const GeomInt_IntSS&   theIntersection,
+                         const IntSurf_Quadric& theFirst,
+                         const IntSurf_Quadric& theSecond,
+                         const double           theTolerance,
+                         const size_t           theSampleCount)
+{
+  for (int aLine = 1; aLine <= theIntersection.NbLines(); ++aLine)
+  {
+    const occ::handle<Geom_Curve>& aCurve = theIntersection.Line(aLine);
+    ASSERT_FALSE(aCurve.IsNull());
+    GeomAdaptor_Curve anAdaptor(aCurve);
+    const double      aFirst    = aCurve->FirstParameter();
+    const double      aRange    = aCurve->LastParameter() - aFirst;
+    double            aMaxError = 0.0;
+    for (size_t aSample = 0; aSample <= theSampleCount; ++aSample)
+    {
+      const gp_Pnt aPoint =
+        anAdaptor.EvalD0(aFirst + aRange * double(aSample) / double(theSampleCount));
+      aMaxError = std::max(aMaxError, std::abs(theFirst.Distance(aPoint)));
+      aMaxError = std::max(aMaxError, std::abs(theSecond.Distance(aPoint)));
+    }
+    EXPECT_LE(aMaxError, theTolerance) << "Line " << aLine;
+  }
+}
+} // namespace
+
+TEST(IntPatch_WalkingTest, ApproximationPreservesBothCylinderSurfaces)
+{
+  const gp_Cylinder aFirstCylinder(
+    gp_Ax3(gp_Pnt(4.999999999813, 1.35836143386791, 0.20975890778078), -gp::DX(), gp::DZ()),
+    10.0);
+  const gp_Cylinder aSecondCylinder(
+    gp_Ax3(gp_Pnt(9.999999999813, 9.1401960568287, 0.11837300583107),
+           gp_Dir(0.0, -0.75870713028692, 0.651431877061437),
+           gp_Dir(0.0, -0.651431877061437, -0.75870713028692)),
+    5.0);
+  const occ::handle<Geom_Surface> aFirst  = new Geom_CylindricalSurface(aFirstCylinder);
+  const occ::handle<Geom_Surface> aSecond = new Geom_CylindricalSurface(aSecondCylinder);
+  const IntSurf_Quadric           aFirstQuadric(aFirstCylinder), aSecondQuadric(aSecondCylinder);
+  for (const bool aReverse : {false, true})
+  {
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(aReverse ? aSecond : aFirst, aReverse ? aFirst : aSecond, 1.0e-7);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_EQ(anIntersection.NbLines(), 6);
+    checkCurveDistances(anIntersection, aFirstQuadric, aSecondQuadric, 2.0e-7, 360);
+  }
+}
+
+TEST(IntPatch_WalkingTest, ApproximationRejectsCoincidentLinearCurves)
+{
+  const gp_Torus    aTorus(gp_Ax3(gp_Pnt(-127.0, 84.0, 100.0), -gp::DZ(), gp::DX()), 23.0, 10.0);
+  const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(-132.0, 61.5500556793564, 131.0), -gp::DZ(), gp::DX()),
+                              10.0);
+  const occ::handle<Geom_Surface> aFirst  = new Geom_ToroidalSurface(aTorus);
+  const occ::handle<Geom_Surface> aSecond = new Geom_CylindricalSurface(aCylinder);
+  const IntSurf_Quadric           aFirstQuadric(aTorus), aSecondQuadric(aCylinder);
+  for (const bool aReverse : {false, true})
+  {
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(aReverse ? aSecond : aFirst, aReverse ? aFirst : aSecond, 1.0e-4);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_EQ(anIntersection.NbLines(), 6);
+    checkCurveDistances(anIntersection, aFirstQuadric, aSecondQuadric, 6.0e-7, 297);
   }
 }

@@ -1,0 +1,49 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _PLib_EvalPolynomial_HeaderFile
+#define _PLib_EvalPolynomial_HeaderFile
+
+#include <stddef.h>
+
+namespace
+{
+//==================================================================================================
+
+// Horner evaluation with highest-order coefficient rows first.
+// Each borrowed row and the result contain at least theDimension elements.
+// The result must not overwrite coefficient rows that are still needed.
+template <class Real, class CoefficientAccessor>
+void evalPolynomialValue(const size_t               theDegree,
+                         const size_t               theDimension,
+                         const Real&                theParameter,
+                         const CoefficientAccessor& theCoefficient,
+                         Real*                      theResult)
+{
+  const auto& aFirst = theCoefficient(0);
+  for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+  {
+    theResult[aCoordinate] = aFirst[aCoordinate];
+  }
+  for (size_t aStep = 1; aStep <= theDegree; ++aStep)
+  {
+    const auto& aCoefficient = theCoefficient(aStep);
+    for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+    {
+      theResult[aCoordinate] = theResult[aCoordinate] * theParameter + aCoefficient[aCoordinate];
+    }
+  }
+}
+} // namespace
+
+#endif // _PLib_EvalPolynomial_HeaderFile

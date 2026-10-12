@@ -34,6 +34,7 @@
 #include <math_IntegerVector.hxx>
 #include <math_Matrix.hxx>
 #include <math_SVD.hxx>
+#include <MathLin_Utils.hxx>
 #include <Precision.hxx>
 #include <Standard_DimensionError.hxx>
 #include <StdFail_NotDone.hxx>
@@ -449,7 +450,35 @@ static void SearchDirection(const math_Matrix& DF,
   double Eps = 1.e-32;
   if (!ChangeDirection)
   {
-    if (Ninc == Neq)
+    if (Neq == 1)
+    {
+      // One equation has a rank-one minimum-norm Newton direction.
+      double aScale = 0.0, aSumSquares = 0.0;
+      for (size_t anIndex = 0; anIndex < DF.ColSize(); ++anIndex)
+      {
+        if (!MathLin::Utils::AccumulateNorm(DF.At(0, anIndex), aScale, aSumSquares))
+        {
+          ChangeDirection = true;
+          break;
+        }
+      }
+      if (!ChangeDirection)
+      {
+        if (aScale == 0.0)
+        {
+          Direction.Init(0.0);
+        }
+        else
+        {
+          const double aFactor = (-FF.At(0) / aScale) / aSumSquares;
+          for (size_t anIndex = 0; anIndex < DF.ColSize(); ++anIndex)
+          {
+            Direction.ChangeAt(anIndex) = aFactor * (DF.At(0, anIndex) / aScale);
+          }
+        }
+      }
+    }
+    else if (Ninc == Neq)
     {
       for (int i = FF.Lower(); i <= FF.Upper(); i++)
       {
@@ -892,7 +921,12 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     PreviousSolution = Sol;
     SolSave          = Sol;
 
-    SearchDirection(DF, GH, FF, ChangeDirection, InvLengthMax, DH, Dy);
+    // Keep prescribed coordinates out of the Newton direction.
+    for (size_t anIndex = 0; anIndex < DF.ColSize(); ++anIndex)
+    {
+      aConstraints.ChangeAt(anIndex) = theInfBound.At(anIndex) == theSupBound.At(anIndex) ? 1 : 0;
+    }
+    SearchDirection(DF, GH, FF, aConstraints, Sol, ChangeDirection, InvLengthMax, DH, Dy);
     if (std::abs(Dy) <= Eps)
     {
       Done = false;
