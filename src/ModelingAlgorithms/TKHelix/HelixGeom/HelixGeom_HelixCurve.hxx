@@ -32,7 +32,7 @@ class gp_Vec;
 //! - x(t) = r(t) * cos(t)
 //! - y(t) = r(t) * sin(t) [* direction factor]
 //! - z(t) = pitch * t / (2*PI)
-//! where r(t) = rStart + taper_factor * t
+//! where r(t) = rStart + taper_factor * (t - t1)
 //!
 //! @sa HelixGeom_BuilderHelix, HelixGeom_BuilderHelixCoil
 class HelixGeom_HelixCurve : public Adaptor3d_Curve
@@ -84,6 +84,11 @@ public:
   //! Computes the point of parameter theU on the curve.
   [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(const double theU) const final;
 
+  //! Return the radius at a parameter using the current taper.
+  //! @param[in] theT helix parameter
+  //! @return radius measured from the helix axis; RStart is the radius at FirstParameter()
+  [[nodiscard]] Standard_EXPORT double Radius(const double theT) const;
+
   //! Computes the point and first derivative at parameter theU.
   [[nodiscard]] Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double theU) const final;
 
@@ -102,7 +107,6 @@ protected:
   bool   myIsClockWise;
   double myC1;
   double myTgBeta;
-  double myTolAngle;
 };
 
 #endif // _HelixGeom_HelixCurve_HeaderFile

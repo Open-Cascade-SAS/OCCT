@@ -202,23 +202,21 @@ public:
   Standard_EXPORT bool Status(const ShapeExtend_Status status) const;
 
   //! Checks the edge to be SameParameter.
-  //! Calculates the maximal deviation between 3d curve and each
-  //! pcurve of the edge on <NbControl> equidistant points (the same
-  //! algorithm as in BRepCheck; default value is 23 as in BRepCheck).
-  //! This deviation is returned in <maxdev> parameter.
-  //! If deviation is greater than tolerance of the edge (i.e.
-  //! incorrect flag) returns False, else returns True.
+  //! Finds the maximal deviation between the 3D curve and its pcurves using
+  //! GeomLib_CheckCurveOnSurface when the edge has the SameParameter flag.
+  //! Otherwise, uses <NbControl> equidistant points with point projection.
+  //! Returns the deviation in <maxdev> and True if the edge tolerance is
+  //! exceeded or the SameParameter flag is unset. Check Status() for failures.
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& edge,
                                           double&            maxdev,
                                           const int          NbControl = 23);
 
   //! Checks the edge to be SameParameter.
-  //! Calculates the maximal deviation between 3d curve and each
-  //! pcurve of the edge on <NbControl> equidistant points (the same
-  //! algorithm as in BRepCheck; default value is 23 as in BRepCheck).
-  //! This deviation is returned in <maxdev> parameter.
-  //! If deviation is greater than tolerance of the edge (i.e.
-  //! incorrect flag) returns False, else returns True.
+  //! Finds the maximal deviation between the 3D curve and its pcurves using
+  //! GeomLib_CheckCurveOnSurface when the edge has the SameParameter flag.
+  //! Otherwise, uses <NbControl> equidistant points with point projection.
+  //! Returns the deviation in <maxdev> and True if the edge tolerance is
+  //! exceeded or the SameParameter flag is unset. Check Status() for failures.
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& theEdge,
                                           const TopoDS_Face& theFace,
                                           double&            theMaxdev,

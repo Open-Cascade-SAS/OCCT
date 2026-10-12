@@ -4045,13 +4045,17 @@ bool ChFi3d_ComputeCurves(const occ::handle<Adaptor3d_Surface>& S1,
           inter.Perform(gs2, gs1, tolap, 1, 1, 1);
           //          inter.Perform(gs2,dom2,gs1,dom1,tolap,1,1,1);
           if (!inter.IsDone())
+          {
             return false;
+          }
           nbl = inter.NbLines();
 
           //  if GeomInt does not make the intersection the solution of adjustment
           //  is not attempted
           if (nbl == 0)
+          {
             return false;
+          }
         }
 #endif
         GeomAPI_ProjectPointOnCurve proj;
@@ -5775,7 +5779,10 @@ int ChFi3d_NbNotDegeneratedEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEM
 // purpose  : calculate the number of sharp edges of Map VEMap(Vtx)
 // Attention the edges of junctions are taken into account twice
 //=======================================================================
-int ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap, const ChFiDS_Map& EFMap)
+int ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx,
+                        const ChFiDS_Map&    VEMap,
+                        const ChFiDS_Map&    EFMap,
+                        const double         theAngularTolerance)
 {
   NCollection_List<TopoDS_Shape>::Iterator ItE;
   int                                      nba = VEMap(Vtx).Extent();
@@ -5790,7 +5797,7 @@ int ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap, const
     {
       TopoDS_Face F1, F2;
       ChFi3d_conexfaces(cur, F1, F2, EFMap);
-      if (!F2.IsNull() && ChFi3d::IsTangentFaces(cur, F1, F2, GeomAbs_G2))
+      if (!F2.IsNull() && ChFi3d::IsTangentFaces(cur, F1, F2, GeomAbs_G2, theAngularTolerance))
       {
         nba--;
       }
@@ -5829,12 +5836,13 @@ int ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap)
 //=======================================================================
 int ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
                               const ChFiDS_Map&    VEMap,
-                              const ChFiDS_Map&    EFmap)
+                              const ChFiDS_Map&    EFmap,
+                              const double         theAngularTolerance)
 {
   int         nba;
   bool        bordlibre;
   TopoDS_Edge edgelibre1, edgelibre2;
-  nba = ChFi3d_NbSharpEdges(Vtx, VEMap, EFmap);
+  nba = ChFi3d_NbSharpEdges(Vtx, VEMap, EFmap, theAngularTolerance);
   ChFi3d_ChercheBordsLibres(VEMap, Vtx, bordlibre, edgelibre1, edgelibre2);
   if (bordlibre)
   {

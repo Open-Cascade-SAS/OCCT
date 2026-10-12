@@ -12,6 +12,14 @@
 // commercial license or contractual agreement.
 
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <NCollection_Array1.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <Precision.hxx>
+#include <gp_Pln.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Geom_Circle.hxx>
 #include <gp_Ax2.hxx>
@@ -88,4 +96,49 @@ TEST(ShapeAnalysis_EdgeTest, IsSeam_NonSeam)
 
   ShapeAnalysis_Edge anAnalyzer;
   EXPECT_FALSE(anAnalyzer.IsSeam(anEdge, aFace));
+}
+
+//=================================================================================================
+
+TEST(ShapeAnalysis_EdgeTest, SameParameterDeviationBetweenControlPoints)
+{
+  // Each quadratic span meets the 3D line at the sampling points and bows away between them.
+  constexpr double aDeviation = 0.01;
+  for (const int aNbControl : {7, 23, 41})
+  {
+    const int                    aNbSpans = aNbControl - 1;
+    NCollection_Array1<gp_Pnt2d> aPoles(1, 2 * aNbSpans + 1);
+    NCollection_Array1<double>   aKnots(1, aNbSpans + 1);
+    NCollection_Array1<int>      aMultiplicities(1, aNbSpans + 1);
+    for (int aSpan = 0; aSpan <= aNbSpans; ++aSpan)
+    {
+      aPoles.ChangeAt(2 * aSpan)      = gp_Pnt2d(aSpan, 0.0);
+      aKnots.ChangeAt(aSpan)          = aSpan;
+      aMultiplicities.ChangeAt(aSpan) = (aSpan == 0 || aSpan == aNbSpans) ? 3 : 2;
+      if (aSpan < aNbSpans)
+      {
+        aPoles.ChangeAt(2 * aSpan + 1) = gp_Pnt2d(aSpan + 0.5, 2.0 * aDeviation);
+      }
+    }
+    const occ::handle<Geom2d_BSplineCurve> aPCurve =
+      new Geom2d_BSplineCurve(aPoles, aKnots, aMultiplicities, 2);
+    const occ::handle<Geom_Plane> aSurface = new Geom_Plane(gp_Pln(gp::XOY()));
+    TopoDS_Edge  anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(aNbSpans, 0, 0));
+    BRep_Builder aBuilder;
+    aBuilder.UpdateEdge(anEdge, aPCurve, aSurface, TopLoc_Location(), Precision::Confusion());
+    aBuilder.Range(anEdge, aSurface, TopLoc_Location(), 0.0, aNbSpans);
+    aBuilder.SameRange(anEdge, true);
+    aBuilder.SameParameter(anEdge, true);
+
+    ShapeAnalysis_Edge anAnalysis;
+    double             aMaxDeviation = 0.0;
+    EXPECT_TRUE(anAnalysis.CheckSameParameter(anEdge, aMaxDeviation, aNbControl));
+    EXPECT_TRUE(anAnalysis.Status(ShapeExtend_DONE1));
+    EXPECT_NEAR(aMaxDeviation, aDeviation, aDeviation * 2.e-5);
+
+    ShapeFix_Edge aFixer;
+    EXPECT_TRUE(aFixer.FixSameParameter(anEdge));
+    EXPECT_GE(BRep_Tool::Tolerance(anEdge), aDeviation);
+    EXPECT_NEAR(BRep_Tool::Tolerance(anEdge), aDeviation, aDeviation * 2.e-5);
+  }
 }

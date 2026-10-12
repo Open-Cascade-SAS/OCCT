@@ -1539,7 +1539,9 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
         //  Modified by Sergey KHROMOV - Fri Dec 21 18:11:02 2001 Begin
         // 	regul.SetValue(ic,BRep_Tool::Continuity(TopoDS::Edge(Evive.Value(ic)),F1,F2)
         // 		     !=GeomAbs_C0);
-        regul.SetValue(ic, ChFi3d::IsTangentFaces(TopoDS::Edge(Evive.Value(ic)), F1, F2));
+        regul.SetValue(
+          ic,
+          ChFi3d::IsTangentFaces(TopoDS::Edge(Evive.Value(ic)), F1, F2, GeomAbs_G1, angular));
         //  Modified by Sergey KHROMOV - Fri Dec 21 18:11:07 2001 End
       }
     }

@@ -61,6 +61,22 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <BRep_Tool.hxx>
+
+namespace
+{
+//==================================================================================================
+
+// Construction regularity records the intended continuity of approximated surfaces.
+bool isRegularEdge(const TopoDS_Edge& theEdge,
+                   const TopoDS_Face& theFace1,
+                   const TopoDS_Face& theFace2)
+{
+  return BRep_Tool::Continuity(theEdge, theFace1, theFace2) >= GeomAbs_G1
+         || ChFi3d::IsTangentFaces(theEdge, theFace1, theFace2);
+}
+
+} // namespace
 
 static void ReorderFaces(TopoDS_Face&         theF1,
                          TopoDS_Face&         theF2,
@@ -589,7 +605,7 @@ bool ChFi3d_Builder::FaceTangency(const TopoDS_Edge&   E0,
   }
   //  Modified by Sergey KHROMOV - Fri Dec 21 17:44:19 2001 Begin
   // if (BRep_Tool::Continuity(E1,F[0],F[1]) != GeomAbs_C0) {
-  if (ChFi3d::IsTangentFaces(E1, F[0], F[1]))
+  if (isRegularEdge(E1, F[0], F[1]))
   {
     //  Modified by Sergey KHROMOV - Fri Dec 21 17:44:21 2001 End
     return false;
@@ -615,7 +631,8 @@ bool ChFi3d_Builder::FaceTangency(const TopoDS_Edge&   E0,
       }
       //  Modified by Sergey KHROMOV - Tue Dec 18 18:10:40 2001 Begin
       //    if (BRep_Tool::Continuity(Ec,F[0],F[1]) < GeomAbs_G1) {
-      if (!ChFi3d::IsTangentFaces(Ec, F[0], F[1]))
+      // Propagation tolerance applies to supporting faces, not candidate regularity.
+      if (!ChFi3d::IsTangentFaces(Ec, F[0], F[1], GeomAbs_G1, angular))
       {
         //  Modified by Sergey KHROMOV - Tue Dec 18 18:10:41 2001 End
         return false;
@@ -765,7 +782,8 @@ void ChFi3d_Builder::PerformExtremity(const occ::handle<ChFiDS_Spine>& Spine)
         }
         TopoDS_Face F1, F2;
         ChFi3d_conexfaces(anEdge, F1, F2, myEFMap);
-        if (!F2.IsNull() && ChFi3d::IsTangentFaces(anEdge, F1, F2, GeomAbs_G2)) // smooth edge
+        if (!F2.IsNull()
+            && ChFi3d::IsTangentFaces(anEdge, F1, F2, GeomAbs_G2, angular)) // smooth edge
         {
           if (!F1.IsSame(F2))
           {
@@ -915,7 +933,7 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
   }
   //  Modified by Sergey KHROMOV - Fri Dec 21 17:46:22 2001 End
   // if(BRep_Tool::Continuity(Ec,ff1,ff2) != GeomAbs_C0) return 0;
-  if (ChFi3d::IsTangentFaces(Ec, ff1, ff2))
+  if (isRegularEdge(Ec, ff1, ff2))
   {
     return false;
   }

@@ -125,7 +125,7 @@ static void EdgeAnalyse(const TopoDS_Edge&                     E,
 
     if (!isMixedConcavity)
     {
-      if (ChFi3d::IsTangentFaces(E, F1, F2)) // weak condition
+      if (ChFi3d::IsTangentFaces(E, F1, F2, GeomAbs_G1, std::asin(SinTol)))
       {
         ConnectType = ChFiDS_Tangential;
       }

@@ -22,6 +22,10 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
+#include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepFill_Pipe.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <limits>
 #include <GC_MakeArcOfCircle.hxx>
 #include <Geom_Plane.hxx>
 #include <GProp_GProps.hxx>
@@ -319,4 +323,51 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug24909_2_ClosedCircularSpine)
 
   EXPECT_EQ(aSweep.GetStatus(), BRepBuilderAPI_PipeDone);
   EXPECT_FALSE(aSweep.Shape().IsNull());
+}
+
+TEST(BRepOffsetAPI_MakePipeTest, ExistingConstructorsAndExplicitTolerance)
+{
+  const TopoDS_Wire aSpine =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(0, 0, 10)).Edge())
+      .Wire();
+  const TopoDS_Wire aWire =
+    BRepBuilderAPI_MakeWire(
+      BRepBuilderAPI_MakeEdge(gp_Circ(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0)).Edge())
+      .Wire();
+  const TopoDS_Face aProfile = BRepBuilderAPI_MakeFace(aWire).Face();
+  BRepFill_Pipe     aDefault(aSpine, aProfile);
+  BRepFill_Pipe     anExisting(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, false);
+  BRepFill_Pipe     anExplicit(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, false, 1.0e-6);
+  BRepOffsetAPI_MakePipe anExistingAPI(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false);
+  BRepOffsetAPI_MakePipe anExplicitAPI(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, 1.0e-6);
+  for (const TopoDS_Shape& aShape : {aDefault.Shape(),
+                                     anExisting.Shape(),
+                                     anExplicit.Shape(),
+                                     anExistingAPI.Shape(),
+                                     anExplicitAPI.Shape()})
+  {
+    ASSERT_FALSE(aShape.IsNull());
+    EXPECT_TRUE(BRepCheck_Analyzer(aShape).IsValid());
+    GProp_GProps aProps;
+    BRepGProp::VolumeProperties(aShape, aProps);
+    EXPECT_NEAR(aProps.Mass(), 10.0 * M_PI, 1.0e-6);
+  }
+}
+
+TEST(BRepOffsetAPI_MakePipeTest, RejectsInvalidTolerance)
+{
+  const TopoDS_Wire  aSpine;
+  const TopoDS_Shape aProfile;
+  for (const double aTolerance : {0.0,
+                                  -1.0,
+                                  std::numeric_limits<double>::quiet_NaN(),
+                                  std::numeric_limits<double>::infinity()})
+  {
+    EXPECT_THROW(
+      (BRepFill_Pipe(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, false, aTolerance)),
+      Standard_ConstructionError);
+    EXPECT_THROW(
+      (BRepOffsetAPI_MakePipe(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, aTolerance)),
+      Standard_ConstructionError);
+  }
 }

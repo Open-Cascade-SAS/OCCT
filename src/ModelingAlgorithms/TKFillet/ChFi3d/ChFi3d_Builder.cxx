@@ -133,7 +133,7 @@ void ChFi3d_Builder::ExtentAnalyse()
     nbs                      = myVDataMap(iv).Extent();
     const TopoDS_Vertex& Vtx = myVDataMap.FindKey(iv);
     // nbedges = ChFi3d_NumberOfEdges(Vtx, myVEMap);
-    nbedges = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap);
+    nbedges = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap, angular);
     switch (nbs)
     {
       case 1:
@@ -652,7 +652,7 @@ void ChFi3d_Builder::PerformFilletOnVertex(const int Index)
       if (BRep_Tool::Degenerated(cur)) nba--;
     }
     nba=nba/2;*/
-  int nba = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap);
+  int nba = ChFi3d_NumberOfSharpEdges(Vtx, myVEMap, myEFMap, angular);
 
   if (nondegenere)
   { // Normal processing
