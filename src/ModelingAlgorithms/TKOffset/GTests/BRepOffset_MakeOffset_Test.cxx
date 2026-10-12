@@ -30,6 +30,7 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
@@ -1144,4 +1145,28 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolidDoesNotReportOpenShellsAsSuccess)
   {
     EXPECT_NE(anOffset.Error(), BRepOffset_NoError);
   }
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidWithDegeneratePoleEdges)
+{
+  BRepPrimAPI_MakeSphere aSphere(5.0, -M_PI / 2.0, 40.0 * M_PI / 180.0, 2.0 * M_PI);
+  const TopoDS_Shape     aShape = aSphere.Shape();
+  ASSERT_TRUE(BRepCheck_Analyzer(aShape).IsValid());
+
+  BRepOffset_MakeOffset anOffset;
+  anOffset.Initialize(aShape, -1.0, 1.0e-7, BRepOffset_Skin, false, false, GeomAbs_Arc);
+  size_t aRemovedFaces = 0;
+  for (TopExp_Explorer anExp(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+    if (BRepAdaptor_Surface(aFace).GetType() == GeomAbs_Plane)
+    {
+      anOffset.AddFace(aFace);
+      ++aRemovedFaces;
+    }
+  }
+  ASSERT_EQ(aRemovedFaces, 1u);
+  anOffset.MakeThickSolid();
+  ASSERT_TRUE(anOffset.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(anOffset.Shape()).IsValid());
 }

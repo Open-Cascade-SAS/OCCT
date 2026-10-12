@@ -1133,7 +1133,7 @@ void BRepOffset_MakeOffset::MakeThickSolid(const Message_ProgressRange& theRange
     myOffsetShape = Glue.Shells();
     for (exp.Init(myOffsetShape, TopAbs_SHELL); exp.More(); exp.Next())
     {
-      if (!exp.Current().Closed())
+      if (!BRep_Tool::IsClosed(exp.Current()))
       {
         myDone  = false;
         myError = BRepOffset_UnknownError;
