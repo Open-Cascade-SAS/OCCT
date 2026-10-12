@@ -13,6 +13,10 @@
 
 #include <gtest/gtest.h>
 
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPDS_Curve.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_Pave.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
@@ -27,11 +31,16 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom_ConicalSurface.hxx>
+#include <Geom_Circle.hxx>
 #include <Geom_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>
+#include <IntTools_Curve.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
 #include <Precision.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <TopExp_Explorer.hxx>
@@ -99,6 +108,53 @@ protected:
     return aProps.Mass();
   }
 };
+
+class BOPAlgo_ClosingPaveProbe : public BOPAlgo_PaveFiller
+{
+public:
+  BOPAlgo_ClosingPaveProbe() { myDS = new BOPDS_DS; }
+
+  using BOPAlgo_PaveFiller::PutClosingPaveOnCurve;
+
+  int AddVertex(const gp_Pnt& thePoint, double theTolerance)
+  {
+    TopoDS_Vertex aVertex;
+    BRep_Builder().MakeVertex(aVertex, thePoint, theTolerance);
+    return myDS->Append(aVertex);
+  }
+};
+
+namespace
+{
+BOPDS_Curve makeClosingCurve(double theRadius, double theLast, double theTolerance)
+{
+  const occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), theRadius);
+  const occ::handle<Geom_Curve> aCurve = new Geom_TrimmedCurve(aCircle, 0.0, theLast);
+  BOPDS_Curve                   aDSCurve;
+  aDSCurve.SetCurve(IntTools_Curve(aCurve, nullptr, nullptr, theTolerance, theTolerance));
+  aDSCurve.InitPaveBlock1();
+  return aDSCurve;
+}
+
+void appendPave(BOPDS_Curve& theCurve, int theVertex, double theParameter)
+{
+  BOPDS_Pave aPave;
+  aPave.SetIndex(theVertex);
+  aPave.SetParameter(theParameter);
+  theCurve.ChangePaveBlock1()->AppendExtPave(aPave);
+}
+
+int countPaves(const BOPDS_Curve& theCurve, int theVertex)
+{
+  int aCount = 0;
+  for (const BOPDS_Pave& aPave : theCurve.PaveBlocks().First()->ExtPaves())
+  {
+    aCount += aPave.Index() == theVertex;
+  }
+  return aCount;
+}
+} // namespace
 
 // Test: Boolean fuse of loft (wire to vertex) with box
 // This tests the fix for FillPaves() handling edges without 2D curves.
@@ -349,4 +405,89 @@ TEST_F(BOPAlgo_PaveFillerTest, FuseConeWithRemovedPCurve_NullPCurveHandling)
     BRepAlgoAPI_Fuse    aFuser(aCone, aBoxMaker.Shape());
     EXPECT_TRUE(aFuser.IsDone());
   }
+}
+
+// A near-bound shared pave must not replace a real vertex already assigned to a curve bound.
+TEST(BOPAlgo_PaveFillerClosingTest, PreserveRealBoundPave)
+{
+  constexpr double               aCurveTolerance = 2.0e-7;
+  constexpr double               aLast           = 2.0 * M_PI - 1.0e-7;
+  BOPAlgo_ClosingPaveProbe       aFiller;
+  BOPDS_Curve                    aCurve = makeClosingCurve(2.0, aLast, aCurveTolerance);
+  const occ::handle<Geom_Curve>& aC3D   = aCurve.Curve().Curve();
+
+  const int aRealBound = aFiller.AddVertex(aC3D->Value(0.0), aCurveTolerance);
+  const int aBound1    = aFiller.AddVertex(aC3D->Value(0.0), aCurveTolerance);
+  const int aBound2    = aFiller.AddVertex(aC3D->Value(aLast), aCurveTolerance);
+  const int aShared    = aFiller.AddVertex(aC3D->Value(5.0e-9), aCurveTolerance);
+  appendPave(aCurve, aRealBound, 0.0);
+  appendPave(aCurve, aBound1, 0.0);
+  appendPave(aCurve, aBound2, aLast);
+  appendPave(aCurve, aShared, 5.0e-9);
+
+  NCollection_List<int> aBoundVertices = {aBound1, aBound2};
+  NCollection_Map<int>  aSharedVertices;
+  aSharedVertices.Add(aShared);
+  aFiller.PutClosingPaveOnCurve(aCurve, &aBoundVertices, &aSharedVertices);
+
+  EXPECT_EQ(countPaves(aCurve, aRealBound), 2);
+  EXPECT_EQ(countPaves(aCurve, aBound1), 1);
+  EXPECT_EQ(countPaves(aCurve, aBound2), 1);
+  EXPECT_EQ(countPaves(aCurve, aShared), 1);
+}
+
+// A geometrically open curve must stay open even when its gap is within the old 10x envelope.
+TEST(BOPAlgo_PaveFillerClosingTest, RejectGapOutsideEndpointTolerance)
+{
+  constexpr double               aCurveTolerance = 2.0e-7;
+  constexpr double               aLast           = 2.0 * M_PI - 8.0e-8;
+  BOPAlgo_ClosingPaveProbe       aFiller;
+  BOPDS_Curve                    aCurve = makeClosingCurve(10.0, aLast, aCurveTolerance);
+  const occ::handle<Geom_Curve>& aC3D   = aCurve.Curve().Curve();
+
+  const int aBound1 = aFiller.AddVertex(aC3D->Value(0.0), aCurveTolerance);
+  const int aBound2 = aFiller.AddVertex(aC3D->Value(aLast), aCurveTolerance);
+  const int aShared = aFiller.AddVertex(aC3D->Value(5.0e-9), aCurveTolerance);
+  appendPave(aCurve, aBound1, 0.0);
+  appendPave(aCurve, aBound2, aLast);
+  appendPave(aCurve, aShared, 5.0e-9);
+
+  NCollection_List<int> aBoundVertices = {aBound1, aBound2};
+  NCollection_Map<int>  aSharedVertices;
+  aSharedVertices.Add(aShared);
+  aFiller.PutClosingPaveOnCurve(aCurve, &aBoundVertices, &aSharedVertices);
+
+  EXPECT_EQ(countPaves(aCurve, aShared), 1);
+  EXPECT_EQ(countPaves(aCurve, aBound1), 1);
+  EXPECT_EQ(countPaves(aCurve, aBound2), 1);
+}
+
+// Candidate order must not affect which shared vertex is used to close the curve.
+TEST(BOPAlgo_PaveFillerClosingTest, SelectNearestSharedPave)
+{
+  constexpr double               aCurveTolerance = 2.0e-7;
+  constexpr double               aLast           = 2.0 * M_PI - 1.0e-8;
+  BOPAlgo_ClosingPaveProbe       aFiller;
+  BOPDS_Curve                    aCurve = makeClosingCurve(2.0, aLast, aCurveTolerance);
+  const occ::handle<Geom_Curve>& aC3D   = aCurve.Curve().Curve();
+
+  const int aBound1 = aFiller.AddVertex(aC3D->Value(0.0), aCurveTolerance);
+  const int aBound2 = aFiller.AddVertex(aC3D->Value(aLast), aCurveTolerance);
+  const int aFar    = aFiller.AddVertex(aC3D->Value(2.0e-8), aCurveTolerance);
+  const int aNear   = aFiller.AddVertex(aC3D->Value(5.0e-9), aCurveTolerance);
+  appendPave(aCurve, aBound1, 0.0);
+  appendPave(aCurve, aBound2, aLast);
+  appendPave(aCurve, aFar, 2.0e-8);
+  appendPave(aCurve, aNear, 5.0e-9);
+
+  NCollection_List<int> aBoundVertices = {aBound1, aBound2};
+  NCollection_Map<int>  aSharedVertices;
+  aSharedVertices.Add(aFar);
+  aSharedVertices.Add(aNear);
+  aFiller.PutClosingPaveOnCurve(aCurve, &aBoundVertices, &aSharedVertices);
+
+  EXPECT_EQ(countPaves(aCurve, aNear), 2);
+  EXPECT_EQ(countPaves(aCurve, aFar), 1);
+  EXPECT_EQ(countPaves(aCurve, aBound1), 0);
+  EXPECT_EQ(countPaves(aCurve, aBound2), 0);
 }

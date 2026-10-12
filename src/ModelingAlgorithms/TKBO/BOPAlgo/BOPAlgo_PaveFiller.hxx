@@ -453,6 +453,12 @@ protected:
   //! is closed 3D-curve
   Standard_EXPORT void PutClosingPaveOnCurve(BOPDS_Curve& aNC);
 
+  //! Put closing pave on the curve, replacing only the supplied technological
+  //! vertices created on its bounds.
+  Standard_EXPORT void PutClosingPaveOnCurve(BOPDS_Curve&                 theNC,
+                                             const NCollection_List<int>* theBoundVertices,
+                                             const NCollection_Map<int>*  theSharedVertices);
+
   //! Keeps data for post treatment
   Standard_EXPORT void PreparePostTreatFF(
     const int                           aInt,
