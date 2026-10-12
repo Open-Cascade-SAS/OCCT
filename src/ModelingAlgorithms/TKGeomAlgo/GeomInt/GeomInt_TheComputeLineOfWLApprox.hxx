@@ -252,6 +252,8 @@ private:
   double                                                          mylambda1;
   double                                                          mylambda2;
   bool                                                            myPeriodic;
+  bool                                                            myExplicitConstraints =
+    false; //!< Also honor explicitly set constraints during interpolation.
 };
 
 #endif // _GeomInt_TheComputeLineOfWLApprox_HeaderFile

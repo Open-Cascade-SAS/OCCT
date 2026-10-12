@@ -51,6 +51,7 @@
 #include <BRepFill_Generator.hxx>
 #include <BRepLib.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
+#include <cmath>
 #include <BRepTools_WireExplorer.hxx>
 #include <BRepTools_ReShape.hxx>
 #include <BSplCLib.hxx>
@@ -282,6 +283,8 @@ BRepOffsetAPI_ThruSections::BRepOffsetAPI_ThruSections(const bool   isSolid,
 
 void BRepOffsetAPI_ThruSections::Init(const bool isSolid, const bool ruled, const double pres3d)
 {
+  myFirstTangent.Nullify();
+  myLastTangent.Nullify();
   myIsSolid      = isSolid;
   myIsRuled      = ruled;
   myPres3d       = pres3d;
@@ -340,6 +343,19 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
 {
   myStatus = BRepFill_ThruSectionErrorStatus_Done;
   myBFGenerator.Nullify();
+  const bool hasConstraints = !myFirstTangent.IsNull() || !myLastTangent.IsNull();
+  if (hasConstraints && (myIsRuled || myUseSmoothing || myWCheck))
+  {
+    myStatus = BRepFill_ThruSectionErrorStatus_IncompatibleOptions;
+    NotDone();
+    return;
+  }
+  if (hasConstraints && myWires.Length() < 2)
+  {
+    myStatus = BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint;
+    NotDone();
+    return;
+  }
   // Check set of section for right configuration of punctual sections
   int             i;
   TopExp_Explorer explo;
@@ -511,7 +527,7 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
   try
   {
     // Calculate the resulting shape
-    if (myWires.Length() == 2 || myIsRuled)
+    if ((myWires.Length() == 2 && !hasConstraints) || myIsRuled)
     {
       // create a ruled shell
       CreateRuled();
@@ -751,16 +767,21 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   bool                             uClosed = true;
   NCollection_Array1<TopoDS_Shape> shapes(1, nbSects * nbEdges);
   int                              nb = 0, i, j;
+  const bool hasBoundaryConstraints   = !myFirstTangent.IsNull() || !myLastTangent.IsNull();
 
   for (i = 1; i <= nbSects; i++)
   {
     const TopoDS_Wire& wire = TopoDS::Wire(myWires(i));
-    if (!wire.Closed())
+    if (hasBoundaryConstraints)
     {
-      // check if the vertices are the same
-      TopoDS_Vertex V1, V2;
-      TopExp::Vertices(wire, V1, V2);
-      if (!V1.IsSame(V2))
+      uClosed = uClosed && BRep_Tool::IsClosed(wire);
+    }
+    else if (!wire.Closed())
+    {
+      // Preserve the legacy closure check for unconstrained lofts.
+      TopoDS_Vertex aFirstVertex, aLastVertex;
+      TopExp::Vertices(wire, aFirstVertex, aLastVertex);
+      if (!aFirstVertex.IsSame(aLastVertex))
       {
         uClosed = false;
       }
@@ -802,7 +823,7 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   BW2.MakeWire(newW2);
 
   TopLoc_Location loc;
-  TopoDS_Vertex   v1f, v1l, v2f, v2l;
+  TopoDS_Vertex   v1f, v1l, v2f, v2l, v1Seam, v2Seam;
 
   int                        nbPnts = 21;
   NCollection_Array2<gp_Pnt> points(1, nbPnts, 1, nbSects);
@@ -813,11 +834,15 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
 
   if (TS.IsNull())
   {
-    myStatus = BRepFill_ThruSectionErrorStatus_Failed;
+    if (myStatus == BRepFill_ThruSectionErrorStatus_Done)
+    {
+      myStatus = BRepFill_ThruSectionErrorStatus_Failed;
+    }
     return;
   }
 
-  TopoDS_Shape firstEdge;
+  occ::handle<Geom_BSplineSurface> aFirstPatch;
+  TopoDS_Shape                     firstEdge;
   for (i = 1; i <= nbEdges; i++)
   {
 
@@ -832,6 +857,35 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     V0  = surface->VKnot(surface->FirstVKnotIndex());
     V1  = surface->VKnot(surface->LastVKnotIndex());
     surface->Segment(Ui1, Ui2, V0, V1);
+    if (hasBoundaryConstraints && uClosed)
+    {
+      if (i == 1)
+        aFirstPatch = surface;
+      if (i == nbEdges)
+      {
+        if (surface->NbVPoles() != aFirstPatch->NbVPoles())
+        {
+          myStatus = BRepFill_ThruSectionErrorStatus_Failed;
+          return;
+        }
+        const int aLastUPole = surface->NbUPoles();
+        for (int aVIndex = 1; aVIndex <= surface->NbVPoles(); ++aVIndex)
+        {
+          // Only remove roundoff at the seam, never change incompatible derivative data.
+          if (surface->Pole(aLastUPole, aVIndex).Distance(aFirstPatch->Pole(1, aVIndex)) > myPres3d
+              || std::abs(surface->Weight(aLastUPole, aVIndex) - aFirstPatch->Weight(1, aVIndex))
+                   > Precision::PConfusion())
+          {
+            myStatus = BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint;
+            return;
+          }
+          surface->SetPole(aLastUPole,
+                           aVIndex,
+                           aFirstPatch->Pole(1, aVIndex),
+                           aFirstPatch->Weight(1, aVIndex));
+        }
+      }
+    }
 
     // return vertices
     edge = TopoDS::Edge(shapes(i));
@@ -847,6 +901,17 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
     if (edge.Orientation() == TopAbs_REVERSED)
     {
       TopExp::Vertices(edge, v2l, v2f);
+    }
+    if (hasBoundaryConstraints && i == 1)
+    {
+      v1Seam = v1f;
+      v2Seam = v2f;
+    }
+    if (hasBoundaryConstraints && uClosed && i == nbEdges)
+    {
+      // Use the same topological vertices as the exact first-patch boundary.
+      v1l = v1Seam;
+      v2l = v2Seam;
     }
 
     // make the face
@@ -1206,7 +1271,7 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
   const int                               NbEdges,
   const bool                              w1Point,
   const bool                              w2Point,
-  const bool                              vClosed) const
+  const bool                              vClosed)
 {
   int           i, j, jdeb = 1, jfin = NbSects;
   TopoDS_Vertex vf, vl;
@@ -1309,6 +1374,16 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
     section.AddCurve(BSPoint);
   }
 
+  const bool hasConstraints = !myFirstTangent.IsNull() || !myLastTangent.IsNull();
+  if (hasConstraints)
+  {
+    if (w1Point || w2Point || vClosed)
+    {
+      myStatus = BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint;
+      return nullptr;
+    }
+    section.SetTangents(myFirstTangent, myLastTangent);
+  }
   section.Perform(Precision::PConfusion());
   occ::handle<GeomFill_Line> line = new GeomFill_Line(NbSects);
 

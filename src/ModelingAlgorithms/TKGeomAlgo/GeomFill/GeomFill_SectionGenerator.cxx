@@ -16,6 +16,8 @@
 
 #include <Geom_BSplineCurve.hxx>
 #include <GeomFill_SectionGenerator.hxx>
+#include <gp.hxx>
+#include <Precision.hxx>
 
 //=================================================================================================
 
@@ -75,17 +77,25 @@ void GeomFill_SectionGenerator::Mults(NCollection_Array1<int>& TMults) const
 
 //=================================================================================================
 
-bool GeomFill_SectionGenerator::Section(const int                   P,
-                                        NCollection_Array1<gp_Pnt>& Poles,
-                                        NCollection_Array1<gp_Vec>&, // DPoles,
+bool GeomFill_SectionGenerator::Section(const int                     P,
+                                        NCollection_Array1<gp_Pnt>&   Poles,
+                                        NCollection_Array1<gp_Vec>&   DPoles,
                                         NCollection_Array1<gp_Pnt2d>& Poles2d,
                                         NCollection_Array1<gp_Vec2d>&, // DPoles2d,
                                         NCollection_Array1<double>& Weigths,
-                                        NCollection_Array1<double>& // DWeigths
-) const
+                                        NCollection_Array1<double>& DWeigths) const
 {
   Section(P, Poles, Poles2d, Weigths);
-  return false;
+  const int anEnd = P == 1 ? 0 : P == mySequence.Length() ? 1 : -1;
+  if (anEnd < 0 || myTangents[anEnd].IsNull())
+    return false;
+  const auto aTangent = occ::down_cast<Geom_BSplineCurve>(myTangents[anEnd]);
+  for (int i = 1; i <= Poles.Length(); ++i)
+  {
+    DWeigths(i) = aTangent->Weight(i) - Weigths(i);
+    DPoles(i)   = gp_Vec(Poles(i), aTangent->Pole(i)) * (aTangent->Weight(i) / Weigths(i));
+  }
+  return true;
 }
 
 //=================================================================================================
@@ -106,4 +116,36 @@ void GeomFill_SectionGenerator::Section(const int                   P,
 double GeomFill_SectionGenerator::Parameter(const int P) const
 {
   return myParams->Value(P);
+}
+
+//=================================================================================================
+
+void GeomFill_SectionGenerator::SetTangents(const occ::handle<Geom_Curve>& theFirst,
+                                            const occ::handle<Geom_Curve>& theLast)
+{
+  myTangents[0] = theFirst;
+  myTangents[1] = theLast;
+  myIsDone      = false;
+}
+
+//=================================================================================================
+
+void GeomFill_SectionGenerator::Perform(const double theTolerance)
+{
+  GeomFill_Profiler aProfiler;
+  for (const auto& aCurve : mySequence)
+    aProfiler.AddCurve(aCurve);
+  for (const auto& aTangent : myTangents)
+    if (!aTangent.IsNull())
+      aProfiler.AddCurve(aTangent);
+  aProfiler.Perform(theTolerance);
+  const int aNbSections = mySequence.Length();
+  for (int i = 1; i <= aNbSections; ++i)
+    mySequence(i) = aProfiler.Curve(i);
+  int anIndex = aNbSections;
+  for (auto& aTangent : myTangents)
+    if (!aTangent.IsNull())
+      aTangent = aProfiler.Curve(++anIndex);
+  myIsPeriodic = aProfiler.IsPeriodic();
+  myIsDone     = true;
 }

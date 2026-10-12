@@ -27,6 +27,7 @@
 #include <gp_Vec2d.hxx>
 #include <math_Vector.hxx>
 #include <BSplCLib.hxx>
+#include <cmath>
 
 #include <StdFail_NotDone.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
@@ -447,6 +448,8 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
         theapprox.SetParameters(theParams);
       }
       theapprox.Perform(multL);
+      if (!theapprox.IsAllApproximated())
+        return;
       theapprox.Error(mytol3d, mytol2d);
 #ifdef OCCT_DEBUG
       std::cout << " Tolerances obtenues  --> 3d : " << mytol3d << std::endl;
@@ -557,13 +560,14 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
     {
       // pour les courbes rationnelles il faut maintenant diviser
       // les poles par leurs poids respectifs
-      tabPoles->ChangeValue(j, k).SetXYZ(newtabP(k).XYZ() / newtabP2d->Value(k).X());
       double aWeight = newtabP2d->Value(k).X();
-      if (aWeight < gp::Resolution())
+      if (aWeight < gp::Resolution() || !std::isfinite(aWeight) || !std::isfinite(newtabP(k).X())
+          || !std::isfinite(newtabP(k).Y()) || !std::isfinite(newtabP(k).Z()))
       {
         done = false;
         return;
       }
+      tabPoles->ChangeValue(j, k).SetXYZ(newtabP(k).XYZ() / aWeight);
       tabWeights->SetValue(j, k, aWeight);
     }
   }

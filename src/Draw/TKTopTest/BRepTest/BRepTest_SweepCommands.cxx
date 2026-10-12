@@ -29,6 +29,7 @@
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakeEvolved.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
+#include <DrawTrSurf.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <BRepOffsetAPI_MiddlePath.hxx>
 
@@ -516,15 +517,52 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
   bool isruled = (Draw::Atoi(a[index + 1]) == 1);
 
   delete Generator;
-  Generator           = new BRepOffsetAPI_ThruSections(issolid, isruled);
-  bool IsMutableInput = true;
-  int  NbEdges        = 0;
-  bool IsFirstWire    = false;
+  Generator = new BRepOffsetAPI_ThruSections(issolid, isruled);
+  occ::handle<Geom_Curve> aConstraints[2];
+  bool                    IsMutableInput = true;
+  int                     NbEdges        = 0;
+  bool                    IsFirstWire    = false;
   for (int i = index + 2; i <= n - 1; i++)
   {
     if (!strcmp(a[i], "-safe"))
     {
       IsMutableInput = false;
+      continue;
+    }
+    if (!strcmp(a[i], "-param") && i + 1 < n)
+    {
+      const char* aType = a[++i];
+      if (!strcmp(aType, "uniform"))
+        Generator->SetParType(Approx_IsoParametric);
+      else if (!strcmp(aType, "chord"))
+        Generator->SetParType(Approx_ChordLength);
+      else if (!strcmp(aType, "centripetal"))
+        Generator->SetParType(Approx_Centripetal);
+      else
+        return 1;
+      continue;
+    }
+    if (!strcmp(a[i], "-maxdegree") && i + 1 < n)
+    {
+      Generator->SetMaxDegree(Draw::Atoi(a[++i]));
+      continue;
+    }
+    if (!strncmp(a[i], "-firstd", 7) || !strncmp(a[i], "-lastd", 6))
+    {
+      const bool  isFirst = a[i][1] == 'f';
+      const char* anOrder = a[i] + (isFirst ? 7 : 6);
+      if (anOrder[0] != '1')
+        return 1;
+      auto& aConstraint = aConstraints[isFirst ? 0 : 1];
+      if (!strcmp(anOrder + 1, "curve") && i + 1 < n)
+      {
+        const auto aCurve = DrawTrSurf::GetCurve(a[++i]);
+        if (aCurve.IsNull())
+          return 1;
+        aConstraint = aCurve;
+      }
+      else
+        return 1;
       continue;
     }
     bool IsWire = true;
@@ -564,6 +602,8 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
     }
   }
 
+  Generator->SetFirstSectionTangent(aConstraints[0]);
+  Generator->SetLastSectionTangent(aConstraints[1]);
   Generator->SetMutableInput(IsMutableInput);
 
   check = (check || !samenumber);
@@ -601,6 +641,12 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
       case BRepFill_ThruSectionErrorStatus_Null3DCurve:
         di << "Some edges have null 3d curve";
         break;
+      case BRepFill_ThruSectionErrorStatus_InvalidBoundaryConstraint:
+        di << "Invalid endpoint derivatives\n";
+        return 1;
+      case BRepFill_ThruSectionErrorStatus_IncompatibleOptions:
+        di << "Endpoint derivatives require non-ruled, non-variational lofts; fields require -N\n";
+        return 1;
       case BRepFill_ThruSectionErrorStatus_Failed:
         di << "Algorithm has failed\n";
         break;
@@ -1189,7 +1235,9 @@ void BRepTest::SweepCommands(Draw_Interpretor& theCommands)
                   "thrusections [-N] result issolid isruled shape1 shape2 [..shape..] [-safe],\n"
                   "\t\tthe option -N means no check on wires, shapes must be wires or vertices "
                   "(only first or last),\n"
-                  "\t\t-safe option allows to prevent the modifying of input shapes",
+                  "\t\t-safe option allows to prevent the modifying of input shapes\n"
+                  "\t\t-firstd1curve/-lastd1curve curve: auxiliary tangent section (requires -N)\n"
+                  "\t\t-param uniform|chord|centripetal; -maxdegree degree",
                   __FILE__,
                   thrusections,
                   g);

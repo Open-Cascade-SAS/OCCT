@@ -1,0 +1,13 @@
+# Two-section G1 interpolation; tangent magnitudes are chosen by AppSurf.
+beziercurve c1 3 -1 0 0 0 0.5 0 1 0 0
+beziercurve c2 3 -1 0 5 0 0.5 5 1 0 5
+mkedge e1 c1
+mkedge e2 c2
+wire w1 e1
+wire w2 e2
+copy c1 t1
+copy c2 t2
+translate t1 0.2 0 2
+translate t2 -0.2 0 4
+thrusections -N result 0 0 w1 w2 -firstd1curve t1 -lastd1curve t2
+checkshape result
