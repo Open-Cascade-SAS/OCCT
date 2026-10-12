@@ -67,13 +67,13 @@ namespace
 {
 //==================================================================================================
 
-// Construction regularity records the intended continuity of approximated surfaces.
+// Recorded smoothness and geometric tangency exclude an edge from fillet selection.
 bool isRegularEdge(const TopoDS_Edge& theEdge,
                    const TopoDS_Face& theFace1,
                    const TopoDS_Face& theFace2)
 {
   return BRep_Tool::Continuity(theEdge, theFace1, theFace2) >= GeomAbs_G1
-         || ChFi3d::IsTangentFaces(theEdge, theFace1, theFace2);
+         || ChFi3d::IsTangentFaces(theEdge, theFace1, theFace2, GeomAbs_G1, Precision::Angular());
 }
 
 } // namespace
@@ -631,8 +631,7 @@ bool ChFi3d_Builder::FaceTangency(const TopoDS_Edge&   E0,
       }
       //  Modified by Sergey KHROMOV - Tue Dec 18 18:10:40 2001 Begin
       //    if (BRep_Tool::Continuity(Ec,F[0],F[1]) < GeomAbs_G1) {
-      // Propagation tolerance applies to supporting faces, not candidate regularity.
-      if (!ChFi3d::IsTangentFaces(Ec, F[0], F[1], GeomAbs_G1, angular))
+      if (!ChFi3d::IsTangentFaces(Ec, F[0], F[1]))
       {
         //  Modified by Sergey KHROMOV - Tue Dec 18 18:10:41 2001 End
         return false;
@@ -782,8 +781,7 @@ void ChFi3d_Builder::PerformExtremity(const occ::handle<ChFiDS_Spine>& Spine)
         }
         TopoDS_Face F1, F2;
         ChFi3d_conexfaces(anEdge, F1, F2, myEFMap);
-        if (!F2.IsNull()
-            && ChFi3d::IsTangentFaces(anEdge, F1, F2, GeomAbs_G2, angular)) // smooth edge
+        if (!F2.IsNull() && ChFi3d::IsTangentFaces(anEdge, F1, F2, GeomAbs_G2)) // smooth edge
         {
           if (!F1.IsSame(F2))
           {

@@ -42,12 +42,17 @@ public:
                                                                   const double       SinTol,
                                                                   const bool         CorrectPoint);
 
-  //! Tests oriented G1 or G2 continuity with Precision::Angular().
-  //! @param[in] theEdge common edge
-  //! @param[in] theFace1 first adjacent face
-  //! @param[in] theFace2 second adjacent face
+  //! Returns max(0.001, 1.5 * edge tolerance) for construction continuity checks.
+  //! @param[in] theEdge non-null common edge
+  //! @return construction continuity tolerance in model units
+  Standard_EXPORT static double ConstructionContinuityTolerance(const TopoDS_Edge& theEdge);
+
+  //! Tests construction G1 or G2 continuity; stored continuity takes precedence for G1.
+  //! @param[in] theEdge non-null common edge
+  //! @param[in] theFace1 non-null first adjacent face
+  //! @param[in] theFace2 non-null second adjacent face
   //! @param[in] theOrder continuity to test: GeomAbs_G1 or GeomAbs_G2
-  //! @return true if the sampled geometry satisfies the requested continuity
+  //! @return true if construction continuity is satisfied
   Standard_EXPORT static bool IsTangentFaces(const TopoDS_Edge&  theEdge,
                                              const TopoDS_Face&  theFace1,
                                              const TopoDS_Face&  theFace2,
@@ -55,12 +60,14 @@ public:
 
   //! Tests oriented G1 or G2 continuity by sampling along the edge.
   //! Pcurves must have matching ranges and corresponding parameters.
+  //! The positional gap must not exceed twice the edge tolerance.
   //! @param[in] theEdge common edge
   //! @param[in] theFace1 first adjacent face
   //! @param[in] theFace2 second adjacent face
   //! @param[in] theOrder continuity to test: GeomAbs_G1 or GeomAbs_G2
   //! @param[in] theAngularTolerance angular tolerance in radians, in [0, Pi/2)
-  //! @return true if the sampled geometry satisfies the requested continuity
+  //! @return true if the requested continuity is satisfied;
+  //! false for invalid input or undefined interior normals
   Standard_EXPORT static bool IsTangentFaces(const TopoDS_Edge&  theEdge,
                                              const TopoDS_Face&  theFace1,
                                              const TopoDS_Face&  theFace2,

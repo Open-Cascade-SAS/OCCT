@@ -84,9 +84,9 @@ public:
   //! Computes the point of parameter theU on the curve.
   [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(const double theU) const final;
 
-  //! Return the radius at a parameter using the current taper.
+  //! Returns the tapered radius at theT.
   //! @param[in] theT helix parameter
-  //! @return radius measured from the helix axis; RStart is the radius at FirstParameter()
+  //! @return radius from the axis; RStart applies at FirstParameter()
   [[nodiscard]] Standard_EXPORT double Radius(const double theT) const;
 
   //! Computes the point and first derivative at parameter theU.

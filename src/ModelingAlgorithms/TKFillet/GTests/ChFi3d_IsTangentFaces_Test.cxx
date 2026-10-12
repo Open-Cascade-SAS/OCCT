@@ -17,6 +17,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepCheck_Analyzer.hxx>
@@ -24,19 +25,23 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_Surface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <TopLoc_Location.hxx>
 #include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <NCollection_Array2.hxx>
 #include <Precision.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <gp_Ax1.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 #include <gtest/gtest.h>
@@ -80,11 +85,27 @@ ChFi3d_TestFaces::ChFi3d_TestFaces(double theCurvature)
 TEST(ChFi3d_IsTangentFacesTest, PlanesAndCurvatureMismatch)
 {
   ChFi3d_TestFaces aFlat;
-  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFlat.Edge, aFlat.First, aFlat.Second));
-  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFlat.Edge, aFlat.First, aFlat.Second, GeomAbs_G2));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFlat.Edge,
+                                     aFlat.First,
+                                     aFlat.Second,
+                                     GeomAbs_G1,
+                                     Precision::Angular()));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFlat.Edge,
+                                     aFlat.First,
+                                     aFlat.Second,
+                                     GeomAbs_G2,
+                                     Precision::Angular()));
   ChFi3d_TestFaces aCurved(1.0);
-  EXPECT_TRUE(ChFi3d::IsTangentFaces(aCurved.Edge, aCurved.First, aCurved.Second));
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aCurved.Edge, aCurved.First, aCurved.Second, GeomAbs_G2));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aCurved.Edge,
+                                     aCurved.First,
+                                     aCurved.Second,
+                                     GeomAbs_G1,
+                                     Precision::Angular()));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aCurved.Edge,
+                                      aCurved.First,
+                                      aCurved.Second,
+                                      GeomAbs_G2,
+                                      Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, StoredRegularityDoesNotOverrideOrientation)
@@ -92,21 +113,49 @@ TEST(ChFi3d_IsTangentFacesTest, StoredRegularityDoesNotOverrideOrientation)
   ChFi3d_TestFaces aFaces;
   BRep_Builder().Continuity(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G1);
   aFaces.Second.Reverse();
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
   aFaces.First.Reverse();
-  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                     aFaces.First,
+                                     aFaces.Second,
+                                     GeomAbs_G1,
+                                     Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, RejectInvalidRepresentations)
 {
   ChFi3d_TestFaces aFaces;
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(TopoDS_Edge(), aFaces.First, aFaces.Second));
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, TopoDS_Face(), aFaces.Second));
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_C2));
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.First));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(TopoDS_Edge(),
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      TopoDS_Face(),
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_C2,
+                                      Precision::Angular()));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.First,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
   BRep_Builder aBuilder;
   aBuilder.Range(aFaces.Edge, aFaces.Second, 0.0, 0.5);
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, UnsetRepresentationFlags)
@@ -119,10 +168,22 @@ TEST(ChFi3d_IsTangentFacesTest, UnsetRepresentationFlags)
     {
       aBuilder.SameParameter(aFaces.Edge, isSameParameter);
       aBuilder.SameRange(aFaces.Edge, isSameRange);
-      EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
-      EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G2));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                         aFaces.First,
+                                         aFaces.Second,
+                                         GeomAbs_G1,
+                                         Precision::Angular()));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                         aFaces.First,
+                                         aFaces.Second,
+                                         GeomAbs_G2,
+                                         Precision::Angular()));
       aFaces.Second.Reverse();
-      EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+      EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                          aFaces.First,
+                                          aFaces.Second,
+                                          GeomAbs_G1,
+                                          Precision::Angular()));
       aFaces.Second.Reverse();
     }
   }
@@ -140,10 +201,22 @@ TEST(ChFi3d_IsTangentFacesTest, DegenerateEdgeWithDefinedNormals)
   aBuilder.UpdateEdge(aFaces.Edge, aPCurve, aFaces.Second, Precision::Confusion());
   aBuilder.Range(aFaces.Edge, 0.0, 1.0);
   aBuilder.Degenerated(aFaces.Edge, true);
-  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
-  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G2));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                     aFaces.First,
+                                     aFaces.Second,
+                                     GeomAbs_G1,
+                                     Precision::Angular()));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                     aFaces.First,
+                                     aFaces.Second,
+                                     GeomAbs_G2,
+                                     Precision::Angular()));
   aFaces.Second.Reverse();
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, CylinderSeam)
@@ -161,10 +234,12 @@ TEST(ChFi3d_IsTangentFacesTest, CylinderSeam)
         continue;
       }
       hasSeam = true;
-      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G1, Precision::Angular()));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G2, Precision::Angular()));
       EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G2));
       anEdge.Reverse();
-      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G1, Precision::Angular()));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G2));
     }
   }
   EXPECT_TRUE(hasSeam);
@@ -198,7 +273,11 @@ TEST(ChFi3d_IsTangentFacesTest, NarrowSplineSpan)
   aBuilder.Range(aFaces.Edge, aFaces.Second, 0.0, 1.0);
   // The common edge is straight. Curve deflection sampling cannot see the
   // transverse normal variation confined to [0.501, 0.503].
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, InteriorSingularityIsNotSkipped)
@@ -219,7 +298,11 @@ TEST(ChFi3d_IsTangentFacesTest, InteriorSingularityIsNotSkipped)
                       aFaces.Second,
                       Precision::Confusion());
   aBuilder.Range(aFaces.Edge, aFaces.Second, 0.0, 1.0);
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, LocatedFaces)
@@ -233,6 +316,11 @@ TEST(ChFi3d_IsTangentFacesTest, LocatedFaces)
   aFaces.First.Move(aLocation);
   aFaces.Second.Move(aLocation);
   EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G2));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                     aFaces.First,
+                                     aFaces.Second,
+                                     GeomAbs_G2,
+                                     Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, SphereSeamAllowsSingularEndpoints)
@@ -247,13 +335,14 @@ TEST(ChFi3d_IsTangentFacesTest, SphereSeamAllowsSingularEndpoints)
       const TopoDS_Edge anEdge = TopoDS::Edge(anEdges.Current());
       if (BRep_Tool::Degenerated(anEdge))
       {
-        EXPECT_FALSE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace));
+        EXPECT_FALSE(
+          ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G1, Precision::Angular()));
       }
       else if (BRep_Tool::IsClosed(anEdge, aFace))
       {
         hasSeam = true;
-        EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace));
-        EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G2));
+        EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G1, Precision::Angular()));
+        EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace, aFace, GeomAbs_G2, Precision::Angular()));
       }
     }
   }
@@ -266,10 +355,18 @@ TEST(ChFi3d_IsTangentFacesTest, StoredRegularityDoesNotHideGeometryMismatch)
   BRep_Builder().Continuity(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G1);
   occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFaces.Second);
   aSurface->Rotate(gp_Ax1(gp::Origin(), gp::DX()), 0.2);
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
   aSurface->Rotate(gp_Ax1(gp::Origin(), gp::DX()), -0.2);
   aSurface->Translate(gp_Vec(0, 0, 0.01));
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, MissingPCurve)
@@ -279,7 +376,11 @@ TEST(ChFi3d_IsTangentFacesTest, MissingPCurve)
                             occ::handle<Geom2d_Curve>(),
                             aFaces.Second,
                             Precision::Confusion());
-  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
+  EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                      aFaces.First,
+                                      aFaces.Second,
+                                      GeomAbs_G1,
+                                      Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, SeamOnDistinctFaces)
@@ -298,14 +399,18 @@ TEST(ChFi3d_IsTangentFacesTest, SeamOnDistinctFaces)
       }
       hasSeam            = true;
       TopoDS_Face aFace2 = TopoDS::Face(aFace1.EmptyCopied());
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace1, aFace2, GeomAbs_G2, Precision::Angular()));
       EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace1, aFace2, GeomAbs_G2));
       // The special branch requires an edge occurrence in the first face.
-      EXPECT_FALSE(ChFi3d::IsTangentFaces(anEdge, aFace2, aFace1));
+      EXPECT_FALSE(
+        ChFi3d::IsTangentFaces(anEdge, aFace2, aFace1, GeomAbs_G1, Precision::Angular()));
+      EXPECT_FALSE(ChFi3d::IsTangentFaces(anEdge, aFace2, aFace1, GeomAbs_G2));
       anEdge.Reverse();
-      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace1, aFace2));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace1, aFace2, GeomAbs_G1, Precision::Angular()));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace1, aFace2, GeomAbs_G2));
       aFace1.Reverse();
       aFace2.Reverse();
-      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace1, aFace2));
+      EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFace1, aFace2, GeomAbs_G1, Precision::Angular()));
       aFace1.Reverse();
     }
   }
@@ -327,6 +432,11 @@ TEST(ChFi3d_IsTangentFacesTest, DifferentSurfaceLocations)
                       Precision::Confusion());
   aBuilder.Range(aFaces.Edge, aFaces.Second, 0.0, 1.0);
   EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G2));
+  EXPECT_TRUE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                     aFaces.First,
+                                     aFaces.Second,
+                                     GeomAbs_G2,
+                                     Precision::Angular()));
 }
 
 TEST(ChFi3d_IsTangentFacesTest, AngularToleranceBoundary)
@@ -354,8 +464,16 @@ TEST(ChFi3d_IsTangentFacesTest, ShallowCreasesAreNotTangentByDefault)
   {
     ChFi3d_TestFaces aFaces;
     BRep_Tool::Surface(aFaces.Second)->Rotate(gp_Ax1(gp::Origin(), gp::DX()), anAngle);
-    EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second));
-    EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G2));
+    EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                        aFaces.First,
+                                        aFaces.Second,
+                                        GeomAbs_G1,
+                                        Precision::Angular()));
+    EXPECT_FALSE(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                        aFaces.First,
+                                        aFaces.Second,
+                                        GeomAbs_G2,
+                                        Precision::Angular()));
     EXPECT_TRUE(
       ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, GeomAbs_G1, 0.075));
   }
@@ -423,5 +541,154 @@ TEST(ChFi3d_IsTangentFacesTest, ShallowCreaseFilletAndChamfer)
     aChamfer.Build();
     ASSERT_TRUE(aChamfer.IsDone());
     EXPECT_TRUE(BRepCheck_Analyzer(aChamfer.Shape()).IsValid());
+  }
+}
+
+//==================================================================================================
+
+TEST(ChFi3d_IsTangentFacesTest, ConstructionContinuityAndGeometricTangency)
+{
+  for (const double anAngle : {0.0, 0.03, 0.2})
+  {
+    ChFi3d_TestFaces aFaces;
+    BRep_Tool::Surface(aFaces.Second)->Rotate(gp_Ax1(gp::Origin(), gp::DX()), anAngle);
+    for (const GeomAbs_Shape anOrder : {GeomAbs_G1, GeomAbs_G2})
+    {
+      EXPECT_EQ(ChFi3d::IsTangentFaces(aFaces.Edge, aFaces.First, aFaces.Second, anOrder),
+                anAngle != 0.2);
+      EXPECT_EQ(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                       aFaces.First,
+                                       aFaces.Second,
+                                       anOrder,
+                                       Precision::Angular()),
+                anAngle == 0.0);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ChFi3d_IsTangentFacesTest, ConstructionContinuityDoesNotUseGuideTolerance)
+{
+  BRepOffsetAPI_ThruSections aLoft(true, true);
+  for (int aSectionIndex = 0; aSectionIndex < 3; ++aSectionIndex)
+  {
+    const double               anAngle = aSectionIndex == 2 ? 0.03 : 0.0;
+    const double               aCos = std::cos(anAngle), aSin = std::sin(anAngle);
+    const double               aZ = 5.0 * aSectionIndex;
+    BRepBuilderAPI_MakePolygon aPolygon;
+    aPolygon.Add(gp_Pnt(0, 0, aZ));
+    aPolygon.Add(gp_Pnt(10 * aCos, 10 * aSin, aZ));
+    aPolygon.Add(gp_Pnt(10 * (aCos - aSin), 10 * (aSin + aCos), aZ));
+    aPolygon.Add(gp_Pnt(-10 * aSin, 10 * aCos, aZ));
+    aPolygon.Close();
+    aLoft.AddWire(aPolygon.Wire());
+  }
+  aLoft.Build();
+  ASSERT_TRUE(aLoft.IsDone());
+  ASSERT_TRUE(BRepCheck_Analyzer(aLoft.Shape()).IsValid());
+  TopoDS_Edge aGuide;
+  for (TopExp_Explorer anEdges(aLoft.Shape(), TopAbs_EDGE); anEdges.More(); anEdges.Next())
+  {
+    const TopoDS_Edge anEdge = TopoDS::Edge(anEdges.Current());
+    BRepAdaptor_Curve aCurve(anEdge);
+    const gp_Pnt      aFirst = aCurve.EvalD0(aCurve.FirstParameter());
+    const gp_Pnt      aLast  = aCurve.EvalD0(aCurve.LastParameter());
+    if (aFirst.Distance(gp_Pnt(0, 0, 0)) < Precision::Confusion()
+        && aLast.Distance(gp_Pnt(0, 0, 5)) < Precision::Confusion())
+    {
+      aGuide = anEdge;
+      break;
+    }
+  }
+  ASSERT_FALSE(aGuide.IsNull());
+  for (const double aGuideTolerance : {1.e-4, 0.01})
+  {
+    BRepFilletAPI_MakeFillet aFillet(aLoft.Shape());
+    aFillet.SetParams(aGuideTolerance, 1.e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
+    aFillet.Add(0.5, aGuide);
+    ASSERT_EQ(aFillet.NbContours(), 1);
+    EXPECT_EQ(aFillet.NbEdges(1), 2);
+    aFillet.Build();
+    ASSERT_TRUE(aFillet.IsDone());
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  }
+}
+
+//==================================================================================================
+
+TEST(ChFi3d_IsTangentFacesTest, PositionalGapUsesEdgeTolerance)
+{
+  const double aGapLimit = 2.0 * Precision::Confusion();
+  for (const double aGap : {0.5 * aGapLimit,
+                            aGapLimit,
+                            std::nextafter(aGapLimit, std::numeric_limits<double>::infinity())})
+  {
+    ChFi3d_TestFaces aFaces;
+    BRep_Tool::Surface(aFaces.First)->Translate(gp_Vec(0.0, 0.0, -0.5 * aGap));
+    BRep_Tool::Surface(aFaces.Second)->Translate(gp_Vec(0.0, 0.0, 0.5 * aGap));
+    for (const GeomAbs_Shape anOrder : {GeomAbs_G1, GeomAbs_G2})
+    {
+      EXPECT_EQ(ChFi3d::IsTangentFaces(aFaces.Edge,
+                                       aFaces.First,
+                                       aFaces.Second,
+                                       anOrder,
+                                       Precision::Angular()),
+                aGap <= aGapLimit);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ChFi3d_IsTangentFacesTest, ShallowCreaseContinuesAcrossTangentGuideEdges)
+{
+  for (const double anAngle : {0.005, 0.02})
+  {
+    BRepOffsetAPI_ThruSections aLoft(true, true);
+    const double               aSideHeight = -10.0 * std::tan(0.5 * anAngle);
+    for (int aSection = 0; aSection < 3; ++aSection)
+    {
+      const double               aZ = 5.0 * aSection;
+      BRepBuilderAPI_MakePolygon aPolygon;
+      aPolygon.Add(gp_Pnt(-10.0, -5.0, aZ));
+      aPolygon.Add(gp_Pnt(10.0, -5.0, aZ));
+      aPolygon.Add(gp_Pnt(10.0, aSideHeight, aZ));
+      aPolygon.Add(gp_Pnt(0.0, 0.0, aZ));
+      aPolygon.Add(gp_Pnt(-10.0, aSideHeight, aZ));
+      aPolygon.Close();
+      ASSERT_TRUE(aPolygon.IsDone());
+      aLoft.AddWire(aPolygon.Wire());
+    }
+    aLoft.Build();
+    ASSERT_TRUE(aLoft.IsDone());
+    ASSERT_TRUE(BRepCheck_Analyzer(aLoft.Shape()).IsValid());
+    TopoDS_Edge aGuide;
+    for (TopExp_Explorer anEdges(aLoft.Shape(), TopAbs_EDGE); anEdges.More(); anEdges.Next())
+    {
+      const TopoDS_Edge anEdge = TopoDS::Edge(anEdges.Current());
+      BRepAdaptor_Curve aCurve(anEdge);
+      if (aCurve.EvalD0(aCurve.FirstParameter()).Distance(gp_Pnt(0, 0, 0)) < Precision::Confusion()
+          && aCurve.EvalD0(aCurve.LastParameter()).Distance(gp_Pnt(0, 0, 5))
+               < Precision::Confusion())
+      {
+        aGuide = anEdge;
+        break;
+      }
+    }
+    ASSERT_FALSE(aGuide.IsNull());
+    BRepFilletAPI_MakeFillet aFillet(aLoft.Shape());
+    aFillet.Add(0.5, aGuide);
+    ASSERT_EQ(aFillet.NbContours(), 1);
+    EXPECT_EQ(aFillet.NbEdges(1), 2);
+    aFillet.Build();
+    ASSERT_TRUE(aFillet.IsDone());
+    size_t aNbSolids = 0;
+    for (TopExp_Explorer aSolids(aFillet.Shape(), TopAbs_SOLID); aSolids.More(); aSolids.Next())
+    {
+      ++aNbSolids;
+    }
+    EXPECT_EQ(aNbSolids, 1u);
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
   }
 }

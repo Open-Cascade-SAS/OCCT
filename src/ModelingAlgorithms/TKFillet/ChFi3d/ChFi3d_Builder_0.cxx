@@ -5779,10 +5779,7 @@ int ChFi3d_NbNotDegeneratedEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEM
 // purpose  : calculate the number of sharp edges of Map VEMap(Vtx)
 // Attention the edges of junctions are taken into account twice
 //=======================================================================
-int ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx,
-                        const ChFiDS_Map&    VEMap,
-                        const ChFiDS_Map&    EFMap,
-                        const double         theAngularTolerance)
+int ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap, const ChFiDS_Map& EFMap)
 {
   NCollection_List<TopoDS_Shape>::Iterator ItE;
   int                                      nba = VEMap(Vtx).Extent();
@@ -5797,7 +5794,7 @@ int ChFi3d_NbSharpEdges(const TopoDS_Vertex& Vtx,
     {
       TopoDS_Face F1, F2;
       ChFi3d_conexfaces(cur, F1, F2, EFMap);
-      if (!F2.IsNull() && ChFi3d::IsTangentFaces(cur, F1, F2, GeomAbs_G2, theAngularTolerance))
+      if (!F2.IsNull() && ChFi3d::IsTangentFaces(cur, F1, F2, GeomAbs_G2))
       {
         nba--;
       }
@@ -5836,13 +5833,12 @@ int ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap)
 //=======================================================================
 int ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
                               const ChFiDS_Map&    VEMap,
-                              const ChFiDS_Map&    EFmap,
-                              const double         theAngularTolerance)
+                              const ChFiDS_Map&    EFmap)
 {
   int         nba;
   bool        bordlibre;
   TopoDS_Edge edgelibre1, edgelibre2;
-  nba = ChFi3d_NbSharpEdges(Vtx, VEMap, EFmap, theAngularTolerance);
+  nba = ChFi3d_NbSharpEdges(Vtx, VEMap, EFmap);
   ChFi3d_ChercheBordsLibres(VEMap, Vtx, bordlibre, edgelibre1, edgelibre2);
   if (bordlibre)
   {

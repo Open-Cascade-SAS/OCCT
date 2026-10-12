@@ -233,8 +233,7 @@ static bool BonVoisin(const gp_Pnt&                     Point,
                       double&                           XDep,
                       double&                           YDep,
                       const ChFiDS_Map&                 EFMap,
-                      const double                      tol3d,
-                      const double                      theAngularTolerance)
+                      const double                      tol3d)
 {
   bool                           bonvoisin = true;
   double                         winter;
@@ -269,7 +268,7 @@ static bool BonVoisin(const gp_Pnt&                     Point,
             //  Modified by Sergey KHROMOV - Fri Dec 21 17:12:48 2001 Begin
             // 	    bool istg =
             // 	      BRep_Tool::Continuity(ecur,ff,F) != GeomAbs_C0;
-            bool istg = ChFi3d::IsTangentFaces(ecur, ff, F, GeomAbs_G1, theAngularTolerance);
+            bool istg = ChFi3d::IsTangentFaces(ecur, ff, F);
             //  Modified by Sergey KHROMOV - Fri Dec 21 17:12:51 2001 End
             if ((!issame || (issame && isreallyclosed)) && istg)
             {
@@ -491,8 +490,7 @@ static bool IsInput(const gp_Vec& Vec, const TopoDS_Vertex& Ve, const TopoDS_Fac
 static bool IsG1(const ChFiDS_Map&  TheMap,
                  const TopoDS_Edge& E,
                  const TopoDS_Face& FRef,
-                 TopoDS_Face&       FVoi,
-                 const double       theAngularTolerance)
+                 TopoDS_Face&       FVoi)
 {
   NCollection_List<TopoDS_Shape>::Iterator It;
   // Find a neighbor of E different from FRef (general case).
@@ -503,7 +501,7 @@ static bool IsG1(const ChFiDS_Map&  TheMap,
       FVoi = TopoDS::Face(It.Value());
       //  Modified by Sergey KHROMOV - Fri Dec 21 17:09:32 2001 Begin
       //    if (BRep_Tool::Continuity(E,FRef,FVoi) != GeomAbs_C0) {
-      if (ChFi3d::IsTangentFaces(E, FRef, FVoi, GeomAbs_G1, theAngularTolerance))
+      if (ChFi3d::IsTangentFaces(E, FRef, FVoi))
       {
         //  Modified by Sergey KHROMOV - Fri Dec 21 17:09:33 2001 End
         return true;
@@ -531,7 +529,7 @@ static bool IsG1(const ChFiDS_Map&  TheMap,
         FVoi = FRef;
         //  Modified by Sergey KHROMOV - Fri Dec 21 17:15:12 2001 Begin
         //  if (BRep_Tool::Continuity(E,FRef,FRef) >= GeomAbs_G1)
-        return ChFi3d::IsTangentFaces(E, FRef, FRef, GeomAbs_G1, theAngularTolerance);
+        return ChFi3d::IsTangentFaces(E, FRef, FRef);
       }
     }
   }
@@ -551,8 +549,7 @@ static int SearchFaceOnV(const ChFiDS_CommonPoint& Pc,
                          const ChFiDS_Map&         VEMap,
                          const ChFiDS_Map&         EFMap,
                          TopoDS_Face&              F1,
-                         TopoDS_Face&              F2,
-                         const double              theAngularTolerance)
+                         TopoDS_Face&              F2)
 {
   // it is checked that it leaves the current face.
   bool FindFace = IsInput(Pc.Vector(), Pc.Vertex(), FRef);
@@ -584,7 +581,7 @@ static int SearchFaceOnV(const ChFiDS_CommonPoint& Pc,
     }
     if (Trouve)
     {
-      Trouve = IsG1(EFMap, E, FRef, FVoi, theAngularTolerance);
+      Trouve = IsG1(EFMap, E, FRef, FVoi);
     }
     if (Trouve)
     {
@@ -1086,13 +1083,11 @@ void ChFi3d_Builder::StartSol(const occ::handle<ChFiDS_Stripe>&      Stripe,
       {
         if (Pos1 != TopAbs_IN)
         {
-          bonvoisin =
-            BonVoisin(P, HS1, f1, plane, cured, SolDep(1), SolDep(2), myEFMap, tolapp3d, angular);
+          bonvoisin = BonVoisin(P, HS1, f1, plane, cured, SolDep(1), SolDep(2), myEFMap, tolapp3d);
         }
         if (Pos2 != TopAbs_IN && bonvoisin)
         {
-          bonvoisin =
-            BonVoisin(P, HS2, f2, plane, cured, SolDep(3), SolDep(4), myEFMap, tolapp3d, angular);
+          bonvoisin = BonVoisin(P, HS2, f2, plane, cured, SolDep(3), SolDep(4), myEFMap, tolapp3d);
         }
         if (bonvoisin)
         {
@@ -1273,7 +1268,7 @@ bool ChFi3d_Builder::StartSol(
         {
           if (ex2.Current().IsSame(VCP))
           {
-            if (IsG1(myEFMap, cured, Fref, Fv, angular))
+            if (IsG1(myEFMap, cured, Fref, Fv))
             {
               edgereg = cured;
               facereg = Fv;
@@ -1336,7 +1331,7 @@ bool ChFi3d_Builder::StartSol(
             {
               if (ex2.Current().IsSame(VCP))
               {
-                if (!IsG1(myEFMap, cured, Fref, Fv, angular))
+                if (!IsG1(myEFMap, cured, Fref, Fv))
                 {
                   newedge = cured;
                 }
@@ -1352,7 +1347,7 @@ bool ChFi3d_Builder::StartSol(
     {
       throw Standard_Failure("StartSol : chain is not possible, new obstacle not found");
     }
-    if (IsG1(myEFMap, newedge, Fref, Fv, angular))
+    if (IsG1(myEFMap, newedge, Fref, Fv))
     {
       throw Standard_Failure("StartSol : chain is not possible, config non processed");
     }
@@ -1459,7 +1454,7 @@ bool ChFi3d_Builder::StartSol(
         // One goes directly by the Vertex
         // And it is checked that there are no other candidates
         TopoDS_Face aux;
-        const int   Nb = SearchFaceOnV(aCommonPoint, F, myVEMap, myEFMap, Fv, aux, angular);
+        const int   Nb = SearchFaceOnV(aCommonPoint, F, myVEMap, myEFMap, Fv, aux);
 
         pons = BRep_Tool::Parameters(aCommonPoint.Vertex(), Fv);
         HS->Initialize(Fv);
@@ -1626,7 +1621,7 @@ bool ChFi3d_Builder::SearchFace(const occ::handle<ChFiDS_Spine>& Spine,
     { // General processing
       TopoDS_Face Fbis;
       int         nb_faces;
-      nb_faces = SearchFaceOnV(Pc, FRef, myVEMap, myEFMap, FVoi, Fbis, angular);
+      nb_faces = SearchFaceOnV(Pc, FRef, myVEMap, myEFMap, FVoi, Fbis);
       return (nb_faces > 0);
     }
     else
@@ -1668,7 +1663,7 @@ bool ChFi3d_Builder::SearchFace(const occ::handle<ChFiDS_Spine>& Spine,
         }
         if (Trouve)
         {
-          FindFace = IsG1(myEFMap, E, FRef, FVoi, angular);
+          FindFace = IsG1(myEFMap, E, FRef, FVoi);
         }
         if (FindFace)
         {
@@ -1708,7 +1703,7 @@ bool ChFi3d_Builder::SearchFace(const occ::handle<ChFiDS_Spine>& Spine,
   }
   else
   {
-    return IsG1(myEFMap, Pc.Arc(), FRef, FVoi, angular);
+    return IsG1(myEFMap, Pc.Arc(), FRef, FVoi);
   }
   return false;
 }

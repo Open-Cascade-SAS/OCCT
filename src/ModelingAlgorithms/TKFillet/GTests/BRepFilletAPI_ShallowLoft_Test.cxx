@@ -20,6 +20,7 @@
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRep_Tool.hxx>
 #include <ChFi3d.hxx>
+#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -112,7 +113,8 @@ TEST_P(BRepFilletAPI_ShallowLoft, Fillet)
       const TopoDS_Face aSecond = TopoDS::Face(aFaces.Last());
       ASSERT_EQ(BRepAdaptor_Surface(aFirst).GetType(), GeomAbs_BSplineSurface);
       ASSERT_EQ(BRepAdaptor_Surface(aSecond).GetType(), GeomAbs_BSplineSurface);
-      EXPECT_FALSE(ChFi3d::IsTangentFaces(anEdge, aFirst, aSecond));
+      EXPECT_FALSE(
+        ChFi3d::IsTangentFaces(anEdge, aFirst, aSecond, GeomAbs_G1, Precision::Angular()));
       EXPECT_TRUE(ChFi3d::IsTangentFaces(anEdge, aFirst, aSecond, GeomAbs_G1, 0.1));
       BRepFilletAPI_MakeFillet aFillet(aShape);
       aFillet.Add(aRadius, anEdge);
@@ -193,7 +195,7 @@ TEST(BRepFilletAPI_ShallowLoftTest, GeneratedSmoothBoundariesAreNotNewContours)
         continue;
       }
       ++aRegularCount;
-      if (!ChFi3d::IsTangentFaces(anEdge, aFirst, aSecond))
+      if (!ChFi3d::IsTangentFaces(anEdge, aFirst, aSecond, GeomAbs_G1, Precision::Angular()))
       {
         ++anApproximateCount;
       }

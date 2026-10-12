@@ -117,7 +117,7 @@ public:
   //! @return corresponding step in the pcurve parameter
   Standard_EXPORT double Resolution(const double R3d) const override;
 
-  //! Resolves a spatial tolerance for a pcurve on a surface without constructing an adaptor.
+  //! Returns the pcurve resolution without constructing an adaptor.
   //! Isoparametric lines use the resolution of their varying surface coordinate.
   //! @param[in] theCurve pcurve to resolve
   //! @param[in] theSurface supporting surface

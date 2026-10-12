@@ -223,9 +223,8 @@ public:
   //! Checks all pcurves using the selected deviation method.
   //! @param[in] theEdge edge to check
   //! @param[out] theMaxdev maximum deviation in model units
-  //! @param[in] theNbControl number of sample points for the finite-point method
-  //! @param[in] theExact selects GeomLib_CheckCurveOnSurface for SameParameter edges;
-  //! otherwise the finite-point method is used
+  //! @param[in] theNbControl sample count for the sampled method
+  //! @param[in] theExact use GeomLib_CheckCurveOnSurface for SameParameter edges, else sample
   //! @return true if the edge tolerance is exceeded or SameParameter is unset;
   //! Check Status() for failures
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& theEdge,
@@ -237,9 +236,8 @@ public:
   //! @param[in] theEdge edge to check
   //! @param[in] theFace face to check; a null face selects all pcurves
   //! @param[out] theMaxdev maximum deviation in model units
-  //! @param[in] theNbControl number of sample points for the finite-point method
-  //! @param[in] theExact selects GeomLib_CheckCurveOnSurface for SameParameter edges;
-  //! otherwise the finite-point method is used
+  //! @param[in] theNbControl sample count for the sampled method
+  //! @param[in] theExact use GeomLib_CheckCurveOnSurface for SameParameter edges, else sample
   //! @return true if the edge tolerance is exceeded or SameParameter is unset;
   //! Check Status() for failures
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& theEdge,

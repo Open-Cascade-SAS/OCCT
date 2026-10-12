@@ -109,104 +109,85 @@ public:
                                                   const double Maxlen  = 10000);
 
   //! Computes local continuity from surface properties.
-  //! @param[in,out] Surf1 first surface properties; derivatives are evaluated as needed
-  //! @param[in,out] Surf2 second surface properties; derivatives are evaluated as needed
+  //! @param[in,out] Surf1 first surface properties
+  //! @param[in,out] Surf2 second surface properties
   //! @param[in] Order requested continuity: C0, C1, C2, G1 or G2
   Standard_EXPORT void ComputeAnalysis(GeomLProp_SLProps&  Surf1,
                                        GeomLProp_SLProps&  Surf2,
                                        const GeomAbs_Shape Order);
 
-  //! Reports whether the analysis completed.
-  //! @return true if the requested quantities were computed
+  //! @return true if analysis is done
   Standard_EXPORT bool IsDone() const;
 
-  //! Returns the analyzed continuity order.
   //! @return continuity order supplied to the analysis
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT GeomAbs_Shape ContinuityStatus() const;
 
-  //! Returns the analysis error status.
   //! @return failure reason, or LocalAnalysis_NoError after success
   Standard_EXPORT LocalAnalysis_StatusErrorType StatusError() const;
 
-  //! Returns the positional gap.
   //! @return distance between the analyzed points in model units
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C0Value() const;
 
-  //! Returns the C1 derivative angle in U.
-  //! @return derivative angle in radians
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C1 derivative angle in U, in radians
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C1UAngle() const;
 
-  //! Returns the C1 derivative magnitude ratio in U.
-  //! @return derivative magnitude ratio used by the continuity test
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C1 derivative magnitude ratio in U
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C1URatio() const;
 
-  //! Returns the C1 derivative angle in V.
-  //! @return derivative angle in radians
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C1 derivative angle in V, in radians
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C1VAngle() const;
 
-  //! Returns the C1 derivative magnitude ratio in V.
-  //! @return derivative magnitude ratio used by the continuity test
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C1 derivative magnitude ratio in V
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C1VRatio() const;
 
-  //! Returns the C2 derivative angle in U.
-  //! @return derivative angle in radians
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C2 derivative angle in U, in radians
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C2UAngle() const;
 
-  //! Returns the C2 derivative magnitude ratio in U.
-  //! @return derivative magnitude ratio used by the continuity test
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C2 derivative magnitude ratio in U
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C2URatio() const;
 
-  //! Returns the C2 derivative angle in V.
-  //! @return derivative angle in radians
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C2 derivative angle in V, in radians
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C2VAngle() const;
 
-  //! Returns the C2 derivative magnitude ratio in V.
-  //! @return derivative magnitude ratio used by the continuity test
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return C2 derivative magnitude ratio in V
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double C2VRatio() const;
 
-  //! Returns the angle between surface normals.
   //! @return normal angle in radians
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double G1Angle() const;
 
-  //! Returns the normal-curvature gap in aligned tangent planes.
-  //! @return maximum absolute normal-curvature difference
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return maximum absolute normal-curvature difference in aligned tangent planes
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT double G2CurvatureGap() const;
 
-  //! Tests C0 continuity.
-  //! @return true if the computed quantities satisfy the C0 tolerances
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return true if the result satisfies the C0 tolerances
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT bool IsC0() const;
 
-  //! Tests C1 continuity.
-  //! @return true if the computed quantities satisfy the C1 tolerances
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return true if the result satisfies the C1 tolerances
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT bool IsC1() const;
 
-  //! Tests C2 continuity.
-  //! @return true if the computed quantities satisfy the C2 tolerances
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return true if the result satisfies the C2 tolerances
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT bool IsC2() const;
 
-  //! Tests G1 continuity.
-  //! @return true if the computed quantities satisfy the G1 tolerances
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return true if the result satisfies the G1 tolerances
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT bool IsG1() const;
 
-  //! Tests G2 continuity.
-  //! @return true if the computed quantities satisfy the G2 tolerances
-  //! @throw StdFail_NotDone if the analysis has not completed
+  //! @return true if the result satisfies the G2 tolerances
+  //! @throw StdFail_NotDone if analysis is not done
   Standard_EXPORT bool IsG2() const;
 
 private:

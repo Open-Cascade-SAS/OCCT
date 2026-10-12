@@ -30,9 +30,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
-//! Provides section data for surface approximation through the profiler curves.
-//! Section parameters are copied and indexed from one; section evaluation supplies
-//! poles, weights and endpoint derivatives to the AppSurf approximation algorithm.
+//! Supplies profiler sections and endpoint derivatives for AppSurf approximation.
 class GeomFill_SectionGenerator : public GeomFill_Profiler
 {
 public:
@@ -42,9 +40,9 @@ public:
   Standard_EXPORT GeomFill_SectionGenerator();
 
   //! Copies section parameters into independent one-based storage.
-  //! @param Params nonempty array of finite, strictly increasing parameters
+  //! @param[in] Params nonempty array of finite, strictly increasing parameters
   //! @throws Standard_NullObject if Params is null
-  //! @throws Standard_ConstructionError if values are invalid; stored parameters remain unchanged
+  //! @throws Standard_ConstructionError for invalid values; parameters remain unchanged
   Standard_EXPORT void SetParam(const occ::handle<NCollection_HArray1<double>>& Params);
 
   //! Returns the pole counts, knot count and degree of the section curves.
