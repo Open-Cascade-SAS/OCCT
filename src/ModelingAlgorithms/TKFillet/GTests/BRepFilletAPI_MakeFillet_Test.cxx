@@ -20,6 +20,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
@@ -56,6 +57,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -816,5 +818,57 @@ TEST(BRepFilletAPI_MakeFilletTest, ConeCornerIsInvariantUnderRotation)
     {
       EXPECT_NEAR(aProperties.Mass(), aReferenceArea, 1.e-3);
     }
+  }
+}
+
+//==================================================================================================
+
+TEST(BRepFilletAPI_MakeFilletTest, CollapsedFreeBoundarySectionSharesEndpoint)
+{
+  for (const double aShift : {0.0, -0.0005, 0.0005})
+  {
+    const TopoDS_Edge anArc =
+      BRepBuilderAPI_MakeEdge(gp_Circ(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 500), 0, M_PI);
+    const TopoDS_Edge aChord =
+      BRepBuilderAPI_MakeEdge(TopExp::LastVertex(anArc), TopExp::FirstVertex(anArc));
+    const TopoDS_Wire     aWire = BRepBuilderAPI_MakeWire(anArc, aChord);
+    const TopoDS_Face     aBase = BRepBuilderAPI_MakeFace(aWire);
+    BRepPrimAPI_MakePrism anUpper(aBase, gp_Vec(aShift, 100, 200));
+    BRepPrimAPI_MakePrism aLower(aBase, gp_Vec(0, 0, -300));
+    ASSERT_TRUE(anUpper.IsDone());
+    ASSERT_TRUE(aLower.IsDone());
+    ASSERT_EQ(anUpper.Generated(anArc).Size(), 1u);
+    ASSERT_EQ(aLower.Generated(anArc).Size(), 1u);
+    BRepBuilderAPI_Sewing aSewing;
+    aSewing.Add(anUpper.Generated(anArc).First());
+    aSewing.Add(aLower.Generated(anArc).First());
+    aSewing.Perform();
+    const TopoDS_Shape aShell = aSewing.SewedShape();
+    ASSERT_FALSE(aShell.IsNull());
+    ASSERT_TRUE(BRepCheck_Analyzer(aShell).IsValid());
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      anEdgeFaces;
+    TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, anEdgeFaces);
+    TopoDS_Edge aSharedEdge;
+    for (int anEdgeIndex = 1; anEdgeIndex <= anEdgeFaces.Extent(); ++anEdgeIndex)
+    {
+      if (anEdgeFaces(anEdgeIndex).Size() == 2)
+      {
+        aSharedEdge = TopoDS::Edge(anEdgeFaces.FindKey(anEdgeIndex));
+        break;
+      }
+    }
+    ASSERT_FALSE(aSharedEdge.IsNull());
+    BRepFilletAPI_MakeFillet aFillet(aShell);
+    aFillet.SetParams(0.01, 1.e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
+    aFillet.Add(75, aSharedEdge);
+    aFillet.Build();
+    ASSERT_TRUE(aFillet.IsDone()) << aShift;
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid()) << aShift;
+    GProp_GProps aProperties;
+    BRepGProp::SurfaceProperties(aFillet.Shape(), aProperties);
+    EXPECT_NEAR(aProperties.Mass(), 803799.0, 803799.0 * 1.e-4) << aShift;
   }
 }

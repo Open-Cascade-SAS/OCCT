@@ -21,7 +21,7 @@
 #include <math_Matrix.hxx>
 #include <Precision.hxx>
 
-#include <algorithm>
+#include <Adaptor3d_CurveOnSurface.hxx>
 
 #define Eps 1.e-15
 
@@ -84,10 +84,8 @@ int BlendFunc_EvolRadInv::NbEquations() const
 
 void BlendFunc_EvolRadInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
-  // Convert the spatial tolerance to UV before resolving the restriction pcurve.
   const occ::handle<Adaptor3d_Surface>& aSurface = first ? surf1 : surf2;
-  Tolerance(1) =
-    csurf->Resolution(std::min(aSurface->UResolution(Tol), aSurface->VResolution(Tol)));
+  Tolerance(1) = Adaptor3d_CurveOnSurface::Resolution(*csurf, *aSurface, Tol);
   Tolerance(2) = curv->Resolution(Tol);
   if (first)
   {

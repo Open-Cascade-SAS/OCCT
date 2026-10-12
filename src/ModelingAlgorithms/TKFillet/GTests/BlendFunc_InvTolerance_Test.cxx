@@ -11,7 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <NCollection_Array2.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <math_Vector.hxx>
+#include <Blend_FuncInv.hxx>
 #include <BlendFunc_ConstRadInv.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <gp_Ax3.hxx>
 #include <BlendFunc_EvolRadInv.hxx>
 #include <BlendFunc_ChamfInv.hxx>
 #include <BlendFunc_ChAsymInv.hxx>
@@ -23,6 +32,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Law_Constant.hxx>
 #include <gtest/gtest.h>
+#include <cmath>
 
 namespace
 {
@@ -66,6 +76,10 @@ TEST(BlendFunc_InvTolerance, RestrictionUsesSpatialUnits)
         math_Vector aTolerance(1, 4);
         aFunction->GetTolerance(aTolerance, aSpatialTolerance);
         ASSERT_GT(aTolerance(1), 0.0);
+        const double anExpectedTolerance = aRestriction->Resolution(
+          aDirection.X() == 0.0 ? aSurface->VResolution(aSpatialTolerance)
+                                : aSurface->UResolution(aSpatialTolerance));
+        EXPECT_DOUBLE_EQ(aTolerance(1), anExpectedTolerance);
         const gp_Pnt2d aUV1 = aRestriction->EvalD0(0.5);
         const gp_Pnt2d aUV2 = aRestriction->EvalD0(0.5 + aTolerance(1));
         const double   aDistance =
@@ -73,5 +87,27 @@ TEST(BlendFunc_InvTolerance, RestrictionUsesSpatialUnits)
         EXPECT_LE(aDistance, aSpatialTolerance * (1.0 + 1.e-7));
       }
     }
+  }
+}
+
+//==================================================================================================
+
+TEST(Adaptor3d_CurveOnSurfaceTest, IsoparametricResolutionUsesVaryingCoordinate)
+{
+  constexpr double                     aRadius    = 500.0;
+  constexpr double                     aTolerance = 1.e-5;
+  const occ::handle<Adaptor3d_Surface> aSurface =
+    new GeomAdaptor_Surface(new Geom_CylindricalSurface(gp_Ax3(), aRadius));
+  for (const gp_Dir2d& aDirection :
+       {gp_Dir2d(1, 0), gp_Dir2d(-1, 0), gp_Dir2d(0, 1), gp_Dir2d(0, -1)})
+  {
+    const occ::handle<Adaptor2d_Curve2d> aPCurve =
+      new Geom2dAdaptor_Curve(new Geom2d_Line(gp_Pnt2d(0, 0), aDirection));
+    const Adaptor3d_CurveOnSurface aCurve(aPCurve, aSurface);
+    const double                   aStep = aCurve.Resolution(aTolerance);
+    const double                   anExpectedStep =
+      aDirection.X() == 0.0 ? aTolerance : 2.0 * std::asin(aTolerance / (2.0 * aRadius));
+    EXPECT_NEAR(aStep, anExpectedStep, 1.e-15);
+    EXPECT_NEAR(aCurve.EvalD0(0).Distance(aCurve.EvalD0(aStep)), aTolerance, 1.e-12);
   }
 }

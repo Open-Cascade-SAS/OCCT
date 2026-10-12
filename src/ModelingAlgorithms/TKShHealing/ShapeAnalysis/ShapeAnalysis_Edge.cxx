@@ -706,6 +706,28 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
                                             double&            maxdev,
                                             const int          NbControl)
 {
+  return CheckSameParameter(edge, face, maxdev, NbControl, false);
+}
+
+//==================================================================================================
+
+bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
+                                            double&            maxdev,
+                                            const int          NbControl,
+                                            const bool         theExact)
+{
+  const TopoDS_Face anEmptyFace;
+  return CheckSameParameter(edge, anEmptyFace, maxdev, NbControl, theExact);
+}
+
+//==================================================================================================
+
+bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
+                                            const TopoDS_Face& face,
+                                            double&            maxdev,
+                                            const int          NbControl,
+                                            const bool         theExact)
+{
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (BRep_Tool::Degenerated(edge))
   {
@@ -789,8 +811,7 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
     occ::handle<Adaptor3d_CurveOnSurface> ACS = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
 
     BRepLib_ValidateEdge aValidateEdge(aGAC, ACS, SameParameter);
-    // Uniform checks can coincide with pcurve interpolation points and miss the deviation.
-    aValidateEdge.SetExactMethod(SameParameter);
+    aValidateEdge.SetExactMethod(theExact && SameParameter);
     aValidateEdge.SetControlPointsNumber(NbControl - 1);
     aValidateEdge.Process();
     aValidateEdge.UpdateTolerance(maxdev);
@@ -817,7 +838,7 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
       occ::handle<Adaptor3d_CurveOnSurface> ACS = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
 
       BRepLib_ValidateEdge aValidateEdgeOnPlane(aGAC, ACS, SameParameter);
-      aValidateEdgeOnPlane.SetExactMethod(SameParameter);
+      aValidateEdgeOnPlane.SetExactMethod(theExact && SameParameter);
       aValidateEdgeOnPlane.SetControlPointsNumber(NbControl - 1);
       aValidateEdgeOnPlane.Process();
       aValidateEdgeOnPlane.UpdateTolerance(maxdev);

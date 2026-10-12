@@ -11,10 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TopLoc_Location.hxx>
+#include <ShapeExtend_Status.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <gp_Dir2d.hxx>
 #include <Geom_Plane.hxx>
 #include <NCollection_Array1.hxx>
 #include <ShapeFix_Edge.hxx>
@@ -132,13 +136,32 @@ TEST(ShapeAnalysis_EdgeTest, SameParameterDeviationBetweenControlPoints)
 
     ShapeAnalysis_Edge anAnalysis;
     double             aMaxDeviation = 0.0;
-    EXPECT_TRUE(anAnalysis.CheckSameParameter(anEdge, aMaxDeviation, aNbControl));
+    EXPECT_FALSE(anAnalysis.CheckSameParameter(anEdge, aMaxDeviation, aNbControl));
+    EXPECT_LT(aMaxDeviation, Precision::Confusion());
+    EXPECT_TRUE(anAnalysis.CheckSameParameter(anEdge, aMaxDeviation, aNbControl, true));
     EXPECT_TRUE(anAnalysis.Status(ShapeExtend_DONE1));
     EXPECT_NEAR(aMaxDeviation, aDeviation, aDeviation * 2.e-5);
-
-    ShapeFix_Edge aFixer;
-    EXPECT_TRUE(aFixer.FixSameParameter(anEdge));
-    EXPECT_GE(BRep_Tool::Tolerance(anEdge), aDeviation);
-    EXPECT_NEAR(BRep_Tool::Tolerance(anEdge), aDeviation, aDeviation * 2.e-5);
   }
+}
+
+//==================================================================================================
+
+TEST(ShapeAnalysis_EdgeTest, SameParameterRepairPreservesToleranceStatus)
+{
+  constexpr double              aDeviation = 0.01;
+  TopoDS_Edge                   anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+  const occ::handle<Geom_Plane> aSurface = new Geom_Plane(gp_Pln(gp::XOY()));
+  const occ::handle<Geom2d_Curve> aPCurve =
+    new Geom2d_Line(gp_Pnt2d(0, aDeviation), gp_Dir2d(1, 0));
+  BRep_Builder aBuilder;
+  aBuilder.UpdateEdge(anEdge, aPCurve, aSurface, TopLoc_Location(), Precision::Confusion());
+  aBuilder.Range(anEdge, aSurface, TopLoc_Location(), 0.0, 1.0);
+  aBuilder.SameRange(anEdge, true);
+  aBuilder.SameParameter(anEdge, true);
+
+  ShapeFix_Edge aFixer;
+  EXPECT_TRUE(aFixer.FixSameParameter(anEdge));
+  EXPECT_TRUE(aFixer.Status(ShapeExtend_DONE1));
+  EXPECT_GE(BRep_Tool::Tolerance(anEdge), aDeviation);
+  EXPECT_NEAR(BRep_Tool::Tolerance(anEdge), aDeviation, aDeviation * 2.e-5);
 }

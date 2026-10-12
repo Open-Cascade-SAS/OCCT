@@ -1236,11 +1236,7 @@ reapprox:;
         bool anApprox2 = myApprox2;
         //
         aTolApproxImp = 1.e-5;
-        // Surface parameters and model-space distances have different units.
-        tol2d = std::min({myHS1->UResolution(myTolApprox),
-                          myHS1->VResolution(myTolApprox),
-                          myHS2->UResolution(myTolApprox),
-                          myHS2->VResolution(myTolApprox)});
+        tol2d         = myTolApprox;
 
         GeomAbs_SurfaceType typs1, typs2;
         typs1         = myHS1->GetType();

@@ -15,11 +15,18 @@
 #include <array>
 #include <NCollection_Map.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_List.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BOPDS_DS.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPDS_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <IntTools_Context.hxx>
+#include <IntTools_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pln.hxx>
@@ -522,4 +529,72 @@ TEST(BOPTools_AlgoToolsTest, ExistingIndexedBoundsClassifier)
                                              anIndexedBounds,
                                              aContext),
             TopAbs_IN);
+}
+
+namespace
+{
+class BOPAlgo_TestSectionPaves : public BOPAlgo_PaveFiller
+{
+public:
+  BOPAlgo_TestSectionPaves(const TopoDS_Vertex& theVertex);
+
+  // Returns the section split count for one source or generated candidate vertex.
+  size_t SplitCount(const bool theCommon, const bool theGenerated);
+};
+
+//==================================================================================================
+
+BOPAlgo_TestSectionPaves::BOPAlgo_TestSectionPaves(const TopoDS_Vertex& theVertex)
+{
+  NCollection_List<TopoDS_Shape> anArguments;
+  anArguments.Append(theVertex);
+  myDS = new BOPDS_DS;
+  myDS->SetArguments(anArguments);
+  myDS->Init();
+  myContext = new IntTools_Context;
+}
+
+//==================================================================================================
+
+size_t BOPAlgo_TestSectionPaves::SplitCount(const bool theCommon, const bool theGenerated)
+{
+  int aVertexIndex = 0;
+  if (theGenerated)
+  {
+    const BOPDS_ShapeInfo aVertexInfo = myDS->ShapeInfo(aVertexIndex);
+    aVertexIndex                      = myDS->Append(aVertexInfo);
+  }
+  NCollection_Map<int> aCandidates, aCommon, anEmpty;
+  aCandidates.Add(aVertexIndex);
+  if (theCommon)
+  {
+    aCommon.Add(aVertexIndex);
+  }
+  IntTools_Curve aSection;
+  aSection.SetCurve(new Geom_TrimmedCurve(new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 0, 1));
+  BOPDS_Curve aCurve;
+  aCurve.SetCurve(aSection);
+  aCurve.SetTolerance(2.e-5);
+  aCurve.ChangeBox().Update(-2.e-5, 0, -2.e-5, 2.e-5, 1, 2.e-5);
+  aCurve.InitPaveBlock1();
+  NCollection_DataMap<int, double>                aTolerances;
+  NCollection_DataMap<int, NCollection_List<int>> aVertices;
+  PutPavesOnCurve(aCandidates, aCommon, aCurve, anEmpty, anEmpty, aTolerances, aVertices);
+  return aCurve.PaveBlocks().First()->ExtPaves().Size();
+}
+} // namespace
+
+//==================================================================================================
+
+TEST_F(BOPAlgo_PaveFillerTest, SectionSplitsRequireCommonSourceVertices)
+{
+  for (const bool isCommon : {false, true})
+  {
+    for (const bool isGenerated : {false, true})
+    {
+      const TopoDS_Vertex      aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(1.e-5, 0.5, 0));
+      BOPAlgo_TestSectionPaves aFiller(aVertex);
+      EXPECT_EQ(aFiller.SplitCount(isCommon, isGenerated), isCommon || isGenerated ? 1u : 0u);
+    }
+  }
 }
