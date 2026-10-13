@@ -1139,7 +1139,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
           continue;
         }
         anIntersector.Perform(aCorkPCurve, anOtherPCurve, tol2d, Precision::PConfusion());
-        if (ChFi3d_HasTransversalIntersection(anIntersector))
+        if (ChFi3d_HasTransversalIntersection(anIntersector, aCorkPCurve, anOtherPCurve, tol2d))
         {
           throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
         }
@@ -1185,7 +1185,7 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
                                         anOtherCur->FirstParameter(),
                                         anOtherCur->LastParameter());
       anIntersector.Perform(aCorkPCurve, anOtherPCurve, tol2d, Precision::PConfusion());
-      if (ChFi3d_HasTransversalIntersection(anIntersector))
+      if (ChFi3d_HasTransversalIntersection(anIntersector, aCorkPCurve, anOtherPCurve, tol2d))
       {
         throw StdFail_NotDone("OneCorner : fillets have too big radiuses");
       }
