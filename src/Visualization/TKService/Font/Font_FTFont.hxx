@@ -337,7 +337,6 @@ public:
   //! @return true on success
   Standard_DEPRECATED("Deprecated method, Font_FTFont::Params should be used for passing "
                       "parameters")
-
   bool Init(const NCollection_String& theFontPath, uint32_t thePointSize, uint32_t theResolution)
   {
     Params aParams;
@@ -354,7 +353,6 @@ public:
   //! @return true on success
   Standard_DEPRECATED("Deprecated method, Font_FTFont::Params should be used for passing "
                       "parameters")
-
   bool Init(const NCollection_String& theFontName,
             Font_FontAspect           theFontAspect,
             uint32_t                  thePointSize,
