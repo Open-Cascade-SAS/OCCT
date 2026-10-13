@@ -93,15 +93,21 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 TEST(Resource_UnicodeTest, ConvertFormatToUnicode_InvalidLocale_ReportsFailure)
 {
   LocaleGuard aLocale;
-  ASSERT_NE(std::setlocale(LC_CTYPE, "C"), nullptr);
+  ASSERT_TRUE(aLocale.SetUtf8()) << "A UTF-8 locale is required for malformed-input checks";
   TCollection_ExtendedString aResult(u"unchanged");
 
-  EXPECT_THROW(
-    Resource_Unicode::ConvertFormatToUnicode(Resource_FormatType_SystemLocale, "\xFF", aResult),
-    Standard_DomainError);
-  EXPECT_EQ(aResult, TCollection_ExtendedString(u"unchanged"));
+  const std::array<const char*, 3> anInvalidInputs = {"\xFF", "\xE2\x82", "A\xFF"};
+  for (const char* anInput : anInvalidInputs)
+  {
+    EXPECT_THROW(
+      Resource_Unicode::ConvertFormatToUnicode(Resource_FormatType_SystemLocale, anInput, aResult),
+      Standard_DomainError);
+    EXPECT_EQ(aResult, TCollection_ExtendedString(u"unchanged"));
+  }
   Resource_Unicode::ConvertFormatToUnicode(Resource_FormatType_SystemLocale, "ASCII", aResult);
   EXPECT_EQ(aResult, TCollection_ExtendedString(u"ASCII"));
+  Resource_Unicode::ConvertFormatToUnicode(Resource_FormatType_SystemLocale, "\xC3\xBF", aResult);
+  EXPECT_EQ(aResult, TCollection_ExtendedString(u"\u00FF"));
 }
 #endif
 
@@ -734,6 +740,7 @@ TEST(TCollection_UtfStringTest, LegacyLocaleArguments_PreserveLimitsAndFailureCl
   ASSERT_TRUE(aString.ToLocale(aOutput.data(), 4));
   EXPECT_STREQ(aOutput.data(), "abc");
 #if !defined(_WIN32) && !defined(__ANDROID__)
+  ASSERT_TRUE(aGuard.SetUtf8()) << "A UTF-8 locale is required for malformed-input checks";
   const char aBad[] = {char(0xFF), 0};
   aString.FromLocale(aBad);
   EXPECT_TRUE(aString.IsEmpty());
