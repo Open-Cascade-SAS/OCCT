@@ -925,7 +925,10 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
     B.UpdateEdge(edge, maxdev);
+    // Keep the SameParameter result; the vertex check has its own status codes.
+    const int aStatus = myStatus;
     FixVertexTolerance(edge);
+    myStatus = aStatus;
   }
 
   if (!wasSP && !SP)

@@ -259,6 +259,11 @@ occ::handle<Geom2d_Curve> GeomPlate_BuildPlateSurface::ProjectCurve(
   occ::handle<ProjLib_HCompProjectedCurve> HProjector =
     new ProjLib_HCompProjectedCurve(hsur, Curv, myTol3d / 10, myTol3d / 10);
 
+  if (HProjector->NbCurves() == 0)
+  {
+    return Curve2d;
+  }
+
   double UdebCheck, UfinCheck, ProjUdeb, ProjUfin;
   UdebCheck = Curv->FirstParameter();
   UfinCheck = Curv->LastParameter();
@@ -384,6 +389,9 @@ gp_Pnt2d GeomPlate_BuildPlateSurface::ProjectPoint(const gp_Pnt& p3d)
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::Init()
 {
+  myG0Error = 0.0;
+  myG1Error = 0.0;
+  myG2Error = 0.0;
   myLinCont->Clear();
   myPntCont->Clear();
   myPntCont = new NCollection_HSequence<occ::handle<GeomPlate_PointConstraint>>;
@@ -435,6 +443,9 @@ void GeomPlate_BuildPlateSurface::Add(const occ::handle<GeomPlate_PointConstrain
 void GeomPlate_BuildPlateSurface::Perform(const Message_ProgressRange& theProgress)
 {
   myGeomPlateSurface.Nullify();
+  myG0Error = 0.0;
+  myG1Error = 0.0;
+  myG2Error = 0.0;
 
 #ifdef OCCT_DEBUG
   // Timing

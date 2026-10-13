@@ -18,7 +18,6 @@
 #include <gp.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
-#include <type_traits>
 #include <cmath>
 
 class gp_Pnt;
@@ -118,26 +117,17 @@ public:
             && std::abs(aV1.Angle(aV2)) <= myAngular)
         {
           const double aLambda = std::sqrt(aD2 / aD1);
-          if constexpr (std::is_same_v<PointType, gp_Pnt>)
-          {
-            // 3D-specific epsilon guard to avoid numerical issues
-            // when accumulated knot values become too small relative to Det.
-            if (aCurveKnVals(i - 1) * aLambda > 10. * Epsilon(aDet))
-            {
-              myKnotsMults.Append(aMaxDegree - 1);
-              aCurveKnVals(i) = aCurveKnVals(i - 1) * aLambda;
-            }
-            else
-            {
-              myCurvePoles.Append(aPoints(1));
-              myKnotsMults.Append(aMaxDegree);
-              aCurveKnVals(i) = 1.0;
-            }
-          }
-          else
+          // Keep each accumulated knot interval above floating-point resolution.
+          if (aCurveKnVals(i - 1) * aLambda > 10. * Epsilon(aDet))
           {
             myKnotsMults.Append(aMaxDegree - 1);
             aCurveKnVals(i) = aCurveKnVals(i - 1) * aLambda;
+          }
+          else
+          {
+            myCurvePoles.Append(aPoints(1));
+            myKnotsMults.Append(aMaxDegree);
+            aCurveKnVals(i) = 1.0;
           }
         }
         else

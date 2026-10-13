@@ -253,3 +253,37 @@ TEST(Convert_CompBezierCurvesToBSplineCurveTest, OppositeTangentsKeepCusp2d)
     new Geom2d_BSplineCurve(aPoles, aKnots, aMults, aConverter.Degree());
   EXPECT_DOUBLE_EQ(aCurve->EvalD0(aKnots(2)).X(), 1.0);
 }
+
+//==================================================================================================
+
+TEST(Convert_CompBezierCurves2dToBSplineCurve2dTest, ShrinkingTangentsKeepDistinctKnots)
+{
+  Convert_CompBezierCurves2dToBSplineCurve2d aConverter;
+  NCollection_Array1<gp_Pnt2d>               aSegment(1, 4);
+  aSegment(1)           = gp_Pnt2d(0, 0);
+  aSegment(4)           = gp_Pnt2d(0, 0);
+  double aTangentLength = 1.0;
+  for (int aSegmentIndex = 0; aSegmentIndex < 10; ++aSegmentIndex)
+  {
+    aSegment(2) = gp_Pnt2d(aTangentLength, 0);
+    aSegment(3) = gp_Pnt2d(-aTangentLength, 0);
+    aConverter.AddCurve(aSegment);
+    aTangentLength *= 0.01;
+  }
+  aConverter.Perform();
+
+  NCollection_Array1<gp_Pnt2d> aPoles(1, aConverter.NbPoles());
+  NCollection_Array1<double>   aKnots(1, aConverter.NbKnots());
+  NCollection_Array1<int>      aMults(1, aConverter.NbKnots());
+  aConverter.Poles(aPoles);
+  aConverter.KnotsAndMults(aKnots, aMults);
+  for (int aKnotIndex = aKnots.Lower(); aKnotIndex < aKnots.Upper(); ++aKnotIndex)
+  {
+    EXPECT_GT(aKnots(aKnotIndex + 1) - aKnots(aKnotIndex), Epsilon(aKnots(aKnotIndex)));
+  }
+  const Geom2d_BSplineCurve aCurve(aPoles, aKnots, aMults, aConverter.Degree());
+  // The first cubic has poles 0, 1, -1, 0 and value 9/32 at one quarter.
+  const gp_Pnt2d aPoint = aCurve.EvalD0(aKnots(2) * 0.25);
+  EXPECT_NEAR(aPoint.X(), 9.0 / 32.0, Epsilon(1.0));
+  EXPECT_DOUBLE_EQ(aPoint.Y(), 0.0);
+}

@@ -13,6 +13,7 @@
 
 #define No_Standard_OutOfRange
 
+#include <gp_Dir2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 
 #include <Adaptor2d_Curve2d.hxx>
@@ -1363,10 +1364,32 @@ gp_Vec Adaptor3d_CurveOnSurface::EvalDN(const double theU, const int theN) const
 
 double Adaptor3d_CurveOnSurface::Resolution(const double R3d) const
 {
-  double ru, rv;
-  ru = mySurface->UResolution(R3d);
-  rv = mySurface->VResolution(R3d);
-  return myCurve->Resolution(std::min(ru, rv));
+  return Resolution(*myCurve, *mySurface, R3d);
+}
+
+//==================================================================================================
+
+double Adaptor3d_CurveOnSurface::Resolution(const Adaptor2d_Curve2d& theCurve,
+                                            const Adaptor3d_Surface& theSurface,
+                                            const double             theTolerance)
+{
+  // An isoparametric line varies in only one surface parameter. The
+  // resolution of the constant parameter does not constrain its step.
+  if (theCurve.GetType() == GeomAbs_Line)
+  {
+    const gp_Dir2d aDirection = theCurve.Line().Direction();
+    if (aDirection.X() == 0.0)
+    {
+      return theCurve.Resolution(theSurface.VResolution(theTolerance));
+    }
+    if (aDirection.Y() == 0.0)
+    {
+      return theCurve.Resolution(theSurface.UResolution(theTolerance));
+    }
+  }
+  const double aRU = theSurface.UResolution(theTolerance);
+  const double aRV = theSurface.VResolution(theTolerance);
+  return theCurve.Resolution(std::min(aRU, aRV));
 }
 
 //=================================================================================================

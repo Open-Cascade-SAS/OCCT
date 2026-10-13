@@ -18,6 +18,8 @@
 #include <math_Matrix.hxx>
 #include <Precision.hxx>
 
+#include <Adaptor3d_CurveOnSurface.hxx>
+
 //=================================================================================================
 
 BlendFunc_GenChamfInv::BlendFunc_GenChamfInv(const occ::handle<Adaptor3d_Surface>& S1,
@@ -50,7 +52,8 @@ void BlendFunc_GenChamfInv::Set(const bool OnFirst, const occ::handle<Adaptor2d_
 
 void BlendFunc_GenChamfInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
-  Tolerance(1) = csurf->Resolution(Tol);
+  const occ::handle<Adaptor3d_Surface>& aSurface = first ? surf1 : surf2;
+  Tolerance(1) = Adaptor3d_CurveOnSurface::Resolution(*csurf, *aSurface, Tol);
   Tolerance(2) = curv->Resolution(Tol);
   if (first)
   {

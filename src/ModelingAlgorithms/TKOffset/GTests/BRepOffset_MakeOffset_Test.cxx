@@ -17,9 +17,11 @@
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffset_MakeOffset.hxx>
+#include <BRepOffset_Analyse.hxx>
 #include <BRepOffset_Error.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Trsf.hxx>
@@ -33,6 +35,7 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -41,14 +44,69 @@
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pln.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
 #include <NCollection_List.hxx>
+#include <Precision.hxx>
 
 #include <cmath>
+#include <array>
+#include <utility>
+
+TEST(BRepOffset_AnalyseTest, ConstructionContinuityOfSplineFace)
+{
+  BRepBuilderAPI_MakeFace aFirstMaker(gp_Pln(gp::XOY()), 0.0, 1.0, -1.0, 0.0);
+  ASSERT_TRUE(aFirstMaker.IsDone());
+  const TopoDS_Face                            aFirstFace = aFirstMaker.Face();
+  const std::array<std::pair<double, bool>, 3> aCases = {{{0.0, true}, {0.03, true}, {0.2, false}}};
+  for (const auto& [anAngle, aTangentExpected] : aCases)
+  {
+    NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+    for (int anIndex = 1; anIndex <= 2; ++anIndex)
+    {
+      aPoles(anIndex, 1) = gp_Pnt(anIndex - 1.0, 0.0, 0.0);
+      aPoles(anIndex, 2) = gp_Pnt(anIndex - 1.0, std::cos(anAngle), std::sin(anAngle));
+    }
+    const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles);
+    BRepBuilderAPI_MakeFace               aSecondMaker(aSurface, Precision::Confusion());
+    ASSERT_TRUE(aSecondMaker.IsDone());
+    const TopoDS_Face     aSecondFace = aSecondMaker.Face();
+    BRepBuilderAPI_Sewing aSewing(Precision::Confusion());
+    aSewing.Add(aFirstFace);
+    aSewing.Add(aSecondFace);
+    aSewing.Perform();
+    const TopoDS_Shape& aShell = aSewing.SewedShape();
+    ASSERT_FALSE(aShell.IsNull());
+    ASSERT_TRUE(BRepCheck_Analyzer(aShell).IsValid());
+
+    for (const double aClassificationAngle : {1.0e-4, 0.01})
+    {
+      BRepOffset_Analyse anAnalysis(aShell, aClassificationAngle);
+      ASSERT_TRUE(anAnalysis.IsDone());
+      int aNbSharedEdges = 0;
+      for (TopExp_Explorer anEdges(aShell, TopAbs_EDGE); anEdges.More(); anEdges.Next())
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdges.Current());
+        if (anAnalysis.Ancestors(anEdge).Size() != 2)
+        {
+          continue;
+        }
+        ++aNbSharedEdges;
+        const NCollection_List<BRepOffset_Interval>& anIntervals = anAnalysis.Type(anEdge);
+        ASSERT_EQ(anIntervals.Size(), 1);
+        EXPECT_EQ(anIntervals.First().Type() == ChFiDS_Tangential, aTangentExpected);
+      }
+      EXPECT_EQ(aNbSharedEdges, 2);
+    }
+  }
+}
 
 //=================================================================================================
 // Helper function to create a circular wire

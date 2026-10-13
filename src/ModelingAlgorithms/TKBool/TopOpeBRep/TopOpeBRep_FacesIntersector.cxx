@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <BRepTopAdaptor_TopolTool.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_LineInter.hxx>
@@ -1294,15 +1295,16 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
   for (theDomainObj->Init(); theDomainObj->More(); theDomainObj->Next())
   {
     CurArc++;
-    void* anEAddress = theDomainObj->Edge();
+    const occ::handle<BRepAdaptor_Curve2d> aBoundary =
+      occ::down_cast<BRepAdaptor_Curve2d>(theDomainObj->Value());
 
-    if (anEAddress == nullptr)
+    if (aBoundary.IsNull())
     {
       continue;
     }
 
-    TopoDS_Edge*            anE    = (TopoDS_Edge*)anEAddress;
-    occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, firstES1, lastES1);
+    const TopoDS_Edge&      anE    = aBoundary->Edge();
+    occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(anE, firstES1, lastES1);
     if (aCEdge.IsNull())
     { // e.g. degenerated edge, see OCC21770
       continue;
@@ -1403,15 +1405,16 @@ static int GetArc(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
       }
     }
 
-    void*         anEAddress = theDomainObj->Edge();
-    TopoDS_Edge*  anE        = (TopoDS_Edge*)anEAddress;
-    TopoDS_Vertex V1, V2;
-    TopExp::Vertices(*anE, V1, V2);
+    // ArcNumber was selected from a BRepAdaptor_Curve2d in the first pass.
+    const occ::handle<BRepAdaptor_Curve2d> aBoundary = occ::down_cast<BRepAdaptor_Curve2d>(arc);
+    const TopoDS_Edge&                     anE       = aBoundary->Edge();
+    TopoDS_Vertex                          V1, V2;
+    TopExp::Vertices(anE, V1, V2);
     double MaxVertexTol            = std::max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
     theVrtxTol                     = MaxVertexTol;
-    double EdgeTol                 = BRep_Tool::Tolerance(*anE);
+    double EdgeTol                 = BRep_Tool::Tolerance(anE);
     CheckTol                       = std::max(MaxVertexTol, EdgeTol);
-    occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, firstES1, lastES1);
+    occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(anE, firstES1, lastES1);
 
     // Initialize extrema projector for theSurfaceTool (used for classification checks)
     Extrema_ExtPS anExtPSTool;

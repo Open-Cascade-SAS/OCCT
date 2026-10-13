@@ -111,9 +111,21 @@ public:
   //! DN evaluation. Raises an exception on failure.
   [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(const double theU, const int theN) const final;
 
-  //! Returns the parametric resolution corresponding
-  //! to the real space resolution <R3d>.
+  //! Returns the parametric resolution corresponding to a spatial resolution.
+  //! Isoparametric lines use the resolution of their varying surface coordinate.
+  //! @param[in] R3d spatial resolution in model units
+  //! @return corresponding step in the pcurve parameter
   Standard_EXPORT double Resolution(const double R3d) const override;
+
+  //! Returns the pcurve resolution without constructing an adaptor.
+  //! Isoparametric lines use the resolution of their varying surface coordinate.
+  //! @param[in] theCurve pcurve to resolve
+  //! @param[in] theSurface supporting surface
+  //! @param[in] theTolerance spatial resolution in model units
+  //! @return corresponding step in the pcurve parameter
+  Standard_EXPORT static double Resolution(const Adaptor2d_Curve2d& theCurve,
+                                           const Adaptor3d_Surface& theSurface,
+                                           const double             theTolerance);
 
   //! Returns the type of the curve in the current
   //! interval: Line, Circle, Ellipse, Hyperbola,

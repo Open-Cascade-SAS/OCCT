@@ -2277,10 +2277,10 @@ void ChFi3d_FilBuilder::SplitSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfDa
                               50);
       if (Resol.IsDone())
       {
-        double Val, racine = Resol.Root();
-
-        Fonc.Value(Resol.Root(), Val);
-        if (Val < tolapp3d)
+        const double racine = Resol.Root();
+        // SearchSing finds a stationary squared distance, not a zero-width section.
+        // Its residual vanishes at every local minimum, including regular narrow fillets.
+        if (Courbe1->EvalD0(racine).SquareDistance(Courbe2->EvalD0(racine)) < tolapp3d * tolapp3d)
         {
           // the solution (avoiding the risks of confusion)
           if (LesVi.Length() == 0)
