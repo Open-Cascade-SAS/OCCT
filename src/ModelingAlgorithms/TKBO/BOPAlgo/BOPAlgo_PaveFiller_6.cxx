@@ -790,6 +790,21 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
       }
     }
     //
+    // Isolated vertices can split a section only when they belong to both faces.
+    // Pave block endpoints also cover edge-face intersections near the section.
+    aMVOnIn.Clear();
+    for (const int aVertexIndex : aMVCommon)
+    {
+      aMVOnIn.Add(aVertexIndex);
+    }
+    for (const auto& aPaveBlock : aMPBOnIn)
+    {
+      int aFirstVertex, aLastVertex;
+      aPaveBlock->Indices(aFirstVertex, aLastVertex);
+      aMVOnIn.Add(aFirstVertex);
+      aMVOnIn.Add(aLastVertex);
+    }
+    //
     // 2. Treat Curves
     GetStickVertices(nF1, nF2, aMVStick, aMVEF, aMI);
     //

@@ -11,6 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <array>
+#include <NCollection_Map.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_List.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPDS_FaceInfo.hxx>
+#include <BOPDS_ShapeInfo.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPTools_AlgoTools.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Dir.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <gp_Ax2.hxx>
 #include <gtest/gtest.h>
 
 #include <BRep_Builder.hxx>
@@ -349,4 +366,131 @@ TEST_F(BOPAlgo_PaveFillerTest, FuseConeWithRemovedPCurve_NullPCurveHandling)
     BRepAlgoAPI_Fuse    aFuser(aCone, aBoxMaker.Shape());
     EXPECT_TRUE(aFuser.IsDone());
   }
+}
+
+// Near-coincident cylindrical seams must give the same union in either operand order.
+TEST_F(BOPAlgo_PaveFillerTest, FuseNearCoincidentSeamsBothOrders)
+{
+  const TopoDS_Shape aCylinder1 = BRepPrimAPI_MakeCylinder(1.0, 10.0).Shape();
+  const TopoDS_Shape aCylinder2 =
+    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(1.e-5, 0.0, 5.0), gp_Dir(0.0, 0.0, 1.0)), 1.0, 10.0)
+      .Shape();
+  const double anExpectedVolume = 1.5 * GetVolume(aCylinder1);
+  double       aVolumes[2]      = {0.0, 0.0};
+  for (int anOrder = 0; anOrder < 2; ++anOrder)
+  {
+    NCollection_List<TopoDS_Shape> anArguments;
+    NCollection_List<TopoDS_Shape> aTools;
+    anArguments.Append(anOrder == 0 ? aCylinder1 : aCylinder2);
+    aTools.Append(anOrder == 0 ? aCylinder2 : aCylinder1);
+    BRepAlgoAPI_Fuse aFuse;
+    aFuse.SetArguments(anArguments);
+    aFuse.SetTools(aTools);
+    aFuse.SetNonDestructive(true);
+    aFuse.SetFuzzyValue(1.e-4);
+    aFuse.Build();
+    ASSERT_TRUE(aFuse.IsDone());
+    ASSERT_FALSE(aFuse.Shape().IsNull());
+    EXPECT_TRUE(BRepCheck_Analyzer(aFuse.Shape()).IsValid());
+    aVolumes[anOrder] = GetVolume(aFuse.Shape());
+    EXPECT_NEAR(aVolumes[anOrder], anExpectedVolume, 1.e-3);
+  }
+  EXPECT_NEAR(aVolumes[0], aVolumes[1], 1.e-3);
+}
+
+//==================================================================================================
+
+TEST(BOPDS_DSTest, SubShapesOnInCollectsVertexUnionAndIntersection)
+{
+  BOPDS_DS           aDS;
+  BRep_Builder       aBuilder;
+  std::array<int, 2> aFaces;
+  for (int& aFaceIndex : aFaces)
+  {
+    TopoDS_Face aFace;
+    aBuilder.MakeFace(aFace);
+    BOPDS_ShapeInfo aInfo;
+    aInfo.SetShape(aFace);
+    aInfo.SetShapeType(TopAbs_FACE);
+    aFaceIndex = aDS.Append(aInfo);
+  }
+  std::array<int, 6> aVertices;
+  for (size_t anIndex = 0; anIndex < aVertices.size(); ++anIndex)
+  {
+    BOPDS_ShapeInfo aInfo;
+    aInfo.SetShape(BRepBuilderAPI_MakeVertex(gp_Pnt(double(anIndex), 0, 0)).Vertex());
+    aInfo.SetShapeType(TopAbs_VERTEX);
+    aVertices[anIndex] = aDS.Append(aInfo);
+  }
+  BOPDS_FaceInfo& aFirst  = aDS.ChangeFaceInfo(aFaces[0]);
+  BOPDS_FaceInfo& aSecond = aDS.ChangeFaceInfo(aFaces[1]);
+  aFirst.ChangeVerticesOn().Add(aVertices[0]);
+  aFirst.ChangeVerticesIn().Add(aVertices[1]);
+  aSecond.ChangeVerticesOn().Add(aVertices[2]);
+  aSecond.ChangeVerticesIn().Add(aVertices[3]);
+  aFirst.ChangeVerticesOn().Add(aVertices[4]);
+  aSecond.ChangeVerticesIn().Add(aVertices[4]);
+  aFirst.ChangeVerticesIn().Add(aVertices[5]);
+  aSecond.ChangeVerticesOn().Add(aVertices[5]);
+
+  NCollection_Map<int>                                 aUnion, aCommon;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aBlocks;
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>        aCommonBlocks;
+  for (const bool isReversed : {false, true})
+  {
+    SCOPED_TRACE(isReversed);
+    aUnion.Clear();
+    aCommon.Clear();
+    aDS.SubShapesOnIn(aFaces[isReversed ? 1 : 0],
+                      aFaces[isReversed ? 0 : 1],
+                      aUnion,
+                      aCommon,
+                      aBlocks,
+                      aCommonBlocks);
+    EXPECT_EQ(aUnion.Size(), aVertices.size());
+    for (const int aVertex : aVertices)
+    {
+      EXPECT_TRUE(aUnion.Contains(aVertex));
+    }
+    EXPECT_EQ(aCommon.Size(), 2u);
+    EXPECT_TRUE(aCommon.Contains(aVertices[4]));
+    EXPECT_TRUE(aCommon.Contains(aVertices[5]));
+    EXPECT_TRUE(aBlocks.IsEmpty());
+    EXPECT_TRUE(aCommonBlocks.IsEmpty());
+  }
+}
+
+//==================================================================================================
+
+TEST(BOPTools_AlgoToolsTest, WireCorrectionUsesTheShorterEdgeLength)
+{
+  const TopoDS_Vertex        aStart    = BRepBuilderAPI_MakeVertex(gp_Pnt(0.0, 0.0, 0.0));
+  const TopoDS_Vertex        aLongEnd  = BRepBuilderAPI_MakeVertex(gp_Pnt(10.0, 0.0, 0.0));
+  const TopoDS_Vertex        aShortEnd = BRepBuilderAPI_MakeVertex(gp_Pnt(11.0, 0.0, 0.0));
+  NCollection_Array1<gp_Pnt> aPoles(0, 3);
+  // Y(t) = 100 * t * (t - 0.4) * (t - 1): the extra crossing is at X = 4.
+  aPoles.ChangeAt(0)                         = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles.ChangeAt(1)                         = gp_Pnt(10.0 / 3.0, 40.0 / 3.0, 0.0);
+  aPoles.ChangeAt(2)                         = gp_Pnt(20.0 / 3.0, -20.0, 0.0);
+  aPoles.ChangeAt(3)                         = gp_Pnt(10.0, 0.0, 0.0);
+  const occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+  BRepBuilderAPI_MakeEdge             aLongMaker(aCurve, aStart, aLongEnd);
+  BRepBuilderAPI_MakeEdge             aShortMaker(aStart, aShortEnd);
+  BRepBuilderAPI_MakeEdge             aClosingMaker(aLongEnd, aShortEnd);
+  ASSERT_TRUE(aLongMaker.IsDone());
+  ASSERT_TRUE(aShortMaker.IsDone());
+  ASSERT_TRUE(aClosingMaker.IsDone());
+  BRepBuilderAPI_MakeWire aWireMaker;
+  aWireMaker.Add(aLongMaker.Edge());
+  aWireMaker.Add(aClosingMaker.Edge());
+  aWireMaker.Add(TopoDS::Edge(aShortMaker.Edge().Reversed()));
+  ASSERT_TRUE(aWireMaker.IsDone());
+  BRepBuilderAPI_MakeFace aFaceMaker(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
+                                     aWireMaker.Wire());
+  ASSERT_TRUE(aFaceMaker.IsDone());
+  const double aTolerance = BRep_Tool::Tolerance(aStart);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapToAvoid;
+  BOPTools_AlgoTools::CorrectCurveOnSurface(aFaceMaker.Face(), aMapToAvoid);
+  // The crossing covers more than 30 percent of the short edge.
+  EXPECT_DOUBLE_EQ(BRep_Tool::Tolerance(aStart), aTolerance);
 }
