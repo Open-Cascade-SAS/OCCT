@@ -15,16 +15,25 @@
 // commercial license or contractual agreement.
 
 #include <algorithm>
+#include <cmath>
 
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
 #include <BRepLib.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
 #include <ChFiDS_Spine.hxx>
+#include <GC_MakeArcOfCircle.hxx>
 #include <Geom_Surface.hxx>
 #include <GProp_GProps.hxx>
 #include <Law_Linear.hxx>
@@ -36,11 +45,16 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 namespace
 {
@@ -97,13 +111,228 @@ bool isClosedValidSolid(const TopoDS_Shape& theShape)
   return true;
 }
 
+//! Fillet arc in the section of a right-angle convex edge, the edge at the origin.
+struct SectionArc
+{
+  double myCx, myCy; //!< centre
+  double myQ1, myQ2; //!< ends of the arc on face 1 and on face 2
+  double myArea;     //!< area between the arc and the two faces, the part the fillet removes
+};
+
+//! Arc of radius theR on faces reaching theA and theB, through the far edge of one that runs out.
+bool pivotArc(const double theA, const double theB, const double theR, SectionArc& theArc)
+{
+  const double aTol = Precision::Confusion();
+  if (theR < std::min(theA, theB) - aTol)
+  {
+    return false;
+  }
+  const double aCx =
+    theR >= theA - aTol ? std::sqrt(std::max(2. * theA * theR - theA * theA, 0.)) : -1.;
+  const double aCy =
+    theR >= theB - aTol ? std::sqrt(std::max(2. * theB * theR - theB * theB, 0.)) : -1.;
+  if (aCx >= 0. && aCx <= theB + aTol)
+  {
+    theArc.myCx = theR;
+    theArc.myCy = aCx;
+    theArc.myQ1 = theA;
+    theArc.myQ2 = aCx;
+  }
+  else if (aCy >= 0. && aCy <= theA + aTol)
+  {
+    theArc.myCx = aCy;
+    theArc.myCy = theR;
+    theArc.myQ1 = aCy;
+    theArc.myQ2 = theB;
+  }
+  else
+  {
+    const double aChord = std::hypot(theA, theB);
+    if (theR < aChord / 2.)
+    {
+      return false;
+    }
+    const double aH = std::sqrt(theR * theR - aChord * aChord / 4.);
+    theArc.myCx     = theA / 2. + aH * theB / aChord;
+    theArc.myCy     = theB / 2. + aH * theA / aChord;
+    theArc.myQ1     = theA;
+    theArc.myQ2     = theB;
+  }
+  const double aTheta =
+    2. * std::asin(std::min(1., std::hypot(theArc.myQ1, theArc.myQ2) / (2. * theR)));
+  theArc.myArea = theArc.myQ1 * theArc.myQ2 / 2. - theR * theR / 2. * (aTheta - std::sin(aTheta));
+  return true;
+}
+
+//! Direction and width of a rectangular planar face from theEdge to the far edge, and its normal.
+bool rectangleWidth(const TopoDS_Face& theFace,
+                    const TopoDS_Edge& theEdge,
+                    const gp_Pnt&      theOrigin,
+                    const gp_Dir&      theAxis,
+                    gp_Dir&            theAcross,
+                    double&            theWidth,
+                    gp_Dir&            theNormal)
+{
+  BRepAdaptor_Surface aSurf(theFace);
+  if (aSurf.GetType() != GeomAbs_Plane)
+  {
+    return false;
+  }
+  gp_Pnt aPnt;
+  gp_Vec aDU, aDV;
+  aSurf.D1(0., 0., aPnt, aDU, aDV);
+  const gp_Vec aNorm = aDU.Crossed(aDV);
+  if (aNorm.SquareMagnitude() < gp::Resolution())
+  {
+    return false;
+  }
+  theNormal = gp_Dir(aNorm);
+  if (theFace.Orientation() == TopAbs_REVERSED)
+  {
+    theNormal.Reverse();
+  }
+  int aNbEdges = 0, aNbParallel = 0;
+  for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
+    BRepAdaptor_Curve  aCurve(anEdge);
+    ++aNbEdges;
+    if (aCurve.GetType() != GeomAbs_Line)
+    {
+      return false;
+    }
+    const double aDot = std::abs(aCurve.Line().Direction().Dot(theAxis));
+    if (aDot > 1. - 1.e-9)
+    {
+      if (anEdge.IsSame(theEdge))
+      {
+        continue;
+      }
+      ++aNbParallel;
+      const gp_Vec aVec(theOrigin, aCurve.Value(aCurve.FirstParameter()));
+      const gp_Vec aPerp = aVec - gp_Vec(theAxis) * aVec.Dot(gp_Vec(theAxis));
+      theWidth           = aPerp.Magnitude();
+      if (theWidth < Precision::Confusion())
+      {
+        return false;
+      }
+      theAcross = gp_Dir(aPerp);
+    }
+    else if (aDot > 1.e-9)
+    {
+      return false;
+    }
+  }
+  return aNbEdges == 4 && aNbParallel == 1;
+}
+
+//! Cuts the pivot fillet of theRadius on theEdge out of theShape, or returns a null shape.
+TopoDS_Shape pivotCut(const TopoDS_Shape& theShape,
+                      const TopoDS_Edge&  theEdge,
+                      const double        theRadius)
+{
+  BRepAdaptor_Curve aCurve(theEdge);
+  if (aCurve.GetType() != GeomAbs_Line)
+  {
+    return TopoDS_Shape();
+  }
+  int aNbSolids = 0;
+  for (TopExp_Explorer anExp(theShape, TopAbs_SOLID); anExp.More(); anExp.Next())
+  {
+    ++aNbSolids;
+  }
+  EdgeFaceMap anEdgeFaces;
+  TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, anEdgeFaces);
+  if (aNbSolids != 1 || !anEdgeFaces.Contains(theEdge))
+  {
+    return TopoDS_Shape();
+  }
+  const NCollection_List<TopoDS_Shape>& aFaces = anEdgeFaces.FindFromKey(theEdge);
+  if (aFaces.Extent() != 2 || aFaces.First().IsSame(aFaces.Last()))
+  {
+    return TopoDS_Shape();
+  }
+  const gp_Dir aAxis   = aCurve.Line().Direction();
+  const gp_Pnt aOrigin = aCurve.Value(aCurve.FirstParameter());
+  const double aLength = aCurve.LastParameter() - aCurve.FirstParameter();
+  gp_Dir       aU, aV, aN1, aN2;
+  double       aA = 0., aB = 0.;
+  if (!rectangleWidth(TopoDS::Face(aFaces.First()), theEdge, aOrigin, aAxis, aU, aA, aN1)
+      || !rectangleWidth(TopoDS::Face(aFaces.Last()), theEdge, aOrigin, aAxis, aV, aB, aN2))
+  {
+    return TopoDS_Shape();
+  }
+  // A convex right angle: each face leads into the material side of the other.
+  if (std::abs(aU.Dot(aV)) > 1.e-7 || aU.Dot(aN2) > -0.5 || aV.Dot(aN1) > -0.5)
+  {
+    return TopoDS_Shape();
+  }
+  SectionArc anArc;
+  if (!pivotArc(aA, aB, theRadius, anArc))
+  {
+    return TopoDS_Shape();
+  }
+
+  // The tool: the region between the arc and the faces, enlarged and swept along the edge.
+  const double aMargin = 0.1 * (aA + aB + aLength);
+  const gp_Vec aStart  = gp_Vec(aAxis) * (-aMargin);
+  auto         aPoint  = [&](const double theU, const double theW) {
+    return aOrigin.Translated(gp_Vec(aU) * theU + gp_Vec(aV) * theW + aStart);
+  };
+  const gp_Pnt aQ1  = aPoint(anArc.myQ1, 0.);
+  const gp_Pnt aQ2  = aPoint(0., anArc.myQ2);
+  const gp_Pnt aCen = aPoint(anArc.myCx, anArc.myCy);
+  const gp_Pnt aMid = aPoint((anArc.myQ1) / 2., (anArc.myQ2) / 2.);
+  gp_Vec       aToMid(aCen, aMid);
+  if (aToMid.SquareMagnitude() < gp::Resolution())
+  {
+    return TopoDS_Shape();
+  }
+  aToMid.Normalize();
+  const gp_Pnt            aArcMid = aCen.Translated(aToMid * theRadius);
+  const gp_Pnt            aS1     = aPoint(anArc.myQ1 + aMargin, -aMargin);
+  const gp_Pnt            aS2     = aPoint(-aMargin, anArc.myQ2 + aMargin);
+  const gp_Pnt            aS0     = aPoint(-aMargin, -aMargin);
+  BRepBuilderAPI_MakeWire aWire;
+  aWire.Add(BRepBuilderAPI_MakeEdge(aS1, aQ1).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(GC_MakeArcOfCircle(aQ1, aArcMid, aQ2).Value()).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(aQ2, aS2).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(aS2, aS0).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(aS0, aS1).Edge());
+  if (!aWire.IsDone())
+  {
+    return TopoDS_Shape();
+  }
+  BRepBuilderAPI_MakeFace aFace(aWire.Wire(), true);
+  if (!aFace.IsDone())
+  {
+    return TopoDS_Shape();
+  }
+  TopoDS_Shape aTool =
+    BRepPrimAPI_MakePrism(aFace.Face(), gp_Vec(aAxis) * (aLength + 2. * aMargin)).Shape();
+  if (volumeOf(aTool) < 0.)
+  {
+    aTool.Reverse();
+  }
+  BRepAlgoAPI_Cut aCut(theShape, aTool);
+  if (!aCut.IsDone() || aCut.HasErrors() || !isClosedValidSolid(aCut.Shape()))
+  {
+    return TopoDS_Shape();
+  }
+  // The section is the same along the edge, so the volume that went is the area times the length.
+  const double aVolume  = volumeOf(theShape);
+  const double aRemoved = anArc.myArea * aLength;
+  if (std::abs(aVolume - volumeOf(aCut.Shape()) - aRemoved) > 1.e-6 * aRemoved + 1.e-10 * aVolume)
+  {
+    return TopoDS_Shape();
+  }
+  return aCut.Shape();
+}
+
 //! The most contours the fallback intersects: each costs a fillet and a Boolean operation.
 const int THE_MAX_CONTOURS = 8;
 
-//! The fillets of the contours of theBuilder, computed after Compute() failed: each contour on its
-//! own, and the intersection of the results. Two fillets whose arcs cross are built this way.
-//! The contours must share no vertex, and every contour must be a constant radius.
-//! Null if not applicable.
+//! Intersection of each contour filleted alone, after Compute() failed; null if not applicable.
 TopoDS_Shape fallbackFillets(ChFi3d_FilBuilder& theBuilder, const ChFi3d_FilletShape theShape)
 {
   const int aNbContours = theBuilder.NbElements();
@@ -155,6 +384,10 @@ TopoDS_Shape fallbackFillets(ChFi3d_FilBuilder& theBuilder, const ChFi3d_FilletS
       {
         aOne = aSingle.Shape();
       }
+    }
+    if (aOne.IsNull() && theBuilder.Value(aContour)->NbEdges() == 1)
+    {
+      aOne = pivotCut(aShape, aFirst, aRadius);
     }
     if (aOne.IsNull())
     {
@@ -537,7 +770,7 @@ void BRepFilletAPI_MakeFillet::Build(const Message_ProgressRange& /*theRange*/)
   myBuilder.Compute();
   if (!myBuilder.IsDone() || !isValidResult(myBuilder.Shape()))
   {
-    // Fillets that cross each other: see fallbackFillets.
+    // Fillets that cross each other or run out of face: see fallbackFillets.
     TopoDS_Shape aFallback;
     try
     {

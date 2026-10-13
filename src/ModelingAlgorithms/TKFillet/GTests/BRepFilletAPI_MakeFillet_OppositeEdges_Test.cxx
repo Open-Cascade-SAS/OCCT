@@ -175,6 +175,65 @@ TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsMeetingWithinToleranc
               1.e-6);
 }
 
+// r = 5 on a 4 wide face: the arc is tangent to the side face and passes through the far edge of
+// the top face, centre (5, 6 - sqrt(2 w r - w^2)). Removed area 4.927428.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1177_FilletWiderThanItsFaceEndsAtTheFarEdge)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(5.0, findEdgeAt(aBox, gp_Pnt(0.0, 5.0, 6.0)));
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  EXPECT_NEAR(volumeOf(aFillet.Shape()), 240.0 - 10.0 * 4.927428, 1.e-4);
+}
+
+// r = 4.5 on the edge between a 4 wide face and a 3 high one: the arc passes through both far
+// edges. Removed area 3.426266.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1177_FilletWiderThanBothFacesEndsAtBothFarEdges)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 3.0).Shape();
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(4.5, findEdgeAt(aBox, gp_Pnt(0.0, 5.0, 3.0)));
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  EXPECT_NEAR(volumeOf(aFillet.Shape()), 120.0 - 10.0 * 3.426266, 1.e-4);
+}
+
+// Two fillets each wider than the face between them (r = 7.5 on a 10 wide face of a 6 high wall):
+// the result is the intersection of the two pivot results, the arcs crossing at 143.5 degrees.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1177_OppositeFilletsWiderThanTheirWallAreTheIntersection)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(10.0, 4.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(7.5, findEdgeAt(aBox, gp_Pnt(0.0, 2.0, 6.0)));
+  aFillet.Add(7.5, findEdgeAt(aBox, gp_Pnt(10.0, 2.0, 6.0)));
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  EXPECT_NEAR(volumeOf(aFillet.Shape()), 153.644087, 1.e-4);
+}
+
+// The same fillet again after a finished one: the second fillet pivots at the first one's
+// tangent edge, so the result depends on the order (213.812565 for 3 then 3 on the 4 wide face).
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1177_FilletNextToAFinishedFilletPivotsAtItsTangentEdge)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFirst(aBox);
+  aFirst.Add(3.0, findEdgeAt(aBox, gp_Pnt(0.0, 5.0, 6.0)));
+  ASSERT_NO_THROW(aFirst.Build());
+  ASSERT_TRUE(aFirst.IsDone());
+  const TopoDS_Shape aRounded = aFirst.Shape();
+
+  BRepFilletAPI_MakeFillet aSecond(aRounded);
+  aSecond.Add(3.0, findEdgeAt(aRounded, gp_Pnt(4.0, 5.0, 6.0)));
+  ASSERT_NO_THROW(aSecond.Build());
+  ASSERT_TRUE(aSecond.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aSecond.Shape()).IsValid());
+  EXPECT_NEAR(volumeOf(aSecond.Shape()), 213.812565, 1.e-4);
+}
+
 // A fillet that meets a finished fillet exactly (r = 5 twice on a 10 wide face) was reported done
 // with a solid that BRepCheck rejects; the second fillet now pivots at the first one's tangent
 // edge.
