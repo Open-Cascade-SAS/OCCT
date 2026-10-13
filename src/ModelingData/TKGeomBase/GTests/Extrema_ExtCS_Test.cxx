@@ -19,16 +19,19 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
+#include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <StdFail_NotDone.hxx>
+#include <Standard_Real.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 
 #include <gtest/gtest.h>
 
-// NbExt() counts mySqDist, and the analytic parallel branch appends a distance with no matching
-// point pair, so Points() must bound against the point sequence rather than against NbExt().
-TEST(Extrema_ExtCS_Test, LineParallelToPlaneHasADistanceButNoPoints)
+#include <cmath>
+
+TEST(Extrema_ExtCS_Test, Points_ParallelLineAndPlane_Throws)
 {
   occ::handle<Geom_Line>  aLine  = new Geom_Line(gp_Pnt(0, 0, 5), gp_Dir(1, 0, 0));
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
@@ -36,22 +39,19 @@ TEST(Extrema_ExtCS_Test, LineParallelToPlaneHasADistanceButNoPoints)
   GeomAdaptor_Curve   aC(aLine, -10.0, 10.0);
   GeomAdaptor_Surface aS(aPlane, -10.0, 10.0, -10.0, 10.0);
 
-  Extrema_ExtCS aExt(aC, aS, 1.0e-6, 1.0e-6);
+  Extrema_ExtCS aExt(aC, aS, Precision::PConfusion(), Precision::PConfusion());
   ASSERT_TRUE(aExt.IsDone());
   ASSERT_TRUE(aExt.IsParallel());
 
-  // The distance is a real measurement and stays available.
   ASSERT_EQ(aExt.NbExt(), 1);
-  EXPECT_NEAR(aExt.SquareDistance(1), 25.0, 1.0e-7);
+  EXPECT_NEAR(std::sqrt(aExt.SquareDistance(1)), 5.0, Precision::Confusion());
 
-  // The point pair is not: an equidistant family has no unique witness.
   Extrema_POnCurv aPC;
   Extrema_POnSurf aPS;
   EXPECT_THROW(aExt.Points(1, aPC, aPS), Standard_OutOfRange);
 }
 
-// The tighter bound must not refuse a result that does have points.
-TEST(Extrema_ExtCS_Test, LineAboveSphereStillReportsItsPoints)
+TEST(Extrema_ExtCS_Test, Points_LineAndSphere_ReturnsExtrema)
 {
   occ::handle<Geom_Line>             aLine = new Geom_Line(gp_Pnt(0, 0, 40), gp_Dir(1, 0, 0));
   occ::handle<Geom_SphericalSurface> aSph =
@@ -60,16 +60,39 @@ TEST(Extrema_ExtCS_Test, LineAboveSphereStillReportsItsPoints)
   GeomAdaptor_Curve   aC(aLine, -10.0, 10.0);
   GeomAdaptor_Surface aS(aSph, 0.0, 2.0 * M_PI, -M_PI_2, M_PI_2);
 
-  Extrema_ExtCS aExt(aC, aS, 1.0e-6, 1.0e-6);
+  Extrema_ExtCS aExt(aC, aS, Precision::PConfusion(), Precision::PConfusion());
   ASSERT_TRUE(aExt.IsDone());
   ASSERT_FALSE(aExt.IsParallel());
   ASSERT_GT(aExt.NbExt(), 0);
 
+  Extrema_POnCurv aP1;
+  Extrema_POnSurf aP2;
+  EXPECT_THROW(aExt.Points(0, aP1, aP2), Standard_OutOfRange);
+  EXPECT_THROW(aExt.Points(aExt.NbExt() + 1, aP1, aP2), Standard_OutOfRange);
+
+  double aMinSquareDistance = RealLast();
   for (int anI = 1; anI <= aExt.NbExt(); ++anI)
   {
     Extrema_POnCurv aPC;
     Extrema_POnSurf aPS;
     ASSERT_NO_THROW(aExt.Points(anI, aPC, aPS));
-    EXPECT_NEAR(aPC.Value().SquareDistance(aPS.Value()), aExt.SquareDistance(anI), 1.0e-5);
+    EXPECT_NEAR(aPC.Value().Distance(aPS.Value()),
+                std::sqrt(aExt.SquareDistance(anI)),
+                Precision::Confusion());
+    if (aExt.SquareDistance(anI) < aMinSquareDistance)
+    {
+      aMinSquareDistance = aExt.SquareDistance(anI);
+    }
   }
+  EXPECT_NEAR(std::sqrt(aMinSquareDistance), 37.0, Precision::Confusion());
+}
+
+TEST(Extrema_ExtCS_Test, Points_NotDone_Throws)
+{
+  Extrema_ExtCS   aExt;
+  Extrema_POnCurv aP1;
+  Extrema_POnSurf aP2;
+
+  ASSERT_FALSE(aExt.IsDone());
+  EXPECT_THROW(aExt.Points(1, aP1, aP2), StdFail_NotDone);
 }
