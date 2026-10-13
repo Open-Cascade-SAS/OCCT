@@ -289,7 +289,6 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(
 
   // Get text style parameters
   occ::handle<Prs3d_TextAspect> aTextAspect = myDrawer->DimensionAspect()->TextAspect();
-  NCollection_UtfString<char>   anUTFString(aValueStr.ToExtString());
 
   theWidth = 0.0;
   theFont.Nullify();
@@ -297,27 +296,16 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(
 
   if (myDrawer->DimensionAspect()->IsText3d())
   {
-    theFont = myBRepFontCache.IsNull()
-                ? StdPrs_BRepFont::FindAndCreate(aTextAspect->Aspect()->Font(),
-                                                 aTextAspect->Aspect()->GetTextFontAspect(),
-                                                 aTextAspect->Height(),
-                                                 Font_StrictLevel_Any)
-                : myBRepFontCache->FindFont(aTextAspect->Aspect()->Font(),
-                                            aTextAspect->Aspect()->GetTextFontAspect(),
-                                            aTextAspect->Height(),
-                                            Font_StrictLevel_Any);
-    if (!theFont.IsNull())
+    prepareText(aValueStr, theFont, thePlan);
+    if (thePlan.has_value())
     {
-      thePlan = theFont->PlanText(anUTFString);
-      if (thePlan.has_value())
-      {
-        theWidth = thePlan->Width();
-      }
+      theWidth = thePlan->Width();
     }
   }
   else
   {
     // Text width for 1:1 scale 2D case
+    NCollection_UtfString<char>      anUTFString(aValueStr.ToExtString());
     Font_FTFont::Params              aFontParams;
     const Graphic3d_RenderingParams& aRendParams =
       GetContext()->CurrentViewer()->DefaultRenderingParams();
@@ -1725,4 +1713,116 @@ void PrsDim_Dimension::UnsetFixedTextPosition()
 {
   myIsTextPositionFixed = false;
   myFixedTextPosition   = gp::Origin();
+}
+
+//==================================================================================================
+
+TCollection_ExtendedString PrsDim_Dimension::GetValueString(double& theWidth) const
+{
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aPlan;
+  return GetValueString(theWidth, aFont, aPlan);
+}
+
+//==================================================================================================
+
+void PrsDim_Dimension::drawText(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                const gp_Pnt&                          theTextPos,
+                                const gp_Dir&                          theTextDir,
+                                const TCollection_ExtendedString&      theText,
+                                const int                              theLabelPosition)
+{
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aPlan;
+  if (myDrawer->DimensionAspect()->IsText3d())
+  {
+    prepareText(theText, aFont, aPlan);
+  }
+  drawText(thePresentation,
+           theTextPos,
+           theTextDir,
+           theText,
+           theLabelPosition,
+           aFont,
+           aPlan ? &*aPlan : nullptr);
+}
+
+//==================================================================================================
+
+void PrsDim_Dimension::DrawExtension(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                     const double                           theExtensionSize,
+                                     const gp_Pnt&                          theExtensionStart,
+                                     const gp_Dir&                          theExtensionDir,
+                                     const TCollection_ExtendedString&      theLabelString,
+                                     const double                           theLabelWidth,
+                                     const int                              theMode,
+                                     const int                              theLabelPosition)
+{
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aPlan;
+  if (myDrawer->DimensionAspect()->IsText3d())
+  {
+    prepareText(theLabelString, aFont, aPlan);
+  }
+  DrawExtension(thePresentation,
+                theExtensionSize,
+                theExtensionStart,
+                theExtensionDir,
+                theLabelString,
+                theLabelWidth,
+                theMode,
+                theLabelPosition,
+                aFont,
+                aPlan ? &*aPlan : nullptr);
+}
+
+//==================================================================================================
+
+void PrsDim_Dimension::FitTextAlignmentForLinear(
+  const gp_Pnt&                                theFirstPoint,
+  const gp_Pnt&                                theSecondPoint,
+  const bool                                   theIsOneSide,
+  const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+  int&                                         theLabelPosition,
+  bool&                                        theIsArrowsExternal) const
+{
+  double                                    aWidth = 0.0;
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aPlan;
+  GetValueString(aWidth, aFont, aPlan);
+  if (myDrawer->DimensionAspect()->IsText3d())
+  {
+    aWidth += myDrawer->DimensionAspect()->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
+  }
+  FitTextAlignmentForLinear(theFirstPoint,
+                            theSecondPoint,
+                            theIsOneSide,
+                            theHorizontalTextPos,
+                            aWidth,
+                            theLabelPosition,
+                            theIsArrowsExternal);
+}
+
+//==================================================================================================
+
+void PrsDim_Dimension::prepareText(const TCollection_ExtendedString&          theText,
+                                   occ::handle<StdPrs_BRepFont>&              theFont,
+                                   std::optional<BRepFont_Builder::TextPlan>& thePlan) const
+{
+  const occ::handle<Prs3d_TextAspect>& aTextAspect = myDrawer->DimensionAspect()->TextAspect();
+  theFont                                          = myBRepFontCache.IsNull()
+                                                       ? StdPrs_BRepFont::FindAndCreate(aTextAspect->Aspect()->Font(),
+                                               aTextAspect->Aspect()->GetTextFontAspect(),
+                                               aTextAspect->Height(),
+                                               Font_StrictLevel_Any)
+                                                       : myBRepFontCache->FindFont(aTextAspect->Aspect()->Font(),
+                                          aTextAspect->Aspect()->GetTextFontAspect(),
+                                          aTextAspect->Height(),
+                                          Font_StrictLevel_Any);
+  thePlan.reset();
+  if (!theFont.IsNull())
+  {
+    const NCollection_String aText(theText.ToExtString());
+    thePlan = theFont->PlanText(aText);
+  }
 }

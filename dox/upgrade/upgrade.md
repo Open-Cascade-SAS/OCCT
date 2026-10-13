@@ -1945,25 +1945,34 @@ Deprecated (still compiles with warnings):
 
 @subsection upgrade_810_brepfont BRep font and text conversion
 
-BRep font construction is provided by the `BRepFont` package in the `TKV3d` toolkit.
-`StdPrs_BRepTextBuilder`, `Font_BRepTextBuilder`, and `Font_BRepFont` have been removed. For direct
-TopoDS conversion, use `StdPrs_BRepFont::RenderText()` or `StdPrs_BRepFont::RenderGlyph()`.
-Lower-level code can regularize a `Font_GlyphOutline` with `BRepFont_Regularizer` and pass the result
-to `BRepFont_Builder`.
+Use `StdPrs_BRepFont` to create TopoDS glyph and text shapes. The construction algorithms are
+provided by the `BRepFont` package in `TKV3d`.
 
-For TopoDS output, contour concatenation is selected per call through `ToConcatenateContours` in
-the corresponding `GlyphOptions` or `TextOptions`. The persistent
-`StdPrs_BRepFont::SetCompositeCurveMode()` setting has been removed. Font outlines carrying the
-FreeType overlap flag are emitted as separate faces; no Boolean union is performed.
+| Deprecated interface | Recommended replacement |
+| --- | --- |
+| `Font_BRepFont` | `StdPrs_BRepFont` |
+| `Font_BRepTextBuilder::Perform()`, `StdPrs_BRepTextBuilder::Perform()` | `StdPrs_BRepFont::RenderText()` |
+| `Font_FTFontParams` | Aggregate `Font_FTFont::Params` |
+| `StdPrs_BRepFont::SetCompositeCurveMode()` | Set `ToConcatenateContours` in `GlyphOptions` or `TextOptions` per call |
+| `StdPrs_BRepFont::FTFont()` | Use font setters, such as `SetSingleStrokeFont()`, or a separate `Font_FTFont` for low-level operations |
+| `Font_FTFont::renderGlyphOutline()` | `LoadGlyphOutline()`: owned outline in design units, instead of a borrowed outline in pixel units |
 
-`Font_FTFontParams` has been replaced by the aggregate `Font_FTFont::Params` structure. Use
-`Font_FontMgr::SetUseUnicodeSubsetFallback()` to change the process-wide Unicode fallback setting;
-`Font_FontMgr::ToUseUnicodeSubsetFallback()` now returns the current value rather than a writable
-reference.
+These interfaces remain available for compatibility. The composite-curve setting applies only
+to calls without explicit options. Protected dimension helpers also retain deprecated overloads;
+use the new overloads with a font and text plan to reuse prepared layout.
 
-The `StdPrs_BRepFont::FTFont()` accessor has been removed. Use
-`StdPrs_BRepFont::SetSingleStrokeFont()` to select single-stroke construction, or use `Font_FTFont`
-directly for other low-level font operations.
+**Threading:** rendering synchronizes shared font and glyph-cache state internally.
+Configuration changes and access through the deprecated `FTFont()` handle require caller
+synchronization. `FTFont()` first detaches the backend from other cached wrappers. Backend
+reinitialization refreshes model-space metrics on the next wrapper operation. `Mutex()` is a
+caller lock for multi-call operations; font methods do not acquire it internally. Completed
+text plans retain their regions and layout after font changes or release.
 
-`StdPrs_BRepFont::RenderText()` skips glyphs that cannot be rendered and returns the remaining text
-geometry.
+**Fallback setting:** replace assignments to `Font_FontMgr::ToUseUnicodeSubsetFallback()` with
+`Font_FontMgr::SetUseUnicodeSubsetFallback()`. The getter now returns a value.
+
+**Output:** `RenderText()` skips glyphs that cannot be rendered and returns the remaining geometry.
+Outlines with the FreeType overlap flag produce separate faces without a Boolean union.
+`Font_FTFont::GlyphImage()` returns tightly packed, top-down alpha coverage for bitmap glyphs.
+For custom conversion, pass a `Font_GlyphOutline` through `BRepFont_Regularizer`, then use
+`BRepFont_Builder`.
