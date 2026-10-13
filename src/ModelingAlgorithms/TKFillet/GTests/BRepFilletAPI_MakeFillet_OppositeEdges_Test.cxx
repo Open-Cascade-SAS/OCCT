@@ -30,7 +30,10 @@
 
 #include <gtest/gtest.h>
 
+#include <atomic>
+#include <chrono>
 #include <cmath>
+#include <thread>
 
 namespace
 {
@@ -92,6 +95,27 @@ TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OverlappingOppositeFilletsAreNotAnIn
   }
 }
 
+// Radii that exceed the half width by less than the tolerance: the arcs meet within it. The result
+// is either refused or a valid solid, never a solid that is not one.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsMeetingWithinToleranceAreNotInvalid)
+{
+  const TopoDS_Shape aBox    = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  const double       aBoxVol = volumeOf(aBox);
+  for (const double anExcess : {1.e-12, 1.e-9, 1.e-7, 1.e-5})
+  {
+    BRepFilletAPI_MakeFillet aFillet(aBox);
+    aFillet.Add(2.0 + anExcess, findEdgeAt(aBox, gp_Pnt(0.0, 5.0, 6.0)));
+    aFillet.Add(2.0 + anExcess, findEdgeAt(aBox, gp_Pnt(4.0, 5.0, 6.0)));
+    ASSERT_NO_THROW(aFillet.Build());
+    if (!aFillet.IsDone())
+    {
+      continue;
+    }
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid()) << "excess " << anExcess;
+    EXPECT_LT(volumeOf(aFillet.Shape()), aBoxVol) << "excess " << anExcess;
+  }
+}
+
 // Radii that add up to exactly the width: the arcs touch and the result is a valid solid.
 TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsThatTouchAreValid)
 {
@@ -105,4 +129,74 @@ TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsThatTouchAreValid)
   // The area removed from the section is (1 - pi / 4) (r1^2 + r2^2).
   const double aRemoved = (1.0 - M_PI / 4.0) * (1.5 * 1.5 + 2.5 * 2.5) * 10.0;
   EXPECT_NEAR(volumeOf(aFillet.Shape()), 240.0 - aRemoved, 1.e-6);
+}
+
+// A fillet that meets a finished fillet exactly (r = 5 twice on a 10 wide face) was reported done
+// with a solid that BRepCheck rejects; the second fillet now pivots at the first one's tangent
+// edge.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1177_SecondFilletThatMeetsTheFirstExactlyIsValid)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFirst(aBox);
+  aFirst.Add(5.0, findEdgeAt(aBox, gp_Pnt(2.0, 0.0, 6.0)));
+  ASSERT_NO_THROW(aFirst.Build());
+  ASSERT_TRUE(aFirst.IsDone());
+  const TopoDS_Shape aRounded = aFirst.Shape();
+
+  BRepFilletAPI_MakeFillet aSecond(aRounded);
+  aSecond.Add(5.0, findEdgeAt(aRounded, gp_Pnt(2.0, 10.0, 6.0)));
+  ASSERT_NO_THROW(aSecond.Build());
+  if (aSecond.IsDone())
+  {
+    EXPECT_TRUE(BRepCheck_Analyzer(aSecond.Shape()).IsValid());
+  }
+}
+
+// Two fillets on adjacent edges of a 4 wide face with r = w: never a solid that is not one.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1177_AdjacentFilletsAtTheFaceWidthAreNotAnInvalidSolid)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(4.0, findEdgeAt(aBox, gp_Pnt(4.0, 5.0, 6.0)));
+  aFillet.Add(4.0, findEdgeAt(aBox, gp_Pnt(2.0, 10.0, 6.0)));
+  ASSERT_NO_THROW(aFillet.Build());
+  if (aFillet.IsDone())
+  {
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  }
+}
+
+// Four fillets of r = w / 2 round the four edges of a 4 x 4 face of a cube: the arcs meet on the
+// centre lines and the face between them is a point. The builder reported a solid whose check
+// never returned (an endless loop in BRepTools_WireExplorer). It must return, and if it reports
+// a solid, the solid must be valid. The build and the check run on a thread under a deadline.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_FourFilletsThatConsumeTheirFaceReturn)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(4.0, 4.0, 4.0).Shape();
+  std::atomic<int>   aState(-1); // -1 running, 0 refused, 1 built and valid, 2 built and not valid
+  std::thread        aThread([&]() {
+    BRepFilletAPI_MakeFillet aFillet(aBox);
+    aFillet.Add(2.0, findEdgeAt(aBox, gp_Pnt(0.0, 2.0, 4.0)));
+    aFillet.Add(2.0, findEdgeAt(aBox, gp_Pnt(4.0, 2.0, 4.0)));
+    aFillet.Add(2.0, findEdgeAt(aBox, gp_Pnt(2.0, 0.0, 4.0)));
+    aFillet.Add(2.0, findEdgeAt(aBox, gp_Pnt(2.0, 4.0, 4.0)));
+    aFillet.Build();
+    if (!aFillet.IsDone() || aFillet.Shape().IsNull())
+    {
+      aState = 0;
+      return;
+    }
+    aState = BRepCheck_Analyzer(aFillet.Shape()).IsValid() ? 1 : 2;
+  });
+  for (int i = 0; i < 200 && aState.load() < 0; ++i)
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  }
+  if (aState.load() < 0)
+  {
+    aThread.detach();
+    FAIL() << "the fillet did not return within 10 s";
+  }
+  aThread.join();
+  EXPECT_NE(aState.load(), 2) << "the builder reported a solid that is not valid";
 }

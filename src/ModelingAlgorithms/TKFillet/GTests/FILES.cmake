@@ -5,6 +5,7 @@ set(OCCT_TKFillet_GTests_FILES
   BRepFilletAPI_MakeChamfer_Test.cxx
   BRepFilletAPI_MakeFillet_OppositeEdges_Test.cxx
   BRepFilletAPI_MakeFillet_Test.cxx
+  BRepFilletAPI_MakeFillet_ValidResult_Test.cxx
   ChFi3d_Builder_0_Test.cxx
   ChFi3d_Hatching_Test.cxx
   BRepFilletAPI_ShallowLoft_Test.cxx
