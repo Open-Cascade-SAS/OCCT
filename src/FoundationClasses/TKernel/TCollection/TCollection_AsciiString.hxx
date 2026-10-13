@@ -42,7 +42,7 @@ class TCollection_ExtendedString;
 //! - Methods taking/returning symbol index work with 8-bit code units, not true Unicode symbols,
 //!   including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others.
 //! If application needs to process multi-byte Unicode symbols explicitly,
-//! NCollection_UtfIterator<char> class can be used for iterating through Unicode string (UTF-32
+//! TCollection_UtfIterator<char> class can be used for iterating through Unicode string (UTF-32
 //! code unit will be returned for each position).
 //!
 //! Class provides editing operations with built-in memory management to make AsciiString objects

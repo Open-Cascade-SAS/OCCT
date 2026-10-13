@@ -305,7 +305,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(
   else
   {
     // Text width for 1:1 scale 2D case
-    NCollection_UtfString<char>      anUTFString(aValueStr.ToExtString());
+    TCollection_UtfString<char>      anUTFString(aValueStr.ToExtString());
     Font_FTFont::Params              aFontParams;
     const Graphic3d_RenderingParams& aRendParams =
       GetContext()->CurrentViewer()->DefaultRenderingParams();
@@ -318,7 +318,7 @@ TCollection_ExtendedString PrsDim_Dimension::GetValueString(
                                      aFontParams,
                                      Font_StrictLevel_Any))
     {
-      for (NCollection_UtfIterator<char> anIter = anUTFString.Iterator(); *anIter != 0;)
+      for (TCollection_UtfIterator<char> anIter = anUTFString.BoundedIterator(); anIter.More();)
       {
         char32_t aCurrChar = *anIter;
         char32_t aNextChar = *(++anIter);
@@ -1822,7 +1822,7 @@ void PrsDim_Dimension::prepareText(const TCollection_ExtendedString&          th
   thePlan.reset();
   if (!theFont.IsNull())
   {
-    const NCollection_String aText(theText.ToExtString());
+    const TCollection_UtfString<char> aText(theText.ToExtString());
     thePlan = theFont->PlanText(aText);
   }
 }
