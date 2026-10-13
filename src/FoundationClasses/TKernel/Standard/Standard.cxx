@@ -23,7 +23,7 @@
   #include <locale.h>
 #endif
 
-#if defined(_MSC_VER) || defined(__ANDROID__) || defined(__QNX__)
+#if defined(_WIN32) || defined(__ANDROID__) || defined(__QNX__)
   #include <malloc.h>
 #elif (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))               \
        && (defined(__i386) || defined(__x86_64)))
@@ -471,7 +471,7 @@ void* Standard::AllocateAligned(const size_t theSize, const size_t theAlign)
 #elif defined OCCT_MMGT_OPT_TBB
   return scalable_aligned_malloc(theSize, theAlign);
 #else
-  #if defined(_MSC_VER)
+  #if defined(_WIN32)
   return _aligned_malloc(theSize, theAlign);
   #elif defined(__ANDROID__) || defined(__QNX__)
   return memalign(theAlign, theSize);
@@ -498,7 +498,7 @@ void Standard::FreeAligned(void* thePtrAligned)
 #elif defined OCCT_MMGT_OPT_TBB
   return scalable_aligned_free(thePtrAligned);
 #else
-  #if defined(_MSC_VER)
+  #if defined(_WIN32)
   _aligned_free(thePtrAligned);
   #elif defined(__ANDROID__) || defined(__QNX__)
   free(thePtrAligned);
