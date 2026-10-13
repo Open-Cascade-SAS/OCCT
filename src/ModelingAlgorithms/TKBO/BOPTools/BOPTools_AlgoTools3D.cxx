@@ -148,6 +148,11 @@ bool BOPTools_AlgoTools3D::DoSplitSEAMOnFace(const TopoDS_Edge& aSplit, const To
   //
   //---------------------------------------------------
   C2D1 = BRep_Tool::CurveOnSurface(aSp, aF, a, b);
+  if (C2D1.IsNull())
+  {
+    // Without a pcurve on the face, there is nothing to translate across the seam.
+    return false;
+  }
   //
   aT = BOPTools_AlgoTools2D::IntermediatePoint(a, b);
   C2D1->D1(aT, aP2D, aVec2D);
