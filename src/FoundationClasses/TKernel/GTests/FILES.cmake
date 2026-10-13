@@ -33,6 +33,8 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_Sequence_Test.cxx
   NCollection_SparseArray_Test.cxx
   NCollection_UBTree_Test.cxx
+  TCollection_UtfIterator_Test.cxx
+  TCollection_UtfString_Test.cxx
   NCollection_Vec4_Test.cxx
   OSD_Parallel_Test.cxx
   OSD_Path_Test.cxx

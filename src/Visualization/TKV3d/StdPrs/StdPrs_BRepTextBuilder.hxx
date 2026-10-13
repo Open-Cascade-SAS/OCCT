@@ -17,6 +17,7 @@
 #include <StdPrs_BRepFont.hxx>
 #include <BRep_Builder.hxx>
 #include <Font_TextFormatter.hxx>
+#include <NCollection_String.hxx>
 
 //! Compatibility interface for BRep text construction.
 //! New code should call StdPrs_BRepFont::RenderText().

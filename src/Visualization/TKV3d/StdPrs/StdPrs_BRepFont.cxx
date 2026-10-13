@@ -273,9 +273,9 @@ public:
 
   // Format text using the synchronized font backend.
   std::optional<BRepFont_Builder::TextPlan> PlanText(
-    const NCollection_String&         theText,
-    Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
-    Graphic3d_VerticalTextAlignment   theVerticalAlignment);
+    const TCollection_UtfString<char>& theText,
+    Graphic3d_HorizontalTextAlignment  theHorizontalAlignment,
+    Graphic3d_VerticalTextAlignment    theVerticalAlignment);
 
   // Build regions for a completed layout using this font's metric scale.
   std::optional<BRepFont_Builder::TextPlan> PlanText(const Font_TextFormatter& theFormatter);
@@ -310,7 +310,7 @@ std::optional<StdPrs_BRepFont::Impl::Request> StdPrs_BRepFont::Impl::MakeRequest
 //==================================================================================================
 
 std::optional<BRepFont_Builder::TextPlan> StdPrs_BRepFont::Impl::PlanText(
-  const NCollection_String&               theText,
+  const TCollection_UtfString<char>&      theText,
   const Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
   const Graphic3d_VerticalTextAlignment   theVerticalAlignment)
 {
@@ -475,9 +475,9 @@ StdPrs_BRepFont::StdPrs_BRepFont(const occ::handle<Impl>& theImpl)
 
 //=================================================================================================
 
-StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
-                                 const double              theSize,
-                                 const int                 theFaceId)
+StdPrs_BRepFont::StdPrs_BRepFont(const TCollection_UtfString<char>& theFontPath,
+                                 const double                       theSize,
+                                 const int                          theFaceId)
     : StdPrs_BRepFont()
 {
   Init(theFontPath, theSize, theFaceId);
@@ -485,10 +485,10 @@ StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
 
 //=================================================================================================
 
-StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontName,
-                                 const Font_FontAspect     theFontAspect,
-                                 const double              theSize,
-                                 const Font_StrictLevel    theStrictLevel)
+StdPrs_BRepFont::StdPrs_BRepFont(const TCollection_UtfString<char>& theFontName,
+                                 const Font_FontAspect              theFontAspect,
+                                 const double                       theSize,
+                                 const Font_StrictLevel             theStrictLevel)
     : StdPrs_BRepFont()
 {
   FindAndInit(theFontName.ToCString(), theFontAspect, theSize, theStrictLevel);
@@ -536,9 +536,9 @@ bool StdPrs_BRepFont::IsValid() const
 
 //=================================================================================================
 
-bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
-                           const double              theSize,
-                           const int                 theFaceId)
+bool StdPrs_BRepFont::Init(const TCollection_UtfString<char>& theFontPath,
+                           const double                       theSize,
+                           const int                          theFaceId)
 {
   float aWidthScaling = 1.0f;
   {
@@ -620,7 +620,7 @@ TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const char32_t theChar, const GlyphOpt
 
 //=================================================================================================
 
-TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText)
+TopoDS_Shape StdPrs_BRepFont::RenderText(const TCollection_UtfString<char>& theText)
 {
   TextOptions anOptions;
   anOptions.ToConcatenateContours = myToConcatenateContours;
@@ -629,8 +629,8 @@ TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText)
 
 //=================================================================================================
 
-TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText,
-                                         const TextOptions&        theOptions)
+TopoDS_Shape StdPrs_BRepFont::RenderText(const TCollection_UtfString<char>& theText,
+                                         const TextOptions&                 theOptions)
 {
   if (!isValidPosition(theOptions.Pen))
   {
@@ -644,7 +644,7 @@ TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText,
 //=================================================================================================
 
 std::optional<BRepFont_Builder::TextPlan> StdPrs_BRepFont::PlanText(
-  const NCollection_String&               theText,
+  const TCollection_UtfString<char>&      theText,
   const Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
   const Graphic3d_VerticalTextAlignment   theVerticalAlignment)
 {
