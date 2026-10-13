@@ -131,6 +131,50 @@ TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsThatTouchAreValid)
   EXPECT_NEAR(volumeOf(aFillet.Shape()), 240.0 - aRemoved, 1.e-6);
 }
 
+// The arcs cross on the face between: the result is the intersection of the two rounded profiles.
+// Removed area 3.749792368679 for r = 3,
+// 2 w r - pi r^2 / 2 + (r - w / 2) sqrt(w r - w^2 / 4) + r^2 asin(1 - w / (2 r)) with w = 4.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsWhoseArcsCrossAreTheIntersection)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(3.0, findEdgeAt(aBox, gp_Pnt(0.0, 5.0, 6.0)));
+  aFillet.Add(3.0, findEdgeAt(aBox, gp_Pnt(4.0, 5.0, 6.0)));
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  EXPECT_NEAR(volumeOf(aFillet.Shape()), 240.0 - 10.0 * 3.749792368679, 1.e-6);
+}
+
+// r1 = 1, r2 = 3.5: removed area 2.840940340.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsOfDifferentRadiiCross)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, findEdgeAt(aBox, gp_Pnt(0.0, 5.0, 6.0)));
+  aFillet.Add(3.5, findEdgeAt(aBox, gp_Pnt(4.0, 5.0, 6.0)));
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  EXPECT_NEAR(volumeOf(aFillet.Shape()), 240.0 - 10.0 * 2.840940340, 1.e-6);
+}
+
+// The radii exceed the half width by less than the tolerance: the arcs meet within it and the
+// result is the solid of two arcs that touch, to within the tolerance.
+TEST(BRepFilletAPI_MakeFilletTest, OCCT1568_OppositeFilletsMeetingWithinToleranceAreBuilt)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(4.0, 10.0, 6.0).Shape();
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(2.0 + 1.e-9, findEdgeAt(aBox, gp_Pnt(0.0, 5.0, 6.0)));
+  aFillet.Add(2.0 + 1.e-9, findEdgeAt(aBox, gp_Pnt(4.0, 5.0, 6.0)));
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  EXPECT_NEAR(volumeOf(aFillet.Shape()),
+              240.0 - 10.0 * (4.0 - M_PI) / 4.0 * 2.0 * 2.0 * 2.0,
+              1.e-6);
+}
+
 // A fillet that meets a finished fillet exactly (r = 5 twice on a 10 wide face) was reported done
 // with a solid that BRepCheck rejects; the second fillet now pivots at the first one's tangent
 // edge.

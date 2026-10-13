@@ -14,24 +14,48 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <algorithm>
+
+#include <BRep_Tool.hxx>
+#include <BRepAlgoAPI_Common.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
+#include <BRepGProp.hxx>
 #include <BRepLib.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <Geom_Surface.hxx>
+#include <GProp_GProps.hxx>
 #include <Law_Linear.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Precision.hxx>
+#include <Standard_Failure.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 
 namespace
 {
+typedef NCollection_IndexedDataMap<TopoDS_Shape,
+                                   NCollection_List<TopoDS_Shape>,
+                                   TopTools_ShapeMapHasher>
+  EdgeFaceMap;
+
+double volumeOf(const TopoDS_Shape& theShape)
+{
+  GProp_GProps aProps;
+  BRepGProp::VolumeProperties(theShape, aProps);
+  return aProps.Mass();
+}
+
 //! True if the shape is valid, or becomes valid under the SameParameter pass callers apply next.
 bool isValidResult(const TopoDS_Shape& theShape)
 {
@@ -42,6 +66,128 @@ bool isValidResult(const TopoDS_Shape& theShape)
   BRepBuilderAPI_Copy aCopy(theShape);
   BRepLib::SameParameter(aCopy.Shape(), Precision::Confusion(), true);
   return BRepCheck_Analyzer(aCopy.Shape()).IsValid();
+}
+
+//! True if the shape is one valid solid whose every edge borders two faces.
+bool isClosedValidSolid(const TopoDS_Shape& theShape)
+{
+  if (theShape.IsNull())
+  {
+    return false;
+  }
+  int aNbSolids = 0;
+  for (TopExp_Explorer anExp(theShape, TopAbs_SOLID); anExp.More(); anExp.Next())
+  {
+    ++aNbSolids;
+  }
+  if (aNbSolids != 1 || !BRepCheck_Analyzer(theShape).IsValid())
+  {
+    return false;
+  }
+  EdgeFaceMap anEdgeFaces;
+  TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, anEdgeFaces);
+  for (int anIdx = 1; anIdx <= anEdgeFaces.Extent(); ++anIdx)
+  {
+    if (!BRep_Tool::Degenerated(TopoDS::Edge(anEdgeFaces.FindKey(anIdx)))
+        && anEdgeFaces.FindFromIndex(anIdx).Extent() != 2)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+//! The most contours the fallback intersects: each costs a fillet and a Boolean operation.
+const int THE_MAX_CONTOURS = 8;
+
+//! The fillets of the contours of theBuilder, computed after Compute() failed: each contour on its
+//! own, and the intersection of the results. Two fillets whose arcs cross are built this way.
+//! The contours must share no vertex, and every contour must be a constant radius.
+//! Null if not applicable.
+TopoDS_Shape fallbackFillets(ChFi3d_FilBuilder& theBuilder, const ChFi3d_FilletShape theShape)
+{
+  const int aNbContours = theBuilder.NbElements();
+  if (aNbContours < 1 || aNbContours > THE_MAX_CONTOURS)
+  {
+    return TopoDS_Shape();
+  }
+  const TopoDS_Shape&                                           aShape = theBuilder.InitialShape();
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertices;
+  for (int aContour = 1; aContour <= aNbContours; ++aContour)
+  {
+    const occ::handle<ChFiDS_Spine> aSpine = theBuilder.Value(aContour);
+    if (aSpine.IsNull() || aSpine->NbEdges() < 1 || !theBuilder.IsConstant(aContour))
+    {
+      return TopoDS_Shape();
+    }
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aOwn;
+    for (int anEdge = 1; anEdge <= aSpine->NbEdges(); ++anEdge)
+    {
+      TopExp::MapShapes(aSpine->Edges(anEdge), TopAbs_VERTEX, aOwn);
+    }
+    for (int aVertex = 1; aVertex <= aOwn.Extent(); ++aVertex)
+    {
+      if (aVertices.Contains(aOwn(aVertex)))
+      {
+        return TopoDS_Shape();
+      }
+    }
+    for (int aVertex = 1; aVertex <= aOwn.Extent(); ++aVertex)
+    {
+      aVertices.Add(aOwn(aVertex));
+    }
+  }
+
+  const double aVolume = volumeOf(aShape);
+  TopoDS_Shape aResult;
+  double       aSumRemoved = 0., aMaxRemoved = 0.;
+  for (int aContour = 1; aContour <= aNbContours; ++aContour)
+  {
+    const TopoDS_Edge& aFirst  = theBuilder.Value(aContour)->Edges(1);
+    const double       aRadius = theBuilder.Radius(aContour);
+    TopoDS_Shape       aOne;
+    if (aNbContours > 1)
+    {
+      BRepFilletAPI_MakeFillet aSingle(aShape, theShape);
+      aSingle.Add(aRadius, aFirst);
+      aSingle.Build();
+      if (aSingle.IsDone() && isClosedValidSolid(aSingle.Shape()))
+      {
+        aOne = aSingle.Shape();
+      }
+    }
+    if (aOne.IsNull())
+    {
+      return TopoDS_Shape();
+    }
+    const double aRemoved = aVolume - volumeOf(aOne);
+    if (aRemoved <= 0.)
+    {
+      // Only fillets that take material away are an intersection.
+      return TopoDS_Shape();
+    }
+    aSumRemoved += aRemoved;
+    aMaxRemoved = std::max(aMaxRemoved, aRemoved);
+    if (aResult.IsNull())
+    {
+      aResult = aOne;
+      continue;
+    }
+    BRepAlgoAPI_Common aCommon(aResult, aOne);
+    if (!aCommon.IsDone() || aCommon.HasErrors() || !isClosedValidSolid(aCommon.Shape()))
+    {
+      return TopoDS_Shape();
+    }
+    aResult = aCommon.Shape();
+  }
+  // What the intersection removes is at least what any one fillet removes and at most the sum.
+  const double aTol     = 1.e-6 * aVolume;
+  const double aRemoved = aVolume - volumeOf(aResult);
+  if (aRemoved < aMaxRemoved - aTol || aRemoved > aSumRemoved + aTol)
+  {
+    return TopoDS_Shape();
+  }
+  return aResult;
 }
 } // namespace
 
@@ -389,8 +535,31 @@ occ::handle<TopOpeBRepBuild_HBuilder> BRepFilletAPI_MakeFillet::Builder() const
 void BRepFilletAPI_MakeFillet::Build(const Message_ProgressRange& /*theRange*/)
 {
   myBuilder.Compute();
-  // A result that is not a valid solid is a failure, as for a computation that failed.
-  if (myBuilder.IsDone() && isValidResult(myBuilder.Shape()))
+  if (!myBuilder.IsDone() || !isValidResult(myBuilder.Shape()))
+  {
+    // Fillets that cross each other: see fallbackFillets.
+    TopoDS_Shape aFallback;
+    try
+    {
+      aFallback = fallbackFillets(myBuilder, myBuilder.GetFilletShape());
+    }
+    catch (Standard_Failure const&)
+    {
+    }
+    if (!aFallback.IsNull())
+    {
+      // The failed computation holds nothing of this result: clear its faulty contours.
+      myBuilder.Reset();
+      Done();
+      myShape = aFallback;
+      myMap.Clear();
+      for (TopExp_Explorer anExp(myShape, TopAbs_FACE); anExp.More(); anExp.Next())
+      {
+        myMap.Add(anExp.Current());
+      }
+    }
+  }
+  else
   {
     Done();
     myShape = myBuilder.Shape();
