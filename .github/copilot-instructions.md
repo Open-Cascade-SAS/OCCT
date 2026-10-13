@@ -29,7 +29,6 @@ Keep changes focused on the requested task and, for defect fixes, the cause. Avo
 ### Follow the active subsystem
 
 - Choose APIs from the subsystem being changed, its callers, and its tests, not from a fixed list of familiar OCCT classes.
-- For BRepGraph work, inspect the relevant BRepGraph implementation and contracts first. Do not default to a legacy BRep algorithm or add conversions between representations without a concrete need.
 - Reuse existing operations at the correct dependency level. Keep representation changes explicit and account for their ownership, correctness, and allocation costs.
 - In applications, use the established test setup rather than adding a new framework without need. OCCT test selection and registration are covered in section 9.
 
@@ -154,7 +153,7 @@ Decide first whether traversal order is required, whether integer index access i
 - Consider degenerate edges, seams, periodic surfaces, reversed orientations, empty shapes, and boundary parameter values when the affected algorithm permits them.
 - Check mathematical and API preconditions: normalization thresholds, valid ranges, finite values where required, and valid derivative assumptions. For example, `gp_Vec::Normalize()` requires a magnitude above `gp::Resolution()`, not merely above zero. Handle documented degeneracy at the responsible algorithm level.
 - Preserve topology/geometry consistency, including pcurves, locations, and tolerances when affected. Do not use meshing or display changes to conceal a modeling error.
-- When topology changes, use validity checks for the active representation, such as `BRepCheck_Analyzer` for `TopoDS` shapes or the relevant BRepGraph checks. Do not add a conversion only to use a familiar checker. Validate the requested geometric result too; validity alone does not prove correctness.
+- When topology changes, use validity checks for the active representation, such as `BRepCheck_Analyzer` for `TopoDS` shapes. Do not add a conversion only to use a familiar checker. Validate the requested geometric result too; validity alone does not prove correctness.
 
 ### Numerical algorithms
 

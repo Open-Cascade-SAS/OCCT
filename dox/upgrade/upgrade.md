@@ -1737,17 +1737,6 @@ A new `GeomBndLib` package provides geometry-aware bounding boxes for all standa
 
 The new `ExtremaPC` package provides point-to-curve extrema computation with per-geometry specialized evaluators (`ExtremaPC_Line`, `ExtremaPC_Circle`, `ExtremaPC_Ellipse`, `ExtremaPC_Hyperbola`, `ExtremaPC_BezierCurve`, `ExtremaPC_BSplineCurve`, `ExtremaPC_OffsetCurve`) and an `ExtremaPC_Curve` aggregator dispatcher.
 
-@subsection upgrade_800_brepgraph BRepGraph- graph-based BRep representation
-
-OCCT 8.0.0 introduces a new graph-based representation of topology and BRep geometry as an alternative to the linked `TopoDS_Shape` data structure. The foundation is split across two layers:
-
-- `BRepGraph` (public)- typed `BRepGraph_NodeId` identifiers, multiple Views (`TopoView`, `RefsView`, `CacheView`, `BuilderView`), bidirectional parent/child explorers (`BRepGraph_ChildExplorer`, `BRepGraph_ParentExplorer`, `BRepGraph_WireExplorer`), iterators (`BRepGraph_DefsIterator`, `BRepGraph_RefsIterator`, `BRepGraph_RelatedIterator`, `BRepGraph_CacheKindIterator`, `BRepGraph_LayerIterator`), extensible Layer/Cache system, mutation guards (`BRepGraph_MutGuard`), history tracking (`BRepGraph_History`), deduplication (`BRepGraph_Deduplicate`), compaction (`BRepGraph_Compact`), deep copy (`BRepGraph_Copy`), and validation (`BRepGraph_Validate`).
-- `BRepGraphInc` (internal)- incidence-table storage with `BRepGraphInc_Populate` (`TopoDS_Shape` -> graph) and `BRepGraphInc_Reconstruct` (graph -> `TopoDS_Shape`) roundtrip conversion.
-
-`BRepGraph_Tool` is the centralized geometry-access API (analogue of `BRep_Tool`). `BRepGraph_Builder` allows programmatic graph construction without an input `TopoDS_Shape`.
-
-The graph representation is additive in 8.0.0- existing `TopoDS_Shape` code continues to work unchanged. Application code that wants to opt in can use `BRepGraphInc_Populate` and `BRepGraphInc_Reconstruct` to convert in either direction.
-
 @subsection upgrade_800_topods TopoDS_TShape redesign
 
 The `TopoDS_TShape` hierarchy has been reworked at the state and dispatch layer:
