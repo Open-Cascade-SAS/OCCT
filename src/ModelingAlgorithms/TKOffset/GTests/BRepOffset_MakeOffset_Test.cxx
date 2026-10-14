@@ -33,9 +33,11 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
 #include <GProp_GProps.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -1278,5 +1280,48 @@ TEST(BRepOffset_MakeOffsetTest, ArcJoin_FaceOrderDoesNotDependOnAddresses)
     }
     // The order the faces are summed in decides the last digits of the volume.
     EXPECT_EQ(aVolume.Mass(), aRefVolume) << "volume of run " << aRun;
+  }
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidArcRemovingBlindHoleFloorIsValid)
+{
+  // The cap split of the hole floor is oriented against the offset faces, so the quilt order
+  // decides.
+  TopoDS_Shape aBlock = BRepPrimAPI_MakeBox(gp_Pnt(-28.75, -20.0, 0.0), 57.5, 40.0, 27.5).Shape();
+  for (const gp_Pnt& aHole : {gp_Pnt(0.0, 5.0, 16.25), gp_Pnt(0.0, 10.0, 21.25)})
+  {
+    const gp_Ax2 anAxis(gp_Pnt(-28.75, aHole.Y(), aHole.Z()), gp::DX());
+    aBlock = BRepAlgoAPI_Cut(aBlock, BRepPrimAPI_MakeCylinder(anAxis, 0.75, 40.0).Shape()).Shape();
+  }
+  const gp_Pnt aFloorCentre(11.25, 10.0, 21.25);
+  // A fresh copy gives the shapes other addresses, so a hash order dependence shows.
+  for (int aCopy = 0; aCopy < 20; ++aCopy)
+  {
+    const TopoDS_Shape             aShape = BRepBuilderAPI_Copy(aBlock, false).Shape();
+    NCollection_List<TopoDS_Shape> aRemoved;
+    for (TopExp_Explorer anExp(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      GProp_GProps aProps;
+      BRepGProp::SurfaceProperties(anExp.Current(), aProps);
+      if (aProps.CentreOfMass().Distance(aFloorCentre) < 1.0e-3)
+      {
+        aRemoved.Append(anExp.Current());
+      }
+    }
+    ASSERT_EQ(aRemoved.Size(), 1);
+    BRepOffsetAPI_MakeThickSolid aMaker;
+    aMaker.MakeThickSolidByJoin(aShape,
+                                aRemoved,
+                                -1.95,
+                                1.0e-3,
+                                BRepOffset_Skin,
+                                false,
+                                false,
+                                GeomAbs_Arc);
+    ASSERT_TRUE(aMaker.IsDone()) << "copy " << aCopy;
+    EXPECT_TRUE(BRepCheck_Analyzer(aMaker.Shape()).IsValid()) << "copy " << aCopy;
+    GProp_GProps aVolume;
+    BRepGProp::VolumeProperties(aMaker.Shape(), aVolume);
+    EXPECT_NEAR(aVolume.Mass(), 19219.48, 0.01) << "copy " << aCopy;
   }
 }
