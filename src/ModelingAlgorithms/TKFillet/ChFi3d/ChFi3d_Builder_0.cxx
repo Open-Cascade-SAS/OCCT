@@ -3346,7 +3346,16 @@ void ChFi3d_FilDS(const int                         SolidIndex,
 
 //=======================================================================
 
-bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter& theIntersector)
+namespace
+{
+//! Sine of the largest angle between two curves that still counts as tangent.
+constexpr double THE_TANGENT_SIN = 1.e-6;
+} // namespace
+
+bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter&    theIntersector,
+                                       const Geom2dAdaptor_Curve& theFirstCurve,
+                                       const Geom2dAdaptor_Curve& theSecondCurve,
+                                       const double               theTolerance)
 {
   for (int anIndex = 1; anIndex <= theIntersector.NbPoints(); ++anIndex)
   {
@@ -3355,6 +3364,36 @@ bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter& theIntersector)
     const IntRes2d_TypeTrans          aSecondType = aPoint.TransitionOfSecond().TransitionType();
     if (aFirstType == IntRes2d_In || aFirstType == IntRes2d_Out || aSecondType == IntRes2d_In
         || aSecondType == IntRes2d_Out)
+    {
+      return true;
+    }
+  }
+  // Curves that cross are reported as a segment, not a point: a crossing unless tangent there.
+  for (int anIndex = 1; anIndex <= theIntersector.NbSegments(); ++anIndex)
+  {
+    const IntRes2d_IntersectionSegment& aSegment = theIntersector.Segment(anIndex);
+    if (!aSegment.HasFirstPoint() || !aSegment.HasLastPoint())
+    {
+      continue;
+    }
+    const IntRes2d_IntersectionPoint& aFirstPoint = aSegment.FirstPoint();
+    const auto                        isEnd = [theTolerance](const double               theParameter,
+                                      const Geom2dAdaptor_Curve& theCurve) {
+      return std::abs(theParameter - theCurve.FirstParameter()) <= theTolerance
+             || std::abs(theParameter - theCurve.LastParameter()) <= theTolerance;
+    };
+    if (isEnd(aFirstPoint.ParamOnFirst(), theFirstCurve)
+        && isEnd(aFirstPoint.ParamOnSecond(), theSecondCurve))
+    {
+      continue; // the curves join end to end: not a crossing
+    }
+    gp_Pnt2d aPoint;
+    gp_Vec2d aFirstTangent, aSecondTangent;
+    theFirstCurve.D1(aFirstPoint.ParamOnFirst(), aPoint, aFirstTangent);
+    theSecondCurve.D1(aFirstPoint.ParamOnSecond(), aPoint, aSecondTangent);
+    const double aNorms = aFirstTangent.Magnitude() * aSecondTangent.Magnitude();
+    if (aNorms > gp::Resolution()
+        && std::abs(aFirstTangent.Crossed(aSecondTangent)) > THE_TANGENT_SIN * aNorms)
     {
       return true;
     }
@@ -3549,7 +3588,7 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
       {
         DStr.MergeEquivalentCurves(aFI1.LineIndex(), aFI2.LineIndex(), isReversed);
       }
-      if (ChFi3d_HasTransversalIntersection(anIntersector))
+      if (ChFi3d_HasTransversalIntersection(anIntersector, aPCurve1, aPCurve2, tol2d))
       {
         throw StdFail_NotDone("StripeEdgeInter : fillets have too big radiuses");
       }

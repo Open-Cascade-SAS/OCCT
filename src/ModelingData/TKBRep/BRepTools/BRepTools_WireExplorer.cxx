@@ -812,8 +812,14 @@ double GetNextParamOnPC(const occ::handle<Geom2d_Curve>& aPC,
     bool   nextPntOnEdge = false;
     while (!nextPntOnEdge && startPar < lP)
     {
-      gp_Pnt2d pnt;
+      gp_Pnt2d     pnt;
+      const double aPrevPar = startPar;
       startPar += dP;
+      // A step below the spacing of the parameter makes no progress.
+      if (startPar <= aPrevPar)
+      {
+        break;
+      }
       aPC->D0(startPar, pnt);
       if (std::abs(aPRef.X() - pnt.X()) < tolU && std::abs(aPRef.Y() - pnt.Y()) < tolV)
       {
@@ -843,8 +849,14 @@ double GetNextParamOnPC(const occ::handle<Geom2d_Curve>& aPC,
     bool   nextPntOnEdge = false;
     while (!nextPntOnEdge && startPar > fP)
     {
-      gp_Pnt2d pnt;
+      gp_Pnt2d     pnt;
+      const double aPrevPar = startPar;
       startPar -= dP;
+      // A step below the spacing of the parameter makes no progress.
+      if (startPar >= aPrevPar)
+      {
+        break;
+      }
       aPC->D0(startPar, pnt);
       if (std::abs(aPRef.X() - pnt.X()) < tolU && std::abs(aPRef.Y() - pnt.Y()) < tolV)
       {
