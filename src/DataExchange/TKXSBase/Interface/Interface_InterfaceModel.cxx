@@ -33,6 +33,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 
+#include <mutex>
+
 IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel, Standard_Transient)
 
 // An Interface Model is a closed set of interface Entities: each one
@@ -42,6 +44,14 @@ IMPLEMENT_STANDARD_RTTIEXT(Interface_InterfaceModel, Standard_Transient)
 // It is able to be used in Graph processing
 // STATICS : the TEMPLATES
 static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> atemp;
+
+//! Guards atemp, the process-wide registry of template models. Recursive because Template() calls
+//! HasTemplate().
+static std::recursive_mutex& atempMutex()
+{
+  static std::recursive_mutex THE_MUTEX;
+  return THE_MUTEX;
+}
 
 static const occ::handle<Standard_Type>& typerep()
 {
@@ -1100,6 +1110,7 @@ int Interface_InterfaceModel::NextNumberForLabel(const char* const label,
 
 bool Interface_InterfaceModel::HasTemplate(const char* const name)
 {
+  std::lock_guard<std::recursive_mutex> aLock(atempMutex());
   return atemp.IsBound(name);
 }
 
@@ -1107,6 +1118,7 @@ bool Interface_InterfaceModel::HasTemplate(const char* const name)
 
 occ::handle<Interface_InterfaceModel> Interface_InterfaceModel::Template(const char* const name)
 {
+  std::lock_guard<std::recursive_mutex> aLock(atempMutex());
   occ::handle<Interface_InterfaceModel> model, newmod;
   if (!HasTemplate(name))
   {
@@ -1123,6 +1135,7 @@ occ::handle<Interface_InterfaceModel> Interface_InterfaceModel::Template(const c
 bool Interface_InterfaceModel::SetTemplate(const char* const                            name,
                                            const occ::handle<Interface_InterfaceModel>& model)
 {
+  std::lock_guard<std::recursive_mutex> aLock(atempMutex());
   return atemp.Bind(name, model);
 }
 
@@ -1131,6 +1144,8 @@ bool Interface_InterfaceModel::SetTemplate(const char* const                    
 occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_InterfaceModel::
   ListTemplates()
 {
+  std::lock_guard<std::recursive_mutex> aLock(atempMutex());
+
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list =
     new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
   if (atemp.IsEmpty())
