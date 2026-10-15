@@ -2453,7 +2453,7 @@ bool IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsoparametric th
         case IntWalk_StepTooSmall:
         case IntWalk_ArretSurPoint: {
           //
-          bStop = TestArret(theDirectionFlag, Param, ChoixIso);
+          bStop = TestArret(theDirectionFlag, Param, ChoixIso) || aStatus == IntWalk_ArretSurPoint;
           //
 
           //

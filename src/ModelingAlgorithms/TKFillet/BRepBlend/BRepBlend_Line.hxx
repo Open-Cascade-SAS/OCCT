@@ -18,18 +18,27 @@
 #define _BRepBlend_Line_HeaderFile
 
 #include <Blend_Point.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <BRepBlend_Extremity.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
+#include <memory>
 
-class Blend_Point;
-
+//! Stores walking points with indexed access.
 class BRepBlend_Line : public Standard_Transient
 {
 
 public:
   Standard_EXPORT BRepBlend_Line();
+
+  //! Copies line data with independent point storage.
+  //! @param[in] theOther line to copy
+  Standard_EXPORT BRepBlend_Line(const BRepBlend_Line& theOther);
+
+  //! Copies line data.
+  //! @param[in] theOther line to copy
+  //! @return this line
+  Standard_EXPORT BRepBlend_Line& operator=(const BRepBlend_Line& theOther);
 
   //! Clears the content of the line.
   Standard_EXPORT void Clear();
@@ -65,6 +74,7 @@ public:
   int NbPoints() const;
 
   //! Returns the point of range Index.
+  //! References remain valid until removal, Clear or assignment.
   const Blend_Point& Point(const int Index) const;
 
   //! Returns the type of the transition of the line defined
@@ -105,7 +115,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepBlend_Line, Standard_Transient)
 
 private:
-  NCollection_Sequence<Blend_Point> seqpt;
+  //! Owned walking points in parameter order.
+  NCollection_LinearVector<std::unique_ptr<Blend_Point>> myPoints;
   IntSurf_TypeTrans                 tras1;
   IntSurf_TypeTrans                 tras2;
   BRepBlend_Extremity               stp1;

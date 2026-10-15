@@ -58,6 +58,7 @@
 #include <Extrema_ExtPS.hxx>
 #include <GCPnts_QuasiUniformAbscissa.hxx>
 #include <Standard_DomainError.hxx>
+#include <algorithm>
 // #include <GeomLib_IsIso.hxx>
 // #include <GeomLib_CheckSameParameter.hxx>
 
@@ -69,6 +70,7 @@ struct aFuncStruct
 {
   aFuncStruct() // Empty constructor.
       : mySqProjOrtTol(0.0),
+        mySquareTolerance(0.0),
         myTolU(0.0),
         myTolV(0.0)
   {
@@ -79,6 +81,7 @@ struct aFuncStruct
   occ::handle<Adaptor3d_Curve>   myCurve;        // Curve to project.
   occ::handle<Adaptor2d_Curve2d> myInitCurve2d;  // Initial 2dcurve projection.
   double                         mySqProjOrtTol; // Used to filter non-orthogonal projected point.
+  double                         mySquareTolerance; // Squared distance allowed by the projection.
   double                         myTolU;
   double                         myTolV;
   double                         myPeriod[2]; // U and V period correspondingly.
@@ -178,6 +181,12 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
   gp_Pnt   p            = theData.myCurve->Value(theU);
   gp_Pnt   aSurfPnt     = theData.mySurf->Value(p2d.X(), p2d.Y());
   double   aSurfPntDist = aSurfPnt.SquareDistance(p);
+
+  // Retain a converged hint within the geometric confusion.
+  if (aSurfPntDist <= theData.mySquareTolerance)
+  {
+    return p2d;
+  }
 
   double Uinf, Usup, Vinf, Vsup;
   Uinf = theData.mySurf->FirstUParameter();
@@ -491,6 +500,7 @@ public:
     myStruct.myInitCurve2d  = InitialCurve2d;
     myStruct.mySurf         = Surf;
     myStruct.mySqProjOrtTol = 10000.0 * Tol3d * Tol3d;
+    myStruct.mySquareTolerance = std::min(Tol3d * Tol3d, Precision::SquareConfusion());
     myStruct.myTolU         = Surf->UResolution(Tol3d);
     myStruct.myTolV         = Surf->VResolution(Tol3d);
   }

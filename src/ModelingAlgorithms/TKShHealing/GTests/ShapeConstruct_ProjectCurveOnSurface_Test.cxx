@@ -13,6 +13,10 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
+#include <cmath>
+#include <gp_XY.hxx>
+
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 
@@ -39,6 +43,44 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
+#include <gp_Pnt2d.hxx>
+
+TEST(ShapeAnalysis_SurfaceTest, ConvergedHintAtSingularityKeepsParameters)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  aPoles.SetValue(1, 1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(2, 1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(1, 2, gp_Pnt(1.0, 0.0, 1.0));
+  aPoles.SetValue(2, 2, gp_Pnt(0.0, 1.0, 1.0));
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+  NCollection_Array1<int> aMultiplicities(1, 2);
+  aMultiplicities.Init(2);
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMultiplicities, aMultiplicities, 1, 1);
+  ShapeAnalysis_Surface anAnalysis(aSurface);
+  for (const double aU : {0.0, 0.375, 1.0})
+  {
+    SCOPED_TRACE(aU);
+    const gp_Pnt2d aHint(aU, 0.0);
+    const gp_Pnt   aPoint  = aSurface->EvalD0(aHint.X(), aHint.Y());
+    const gp_Pnt2d aResult = anAnalysis.NextValueOfUV(aHint, aPoint, Precision::Confusion());
+    EXPECT_DOUBLE_EQ(aResult.X(), aHint.X());
+    EXPECT_DOUBLE_EQ(aResult.Y(), aHint.Y());
+    EXPECT_LE(aPoint.Distance(aSurface->EvalD0(aResult.X(), aResult.Y())), Precision::Confusion());
+  }
+  const double   aTolerance = Precision::Confusion();
+  const gp_Pnt2d aHint(0.375, 0.0);
+  const gp_Pnt   aClosePoint(0.0, 0.0, 0.5 * aTolerance);
+  const gp_Pnt2d aCloseResult = anAnalysis.NextValueOfUV(aHint, aClosePoint, aTolerance);
+  EXPECT_DOUBLE_EQ(aCloseResult.X(), aHint.X());
+  EXPECT_DOUBLE_EQ(aCloseResult.Y(), aHint.Y());
+  const gp_Pnt   aDistantPoint  = aSurface->EvalD0(aHint.X(), 0.25);
+  const gp_Pnt2d aDistantResult = anAnalysis.NextValueOfUV(aHint, aDistantPoint, aTolerance);
+  EXPECT_LE(aDistantPoint.Distance(aSurface->EvalD0(aDistantResult.X(), aDistantResult.Y())),
+            aTolerance);
+}
 
 //=================================================================================================
 // Test fixture for ShapeConstruct_ProjectCurveOnSurface
@@ -996,4 +1038,89 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_HighMultiplicityBSplin
   // for curves with degenerate sections (repeated poles)
   EXPECT_TRUE(aResult) << "Projection should succeed for B-spline with degenerate section";
   EXPECT_FALSE(aPCurve.IsNull()) << "PCurve should be created";
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, PeriodicBoundaryWithSingularEndpoints)
+{
+  const std::array<gp_XY, 10> aRing     = {gp_XY(1.0, 0.0),
+                                           gp_XY(1.0, 0.25),
+                                           gp_XY(0.75, 0.75),
+                                           gp_XY(0.0, 1.1),
+                                           gp_XY(-0.75, 0.75),
+                                           gp_XY(-1.0, 0.0),
+                                           gp_XY(-0.75, -0.75),
+                                           gp_XY(0.0, -1.1),
+                                           gp_XY(0.75, -0.75),
+                                           gp_XY(1.0, -0.25)};
+  const std::array<gp_XY, 7>  aMeridian = {gp_XY(0.0, -50.0),
+                                           gp_XY(12.0, -50.0),
+                                           gp_XY(36.0, -40.0),
+                                           gp_XY(54.0, 0.0),
+                                           gp_XY(36.0, 40.0),
+                                           gp_XY(12.0, 50.0),
+                                           gp_XY(0.0, 50.0)};
+  NCollection_Array2<gp_Pnt>  aPoles(1, 10, 1, 7);
+  for (size_t aU = 0; aU < aRing.size(); ++aU)
+  {
+    for (size_t aV = 0; aV < aMeridian.size(); ++aV)
+    {
+      aPoles.ChangeAt(aU, aV) = gp_Pnt(aRing[aU].X() * aMeridian[aV].X(),
+                                       aRing[aU].Y() * aMeridian[aV].X(),
+                                       aMeridian[aV].Y());
+    }
+  }
+  NCollection_Array1<double> aUKnots(1, 9);
+  NCollection_Array1<int>    aUMults(1, 9);
+  aUMults.Init(1);
+  aUMults.ChangeAt(0) = aUMults.ChangeAt(aUMults.Size() - 1) = 3;
+  for (size_t aU = 0; aU < aUKnots.Size(); ++aU)
+  {
+    aUKnots.ChangeAt(aU) = 2.0 + aU;
+  }
+  NCollection_Array1<double> aVKnots(1, 5);
+  NCollection_Array1<int>    aVMults(1, 5);
+  aVMults.Init(1);
+  aVMults.ChangeAt(0) = aVMults.ChangeAt(aVMults.Size() - 1) = 4;
+  for (size_t aV = 0; aV < aVKnots.Size(); ++aV)
+  {
+    aVKnots.ChangeAt(aV) = 2.0 + aV;
+  }
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3, true, false);
+  for (const bool toExchange : {false, true})
+  {
+    if (toExchange)
+    {
+      aSurface->ExchangeUV();
+    }
+    for (const double aBoundary : {2.0, 10.0})
+    {
+      for (const bool toReverse : {false, true})
+      {
+        SCOPED_TRACE(toExchange);
+        SCOPED_TRACE(aBoundary);
+        SCOPED_TRACE(toReverse);
+        const occ::handle<Geom_Curve> aCurve =
+          toExchange ? aSurface->VIso(aBoundary) : aSurface->UIso(aBoundary);
+        if (toReverse)
+        {
+          aCurve->Reverse();
+        }
+        ShapeConstruct_ProjectCurveOnSurface aProjector;
+        aProjector.Init(aSurface, 0.1);
+        occ::handle<Geom2d_Curve> aPCurve;
+        ASSERT_TRUE(aProjector.Perform(aCurve, 2.0, 6.0, aPCurve));
+        ASSERT_FALSE(aPCurve.IsNull());
+        for (int aSample = 0; aSample <= 32; ++aSample)
+        {
+          const double   aParam = 2.0 + 4.0 * aSample / 32.0;
+          const gp_Pnt2d aUV    = aPCurve->EvalD0(aParam);
+          EXPECT_LE(aCurve->EvalD0(aParam).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())),
+                    Precision::Confusion());
+        }
+      }
+    }
+  }
 }

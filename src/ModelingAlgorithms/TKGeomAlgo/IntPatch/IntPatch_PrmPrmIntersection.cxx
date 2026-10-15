@@ -952,7 +952,23 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   double pu1, pu2, pv1, pv2;
 
   NCollection_Array1<double> StartParams(1, 4);
-  IntWalk_PWalking           PW(Surf1, Surf1, TolTangency, Epsilon, Deflection, Increment);
+  // Keep independent evaluation caches for the two parameter pairs.
+  const occ::handle<Adaptor3d_Surface> aSecondSurface = Surf1->ShallowCopy();
+  IntWalk_PWalking PW(Surf1, aSecondSurface, TolTangency, Epsilon, Deflection, Increment);
+
+  const double aUClosure =
+    Surf1->IsUClosed() ? Surf1->LastUParameter() - Surf1->FirstUParameter() : 0.0;
+  const double aVClosure =
+    Surf1->IsVClosed() ? Surf1->LastVParameter() - Surf1->FirstVParameter() : 0.0;
+  const double aParameterTolerance = Precision::Confusion();
+  // A closed seam has two parameter representations of the same surface point.
+  const auto isSamePoint = [&](double theU1, double theV1, double theU2, double theV2) {
+    const double aDU = std::abs(theU1 - theU2), aDV = std::abs(theV1 - theV2);
+    return (aDU <= aParameterTolerance
+            || (aUClosure > 0.0 && std::abs(aDU - aUClosure) <= aParameterTolerance))
+           && (aDV <= aParameterTolerance
+               || (aVClosure > 0.0 && std::abs(aDV - aVClosure) <= aParameterTolerance));
+  };
 
   double SeuildPointLigne = 15.0 * Increment * Increment; //-- 10 est insuffisant
   double incidence;
@@ -1048,7 +1064,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
         if (HasStartPoint)
         {
           StartPOn2S.Parameters(pu1, pv1, pu2, pv2);
-          if (std::abs(pu1 - pu2) > 1e-7 || std::abs(pv1 - pv2) > 1e-7)
+          if (!isSamePoint(pu1, pv1, pu2, pv2))
           {
             NbLigCalculee = SLin.Length();
             int l;
@@ -1264,7 +1280,7 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
       if (HasStartPoint)
       {
         StartPOn2S.Parameters(pu1, pv1, pu2, pv2);
-        if (std::abs(pu1 - pu2) > 1e-7 || std::abs(pv1 - pv2) > 1e-7)
+        if (!isSamePoint(pu1, pv1, pu2, pv2))
         {
           NbLigCalculee   = SLin.Length();
           dminiPointLigne = SeuildPointLigne + SeuildPointLigne;

@@ -591,7 +591,11 @@ TEST(BSplCLibTest, AllDerivativesRetainSmallEndpointWeights)
     const double               aFirstPole = std::pow(1.e16, aDegree);
     NCollection_Array1<double> aPoles(aDegree + 1);
     aPoles.Init(0.0);
-    aPoles.ChangeAt(0) = aFirstPole;
+    aPoles.ChangeAt(0)                = aFirstPole;
+    NCollection_Array1<double> aValue = aPoles;
+    BSplCLib::Eval(aParameter, aDegree, aKnots.ChangeAt(0), 1, aValue.ChangeAt(0));
+    const double anExpectedValue = aFirstPole * std::pow(aDistance, aDegree);
+    EXPECT_NEAR(aValue.At(0), anExpectedValue, 2.e-14 * std::abs(anExpectedValue));
     BSplCLib::Bohm(aParameter, aDegree, aDegree, aKnots.ChangeAt(0), 1, aPoles.ChangeAt(0));
     double aFactor = aFirstPole;
     for (size_t aDerivative = 0; aDerivative <= static_cast<size_t>(aDegree); ++aDerivative)
@@ -656,6 +660,19 @@ TEST(BSplCLibTest, AllDerivativesOfHighDegreePolynomial)
     for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
     {
       aPoles.ChangeAt(aDegree * aDimension + aCoordinate) = static_cast<double>(aCoordinate + 1);
+    }
+    NCollection_Array1<double> aValue = aPoles;
+    BSplCLib::Eval(aParameter, aDegree, aKnots.ChangeAt(0), aDimension, aValue.ChangeAt(0));
+    NCollection_Array1<double> aPosition = aPoles;
+    BSplCLib::Bohm(aParameter, aDegree, 0, aKnots.ChangeAt(0), aDimension, aPosition.ChangeAt(0));
+    for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
+    {
+      const double anExpected =
+        static_cast<double>(aCoordinate + 1) * std::pow(aParameter, aDegree);
+      EXPECT_NEAR(aValue.At(aCoordinate), anExpected, 1.e-12 * std::max(1.0, std::abs(anExpected)));
+      EXPECT_NEAR(aPosition.At(aCoordinate),
+                  anExpected,
+                  1.e-12 * std::max(1.0, std::abs(anExpected)));
     }
     BSplCLib::Bohm(aParameter,
                    aDegree,

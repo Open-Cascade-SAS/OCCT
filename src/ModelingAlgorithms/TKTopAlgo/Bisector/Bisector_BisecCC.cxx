@@ -83,6 +83,7 @@ Bisector_BisecCC::Bisector_BisecCC(const occ::handle<Geom2d_Curve>& Cu1,
                                    const double                     Side2,
                                    const gp_Pnt2d&                  Origin,
                                    const double                     DistMax)
+    : Bisector_BisecCC()
 {
   Perform(Cu1, Cu2, Side1, Side2, Origin, DistMax);
 }
@@ -831,31 +832,21 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, do
   {
     U2 = curve2->FirstParameter();
     curve2->D1(U2, P2, Tan2);
-    if (isConvex1 && isConvex2)
-    {
-      Dist = 0.;
-      return P1;
-    }
-    if (!Tan1.IsParallel(Tan2, Precision::Angular()))
-    {
-      Dist = 0.;
-      return P1;
-    }
+    // Parallel tangents at a concave contact define a normal extension.
+    Dist = (isConvex1 && isConvex2) || !Tan1.IsParallel(Tan2, Precision::Angular())
+             ? 0.0
+             : Precision::Infinite();
+    return P1;
   }
   if (P1.Distance(curve2->Value(curve2->LastParameter())) < Precision::Confusion())
   {
     U2 = curve2->LastParameter();
     curve2->D1(U2, P2, Tan2);
-    if (isConvex1 && isConvex2)
-    {
-      Dist = 0.;
-      return P1;
-    }
-    if (!Tan1.IsParallel(Tan2, Precision::Angular()))
-    {
-      Dist = 0.;
-      return P1;
-    }
+    // Parallel tangents at a concave contact define a normal extension.
+    Dist = (isConvex1 && isConvex2) || !Tan1.IsParallel(Tan2, Precision::Angular())
+             ? 0.0
+             : Precision::Infinite();
+    return P1;
   }
 
   bool   YaSol = false;

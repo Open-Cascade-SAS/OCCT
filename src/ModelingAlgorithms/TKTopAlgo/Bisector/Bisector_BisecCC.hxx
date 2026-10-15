@@ -140,6 +140,7 @@ public:
   //! the two curves I separate.
   //! Computes the parameters on each curve corresponding
   //! of the projection of the current point.
+  //! @param[out] Distance squared distance, or Precision::Infinite() for no isolated intersection.
   Standard_EXPORT gp_Pnt2d ValueByInt(const double U,
                                       double&      U1,
                                       double&      U2,

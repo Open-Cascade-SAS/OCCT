@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <limits>
 #include <utility>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
@@ -25,6 +26,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib_CheckCurveOnSurface.hxx>
+#include <Geom_UndefinedValue.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
@@ -44,6 +46,160 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, CompositionRetainsShiftedSurfaceParameters)
+{
+  constexpr double aLargeOrigin = 1073741824.0;
+  for (const double anOrigin : {0.0, aLargeOrigin, -aLargeOrigin})
+  {
+    SCOPED_TRACE(anOrigin);
+    NCollection_Array1<gp_Pnt> aCurvePoles(1, 3);
+    aCurvePoles.ChangeAt(0) = gp_Pnt(0.0, 0.0, 0.0);
+    aCurvePoles.ChangeAt(1) = gp_Pnt(0.5, 0.0, 0.0);
+    aCurvePoles.ChangeAt(2) = gp_Pnt(1.0, 1.0, 0.0);
+    NCollection_Array1<gp_Pnt2d> aPCurvePoles(1, 3);
+    NCollection_Array2<gp_Pnt>   aSurfacePoles(1, 3, 1, 2);
+    for (size_t anIndex = 0; anIndex < 3; ++anIndex)
+    {
+      aPCurvePoles.ChangeAt(anIndex)     = gp_Pnt2d(anOrigin + 0.5 * double(anIndex), 0.0);
+      aSurfacePoles.ChangeAt(anIndex, 0) = aCurvePoles.At(anIndex);
+      aSurfacePoles.ChangeAt(anIndex, 1) =
+        aCurvePoles.At(anIndex).Translated(gp_Vec(0.0, 0.0, 1.0));
+    }
+    NCollection_Array1<double> aKnots(1, 2), aUKnots(1, 2);
+    aKnots.ChangeAt(0)  = 0.0;
+    aKnots.ChangeAt(1)  = 1.0;
+    aUKnots.ChangeAt(0) = anOrigin;
+    aUKnots.ChangeAt(1) = anOrigin + 1.0;
+    NCollection_Array1<int> aUMultiplicities(1, 2), aVMultiplicities(1, 2);
+    aUMultiplicities.Init(3);
+    aVMultiplicities.Init(2);
+    const occ::handle<Geom_BSplineCurve> aCurve =
+      new Geom_BSplineCurve(aCurvePoles, aKnots, aUMultiplicities, 2);
+    const occ::handle<Geom2d_BSplineCurve> aPCurve =
+      new Geom2d_BSplineCurve(aPCurvePoles, aKnots, aUMultiplicities, 2);
+    const occ::handle<Geom_BSplineSurface>      aSurface   = new Geom_BSplineSurface(aSurfacePoles,
+                                                                              aUKnots,
+                                                                              aKnots,
+                                                                              aUMultiplicities,
+                                                                              aVMultiplicities,
+                                                                              2,
+                                                                              1);
+    const occ::handle<Adaptor3d_Curve>          aReference = new GeomAdaptor_Curve(aCurve);
+    const occ::handle<Adaptor3d_CurveOnSurface> anOther =
+      new Adaptor3d_CurveOnSurface(new Geom2dAdaptor_Curve(aPCurve),
+                                   new GeomAdaptor_Surface(aSurface));
+    GeomLib_CheckCurveOnSurface aCheck(aReference);
+    aCheck.Perform(anOther);
+    ASSERT_TRUE(aCheck.IsDone());
+    EXPECT_LE(aCheck.MaxDistance(), RealEpsilon());
+  }
+}
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, DenseKnotsKeepConstantDeviation)
+{
+  constexpr int              aNbSpans = 128;
+  constexpr double           aGap     = 0.125;
+  NCollection_Array1<gp_Pnt> aCurvePoles(1, 3);
+  aCurvePoles.ChangeAt(0) = gp_Pnt(0.0, 0.0, aGap);
+  aCurvePoles.ChangeAt(1) = gp_Pnt(0.5, 0.0, aGap);
+  aCurvePoles.ChangeAt(2) = gp_Pnt(1.0, 1.0, aGap);
+  NCollection_Array1<gp_Pnt2d> aPCurvePoles(1, 3);
+  NCollection_Array2<gp_Pnt>   aSurfacePoles(1, 3, 1, 2);
+  for (size_t anIndex = 0; anIndex < 3; ++anIndex)
+  {
+    aPCurvePoles.ChangeAt(anIndex) = gp_Pnt2d(0.5 * double(anIndex), 0.0);
+    aSurfacePoles.ChangeAt(anIndex, 0) =
+      gp_Pnt(aCurvePoles.At(anIndex).X(), aCurvePoles.At(anIndex).Y(), 0.0);
+    aSurfacePoles.ChangeAt(anIndex, 1) =
+      aSurfacePoles.At(anIndex, 0).Translated(gp_Vec(0.0, 0.0, 1.0));
+  }
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 1.0;
+  NCollection_Array1<int> aUMultiplicities(1, 2), aVMultiplicities(1, 2);
+  aUMultiplicities.Init(3);
+  aVMultiplicities.Init(2);
+  const occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aCurvePoles, aKnots, aUMultiplicities, 2);
+  const occ::handle<Geom2d_BSplineCurve> aPCurve =
+    new Geom2d_BSplineCurve(aPCurvePoles, aKnots, aUMultiplicities, 2);
+  const occ::handle<Geom_BSplineSurface> aSurface = new Geom_BSplineSurface(aSurfacePoles,
+                                                                            aKnots,
+                                                                            aKnots,
+                                                                            aUMultiplicities,
+                                                                            aVMultiplicities,
+                                                                            2,
+                                                                            1);
+  for (int anIndex = 1; anIndex < aNbSpans; ++anIndex)
+  {
+    const double aParameter = double(anIndex) / aNbSpans;
+    aCurve->InsertKnot(aParameter);
+    aPCurve->InsertKnot(aParameter);
+  }
+  const occ::handle<Adaptor3d_Curve>          aReference = new GeomAdaptor_Curve(aCurve);
+  const occ::handle<Adaptor3d_CurveOnSurface> anOther =
+    new Adaptor3d_CurveOnSurface(new Geom2dAdaptor_Curve(aPCurve),
+                                 new GeomAdaptor_Surface(aSurface));
+  GeomLib_CheckCurveOnSurface aCheck(aReference);
+  for (const bool isParallel : {false, true})
+  {
+    SCOPED_TRACE(isParallel);
+    aCheck.SetParallel(isParallel);
+    aCheck.Perform(anOther);
+    ASSERT_TRUE(aCheck.IsDone());
+    EXPECT_NEAR(aCheck.MaxDistance(), aGap, RealEpsilon());
+  }
+}
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, MaximumIsIndependentOfParameterScale)
+{
+  constexpr double aGap = 0.2;
+  for (const double aParameterScale : {1.0, 1.e-12})
+  {
+    SCOPED_TRACE(aParameterScale);
+    NCollection_Array1<gp_Pnt> aPoles3d(1, 3);
+    aPoles3d.ChangeAt(0) = gp_Pnt(0.0, 0.0, 0.0);
+    aPoles3d.ChangeAt(1) = gp_Pnt(0.5, 1.0, 0.0);
+    aPoles3d.ChangeAt(2) = gp_Pnt(1.0, 0.0, 0.0);
+    NCollection_Array1<gp_Pnt2d> aPoles2d(1, 3);
+    aPoles2d.ChangeAt(0) = gp_Pnt2d(0.0, 0.0);
+    aPoles2d.ChangeAt(1) = gp_Pnt2d(0.5, 1.0 + aGap);
+    aPoles2d.ChangeAt(2) = gp_Pnt2d(1.0, 0.0);
+    NCollection_Array1<double> aKnots(1, 2);
+    aKnots.ChangeAt(0) = 0.0;
+    aKnots.ChangeAt(1) = aParameterScale;
+    NCollection_Array1<int> aMultiplicities(1, 2);
+    aMultiplicities.Init(3);
+    const occ::handle<Geom_BSplineCurve> aCurve =
+      new Geom_BSplineCurve(aPoles3d, aKnots, aMultiplicities, 2);
+    const occ::handle<Geom2d_BSplineCurve> aPCurve =
+      new Geom2d_BSplineCurve(aPoles2d, aKnots, aMultiplicities, 2);
+    const occ::handle<Geom_Plane>               aPlane     = new Geom_Plane(gp_Ax3());
+    const occ::handle<Adaptor3d_Curve>          aReference = new GeomAdaptor_Curve(aCurve);
+    const occ::handle<Adaptor3d_CurveOnSurface> anOther =
+      new Adaptor3d_CurveOnSurface(new Geom2dAdaptor_Curve(aPCurve),
+                                   new GeomAdaptor_Surface(aPlane));
+    GeomLib_CheckCurveOnSurface aCheck(aReference);
+    for (const bool isParallel : {false, true})
+    {
+      SCOPED_TRACE(isParallel);
+      aCheck.SetParallel(isParallel);
+      aCheck.Perform(anOther);
+      ASSERT_EQ(aCheck.ErrorStatus(), 0);
+      EXPECT_NEAR(aCheck.MaxDistance(), 0.5 * aGap, Precision::Confusion());
+      EXPECT_GE(aCheck.MaxParameter(), 0.0);
+      EXPECT_LE(aCheck.MaxParameter(), aParameterScale);
+      const gp_Pnt2d aUV = aPCurve->EvalD0(aCheck.MaxParameter());
+      EXPECT_NEAR(aCurve->EvalD0(aCheck.MaxParameter()).Distance(aPlane->EvalD0(aUV.X(), aUV.Y())),
+                  aCheck.MaxDistance(),
+                  Precision::Confusion());
+    }
+  }
+}
 
 namespace
 {
@@ -712,6 +868,19 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, SplineResidualAcrossSurfacePatches)
       const double aBasisMaximum = hasInnerKnots ? 0.75 : 0.5;
       EXPECT_NEAR(aCheck.MaxDistance(), aBasisMaximum * (aPoles.At(aMiddle).Z() - aBase), 1.0e-18);
       EXPECT_NEAR(aCheck.MaxParameter(), 1.5, Precision::PConfusion());
+
+      const occ::handle<Adaptor3d_CurveOnSurface> aShiftedCoS =
+        new Adaptor3d_CurveOnSurface(aPCurve,
+                                     new GeomAdaptor_Surface(occ::down_cast<Geom_BSplineSurface>(
+                                       aSurface->Surface()->Translated(gp_Vec(0.0, 0.0, 1.0)))));
+      aCheck.Perform(aShiftedCoS);
+      ASSERT_TRUE(aCheck.IsDone());
+      EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), 1.0);
+
+      aCheck.Perform(aCoS);
+      ASSERT_TRUE(aCheck.IsDone());
+      EXPECT_NEAR(aCheck.MaxDistance(), aBasisMaximum * (aPoles.At(aMiddle).Z() - aBase), 1.0e-18);
+      EXPECT_NEAR(aCheck.MaxParameter(), 1.5, Precision::PConfusion());
     }
   }
 }
@@ -816,31 +985,38 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, SurfaceResidualPreservesEndSpanExtrapolati
   aLinearMults.Init(2);
   NCollection_Array1<gp_Pnt> aPoles(size_t{2});
   aPoles.Init(gp_Pnt(0.0, 0.0, 0.0));
-  NCollection_Array1<gp_Pnt2d> aUVPoles(size_t{2});
-  aUVPoles.ChangeAt(0) = gp_Pnt2d(0.0, 2.0);
-  aUVPoles.ChangeAt(1) = gp_Pnt2d(1.0, 2.0);
   const occ::handle<GeomAdaptor_Curve> aCurve =
     new GeomAdaptor_Curve(new Geom_BSplineCurve(aPoles, aKnots, aLinearMults, 1));
-  const occ::handle<Geom2dAdaptor_Curve> aPCurve =
-    new Geom2dAdaptor_Curve(new Geom2d_BSplineCurve(aUVPoles, aKnots, aLinearMults, 1));
-  for (const int aVDegree : {2, 9, Geom_BSplineSurface::MaxDegree()})
+  for (const double aV : {0.0, 2.0})
   {
-    SCOPED_TRACE(aVDegree);
-    NCollection_Array1<int> aVMults(size_t{2});
-    aVMults.Init(aVDegree + 1);
-    NCollection_Array2<gp_Pnt> aSurfacePoles(size_t{2}, static_cast<size_t>(aVDegree) + 1);
-    aSurfacePoles.Init(gp_Pnt(0.0, 0.0, 0.0));
-    aSurfacePoles.ChangeAt(1, static_cast<size_t>(aVDegree)).SetZ(1.0);
-    const occ::handle<GeomAdaptor_Surface> aSurface = new GeomAdaptor_Surface(
-      new Geom_BSplineSurface(aSurfacePoles, aKnots, aKnots, aLinearMults, aVMults, 1, aVDegree));
-    const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
-      new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
-    GeomLib_CheckCurveOnSurface aCheck(aCurve);
-    aCheck.Perform(aCoS);
-    ASSERT_TRUE(aCheck.IsDone());
-    // Z = U * V^degree. At V = 2, the maximum is exactly 2^degree at U = 1.
-    EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), std::ldexp(1.0, aVDegree));
-    EXPECT_NEAR(aCheck.MaxParameter(), 1.0, Precision::PConfusion());
+    SCOPED_TRACE(aV);
+    NCollection_Array1<gp_Pnt2d> aUVPoles(size_t{2});
+    aUVPoles.ChangeAt(0) = gp_Pnt2d(0.0, aV);
+    aUVPoles.ChangeAt(1) = gp_Pnt2d(1.0, aV);
+    const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+      new Geom2dAdaptor_Curve(new Geom2d_BSplineCurve(aUVPoles, aKnots, aLinearMults, 1));
+    for (const int aVDegree : {2, 9, Geom_BSplineSurface::MaxDegree()})
+    {
+      SCOPED_TRACE(aVDegree);
+      NCollection_Array1<int> aVMults(size_t{2});
+      aVMults.Init(aVDegree + 1);
+      NCollection_Array2<gp_Pnt> aSurfacePoles(size_t{2}, static_cast<size_t>(aVDegree) + 1);
+      aSurfacePoles.Init(gp_Pnt(0.0, 0.0, 0.0));
+      aSurfacePoles.ChangeAt(1, static_cast<size_t>(aVDegree)).SetZ(aV == 0.0 ? RealLast() : 1.0);
+      const occ::handle<GeomAdaptor_Surface> aSurface = new GeomAdaptor_Surface(
+        new Geom_BSplineSurface(aSurfacePoles, aKnots, aKnots, aLinearMults, aVMults, 1, aVDegree));
+      const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
+        new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+      GeomLib_CheckCurveOnSurface aCheck(aCurve);
+      aCheck.Perform(aCoS);
+      ASSERT_TRUE(aCheck.IsDone());
+      // Z = U * V^degree; V = 0 is finite even when cache coefficients are too large.
+      EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), aV == 0.0 ? 0.0 : std::ldexp(1.0, aVDegree));
+      if (aV != 0.0)
+      {
+        EXPECT_NEAR(aCheck.MaxParameter(), 1.0, Precision::PConfusion());
+      }
+    }
   }
 }
 
@@ -931,4 +1107,174 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, BezierMaximumWithinTrimmedRange)
       EXPECT_NEAR(aCheck.MaxParameter(), aParameter, Precision::Confusion());
     }
   }
+}
+
+namespace
+{
+constexpr double THE_INTERVAL_BOUNDARY = 1.0;
+constexpr double THE_LAST_PARAMETER    = 2.0;
+constexpr double THE_CURVE_OFFSET      = 0.125;
+
+// Curve with a failing second interval.
+class GeomLib_IntervalFailureCurve : public Adaptor3d_Curve
+{
+public:
+  enum class FailureMode
+  {
+    None,
+    NonFinite,
+    PositiveInfinite,
+    NegativeInfinite,
+    UndefinedValue
+  };
+
+  explicit GeomLib_IntervalFailureCurve(FailureMode theFailure);
+  occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
+  double                       FirstParameter() const override;
+  double                       LastParameter() const override;
+  GeomAbs_CurveType            GetType() const override;
+  gp_Pnt                       EvalD0(double theParameter) const override;
+
+private:
+  FailureMode myFailure; // Evaluation failure in the second interval.
+};
+
+//==================================================================================================
+
+GeomLib_IntervalFailureCurve::GeomLib_IntervalFailureCurve(FailureMode theFailure)
+    : myFailure(theFailure)
+{
+}
+
+//==================================================================================================
+
+occ::handle<Adaptor3d_Curve> GeomLib_IntervalFailureCurve::ShallowCopy() const
+{
+  return new GeomLib_IntervalFailureCurve(myFailure);
+}
+
+//==================================================================================================
+
+double GeomLib_IntervalFailureCurve::FirstParameter() const
+{
+  return 0.0;
+}
+
+//==================================================================================================
+
+double GeomLib_IntervalFailureCurve::LastParameter() const
+{
+  return THE_LAST_PARAMETER;
+}
+
+//==================================================================================================
+
+GeomAbs_CurveType GeomLib_IntervalFailureCurve::GetType() const
+{
+  return GeomAbs_OtherCurve;
+}
+
+//==================================================================================================
+
+gp_Pnt GeomLib_IntervalFailureCurve::EvalD0(double theParameter) const
+{
+  if (theParameter > THE_INTERVAL_BOUNDARY)
+  {
+    if (myFailure == FailureMode::UndefinedValue)
+    {
+      throw Geom_UndefinedValue("Undefined curve value");
+    }
+    if (myFailure == FailureMode::NonFinite)
+    {
+      return gp_Pnt(theParameter, 0.0, std::numeric_limits<double>::quiet_NaN());
+    }
+    if (myFailure == FailureMode::PositiveInfinite || myFailure == FailureMode::NegativeInfinite)
+    {
+      return gp_Pnt(theParameter,
+                    0.0,
+                    myFailure == FailureMode::PositiveInfinite ? Precision::Infinite()
+                                                               : -Precision::Infinite());
+    }
+  }
+  return gp_Pnt(theParameter, 0.0, THE_CURVE_OFFSET);
+}
+
+//==================================================================================================
+
+occ::handle<Adaptor3d_CurveOnSurface> makeTwoIntervalPCurve()
+{
+  constexpr int                aDegree  = 1;
+  constexpr int                aNbKnots = 3;
+  NCollection_Array1<gp_Pnt2d> aPoles(1, aNbKnots);
+  NCollection_Array1<double>   aKnots(1, aNbKnots);
+  NCollection_Array1<int>      aMults(1, aNbKnots);
+  for (size_t anIndex = 0; anIndex < aKnots.Size(); ++anIndex)
+  {
+    aPoles.ChangeAt(anIndex) = gp_Pnt2d(static_cast<double>(anIndex), 0.0);
+    aKnots.ChangeAt(anIndex) = static_cast<double>(anIndex);
+    aMults.ChangeAt(anIndex) = anIndex == 0 || anIndex + 1 == aKnots.Size() ? aDegree + 1 : 1;
+  }
+  const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+    new Geom2dAdaptor_Curve(new Geom2d_BSplineCurve(aPoles, aKnots, aMults, aDegree));
+  const occ::handle<GeomAdaptor_Surface> aSurface =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Ax3()));
+  return new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+}
+} // namespace
+
+//==================================================================================================
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, FailedIntervalDoesNotReportPartialMaximum)
+{
+  const double                aFiniteDistance = std::sqrt(Precision::Infinite());
+  GeomLib_CheckCurveOnSurface aFiniteCheck(
+    new GeomAdaptor_Curve(new Geom_Line(gp_Pnt(0.0, 0.0, aFiniteDistance), gp_Dir(1.0, 0.0, 0.0)),
+                          0.0,
+                          THE_LAST_PARAMETER));
+  aFiniteCheck.Perform(makeTwoIntervalPCurve());
+  ASSERT_TRUE(aFiniteCheck.IsDone());
+  EXPECT_DOUBLE_EQ(aFiniteCheck.MaxDistance(), aFiniteDistance);
+
+  for (const GeomLib_IntervalFailureCurve::FailureMode aFailure :
+       {GeomLib_IntervalFailureCurve::FailureMode::NonFinite,
+        GeomLib_IntervalFailureCurve::FailureMode::PositiveInfinite,
+        GeomLib_IntervalFailureCurve::FailureMode::NegativeInfinite,
+        GeomLib_IntervalFailureCurve::FailureMode::UndefinedValue})
+  {
+    SCOPED_TRACE(static_cast<int>(aFailure));
+    for (const bool aParallel : {false, true})
+    {
+      SCOPED_TRACE(aParallel);
+      GeomLib_CheckCurveOnSurface aCheck(new GeomLib_IntervalFailureCurve(aFailure));
+      aCheck.SetParallel(aParallel);
+      EXPECT_NO_THROW(aCheck.Perform(makeTwoIntervalPCurve()));
+      EXPECT_FALSE(aCheck.IsDone());
+      EXPECT_EQ(aCheck.ErrorStatus(), 3);
+      EXPECT_EQ(aCheck.MaxDistance(), RealLast());
+      EXPECT_EQ(aCheck.MaxParameter(), 0.0);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomLib_CheckCurveOnSurfaceTest, RepeatedPerformResetsStatusAndDistance)
+{
+  GeomLib_CheckCurveOnSurface aCheck(
+    new GeomLib_IntervalFailureCurve(GeomLib_IntervalFailureCurve::FailureMode::None));
+  const occ::handle<Adaptor3d_CurveOnSurface> aPCurve = makeTwoIntervalPCurve();
+  aCheck.Perform(aPCurve);
+  ASSERT_TRUE(aCheck.IsDone());
+  EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), THE_CURVE_OFFSET);
+
+  aCheck.Perform(nullptr);
+  EXPECT_FALSE(aCheck.IsDone());
+  EXPECT_EQ(aCheck.ErrorStatus(), 1);
+  EXPECT_EQ(aCheck.MaxDistance(), RealLast());
+  EXPECT_EQ(aCheck.MaxParameter(), 0.0);
+
+  aCheck.Perform(aPCurve);
+  ASSERT_TRUE(aCheck.IsDone());
+  EXPECT_EQ(aCheck.ErrorStatus(), 0);
+  EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), THE_CURVE_OFFSET);
 }

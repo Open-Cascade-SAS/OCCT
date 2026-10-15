@@ -6,4 +6,5 @@ set(OCCT_TKHLR_GTests_FILES
   HLRBRep_Curve_Test.cxx
   HLRBRep_Data_Test.cxx
   HLRBRep_InternalAlgo_Test.cxx
+  HLRBRep_Surface_Test.cxx
 )

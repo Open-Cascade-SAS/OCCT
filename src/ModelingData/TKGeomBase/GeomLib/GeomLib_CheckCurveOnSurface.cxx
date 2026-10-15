@@ -18,18 +18,25 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Lin2d.hxx>
 #include <gp_XYZ.hxx>
 #include <math_MultipleVarFunction.hxx>
 #include <MathOpt_Brent.hxx>
 #include <MathUtils_FunctorScalar.hxx>
+#include <MathUtils_Domain.hxx>
 #include <math_PSO.hxx>
 #include <math_PSOParticlesPool.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
@@ -49,6 +56,7 @@
 #include <BSplCLib_Basis.pxx>
 #include <PLib_EvalPolynomial.pxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Real.hxx>
 
 typedef NCollection_Array1<occ::handle<Adaptor3d_Curve>> Array1OfHCurve;
@@ -171,7 +179,7 @@ bool operator<(const CompensatedReal& theA, const CompensatedReal& theB)
   return theA.myHigh < theB.myHigh || (theA.myHigh == theB.myHigh && theA.myLow < theB.myLow);
 }
 
-// Evaluates nonperiodic B-spline residuals without rounding intermediate points.
+// Evaluates spline and planar residuals without rounding intermediate points.
 // Reuses compensated Bernstein coefficients within the supplied parameter interval.
 // Geometry must stay unchanged during evaluation.
 class BSplineResidual
@@ -190,6 +198,12 @@ public:
   bool Value(double theParameter, gp_Vec& theResidual) const;
 
 private:
+  // Evaluate polynomial and rational curves without rounding intermediate coordinates.
+  template <class Adaptor>
+  static CompensatedPoint planeCurveValue(const Adaptor& theCurve,
+                                          double         theParameter,
+                                          size_t         theDimension);
+
   struct BernsteinParameter
   {
     CompensatedReal Ratio;      // Smaller Bernstein parameter divided by the larger one.
@@ -206,7 +220,7 @@ private:
     std::array<CompensatedReal, 2> Length;   // Exact knot differences.
   };
 
-  // Extract one span by evaluating its blossom at repeated end knots.
+  // Extract one span by knot insertion.
   // Pole buffers contain degree + 1 points.
   static void extractBezier(size_t                            theDegree,
                             const NCollection_Array1<double>& theKnots,
@@ -226,8 +240,8 @@ private:
                                  size_t                     theDegree,
                                  size_t                     theDimension,
                                  const CoefficientAccessor& theCoefficient);
-  // Convert the surface patch containing the interval midpoint.
-  void initSurfaceCache(const CompensatedReal& theU, const CompensatedReal& theV);
+  // Convert one surface knot patch.
+  void initSurfaceCache(PolynomialCache& theCache, size_t theUSpan, size_t theVSpan) const;
   // Find the active knot span, including extrapolation at either end.
   template <class Real>
   static size_t findSpan(size_t                            theDegree,
@@ -257,11 +271,12 @@ private:
 
   // Evaluate either a 2D or a 3D curve through the shared span cache.
   template <class Curve>
-  static CompensatedPoint curveValue(const Curve&                      theCurve,
-                                     const NCollection_Array1<double>* theWeights,
-                                     const PolynomialCache&            theCache,
-                                     double                            theParameter,
-                                     size_t                            theDimension);
+  static CompensatedPoint curveValue(const Curve&                                  theCurve,
+                                     const NCollection_Array1<double>*             theWeights,
+                                     const PolynomialCache&                        theCache,
+                                     NCollection_DataMap<size_t, PolynomialCache>& theSpans,
+                                     double                                        theParameter,
+                                     size_t                                        theDimension);
 
   // Shift and weight Bernstein poles; retain de Boor when Horner could overflow.
   static void initPolynomialCache(PolynomialCache&                      theCache,
@@ -284,9 +299,13 @@ private:
 
   struct Caches
   {
-    PolynomialCache Curve;   // Spatial curve span.
-    PolynomialCache PCurve;  // Parameter curve span.
-    PolynomialCache Surface; // Surface patch around the interval midpoint.
+    PolynomialCache Curve;  // Spatial curve span.
+    PolynomialCache PCurve; // Parameter curve span.
+
+    mutable NCollection_DataMap<size_t, PolynomialCache> CurveSpans; // Visited spatial curve spans.
+    mutable NCollection_DataMap<size_t, PolynomialCache>
+      PCurveSpans; // Visited parameter curve spans.
+    mutable NCollection_DataMap<size_t, PolynomialCache> SurfaceSpans; // Visited surface patches.
   };
 
   std::optional<Caches> myCaches; // Owned coefficients for the non-affine evaluation path.
@@ -308,6 +327,8 @@ private:
   occ::handle<Geom_BSplineCurve>   myCurve;
   occ::handle<Geom2d_BSplineCurve> myPCurve;
   occ::handle<Geom_BSplineSurface> mySurface;
+  const Adaptor3d_Curve* myPlaneCurve = nullptr; // Borrowed spatial curve for planar residuals.
+  const Adaptor3d_CurveOnSurface* myPlaneCoS = nullptr; // Borrowed planar composition.
 };
 
 //=================================================================================================
@@ -319,6 +340,17 @@ BSplineResidual::BSplineResidual(const Adaptor3d_Curve& theCurve,
 {
   const Adaptor3d_CurveOnSurface* aCoS =
     dynamic_cast<const Adaptor3d_CurveOnSurface*>(&theCurveOnSurface);
+  const auto isPolynomialCurve = [](GeomAbs_CurveType theType) {
+    return theType == GeomAbs_Line || theType == GeomAbs_BezierCurve
+           || theType == GeomAbs_BSplineCurve;
+  };
+  if (aCoS != nullptr && aCoS->GetSurface()->GetType() == GeomAbs_Plane
+      && isPolynomialCurve(theCurve.GetType()) && isPolynomialCurve(aCoS->GetCurve()->GetType()))
+  {
+    myPlaneCurve = &theCurve;
+    myPlaneCoS   = aCoS;
+    return;
+  }
   if (theCurve.GetType() != GeomAbs_BSplineCurve || aCoS == nullptr
       || aCoS->GetCurve()->GetType() != GeomAbs_BSplineCurve
       || aCoS->GetSurface()->GetType() != GeomAbs_BSplineSurface)
@@ -339,7 +371,7 @@ BSplineResidual::BSplineResidual(const Adaptor3d_Curve& theCurve,
   {
     return;
   }
-  myCaches.emplace(Caches{});
+  myCaches.emplace();
   const NCollection_Array1<double>* aCurveWeights  = myCurve->Weights();
   const NCollection_Array1<double>* aPCurveWeights = myPCurve->Weights();
   initCache(myCaches->Curve,
@@ -358,10 +390,6 @@ BSplineResidual::BSplineResidual(const Adaptor3d_Curve& theCurve,
             theLast,
             aPCurveWeights == nullptr ? 2 : 4,
             [&](size_t theIndex) { return pole(myPCurve->Poles(), aPCurveWeights, 2, theIndex); });
-  const double           aMiddle = 0.5 * theFirst + 0.5 * theLast;
-  const CompensatedPoint aUV = curveValue(*myPCurve, aPCurveWeights, myCaches->PCurve, aMiddle, 2);
-  initSurfaceCache(aPCurveWeights == nullptr ? aUV[0] : aUV[0] / aUV[3],
-                   aPCurveWeights == nullptr ? aUV[1] : aUV[1] / aUV[3]);
 }
 
 //=================================================================================================
@@ -518,18 +546,40 @@ void BSplineResidual::extractBezier(size_t                            theDegree,
   }
   else
   {
-    for (size_t anIndex = 0; anIndex <= theDegree; ++anIndex)
+    // Clamp the span ends by knot insertion.
+    std::copy_n(thePoles, theDegree + 1, theWorkPoles);
+    theCoefficients[theDegree] = theWorkPoles[theDegree];
+    for (size_t aLevel = 1; aLevel <= theDegree; ++aLevel)
     {
-      std::copy_n(thePoles, theDegree + 1, theWorkPoles);
-      theCoefficients[anIndex] = evaluatePoles(
-        theDegree,
-        theKnots,
-        theSpan,
-        [&](size_t theLevel) {
-          return CompensatedReal(theLevel < theDegree - anIndex ? aFirst : aLast);
-        },
-        theDimension,
-        theWorkPoles);
+      for (size_t anIndex = theDegree; anIndex >= aLevel; --anIndex)
+      {
+        const CompensatedReal aLeftKnot  = theKnots.At(theSpan - theDegree + anIndex);
+        const CompensatedReal aRightKnot = theKnots.At(theSpan + 1 + anIndex - aLevel);
+        const CompensatedReal aWeight =
+          (CompensatedReal(aFirst) - aLeftKnot) / (aRightKnot - aLeftKnot);
+        for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+        {
+          theWorkPoles[anIndex][aCoordinate] =
+            (1.0 - aWeight) * theWorkPoles[anIndex - 1][aCoordinate]
+            + aWeight * theWorkPoles[anIndex][aCoordinate];
+        }
+      }
+      theCoefficients[theDegree - aLevel] = theWorkPoles[theDegree];
+    }
+    for (size_t aLevel = 1; aLevel <= theDegree; ++aLevel)
+    {
+      for (size_t anIndex = theDegree; anIndex >= aLevel; --anIndex)
+      {
+        const CompensatedReal aWeight =
+          (CompensatedReal(aLast) - aFirst)
+          / (CompensatedReal(theKnots.At(theSpan + 1 + anIndex - aLevel)) - aFirst);
+        for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+        {
+          theCoefficients[anIndex][aCoordinate] =
+            (1.0 - aWeight) * theCoefficients[anIndex - 1][aCoordinate]
+            + aWeight * theCoefficients[anIndex][aCoordinate];
+        }
+      }
     }
   }
 }
@@ -576,21 +626,13 @@ BSplineResidual::CompensatedPoint BSplineResidual::horner(const BernsteinParamet
 
 //==================================================================================================
 
-void BSplineResidual::initSurfaceCache(const CompensatedReal& theU, const CompensatedReal& theV)
+void BSplineResidual::initSurfaceCache(PolynomialCache& theCache,
+                                       size_t           theUSpan,
+                                       size_t           theVSpan) const
 {
   const size_t aUDegree = mySurface->UDegree(), aVDegree = mySurface->VDegree();
-  const NCollection_Array1<double>& aUKnots = mySurface->UKnotSequence();
-  const NCollection_Array1<double>& aVKnots = mySurface->VKnotSequence();
-  if (!Precision::IsFinite(double(theU)) || !Precision::IsFinite(double(theV))
-      || theU < CompensatedReal(aUKnots.At(aUDegree))
-      || CompensatedReal(aUKnots.At(mySurface->NbUPoles())) < theU
-      || theV < CompensatedReal(aVKnots.At(aVDegree))
-      || CompensatedReal(aVKnots.At(mySurface->NbVPoles())) < theV)
-  {
-    return;
-  }
-  const size_t aUSpan = findSpan(aUDegree, aUKnots, mySurface->NbUPoles(), theU);
-  const size_t aVSpan = findSpan(aVDegree, aVKnots, mySurface->NbVPoles(), theV);
+  const NCollection_Array1<double>&           aUKnots    = mySurface->UKnotSequence();
+  const NCollection_Array1<double>&           aVKnots    = mySurface->VKnotSequence();
   const NCollection_Array2<double>*           aWeights   = mySurface->Weights();
   const size_t                                aDimension = aWeights == nullptr ? 3 : 4;
   NCollection_Array2<CompensatedPoint>        aCoefficients(aUDegree + 1, aVDegree + 1);
@@ -604,12 +646,12 @@ void BSplineResidual::initSurfaceCache(const CompensatedReal& theU, const Compen
       aPoles[aVIndex] = pole(mySurface->Poles(),
                              aWeights,
                              3,
-                             aUSpan - aUDegree + aUIndex,
-                             aVSpan - aVDegree + aVIndex);
+                             theUSpan - aUDegree + aUIndex,
+                             theVSpan - aVDegree + aVIndex);
     }
     extractBezier(aVDegree,
                   aVKnots,
-                  aVSpan,
+                  theVSpan,
                   aDimension,
                   &aPoles[0],
                   &aWorkPoles[0],
@@ -623,7 +665,7 @@ void BSplineResidual::initSurfaceCache(const CompensatedReal& theU, const Compen
     }
     extractBezier(aUDegree,
                   aUKnots,
-                  aUSpan,
+                  theUSpan,
                   aDimension,
                   &aPoles[0],
                   &aWorkPoles[0],
@@ -633,35 +675,63 @@ void BSplineResidual::initSurfaceCache(const CompensatedReal& theU, const Compen
       aCoefficients.ChangeAt(aUIndex, aVIndex) = aBezierPoles[aUIndex];
     }
   }
-  initPolynomialCache(myCaches->Surface,
+  initPolynomialCache(theCache,
                       aCoefficients,
                       aDimension,
-                      {aUKnots.At(aUSpan), aVKnots.At(aVSpan)},
-                      {aUKnots.At(aUSpan + 1), aVKnots.At(aVSpan + 1)});
+                      {aUKnots.At(theUSpan), aVKnots.At(theVSpan)},
+                      {aUKnots.At(theUSpan + 1), aVKnots.At(theVSpan + 1)});
 }
 
 //==================================================================================================
 
 template <class Curve>
 BSplineResidual::CompensatedPoint BSplineResidual::curveValue(
-  const Curve&                      theCurve,
-  const NCollection_Array1<double>* theWeights,
-  const PolynomialCache&            theCache,
-  double                            theParameter,
-  size_t                            theDimension)
+  const Curve&                                  theCurve,
+  const NCollection_Array1<double>*             theWeights,
+  const PolynomialCache&                        theCache,
+  NCollection_DataMap<size_t, PolynomialCache>& theSpans,
+  double                                        theParameter,
+  size_t                                        theDimension)
 {
   const size_t aDimension = theWeights == nullptr ? theDimension : 4;
-  return theCache.Coefficients.IsEmpty()
-           ? evaluate<CompensatedReal>(
-               theCurve.Degree(),
-               theCurve.KnotSequence(),
-               theCurve.NbPoles(),
-               theParameter,
-               [&](size_t theIndex) {
-                 return pole(theCurve.Poles(), theWeights, theDimension, theIndex);
-               },
-               aDimension)
-           : cacheValue(theCache, theParameter, 0.0, aDimension);
+  if (!theCache.Coefficients.IsEmpty())
+  {
+    return cacheValue(theCache, theParameter, 0.0, aDimension);
+  }
+  const auto&  aKnots  = theCurve.KnotSequence();
+  const size_t aDegree = theCurve.Degree();
+  const size_t aSpan   = findSpan(aDegree, aKnots, theCurve.NbPoles(), theParameter);
+  const double aFirst = aKnots.At(aSpan), aLast = aKnots.At(aSpan + 1);
+  if (theParameter >= aFirst && theParameter <= aLast)
+  {
+    const PolynomialCache* aSpanCache = theSpans.Seek(aSpan);
+    if (aSpanCache == nullptr)
+    {
+      PolynomialCache aNewCache;
+      initCache(aNewCache,
+                aDegree,
+                aKnots,
+                theCurve.NbPoles(),
+                aFirst,
+                aLast,
+                aDimension,
+                [&](size_t theIndex) {
+                  return pole(theCurve.Poles(), theWeights, theDimension, theIndex);
+                });
+      aSpanCache = &theSpans.TryBound(aSpan, std::move(aNewCache));
+    }
+    if (!aSpanCache->Coefficients.IsEmpty())
+    {
+      return cacheValue(*aSpanCache, theParameter, 0.0, aDimension);
+    }
+  }
+  return evaluate<CompensatedReal>(
+    theCurve.Degree(),
+    theCurve.KnotSequence(),
+    theCurve.NbPoles(),
+    theParameter,
+    [&](size_t theIndex) { return pole(theCurve.Poles(), theWeights, theDimension, theIndex); },
+    aDimension);
 }
 
 //==================================================================================================
@@ -676,7 +746,7 @@ void BSplineResidual::initPolynomialCache(PolynomialCache&                      
   const auto       aPole = [&](size_t theIndex, size_t theCoordinate) -> CompensatedReal& {
     return theCoefficients.ChangeAt(theIndex)[theCoordinate];
   };
-  translateControlPolygon<false>(theCoefficients.Size(), theDimension, aPole, anOrigin.data());
+  translateControlPolygon(theCoefficients.Size(), theDimension, aPole, anOrigin.data());
   // The Horner ratio is at most one. Reserve room for each term and the origin.
   const double aLimit   = RealLast() / static_cast<double>(theCoefficients.Size() + 1);
   const size_t aUDegree = theCoefficients.NbRows() - 1;
@@ -799,8 +869,97 @@ BSplineResidual::Point<Real> BSplineResidual::evaluate(size_t                   
 
 //=================================================================================================
 
+template <class Adaptor>
+BSplineResidual::CompensatedPoint BSplineResidual::planeCurveValue(const Adaptor& theCurve,
+                                                                   double         theParameter,
+                                                                   size_t         theDimension)
+{
+  CompensatedPoint aPoint{};
+  if (theCurve.GetType() == GeomAbs_Line)
+  {
+    const auto aLine = theCurve.Line();
+    for (size_t anAxis = 0; anAxis < theDimension; ++anAxis)
+    {
+      const int aCoord = static_cast<int>(anAxis) + 1;
+      aPoint[anAxis]   = CompensatedReal(aLine.Location().Coord(aCoord))
+                       + CompensatedReal(theParameter) * aLine.Direction().Coord(aCoord);
+    }
+    aPoint[3] = 1.0;
+    return aPoint;
+  }
+  if (theCurve.GetType() == GeomAbs_BSplineCurve)
+  {
+    const auto aCurve = theCurve.BSpline();
+    if (aCurve->IsPeriodic())
+    {
+      theParameter =
+        ElCLib::InPeriod(theParameter, aCurve->FirstParameter(), aCurve->LastParameter());
+    }
+    const NCollection_Array1<double>* aWeights = aCurve->Weights();
+    aPoint                                     = evaluate<CompensatedReal>(
+      aCurve->Degree(),
+      aCurve->KnotSequence(),
+      aCurve->NbPoles(),
+      theParameter,
+      [&](size_t theIndex) { return pole(aCurve->Poles(), aWeights, theDimension, theIndex); },
+      aWeights == nullptr ? theDimension : 4);
+  }
+  else
+  {
+    const auto                        aCurve   = theCurve.Bezier();
+    const NCollection_Array1<double>* aWeights = aCurve->Weights();
+    const size_t                      aDegree  = aCurve->Degree();
+    const size_t aDimension                    = aWeights == nullptr ? theDimension : aPoint.size();
+    NCollection_LocalArray<CompensatedPoint, 8> aPoles(aDegree + 1);
+    for (size_t anIndex = 0; anIndex <= aDegree; ++anIndex)
+    {
+      aPoles[anIndex] = pole(aCurve->Poles(), aWeights, theDimension, anIndex);
+    }
+    const CompensatedReal aParameter(theParameter);
+    const CompensatedReal aComplement = CompensatedReal(1.0) - aParameter;
+    for (size_t aLevel = aDegree; aLevel > 0; --aLevel)
+    {
+      for (size_t anIndex = 0; anIndex < aLevel; ++anIndex)
+      {
+        for (size_t anAxis = 0; anAxis < aDimension; ++anAxis)
+        {
+          aPoles[anIndex][anAxis] =
+            aComplement * aPoles[anIndex][anAxis] + aParameter * aPoles[anIndex + 1][anAxis];
+        }
+      }
+    }
+    aPoint = aPoles[0];
+  }
+  if (theCurve.IsRational())
+  {
+    for (size_t anAxis = 0; anAxis < theDimension; ++anAxis)
+    {
+      aPoint[anAxis] = aPoint[anAxis] / aPoint[3];
+    }
+  }
+  return aPoint;
+}
+
+//==================================================================================================
+
 bool BSplineResidual::Value(double theParameter, gp_Vec& theResidual) const
 {
+  if (myPlaneCoS != nullptr)
+  {
+    const CompensatedPoint aCurve    = planeCurveValue(*myPlaneCurve, theParameter, 3);
+    const CompensatedPoint aUV       = planeCurveValue(*myPlaneCoS->GetCurve(), theParameter, 2);
+    const gp_Pln           aPlane    = myPlaneCoS->GetSurface()->Plane();
+    const gp_Ax3&          aPosition = aPlane.Position();
+    for (int anAxis = 1; anAxis <= 3; ++anAxis)
+    {
+      const CompensatedReal aSurface = CompensatedReal(aPosition.Location().Coord(anAxis))
+                                       + aUV[0] * aPosition.XDirection().Coord(anAxis)
+                                       + aUV[1] * aPosition.YDirection().Coord(anAxis);
+      theResidual.SetCoord(anAxis, static_cast<double>(aSurface - aCurve[anAxis - 1]));
+    }
+    return Precision::IsFinite(theResidual.X()) && Precision::IsFinite(theResidual.Y())
+           && Precision::IsFinite(theResidual.Z());
+  }
   if (myCurve.IsNull())
   {
     return false;
@@ -822,27 +981,48 @@ bool BSplineResidual::Value(double theParameter, gp_Vec& theResidual) const
     const NCollection_Array1<double>* aCurveWeights  = myCurve->Weights();
     const NCollection_Array1<double>* aPCurveWeights = myPCurve->Weights();
     const CompensatedPoint            aCurvePoint =
-      curveValue(*myCurve, aCurveWeights, myCaches->Curve, theParameter, 3);
-    const CompensatedPoint aUV =
-      curveValue(*myPCurve, aPCurveWeights, myCaches->PCurve, theParameter, 2);
-    const CompensatedReal             aU = aPCurveWeights == nullptr ? aUV[0] : aUV[0] / aUV[3];
-    const CompensatedReal             aV = aPCurveWeights == nullptr ? aUV[1] : aUV[1] / aUV[3];
+      curveValue(*myCurve, aCurveWeights, myCaches->Curve, myCaches->CurveSpans, theParameter, 3);
+    const CompensatedPoint            aUV = curveValue(*myPCurve,
+                                            aPCurveWeights,
+                                            myCaches->PCurve,
+                                            myCaches->PCurveSpans,
+                                            theParameter,
+                                            2);
+    const CompensatedReal             aU  = aPCurveWeights == nullptr ? aUV[0] : aUV[0] / aUV[3];
+    const CompensatedReal             aV  = aPCurveWeights == nullptr ? aUV[1] : aUV[1] / aUV[3];
     const NCollection_Array2<double>* aSurfaceWeights   = mySurface->Weights();
     const bool                        isSurfaceRational = aSurfaceWeights != nullptr;
     CompensatedPoint                  aSurfacePoint;
-    if (!myCaches->Surface.Coefficients.IsEmpty() && Precision::IsFinite(double(aU))
-        && Precision::IsFinite(double(aV)) && !(aU < myCaches->Surface.First[0])
-        && !(myCaches->Surface.Last[0] < aU) && !(aV < myCaches->Surface.First[1])
-        && !(myCaches->Surface.Last[1] < aV))
+    const PolynomialCache*            aSurfaceCache = nullptr;
+    const size_t aUDegree = mySurface->UDegree(), aVDegree = mySurface->VDegree();
+    const NCollection_Array1<double>& aUKnots = mySurface->UKnotSequence();
+    const NCollection_Array1<double>& aVKnots = mySurface->VKnotSequence();
+    if (Precision::IsFinite(double(aU)) && Precision::IsFinite(double(aV))
+        && !(aU < CompensatedReal(aUKnots.At(aUDegree)))
+        && !(CompensatedReal(aUKnots.At(mySurface->NbUPoles())) < aU)
+        && !(aV < CompensatedReal(aVKnots.At(aVDegree)))
+        && !(CompensatedReal(aVKnots.At(mySurface->NbVPoles())) < aV))
     {
-      aSurfacePoint = cacheValue(myCaches->Surface, aU, aV, isSurfaceRational ? 4 : 3);
+      const size_t aUSpan = findSpan(aUDegree, aUKnots, mySurface->NbUPoles(), aU);
+      const size_t aVSpan = findSpan(aVDegree, aVKnots, mySurface->NbVPoles(), aV);
+      const size_t aPatch =
+        (aUSpan - aUDegree) * mySurface->Poles().NbColumns() + aVSpan - aVDegree;
+      aSurfaceCache = myCaches->SurfaceSpans.Seek(aPatch);
+      if (aSurfaceCache == nullptr)
+      {
+        PolynomialCache aNewCache;
+        initSurfaceCache(aNewCache, aUSpan, aVSpan);
+        aSurfaceCache = &myCaches->SurfaceSpans.TryBound(aPatch, std::move(aNewCache));
+      }
+    }
+    if (aSurfaceCache != nullptr && !aSurfaceCache->Coefficients.IsEmpty())
+    {
+      aSurfacePoint = cacheValue(*aSurfaceCache, aU, aV, isSurfaceRational ? 4 : 3);
     }
     else
     {
-      const size_t                      aVDegree   = mySurface->VDegree();
-      const size_t                      aDimension = isSurfaceRational ? 4 : 3;
-      const NCollection_Array1<double>& aVKnots    = mySurface->VKnotSequence();
-      const size_t aVSpan = findSpan(aVDegree, aVKnots, mySurface->NbVPoles(), aV);
+      const size_t aDimension = isSurfaceRational ? 4 : 3;
+      const size_t aVSpan     = findSpan(aVDegree, aVKnots, mySurface->NbVPoles(), aV);
       NCollection_LocalArray<CompensatedPoint, 8> aVPoles(aVDegree + 1);
       aSurfacePoint = evaluate<CompensatedReal>(
         mySurface->UDegree(),
@@ -892,6 +1072,7 @@ class GeomLib_CheckCurveOnSurface_TargetFunc : public math_MultipleVarFunction
 public:
   GeomLib_CheckCurveOnSurface_TargetFunc(const Adaptor3d_Curve& theC3D,
                                          const Adaptor3d_Curve& theCurveOnSurface,
+                                         const BSplineResidual& theResidual,
                                          const double           theFirst,
                                          const double           theLast);
 
@@ -899,41 +1080,18 @@ public:
   // (the function is one-dimension).
   int NbVariables() const override { return 1; }
 
-  // returns value of the function when parameters are equal to theX
-  bool Value(const math_Vector& theX, double& theFVal) override { return Value(theX(1), theFVal); }
+  // Evaluates a normalized interval coordinate.
+  bool Value(const math_Vector& theX, double& theFVal) override;
 
   // returns value of the one-dimension-function when parameter
   // is equal to theX
-  bool Value(const double theX, double& theFVal) const
-  {
-    try
-    {
-      OCC_CATCH_SIGNALS
-      if (!(myFirst <= theX && theX <= myLast))
-      {
-        return false;
-      }
+  bool Value(const double theX, double& theFVal) const;
 
-      gp_Vec aResidual;
-      if (!myResidual.Value(theX, aResidual))
-      {
-        const gp_Pnt aP1(myCurve1.Value(theX)), aP2(myCurve2.Value(theX));
-        aResidual = gp_Vec(aP1, aP2);
-      }
-      theFVal = -aResidual.SquareMagnitude();
-    }
-    catch (Standard_Failure const&)
-    {
-      return false;
-    }
-    return true;
-  }
+  // Returns the physical parameter interval.
+  const MathUtils::Domain1D& Domain() const;
 
-  //
-  double FirstParameter() const { return myFirst; }
-
-  //
-  double LastParameter() const { return myLast; }
+  // Returns whether any objective evaluation failed.
+  bool HasFailed() const;
 
   // Computes the exact maximum for elementary compositions supported by the adaptors.
   bool ElementaryMaximum(double& theBestValue, double& theBestParameter) const
@@ -943,7 +1101,7 @@ public:
     if (aType1 == GeomAbs_Line && aType2 == GeomAbs_Line)
     {
       double aFirstValue = RealLast(), aLastValue = RealLast();
-      if (!Value(myFirst, aFirstValue) || !Value(myLast, aLastValue))
+      if (!Value(myDomain.Min, aFirstValue) || !Value(myDomain.Max, aLastValue))
       {
         return false;
       }
@@ -951,12 +1109,12 @@ public:
       if (aFirstValue <= aLastValue)
       {
         theBestValue     = aFirstValue;
-        theBestParameter = myFirst;
+        theBestParameter = myDomain.Min;
       }
       else
       {
         theBestValue     = aLastValue;
-        theBestParameter = myLast;
+        theBestParameter = myDomain.Max;
       }
       return true;
     }
@@ -1008,14 +1166,14 @@ public:
     // Exact zero is required here: a tolerance could classify a varying distance as constant.
     if (aCosCos == 0.0 && aCosSin == 0.0 && aCos == 0.0 && aSin == 0.0 && aConstant == 0.0)
     {
-      theBestParameter = myFirst;
-      return Value(myFirst, theBestValue);
+      theBestParameter = myDomain.Min;
+      return Value(myDomain.Min, theBestValue);
     }
 
     const double aPeriod = 2.0 * M_PI;
-    const double aFirst  = ElCLib::InPeriod(myFirst, 0.0, aPeriod);
-    const double aShift  = aFirst - myFirst;
-    const double aLast   = aFirst + std::min(myLast - myFirst, aPeriod);
+    const double aFirst  = ElCLib::InPeriod(myDomain.Min, 0.0, aPeriod);
+    const double aShift  = aFirst - myDomain.Min;
+    const double aLast   = aFirst + std::min(myDomain.Max - myDomain.Min, aPeriod);
     const double aScale  = std::max(
       {std::abs(aCosCos), std::abs(aCosSin), std::abs(aCos), std::abs(aSin), std::abs(aConstant)});
     math_TrigonometricFunctionRoots aRoots(aCosCos / aScale,
@@ -1026,13 +1184,13 @@ public:
                                            aFirst,
                                            aLast);
     if (!aRoots.IsDone() || aRoots.InfiniteRoots()
-        || (myLast - myFirst >= aPeriod && aRoots.NbSolutions() == 0))
+        || (myDomain.Max - myDomain.Min >= aPeriod && aRoots.NbSolutions() == 0))
     {
       return false;
     }
 
     theBestValue          = RealLast();
-    theBestParameter      = myFirst;
+    theBestParameter      = myDomain.Min;
     const auto updateBest = [&](const double theParameter) {
       double aValue = RealLast();
       if (!Value(theParameter, aValue))
@@ -1047,7 +1205,7 @@ public:
       return true;
     };
 
-    if (!updateBest(myFirst) || !updateBest(myLast))
+    if (!updateBest(myDomain.Min) || !updateBest(myDomain.Max))
     {
       return false;
     }
@@ -1065,25 +1223,72 @@ private:
   GeomLib_CheckCurveOnSurface_TargetFunc operator=(GeomLib_CheckCurveOnSurface_TargetFunc&) =
     delete;
 
-  const BSplineResidual  myResidual;
-  const Adaptor3d_Curve& myCurve1;
-  const Adaptor3d_Curve& myCurve2;
-  const double           myFirst;
-  const double           myLast;
+  const BSplineResidual&    myResidual;
+  const Adaptor3d_Curve&    myCurve1;
+  const Adaptor3d_Curve&    myCurve2;
+  const MathUtils::Domain1D myDomain;            // Parameter bounds.
+  mutable bool              myHasFailed = false; // Failure during this interval search.
 };
+
+//==================================================================================================
+
+bool GeomLib_CheckCurveOnSurface_TargetFunc::Value(const math_Vector& theX, double& theFVal)
+{
+  return Value(myDomain.Lerp(theX(1)), theFVal);
+}
+
+//==================================================================================================
+
+bool GeomLib_CheckCurveOnSurface_TargetFunc::Value(const double theX, double& theFVal) const
+{
+  if (!(myDomain.Min <= theX && theX <= myDomain.Max))
+  {
+    myHasFailed = true;
+    return false;
+  }
+
+  gp_Vec aResidual;
+  if (!myResidual.Value(theX, aResidual))
+  {
+    const gp_Pnt aP1(myCurve1.EvalD0(theX)), aP2(myCurve2.EvalD0(theX));
+    aResidual = gp_Vec(aP1, aP2);
+  }
+  if (!Precision::IsFinite(aResidual.X()) || !Precision::IsFinite(aResidual.Y())
+      || !Precision::IsFinite(aResidual.Z()))
+  {
+    myHasFailed = true;
+    return false;
+  }
+  theFVal = -aResidual.SquareMagnitude();
+  return true;
+}
+
+//==================================================================================================
+
+bool GeomLib_CheckCurveOnSurface_TargetFunc::HasFailed() const
+{
+  return myHasFailed;
+}
+
+//==================================================================================================
+
+const MathUtils::Domain1D& GeomLib_CheckCurveOnSurface_TargetFunc::Domain() const
+{
+  return myDomain;
+}
 
 //==================================================================================================
 
 GeomLib_CheckCurveOnSurface_TargetFunc::GeomLib_CheckCurveOnSurface_TargetFunc(
   const Adaptor3d_Curve& theC3D,
   const Adaptor3d_Curve& theCurveOnSurface,
+  const BSplineResidual& theResidual,
   const double           theFirst,
   const double           theLast)
-    : myResidual(theC3D, theCurveOnSurface, theFirst, theLast),
+    : myResidual(theResidual),
       myCurve1(theC3D),
       myCurve2(theCurveOnSurface),
-      myFirst(theFirst),
-      myLast(theLast)
+      myDomain(theFirst, theLast)
 {
 }
 
@@ -1102,53 +1307,41 @@ public:
         mySubIntervals(theIntervalsArr),
         myEpsilonRange(theEpsilonRange),
         myNbParticles(theNbParticles),
-        myArrOfDist(theIntervalsArr.Lower(), theIntervalsArr.Upper() - 1),
-        myArrOfParam(theIntervalsArr.Lower(), theIntervalsArr.Upper() - 1)
+        myResiduals(theCurveArray.Lower(), theCurveArray.Upper()),
+        myResults(theIntervalsArr.Lower(), theIntervalsArr.Upper() - 1)
   {
   }
 
   void operator()(int theThreadIndex, int theElemIndex) const
   {
-    // For every sub-interval (which is set by mySubIntervals array) this method
-    // computes optimal value of GeomLib_CheckCurveOnSurface_TargetFunc function.
-    // This optimal value will be put in corresponding (depending on theIndex - the
-    // identificator of the current interval in mySubIntervals array) cell of
-    // myArrOfDist and myArrOfParam arrays.
+    std::optional<BSplineResidual>& aResidual = myResiduals(theThreadIndex);
+    if (!aResidual)
+    {
+      aResidual.emplace(*myCurveArray(theThreadIndex),
+                        *myCurveOnSurfaceArray(theThreadIndex),
+                        mySubIntervals.First(),
+                        mySubIntervals.Last());
+    }
+    // Compute the minimum objective for one interval.
     GeomLib_CheckCurveOnSurface_TargetFunc aFunc(
       *(myCurveArray.Value(theThreadIndex).get()),
       *(myCurveOnSurfaceArray.Value(theThreadIndex).get()),
+      *aResidual,
       mySubIntervals.Value(theElemIndex),
       mySubIntervals.Value(theElemIndex + 1));
 
     double aMinDist = RealLast(), aPar = 0.0;
     if (!MinComputing(aFunc, myEpsilonRange, myNbParticles, aMinDist, aPar))
     {
-      myArrOfDist(theElemIndex)  = RealLast();
-      myArrOfParam(theElemIndex) = aFunc.FirstParameter();
+      myResults(theElemIndex) = std::nullopt;
       return;
     }
 
-    myArrOfDist(theElemIndex)  = aMinDist;
-    myArrOfParam(theElemIndex) = aPar;
+    myResults(theElemIndex) = std::make_pair(aMinDist, aPar);
   }
 
-  // Returns optimal value (inverse of square of maximal distance)
-  void OptimalValues(double& theMinimalValue, double& theParameter) const
-  {
-    // This method looks for the minimal value of myArrOfDist.
-
-    const int aStartInd = myArrOfDist.Lower();
-    theMinimalValue     = myArrOfDist(aStartInd);
-    theParameter        = myArrOfParam(aStartInd);
-    for (int i = aStartInd + 1; i <= myArrOfDist.Upper(); i++)
-    {
-      if (myArrOfDist(i) < theMinimalValue)
-      {
-        theMinimalValue = myArrOfDist(i);
-        theParameter    = myArrOfParam(i);
-      }
-    }
-  }
+  // Returns the minimum objective and parameter, or no result if an interval failed.
+  std::optional<std::pair<double, double>> OptimalValues() const;
 
 private:
   GeomLib_CheckCurveOnSurface_Local operator=(const GeomLib_CheckCurveOnSurface_Local&) = delete;
@@ -1157,14 +1350,36 @@ private:
   const Array1OfHCurve& myCurveArray;
   const Array1OfHCurve& myCurveOnSurfaceArray;
 
-  const NCollection_Array1<double>&  mySubIntervals;
-  const double                       myEpsilonRange;
-  const int                          myNbParticles;
-  mutable NCollection_Array1<double> myArrOfDist;
-  mutable NCollection_Array1<double> myArrOfParam;
+  const NCollection_Array1<double>& mySubIntervals;
+  const double                      myEpsilonRange;
+  const int                         myNbParticles;
+  // Each worker reuses coefficients while the geometry stays unchanged.
+  mutable NCollection_Array1<std::optional<BSplineResidual>> myResiduals;
+  // Negative squared distance and parameter for each successful interval.
+  mutable NCollection_Array1<std::optional<std::pair<double, double>>> myResults;
 };
 
-//=================================================================================================
+//==================================================================================================
+
+std::optional<std::pair<double, double>> GeomLib_CheckCurveOnSurface_Local::OptimalValues() const
+{
+  // Every interval is required for a complete maximum.
+  std::optional<std::pair<double, double>> aMinimum;
+  for (const auto& aResult : myResults)
+  {
+    if (!aResult)
+    {
+      return std::nullopt;
+    }
+    if (!aMinimum || aResult->first < aMinimum->first)
+    {
+      aMinimum = aResult;
+    }
+  }
+  return aMinimum;
+}
+
+//==================================================================================================
 
 GeomLib_CheckCurveOnSurface::GeomLib_CheckCurveOnSurface()
     : myErrorStatus(0),
@@ -1217,6 +1432,9 @@ void GeomLib_CheckCurveOnSurface::Init(const occ::handle<Adaptor3d_Curve>& theCu
 void GeomLib_CheckCurveOnSurface::Perform(
   const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface)
 {
+  myErrorStatus  = 0;
+  myMaxDistance  = RealLast();
+  myMaxParameter = 0.0;
   if (myCurve.IsNull() || theCurveOnSurface.IsNull())
   {
     myErrorStatus = 1;
@@ -1290,9 +1508,16 @@ void GeomLib_CheckCurveOnSurface::Perform(
         aComp(0, anI);
       }
     }
-    aComp.OptimalValues(myMaxDistance, myMaxParameter);
+    const std::optional<std::pair<double, double>> aMaximum = aComp.OptimalValues();
+    if (!aMaximum)
+    {
+      myErrorStatus = 3;
+      return;
+    }
 
-    myMaxDistance = sqrt(std::abs(myMaxDistance));
+    const auto [aSquaredDistance, aParameter] = *aMaximum;
+    myMaxDistance                             = sqrt(-aSquaredDistance);
+    myMaxParameter                            = aParameter;
   }
   catch (Standard_Failure const&)
   {
@@ -1394,36 +1619,35 @@ bool FillSubIntervals(const occ::handle<Adaptor3d_Curve>&   theCurve3d,
 //=================================================================================================
 
 bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
-                 const math_Vector&                      theParInf,
-                 const math_Vector&                      theParSup,
                  const double                            theEpsilon,
                  const int                               theNbParticles,
                  double&                                 theBestValue,
                  math_Vector&                            theOutputParam)
 {
-  const double aDeltaParam = theParSup(1) - theParInf(1);
-  if (aDeltaParam < Precision::PConfusion())
+  const MathUtils::Domain1D& aDomain = theFunction.Domain();
+  if (aDomain.Length() <= 0.0)
   {
     return false;
   }
 
-  math_Vector aStepPar(1, 1);
-  aStepPar(1) = theEpsilon * aDeltaParam;
+  math_Vector aStepPar(1, 1), aNormalizedInf(1, 1), aNormalizedSup(1, 1);
+  aStepPar(1)       = theEpsilon;
+  aNormalizedInf(1) = 0.0;
+  aNormalizedSup(1) = 1.0;
 
   math_PSOParticlesPool aParticles(theNbParticles, 1);
 
   // They are used for finding a position of theNbParticles worst places
   const int aNbControlPoints = 3 * theNbParticles;
 
-  const double aStep  = aDeltaParam / (aNbControlPoints - 1);
-  int          aCount = 1;
-  for (double aPrm = theParInf(1); aCount <= aNbControlPoints;
-       aCount++, aPrm = (aCount == aNbControlPoints) ? theParSup(1) : aPrm + aStep)
+  for (int aCount = 0; aCount < aNbControlPoints; ++aCount)
   {
-    double aVal = RealLast();
+    const double aNormalizedParam = double(aCount) / (aNbControlPoints - 1);
+    const double aPrm             = aDomain.Lerp(aNormalizedParam);
+    double       aVal             = RealLast();
     if (!theFunction.Value(aPrm, aVal))
     {
-      continue;
+      return false;
     }
 
     PSO_Particle* aParticle = aParticles.GetWorstParticle();
@@ -1433,15 +1657,20 @@ bool PSO_Perform(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
       continue;
     }
 
-    aParticle->Position[0]     = aPrm;
-    aParticle->BestPosition[0] = aPrm;
+    aParticle->Position[0]     = aNormalizedParam;
+    aParticle->BestPosition[0] = aNormalizedParam;
     aParticle->Distance        = aVal;
     aParticle->BestDistance    = aVal;
   }
 
-  math_PSO aPSO(&theFunction, theParInf, theParSup, aStepPar);
+  math_PSO aPSO(&theFunction, aNormalizedInf, aNormalizedSup, aStepPar);
   aPSO.Perform(aParticles, theNbParticles, theBestValue, theOutputParam);
 
+  if (theFunction.HasFailed() || !std::isfinite(theBestValue) || theBestValue > 0.0)
+  {
+    return false;
+  }
+  theOutputParam(1) = aDomain.Lerp(theOutputParam(1));
   return true;
 }
 
@@ -1453,64 +1682,42 @@ bool MinComputing(GeomLib_CheckCurveOnSurface_TargetFunc& theFunction,
                   double&                                 theBestValue,
                   double&                                 theBestParameter)
 {
-  try
+  const MathUtils::Domain1D& aDomain = theFunction.Domain();
+  math_Vector                anOutputParam(1, 1);
+  theBestParameter = aDomain.Min;
+  theBestValue     = RealLast();
+
+  if (theFunction.ElementaryMaximum(theBestValue, theBestParameter))
   {
-    OCC_CATCH_SIGNALS
-
-    //
-    math_Vector aParInf(1, 1), aParSup(1, 1), anOutputParam(1, 1);
-    aParInf(1)       = theFunction.FirstParameter();
-    aParSup(1)       = theFunction.LastParameter();
-    theBestParameter = aParInf(1);
-    theBestValue     = RealLast();
-
-    if (theFunction.ElementaryMaximum(theBestValue, theBestParameter))
-    {
-      return true;
-    }
-
-    if (!PSO_Perform(theFunction,
-                     aParInf,
-                     aParSup,
-                     theEpsilon,
-                     theNbParticles,
-                     theBestValue,
-                     anOutputParam))
-    {
-#ifdef OCCT_DEBUG
-      std::cout << "BRepLib_CheckCurveOnSurface::Compute(): math_PSO is failed!" << std::endl;
-#endif
-      return false;
-    }
-
-    theBestParameter = anOutputParam(1);
-
-    // Normalize the bracket to make tolerance independent of parameter origin.
-    const double aStep  = theEpsilon * (aParSup(1) - aParInf(1));
-    const double aFirst = std::max(aParInf(1), theBestParameter - 0.5 * aStep);
-    const double aLast  = std::min(aParSup(1), theBestParameter + 0.5 * aStep);
-
-    const double aSpan  = aLast - aFirst;
-    auto         aLocal = MathUtils::MakeScalar([&](double theParameter, double& theValue) {
-      return theFunction.Value(aFirst + aSpan * theParameter, theValue);
-    });
-
-    MathUtils::Config aConfig;
-    aConfig.XTolerance  = Precision::PConfusion() / std::max(1.0, aSpan);
-    const auto aMinimum = MathOpt::Brent(aLocal, 0.0, 1.0, aConfig);
-    if (aMinimum.IsDone() && *aMinimum.Value < theBestValue)
-    {
-      theBestValue     = *aMinimum.Value;
-      theBestParameter = aFirst + aSpan * *aMinimum.Root;
-    }
+    return true;
   }
-  catch (Standard_Failure const&)
+
+  if (!PSO_Perform(theFunction, theEpsilon, theNbParticles, theBestValue, anOutputParam))
   {
 #ifdef OCCT_DEBUG
-    std::cout << "BRepLib_CheckCurveOnSurface.cxx: Exception in MinComputing()!" << std::endl;
+    std::cout << "BRepLib_CheckCurveOnSurface::Compute(): math_PSO is failed!" << std::endl;
 #endif
     return false;
   }
 
-  return true;
+  theBestParameter = anOutputParam(1);
+
+  // Normalize the bracket to make tolerance independent of parameter origin.
+  const double              aStep = theEpsilon * aDomain.Length();
+  const MathUtils::Domain1D aBracket(std::max(aDomain.Min, theBestParameter - 0.5 * aStep),
+                                     std::min(aDomain.Max, theBestParameter + 0.5 * aStep));
+  auto aLocal = MathUtils::MakeScalar([&](double theParameter, double& theValue) {
+    return theFunction.Value(aBracket.Lerp(theParameter), theValue);
+  });
+
+  MathUtils::Config aConfig;
+  aConfig.XTolerance  = Precision::PConfusion() / std::max(1.0, aBracket.Length());
+  const auto aMinimum = MathOpt::Brent(aLocal, 0.0, 1.0, aConfig);
+  if (aMinimum.IsDone() && *aMinimum.Value < theBestValue)
+  {
+    theBestValue     = *aMinimum.Value;
+    theBestParameter = aBracket.Lerp(*aMinimum.Root);
+  }
+
+  return !theFunction.HasFailed();
 }

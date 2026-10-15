@@ -4,7 +4,7 @@ puts "============================================"
 puts ""
 
 set viewname "vright"
-set length 0.841234
+set length 0.853702
 
 restore [locate_data_file bug27720_BSpline.brep] a
 COMPUTE_HLR $viewname $algotype

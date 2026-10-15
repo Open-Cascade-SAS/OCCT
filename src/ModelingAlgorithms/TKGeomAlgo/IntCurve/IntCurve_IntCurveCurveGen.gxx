@@ -799,8 +799,9 @@ void IntCurve_IntCurveCurveGen::InternalPerform(const TheCurve&        C1,
         default: {
           intcurvcurv.SetReversedParameters(false);
           intcurvcurv.Perform(C1, D1, C2, D2, TolConf, Tol);
-          if (Composite)
+          if (Composite || (intcurvcurv.IsDone() && intcurvcurv.NbSegments() > 1))
           {
+            // Merge tangent-zone fragments from polygon refinement.
             this->Append(intcurvcurv, param1inf, param1sup, param2inf, param2sup);
           }
           else

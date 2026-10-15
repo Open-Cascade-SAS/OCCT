@@ -20,6 +20,18 @@
 #include <Geom_Parabola.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_SphericalSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomConvert.hxx>
+#include <ProjLib_ComputeApproxOnPolarSurface.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
@@ -92,4 +104,69 @@ TEST(GeomProjLibTest, OCC31661_2_ProjectHyperbolaOnPlane)
               2.0e-5);
   EXPECT_NEAR(aProjectedTrimmed->FirstParameter(), -5.23179933356147, 1.0e-7);
   EXPECT_NEAR(aProjectedTrimmed->LastParameter(), 4.76820064934972, 1.0e-7);
+}
+
+TEST(GeomProjLibTest, PolarProjectionPreservesIsolineAtSpherePoles)
+{
+  const occ::handle<Geom_SphericalSurface> aSphere =
+    new Geom_SphericalSurface(gp_Ax3(gp_Pnt(5.0, 7.0, 11.0), gp_Dir(1.0, 1.0, 1.0)), 25.0);
+  const double                           aU       = 1.5 * M_PI;
+  const occ::handle<Geom_BSplineSurface> aSurface = GeomConvert::SurfaceToBSplineSurface(
+    new Geom_RectangularTrimmedSurface(aSphere, aU, 2.0 * M_PI, -0.5 * M_PI, 0.5 * M_PI));
+  const occ::handle<Geom_Curve> aCurve = aSurface->UIso(aU);
+  aCurve->Translate(gp_Vec(0.0, 0.0, 0.5 * Precision::Confusion()));
+  const occ::handle<Geom2d_Line> aPCurve = new Geom2d_Line(gp_Pnt2d(aU, 0.0), gp_Dir2d(0.0, 1.0));
+  const occ::handle<GeomAdaptor_Curve>   aCurveAdaptor   = new GeomAdaptor_Curve(aCurve);
+  const occ::handle<GeomAdaptor_Surface> aSurfaceAdaptor = new GeomAdaptor_Surface(aSurface);
+  const occ::handle<Geom2dAdaptor_Curve> aPCurveAdaptor =
+    new Geom2dAdaptor_Curve(aPCurve, aCurve->FirstParameter(), aCurve->LastParameter());
+  ProjLib_ComputeApproxOnPolarSurface aProjection(aPCurveAdaptor,
+                                                  aCurveAdaptor,
+                                                  aSurfaceAdaptor,
+                                                  Precision::Confusion());
+  ASSERT_TRUE(aProjection.IsDone());
+  const occ::handle<Geom2d_BSplineCurve> aResult = aProjection.BSpline();
+  ASSERT_FALSE(aResult.IsNull());
+  for (int i = 0; i <= 32; ++i)
+  {
+    const double aV =
+      aCurve->FirstParameter() + (aCurve->LastParameter() - aCurve->FirstParameter()) * i / 32.0;
+    const gp_Pnt2d aUV = aResult->EvalD0(aV);
+    EXPECT_NEAR(aUV.X(), aU, Precision::PConfusion());
+    EXPECT_LE(aSurface->EvalD0(aUV.X(), aUV.Y()).Distance(aCurve->EvalD0(aV)),
+              Precision::Confusion());
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomProjLibTest, PolarProjectionRefinesHintOutsideGeometricConfusion)
+{
+  constexpr double                         aProjectionTolerance = 1.0e-3;
+  const occ::handle<Geom_SphericalSurface> aSphere  = new Geom_SphericalSurface(gp_Ax3(), 25.0);
+  const double                             aU       = 1.5 * M_PI;
+  const occ::handle<Geom_BSplineSurface>   aSurface = GeomConvert::SurfaceToBSplineSurface(
+    new Geom_RectangularTrimmedSurface(aSphere, aU, 2.0 * M_PI, -0.5 * M_PI, 0.5 * M_PI));
+  const occ::handle<Geom_Curve>  aCurve =
+    new Geom_TrimmedCurve(aSurface->UIso(aU), -0.25 * M_PI, 0.25 * M_PI);
+  const occ::handle<Geom2d_Line> aHint =
+    new Geom2d_Line(gp_Pnt2d(aU + Precision::Approximation(), 0.0), gp_Dir2d(0.0, 1.0));
+  const occ::handle<GeomAdaptor_Curve>   aCurveAdaptor   = new GeomAdaptor_Curve(aCurve);
+  const occ::handle<GeomAdaptor_Surface> aSurfaceAdaptor = new GeomAdaptor_Surface(aSurface);
+  const occ::handle<Geom2dAdaptor_Curve> aHintAdaptor =
+    new Geom2dAdaptor_Curve(aHint, aCurve->FirstParameter(), aCurve->LastParameter());
+  ProjLib_ComputeApproxOnPolarSurface aProjection(aHintAdaptor,
+                                                  aCurveAdaptor,
+                                                  aSurfaceAdaptor,
+                                                  aProjectionTolerance);
+  ASSERT_TRUE(aProjection.IsDone());
+  const occ::handle<Geom2d_BSplineCurve> aResult = aProjection.BSpline();
+  ASSERT_FALSE(aResult.IsNull());
+  const double   aMiddle     = 0.5 * (aCurve->FirstParameter() + aCurve->LastParameter());
+  const gp_Pnt2d anInitialUV = aHint->EvalD0(aMiddle);
+  const gp_Pnt2d aFinalUV    = aResult->EvalD0(aMiddle);
+  const gp_Pnt   aPoint      = aCurve->EvalD0(aMiddle);
+  EXPECT_NEAR(aFinalUV.X(), aU, Precision::PConfusion());
+  EXPECT_LT(aSurface->EvalD0(aFinalUV.X(), aFinalUV.Y()).Distance(aPoint),
+            aSurface->EvalD0(anInitialUV.X(), anInitialUV.Y()).Distance(aPoint));
 }
