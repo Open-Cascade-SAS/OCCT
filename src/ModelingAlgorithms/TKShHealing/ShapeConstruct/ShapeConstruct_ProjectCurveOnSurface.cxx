@@ -1032,7 +1032,7 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
   const gp_Vec2d            aVec0(aP2d[0], aP2d[3]);
   const gp_Vec2d            aVec          = aVec0 / dPar;
   occ::handle<Geom_Surface> aSurf         = mySurf->Surface();
-  bool                      isNormalCheck = aSurf->IsCNu(1) && aSurf->IsCNv(1);
+  const bool                isNormalCheck = aSurf->IsCNu(1) && aSurf->IsCNv(1);
 
   if (isNormalCheck)
   {
@@ -1045,8 +1045,8 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
       aNormalVec = aDu ^ aDv;
       if (aNormalVec.SquareMagnitude() < Precision::SquareConfusion())
       {
-        isNormalCheck = false;
-        break;
+        // A singular normal requires the general projection.
+        return nullptr;
       }
       const gp_Lin aNormalLine(aCurP, gp_Dir(aNormalVec));
       const double aDist = aNormalLine.Distance(thePoints(i));

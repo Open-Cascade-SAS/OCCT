@@ -20,8 +20,10 @@
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Precision.hxx>
+#include <Standard_Real.hxx>
 
 #include <algorithm>
+#include <cmath>
 
 TEST(Bisector_BisecCCTest, SmallNonzeroDistancePreservesBisector)
 {
@@ -129,4 +131,119 @@ TEST(Bisector_BisecCCTest, TangentConcaveCurvesHaveEquidistantBranch)
       EXPECT_NEAR(aDistances[0], aDistances[1], Precision::Confusion());
     }
   }
+}
+
+TEST(Bisector_BisecCCTest, CoincidentTangentEndpointsHaveNoIsolatedIntersection)
+{
+  for (const double anOriginY : {0.0, 1000.0, -1000.0})
+  {
+    SCOPED_TRACE(anOriginY);
+    const gp_Pnt2d               anOrigin(0.0, anOriginY);
+    const double                 aGap = Epsilon(std::max(1.0, std::abs(anOriginY)));
+    NCollection_Array1<gp_Pnt2d> aLeftPoles(1, 3), aRightPoles(1, 3);
+    aLeftPoles.ChangeAt(0)                 = gp_Pnt2d(-1.0, anOriginY + 1.0);
+    aLeftPoles.ChangeAt(1)                 = gp_Pnt2d(-0.5, anOriginY);
+    aLeftPoles.ChangeAt(2)                 = anOrigin;
+    aRightPoles.ChangeAt(0)                = gp_Pnt2d(0.0, anOriginY - aGap);
+    aRightPoles.ChangeAt(1)                = gp_Pnt2d(0.5, anOriginY - aGap);
+    aRightPoles.ChangeAt(2)                = gp_Pnt2d(1.0, anOriginY + 2.0 - aGap);
+    const occ::handle<Geom2d_Curve> aLeft  = new Geom2d_BezierCurve(aLeftPoles);
+    const occ::handle<Geom2d_Curve> aRight = new Geom2d_BezierCurve(aRightPoles);
+
+    for (const double aSide : {-1.0, 1.0})
+    {
+      SCOPED_TRACE(aSide);
+      Bisector_BisecCC aBisector;
+      aBisector.Perform(aRight, aLeft, aSide, aSide, anOrigin);
+      if (aSide < 0.0)
+      {
+        Bisector_Bisec aNormal;
+        aNormal.Perform(aLeft,
+                        aRight,
+                        anOrigin,
+                        gp_Vec2d(1.0, 0.0),
+                        gp_Vec2d(-1.0, 0.0),
+                        aSide,
+                        GeomAbs_Arc,
+                        Precision::Confusion(),
+                        true);
+        const occ::handle<Geom2d_TrimmedCurve>& aNormalCurve = aNormal.Value();
+        const double                            aDistance    = 0.1;
+        const gp_Pnt2d                          aNormalPoint =
+          aNormalCurve->EvalD0(aNormalCurve->FirstParameter() + aDistance);
+        EXPECT_NEAR(aNormalPoint.X(), anOrigin.X(), Precision::Confusion());
+        EXPECT_NEAR(aNormalPoint.Y(), anOriginY - aDistance, Precision::Confusion());
+      }
+      EXPECT_EQ(aBisector.IsEmpty(), aSide < 0.0);
+      EXPECT_EQ(aBisector.IsExtendAtStart(), aSide > 0.0);
+      const Bisector_BisecCC aConstructed(aRight, aLeft, aSide, aSide, anOrigin);
+      EXPECT_EQ(aConstructed.LinkBisCurve(aRight->FirstParameter()), aRight->FirstParameter());
+      double         aFirstParameter, aSecondParameter, aDistance;
+      const gp_Pnt2d aPoint = aBisector.ValueByInt(aRight->FirstParameter(),
+                                                   aFirstParameter,
+                                                   aSecondParameter,
+                                                   aDistance);
+      EXPECT_LE(aPoint.Distance(anOrigin), Precision::Confusion());
+      EXPECT_EQ(aFirstParameter, aRight->FirstParameter());
+      EXPECT_EQ(aSecondParameter, aLeft->LastParameter());
+      EXPECT_EQ(aDistance, aSide > 0.0 ? Precision::Infinite() : 0.0);
+    }
+  }
+}
+
+TEST(Bisector_BisecCCTest, TangentSplineJoinDoesNotCreateZeroDistanceBranch)
+{
+  NCollection_Array1<int> aMultiplicities(1, 2);
+  aMultiplicities.Init(9);
+  NCollection_Array1<gp_Pnt2d> aPoles1(1, 9);
+  aPoles1.ChangeAt(0) = gp_Pnt2d(-307.90510129766335, -1940.0660319358035);
+  aPoles1.ChangeAt(1) = gp_Pnt2d(-314.63757106336578, -1945.8142194005986);
+  aPoles1.ChangeAt(2) = gp_Pnt2d(-321.36902621150097, -1951.5633887030001);
+  aPoles1.ChangeAt(3) = gp_Pnt2d(-328.09965872367707, -1957.3137036587514);
+  aPoles1.ChangeAt(4) = gp_Pnt2d(-334.82947573080526, -1963.066955250099);
+  aPoles1.ChangeAt(5) = gp_Pnt2d(-341.55815318455893, -1968.827555440163);
+  aPoles1.ChangeAt(6) = gp_Pnt2d(-348.28483899361532, -1974.6038584825801);
+  aPoles1.ChangeAt(7) = gp_Pnt2d(-355.00789547596219, -1980.4098735134642);
+  aPoles1.ChangeAt(8) = gp_Pnt2d(-361.72457100928943, -1986.267432239546);
+  NCollection_Array1<double> aKnots1(1, 2);
+  aKnots1.ChangeAt(0) = 0.5823015797383948;
+  aKnots1.ChangeAt(1) = 0.59682247666440191;
+  const occ::handle<Geom2d_Curve> aSpline1 =
+    new Geom2d_BSplineCurve(aPoles1, aKnots1, aMultiplicities, 8);
+  const occ::handle<Geom2d_Curve> aCurve1 =
+    new Geom2d_TrimmedCurve(aSpline1, aKnots1.First(), aKnots1.Last());
+  NCollection_Array1<gp_Pnt2d> aPoles2(1, 9);
+  aPoles2.ChangeAt(0) = gp_Pnt2d(-361.72457100928943, -1986.267432239546);
+  aPoles2.ChangeAt(1) = gp_Pnt2d(-372.4080793643862, -1995.5844339735222);
+  aPoles2.ChangeAt(2) = gp_Pnt2d(-383.03339604604821, -2005.0137664357874);
+  aPoles2.ChangeAt(3) = gp_Pnt2d(-393.61304267256423, -2014.5303608158026);
+  aPoles2.ChangeAt(4) = gp_Pnt2d(-404.15835402544838, -2024.111634054927);
+  aPoles2.ChangeAt(5) = gp_Pnt2d(-414.67947804916571, -2033.7374888461734);
+  aPoles2.ChangeAt(6) = gp_Pnt2d(-425.18537585096237, -2043.3903136340591);
+  aPoles2.ChangeAt(7) = gp_Pnt2d(-435.6838217007608, -2053.0549826145161);
+  aPoles2.ChangeAt(8) = gp_Pnt2d(-446.18140303109612, -2062.7188557348354);
+  const double aGap   = Epsilon(std::abs(aPoles2.At(0).Y()));
+  aPoles2.ChangeAt(0).SetY(aPoles2.At(0).Y() + aGap);
+  aPoles2.ChangeAt(1).SetY(aPoles2.At(1).Y() + aGap);
+  NCollection_Array1<double> aKnots2(1, 2);
+  aKnots2.ChangeAt(0) = 0.59682247666440191;
+  aKnots2.ChangeAt(1) = 0.61991933816188072;
+  const occ::handle<Geom2d_Curve> aSpline2 =
+    new Geom2d_BSplineCurve(aPoles2, aKnots2, aMultiplicities, 8);
+  const occ::handle<Geom2d_Curve> aCurve2 =
+    new Geom2d_TrimmedCurve(aSpline2, aKnots2.First(), aKnots2.Last());
+
+  const auto aLeftEnd    = aCurve1->EvalD1(aCurve1->LastParameter());
+  const auto aRightStart = aCurve2->EvalD1(aCurve2->FirstParameter());
+  ASSERT_TRUE(aLeftEnd.D1.IsParallel(aRightStart.D1, Precision::Angular()));
+  const gp_Pnt2d   anOrigin = aPoles1.Last();
+  Bisector_BisecCC aBisector;
+  aBisector.Perform(aCurve2, aCurve1, 1.0, 1.0, anOrigin);
+  ASSERT_FALSE(aBisector.IsEmpty());
+  EXPECT_TRUE(aBisector.IsExtendAtStart());
+  double         aFirstParameter, aSecondParameter, aDistance;
+  const gp_Pnt2d aPoint =
+    aBisector.ValueByInt(aCurve2->FirstParameter(), aFirstParameter, aSecondParameter, aDistance);
+  EXPECT_LE(aPoint.Distance(anOrigin), Precision::Confusion());
+  EXPECT_EQ(aDistance, Precision::Infinite());
 }

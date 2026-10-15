@@ -90,6 +90,41 @@ TEST(IntPatch_WalkingTest, RegularSeedPreservesFixedParameterAfterTangencyProbe)
   EXPECT_DOUBLE_EQ(aU2, aSeed(3));
 }
 
+TEST(IntPatch_WalkingTest, TangentSeedOutsideDomainUsesBoundedSolution)
+{
+  const occ::handle<Geom_Plane>        aPlane = new Geom_Plane(gp::XOY());
+  const occ::handle<Adaptor3d_Surface> aSurface =
+    new GeomAdaptor_Surface(aPlane, 0.0, 1.0, 0.0, 1.0);
+  for (double aV : {-0.2, 0.5, 1.2})
+  {
+    SCOPED_TRACE(aV);
+    IntWalk_TheInt2S           aIntersection(aSurface, aSurface, Precision::Confusion());
+    math_FunctionSetRoot       aSolver(aIntersection.Function());
+    NCollection_Array1<double> aSeed(1, 4);
+    aSeed(1) = aSeed(3) = 0.5;
+    aSeed(2) = aSeed(4) = aV;
+    math_Vector aFreeParameters(1, 3), aLower(1, 3), anUpper(1, 3), aTolerance(1, 3);
+    aIntersection.Function().ComputeParameters(IntImp_UIsoparametricOnCaro1,
+                                               aSeed,
+                                               aFreeParameters,
+                                               aLower,
+                                               anUpper,
+                                               aTolerance);
+    aIntersection.Perform(aSeed, aSolver, IntImp_UIsoparametricOnCaro1);
+    ASSERT_TRUE(aIntersection.IsDone());
+    ASSERT_FALSE(aIntersection.IsEmpty());
+    double aU1, aV1, aU2, aV2;
+    aIntersection.Point().Parameters(aU1, aV1, aU2, aV2);
+    EXPECT_DOUBLE_EQ(aU1, aSeed(1));
+    EXPECT_GE(aV1, aLower(1));
+    EXPECT_LE(aV1, anUpper(1));
+    EXPECT_GE(aV2, aLower(3));
+    EXPECT_LE(aV2, anUpper(3));
+    EXPECT_LE(aSurface->EvalD0(aU1, aV1).Distance(aSurface->EvalD0(aU2, aV2)),
+              Precision::Confusion());
+  }
+}
+
 TEST(IntPatch_WalkingTest, ReachesBoundaryAtRegularAndSingularPoints)
 {
   for (double aScale : {0.01, 1.0, 100.0})

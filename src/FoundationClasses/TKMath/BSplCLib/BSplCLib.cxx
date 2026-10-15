@@ -920,11 +920,11 @@ bool BSplCLib::IsRational(const NCollection_Array1<double>& Weights,
 
 //=================================================================================================
 
-void BSplCLib::Eval(const double U,
-                    const int    Degree,
-                    double&      Knots,
-                    const int    Dimension,
-                    double&      Poles)
+namespace
+{
+//==================================================================================================
+
+void evalDeBoor(const double U, const int Degree, double& Knots, const int Dimension, double& Poles)
 {
   if (Degree == 0)
   {
@@ -932,7 +932,7 @@ void BSplCLib::Eval(const double U,
   }
   NCollection_LocalArray<double, 16> anOrigin(Dimension);
   const size_t                       aDimension = static_cast<size_t>(Dimension);
-  translateControlPolygon<false>(
+  translateControlPolygon(
     static_cast<size_t>(Degree) + 1,
     aDimension,
     [&](size_t thePole, size_t theCoordinate) -> double& {
@@ -985,7 +985,25 @@ void BSplCLib::Eval(const double U,
   }
 }
 
-//=================================================================================================
+} // namespace
+
+//==================================================================================================
+
+void BSplCLib::Eval(const double U,
+                    const int    Degree,
+                    double&      Knots,
+                    const int    Dimension,
+                    double&      Poles)
+{
+  if (Degree > 3)
+  {
+    Bohm(U, Degree, 0, Knots, Dimension, Poles);
+    return;
+  }
+  evalDeBoor(U, Degree, Knots, Dimension, Poles);
+}
+
+//==================================================================================================
 
 void BSplCLib::BoorScheme(const double U,
                           const int    Degree,
@@ -1190,9 +1208,11 @@ void BSplCLib::Bohm(const double U,
   {
     throw Standard_DomainError("BSplCLib::Bohm: invalid local knot span");
   }
-  if (N == 0)
+  // Low-degree evaluation has little repeated work to offset basis setup.
+  const bool toUseBasis = Degree > 3 && U >= aKnots[Degree - 1] && U <= aKnots[Degree];
+  if (N == 0 && !toUseBasis)
   {
-    Eval(U, Degree, Knots, Dimension, Poles);
+    evalDeBoor(U, Degree, Knots, Dimension, Poles);
     return;
   }
   if (N < 0)
@@ -1206,8 +1226,6 @@ void BSplCLib::Bohm(const double U,
   aKnotData[0] = aKnots[0];
   std::copy_n(aKnots, 2 * Degree, aKnotData + 1);
   aKnotData[2 * Degree + 1] = aKnots[2 * Degree - 1];
-  // Low-degree evaluation has little repeated work to offset basis setup.
-  const bool toUseBasis = Degree > 3 && U >= aKnots[Degree - 1] && U <= aKnots[Degree];
   NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aBasisData(
     toUseBasis ? static_cast<size_t>(Degree + 1) * (Degree + 1) : 0);
   std::optional<math_Matrix> aBasis;
@@ -1231,8 +1249,14 @@ void BSplCLib::Bohm(const double U,
     bool      isSafe  = false;
     if (aBasis)
     {
-      isSafe = translateControlPolygon<true>(
-        static_cast<size_t>(aDegree) + 1,
+      const size_t aNbPoles = static_cast<size_t>(aDegree) + 1;
+      // Reserve room for every weighted pole and the restored origin.
+      const double aLimit = RealLast() / static_cast<double>(aNbPoles + 1);
+      isSafe = std::all_of(&Poles, &Poles + aNbPoles * aDimension, [aLimit](double theValue) {
+        return std::abs(theValue) <= aLimit;
+      });
+      translateControlPolygon(
+        aNbPoles,
         aDimension,
         [&](size_t thePole, size_t theCoordinate) -> double& {
           return (&Poles)[thePole * aDimension + theCoordinate];
@@ -1256,7 +1280,7 @@ void BSplCLib::Bohm(const double U,
         aWorkPoles.Allocate(aNbCoordinates);
       }
       std::copy_n(&Poles, static_cast<size_t>(aDegree + 1) * aDimension, &aWorkPoles[0]);
-      Eval(U, aDegree, aKnotData[aDerivative + 1], Dimension, aWorkPoles[0]);
+      evalDeBoor(U, aDegree, aKnotData[aDerivative + 1], Dimension, aWorkPoles[0]);
       aResultData = &aWorkPoles[0];
       if (aBasis)
       {

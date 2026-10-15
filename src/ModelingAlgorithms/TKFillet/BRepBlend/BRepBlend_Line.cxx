@@ -14,6 +14,7 @@
 
 #include <BRepBlend_Line.hxx>
 #include <Standard_Type.hxx>
+#include <memory>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepBlend_Line, Standard_Transient)
 
@@ -27,11 +28,43 @@ BRepBlend_Line::BRepBlend_Line()
 
 void BRepBlend_Line::Clear()
 {
-  seqpt.Clear();
+  myPoints.Clear(false);
   hass1 = false;
   hass2 = false;
   tras1 = IntSurf_Undecided;
   tras2 = IntSurf_Undecided;
+}
+
+//==================================================================================================
+
+BRepBlend_Line::BRepBlend_Line(const BRepBlend_Line& theOther)
+    : BRepBlend_Line()
+{
+  *this = theOther;
+}
+
+//==================================================================================================
+
+BRepBlend_Line& BRepBlend_Line::operator=(const BRepBlend_Line& theOther)
+{
+  if (this != &theOther)
+  {
+    myPoints.Clear(false);
+    myPoints.Reserve(theOther.myPoints.Size());
+    for (const auto& aPoint : theOther.myPoints)
+    {
+      myPoints.Append(std::make_unique<Blend_Point>(*aPoint));
+    }
+    tras1 = theOther.tras1;
+    tras2 = theOther.tras2;
+    stp1  = theOther.stp1;
+    stp2  = theOther.stp2;
+    endp1 = theOther.endp1;
+    endp2 = theOther.endp2;
+    hass1 = theOther.hass1;
+    hass2 = theOther.hass2;
+  }
+  return *this;
 }
 
 void BRepBlend_Line::Set(const IntSurf_TypeTrans TranS1, const IntSurf_TypeTrans TranS2)

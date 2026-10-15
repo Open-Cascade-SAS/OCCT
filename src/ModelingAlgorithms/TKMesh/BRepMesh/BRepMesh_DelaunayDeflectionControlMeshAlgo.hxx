@@ -19,6 +19,11 @@
 #include <BRepMesh_DelaunayNodeInsertionMeshAlgo.hxx>
 #include <BRepMesh_GeomTool.hxx>
 #include <GeomLib.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <gp_Dir.hxx>
+
+#include <cmath>
+#include <optional>
 
 //! Extends node insertion Delaunay meshing algo in order to control
 //! deflection of generated triangles. Splits triangles failing the check.
@@ -30,6 +35,7 @@ private:
   // Typedef for OCCT RTTI
   typedef BRepMesh_DelaunayNodeInsertionMeshAlgo<RangeSplitter, BaseAlgo>
     DelaunayInsertionBaseClass;
+  using SurfacePoint = typename DelaunayInsertionBaseClass::SurfacePoint;
 
 public:
   //! Constructor.
@@ -72,6 +78,13 @@ protected:
   //! Inserts additional nodes in case of huge deviation.
   virtual void optimizeMesh(BRepMesh_Delaun& theMesher, const Message_ProgressRange& theRange)
   {
+    myNormals.Clear(false);
+    // Keep roughly one surface node per grid cell.
+    const auto [aCellsU, aCellsV] = this->getCellsCount(this->getStructure()->NbNodes());
+    const double aGridScale       = std::sqrt(static_cast<double>(this->getStructure()->NbNodes())
+                                        / (static_cast<double>(aCellsU) * aCellsV));
+    theMesher.InitCirclesTool(std::max(aCellsU, static_cast<int>(std::ceil(aCellsU * aGridScale))),
+                              std::max(aCellsV, static_cast<int>(std::ceil(aCellsV * aGridScale))));
     occ::handle<NCollection_IncAllocator> aTmpAlloc =
       new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
 
@@ -79,8 +92,7 @@ protected:
     myCouplesMap =
       new IMeshData::MapOfOrientedEdges(3 * this->getStructure()->ElementsOfDomain().Extent(),
                                         aTmpAlloc);
-    myControlNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
-    myCircles      = &theMesher.Circles();
+    myCircles = &theMesher.Circles();
 
     size_t                aFirstTriangle = 1;
     bool                  isInserted     = true;
@@ -94,7 +106,7 @@ protected:
       // Reset stop condition
       myMaxSqDeflection  = -1.;
       myIsAllDegenerated = true;
-      myControlNodes->Clear();
+      myControlNodes.Clear(false);
 
       if (this->getStructure()->ElementsOfDomain().Extent() < 1)
       {
@@ -128,7 +140,7 @@ protected:
     }
 
     myCouplesMap.Nullify();
-    myControlNodes.Nullify();
+    myControlNodes.Clear(true);
 
     if (!(myMaxSqDeflection < 0.))
     {
@@ -358,9 +370,9 @@ private:
         {
           if (!rejectSplitLinksForMinSize(theNodesInfo[i], theNodesInfo[j], aMidPoint))
           {
-            if (!checkLinkEndsForAngularDeviation(theNodesInfo[i], theNodesInfo[j], aMidPnt2d))
+            if (!checkLinkEndsForAngularDeviation(theNodesIndices[i], theNodesIndices[j]))
             {
-              myControlNodes->Append(aMidPnt2d);
+              myControlNodes.Append({gp_Pnt2d(aMidPnt2d), aMidPoint});
             }
           }
         }
@@ -378,26 +390,43 @@ private:
             || (theNodeInfo2.Point - theMidPoint.XYZ()).SquareModulus() < mySqMinSize);
   }
 
-  //! Checks the given point (located between the given nodes)
-  //! for specified angular deviation.
-  bool checkLinkEndsForAngularDeviation(const TriangleNodeInfo& theNodeInfo1,
-                                        const TriangleNodeInfo& theNodeInfo2,
-                                        const gp_XY& /*theMidPoint*/)
+  //! Checks angular deviation between normals at the link ends.
+  bool checkLinkEndsForAngularDeviation(const int theFirstNode, const int theLastNode)
   {
-    gp_Dir                           aNorm1, aNorm2;
-    const occ::handle<Geom_Surface>& aSurf = this->getDFace()->GetSurface()->GeomSurfaceOriginal();
-
-    if ((GeomLib::NormEstim(aSurf, theNodeInfo1.Point2d, Precision::Confusion(), aNorm1) == 0)
-        && (GeomLib::NormEstim(aSurf, theNodeInfo2.Point2d, Precision::Confusion(), aNorm2) == 0))
+    if (const std::optional<gp_Dir>& aNorm1 = getNormal(theFirstNode))
     {
-      double anAngle = aNorm1.Angle(aNorm2);
-      if (anAngle > this->getParameters().AngleInterior)
+      if (const std::optional<gp_Dir>& aNorm2 = getNormal(theLastNode))
       {
-        return false;
+        return aNorm1->Angle(*aNorm2) <= this->getParameters().AngleInterior;
       }
     }
-
     return true;
+  }
+
+  //! Returns the cached surface normal, or no value when estimation fails.
+  const std::optional<gp_Dir>& getNormal(const int theNodeIndex)
+  {
+    if (static_cast<size_t>(theNodeIndex) >= myNormals.Size())
+    {
+      myNormals.SetValue(theNodeIndex, std::nullopt);
+    }
+    std::optional<gp_Dir>& aNormal = myNormals.ChangeValue(theNodeIndex);
+    if (!aNormal)
+    {
+      const gp_XY aPoint2d = this->getRangeSplitter()
+                               .Scale(this->getStructure()->GetNode(theNodeIndex).Coord(), false)
+                               .XY();
+      gp_Dir aDirection;
+      if (GeomLib::NormEstim(this->getDFace()->GetSurface()->GeomSurfaceOriginal(),
+                             aPoint2d,
+                             Precision::Confusion(),
+                             aDirection)
+          == 0)
+      {
+        aNormal = aDirection;
+      }
+    }
+    return aNormal;
   }
 
   //! Returns 3d point corresponding to the given one in 2d space.
@@ -420,7 +449,7 @@ private:
                                               thePnt3d,
                                               theDeflectionFunctor.SquareDeviation(thePnt3d)))
     {
-      myControlNodes->Append(thePnt2d);
+      myControlNodes.Append({gp_Pnt2d(thePnt2d), thePnt3d});
       return true;
     }
 
@@ -487,12 +516,14 @@ private:
   }
 
 private:
-  double                                myMaxSqDeflection;
-  double                                mySqMinSize;
-  bool                                  myIsAllDegenerated;
-  Handle(IMeshData::MapOfOrientedEdges) myCouplesMap;
-  Handle(IMeshData::ListOfPnt2d)        myControlNodes;
-  const BRepMesh_CircleTool*            myCircles;
+  double                                 myMaxSqDeflection;
+  double                                 mySqMinSize;
+  bool                                   myIsAllDegenerated;
+  Handle(IMeshData::MapOfOrientedEdges)  myCouplesMap;
+  NCollection_LinearVector<SurfacePoint> myControlNodes; //!< Points selected for refinement.
+  const BRepMesh_CircleTool*             myCircles;
+  NCollection_DynamicArray<std::optional<gp_Dir>>
+    myNormals; //!< Surface normals by mesh node index.
 };
 
 //==================================================================================================
@@ -544,7 +575,7 @@ void BRepMesh_DelaunayDeflectionControlMeshAlgo<RangeSplitter, BaseAlgo>::checkI
     }
     if (!checkDeflectionOfPointAndUpdateCache(aNext, aNextPoint, aNextSqDeviation))
     {
-      myControlNodes->Append(aNext);
+      myControlNodes.Append({gp_Pnt2d(aNext), aNextPoint});
       return;
     }
     theParameter = aNext;
