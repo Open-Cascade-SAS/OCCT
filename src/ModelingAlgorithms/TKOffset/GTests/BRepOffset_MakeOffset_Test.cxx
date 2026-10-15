@@ -13,7 +13,9 @@
 
 #include <gtest/gtest.h>
 
+#include <BRepGProp.hxx>
 #include <BRepOffsetAPI_MakeOffset.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffset_MakeOffset.hxx>
@@ -31,9 +33,12 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <GProp_GProps.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_Ellipse.hxx>
@@ -58,7 +63,9 @@
 
 #include <cmath>
 #include <array>
+#include <memory>
 #include <utility>
+#include <vector>
 
 TEST(BRepOffset_AnalyseTest, ConstructionContinuityOfSplineFace)
 {
@@ -1227,4 +1234,164 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolidWithDegeneratePoleEdges)
   anOffset.MakeThickSolid();
   ASSERT_TRUE(anOffset.IsDone());
   EXPECT_TRUE(BRepCheck_Analyzer(anOffset.Shape()).IsValid());
+}
+
+//=================================================================================================
+// Test: the faces of an arc-join offset come out in the same order whatever the heap looks like
+//=================================================================================================
+
+TEST(BRepOffset_MakeOffsetTest, ArcJoin_FaceOrderDoesNotDependOnAddresses)
+{
+  // Hold a different amount of heap before each build, so that the shapes of each one get other
+  // addresses. BuildOffsetByArc must not let that reach the order of the faces it returns.
+  std::vector<std::unique_ptr<char[]>> aHeap;
+  std::vector<gp_Pnt>                  aRefCentres;
+  double                               aRefVolume = 0.0;
+  for (int aRun = 0; aRun < 32; ++aRun)
+  {
+    aHeap.emplace_back(new char[16 + 16 * aRun]);
+
+    const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(gp_Pnt(-5, -5, -5), 10, 10, 10).Shape();
+    BRepOffsetAPI_MakeOffsetShape aMaker;
+    aMaker.PerformByJoin(aBox, 1.0, 1.0e-7, BRepOffset_Skin, false, false, GeomAbs_Arc, false);
+    ASSERT_TRUE(aMaker.IsDone());
+
+    std::vector<gp_Pnt> aCentres;
+    for (TopExp_Explorer anExp(aMaker.Shape(), TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      GProp_GProps aProps;
+      BRepGProp::SurfaceProperties(anExp.Current(), aProps);
+      aCentres.push_back(aProps.CentreOfMass());
+    }
+    GProp_GProps aVolume;
+    BRepGProp::VolumeProperties(aMaker.Shape(), aVolume, true);
+
+    if (aRun == 0)
+    {
+      aRefCentres = aCentres;
+      aRefVolume  = aVolume.Mass();
+      continue;
+    }
+    ASSERT_EQ(aCentres.size(), aRefCentres.size());
+    for (size_t aFaceIdx = 0; aFaceIdx < aCentres.size(); ++aFaceIdx)
+    {
+      EXPECT_TRUE(aCentres[aFaceIdx].IsEqual(aRefCentres[aFaceIdx], 1.0e-9))
+        << "face " << aFaceIdx << " of run " << aRun << " is not where it was in run 0";
+    }
+    // The order the faces are summed in decides the last digits of the volume.
+    EXPECT_EQ(aVolume.Mass(), aRefVolume) << "volume of run " << aRun;
+  }
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidArcRemovingBlindHoleFloorIsValid)
+{
+  // The cap split of the hole floor is oriented against the offset faces, so the quilt order
+  // decides.
+  TopoDS_Shape aBlock = BRepPrimAPI_MakeBox(gp_Pnt(-28.75, -20.0, 0.0), 57.5, 40.0, 27.5).Shape();
+  for (const gp_Pnt& aHole : {gp_Pnt(0.0, 5.0, 16.25), gp_Pnt(0.0, 10.0, 21.25)})
+  {
+    const gp_Ax2 anAxis(gp_Pnt(-28.75, aHole.Y(), aHole.Z()), gp::DX());
+    aBlock = BRepAlgoAPI_Cut(aBlock, BRepPrimAPI_MakeCylinder(anAxis, 0.75, 40.0).Shape()).Shape();
+  }
+  const gp_Pnt aFloorCentre(11.25, 10.0, 21.25);
+  // A fresh copy gives the shapes other addresses, so a hash order dependence shows.
+  for (int aCopy = 0; aCopy < 20; ++aCopy)
+  {
+    const TopoDS_Shape             aShape = BRepBuilderAPI_Copy(aBlock, false).Shape();
+    NCollection_List<TopoDS_Shape> aRemoved;
+    for (TopExp_Explorer anExp(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      GProp_GProps aProps;
+      BRepGProp::SurfaceProperties(anExp.Current(), aProps);
+      if (aProps.CentreOfMass().Distance(aFloorCentre) < 1.0e-3)
+      {
+        aRemoved.Append(anExp.Current());
+      }
+    }
+    ASSERT_EQ(aRemoved.Size(), 1);
+    BRepOffsetAPI_MakeThickSolid aMaker;
+    aMaker.MakeThickSolidByJoin(aShape,
+                                aRemoved,
+                                -1.95,
+                                1.0e-3,
+                                BRepOffset_Skin,
+                                false,
+                                false,
+                                GeomAbs_Arc);
+    ASSERT_TRUE(aMaker.IsDone()) << "copy " << aCopy;
+    EXPECT_TRUE(BRepCheck_Analyzer(aMaker.Shape()).IsValid()) << "copy " << aCopy;
+    GProp_GProps aVolume;
+    BRepGProp::VolumeProperties(aMaker.Shape(), aVolume);
+    EXPECT_NEAR(aVolume.Mass(), 19219.48, 0.01) << "copy " << aCopy;
+  }
+}
+
+namespace
+{
+// A 57.5 x 40 x 27.5 block with two blind holes of diameter 1.5, 40 deep, floors at x = 11.25.
+TopoDS_Shape makeDrilledBlock()
+{
+  TopoDS_Shape aBlock = BRepPrimAPI_MakeBox(gp_Pnt(-28.75, -20.0, 0.0), 57.5, 40.0, 27.5).Shape();
+  for (const gp_Pnt& aHole : {gp_Pnt(0.0, 5.0, 16.25), gp_Pnt(0.0, 10.0, 21.25)})
+  {
+    const gp_Ax2 anAxis(gp_Pnt(-28.75, aHole.Y(), aHole.Z()), gp::DX());
+    aBlock = BRepAlgoAPI_Cut(aBlock, BRepPrimAPI_MakeCylinder(anAxis, 0.75, 40.0).Shape()).Shape();
+  }
+  return aBlock;
+}
+
+// Thickens copies of the drilled block removing the faces whose centre of mass is in theCentres.
+void checkThickSolidOfCopies(const std::vector<gp_Pnt>& theCentres, const double theVolume)
+{
+  const TopoDS_Shape aBlock = makeDrilledBlock();
+  // A fresh copy gives the shapes other addresses, so a hash order dependence shows.
+  for (int aCopy = 0; aCopy < 20; ++aCopy)
+  {
+    const TopoDS_Shape             aShape = BRepBuilderAPI_Copy(aBlock, false).Shape();
+    NCollection_List<TopoDS_Shape> aRemoved;
+    for (TopExp_Explorer anExp(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      GProp_GProps aProps;
+      BRepGProp::SurfaceProperties(anExp.Current(), aProps);
+      for (const gp_Pnt& aCentre : theCentres)
+      {
+        if (aProps.CentreOfMass().Distance(aCentre) < 1.0e-3)
+        {
+          aRemoved.Append(anExp.Current());
+          break;
+        }
+      }
+    }
+    ASSERT_EQ(aRemoved.Size(), static_cast<int>(theCentres.size()));
+    BRepOffsetAPI_MakeThickSolid aMaker;
+    aMaker.MakeThickSolidByJoin(aShape,
+                                aRemoved,
+                                -1.95,
+                                1.0e-3,
+                                BRepOffset_Skin,
+                                false,
+                                false,
+                                GeomAbs_Arc);
+    ASSERT_TRUE(aMaker.IsDone()) << "copy " << aCopy;
+    EXPECT_TRUE(BRepCheck_Analyzer(aMaker.Shape()).IsValid()) << "copy " << aCopy;
+    GProp_GProps aVolume;
+    BRepGProp::VolumeProperties(aMaker.Shape(), aVolume);
+    // The sign matters: an inside-out solid is valid and has a negative volume.
+    EXPECT_NEAR(aVolume.Mass(), theVolume, 0.01) << "copy " << aCopy;
+  }
+}
+} // namespace
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidArcRemovingTwoBlindHoleFloorsIsValid)
+{
+  // Two caps, both extended beyond their boundary by the offset faces.
+  checkThickSolidOfCopies({gp_Pnt(11.25, 5.0, 16.25), gp_Pnt(11.25, 10.0, 21.25)}, 19186.43);
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidArcRemovingBlindHoleFloorsAndTopIsOutside)
+{
+  // Caps trimmed inside their face (top) and extended beyond it (floors) in one shell.
+  checkThickSolidOfCopies(
+    {gp_Pnt(11.25, 5.0, 16.25), gp_Pnt(11.25, 10.0, 21.25), gp_Pnt(0.0, 0.0, 27.5)},
+    15413.26);
 }
