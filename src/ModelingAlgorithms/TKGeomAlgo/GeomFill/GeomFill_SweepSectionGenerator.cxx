@@ -625,17 +625,6 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
       Axis  = gp_Ax2(PPath, gp_Vec(PPath, P1) ^ gp_Vec(PPath, P2), gp_Vec(PPath, P1));
       Angle = ElCLib::CircleParameter(Axis, P2);
     }
-#ifdef OCCT_DEBUG
-/*
-    if (false) {
-      gp_Vec dummyD1 = myAdpPath->DN(U,1);
-      gp_Vec dummyTg = Axis.Direction();
-      double Cos = dummyD1.Dot(dummyTg);
-      if ( Cos > 0.) std::cout << "+" ;
-      else           std::cout << "-" ;
-    }
-*/
-#endif
     if (Angle < Precision::Angular())
     {
       for (int i = 1; i <= Poles.Upper(); i++)

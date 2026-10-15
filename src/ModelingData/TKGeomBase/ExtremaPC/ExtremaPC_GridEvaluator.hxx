@@ -94,7 +94,7 @@ public:
     if (aConstantDistance.has_value())
     {
       myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
-      myResult.InfiniteSquareDistance = aConstantDistance.value();
+      myResult.InfiniteSquareDistance = aConstantDistance.value_or(0.0);
       return myResult;
     }
 

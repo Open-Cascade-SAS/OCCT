@@ -19,9 +19,49 @@ set VaExp [ dval (x2-x1)*(y2-y1)*(z2-z1) ]
 checkprops ra -v $VaExp
 
 puts "OBB"
-bounding result -shape ro -dump -obb
+set boxInfo [bounding result -shape ro -dump -obb]
+puts $boxInfo
 
-checkprops ro -v 28694.7
+# Check enclosure of the entire torus analytically and bound the OBB volume.
+explode result f
+mksurface torusSurface result_1
+foreach {name u v} {p0 0 0 p1 3.141592653589793 0 n0 0 1.5707963267948966 n1 0 -1.5707963267948966} {
+  svalue torusSurface $u $v ${name}x ${name}y ${name}z
+}
+regexp {Center: ([^\n]+)} $boxInfo dummy boxCenter
+set centerOffset {}
+set normal {}
+foreach coordinate {x y z} boxCoordinate $boxCenter {
+  lappend centerOffset [expr {([dval p0$coordinate] + [dval p1$coordinate])/2 - $boxCoordinate}]
+  lappend normal [expr {([dval n0$coordinate] - [dval n1$coordinate])/10}]
+}
+set boxVolume 8.0
+foreach axis {X Y Z} {
+  regexp "$axis-axis: (\[^\n\]+)" $boxInfo dummy direction
+  regexp "Half $axis: (\[^\n\]+)" $boxInfo dummy halfSize
+  set centerProjection 0.0
+  set normalProjection 0.0
+  set norm2 0.0
+  foreach component $direction offset $centerOffset normalComponent $normal {
+    set centerProjection [expr {$centerProjection + $component*$offset}]
+    set normalProjection [expr {$normalProjection + $component*$normalComponent}]
+    set norm2 [expr {$norm2 + $component*$component}]
+  }
+  set radialNorm2 0.0
+  foreach component $direction normalComponent $normal {
+    set radial [expr {$component-$normalProjection*$normalComponent}]
+    set radialNorm2 [expr {$radialNorm2 + $radial*$radial}]
+  }
+  set support [expr {abs($centerProjection) + 20*sqrt($radialNorm2) + 5*sqrt($norm2)}]
+  if {$support > $halfSize + 1e-7} {
+    puts "Error: OBB does not enclose the torus along $axis"
+  }
+  set boxVolume [expr {$boxVolume*$halfSize}]
+}
+if {$boxVolume <= 0 || $boxVolume > 28694.7} {
+  puts "Error: OBB volume exceeds the reference bound"
+}
+checkprops ro -v $boxVolume
 
 smallview 
 fit

@@ -204,13 +204,15 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
     return VrmlData_EndOfFile;
   }
   // Read a line.
-  theBuffer.Input.getline(theBuffer.Line, sizeof(theBuffer.Line));
+  theBuffer.Input.getline(theBuffer.Line.data(),
+                          static_cast<std::streamsize>(theBuffer.Line.size()));
 
   // Check the number of read symbols.
   // If maximum number is read, process the array of symbols separately
   // rolling back the array to the last comma or space symbol.
   std::streamsize aNbChars = theBuffer.Input.gcount();
-  if (theBuffer.Input.rdstate() & std::ios::failbit && aNbChars == sizeof(theBuffer.Line) - 1)
+  if (theBuffer.Input.rdstate() & std::ios::failbit
+      && aNbChars == static_cast<std::streamsize>(theBuffer.Line.size() - 1))
   {
     // Clear the error.
     // We will fix it here below.
@@ -250,7 +252,7 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
       aStatus = VrmlData_GeneralError;
     }
   }
-  theBuffer.LinePtr     = &theBuffer.Line[0];
+  theBuffer.LinePtr     = theBuffer.Line.data();
   theBuffer.IsProcessed = false;
   return aStatus;
 }
@@ -287,32 +289,36 @@ nonempty_line:
   // Try to detect comment
   if (!theBuffer.IsProcessed)
   {
-    bool  isQuoted(false);
-    int   anOffset(0);
-    char* ptr = theBuffer.LinePtr;
-    for (; *ptr != '\0'; ptr++)
+    bool        isQuoted  = false;
+    const char* aReadPtr  = theBuffer.LinePtr;
+    char*       aWritePtr = theBuffer.LinePtr;
+    while (*aReadPtr != '\0')
     {
-      if (anOffset)
-      {
-        *ptr = ptr[anOffset];
-      }
-      if (*ptr == '\n' || *ptr == '\r' || *ptr == '#')
+      const char aChar = *aReadPtr++;
+      if (aChar == '\n' || aChar == '\r' || aChar == '#')
       {
         if (!isQuoted)
         {
-          *ptr = '\0';
           break;
         }
       }
-      else if (*ptr == '\\' && isQuoted)
+      else if (aChar == '\\' && isQuoted)
       {
-        ptr[0] = ptr[++anOffset];
+        if (*aReadPtr == '\0')
+        {
+          *aWritePtr++ = aChar;
+          break;
+        }
+        *aWritePtr++ = *aReadPtr++;
+        continue;
       }
-      else if (*ptr == '\"')
+      else if (aChar == '\"')
       {
         isQuoted = !isQuoted;
       }
+      *aWritePtr++ = aChar;
     }
+    *aWritePtr            = '\0';
     theBuffer.IsProcessed = true;
   }
   return aStatus;

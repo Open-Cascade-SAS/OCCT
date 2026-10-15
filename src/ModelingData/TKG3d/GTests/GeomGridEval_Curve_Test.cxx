@@ -537,6 +537,52 @@ TEST(GeomGridEval_BSplineCurveTest, MultiSpanBSpline)
   }
 }
 
+TEST(GeomGridEval_BSplineCurveTest, NearRepeatedKnotUsesActualSpan)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 7);
+  for (int anIndex = aPoles.Lower(); anIndex <= aPoles.Upper(); ++anIndex)
+  {
+    const double aValue = static_cast<double>(anIndex);
+    aPoles(anIndex)     = gp_Pnt(aValue, std::sin(aValue), aValue * aValue);
+  }
+
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.5;
+  aKnots(3) = 1.0;
+  NCollection_Array1<int> aMults(1, 3);
+  aMults(1) = 4;
+  aMults(2) = 3;
+  aMults(3) = 4;
+
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  GeomGridEval_BSplineCurve      anEval(aCurve);
+
+  NCollection_Array1<double> aParams(1, 8);
+  aParams(1) = 0.45;
+  aParams(2) = 0.48;
+  aParams(3) = 0.49;
+  aParams(4) = std::nextafter(0.5, 0.0);
+  aParams(5) = 0.5;
+  aParams(6) = 0.51;
+  aParams(7) = 0.52;
+  aParams(8) = 0.55;
+
+  const NCollection_Array1<GeomGridEval::CurveD3> aGrid = anEval.EvaluateGridD3(aParams);
+  for (int anIndex = aParams.Lower(); anIndex <= aParams.Upper(); ++anIndex)
+  {
+    gp_Pnt aPoint;
+    gp_Vec aD1, aD2, aD3;
+    aCurve->D3(aParams(anIndex), aPoint, aD1, aD2, aD3);
+
+    const GeomGridEval::CurveD3& aGridValue = aGrid.Value(anIndex);
+    EXPECT_TRUE(aGridValue.Point.IsEqual(aPoint, THE_TOLERANCE));
+    EXPECT_TRUE(aGridValue.D1.IsEqual(aD1, THE_TOLERANCE, THE_TOLERANCE));
+    EXPECT_TRUE(aGridValue.D2.IsEqual(aD2, THE_TOLERANCE, THE_TOLERANCE));
+    EXPECT_TRUE(aGridValue.D3.IsEqual(aD3, THE_TOLERANCE, THE_TOLERANCE));
+  }
+}
+
 TEST(GeomGridEval_BSplineCurveTest, HighDegree)
 {
   // Create a higher degree B-spline (degree 5)

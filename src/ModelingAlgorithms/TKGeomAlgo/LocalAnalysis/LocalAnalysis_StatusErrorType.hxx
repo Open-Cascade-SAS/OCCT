@@ -23,7 +23,9 @@ enum LocalAnalysis_StatusErrorType
   LocalAnalysis_NullSecondDerivative,
   LocalAnalysis_TangentNotDefined,
   LocalAnalysis_NormalNotDefined,
-  LocalAnalysis_CurvatureNotDefined
+  LocalAnalysis_CurvatureNotDefined,
+  LocalAnalysis_NoError,
+  LocalAnalysis_InvalidInput
 };
 
 #endif // _LocalAnalysis_StatusErrorType_HeaderFile

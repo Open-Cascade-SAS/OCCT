@@ -30,11 +30,6 @@
 #define EPSEPS 2e-14
 #define MAXBIS 100
 
-#ifdef OCCT_DEBUG
-static bool myDebug = 0;
-static int  nbsolve = 0;
-#endif
-
 class DerivFunction : public math_Function
 {
   math_FunctionWithDerivative* myF;
@@ -59,14 +54,6 @@ static void AppendRoot(NCollection_Sequence<double>& Sol,
 
   int    n = Sol.Length();
   double t;
-#ifdef OCCT_DEBUG
-  if (myDebug)
-  {
-    std::cout << "   Ajout de la solution numero : " << n + 1 << std::endl;
-    std::cout << "   Valeur de la racine :" << X << std::endl;
-  }
-#endif
-
   if (n == 0)
   {
     Sol.Append(X);
@@ -118,15 +105,6 @@ static void Solve(math_FunctionWithDerivative&  F,
                   NCollection_Sequence<double>& Sol,
                   NCollection_Sequence<int>&    NbStateSol)
 {
-#ifdef OCCT_DEBUG
-  if (myDebug)
-  {
-    std::cout << "--> Resolution :" << ++nbsolve << std::endl;
-    std::cout << "   x1 =" << x1 << " y1 =" << y1 << std::endl;
-    std::cout << "   x2 =" << x2 << " y2 =" << y2 << std::endl;
-  }
-#endif
-
   int    iter  = 0;
   double tols2 = 0.5 * tol;
   double a, b, c, d = 0, e = 0, fa, fb, fc, p, q, r, s, tol1, xm, min1, min2;
@@ -267,14 +245,6 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                                        const double                 EpsNull,
                                        const double                 K)
 {
-#ifdef OCCT_DEBUG
-  if (myDebug)
-  {
-    std::cout << "---- Debut de math_FunctionRoots ----" << std::endl;
-    nbsolve = 0;
-  }
-#endif
-
 #if NEWSEQ
   NCollection_Sequence<double> StaticSol;
 #endif

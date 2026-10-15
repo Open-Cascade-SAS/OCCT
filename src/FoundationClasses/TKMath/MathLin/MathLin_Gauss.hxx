@@ -157,9 +157,9 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
   aResult.Determinant = static_cast<double>(aResult.Sign);
   for (size_t i = 0; i < aRowCount; ++i)
   {
-    const double aPivot = aLU.At(i, i);
-    *aResult.Determinant *= aPivot;
-    if (!std::isfinite(*aResult.Determinant) || (*aResult.Determinant == 0.0 && aPivot != 0.0))
+    const double aDiagonal = aLU.At(i, i);
+    *aResult.Determinant *= aDiagonal;
+    if (!std::isfinite(*aResult.Determinant) || (*aResult.Determinant == 0.0 && aDiagonal != 0.0))
     {
       aResult.Determinant.reset();
       break;

@@ -437,7 +437,7 @@ const NCollection_List<TopoDS_Shape>& BRepFill_OffsetWire::GeneratedShapes(
   }
   else
   {
-    static NCollection_List<TopoDS_Shape> Empty;
+    static const NCollection_List<TopoDS_Shape> Empty;
     return Empty;
   }
 }

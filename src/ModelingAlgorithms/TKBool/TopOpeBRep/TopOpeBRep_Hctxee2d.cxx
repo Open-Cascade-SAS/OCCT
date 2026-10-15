@@ -30,13 +30,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d, Standard_Transient)
 
-#ifdef OCCT_DEBUG
-  #include <GeomTools_SurfaceSet.hxx>
-  #include <GeomTools_CurveSet.hxx>
-  #include <GeomTools_Curve2dSet.hxx>
-  #include <Geom_Curve.hxx>
-Standard_EXPORT bool TopOpeBRep_GettracePROEDG();
-#endif
+#include <Geom_Curve.hxx>
 
 //=================================================================================================
 
@@ -177,20 +171,6 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge&         E1,
       PC2on1->D0(first, pfirst);
       PC2on1->D0(last, plast);
       myDomain2.SetValues(pfirst, first, tole, plast, last, tole);
-#ifdef OCCT_DEBUG
-      if (TopOpeBRep_GettracePROEDG())
-      {
-        std::cout << "------------ projection de curve" << std::endl;
-        std::cout << "--- Curve : " << std::endl;
-        GeomTools_CurveSet::PrintCurve(NC, std::cout);
-        std::cout << "--- nouvelle PCurve : " << std::endl;
-        GeomTools_Curve2dSet::PrintCurve2d(PC2on1, std::cout);
-        occ::handle<Geom_Surface> aS1 = BRep_Tool::Surface(F1);
-        std::cout << "--- sur surface : " << std::endl;
-        GeomTools_SurfaceSet::PrintSurface(aS1, std::cout);
-        std::cout << std::endl;
-      }
-#endif
     }
   }
 

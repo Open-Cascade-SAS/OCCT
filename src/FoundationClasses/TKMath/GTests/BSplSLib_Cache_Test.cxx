@@ -22,6 +22,7 @@
 #include <NCollection_Array1.hxx>
 
 #include <gtest/gtest.h>
+#include <cmath>
 
 namespace
 {
@@ -973,6 +974,151 @@ TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_VGreaterU)
         << "DifferentDeg V>U D1 tanU X mismatch at u=" << u << ", v=" << v;
       EXPECT_NEAR(aCacheTanV.X(), aDirectTanV.X(), THE_TOLERANCE)
         << "DifferentDeg V>U D1 tanV X mismatch at u=" << u << ", v=" << v;
+    }
+  }
+}
+
+TEST_F(BSplSLib_CacheTest, RationalD1AsymmetricDegreesAndWeightScale)
+{
+  for (const int aUDegree : {1, 2, 5})
+  {
+    for (const int aVDegree : {1, 3, 5})
+    {
+      for (const double aWeightScale : {1.e-6, 1.0, 1.e6})
+      {
+        SCOPED_TRACE(::testing::Message() << aUDegree << "," << aVDegree << "," << aWeightScale);
+        NCollection_Array2<gp_Pnt> aPoles(1, aUDegree + 1, 1, aVDegree + 1);
+        NCollection_Array2<double> aWeights(1, aUDegree + 1, 1, aVDegree + 1);
+        for (int aUIndex = 1; aUIndex <= aPoles.UpperRow(); ++aUIndex)
+        {
+          for (int aVIndex = 1; aVIndex <= aPoles.UpperCol(); ++aVIndex)
+          {
+            aPoles(aUIndex, aVIndex) = gp_Pnt(aUIndex, aVIndex, std::sin(aUIndex + 2.0 * aVIndex));
+            aWeights(aUIndex, aVIndex) = aWeightScale * (1.0 + 0.1 * aUIndex * aVIndex);
+          }
+        }
+        NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+        aUKnots(1) = 2.0;
+        aUKnots(2) = 5.0;
+        aVKnots(1) = -3.0;
+        aVKnots(2) = 7.0;
+        NCollection_Array1<int> aUMults(1, 2), aVMults(1, 2);
+        aUMults.Init(aUDegree + 1);
+        aVMults.Init(aVDegree + 1);
+        NCollection_Array1<double> aUFlat(2 * (aUDegree + 1));
+        NCollection_Array1<double> aVFlat(2 * (aVDegree + 1));
+        createFlatKnots(aUKnots, aUMults, aUFlat);
+        createFlatKnots(aVKnots, aVMults, aVFlat);
+        BSplSLib_Cache aCache(aUDegree, false, aUFlat, aVDegree, false, aVFlat, &aWeights);
+        aCache.BuildCache(3.5, 2.0, aUFlat, aVFlat, aPoles, &aWeights);
+        for (const double aU : {2.0, 2.3, 3.5, 4.8, 5.0})
+        {
+          for (const double aV : {-3.0, -2.7, 2.0, 6.8, 7.0})
+          {
+            gp_Pnt aExpectedPoint;
+            gp_Vec aExpectedU, aExpectedV;
+            BSplSLib::D1(aU,
+                         aV,
+                         0,
+                         0,
+                         aPoles,
+                         &aWeights,
+                         aUKnots,
+                         aVKnots,
+                         &aUMults,
+                         &aVMults,
+                         aUDegree,
+                         aVDegree,
+                         true,
+                         true,
+                         false,
+                         false,
+                         aExpectedPoint,
+                         aExpectedU,
+                         aExpectedV);
+            for (const bool aLocal : {false, true})
+            {
+              gp_Pnt aPoint;
+              gp_Vec aTangentU, aTangentV;
+              if (aLocal)
+              {
+                aCache.D1Local((aU - 3.5) / 1.5, (aV - 2.0) / 5.0, aPoint, aTangentU, aTangentV);
+              }
+              else
+              {
+                aCache.D1(aU, aV, aPoint, aTangentU, aTangentV);
+              }
+              EXPECT_LE(aPoint.Distance(aExpectedPoint), THE_TOLERANCE);
+              EXPECT_LE((aTangentU - aExpectedU).Magnitude(), THE_TOLERANCE);
+              EXPECT_LE((aTangentV - aExpectedV).Magnitude(), THE_TOLERANCE);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST_F(BSplSLib_CacheTest, HighDegreeCacheMatchesPolynomialDerivatives)
+{
+  for (const size_t aUDegree : {5u, 8u})
+  {
+    for (const size_t aVDegree : {5u, 8u})
+    {
+      NCollection_Array2<gp_Pnt> aPoles(aUDegree + 1, aVDegree + 1);
+      for (size_t aU = 0; aU <= aUDegree; ++aU)
+      {
+        for (size_t aV = 0; aV <= aVDegree; ++aV)
+        {
+          aPoles.ChangeAt(aU, aV) =
+            gp_Pnt(static_cast<double>(aU) / aUDegree,
+                   static_cast<double>(aV) / aVDegree,
+                   (aU == aUDegree ? 1.0 : 0.0) + (aV == aVDegree ? 1.0 : 0.0));
+        }
+      }
+      NCollection_Array1<double> aUKnots(2 * (aUDegree + 1));
+      NCollection_Array1<double> aVKnots(2 * (aVDegree + 1));
+      for (size_t aU = 0; aU < aUKnots.Size(); ++aU)
+      {
+        aUKnots.ChangeAt(aU) = aU <= aUDegree ? 0.0 : 1.0;
+      }
+      for (size_t aV = 0; aV < aVKnots.Size(); ++aV)
+      {
+        aVKnots.ChangeAt(aV) = aV <= aVDegree ? 0.0 : 1.0;
+      }
+      BSplSLib_Cache aCache(static_cast<int>(aUDegree),
+                            false,
+                            aUKnots,
+                            static_cast<int>(aVDegree),
+                            false,
+                            aVKnots,
+                            nullptr);
+      for (size_t aSample = 0; aSample <= 200; ++aSample)
+      {
+        const double aU = static_cast<double>(aSample) / 200.0;
+        const double aV = 1.0 - aU;
+        aCache.BuildCache(aU, aV, aUKnots, aVKnots, aPoles, nullptr);
+        gp_Pnt aPoint;
+        gp_Vec aDU, aDV, aDUU, aDVV, aDUV;
+        aCache.D2(aU, aV, aPoint, aDU, aDV, aDUU, aDVV, aDUV);
+        // The tensor-product surface is (u, v, u^p + v^q).
+        EXPECT_NEAR(aPoint.X(), aU, THE_TOLERANCE);
+        EXPECT_NEAR(aPoint.Y(), aV, THE_TOLERANCE);
+        EXPECT_NEAR(aPoint.Z(), std::pow(aU, aUDegree) + std::pow(aV, aVDegree), THE_TOLERANCE);
+        EXPECT_LE((aDU - gp_Vec(1.0, 0.0, aUDegree * std::pow(aU, aUDegree - 1))).Magnitude(),
+                  THE_TOLERANCE);
+        EXPECT_LE((aDV - gp_Vec(0.0, 1.0, aVDegree * std::pow(aV, aVDegree - 1))).Magnitude(),
+                  THE_TOLERANCE);
+        EXPECT_NEAR(aDUU.Z(),
+                    aUDegree * (aUDegree - 1) * std::pow(aU, aUDegree - 2),
+                    THE_TOLERANCE);
+        EXPECT_NEAR(aDVV.Z(),
+                    aVDegree * (aVDegree - 1) * std::pow(aV, aVDegree - 2),
+                    THE_TOLERANCE);
+        EXPECT_LE(aDUV.Magnitude(), THE_TOLERANCE);
+      }
     }
   }
 }

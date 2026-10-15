@@ -936,8 +936,8 @@ const TopoDS_Shape& TNaming_Iterator::OldShape() const
   Standard_NoSuchObject_Raise_if(myNode == nullptr, "TNaming_Iterator::OldShape");
   if (myNode->myOld == nullptr)
   {
-    static TopoDS_Shape NullShape;
-    return NullShape;
+    static const TopoDS_Shape THE_EMPTY_SHAPE;
+    return THE_EMPTY_SHAPE;
   }
   return myNode->myOld->Shape();
 }
@@ -949,8 +949,8 @@ const TopoDS_Shape& TNaming_Iterator::NewShape() const
   Standard_NoSuchObject_Raise_if(myNode == nullptr, "TNaming_Iterator::NewShape");
   if (myNode->myNew == nullptr)
   {
-    static TopoDS_Shape NullShape;
-    return NullShape;
+    static const TopoDS_Shape THE_EMPTY_SHAPE;
+    return THE_EMPTY_SHAPE;
   }
   return myNode->myNew->Shape();
 }

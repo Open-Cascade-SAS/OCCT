@@ -31,7 +31,7 @@ TopOpeBRepDS_ShapeWithState::TopOpeBRepDS_ShapeWithState()
 const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_ShapeWithState::Part(
   const TopAbs_State aState) const
 {
-  static NCollection_List<TopoDS_Shape> myEmptyListOfShape;
+  static const NCollection_List<TopoDS_Shape> anEmptyListOfShape;
   switch (aState)
   {
     case TopAbs_IN:
@@ -41,7 +41,7 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepDS_ShapeWithState::Part(
     case TopAbs_ON:
       return myPartOn;
     default:
-      return myEmptyListOfShape;
+      return anEmptyListOfShape;
   }
 }
 

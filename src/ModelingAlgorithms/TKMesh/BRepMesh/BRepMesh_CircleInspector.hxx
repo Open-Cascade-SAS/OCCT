@@ -40,12 +40,11 @@ public:
   //! Constructor.
   //! @param theTolerance tolerance to be used for identification of shot circles.
   //! @param theReservedSize size to be reserved for vector of circles.
-  //! @param theAllocator memory allocator to be used by internal collections.
+  //! @param theAllocator memory allocator for circle storage.
   BRepMesh_CircleInspector(const double                                 theTolerance,
                            const int                                    theReservedSize,
                            const occ::handle<NCollection_IncAllocator>& theAllocator)
       : mySqTolerance(theTolerance * theTolerance),
-        myResIndices(theAllocator),
         myCircles(theReservedSize, theAllocator)
   {
   }

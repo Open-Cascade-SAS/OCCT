@@ -670,7 +670,16 @@ bool IntTools_WLineTool::DecompositionOfWLine(
       }
       const NCollection_List<int>& aNeighbour = anArrayOfLines.Value(aneighbourindex);
       int                          anIndex    = (j == 0) ? aNeighbour.Last() : aNeighbour.First();
-      const IntSurf_PntOn2S&       aPoint     = theWLine->Point(anIndex);
+      // Preserve the endpoint when splitting a boundary run.
+      if (j == 0 && aNeighbour.First() == 1)
+      {
+        anIndex = 1;
+      }
+      else if (j == 1 && aNeighbour.Last() == theWLine->NbPnts())
+      {
+        anIndex = theWLine->NbPnts();
+      }
+      const IntSurf_PntOn2S& aPoint = theWLine->Point(anIndex);
 
       IntSurf_PntOn2S aNewP = aPoint;
       if (aListOfIndex.Extent() < 2)

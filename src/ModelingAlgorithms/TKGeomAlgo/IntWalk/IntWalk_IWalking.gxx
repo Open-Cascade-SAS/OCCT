@@ -23,6 +23,99 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <math_FunctionSetRoot.hxx>
+#include <math_FunctionSetWithDerivatives.hxx>
+#include <math_Matrix.hxx>
+#include <gp_Vec2d.hxx>
+
+namespace
+{
+// Correct a predicted point along the normal to the marching direction in UV.
+// The surface functions fill only the first equation and Jacobian row.
+class IntWalk_MarchFunction : public math_FunctionSetWithDerivatives
+{
+public:
+  explicit IntWalk_MarchFunction(TheIWFunction& theFunction);
+  void Set(const math_Vector& thePoint, const gp_Dir2d& theDirection);
+  int  NbVariables() const override;
+  int  NbEquations() const override;
+  bool Value(const math_Vector& theX, math_Vector& theF) override;
+  bool Derivatives(const math_Vector& theX, math_Matrix& theD) override;
+  bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override;
+
+private:
+  TheIWFunction& myFunction;  //!< Surface intersection equation.
+  gp_Pnt2d       myPoint;     //!< Predicted UV point.
+  gp_Dir2d       myDirection; //!< Marching direction in UV.
+};
+
+//==================================================================================================
+
+IntWalk_MarchFunction::IntWalk_MarchFunction(TheIWFunction& theFunction)
+    : myFunction(theFunction)
+{
+}
+
+//==================================================================================================
+
+void IntWalk_MarchFunction::Set(const math_Vector& thePoint, const gp_Dir2d& theDirection)
+{
+  myPoint.SetCoord(thePoint(1), thePoint(2));
+  myDirection = theDirection;
+}
+
+//==================================================================================================
+
+int IntWalk_MarchFunction::NbVariables() const
+{
+  return 2;
+}
+
+//==================================================================================================
+
+int IntWalk_MarchFunction::NbEquations() const
+{
+  return 2;
+}
+
+//==================================================================================================
+
+bool IntWalk_MarchFunction::Value(const math_Vector& theX, math_Vector& theF)
+{
+  if (!myFunction.Value(theX, theF))
+  {
+    return false;
+  }
+  theF(2) = gp_Vec2d(myPoint, gp_Pnt2d(theX(1), theX(2))).Dot(gp_Vec2d(myDirection));
+  return true;
+}
+
+//==================================================================================================
+
+bool IntWalk_MarchFunction::Derivatives(const math_Vector& theX, math_Matrix& theD)
+{
+  if (!myFunction.Derivatives(theX, theD))
+  {
+    return false;
+  }
+  theD(2, 1) = myDirection.X();
+  theD(2, 2) = myDirection.Y();
+  return true;
+}
+
+//==================================================================================================
+
+bool IntWalk_MarchFunction::Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD)
+{
+  if (!myFunction.Values(theX, theF, theD))
+  {
+    return false;
+  }
+  theF(2)    = gp_Vec2d(myPoint, gp_Pnt2d(theX(1), theX(2))).Dot(gp_Vec2d(myDirection));
+  theD(2, 1) = myDirection.X();
+  theD(2, 2) = myDirection.Y();
+  return true;
+}
+} // namespace
 
 //-- IntWalk_IWalking_1.gxx
 
@@ -130,6 +223,10 @@ void IntWalk_IWalking::Clear()
 
   done = false;
   seqAjout.Clear();
+  seqAlone.Clear();
+  seqSingle.Clear();
+  mySRangeU.SetVoid();
+  mySRangeV.SetVoid();
   lines.Clear();
 }
 
@@ -325,6 +422,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   int    nbPnts1 = Pnts1.Length();
   double U, V;
 
+  Clear();
   reversed = Reversed;
 
   // Loading of etat1 as well as ustart1 and vstart1.
@@ -748,10 +846,6 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
           }
           if (Arrive)
           {
-            double      abidF[1], abidD[1][2];
-            math_Vector bidF(abidF, 1, 1);
-            math_Matrix bidD(abidD, 1, 1, 1, 2);
-            sp.Values(UV, bidF, bidD);
             break;
           }
         }
@@ -771,6 +865,14 @@ bool IntWalk_IWalking::TestArretPassage(const NCollection_Sequence<double>& Umul
       UV(2)  = wd1[Irang].vstart;
     }
   } // end of for (l = 1; l <= 2 && !Arrive; l++)
+  if (Arrive)
+  {
+    // The point and derivatives must belong to the selected stop parameters.
+    double      aF[1], aD[1][2];
+    math_Vector aValue(aF, 1, 1);
+    math_Matrix aDerivative(aD, 1, 1, 1, 2);
+    sp.Values(UV, aValue, aDerivative);
+  }
   return Arrive;
 }
 
@@ -1469,8 +1571,10 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
   BornInf(2) = Vm;
   BornSup(2) = VM;
 
-  math_FunctionSetRoot Rsnld(Func, tolerance);
-  int                  nbPath = Pnts1.Length();
+  math_FunctionSetRoot  Rsnld(Func, tolerance);
+  IntWalk_MarchFunction aMarchFunction(Func);
+  math_FunctionSetRoot  aCorrector(aMarchFunction, tolerance);
+  int                   nbPath = Pnts1.Length();
 
   // modified by NIZHNY-MKK  Fri Oct 27 12:32:34 2000.BEGIN
   NCollection_LocalArray<int> movementdirectioninfoarr(nbPath + 1);
@@ -1576,20 +1680,24 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
         Chronrsnld.Start();
 #endif
 
-        Rsnld.Perform(Func, UVap, BornInf, BornSup);
+        math_FunctionSetRoot& aSolver = Cadre ? Rsnld : aCorrector;
+        if (Cadre)
+          Rsnld.Perform(Func, UVap, BornInf, BornSup);
+        else
+        {
+          aMarchFunction.Set(UVap, previousd2d);
+          aCorrector.Perform(aMarchFunction, UVap, BornInf, BornSup);
+        }
 
 #ifdef CHRONO
         Chronrsnld.Stop();
 #endif
 
-        if (Cadre)
-        {
-          BornInf(1) = Um;
-          BornSup(1) = UM;
-          BornInf(2) = Vm;
-          BornSup(2) = VM;
-        }
-        if (Rsnld.IsDone())
+        BornInf(1) = Um;
+        BornSup(1) = UM;
+        BornInf(2) = Vm;
+        BornSup(2) = VM;
+        if (aSolver.IsDone())
         {
           if (std::abs(Func.Root()) > Func.Tolerance())
           {
@@ -1614,7 +1722,7 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
           else
           { // test stop
             aNbBadRootIter = 0;
-            Rsnld.Root(UVap);
+            aSolver.Root(UVap);
             Arrive = TestArretPassage(Umult, Vmult, Func, UVap, N);
             if (Arrive)
             {
@@ -1676,8 +1784,13 @@ void IntWalk_IWalking::ComputeOpenLine(const NCollection_Sequence<double>& Umult
                 }
               }
             }
-            aStatus =
-              TestDeflection(Func, Arrive, UVap, StatusPrecedent, NbDivision, PasC, StepSign);
+            aStatus         = TestDeflection(Func,
+                                     Arrive || Cadre || ArretAjout,
+                                     UVap,
+                                     StatusPrecedent,
+                                     NbDivision,
+                                     PasC,
+                                     StepSign);
             StatusPrecedent = aStatus;
             if (aStatus == IntWalk_PasTropGrand)
             {
@@ -2063,8 +2176,10 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
   BornInf(2) = Vm;
   BornSup(2) = VM;
 
-  math_FunctionSetRoot Rsnld(Func, tolerance);
-  int                  nbLoop = Pnts2.Length();
+  math_FunctionSetRoot  Rsnld(Func, tolerance);
+  IntWalk_MarchFunction aMarchFunction(Func);
+  math_FunctionSetRoot  aCorrector(aMarchFunction, tolerance);
+  int                   nbLoop = Pnts2.Length();
 
   // Check borders for degeneracy:
   math_Matrix D(1, 1, 1, 2);
@@ -2170,21 +2285,25 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
         Chronrsnld.Start();
 #endif
 
-        Rsnld.Perform(Func, Uvap, BornInf, BornSup);
+        math_FunctionSetRoot& aSolver = Cadre ? Rsnld : aCorrector;
+        if (Cadre)
+          Rsnld.Perform(Func, Uvap, BornInf, BornSup);
+        else
+        {
+          aMarchFunction.Set(Uvap, previousd2d);
+          aCorrector.Perform(aMarchFunction, Uvap, BornInf, BornSup);
+        }
 
 #ifdef CHRONO
         Chronrsnld.Stop();
 #endif
         bool isOnDegeneratedBorder = false;
 
-        if (Cadre)
-        { // update of limits.
-          BornInf(1) = Um;
-          BornSup(1) = UM;
-          BornInf(2) = Vm;
-          BornSup(2) = VM;
-        }
-        if (Rsnld.IsDone())
+        BornInf(1) = Um;
+        BornSup(1) = UM;
+        BornInf(2) = Vm;
+        BornSup(2) = VM;
+        if (aSolver.IsDone())
         {
           if (std::abs(Func.Root()) > Func.Tolerance())
           { // no solution for the tolerance
@@ -2237,7 +2356,7 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
           else
           { // there is a solution
             aNbBadRootIter = 0;
-            Rsnld.Root(Uvap);
+            aSolver.Root(Uvap);
 
             // Avoid uninitialized memory access.
             if (CurrentLine->NbPoints() > 2)
@@ -2340,8 +2459,13 @@ void IntWalk_IWalking::ComputeCloseLine(const NCollection_Sequence<double>& Umul
                 Arrive = (wd2[I].etat == 12); // the line is open
               }
             }
-            aStatus =
-              TestDeflection(Func, Arrive, Uvap, StatusPrecedent, NbDivision, PasC, StepSign);
+            aStatus = TestDeflection(Func,
+                                     Arrive || Cadre || ArretAjout,
+                                     Uvap,
+                                     StatusPrecedent,
+                                     NbDivision,
+                                     PasC,
+                                     StepSign);
 
             if (isOnDegeneratedBorder && Tgtend)
               aStatus = IntWalk_ArretSurPoint;
@@ -2779,14 +2903,29 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection(
     Cosi2 = Cosi * Cosi / Duv;
     if (Cosi2 < CosRef2D || sp.Direction2d() * previousd2d < 0)
     {
-      // angle 2d too great or change the side
-      Step         = Step / 2.;
-      double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
-      if (StepU < tolerance(1) && StepV < tolerance(2))
-        aStatus = IntWalk_ArretSurPointPrecedent;
-      else
-        aStatus = IntWalk_PasTropGrand;
-      return aStatus;
+      bool isDegeneratedEnd = false;
+      if (Finished)
+      {
+        gp_Pnt aPoint;
+        gp_Vec aD1U, aD1V;
+        ThePSurfaceTool::D1(sp.PSurface(), UV(1), UV(2), aPoint, aD1U, aD1V);
+        // Scale by the parameter range to test the displacement in model units.
+        // At a pole, a collapsed parameter direction cannot constrain the UV turn.
+        aD1U.Multiply(UM - Um);
+        aD1V.Multiply(VM - Vm);
+        isDegeneratedEnd = aD1U.SquareMagnitude() <= Precision::SquareConfusion()
+                           || aD1V.SquareMagnitude() <= Precision::SquareConfusion();
+      }
+      if (!isDegeneratedEnd)
+      {
+        Step         = Step / 2.;
+        double StepU = std::abs(Step * previousd2d.X()), StepV = std::abs(Step * previousd2d.Y());
+        if (StepU < tolerance(1) && StepV < tolerance(2))
+          aStatus = IntWalk_ArretSurPointPrecedent;
+        else
+          aStatus = IntWalk_PasTropGrand;
+        return aStatus;
+      }
     }
   }
 

@@ -26,6 +26,7 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopOpeBRepBuild_Builder.hxx>
@@ -194,6 +195,10 @@ private:
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
                                                                 myMapOfEdgeFaces;
   NCollection_DataMap<TopoDS_Shape, bool>                       myMapOfEdgeWithFaceState;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myProcessedEdges;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myUsedVertexMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        myUnkStateVer;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mySDEdgeMap;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myProcessedPartsOut2d;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myProcessedPartsON2d;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mySplitsONtoKeep;

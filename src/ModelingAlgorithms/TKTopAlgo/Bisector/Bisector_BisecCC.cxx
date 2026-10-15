@@ -83,6 +83,7 @@ Bisector_BisecCC::Bisector_BisecCC(const occ::handle<Geom2d_Curve>& Cu1,
                                    const double                     Side2,
                                    const gp_Pnt2d&                  Origin,
                                    const double                     DistMax)
+    : Bisector_BisecCC()
 {
   Perform(Cu1, Cu2, Side1, Side2, Origin, DistMax);
 }
@@ -126,7 +127,7 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
   }
 
   P = ValueByInt(U, UC1, UC2, Dist);
-  if (Dist < Precision::Confusion())
+  if (Dist < Precision::SquareConfusion())
   {
     gp_Pnt2d aP1   = curve1->Value(UC1);
     gp_Pnt2d aP2   = curve2->Value(UC2);
@@ -175,6 +176,33 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
         break;
       }
       U += dU;
+    }
+  }
+
+  if (myPolygon.IsEmpty() && TestExtension(curve1, curve2, 1))
+  {
+    double anOriginParameter;
+    ProjOnCurve(Origin, curve1, anOriginParameter);
+    double aProbe =
+      anOriginParameter + (curve1->LastParameter() - anOriginParameter) / (NbPnts - 1);
+    const double aResolution = Geom2dAdaptor_Curve(curve1).Resolution(Precision::Confusion());
+    while (aProbe - anOriginParameter > aResolution)
+    {
+      P = ValueByInt(aProbe, UC1, UC2, Dist);
+      if (Dist < Precision::Infinite())
+      {
+        USol = SearchBound(anOriginParameter, aProbe);
+        P    = ValueByInt(USol, UC1, UC2, Dist);
+        startIntervals.Append(USol);
+        myPolygon.Append(Bisector_PointOnBis(UC1, UC2, USol, Dist, P));
+        break;
+      }
+      const double aNext = anOriginParameter + 0.5 * (aProbe - anOriginParameter);
+      if (aNext == aProbe)
+      {
+        break;
+      }
+      aProbe = aNext;
     }
   }
 
@@ -659,7 +687,7 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U, double& U1, double& U2, 
   //---------------------------------------------------------------
   gp_Pnt2d P1;
   gp_Vec2d T1;
-  double   EpsH    = 1.E-9;
+  double   EpsH    = Epsilon(std::max(std::abs(VMin), std::abs(VMax)));
   double   EpsH100 = 1.E-7;
   curve1->D1(U1, P1, T1);
   gp_Vec2d N1(T1.Y(), -T1.X());
@@ -673,7 +701,7 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U, double& U1, double& U2, 
     Bisector_FunctionH H(curve2, P1, sign1 * sign2 * T1);
     double             FInit;
     H.Value(VInit, FInit);
-    if (std::abs(FInit) < EpsH)
+    if (FInit == 0.0)
     {
       U2 = VInit;
     }
@@ -804,31 +832,21 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, do
   {
     U2 = curve2->FirstParameter();
     curve2->D1(U2, P2, Tan2);
-    if (isConvex1 && isConvex2)
-    {
-      Dist = 0.;
-      return P1;
-    }
-    if (!Tan1.IsParallel(Tan2, Precision::Angular()))
-    {
-      Dist = 0.;
-      return P1;
-    }
+    // Parallel tangents at a concave contact define a normal extension.
+    Dist = (isConvex1 && isConvex2) || !Tan1.IsParallel(Tan2, Precision::Angular())
+             ? 0.0
+             : Precision::Infinite();
+    return P1;
   }
   if (P1.Distance(curve2->Value(curve2->LastParameter())) < Precision::Confusion())
   {
     U2 = curve2->LastParameter();
     curve2->D1(U2, P2, Tan2);
-    if (isConvex1 && isConvex2)
-    {
-      Dist = 0.;
-      return P1;
-    }
-    if (!Tan1.IsParallel(Tan2, Precision::Angular()))
-    {
-      Dist = 0.;
-      return P1;
-    }
+    // Parallel tangents at a concave contact define a normal extension.
+    Dist = (isConvex1 && isConvex2) || !Tan1.IsParallel(Tan2, Precision::Angular())
+             ? 0.0
+             : Precision::Infinite();
+    return P1;
   }
 
   bool   YaSol = false;
@@ -1100,6 +1118,7 @@ void Bisector_BisecCC::Values(const double U,
   if (myPolygon.Length() <= 1)
   {
     P = Extension(U, U0, V0, Dist, V1);
+    return;
   }
   if (U < myPolygon.First().ParamOnBis())
   {
@@ -1864,6 +1883,7 @@ static bool TestExtension(const occ::handle<Geom2d_Curve>& C1,
     C2->D1(C2->LastParameter(), P2, T2);
     if (P1.IsEqual(P2, Precision::Confusion()))
     {
+      T1.Normalize();
       T2.Normalize();
       if (T1.Dot(T2) > 1.0 - Precision::Confusion())
       {

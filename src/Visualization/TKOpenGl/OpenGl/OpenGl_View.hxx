@@ -484,7 +484,7 @@ private:
   void drawStereoPair(OpenGl_FrameBuffer* theDrawFbo);
 
   //! Check and update OIT compatibility with current OpenGL context's state.
-  bool checkOitCompatibility(const occ::handle<OpenGl_Context>& theGlContext, const bool theMSAA);
+  bool checkOitCompatibility(const occ::handle<OpenGl_Context>& theGlContext);
 
 protected:
   OpenGl_GraphicDriver*         myDriver;

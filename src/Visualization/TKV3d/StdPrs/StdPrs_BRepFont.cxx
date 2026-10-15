@@ -21,6 +21,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <gp_XY.hxx>
 
 #include <algorithm>
@@ -30,18 +31,15 @@
 #include <optional>
 #include <shared_mutex>
 #include <utility>
-#include <variant>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdPrs_BRepFont, Standard_Transient)
 
 namespace
 {
 // A 72-point font is one inch high. The high resolution reduces rounding in FreeType text metrics.
-constexpr uint32_t THE_POINTS_PER_INCH = 72;
-constexpr uint32_t THE_FONT_POINT_SIZE = 72;
-constexpr uint32_t THE_FONT_RESOLUTION = 4800;
-constexpr double   THE_FONT_METRIC_SIZE =
-  static_cast<double>(THE_FONT_POINT_SIZE) * THE_FONT_RESOLUTION / THE_POINTS_PER_INCH;
+constexpr uint32_t            THE_POINTS_PER_INCH = 72;
+constexpr uint32_t            THE_FONT_POINT_SIZE = 72;
+constexpr uint32_t            THE_FONT_RESOLUTION = 4800;
 constexpr Font_FTFont::Params THE_FONT_PARAMETERS{THE_FONT_POINT_SIZE, THE_FONT_RESOLUTION};
 
 bool isValidReal(const double theValue) noexcept
@@ -67,19 +65,6 @@ bool isValidPosition(const gp_Ax3& thePosition) noexcept
 class StdPrs_BRepFont::Impl : public Standard_Transient
 {
 public:
-  struct FileSource
-  {
-    TCollection_AsciiString Path;
-    int                     FaceId = 0;
-  };
-
-  struct NamedSource
-  {
-    TCollection_AsciiString Name;
-    Font_FontAspect         Aspect      = Font_FontAspect_Regular;
-    Font_StrictLevel        StrictLevel = Font_StrictLevel_Any;
-  };
-
   struct Metrics
   {
     double Size        = 0.0;
@@ -89,8 +74,6 @@ public:
     double LineSpacing = 0.0;
     double PointSize   = 0.0;
   };
-
-  using Source = std::variant<std::monostate, FileSource, NamedSource>;
 
   Impl()
       : Font(new Font_FTFont()),
@@ -194,64 +177,17 @@ public:
     Glyphs.Clear();
   }
 
-  [[nodiscard]] occ::handle<Impl> Copy() const
-  {
-    std::lock_guard<std::mutex> aLock(FontMutex);
-    occ::handle<Impl>           aCopy = new Impl();
-    aCopy->Font->SetUseUnicodeSubsetFallback(Font->ToUseUnicodeSubsetFallback());
-    bool isInitialized = false;
-    if (const FileSource* aSource = std::get_if<FileSource>(&FontSource))
-    {
-      isInitialized =
-        aCopy->Font->Init(aSource->Path.ToCString(), THE_FONT_PARAMETERS, aSource->FaceId);
-    }
-    else if (const NamedSource* aSource = std::get_if<NamedSource>(&FontSource))
-    {
-      isInitialized = aCopy->Font->FindAndInit(aSource->Name,
-                                               aSource->Aspect,
-                                               THE_FONT_PARAMETERS,
-                                               aSource->StrictLevel);
-    }
-    else
-    {
-      isInitialized = !Font->IsValid();
-    }
-    if (!isInitialized)
-    {
-      return {};
-    }
-    aCopy->Font->SetSingleStrokeFont(Font->IsSingleStrokeFont());
-    if (!aCopy->Font->SetWidthScaling(Font->WidthScaling()))
-    {
-      return {};
-    }
-    aCopy->SetSize(FontMetrics.Size);
-    aCopy->FontSource = FontSource;
-    return aCopy;
-  }
+  // Clone the actual backend source, including changes through the compatibility handle.
+  [[nodiscard]] occ::handle<Impl> Copy() const;
 
-  void SetSize(const double theSize)
-  {
-    const double aScale = theSize / THE_FONT_METRIC_SIZE;
-    FontMetrics         = Metrics{theSize,
-                          aScale,
-                          aScale * static_cast<double>(Font->Ascender()),
-                          aScale * static_cast<double>(Font->Descender()),
-                          aScale * static_cast<double>(Font->LineSpacing()),
-                          aScale * static_cast<double>(Font->PointSize())};
-  }
+  // Refresh metrics and discard cached regions when backend configuration changes.
+  void RefreshMetrics();
 
-  std::optional<Request> MakeRequest(const char32_t theChar)
-  {
-    std::lock_guard<std::mutex> aLock(FontMutex);
-    if (!(FontMetrics.Size > 0.0) || !Font->IsValid())
-    {
-      return std::nullopt;
-    }
-    const std::optional<Font_GlyphOutline::Glyph> aGlyph = Font->ResolveGlyph(theChar);
-    return aGlyph.has_value() ? std::optional<Request>(Request{*aGlyph, FontMetrics.Size})
-                              : std::nullopt;
-  }
+  // Set the model size and derive metrics from the current backend configuration.
+  void SetSize(double theSize);
+
+  // Resolve a glyph while the caller holds FontMutex.
+  std::optional<Request> MakeRequest(char32_t theChar);
 
   std::shared_ptr<const BRepFont_PlanarRegion> LoadRegion(const Request& theRequest)
   {
@@ -335,95 +271,14 @@ public:
     return RenderGlyph(Request{*aGlyph, theSize}, theToConcatenateContours);
   }
 
+  // Format text using the synchronized font backend.
   std::optional<BRepFont_Builder::TextPlan> PlanText(
-    const NCollection_String&               theText,
-    const Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
-    const Graphic3d_VerticalTextAlignment   theVerticalAlignment)
-  {
-    if (theText.IsEmpty())
-    {
-      return std::nullopt;
-    }
-    NCollection_LinearVector<PendingItem> aPendingItems;
-    double                                aSize        = 0.0;
-    double                                aMetricScale = 0.0;
-    gp_XY                                 aLowerLeft;
-    gp_XY                                 anUpperRight;
-    {
-      std::lock_guard<std::mutex> aLock(FontMutex);
-      if (!(FontMetrics.Size > 0.0) || !Font->IsValid())
-      {
-        return std::nullopt;
-      }
-      aSize        = FontMetrics.Size;
-      aMetricScale = FontMetrics.Scale;
+    const TCollection_UtfString<char>& theText,
+    Graphic3d_HorizontalTextAlignment  theHorizontalAlignment,
+    Graphic3d_VerticalTextAlignment    theVerticalAlignment);
 
-      Font_TextFormatter aFormatter;
-      aFormatter.SetupAlignment(theHorizontalAlignment, theVerticalAlignment);
-      aFormatter.Append(theText, *Font);
-      aFormatter.Format();
-      Font_Rect aBounds;
-      aFormatter.BndBox(aBounds);
-      const double aLeft   = static_cast<double>(aBounds.Left) * aMetricScale;
-      const double aRight  = static_cast<double>(aBounds.Right) * aMetricScale;
-      const double aBottom = static_cast<double>(aBounds.Bottom) * aMetricScale;
-      const double aTop    = static_cast<double>(aBounds.Top) * aMetricScale;
-      aLowerLeft.SetCoord(std::min(aLeft, aRight), std::min(aBottom, aTop));
-      anUpperRight.SetCoord(std::max(aLeft, aRight), std::max(aBottom, aTop));
-      aPendingItems.Reserve(64);
-      for (Font_TextFormatter::Iterator anIterator(
-             aFormatter,
-             Font_TextFormatter::IterationFilter_ExcludeInvisible);
-           anIterator.More();
-           anIterator.Next())
-      {
-        const std::optional<Font_GlyphOutline::Glyph> aGlyph =
-          Font->ResolveGlyph(anIterator.Symbol());
-        if (!aGlyph.has_value())
-        {
-          continue;
-        }
-        const NCollection_Vec2<float>& aCorner = aFormatter.BottomLeft(anIterator.SymbolPosition());
-        aPendingItems.Append(PendingItem{*aGlyph,
-                                         gp_XY(static_cast<double>(aCorner.x()) * aMetricScale,
-                                               static_cast<double>(aCorner.y()) * aMetricScale)});
-      }
-    }
-    NCollection_DataMap<Font_GlyphOutline::Glyph, size_t, Font_GlyphOutline::Glyph::Hasher>
-                                                                           aRegionIndices;
-    NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>> aRegions;
-    NCollection_LinearVector<BRepFont_Builder::TextPlan::Item>             anItems;
-    aRegions.Reserve(aPendingItems.Size());
-    anItems.Reserve(aPendingItems.Size());
-    for (const PendingItem& anItem : aPendingItems)
-    {
-      const size_t* aFoundIndex  = aRegionIndices.Seek(anItem.Glyph);
-      size_t        aRegionIndex = 0;
-      if (aFoundIndex == nullptr)
-      {
-        std::shared_ptr<const BRepFont_PlanarRegion> aRegion =
-          LoadRegion(Request{anItem.Glyph, aSize});
-        if (!aRegion)
-        {
-          continue;
-        }
-        aRegionIndex = aRegions.Size();
-        aRegions.Append(std::move(aRegion));
-        aRegionIndices.Bind(anItem.Glyph, aRegionIndex);
-      }
-      else
-      {
-        aRegionIndex = *aFoundIndex;
-      }
-      anItems.EmplaceAppend(aRegionIndex, anItem.Position);
-    }
-    return BRepFont_Builder::CreateTextPlan(aSize,
-                                            Tolerance,
-                                            aLowerLeft,
-                                            anUpperRight,
-                                            std::move(aRegions),
-                                            std::move(anItems));
-  }
+  // Build regions for a completed layout using this font's metric scale.
+  std::optional<BRepFont_Builder::TextPlan> PlanText(const Font_TextFormatter& theFormatter);
 
 public:
   occ::handle<Font_FTFont>  Font;
@@ -432,8 +287,177 @@ public:
   mutable std::shared_mutex CacheMutex;
   const double              Tolerance;
   Metrics                   FontMetrics;
-  Source                    FontSource;
+
+private:
+  uint64_t myFontRevision = 0; //!< Backend revision represented by the current metrics.
 };
+
+//==================================================================================================
+
+std::optional<StdPrs_BRepFont::Impl::Request> StdPrs_BRepFont::Impl::MakeRequest(
+  const char32_t theChar)
+{
+  RefreshMetrics();
+  if (!(FontMetrics.Size > 0.0) || !Font->IsValid())
+  {
+    return std::nullopt;
+  }
+  const std::optional<Font_GlyphOutline::Glyph> aGlyph = Font->ResolveGlyph(theChar);
+  return aGlyph.has_value() ? std::optional<Request>(Request{*aGlyph, FontMetrics.Size})
+                            : std::nullopt;
+}
+
+//==================================================================================================
+
+std::optional<BRepFont_Builder::TextPlan> StdPrs_BRepFont::Impl::PlanText(
+  const TCollection_UtfString<char>&      theText,
+  const Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
+  const Graphic3d_VerticalTextAlignment   theVerticalAlignment)
+{
+  Font_TextFormatter aFormatter;
+  {
+    std::lock_guard<std::mutex> aLock(FontMutex);
+    RefreshMetrics();
+    if (theText.IsEmpty() || !(FontMetrics.Size > 0.0) || !Font->IsValid())
+    {
+      return std::nullopt;
+    }
+    aFormatter.SetupAlignment(theHorizontalAlignment, theVerticalAlignment);
+    aFormatter.Append(theText, *Font);
+    aFormatter.Format();
+  }
+  return PlanText(aFormatter);
+}
+
+//==================================================================================================
+
+std::optional<BRepFont_Builder::TextPlan> StdPrs_BRepFont::Impl::PlanText(
+  const Font_TextFormatter& theFormatter)
+{
+  if (theFormatter.String().IsEmpty())
+  {
+    return std::nullopt;
+  }
+  NCollection_LinearVector<PendingItem> aPendingItems;
+  double                                aSize        = 0.0;
+  double                                aMetricScale = 0.0;
+  gp_XY                                 aLowerLeft;
+  gp_XY                                 anUpperRight;
+  {
+    std::lock_guard<std::mutex> aLock(FontMutex);
+    RefreshMetrics();
+    if (!(FontMetrics.Size > 0.0) || !Font->IsValid())
+    {
+      return std::nullopt;
+    }
+    aSize        = FontMetrics.Size;
+    aMetricScale = FontMetrics.Scale;
+
+    Font_Rect aBounds;
+    theFormatter.BndBox(aBounds);
+    const double aLeft   = static_cast<double>(aBounds.Left) * aMetricScale;
+    const double aRight  = static_cast<double>(aBounds.Right) * aMetricScale;
+    const double aBottom = static_cast<double>(aBounds.Bottom) * aMetricScale;
+    const double aTop    = static_cast<double>(aBounds.Top) * aMetricScale;
+    aLowerLeft.SetCoord(std::min(aLeft, aRight), std::min(aBottom, aTop));
+    anUpperRight.SetCoord(std::max(aLeft, aRight), std::max(aBottom, aTop));
+    aPendingItems.Reserve(64);
+    for (Font_TextFormatter::Iterator anIterator(
+           theFormatter,
+           Font_TextFormatter::IterationFilter_ExcludeInvisible);
+         anIterator.More();
+         anIterator.Next())
+    {
+      const std::optional<Font_GlyphOutline::Glyph> aGlyph =
+        Font->ResolveGlyph(anIterator.Symbol());
+      if (!aGlyph.has_value())
+      {
+        continue;
+      }
+      const NCollection_Vec2<float>& aCorner = theFormatter.BottomLeft(anIterator.SymbolPosition());
+      aPendingItems.Append(PendingItem{*aGlyph,
+                                       gp_XY(static_cast<double>(aCorner.x()) * aMetricScale,
+                                             static_cast<double>(aCorner.y()) * aMetricScale)});
+    }
+  }
+  NCollection_DataMap<Font_GlyphOutline::Glyph, size_t, Font_GlyphOutline::Glyph::Hasher>
+                                                                         aRegionIndices;
+  NCollection_LinearVector<std::shared_ptr<const BRepFont_PlanarRegion>> aRegions;
+  NCollection_LinearVector<BRepFont_Builder::TextPlan::Item>             anItems;
+  aRegions.Reserve(aPendingItems.Size());
+  anItems.Reserve(aPendingItems.Size());
+  for (const PendingItem& anItem : aPendingItems)
+  {
+    const size_t* aFoundIndex  = aRegionIndices.Seek(anItem.Glyph);
+    size_t        aRegionIndex = 0;
+    if (aFoundIndex == nullptr)
+    {
+      std::shared_ptr<const BRepFont_PlanarRegion> aRegion =
+        LoadRegion(Request{anItem.Glyph, aSize});
+      if (!aRegion)
+      {
+        continue;
+      }
+      aRegionIndex = aRegions.Size();
+      aRegions.Append(std::move(aRegion));
+      aRegionIndices.Bind(anItem.Glyph, aRegionIndex);
+    }
+    else
+    {
+      aRegionIndex = *aFoundIndex;
+    }
+    anItems.EmplaceAppend(aRegionIndex, anItem.Position);
+  }
+  return BRepFont_Builder::CreateTextPlan(aSize,
+                                          Tolerance,
+                                          aLowerLeft,
+                                          anUpperRight,
+                                          std::move(aRegions),
+                                          std::move(anItems));
+}
+
+//==================================================================================================
+
+void StdPrs_BRepFont::Impl::SetSize(const double theSize)
+{
+  const Font_FTFont::Params& aParams = Font->myFontParams;
+  const double               aMetricSize =
+    static_cast<double>(aParams.PointSize) * aParams.Resolution / THE_POINTS_PER_INCH;
+  const double aScale = Font->IsValid() && aMetricSize > 0.0 ? theSize / aMetricSize : 0.0;
+  myFontRevision      = Font->myRevision;
+  FontMetrics         = Metrics{theSize,
+                        aScale,
+                        aScale * static_cast<double>(Font->Ascender()),
+                        aScale * static_cast<double>(Font->Descender()),
+                        aScale * static_cast<double>(Font->LineSpacing()),
+                        aScale * static_cast<double>(Font->PointSize())};
+}
+
+//==================================================================================================
+
+occ::handle<StdPrs_BRepFont::Impl> StdPrs_BRepFont::Impl::Copy() const
+{
+  std::lock_guard<std::mutex> aLock(FontMutex);
+  occ::handle<Impl>           aCopy = new Impl();
+  aCopy->Font                       = Font->copy();
+  if (aCopy->Font.IsNull())
+  {
+    return {};
+  }
+  aCopy->SetSize(FontMetrics.Size);
+  return aCopy;
+}
+
+//==================================================================================================
+
+void StdPrs_BRepFont::Impl::RefreshMetrics()
+{
+  if (myFontRevision != Font->myRevision)
+  {
+    SetSize(FontMetrics.Size);
+    ClearCache();
+  }
+}
 
 //=================================================================================================
 
@@ -451,9 +475,9 @@ StdPrs_BRepFont::StdPrs_BRepFont(const occ::handle<Impl>& theImpl)
 
 //=================================================================================================
 
-StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
-                                 const double              theSize,
-                                 const int                 theFaceId)
+StdPrs_BRepFont::StdPrs_BRepFont(const TCollection_UtfString<char>& theFontPath,
+                                 const double                       theSize,
+                                 const int                          theFaceId)
     : StdPrs_BRepFont()
 {
   Init(theFontPath, theSize, theFaceId);
@@ -461,10 +485,10 @@ StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
 
 //=================================================================================================
 
-StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontName,
-                                 const Font_FontAspect     theFontAspect,
-                                 const double              theSize,
-                                 const Font_StrictLevel    theStrictLevel)
+StdPrs_BRepFont::StdPrs_BRepFont(const TCollection_UtfString<char>& theFontName,
+                                 const Font_FontAspect              theFontAspect,
+                                 const double                       theSize,
+                                 const Font_StrictLevel             theStrictLevel)
     : StdPrs_BRepFont()
 {
   FindAndInit(theFontName.ToCString(), theFontAspect, theSize, theStrictLevel);
@@ -499,7 +523,8 @@ void StdPrs_BRepFont::Release()
   }
   occ::handle<Impl> aNewImpl = new Impl();
   aNewImpl->Font->SetWidthScaling(aWidthScaling);
-  myImpl = aNewImpl;
+  myImpl             = aNewImpl;
+  myCurrentCharacter = 0;
 }
 
 //=================================================================================================
@@ -511,9 +536,9 @@ bool StdPrs_BRepFont::IsValid() const
 
 //=================================================================================================
 
-bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
-                           const double              theSize,
-                           const int                 theFaceId)
+bool StdPrs_BRepFont::Init(const TCollection_UtfString<char>& theFontPath,
+                           const double                       theSize,
+                           const int                          theFaceId)
 {
   float aWidthScaling = 1.0f;
   {
@@ -534,8 +559,8 @@ bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
     return false;
   }
   aNewImpl->SetSize(theSize);
-  aNewImpl->FontSource = Impl::FileSource{theFontPath.ToCString(), theFaceId};
-  myImpl               = aNewImpl;
+  myImpl             = aNewImpl;
+  myCurrentCharacter = 0;
   return true;
 }
 
@@ -565,8 +590,8 @@ bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
     return false;
   }
   aNewImpl->SetSize(theSize);
-  aNewImpl->FontSource = Impl::NamedSource{theFontName, theFontAspect, theStrictLevel};
-  myImpl               = aNewImpl;
+  myImpl             = aNewImpl;
+  myCurrentCharacter = 0;
   return true;
 }
 
@@ -574,29 +599,38 @@ bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
 
 TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const char32_t theChar)
 {
-  return RenderGlyph(theChar, GlyphOptions{});
+  GlyphOptions anOptions;
+  anOptions.ToConcatenateContours = myToConcatenateContours;
+  return RenderGlyph(theChar, anOptions);
 }
 
 //=================================================================================================
 
 TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const char32_t theChar, const GlyphOptions& theOptions)
 {
-  const std::optional<Impl::Request> aRequest = myImpl->MakeRequest(theChar);
+  std::optional<Impl::Request> aRequest;
+  {
+    std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+    aRequest           = myImpl->MakeRequest(theChar);
+    myCurrentCharacter = aRequest.has_value() ? theChar : 0;
+  }
   return aRequest.has_value() ? myImpl->RenderGlyph(*aRequest, theOptions.ToConcatenateContours)
                               : TopoDS_Shape();
 }
 
 //=================================================================================================
 
-TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText)
+TopoDS_Shape StdPrs_BRepFont::RenderText(const TCollection_UtfString<char>& theText)
 {
-  return RenderText(theText, TextOptions{});
+  TextOptions anOptions;
+  anOptions.ToConcatenateContours = myToConcatenateContours;
+  return RenderText(theText, anOptions);
 }
 
 //=================================================================================================
 
-TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText,
-                                         const TextOptions&        theOptions)
+TopoDS_Shape StdPrs_BRepFont::RenderText(const TCollection_UtfString<char>& theText,
+                                         const TextOptions&                 theOptions)
 {
   if (!isValidPosition(theOptions.Pen))
   {
@@ -610,7 +644,7 @@ TopoDS_Shape StdPrs_BRepFont::RenderText(const NCollection_String& theText,
 //=================================================================================================
 
 std::optional<BRepFont_Builder::TextPlan> StdPrs_BRepFont::PlanText(
-  const NCollection_String&               theText,
+  const TCollection_UtfString<char>&      theText,
   const Graphic3d_HorizontalTextAlignment theHorizontalAlignment,
   const Graphic3d_VerticalTextAlignment   theVerticalAlignment)
 {
@@ -661,7 +695,9 @@ TopoDS_Shape StdPrs_BRepFont::RenderText(const BRepFont_Builder::TextPlan& thePl
 
 TopoDS_Shape StdPrs_BRepFont::RenderText(const BRepFont_Builder::TextPlan& thePlan)
 {
-  return RenderText(thePlan, TextOptions{});
+  TextOptions anOptions;
+  anOptions.ToConcatenateContours = myToConcatenateContours;
+  return RenderText(thePlan, anOptions);
 }
 
 //=================================================================================================
@@ -689,7 +725,7 @@ bool StdPrs_BRepFont::SetWidthScaling(const float theScaleFactor)
   {
     return false;
   }
-  anImpl->ClearCache();
+  anImpl->RefreshMetrics();
   myImpl = anImpl;
   return true;
 }
@@ -712,7 +748,7 @@ void StdPrs_BRepFont::SetSingleStrokeFont(const bool theIsSingleStroke)
   }
   std::lock_guard<std::mutex> aLock(anImpl->FontMutex);
   anImpl->Font->SetSingleStrokeFont(theIsSingleStroke);
-  anImpl->ClearCache();
+  anImpl->RefreshMetrics();
   myImpl = anImpl;
 }
 
@@ -720,6 +756,8 @@ void StdPrs_BRepFont::SetSingleStrokeFont(const bool theIsSingleStroke)
 
 double StdPrs_BRepFont::Ascender() const
 {
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.Ascender;
 }
 
@@ -727,6 +765,8 @@ double StdPrs_BRepFont::Ascender() const
 
 double StdPrs_BRepFont::Descender() const
 {
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.Descender;
 }
 
@@ -734,6 +774,8 @@ double StdPrs_BRepFont::Descender() const
 
 double StdPrs_BRepFont::LineSpacing() const
 {
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.LineSpacing;
 }
 
@@ -741,6 +783,8 @@ double StdPrs_BRepFont::LineSpacing() const
 
 double StdPrs_BRepFont::PointSize() const
 {
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.PointSize;
 }
 
@@ -749,7 +793,9 @@ double StdPrs_BRepFont::PointSize() const
 double StdPrs_BRepFont::AdvanceX(const char32_t theUCharNext)
 {
   std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
-  return myImpl->FontMetrics.Scale * static_cast<double>(myImpl->Font->AdvanceX(theUCharNext));
+  myImpl->RefreshMetrics();
+  return myImpl->FontMetrics.Scale
+         * static_cast<double>(myImpl->Font->AdvanceX(myCurrentCharacter, theUCharNext));
 }
 
 //=================================================================================================
@@ -757,6 +803,8 @@ double StdPrs_BRepFont::AdvanceX(const char32_t theUCharNext)
 double StdPrs_BRepFont::AdvanceX(const char32_t theUChar, const char32_t theUCharNext)
 {
   std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myCurrentCharacter = theUChar;
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.Scale
          * static_cast<double>(myImpl->Font->AdvanceX(theUChar, theUCharNext));
 }
@@ -766,7 +814,9 @@ double StdPrs_BRepFont::AdvanceX(const char32_t theUChar, const char32_t theUCha
 double StdPrs_BRepFont::AdvanceY(const char32_t theUCharNext)
 {
   std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
-  return myImpl->FontMetrics.Scale * static_cast<double>(myImpl->Font->AdvanceY(theUCharNext));
+  myImpl->RefreshMetrics();
+  return myImpl->FontMetrics.Scale
+         * static_cast<double>(myImpl->Font->AdvanceY(myCurrentCharacter, theUCharNext));
 }
 
 //=================================================================================================
@@ -774,6 +824,8 @@ double StdPrs_BRepFont::AdvanceY(const char32_t theUCharNext)
 double StdPrs_BRepFont::AdvanceY(const char32_t theUChar, const char32_t theUCharNext)
 {
   std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myCurrentCharacter = theUChar;
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.Scale
          * static_cast<double>(myImpl->Font->AdvanceY(theUChar, theUCharNext));
 }
@@ -782,6 +834,8 @@ double StdPrs_BRepFont::AdvanceY(const char32_t theUChar, const char32_t theUCha
 
 double StdPrs_BRepFont::Scale() const
 {
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.Scale;
 }
 
@@ -789,5 +843,46 @@ double StdPrs_BRepFont::Scale() const
 
 double StdPrs_BRepFont::Size() const
 {
+  std::lock_guard<std::mutex> aLock(myImpl->FontMutex);
+  myImpl->RefreshMetrics();
   return myImpl->FontMetrics.Size;
+}
+
+//==================================================================================================
+
+TopoDS_Shape StdPrs_BRepFont::RenderText(const Font_TextFormatter& theFormatter,
+                                         const gp_Ax3&             thePenLoc)
+{
+  TextOptions anOptions;
+  anOptions.Pen                   = thePenLoc;
+  anOptions.ToConcatenateContours = myToConcatenateContours;
+  if (!isValidPosition(thePenLoc))
+  {
+    return {};
+  }
+  const std::optional<BRepFont_Builder::TextPlan> aPlan = myImpl->PlanText(theFormatter);
+  return aPlan.has_value() ? RenderText(*aPlan, anOptions) : TopoDS_Shape();
+}
+
+//==================================================================================================
+
+std::mutex& StdPrs_BRepFont::Mutex()
+{
+  return myMutex;
+}
+
+//==================================================================================================
+
+const occ::handle<Font_FTFont>& StdPrs_BRepFont::FTFont() const
+{
+  if (myImpl->GetRefCount() > 1)
+  {
+    occ::handle<Impl> aCopy = myImpl->Copy();
+    if (aCopy.IsNull())
+    {
+      throw Standard_ConstructionError("Cannot detach BRep font backend");
+    }
+    myImpl = aCopy;
+  }
+  return myImpl->Font;
 }

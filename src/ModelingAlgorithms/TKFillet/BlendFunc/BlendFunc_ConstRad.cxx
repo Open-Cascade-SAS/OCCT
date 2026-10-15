@@ -55,6 +55,8 @@ BlendFunc_ConstRad::BlendFunc_ConstRad(const occ::handle<Adaptor3d_Surface>& S1,
       ray2(0.0),
       choix(0),
       xval(1, 4),
+      invnormtg(0.0),
+      dinvnormtg(0.0),
       E(1, 4),
       DEDX(1, 4, 1, 4),
       DEDT(1, 4),
@@ -138,12 +140,7 @@ bool BlendFunc_ConstRad::ComputeValues(const math_Vector& X,
                                        const bool         byParam,
                                        const double       Param)
 {
-  // Per-thread scratch, reused across calls via the t_OK / myX_OK guards below.
-  static thread_local gp_Vec d3u1, d3v1, d3uuv1, d3uvv1, d3u2, d3v2, d3uuv2, d3uvv2;
-  static thread_local gp_Vec d1gui, d2gui, d3gui;
-  static thread_local gp_Pnt ptgui;
-  static thread_local double invnormtg, dinvnormtg;
-  double                     T = Param, aux;
+  double T = Param, aux;
 
   // Case of implicite parameter
   if (!byParam)
@@ -1906,14 +1903,14 @@ bool BlendFunc_ConstRad::Section(const Blend_Point&            P,
 gp_Ax1 BlendFunc_ConstRad::AxeRot(const double Prm)
 {
   gp_Ax1 axrot;
-  gp_Vec dirax, d1gui, d2gui, np, dnp;
-  gp_Pnt oriax, ptgui;
+  gp_Vec dirax, np, dnp;
+  gp_Pnt oriax;
 
-  curv->D2(Prm, ptgui, d1gui, d2gui);
+  const auto [aGuidePoint, aGuideD1, aGuideD2] = curv->EvalD2(Prm);
 
-  double normtg = d1gui.Magnitude();
-  np            = d1gui.Normalized();
-  dnp.SetLinearForm(1. / normtg, d2gui, -1. / normtg * (np.Dot(d2gui)), np);
+  double normtg = aGuideD1.Magnitude();
+  np            = aGuideD1.Normalized();
+  dnp.SetLinearForm(1. / normtg, aGuideD2, -1. / normtg * (np.Dot(aGuideD2)), np);
 
   dirax = np.Crossed(dnp);
   if (dirax.Magnitude() >= gp::Resolution())
@@ -1927,11 +1924,11 @@ gp_Ax1 BlendFunc_ConstRad::AxeRot(const double Prm)
   }
   if (dnp.Magnitude() >= gp::Resolution())
   {
-    oriax.SetXYZ(ptgui.XYZ() + (normtg / dnp.Magnitude()) * dnp.Normalized().XYZ());
+    oriax.SetXYZ(aGuidePoint.XYZ() + (normtg / dnp.Magnitude()) * dnp.Normalized().XYZ());
   }
   else
   {
-    oriax.SetXYZ(ptgui.XYZ());
+    oriax.SetXYZ(aGuidePoint.XYZ());
   }
   axrot.SetLocation(oriax);
   return axrot;

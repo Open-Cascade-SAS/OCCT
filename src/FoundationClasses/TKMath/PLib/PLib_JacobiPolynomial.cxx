@@ -22,6 +22,7 @@
 #include <NCollection_Array2.hxx>
 
 #include <array>
+#include <iterator>
 
 namespace
 {
@@ -194,6 +195,18 @@ void PLib_JacobiPolynomial::MaxValue(NCollection_Array1<double>& theTabMax) cons
   {
     theTabMax.ChangeValue(i) = *aDbPointer++;
   }
+}
+
+//=================================================================================================
+
+const NCollection_Array1<double>& PLib_JacobiPolynomial::MaxValues(
+  const GeomAbs_Shape theConstraintOrder)
+{
+  static const NCollection_Array1<double> THE_MAX_VALUES[] = {
+    NCollection_Array1<double>(MaxValuesDB_C0[0], std::size(MaxValuesDB_C0), true),
+    NCollection_Array1<double>(MaxValuesDB_C1[0], std::size(MaxValuesDB_C1), true),
+    NCollection_Array1<double>(MaxValuesDB_C2[0], std::size(MaxValuesDB_C2), true)};
+  return THE_MAX_VALUES[PLib::NivConstr(theConstraintOrder)];
 }
 
 //=================================================================================================

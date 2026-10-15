@@ -46,9 +46,6 @@ Standard_IMPORT void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
                                      const gp_Vec2d&                 tra,
                                      const double                    scal);
 
-  // Pour les mesures.
-  #include <OSD_Chronometer.hxx>
-static OSD_Chronometer totclock, parclock, appclock, cstclock;
 #endif
 
 static int inqadd(const double d1,
@@ -314,13 +311,7 @@ static void killcorners(const int                       nb,
     }
     if (fnul || lnul)
     {
-#ifdef OCCT_DEBUG
-      parclock.Start();
-#endif
       bound[i]->Reparametrize(0., 1., fnul, lnul, fscal, lscal, rev[i]);
-#ifdef OCCT_DEBUG
-      parclock.Stop();
-#endif
       if (bound[i]->HasNormals() && tga[i]->IsScalable())
       {
         occ::handle<Law_BSpline> bs = Law::ScaleCub(0., 1., fnul, lnul, fscal, lscal);
@@ -386,13 +377,6 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
                                        const occ::handle<GeomFill_Boundary>& B3,
                                        const bool                            NoCheck)
 {
-#ifdef OCCT_DEBUG
-  totclock.Reset();
-  parclock.Reset();
-  appclock.Reset();
-  cstclock.Reset();
-  totclock.Start();
-#endif
   bool rev[3];
   rev[0] = rev[1] = rev[2] = false;
   occ::handle<GeomFill_Boundary> bound[3];
@@ -406,16 +390,10 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
   rev[2] = !rev[2];
 
   // on reparamettre tout le monde entre 0. et 1.
-#ifdef OCCT_DEBUG
-  parclock.Start();
-#endif
   for (i = 0; i <= 2; i++)
   {
     bound[i]->Reparametrize(0., 1., false, false, 1., 1., rev[i]);
   }
-#ifdef OCCT_DEBUG
-  parclock.Stop();
-#endif
 
   // On cree le carreau algorithmique (u,(1-u)) et les champs tangents
   // 1er jus.
@@ -493,13 +471,6 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
                                        const occ::handle<GeomFill_Boundary>& B4,
                                        const bool                            NoCheck)
 {
-#ifdef OCCT_DEBUG
-  totclock.Reset();
-  parclock.Reset();
-  appclock.Reset();
-  cstclock.Reset();
-  totclock.Start();
-#endif
   bool rev[4];
   rev[0] = rev[1] = rev[2] = rev[3] = false;
   occ::handle<GeomFill_Boundary> bound[4];
@@ -515,16 +486,10 @@ void GeomFill_ConstrainedFilling::Init(const occ::handle<GeomFill_Boundary>& B1,
   rev[3] = !rev[3];
 
   // on reparamettre tout le monde entre 0. et 1.
-#ifdef OCCT_DEBUG
-  parclock.Start();
-#endif
   for (i = 0; i <= 3; i++)
   {
     bound[i]->Reparametrize(0., 1., false, false, 1., 1., rev[i]);
   }
-#ifdef OCCT_DEBUG
-  parclock.Stop();
-#endif
 
   // On cree le carreau algorithmique (u,(1-u)) et les champs tangents
   // 1er jus.
@@ -651,42 +616,16 @@ void GeomFill_ConstrainedFilling::Build()
       }
       nbd3 += ctr[ii];
     }
-#ifdef OCCT_DEBUG
-    appclock.Start();
-#endif
     if (nbd3)
     {
       PerformApprox();
     }
-#ifdef OCCT_DEBUG
-    appclock.Stop();
-#endif
   }
   appdone = true;
-#ifdef OCCT_DEBUG
-  cstclock.Start();
-#endif
   MatchKnots();
   PerformS0();
   PerformS1();
   PerformSurface();
-#ifdef OCCT_DEBUG
-  cstclock.Stop();
-  totclock.Stop();
-  double tottime, apptime, partime, csttime;
-  totclock.Show(tottime);
-  parclock.Show(partime);
-  appclock.Show(apptime);
-  cstclock.Show(csttime);
-  std::cout << "temp total : " << tottime << " secondes" << std::endl;
-  std::cout << std::endl;
-  std::cout << "dont" << std::endl;
-  std::cout << std::endl;
-  std::cout << "reparametrage         : " << partime << " secondes" << std::endl;
-  std::cout << "approximation         : " << apptime << " secondes" << std::endl;
-  std::cout << "construction formelle : " << csttime << " secondes" << std::endl;
-  std::cout << std::endl;
-#endif
 }
 
 //=================================================================================================

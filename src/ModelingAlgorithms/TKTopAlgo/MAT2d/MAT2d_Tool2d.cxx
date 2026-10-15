@@ -14,9 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define Debug(expr) std::cout << " MAT2d_Tool2d.cxx  :  expr :" << expr << std::endl;
-// #define OCCT_DEBUG
-
 #include <Bisector_Bisec.hxx>
 #include <Bisector_BisecAna.hxx>
 #include <Bisector_BisecCC.hxx>
@@ -56,8 +53,6 @@
 
 #ifdef OCCT_DEBUG
 static void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
-static bool Store      = false;
-static bool AffichDist = false;
 #endif
 
 //=====================================================================
@@ -75,8 +70,6 @@ static bool CheckEnds(const occ::handle<Geom2d_Geometry>& Elt,
                       const gp_Pnt2d&                     PCom,
                       const double                        Distance,
                       const double                        Tol);
-
-static double MAT2d_TOLCONF = 1.e-7;
 
 //=================================================================================================
 
@@ -136,7 +129,7 @@ int MAT2d_Tool2d::NumberOfItems() const
 
 double MAT2d_Tool2d::ToleranceOfConfusion() const
 {
-  return 2 * MAT2d_TOLCONF;
+  return 2.0 * Precision::Confusion();
 }
 
 //=================================================================================================
@@ -278,7 +271,7 @@ void MAT2d_Tool2d::CreateBisector(const occ::handle<MAT_Bisector>& abisector)
   occ::handle<Geom2d_Point>    point1, point2;
   occ::handle<Geom2d_Geometry> elt1, elt2;
   Bisector_Bisec               bisector;
-  double                       tolerance = MAT2d_TOLCONF;
+  double                       tolerance = Precision::Confusion();
 
   int  edge1number      = abisector->FirstEdge()->EdgeNumber();
   int  edge2number      = abisector->SecondEdge()->EdgeNumber();
@@ -309,25 +302,6 @@ void MAT2d_Tool2d::CreateBisector(const occ::handle<MAT_Bisector>& abisector)
   {
     item2 = occ::down_cast<Geom2d_Curve>(elt2);
   }
-
-#ifdef OCCT_DEBUG
-  bool Affich = false;
-  if (Affich)
-  {
-    std::cout << std::endl;
-    std::cout << "BISECTOR number :  " << theNumberOfBisectors + 1 << std::endl;
-    std::cout << "  Item 1 : " << std::endl;
-    std::cout << edge1number << std::endl;
-    std::cout << std::endl;
-    //    elt1->Dump(1,1);
-    std::cout << std::endl;
-    std::cout << "  Item 2 : " << std::endl;
-    std::cout << edge2number << std::endl;
-    std::cout << std::endl;
-    //  elt2->Dump(1,1);
-    std::cout << std::endl;
-  }
-#endif
 
   if (type1 != STANDARD_TYPE(Geom2d_CartesianPoint)
       && type2 != STANDARD_TYPE(Geom2d_CartesianPoint))
@@ -392,21 +366,6 @@ void MAT2d_Tool2d::CreateBisector(const occ::handle<MAT_Bisector>& abisector)
 
   abisector->BisectorNumber(theNumberOfBisectors);
   abisector->Sense(1);
-
-#ifdef OCCT_DEBUG
-  bool AffichDraw = false;
-  if (AffichDraw)
-    Dump(abisector->BisectorNumber(), 1);
-  if (Store)
-  {
-    occ::handle<Standard_Type> Type1 = Type(bisector.Value()->BasisCurve());
-    occ::handle<Geom2d_Curve>  BasisCurve;
-    if (Type1 == STANDARD_TYPE(Bisector_BisecAna))
-    {
-      BasisCurve = occ::down_cast<Bisector_BisecAna>(bisector.Value()->BasisCurve())->Geom2dCurve();
-    }
-  }
-#endif
 }
 
 //=============================================================================
@@ -491,12 +450,6 @@ bool MAT2d_Tool2d::TrimBisector(const occ::handle<MAT_Bisector>& abisector)
 {
   double param = abisector->FirstParameter();
 
-#ifdef OCCT_DEBUG
-  bool Affich = false;
-  if (Affich)
-    std::cout << "TRIM de " << abisector->BisectorNumber() << std::endl;
-#endif
-
   occ::handle<Geom2d_TrimmedCurve> bisector =
     ChangeGeomBis(abisector->BisectorNumber()).ChangeValue();
 
@@ -547,12 +500,6 @@ bool MAT2d_Tool2d::TrimBisector(const occ::handle<MAT_Bisector>& abisector, cons
   }
   Bisector->SetTrim(Bisector->FirstParameter(), Param);
 
-#ifdef OCCT_DEBUG
-  bool Affich = false;
-  if (Affich)
-    MAT2d_DrawCurve(Bisector, 2);
-#endif
-
   return true;
 }
 
@@ -565,7 +512,7 @@ bool MAT2d_Tool2d::Projection(const int IEdge, const gp_Pnt2d& PCom, double& Dis
   occ::handle<Standard_Type>       Type = Elt->DynamicType();
   occ::handle<Geom2d_TrimmedCurve> Curve;
   int                              INext;
-  double                           Eps = MAT2d_TOLCONF; //*10.;
+  double                           Eps = Precision::Confusion(); //*10.;
 
   if (Type == STANDARD_TYPE(Geom2d_CartesianPoint))
   {
@@ -747,15 +694,7 @@ bool MAT2d_Tool2d::IsSameDistance(const occ::handle<MAT_Bisector>& BisectorOne,
     }
   }
 
-#ifdef OCCT_DEBUG
-  if (AffichDist)
-    for (int j = 1; j <= 4; j++)
-    {
-      std::cout << "Distance number : " << j << " is :" << Dist(j) << std::endl;
-    }
-#endif
-
-  double EpsDist = MAT2d_TOLCONF * 300.;
+  double EpsDist = Precision::Confusion() * 300.0;
   Distance       = Dist(1);
   if (theJoinType == GeomAbs_Intersection && Precision::IsInfinite(Distance))
   {
@@ -789,7 +728,7 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
                                        const occ::handle<MAT_Bisector>& BisectorTwo,
                                        int&                             IntPnt)
 {
-  double   Tolerance = MAT2d_TOLCONF;
+  double   Tolerance = Precision::Confusion();
   double   Param1, Param2;
   double   Parama, Paramb;
   double   Distance = 0., DistanceMini;
@@ -845,28 +784,6 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
   {
     return Precision::Infinite();
   }
-
-#ifdef OCCT_DEBUG
-  bool Affich = false;
-  if (Affich)
-  {
-    std::cout << std::endl;
-    std::cout << "INTERSECTION de " << BisectorOne->BisectorNumber() << " et de "
-              << BisectorTwo->BisectorNumber() << std::endl;
-    std::cout << "  Bisector 1 : " << std::endl;
-    //    (Bisector1->BasisCurve())->Dump(-1,1);
-    std::cout << std::endl;
-    Debug(Domain1.FirstParameter());
-    Debug(Domain1.LastParameter());
-    std::cout << "-----------------" << std::endl;
-    std::cout << "  Bisector 2 : " << std::endl;
-    //    (Bisector2->BasisCurve())->Dump(-1,1);
-    std::cout << std::endl;
-    Debug(Domain2.FirstParameter());
-    Debug(Domain2.LastParameter());
-    std::cout << "-----------------" << std::endl;
-  }
-#endif
 
   // -------------------------
   // Calcul de l intersection.
@@ -1088,16 +1005,6 @@ double MAT2d_Tool2d::IntersectBisector(const occ::handle<MAT_Bisector>& Bisector
   BisectorOne->SecondParameter(Param1);
   BisectorTwo->FirstParameter(Param2);
 
-#ifdef OCCT_DEBUG
-  if (Affich)
-  {
-    std::cout << "   coordonnees    : " << GeomPnt(IntPnt).X() << " " << GeomPnt(IntPnt).Y()
-              << std::endl;
-    std::cout << "   parametres     : " << Param1 << " " << Param2 << std::endl;
-    std::cout << "   distancemini   : " << DistanceMini << std::endl;
-  }
-#endif
-
   return DistanceMini;
 }
 
@@ -1205,7 +1112,7 @@ void MAT2d_Tool2d::BisecFusion(const int I1, const int I2)
     // deux courbes avec comme point de depart le dernier point de la Bisector2.
     // on trime ensuite la courbe par le dernier point de Bisector1.
     //------------------------------------------------------------------------------------
-    double                        Tolerance = MAT2d_TOLCONF;
+    double                        Tolerance = Precision::Confusion();
     Bisector_Bisec                Bis;
     gp_Vec2d                      VBid(1, 0);
     gp_Pnt2d                      P2   = Bisector2->Value(Bisector2->LastParameter());
@@ -1290,7 +1197,7 @@ static void SetTrim(Bisector_Bisec& Bis, const occ::handle<Geom2d_Curve>& Line1)
 {
   Geom2dInt_GInter                 Intersect;
   double                           Distance;
-  double                           Tolerance = MAT2d_TOLCONF;
+  double                           Tolerance = Precision::Confusion();
   occ::handle<Geom2d_TrimmedCurve> Bisector  = Bis.ChangeValue();
 
   IntRes2d_Domain Domain1 = Domain(Bisector, Tolerance);
@@ -1459,8 +1366,8 @@ void MAT2d_DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int /*Indice
         double Minr  = gpHyperbola.MinorRadius();
         double Valu1 = Limit / Majr;
         double Valu2 = Limit / Minr;
-        double Val1  = Log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
-        double Val2  = Log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
+        double Val1  = std::log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
+        double Val2  = std::log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
         delta        = (Val1 <= Val2 ? Val1 : Val2);
       }
       CurveDraw =

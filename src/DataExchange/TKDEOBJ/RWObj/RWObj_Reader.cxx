@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <string_view>
 
 #if defined(_WIN32)
   #define ftell64(a) _ftelli64(a)
@@ -46,6 +47,30 @@ namespace
 {
 // The length of buffer to read (in bytes)
 static const size_t THE_BUFFER_SIZE = 4 * 1024;
+
+//! Parsed OBJ command and its possibly empty arguments.
+struct ObjCommand
+{
+  std::string_view Name;
+  std::string_view Arguments;
+};
+
+//! Split an OBJ line into a command name and its arguments.
+static ObjCommand splitCommand(const std::string_view theLine)
+{
+  const size_t aNameEnd = theLine.find_first_of(" \t");
+  if (aNameEnd == std::string_view::npos)
+  {
+    return {theLine, {}};
+  }
+
+  size_t anArgumentOffset = aNameEnd;
+  while (anArgumentOffset < theLine.size() && RWObj_Tools::isSpaceChar(theLine[anArgumentOffset]))
+  {
+    ++anArgumentOffset;
+  }
+  return {theLine.substr(0, aNameEnd), theLine.substr(anArgumentOffset)};
+}
 
 //! Return TRUE if given polygon has clockwise node order.
 static bool isClockwisePolygon(const occ::handle<BRepMesh_DataStructureOfDelaun>& theMesh,
@@ -181,61 +206,63 @@ bool RWObj_Reader::read(std::istream&                  theStream,
       continue;
     }
     isStart = false;
+    const std::string_view aLineView(aLine, aLineLen);
+    const ObjCommand       aCommand = splitCommand(aLineView);
 
     if (theToProbe)
     {
-      if (::strncmp(aLine, "mtllib", 6) == 0)
+      if (aCommand.Name == "mtllib")
       {
-        readMaterialLib(IsSpace(aLine[6]) ? aLine + 7 : "");
+        readMaterialLib(aCommand.Arguments);
       }
-      else if (aLine[0] == 'v' && RWObj_Tools::isSpaceChar(aLine[1]))
+      else if (aCommand.Name == "v" && !aCommand.Arguments.empty())
       {
         ++myNbProbeNodes;
       }
-      else if (aLine[0] == 'f' && RWObj_Tools::isSpaceChar(aLine[1]))
+      else if (aCommand.Name == "f" && !aCommand.Arguments.empty())
       {
         ++myNbProbeElems;
       }
       continue;
     }
 
-    if (aLine[0] == 'v' && RWObj_Tools::isSpaceChar(aLine[1]))
+    if (aCommand.Name == "v" && !aCommand.Arguments.empty())
     {
       ++myNbProbeNodes;
-      pushVertex(aLine + 2);
+      pushVertex(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'v' && aLine[1] == 'n' && RWObj_Tools::isSpaceChar(aLine[2]))
+    else if (aCommand.Name == "vn" && !aCommand.Arguments.empty())
     {
-      pushNormal(aLine + 3);
+      pushNormal(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'v' && aLine[1] == 't' && RWObj_Tools::isSpaceChar(aLine[2]))
+    else if (aCommand.Name == "vt" && !aCommand.Arguments.empty())
     {
-      pushTexel(aLine + 3);
+      pushTexel(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'f' && RWObj_Tools::isSpaceChar(aLine[1]))
+    else if (aCommand.Name == "f" && !aCommand.Arguments.empty())
     {
       ++myNbProbeElems;
-      pushIndices(aLine + 2);
+      pushIndices(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'g' && IsSpace(aLine[1]))
+    else if (aCommand.Name == "g")
     {
-      pushGroup(aLine + 2);
+      pushGroup(aCommand.Arguments);
     }
-    else if (aLine[0] == 's' && IsSpace(aLine[1]))
+    else if (aCommand.Name == "s")
     {
-      pushSmoothGroup(aLine + 2);
+      pushSmoothGroup(aCommand.Arguments);
     }
-    else if (aLine[0] == 'o' && IsSpace(aLine[1]))
+    else if (aCommand.Name == "o")
     {
-      pushObject(aLine + 2);
+      pushObject(aCommand.Arguments);
     }
-    else if (::strncmp(aLine, "mtllib", 6) == 0)
+    else if (aCommand.Name == "mtllib")
     {
-      readMaterialLib(IsSpace(aLine[6]) ? aLine + 7 : "");
+      readMaterialLib(aCommand.Arguments);
     }
-    else if (::strncmp(aLine, "usemtl", 6) == 0)
+    else if (aCommand.Name == "usemtl")
     {
-      pushMaterial(IsSpace(aLine[6]) ? aLine + 7 : "");
+      pushMaterial(aCommand.Arguments);
     }
 
     if (!checkMemory())
@@ -612,7 +639,7 @@ int RWObj_Reader::triangulatePolygon(const NCollection_Array1<int>& theIndices)
 
 //=================================================================================================
 
-void RWObj_Reader::pushObject(const char* theObjectName)
+void RWObj_Reader::pushObject(const std::string_view theObjectName)
 {
   TCollection_AsciiString aNewObject;
   if (!RWObj_Tools::ReadName(theObjectName, aNewObject))
@@ -628,7 +655,7 @@ void RWObj_Reader::pushObject(const char* theObjectName)
 
 //=================================================================================================
 
-void RWObj_Reader::pushGroup(const char* theGroupName)
+void RWObj_Reader::pushGroup(const std::string_view theGroupName)
 {
   TCollection_AsciiString aNewGroup;
   if (!RWObj_Tools::ReadName(theGroupName, aNewGroup))
@@ -644,7 +671,7 @@ void RWObj_Reader::pushGroup(const char* theGroupName)
 
 //=================================================================================================
 
-void RWObj_Reader::pushSmoothGroup(const char* theSmoothGroupIndex)
+void RWObj_Reader::pushSmoothGroup(const std::string_view theSmoothGroupIndex)
 {
   TCollection_AsciiString aNewSmoothGroup;
   RWObj_Tools::ReadName(theSmoothGroupIndex, aNewSmoothGroup);
@@ -669,7 +696,7 @@ void RWObj_Reader::pushSmoothGroup(const char* theSmoothGroupIndex)
 
 //=================================================================================================
 
-void RWObj_Reader::pushMaterial(const char* theMaterialName)
+void RWObj_Reader::pushMaterial(const std::string_view theMaterialName)
 {
   TCollection_AsciiString aNewMat;
   if (!RWObj_Tools::ReadName(theMaterialName, aNewMat))
@@ -697,7 +724,7 @@ void RWObj_Reader::pushMaterial(const char* theMaterialName)
 
 //=================================================================================================
 
-void RWObj_Reader::readMaterialLib(const char* theFileName)
+void RWObj_Reader::readMaterialLib(const std::string_view theFileName)
 {
   TCollection_AsciiString aMatPath;
   if (!RWObj_Tools::ReadName(theFileName, aMatPath))

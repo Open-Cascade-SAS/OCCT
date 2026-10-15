@@ -510,7 +510,7 @@ TEST(BRepFont_RegularizerTest, NonFiniteGeometryIsRejected)
 
 TEST(BRepFont_RegularizerTest, FiniteAreaOverflowIsRejected)
 {
-  const double                                         aLimit = std::numeric_limits<double>::max();
+  constexpr double                                     aLimit = std::numeric_limits<double>::max();
   NCollection_LinearVector<Font_GlyphOutline::Segment> aSegments;
   NCollection_LinearVector<Font_GlyphOutline::Contour> aContours;
   BRepFont_Regularizer_Test::appendClosedContour({gp_XY(aLimit, aLimit),

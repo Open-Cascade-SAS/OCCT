@@ -774,3 +774,154 @@ TEST(BVH_ToolsTest, RayBoxIntersectionNegativeTime)
   EXPECT_TRUE(aHit2);
   EXPECT_TRUE(aTimeLeave >= 0.0);
 }
+
+//=================================================================================================
+
+TEST(BVH_ToolsTest, NearlyCollinearTriangleRetainsEdgeProjection)
+{
+  // A cone generator from the NIST ctc02 model. The point lies on edge 0-2
+  // within coordinate roundoff; unstable barycentric weights move its projection.
+  const BVH_Vec3d aNodes[] = {
+    BVH_Vec3d(-237.95444513009758, 229.57512022543935, -252.59822976488073),
+    BVH_Vec3d(-237.48239400627401, 228.90000000000001, -253),
+    BVH_Vec3d(-239.21324812696042, 231.37544082661105, -251.52684247122957)};
+  const BVH_Vec3d aPoint(-238.49393212875307, 230.34668619737005, -252.13906378188733);
+  for (int aFirst = 0; aFirst < 3; ++aFirst)
+  {
+    for (int aDirection : {-1, 1})
+    {
+      const int       aSecond     = (aFirst + aDirection + 3) % 3;
+      const int       aThird      = (aFirst + 2 * aDirection + 3) % 3;
+      const BVH_Vec3d aProjection = BVH_Tools<double, 3>::PointTriangleProjection(aPoint,
+                                                                                  aNodes[aFirst],
+                                                                                  aNodes[aSecond],
+                                                                                  aNodes[aThird]);
+      EXPECT_LE((aProjection - aPoint).Modulus(), 1.e-10);
+    }
+  }
+}
+
+//=================================================================================================
+
+TEST(BVH_ToolsTest, ThinTrianglePreservesInteriorProjection)
+{
+  using Tools3d = BVH_Tools<double, 3>;
+  for (const double aHeight : {1.e-6, 1.e-9, 1.e-12})
+  {
+    SCOPED_TRACE(aHeight);
+    const BVH_Vec3d                 aFirst(0, 0, 0), aSecond(1, 0, 0), aThird(0.5, aHeight, 0);
+    const BVH_Vec3d                 aPoint(0.5, aHeight / 2, 1);
+    Tools3d::BVH_PrjStateInTriangle aState = Tools3d::BVH_PrjStateInTriangle_VERTEX;
+    const BVH_Vec3d                 aProjection =
+      BVH_Tools<double, 3>::PointTriangleProjection(aPoint, aFirst, aSecond, aThird, &aState);
+    EXPECT_DOUBLE_EQ(aProjection.x(), 0.5);
+    EXPECT_NEAR(aProjection.y(), aHeight / 2, aHeight * 1.e-12);
+    EXPECT_DOUBLE_EQ(aProjection.z(), 0.0);
+    EXPECT_EQ(aState, Tools3d::BVH_PrjStateInTriangle_INNER);
+  }
+}
+
+//=================================================================================================
+
+TEST(BVH_ToolsTest, ProjectionAcceptsIndependentOptionalOutputs)
+{
+  using Tools3d = BVH_Tools<double, 3>;
+  const BVH_Vec3d                 aFirst(0, 0, 0), aSecond(1, 0, 0), aThird(0, 1, 0);
+  Tools3d::BVH_PrjStateInTriangle aState = Tools3d::BVH_PrjStateInTriangle_INNER;
+  const BVH_Vec3d aVertex = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(-1, -1, 0),
+                                                                          aFirst,
+                                                                          aSecond,
+                                                                          aThird,
+                                                                          &aState);
+  EXPECT_EQ(aState, Tools3d::BVH_PrjStateInTriangle_VERTEX);
+  EXPECT_DOUBLE_EQ(aVertex.SquareModulus(), 0.0);
+  const BVH_Vec3d anEdge = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(0.5, -1, 0),
+                                                                         aFirst,
+                                                                         aSecond,
+                                                                         aThird,
+                                                                         &aState);
+  EXPECT_EQ(aState, Tools3d::BVH_PrjStateInTriangle_EDGE);
+  EXPECT_DOUBLE_EQ(anEdge.x(), 0.5);
+  int aFirstIndex = -1;
+  int aLastIndex  = -1;
+  BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(0.5, -1, 0),
+                                                aFirst,
+                                                aSecond,
+                                                aThird,
+                                                nullptr,
+                                                &aFirstIndex,
+                                                &aLastIndex);
+  EXPECT_EQ(aFirstIndex, 0);
+  EXPECT_EQ(aLastIndex, 1);
+}
+
+//=================================================================================================
+
+TEST(BVH_ToolsTest, ThinTriangleFloatAndTwoDimensions)
+{
+  const BVH_Vec3f aFirst(0, 0, 0), aSecond(1, 0, 0), aThird(0.5f, 1.e-4f, 0);
+  const BVH_Vec3f aFloatProjection =
+    BVH_Tools<float, 3>::PointTriangleProjection(BVH_Vec3f(0.5f, 5.e-5f, 1),
+                                                 aFirst,
+                                                 aSecond,
+                                                 aThird);
+  EXPECT_FLOAT_EQ(aFloatProjection.y(), 5.e-5f);
+  EXPECT_FLOAT_EQ(aFloatProjection.z(), 0.0f);
+  const BVH_Vec2d aPoint(0.5, 5.e-13);
+  const BVH_Vec2d aProjection =
+    BVH_Tools<double, 2>::PointTriangleProjection(aPoint,
+                                                  BVH_Vec2d(0, 0),
+                                                  BVH_Vec2d(1, 0),
+                                                  BVH_Vec2d(0.5, 1.e-12));
+  EXPECT_DOUBLE_EQ(aProjection.x(), aPoint.x());
+  EXPECT_DOUBLE_EQ(aProjection.y(), aPoint.y());
+}
+
+//==================================================================================================
+
+TEST(BVH_ToolsTest, ThinTriangleInteriorNearEdgeKeepsCoordinates)
+{
+  using Tools2d = BVH_Tools<double, 2>;
+  for (const double aScale : {1.e-8, 1.0, 1.e16})
+  {
+    const BVH_Vec2d aFirst(0, 0), aSecond(aScale, 0), aThird(0.5 * aScale, 1.e-8 * aScale);
+    const BVH_Vec2d aPoint(0.5 * aScale, 1.e-24 * aScale);
+    Tools2d::BVH_PrjStateInTriangle aState = Tools2d::BVH_PrjStateInTriangle_EDGE;
+    const BVH_Vec2d                 aProjection =
+      Tools2d::PointTriangleProjection(aPoint, aFirst, aSecond, aThird, &aState);
+    EXPECT_DOUBLE_EQ(aProjection.x(), aPoint.x());
+    EXPECT_DOUBLE_EQ(aProjection.y(), aPoint.y());
+    EXPECT_EQ(aState, Tools2d::BVH_PrjStateInTriangle_INNER);
+  }
+}
+
+//==================================================================================================
+
+TEST(BVH_ToolsTest, ThinTrianglePlaneProjectionInThreeAndFourDimensions)
+{
+  using Tools3d                            = BVH_Tools<double, 3>;
+  Tools3d::BVH_PrjStateInTriangle aState3d = Tools3d::BVH_PrjStateInTriangle_EDGE;
+  const BVH_Vec3d                 aPoint3d(0.5, 1.e-24, 0);
+  const BVH_Vec3d                 aProjection3d = Tools3d::PointTriangleProjection(aPoint3d,
+                                                                   BVH_Vec3d(0, 0, 0),
+                                                                   BVH_Vec3d(1, 0, 0),
+                                                                   BVH_Vec3d(0.5, 1.e-8, 0),
+                                                                   &aState3d);
+  EXPECT_DOUBLE_EQ(aProjection3d.x(), aPoint3d.x());
+  EXPECT_DOUBLE_EQ(aProjection3d.y(), aPoint3d.y());
+  EXPECT_DOUBLE_EQ(aProjection3d.z(), 0.0);
+  EXPECT_EQ(aState3d, Tools3d::BVH_PrjStateInTriangle_INNER);
+
+  using Tools4d                            = BVH_Tools<double, 4>;
+  Tools4d::BVH_PrjStateInTriangle aState4d = Tools4d::BVH_PrjStateInTriangle_EDGE;
+  const BVH_Vec4d aProjection4d = Tools4d::PointTriangleProjection(BVH_Vec4d(0.5, 5.e-13, 1, 2),
+                                                                   BVH_Vec4d(0, 0, 0, 0),
+                                                                   BVH_Vec4d(1, 0, 0, 0),
+                                                                   BVH_Vec4d(0.5, 1.e-12, 0, 0),
+                                                                   &aState4d);
+  EXPECT_DOUBLE_EQ(aProjection4d.x(), 0.5);
+  EXPECT_DOUBLE_EQ(aProjection4d.y(), 5.e-13);
+  EXPECT_DOUBLE_EQ(aProjection4d.z(), 0.0);
+  EXPECT_DOUBLE_EQ(aProjection4d.w(), 0.0);
+  EXPECT_EQ(aState4d, Tools4d::BVH_PrjStateInTriangle_INNER);
+}

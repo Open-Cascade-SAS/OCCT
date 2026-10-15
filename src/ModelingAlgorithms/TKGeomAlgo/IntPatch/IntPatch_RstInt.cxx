@@ -545,11 +545,9 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
     }
   }
 
-  int NumeroEdge = 0;
   Domain->Init();
   while (Domain->More())
   {
-    NumeroEdge++;
     arc = Domain->Value();
 
     // MSV Oct 15, 2001: use tolerance of this edge if possible
@@ -699,14 +697,6 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
         }
 
         Brise.SetOffset(OffsetU, OffsetV);
-
-        static int debug_polygon2d = 0;
-        if (debug_polygon2d)
-        {
-          std::cout << " ***** Numero Restriction : " << NumeroEdge << " *****" << '\n';
-          PLin.Dump();
-          Brise.Dump();
-        }
 
         Commun.Perform(PLin, Brise);
         locpt.Clear();
