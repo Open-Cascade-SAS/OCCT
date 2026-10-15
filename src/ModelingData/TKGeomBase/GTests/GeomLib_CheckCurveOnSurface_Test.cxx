@@ -1061,13 +1061,19 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, SplineMaximumWhenIntervalsCrossCurveKnots)
                                                     aLinearMults,
                                                     1,
                                                     1));
-  const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
-    new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
-  GeomLib_CheckCurveOnSurface aCheck(aCurve);
-  aCheck.Perform(aCoS);
-  ASSERT_TRUE(aCheck.IsDone());
-  EXPECT_NEAR(aCheck.MaxDistance(), 1.0, Precision::Confusion());
-  EXPECT_NEAR(aCheck.MaxParameter(), double(aPeak), Precision::Confusion());
+  for (const bool isPlane : {false, true})
+  {
+    SCOPED_TRACE(isPlane);
+    const occ::handle<GeomAdaptor_Surface> aCheckedSurface =
+      isPlane ? new GeomAdaptor_Surface(new Geom_Plane(gp_Ax3())) : aSurface;
+    const occ::handle<Adaptor3d_CurveOnSurface> aCoS =
+      new Adaptor3d_CurveOnSurface(aPCurve, aCheckedSurface);
+    GeomLib_CheckCurveOnSurface aCheck(aCurve);
+    aCheck.Perform(aCoS);
+    ASSERT_TRUE(aCheck.IsDone());
+    EXPECT_NEAR(aCheck.MaxDistance(), 1.0, Precision::Confusion());
+    EXPECT_NEAR(aCheck.MaxParameter(), double(aPeak), Precision::Confusion());
+  }
 }
 
 TEST(GeomLib_CheckCurveOnSurfaceTest, BezierMaximumWithinTrimmedRange)

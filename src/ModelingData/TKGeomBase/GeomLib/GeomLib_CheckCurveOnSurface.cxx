@@ -198,12 +198,6 @@ public:
   bool Value(double theParameter, gp_Vec& theResidual) const;
 
 private:
-  // Evaluate polynomial and rational curves without rounding intermediate coordinates.
-  template <class Adaptor>
-  static CompensatedPoint planeCurveValue(const Adaptor& theCurve,
-                                          double         theParameter,
-                                          size_t         theDimension);
-
   struct BernsteinParameter
   {
     CompensatedReal Ratio;      // Smaller Bernstein parameter divided by the larger one.
@@ -219,6 +213,14 @@ private:
     std::array<CompensatedReal, 2>       Last;   // Upper knot bounds in each direction.
     std::array<CompensatedReal, 2>       Length; // Exact knot differences.
   };
+
+  // Evaluate polynomial and rational curves without rounding intermediate coordinates.
+  template <class Adaptor>
+  static CompensatedPoint planeCurveValue(const Adaptor&                                theCurve,
+                                          const PolynomialCache&                        theCache,
+                                          NCollection_DataMap<size_t, PolynomialCache>& theSpans,
+                                          double                                        theParameter,
+                                          size_t                                        theDimension);
 
   // Extract one span by knot insertion.
   // Pole buffers contain degree + 1 points.
@@ -349,6 +351,7 @@ BSplineResidual::BSplineResidual(const Adaptor3d_Curve& theCurve,
   {
     myPlaneCurve = &theCurve;
     myPlaneCoS   = aCoS;
+    myCaches.emplace();
     return;
   }
   if (theCurve.GetType() != GeomAbs_BSplineCurve || aCoS == nullptr
@@ -870,9 +873,12 @@ BSplineResidual::Point<Real> BSplineResidual::evaluate(size_t                   
 //=================================================================================================
 
 template <class Adaptor>
-BSplineResidual::CompensatedPoint BSplineResidual::planeCurveValue(const Adaptor& theCurve,
-                                                                   double         theParameter,
-                                                                   size_t         theDimension)
+BSplineResidual::CompensatedPoint BSplineResidual::planeCurveValue(
+  const Adaptor&                                theCurve,
+  const PolynomialCache&                        theCache,
+  NCollection_DataMap<size_t, PolynomialCache>& theSpans,
+  double                                        theParameter,
+  size_t                                        theDimension)
 {
   CompensatedPoint aPoint{};
   if (theCurve.GetType() == GeomAbs_Line)
@@ -896,13 +902,7 @@ BSplineResidual::CompensatedPoint BSplineResidual::planeCurveValue(const Adaptor
         ElCLib::InPeriod(theParameter, aCurve->FirstParameter(), aCurve->LastParameter());
     }
     const NCollection_Array1<double>* aWeights = aCurve->Weights();
-    aPoint                                     = evaluate<CompensatedReal>(
-      aCurve->Degree(),
-      aCurve->KnotSequence(),
-      aCurve->NbPoles(),
-      theParameter,
-      [&](size_t theIndex) { return pole(aCurve->Poles(), aWeights, theDimension, theIndex); },
-      aWeights == nullptr ? theDimension : 4);
+    aPoint = curveValue(*aCurve, aWeights, theCache, theSpans, theParameter, theDimension);
   }
   else
   {
@@ -946,8 +946,13 @@ bool BSplineResidual::Value(double theParameter, gp_Vec& theResidual) const
 {
   if (myPlaneCoS != nullptr)
   {
-    const CompensatedPoint aCurve    = planeCurveValue(*myPlaneCurve, theParameter, 3);
-    const CompensatedPoint aUV       = planeCurveValue(*myPlaneCoS->GetCurve(), theParameter, 2);
+    const CompensatedPoint aCurve =
+      planeCurveValue(*myPlaneCurve, myCaches->Curve, myCaches->CurveSpans, theParameter, 3);
+    const CompensatedPoint aUV = planeCurveValue(*myPlaneCoS->GetCurve(),
+                                                myCaches->PCurve,
+                                                myCaches->PCurveSpans,
+                                                theParameter,
+                                                2);
     const gp_Pln           aPlane    = myPlaneCoS->GetSurface()->Plane();
     const gp_Ax3&          aPosition = aPlane.Position();
     for (int anAxis = 1; anAxis <= 3; ++anAxis)
