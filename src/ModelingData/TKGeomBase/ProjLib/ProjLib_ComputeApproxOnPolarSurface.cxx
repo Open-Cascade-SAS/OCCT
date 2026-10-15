@@ -496,13 +496,13 @@ public:
 
     computePeriodicity(Surf, myStruct.myPeriod[0], myStruct.myPeriod[1]);
 
-    myStruct.myCurve        = C;
-    myStruct.myInitCurve2d  = InitialCurve2d;
-    myStruct.mySurf         = Surf;
-    myStruct.mySqProjOrtTol = 10000.0 * Tol3d * Tol3d;
+    myStruct.myCurve           = C;
+    myStruct.myInitCurve2d     = InitialCurve2d;
+    myStruct.mySurf            = Surf;
+    myStruct.mySqProjOrtTol    = 10000.0 * Tol3d * Tol3d;
     myStruct.mySquareTolerance = std::min(Tol3d * Tol3d, Precision::SquareConfusion());
-    myStruct.myTolU         = Surf->UResolution(Tol3d);
-    myStruct.myTolV         = Surf->VResolution(Tol3d);
+    myStruct.myTolU            = Surf->UResolution(Tol3d);
+    myStruct.myTolV            = Surf->VResolution(Tol3d);
   }
 
   ~ProjLib_PolarFunction() override = default;

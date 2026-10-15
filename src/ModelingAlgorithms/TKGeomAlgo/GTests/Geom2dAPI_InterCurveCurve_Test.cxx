@@ -71,7 +71,7 @@ TEST(Geom2dAPI_InterCurveCurve_Test, TangentRationalEndpointHasOneConnectedZone)
     {
       SCOPED_TRACE(isReversed);
       SCOPED_TRACE(isSwapped);
-      constexpr double aTolerance = 1.0e-10;
+      constexpr double                aTolerance = 1.0e-10;
       const Geom2dAPI_InterCurveCurve anIntersection(isSwapped ? aCurve2 : aCurve1,
                                                      isSwapped ? aCurve1 : aCurve2,
                                                      aTolerance);

@@ -579,7 +579,13 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                 Pos2 = IntRes2d_End;
               //-----------------------------------------------------------------
               if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
-                  || !IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf))
+                  || !IntImpParGen::DetermineTransition(Pos1,
+                                                        Tan1,
+                                                        Trans1,
+                                                        Pos2,
+                                                        Tan2,
+                                                        Trans2,
+                                                        TolConf))
               {
                 TheCurveTool::D2(C1, U, P1, Tan1, Norm1);
                 TheCurveTool::D2(C1, V, P2, Tan2, Norm2);

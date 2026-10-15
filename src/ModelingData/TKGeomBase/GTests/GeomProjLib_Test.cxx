@@ -147,7 +147,7 @@ TEST(GeomProjLibTest, PolarProjectionRefinesHintOutsideGeometricConfusion)
   const double                             aU       = 1.5 * M_PI;
   const occ::handle<Geom_BSplineSurface>   aSurface = GeomConvert::SurfaceToBSplineSurface(
     new Geom_RectangularTrimmedSurface(aSphere, aU, 2.0 * M_PI, -0.5 * M_PI, 0.5 * M_PI));
-  const occ::handle<Geom_Curve>  aCurve =
+  const occ::handle<Geom_Curve> aCurve =
     new Geom_TrimmedCurve(aSurface->UIso(aU), -0.25 * M_PI, 0.25 * M_PI);
   const occ::handle<Geom2d_Line> aHint =
     new Geom2d_Line(gp_Pnt2d(aU + Precision::Approximation(), 0.0), gp_Dir2d(0.0, 1.0));

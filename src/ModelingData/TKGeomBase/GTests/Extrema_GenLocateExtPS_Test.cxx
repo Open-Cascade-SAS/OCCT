@@ -31,8 +31,8 @@ TEST(Extrema_GenLocateExtPSTest, ClosedSplineNormalizesStartingParameter)
       new Geom_RectangularTrimmedSurface(new Geom_CylindricalSurface(gp_Ax3(), 2.0),
                                          0.0,
                                          2.0 * M_PI,
-                                        -1.0,
-                                        1.0));
+                                         -1.0,
+                                         1.0));
     aSurface->SetUNotPeriodic();
     if (isExchanged)
     {
