@@ -214,7 +214,7 @@ private:
   struct PolynomialCache
   {
     NCollection_Array2<CompensatedPoint> Coefficients; // Binomial-weighted Bernstein poles.
-    CompensatedPoint               Origin{}; // Common coordinates excluded from interpolation.
+    CompensatedPoint               Origin; // Common coordinates excluded from interpolation.
     std::array<CompensatedReal, 2> First;    // Lower knot bounds in each direction.
     std::array<CompensatedReal, 2> Last;     // Upper knot bounds in each direction.
     std::array<CompensatedReal, 2> Length;   // Exact knot differences.
@@ -299,9 +299,6 @@ private:
 
   struct Caches
   {
-    // Create empty span caches.
-    Caches() = default;
-
     PolynomialCache Curve;  // Spatial curve span.
     PolynomialCache PCurve; // Parameter curve span.
 
