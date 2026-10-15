@@ -1407,3 +1407,73 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolidArcRemovingBlindHoleFloorIsValid)
     EXPECT_NEAR(aVolume.Mass(), 19219.48, 0.01) << "copy " << aCopy;
   }
 }
+
+namespace
+{
+// A 57.5 x 40 x 27.5 block with two blind holes of diameter 1.5, 40 deep, floors at x = 11.25.
+TopoDS_Shape makeDrilledBlock()
+{
+  TopoDS_Shape aBlock = BRepPrimAPI_MakeBox(gp_Pnt(-28.75, -20.0, 0.0), 57.5, 40.0, 27.5).Shape();
+  for (const gp_Pnt& aHole : {gp_Pnt(0.0, 5.0, 16.25), gp_Pnt(0.0, 10.0, 21.25)})
+  {
+    const gp_Ax2 anAxis(gp_Pnt(-28.75, aHole.Y(), aHole.Z()), gp::DX());
+    aBlock = BRepAlgoAPI_Cut(aBlock, BRepPrimAPI_MakeCylinder(anAxis, 0.75, 40.0).Shape()).Shape();
+  }
+  return aBlock;
+}
+
+// Thickens copies of the drilled block removing the faces whose centre of mass is in theCentres.
+void checkThickSolidOfCopies(const std::vector<gp_Pnt>& theCentres, const double theVolume)
+{
+  const TopoDS_Shape aBlock = makeDrilledBlock();
+  // A fresh copy gives the shapes other addresses, so a hash order dependence shows.
+  for (int aCopy = 0; aCopy < 20; ++aCopy)
+  {
+    const TopoDS_Shape             aShape = BRepBuilderAPI_Copy(aBlock, false).Shape();
+    NCollection_List<TopoDS_Shape> aRemoved;
+    for (TopExp_Explorer anExp(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      GProp_GProps aProps;
+      BRepGProp::SurfaceProperties(anExp.Current(), aProps);
+      for (const gp_Pnt& aCentre : theCentres)
+      {
+        if (aProps.CentreOfMass().Distance(aCentre) < 1.0e-3)
+        {
+          aRemoved.Append(anExp.Current());
+          break;
+        }
+      }
+    }
+    ASSERT_EQ(aRemoved.Size(), static_cast<int>(theCentres.size()));
+    BRepOffsetAPI_MakeThickSolid aMaker;
+    aMaker.MakeThickSolidByJoin(aShape,
+                                aRemoved,
+                                -1.95,
+                                1.0e-3,
+                                BRepOffset_Skin,
+                                false,
+                                false,
+                                GeomAbs_Arc);
+    ASSERT_TRUE(aMaker.IsDone()) << "copy " << aCopy;
+    EXPECT_TRUE(BRepCheck_Analyzer(aMaker.Shape()).IsValid()) << "copy " << aCopy;
+    GProp_GProps aVolume;
+    BRepGProp::VolumeProperties(aMaker.Shape(), aVolume);
+    // The sign matters: an inside-out solid is valid and has a negative volume.
+    EXPECT_NEAR(aVolume.Mass(), theVolume, 0.01) << "copy " << aCopy;
+  }
+}
+} // namespace
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidArcRemovingTwoBlindHoleFloorsIsValid)
+{
+  // Two caps, both extended beyond their boundary by the offset faces.
+  checkThickSolidOfCopies({gp_Pnt(11.25, 5.0, 16.25), gp_Pnt(11.25, 10.0, 21.25)}, 19186.43);
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidArcRemovingBlindHoleFloorsAndTopIsOutside)
+{
+  // Caps trimmed inside their face (top) and extended beyond it (floors) in one shell.
+  checkThickSolidOfCopies(
+    {gp_Pnt(11.25, 5.0, 16.25), gp_Pnt(11.25, 10.0, 21.25), gp_Pnt(0.0, 0.0, 27.5)},
+    15413.26);
+}
