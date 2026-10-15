@@ -219,8 +219,8 @@ private:
   static CompensatedPoint planeCurveValue(const Adaptor&                                theCurve,
                                           const PolynomialCache&                        theCache,
                                           NCollection_DataMap<size_t, PolynomialCache>& theSpans,
-                                          double                                        theParameter,
-                                          size_t                                        theDimension);
+                                          double theParameter,
+                                          size_t theDimension);
 
   // Extract one span by knot insertion.
   // Pole buffers contain degree + 1 points.
@@ -948,11 +948,11 @@ bool BSplineResidual::Value(double theParameter, gp_Vec& theResidual) const
   {
     const CompensatedPoint aCurve =
       planeCurveValue(*myPlaneCurve, myCaches->Curve, myCaches->CurveSpans, theParameter, 3);
-    const CompensatedPoint aUV = planeCurveValue(*myPlaneCoS->GetCurve(),
-                                                myCaches->PCurve,
-                                                myCaches->PCurveSpans,
-                                                theParameter,
-                                                2);
+    const CompensatedPoint aUV       = planeCurveValue(*myPlaneCoS->GetCurve(),
+                                                 myCaches->PCurve,
+                                                 myCaches->PCurveSpans,
+                                                 theParameter,
+                                                 2);
     const gp_Pln           aPlane    = myPlaneCoS->GetSurface()->Plane();
     const gp_Ax3&          aPosition = aPlane.Position();
     for (int anAxis = 1; anAxis <= 3; ++anAxis)
