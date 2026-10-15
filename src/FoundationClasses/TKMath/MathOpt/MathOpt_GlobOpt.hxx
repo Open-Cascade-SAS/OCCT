@@ -328,9 +328,9 @@ VectorResult MultiStart(Function&           theFunc,
 
   // Configure Powell optimization for local refinement
   Config aPowellConfig;
-  aPowellConfig.Tolerance     = theConfig.Tolerance;
-  aPowellConfig.XTolerance    = theConfig.Tolerance;
-  aPowellConfig.FTolerance    = theConfig.Tolerance;
+  aPowellConfig.Tolerance  = theConfig.Tolerance;
+  aPowellConfig.XTolerance = theConfig.Tolerance;
+  aPowellConfig.FTolerance = theConfig.Tolerance;
   // NbStarts is positive, so division cannot exceed the uint32_t iteration budget.
   aPowellConfig.MaxIterations = static_cast<uint32_t>(theConfig.MaxIterations / theConfig.NbStarts);
   if (aPowellConfig.MaxIterations < 10)
