@@ -5161,34 +5161,33 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
   {
     anUnequal = anUnequalComplex->GetUnequallyDisposedGeometricTolerance();
   }
-  else if (const occ::handle<StepDimTol_GeoTolAndUneqDisGeoTol> aComplex =
+  else if (const occ::handle<StepDimTol_GeoTolAndUneqDisGeoTol> aPlainComplex =
              occ::down_cast<StepDimTol_GeoTolAndUneqDisGeoTol>(aTolEnt))
   {
-    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+    anUnequal = aPlainComplex->GetUnequallyDisposedGeometricTolerance();
   }
-  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol> aComplex =
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol> aModifiedComplex =
              occ::down_cast<StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol>(aTolEnt))
   {
-    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+    anUnequal = aModifiedComplex->GetUnequallyDisposedGeometricTolerance();
   }
-  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol> aComplex =
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol> aMaximumComplex =
              occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>(aTolEnt))
   {
-    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+    anUnequal = aMaximumComplex->GetUnequallyDisposedGeometricTolerance();
   }
   else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol>
-             aComplex =
+             aDatumModifiedComplex =
                occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol>(
                  aTolEnt))
   {
-    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+    anUnequal = aDatumModifiedComplex->GetUnequallyDisposedGeometricTolerance();
   }
-  else if (const occ::handle<
-             StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol> aComplex =
-             occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol>(
-               aTolEnt))
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol>
+             aDatumMaximumComplex = occ::down_cast<
+               StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol>(aTolEnt))
   {
-    anUnequal = aComplex->GetUnequallyDisposedGeometricTolerance();
+    anUnequal = aDatumMaximumComplex->GetUnequallyDisposedGeometricTolerance();
   }
   if (!anUnequal.IsNull())
   {
@@ -5341,20 +5340,21 @@ static void setGeomTolObjectToXCAF(const occ::handle<Standard_Transient>&    the
     }
   }
   occ::handle<Standard_Transient> aMaximumEntity;
-  if (const occ::handle<StepDimTol_GeometricToleranceWithMaximumTolerance> aMax =
+  if (const occ::handle<StepDimTol_GeometricToleranceWithMaximumTolerance> aMaximumTolerance =
         occ::down_cast<StepDimTol_GeometricToleranceWithMaximumTolerance>(aTolEnt))
   {
-    aMaximumEntity = aMax->MaximumUpperTolerance();
+    aMaximumEntity = aMaximumTolerance->MaximumUpperTolerance();
   }
-  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTol> aMax =
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTol> aMaximumComplex =
              occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTol>(aTolEnt))
   {
-    aMaximumEntity = aMax->GetMaxTolerance();
+    aMaximumEntity = aMaximumComplex->GetMaxTolerance();
   }
-  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol> aMax =
-             occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol>(aTolEnt))
+  else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol>
+             aDatumMaximumComplex =
+               occ::down_cast<StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol>(aTolEnt))
   {
-    aMaximumEntity = aMax->GetMaxTolerance();
+    aMaximumEntity = aDatumMaximumComplex->GetMaxTolerance();
   }
   if (const occ::handle<StepBasic_MeasureWithUnit> aMaximum = GetMeasureWithUnit(aMaximumEntity))
   {

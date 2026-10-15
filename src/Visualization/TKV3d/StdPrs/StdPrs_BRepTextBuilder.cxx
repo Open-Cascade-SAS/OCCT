@@ -25,7 +25,7 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                   
 //==================================================================================================
 
 TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                        theFont,
-                                             const NCollection_String&               theString,
+                                             const TCollection_UtfString<char>&      theString,
                                              const gp_Ax3&                           thePenLoc,
                                              const Graphic3d_HorizontalTextAlignment theHAlign,
                                              const Graphic3d_VerticalTextAlignment   theVAlign)
