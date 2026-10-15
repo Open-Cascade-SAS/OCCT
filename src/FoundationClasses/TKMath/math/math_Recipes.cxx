@@ -388,14 +388,17 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v)
   return SVD_Decompose(a, w, v, rv1);
 }
 
+#if defined(_MSC_VER) && !defined(__clang__)
+  #pragma float_control(precise, on, push)
+  #pragma float_control(except, on)
+#endif
+
 int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& rv1)
 {
 
   // Prevent divisions from moving across guards when FP traps are enabled.
 #if defined(__clang__)
   #pragma STDC FENV_ACCESS ON
-#elif defined(_MSC_VER)
-  #pragma fenv_access(on)
 #endif
 
   int    flag, i, its, j, jj, k, l = 0, nm = 0;
@@ -723,6 +726,10 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
   }
   return math_Status_OK;
 }
+
+#if defined(_MSC_VER) && !defined(__clang__)
+  #pragma float_control(pop)
+#endif
 
 void SVD_Solve(const math_Matrix& u,
                const math_Vector& w,
