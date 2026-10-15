@@ -299,6 +299,9 @@ private:
 
   struct Caches
   {
+    // Create empty span caches.
+    Caches() = default;
+
     PolynomialCache Curve;  // Spatial curve span.
     PolynomialCache PCurve; // Parameter curve span.
 
