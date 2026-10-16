@@ -54,6 +54,17 @@
 class Geom2dAdaptor_Curve;
 class Geom2dHatch_Hatcher;
 class Geom2dInt_GInter;
+class BRepAdaptor_Curve;
+
+//! Improve a chamfer corner recoil by projecting onto its local, directed edge interval.
+//! Retain the recoil and return false if the projection collapses or does not improve the
+//! connector.
+Standard_EXPORT bool ChFi3d_ChooseProjectedRecoil(const BRepAdaptor_Curve& theCurve,
+                                                  const gp_Pnt&            theAdjacentPoint,
+                                                  const gp_Pnt&            theCornerPoint,
+                                                  const double             theCornerParameter,
+                                                  const double             theRecoilParameter,
+                                                  double&                  theParameter);
 
 //! Computes hatching domains using coincident segments only when no interior domain exists.
 Standard_EXPORT bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher,

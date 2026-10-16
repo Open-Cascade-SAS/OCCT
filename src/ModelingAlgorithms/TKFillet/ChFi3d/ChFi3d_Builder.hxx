@@ -196,6 +196,9 @@ public:
   Standard_EXPORT bool PerformTwoCornerbyInter(const int Index);
 
 protected:
+  //! Detect whether a corner intersects consecutive patches of its stripe.
+  Standard_EXPORT bool MoreSurfdata(const int theIndex) const;
+
   Standard_EXPORT ChFi3d_Builder(const TopoDS_Shape& S, const double Ta);
 
   Standard_EXPORT virtual void SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const = 0;
@@ -797,8 +800,6 @@ private:
                                 const ChFiDS_CommonPoint& P2,
                                 TopoDS_Face&              Fv,
                                 const TopoDS_Face&        Favoid) const;
-
-  Standard_EXPORT bool MoreSurfdata(const int Index) const;
 
   Standard_EXPORT bool StartSol(const occ::handle<ChFiDS_Spine>&    Spine,
                                 occ::handle<BRepAdaptor_Surface>&   HS,
