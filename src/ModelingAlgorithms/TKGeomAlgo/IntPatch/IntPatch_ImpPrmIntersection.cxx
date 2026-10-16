@@ -1961,6 +1961,28 @@ void IntPatch_ImpPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
   {
     slin.Append(dslin(i));
   }
+  // The decomposition above rebuilds each piece with only its two end
+  // vertices, so the vertices placed on the implicit surface's restrictions
+  // before it (boundary crossings, seams) are lost. Put them back on the
+  // pieces: without them a piece that straddles a face boundary is classified
+  // by its midpoint alone and, if that lies outside, discarded whole --
+  // including the part that lies inside the face.
+  for (int i = 1, aNbLin = slin.Length(); i <= aNbLin; i++)
+  {
+    occ::handle<IntPatch_PointLine> aL = occ::down_cast<IntPatch_PointLine>(slin(i));
+    if (aL.IsNull() || aL->ArcType() != IntPatch_Walking)
+    {
+      continue;
+    }
+    if (!reversed)
+    {
+      IntPatch_RstInt::PutVertexOnLine(aL, Surf1, D1, Surf2, true, TolTang);
+    }
+    else
+    {
+      IntPatch_RstInt::PutVertexOnLine(aL, Surf2, D2, Surf1, false, TolTang);
+    }
+  }
 }
 
 // correct U parameter of the start point of line on Quadric
