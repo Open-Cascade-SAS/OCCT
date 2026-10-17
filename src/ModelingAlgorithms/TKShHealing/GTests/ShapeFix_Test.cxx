@@ -26,6 +26,7 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
@@ -81,7 +82,7 @@ TEST(ShapeFixTest, SameParameterPreservesSharedEdgeMessages)
         aBuilder.MakeCompound(aShape);
         for (int anOccurrence = 0; anOccurrence < aNbOccurrences; ++anOccurrence)
         {
-          aBuilder.Add(aShape, anOccurrence % 2 == 0 ? aFace : aFace.Reversed());
+          aBuilder.Add(aShape, anOccurrence % 2 == 0 ? TopoDS_Shape(aFace) : aFace.Reversed());
           aBuilder.Add(aShape, anEdgeBuilder.Edge());
         }
         if (hasMovedFace)

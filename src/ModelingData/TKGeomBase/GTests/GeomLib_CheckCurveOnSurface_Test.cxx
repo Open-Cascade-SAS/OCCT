@@ -1223,7 +1223,7 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, SurfaceResidualPreservesEndSpanExtrapolati
   const double aCoordinate = 1.0e12;
   const double aStep       = Epsilon(aCoordinate);
   aConstantPoles.Init(gp_Pnt(aCoordinate, 0.0, 0.0));
-  for (size_t aVIndex = 0; aVIndex < aConstantPoles.NbColumns(); ++aVIndex)
+  for (size_t aVIndex = 0; aVIndex < aConstantPoles.ColSize(); ++aVIndex)
   {
     aConstantPoles.ChangeAt(1, aVIndex).SetX(aCoordinate + aStep);
   }
