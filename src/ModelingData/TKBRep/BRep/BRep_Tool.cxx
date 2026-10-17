@@ -28,7 +28,6 @@
 #include <ElSLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAdaptor.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -36,7 +35,6 @@
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomProjLib.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -46,7 +44,6 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
-#include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <TopExp.hxx>
@@ -466,19 +463,13 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&            
     return nullPCurve;
   }
 
-  occ::handle<Geom_TrimmedCurve> aTrimmedCurve = new Geom_TrimmedCurve(C3D, f, l, true, false);
-
-  // Perform projection
-  occ::handle<Geom_Curve> ProjOnPlane =
+  const occ::handle<Geom_TrimmedCurve> aTrimmedCurve =
+    new Geom_TrimmedCurve(C3D, f, l, true, false);
+  const occ::handle<Geom_Curve> aProjected =
     GeomProjLib::ProjectOnPlane(aTrimmedCurve, GP, GP->Position().Direction(), true);
+  occ::handle<Geom2d_Curve> pc = GeomProjLib::Curve2d(aProjected, f, l, GP);
 
-  occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface(GP);
-  occ::handle<GeomAdaptor_Curve>   HC = new GeomAdaptor_Curve(ProjOnPlane);
-
-  ProjLib_ProjectedCurve    Proj(HS, HC);
-  occ::handle<Geom2d_Curve> pc = Geom2dAdaptor::MakeCurve(Proj);
-
-  if (pc->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
+  if (!pc.IsNull() && pc->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
     occ::handle<Geom2d_TrimmedCurve> TC = occ::down_cast<Geom2d_TrimmedCurve>(pc);
     pc                                  = TC->BasisCurve();

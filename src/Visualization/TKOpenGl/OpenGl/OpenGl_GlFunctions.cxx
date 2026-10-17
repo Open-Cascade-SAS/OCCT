@@ -2999,8 +2999,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
   {
     // Intel driver exports only ARB-suffixed functions in a violation to OpenGL 4.5 specs
     hasGetnTexImage =
-      checkExtensionShort("GL_ARB_robustness")
-      && theCtx.FindProc("glGetnCompressedTexImageARB", this->glGetnCompressedTexImage)
+      theCtx.FindProc("glGetnCompressedTexImageARB", this->glGetnCompressedTexImage)
       && theCtx.FindProc("glGetnTexImageARB", this->glGetnTexImage)
       && theCtx.FindProc("glGetnUniformdvARB", this->glGetnUniformdv);
     has45 = hasGetnTexImage;
@@ -3032,8 +3031,7 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
   {
     // Intel driver exports only ARB-suffixed functions in a violation to OpenGL 4.6 specs
     hasIndParams =
-      checkExtensionShort("GL_ARB_indirect_parameters")
-      && theCtx.FindProc("glMultiDrawArraysIndirectCountARB", this->glMultiDrawArraysIndirectCount)
+      theCtx.FindProc("glMultiDrawArraysIndirectCountARB", this->glMultiDrawArraysIndirectCount)
       && theCtx.FindProc("glMultiDrawElementsIndirectCountARB",
                          this->glMultiDrawElementsIndirectCount);
     has46 = hasIndParams;

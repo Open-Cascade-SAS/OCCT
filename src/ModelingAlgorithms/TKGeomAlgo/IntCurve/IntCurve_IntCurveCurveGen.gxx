@@ -25,6 +25,89 @@
 #include <Precision.hxx>
 
 #include <NCollection_Array1.hxx>
+#include <Adaptor2d_Curve2d.hxx>
+#include <Bnd_Box2d.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <gp_Pnt2d.hxx>
+
+#include <algorithm>
+#include <optional>
+#include <type_traits>
+#include <utility>
+
+namespace
+{
+// Minimum parameter length for a composite intersection domain.
+constexpr double THE_COMPOSITE_MIN_RANGE = 1.e-10;
+
+//==================================================================================================
+
+template <class Curve>
+std::optional<NCollection_Array1<Bnd_Box2d>> splineIntervalBounds(
+  const Curve&                      theCurve,
+  const IntRes2d_Domain&            theDomain,
+  const NCollection_Array1<double>& theIntervals,
+  double                            theTolerance)
+{
+  if constexpr (std::is_base_of_v<Adaptor2d_Curve2d, Curve>)
+  {
+    if (theCurve.GetType() != GeomAbs_BSplineCurve || !theDomain.HasFirstPoint()
+        || !theDomain.HasLastPoint())
+    {
+      return std::nullopt;
+    }
+    const occ::handle<Geom2d_BSplineCurve> aCurve = theCurve.BSpline();
+    if (aCurve->IsPeriodic()
+        || !(theDomain.FirstParameter() >= aCurve->FirstParameter()
+             && theDomain.LastParameter() <= aCurve->LastParameter()))
+    {
+      return std::nullopt;
+    }
+    const NCollection_Array1<double>&   aKnots  = aCurve->KnotSequence();
+    const NCollection_Array1<gp_Pnt2d>& aPoles  = aCurve->Poles();
+    const int                           aDegree = aCurve->Degree();
+    const double                        aTolerance =
+      std::max({theTolerance, theDomain.FirstTolerance(), theDomain.LastTolerance()});
+    NCollection_Array1<Bnd_Box2d> aBounds(1, theIntervals.Length() - 1);
+    const bool                    isComposite = aBounds.Size() > 1;
+    for (size_t i = 0; i < aBounds.Size(); ++i)
+    {
+      const double aFirst = isComposite ? std::max(theIntervals.At(i), theDomain.FirstParameter())
+                                        : theDomain.FirstParameter();
+      const double aLast = isComposite ? std::min(theIntervals.At(i + 1), theDomain.LastParameter())
+                                       : theDomain.LastParameter();
+      if (aLast - aFirst <= THE_COMPOSITE_MIN_RANGE)
+      {
+        continue;
+      }
+      const int aFirstSpan = std::clamp(
+        static_cast<int>(std::upper_bound(aKnots.cbegin(), aKnots.cend(), aFirst) - aKnots.cbegin())
+          - 1,
+        aDegree,
+        aCurve->NbPoles() - 1);
+      const int aLastSpan = std::clamp(
+        static_cast<int>(std::lower_bound(aKnots.cbegin(), aKnots.cend(), aLast) - aKnots.cbegin())
+          - 1,
+        aDegree,
+        aCurve->NbPoles() - 1);
+      Bnd_Box2d& aBox = aBounds.ChangeAt(i);
+      // Positive spline weights keep each span inside its active control poles.
+      for (int aPole = aFirstSpan - aDegree; aPole <= aLastSpan; ++aPole)
+      {
+        aBox.Add(aPoles.At(static_cast<size_t>(aPole)));
+      }
+      aBox.Enlarge(aTolerance);
+    }
+    if (!std::all_of(aBounds.cbegin(), aBounds.cend(), [](const Bnd_Box2d& theBox) {
+          return theBox.IsVoid();
+        }))
+    {
+      return std::make_optional(std::move(aBounds));
+    }
+  }
+  return std::nullopt;
+}
+} // namespace
 
 void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C, const double TolConf, const double Tol)
 {
@@ -215,6 +298,36 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve&        C1,
     NCollection_Array1<double> Tab2(1, nbi2 + 1);
     TheCurveTool::Intervals(C1, Tab1);
     TheCurveTool::Intervals(C2, Tab2);
+    const std::optional<NCollection_Array1<Bnd_Box2d>> aBounds1 =
+      splineIntervalBounds(C1, D1, Tab1, std::max(TolConf, Tol));
+    const std::optional<NCollection_Array1<Bnd_Box2d>> aBounds2 =
+      aBounds1 ? splineIntervalBounds(C2, D2, Tab2, std::max(TolConf, Tol)) : std::nullopt;
+    if (aBounds2)
+    {
+      done = true;
+      for (int j = 1; j <= nbi2; ++j)
+      {
+        for (int i = 1; i <= nbi1; ++i)
+        {
+          if (!aBounds1->Value(i).IsOut(aBounds2->Value(j)))
+          {
+            InternalCompositePerform_noRecurs(nbi2,
+                                              C2,
+                                              j,
+                                              Tab2,
+                                              D2,
+                                              nbi1,
+                                              C1,
+                                              i,
+                                              Tab1,
+                                              D1,
+                                              TolConf,
+                                              Tol);
+          }
+        }
+      }
+      return;
+    }
     InternalCompositePerform(C1, D1, 1, nbi1, Tab1, C2, D2, 1, nbi2, Tab2, TolConf, Tol, true);
     return;
   }
@@ -864,7 +977,7 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(
       ParamSup = u;
     }
 
-    if ((ParamSup - ParamInf) > 1e-10)
+    if ((ParamSup - ParamInf) > THE_COMPOSITE_MIN_RANGE)
     {
       DomainC1NumInter.SetValues(TheCurveTool::Value(C1, ParamInf),
                                  ParamInf,
@@ -907,7 +1020,7 @@ void IntCurve_IntCurveCurveGen::InternalCompositePerform_noRecurs(
       ParamSup = u;
     }
 
-    if ((ParamSup - ParamInf) > 1e-10)
+    if ((ParamSup - ParamInf) > THE_COMPOSITE_MIN_RANGE)
     {
       DomainC2NumInter.SetValues(TheCurveTool::Value(C2, ParamInf),
                                  ParamInf,

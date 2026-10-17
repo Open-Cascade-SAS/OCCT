@@ -374,7 +374,7 @@ private:
   //! Rebuilds B-spline cache
   //! \param theU first parameter to identify the span for caching
   //! \param theV second parameter to identify the span for caching
-  Standard_EXPORT void RebuildCache(const double theU, const double theV) const;
+  void RebuildCache(const double theU, const double theV) const;
 
 protected:
   occ::handle<Geom_Surface> mySurface;

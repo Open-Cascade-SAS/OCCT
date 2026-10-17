@@ -25,6 +25,7 @@
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <LProp_CIType.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 
 #include <cmath>
@@ -80,6 +81,54 @@ TEST(GeomLProp_CurAndInf2dKnotTest, CurvatureMaximumAtC2Knot)
           }
         }
         EXPECT_EQ(aNbKnotExtrema, 1);
+      }
+    }
+  }
+}
+
+TEST(GeomLProp_CurAndInf2dParameterTest, InflectionsWithAffineParameters)
+{
+  for (const double aScale : {1.0, 1000.0})
+  {
+    NCollection_Array1<gp_Pnt2d> aPoles(1, 5);
+    aPoles.ChangeAt(0) = gp_Pnt2d(-aScale, 0.0);
+    aPoles.ChangeAt(1) = gp_Pnt2d(-2.0 * aScale / 3.0, aScale / 3.0);
+    aPoles.ChangeAt(2) = gp_Pnt2d(0.0, -aScale / 3.0);
+    aPoles.ChangeAt(3) = gp_Pnt2d(2.0 * aScale / 3.0, aScale / 3.0);
+    aPoles.ChangeAt(4) = gp_Pnt2d(aScale, 0.0);
+    NCollection_Array1<int> aMultiplicities(1, 3);
+    aMultiplicities.ChangeAt(0) = 4;
+    aMultiplicities.ChangeAt(1) = 1;
+    aMultiplicities.ChangeAt(2) = 4;
+    for (const double anOrigin : {0.0, 2000000.0})
+    {
+      for (const double aSpan : {1.0, 200.0})
+      {
+        NCollection_Array1<double> aKnots(1, 3);
+        aKnots.ChangeAt(0) = anOrigin - aSpan;
+        aKnots.ChangeAt(1) = anOrigin;
+        aKnots.ChangeAt(2) = anOrigin + aSpan;
+        occ::handle<Geom2d_BSplineCurve> aCurve =
+          new Geom2d_BSplineCurve(aPoles, aKnots, aMultiplicities, 3);
+        for (const bool isReversed : {false, true})
+        {
+          SCOPED_TRACE(::testing::Message()
+                       << aScale << "," << anOrigin << "," << aSpan << "," << isReversed);
+          if (isReversed)
+          {
+            aCurve->Reverse();
+          }
+          GeomLProp_CurAndInf2d anAnalyzer;
+          anAnalyzer.PerformInf(aCurve);
+          ASSERT_TRUE(anAnalyzer.IsDone());
+          ASSERT_EQ(anAnalyzer.NbPoints(), 2);
+          EXPECT_NEAR((anAnalyzer.Parameter(1) - anOrigin) / aSpan,
+                      -1.0 / 3.0,
+                      Precision::Confusion());
+          EXPECT_NEAR((anAnalyzer.Parameter(2) - anOrigin) / aSpan,
+                      1.0 / 3.0,
+                      Precision::Confusion());
+        }
       }
     }
   }

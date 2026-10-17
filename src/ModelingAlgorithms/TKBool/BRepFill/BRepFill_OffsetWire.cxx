@@ -1485,7 +1485,7 @@ void BRepFill_OffsetWire::MakeWires()
     End     = false;
     MVE.ChangeFromKey(CV).RemoveFirst();
 
-    if (myIsOpenResult && MVE.FindFromKey(CV).IsEmpty())
+    if (MVE.FindFromKey(CV).IsEmpty())
     {
       MVE.RemoveKey(CV);
     }
@@ -1540,7 +1540,7 @@ void BRepFill_OffsetWire::MakeWires()
           CE = TopoDS::Edge(MVE.FindFromKey(CV).First());
           MVE.ChangeFromKey(CV).RemoveFirst();
         }
-        else if (myIsOpenResult)
+        else
         { // CV was a vertex with one edge
           End = true;
         }

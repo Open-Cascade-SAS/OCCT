@@ -73,13 +73,6 @@ bool ShapeFix::SameParameter(const TopoDS_Shape&                                
                              const Message_ProgressRange&                        theProgress,
                              const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg)
 {
-  // Calculate number of edges
-  int aNbEdges = 0;
-  for (TopExp_Explorer anEdgeExp(shape, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
-  {
-    ++aNbEdges;
-  }
-
   // Calculate number of faces
   int aNbFaces = 0;
   for (TopExp_Explorer anEdgeExp(shape, TopAbs_FACE); anEdgeExp.More(); anEdgeExp.Next())
@@ -89,7 +82,8 @@ bool ShapeFix::SameParameter(const TopoDS_Shape&                                
 
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     aMapEF;
-  TopExp::MapShapesAndAncestors(shape, TopAbs_EDGE, TopAbs_FACE, aMapEF);
+  TopExp::MapShapesAndUniqueAncestors(shape, TopAbs_EDGE, TopAbs_FACE, aMapEF);
+  const int aNbEdges = aMapEF.Extent();
 
   BRep_Builder B;
 #ifdef OCCT_DEBUG
@@ -99,7 +93,6 @@ bool ShapeFix::SameParameter(const TopoDS_Shape&                                
   double                     tol    = preci;
   bool                       iatol  = (tol > 0);
   occ::handle<ShapeFix_Edge> sfe    = new ShapeFix_Edge;
-  TopExp_Explorer            ex(shape, TopAbs_EDGE);
   Message_Msg                doneMsg("FixEdge.SameParameter.MSG0");
 
   // Start progress scope (no need to check if progress exists -- it is safe)
@@ -109,73 +102,61 @@ bool ShapeFix::SameParameter(const TopoDS_Shape&                                
     // Start progress scope (no need to check if progress exists -- it is safe)
     Message_ProgressScope aPS(aPSForSameParam.Next(), "Fixing edge", aNbEdges);
 
-    while (ex.More())
+    for (int anEdgeIndex = 1; anEdgeIndex <= aNbEdges; ++anEdgeIndex)
     {
-      TopoDS_Edge E;
-      while (ex.More() && aPS.More())
-      {
-#ifdef OCCT_DEBUG
-        numedge++;
-#endif
-        int             ierr = 0;
-        TopLoc_Location loc;
-        E = TopoDS::Edge(ex.Current());
-        ex.Next();
-
-        if (!iatol)
-        {
-          tol = BRep_Tool::Tolerance(E);
-        }
-        if (enforce)
-        {
-          B.SameRange(E, false);
-          B.SameParameter(E, false);
-        }
-
-        NCollection_List<TopoDS_Shape> aListOfFaces;
-        aMapEF.FindFromKey(E, aListOfFaces);
-        if (aListOfFaces.Extent() != 0)
-        {
-          NCollection_List<TopoDS_Shape>::Iterator aListOfFacesIt(aListOfFaces);
-          for (; aListOfFacesIt.More(); aListOfFacesIt.Next())
-          {
-            TopoDS_Face aF = TopoDS::Face(aListOfFacesIt.Value());
-            sfe->FixSameParameter(E, aF);
-          }
-        }
-        else
-        {
-          sfe->FixSameParameter(E); // K2-SEP97
-        }
-
-        if (!BRep_Tool::SameParameter(E))
-        {
-          ierr = 1;
-#ifdef OCCT_DEBUG
-          nbfail++;
-#endif
-        }
-
-        if (ierr)
-        {
-          status = false;
-          B.SameRange(E, false);
-          B.SameParameter(E, false);
-        }
-        else if (!theMsgReg.IsNull() && !sfe->Status(ShapeExtend_OK))
-        {
-          theMsgReg->Send(E, doneMsg, Message_Warning);
-        }
-
-        // Complete step in current progress scope
-        aPS.Next();
-      } // -- end while
-
-      // Halt algorithm in case of user's abort
       if (!aPS.More())
       {
         return false;
       }
+#ifdef OCCT_DEBUG
+      numedge++;
+#endif
+      const TopoDS_Edge& E = TopoDS::Edge(aMapEF.FindKey(anEdgeIndex));
+
+      if (!iatol)
+      {
+        tol = BRep_Tool::Tolerance(E);
+      }
+      if (enforce)
+      {
+        B.SameRange(E, false);
+        B.SameParameter(E, false);
+      }
+
+      const NCollection_List<TopoDS_Shape>& aListOfFaces = aMapEF.FindFromIndex(anEdgeIndex);
+      if (aListOfFaces.Extent() != 0)
+      {
+        for (const TopoDS_Shape& aFaceShape : aListOfFaces)
+        {
+          const TopoDS_Face& aF = TopoDS::Face(aFaceShape);
+          sfe->FixSameParameter(E, aF);
+        }
+      }
+      else
+      {
+        sfe->FixSameParameter(E); // K2-SEP97
+      }
+
+      if (!BRep_Tool::SameParameter(E))
+      {
+#ifdef OCCT_DEBUG
+        nbfail++;
+#endif
+        status = false;
+        B.SameRange(E, false);
+        B.SameParameter(E, false);
+      }
+      else if (!theMsgReg.IsNull() && !sfe->Status(ShapeExtend_OK))
+      {
+        theMsgReg->Send(E, doneMsg, Message_Warning);
+      }
+
+      // Complete step in current progress scope
+      aPS.Next();
+    }
+    if (!aPS.More())
+    {
+      return false;
     }
   }
 
