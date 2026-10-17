@@ -148,20 +148,42 @@ TEST(ShapeAnalysis_EdgeTest, SameParameterDeviationBetweenControlPoints)
 
 TEST(ShapeAnalysis_EdgeTest, SameParameterRepairPreservesToleranceStatus)
 {
-  constexpr double              aDeviation = 0.01;
-  TopoDS_Edge                   anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
-  const occ::handle<Geom_Plane> aSurface = new Geom_Plane(gp_Pln(gp::XOY()));
-  const occ::handle<Geom2d_Curve> aPCurve =
-    new Geom2d_Line(gp_Pnt2d(0, aDeviation), gp_Dir2d(1, 0));
-  BRep_Builder aBuilder;
-  aBuilder.UpdateEdge(anEdge, aPCurve, aSurface, TopLoc_Location(), Precision::Confusion());
-  aBuilder.Range(anEdge, aSurface, TopLoc_Location(), 0.0, 1.0);
-  aBuilder.SameRange(anEdge, true);
-  aBuilder.SameParameter(anEdge, true);
+  const double                  aDeviation = 10.0 * Precision::Confusion();
+  const occ::handle<Geom_Plane> aSurface   = new Geom_Plane(gp_Pln(gp::XOY()));
+  auto aCheckRepair = [&](const occ::handle<Geom2d_Curve>& thePCurve, const double theDeviation) {
+    for (const bool isSameParameter : {false, true})
+    {
+      SCOPED_TRACE(isSameParameter);
+      TopoDS_Edge  anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+      BRep_Builder aBuilder;
+      aBuilder.UpdateEdge(anEdge, thePCurve, aSurface, TopLoc_Location(), Precision::Confusion());
+      aBuilder.Range(anEdge, aSurface, TopLoc_Location(), 0.0, 1.0);
+      aBuilder.SameRange(anEdge, true);
+      aBuilder.SameParameter(anEdge, isSameParameter);
 
-  ShapeFix_Edge aFixer;
-  EXPECT_TRUE(aFixer.FixSameParameter(anEdge));
-  EXPECT_TRUE(aFixer.Status(ShapeExtend_DONE1));
-  EXPECT_GE(BRep_Tool::Tolerance(anEdge), aDeviation);
-  EXPECT_NEAR(BRep_Tool::Tolerance(anEdge), aDeviation, aDeviation * 2.e-5);
+      ShapeFix_Edge aFixer;
+      EXPECT_TRUE(aFixer.FixSameParameter(anEdge));
+      EXPECT_FALSE(aFixer.Status(ShapeExtend_FAIL));
+      EXPECT_TRUE(aFixer.Status(ShapeExtend_DONE1));
+      EXPECT_TRUE(BRep_Tool::SameParameter(anEdge));
+      EXPECT_GE(BRep_Tool::Tolerance(anEdge), theDeviation);
+      EXPECT_NEAR(BRep_Tool::Tolerance(anEdge), theDeviation, theDeviation * 2.e-5);
+    }
+  };
+  aCheckRepair(new Geom2d_Line(gp_Pnt2d(0, 0.01), gp_Dir2d(1, 0)), 0.01);
+
+  const double                     aKnotValues[] = {0.0, 1.0};
+  const int                        aMultValues[] = {3, 3};
+  const NCollection_Array1<double> aKnots(aKnotValues[0], 1, 2);
+  const NCollection_Array1<int>    aMults(aMultValues[0], 1, 2);
+  NCollection_Array1<gp_Pnt2d>     aPoles(1, 3);
+  for (const double aPeak : {1.0 / 128.0, 0.5, 1.0 - 1.0 / 128.0})
+  {
+    SCOPED_TRACE(aPeak);
+    // The quadratic deviation reaches its maximum at aPeak.
+    aPoles.ChangeAt(0) = gp_Pnt2d(0.0, aDeviation * (1.0 - aPeak * aPeak));
+    aPoles.ChangeAt(1) = gp_Pnt2d(0.5, aDeviation * (1.0 - aPeak * aPeak + aPeak));
+    aPoles.ChangeAt(2) = gp_Pnt2d(1.0, aDeviation * (1.0 - (1.0 - aPeak) * (1.0 - aPeak)));
+    aCheckRepair(new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2), aDeviation);
+  }
 }

@@ -16,6 +16,10 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GeomProjLib.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Parabola.hxx>
 #include <Geom_Plane.hxx>
@@ -32,6 +36,7 @@
 #include <gp_Ax3.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
@@ -169,4 +174,98 @@ TEST(GeomProjLibTest, PolarProjectionRefinesHintOutsideGeometricConfusion)
   EXPECT_NEAR(aFinalUV.X(), aU, Precision::PConfusion());
   EXPECT_LT(aSurface->EvalD0(aFinalUV.X(), aFinalUV.Y()).Distance(aPoint),
             aSurface->EvalD0(anInitialUV.X(), anInitialUV.Y()).Distance(aPoint));
+}
+
+TEST(GeomProjLibTest, OffsetProjectionPreservesDistanceAndTrim)
+{
+  const gp_Pnt aLocation(10.0, 20.0, 30.0);
+  for (const bool isIndirect : {false, true})
+  {
+    gp_Ax3 anAxes(aLocation, gp_Dir(0.0, 0.0, 1.0));
+    if (isIndirect)
+    {
+      anAxes.YReverse();
+    }
+    const occ::handle<Geom_Plane> aPlane = new Geom_Plane(anAxes);
+    for (const bool isBSpline : {false, true})
+    {
+      for (const bool isRational : {false, true})
+      {
+        for (const bool isPlanar : {false, true})
+        {
+          NCollection_Array1<gp_Pnt> aPoles(1, 4);
+          aPoles.ChangeAt(0) = gp_Pnt(10.0, 20.0, 30.0);
+          aPoles.ChangeAt(1) = gp_Pnt(11.0, 22.0, isPlanar ? 30.0 : 31.0);
+          aPoles.ChangeAt(2) = gp_Pnt(12.0, 22.0, isPlanar ? 30.0 : 29.0);
+          aPoles.ChangeAt(3) = gp_Pnt(13.0, 20.0, 30.0);
+          NCollection_Array1<double> aWeights(1, 4);
+          aWeights.ChangeAt(0) = 1.0;
+          aWeights.ChangeAt(1) = 2.0;
+          aWeights.ChangeAt(2) = 2.0;
+          aWeights.ChangeAt(3) = 1.0;
+          const occ::handle<Geom_BezierCurve> aBezier =
+            isRational ? new Geom_BezierCurve(aPoles, aWeights) : new Geom_BezierCurve(aPoles);
+          const occ::handle<Geom_Curve> aBasis = isBSpline
+                                                   ? GeomConvert::CurveToBSplineCurve(aBezier)
+                                                   : occ::handle<Geom_Curve>(aBezier);
+          for (const double aDirection : {-1.0, 1.0})
+          {
+            for (const double anOffset : {-0.2, 0.2})
+            {
+              for (const bool isTrimmed : {false, true})
+              {
+                SCOPED_TRACE(isIndirect);
+                SCOPED_TRACE(isBSpline);
+                SCOPED_TRACE(isRational);
+                SCOPED_TRACE(isPlanar);
+                SCOPED_TRACE(aDirection);
+                SCOPED_TRACE(anOffset);
+                SCOPED_TRACE(isTrimmed);
+                const occ::handle<Geom_Curve> anOffsetCurve =
+                  new Geom_OffsetCurve(aBasis, anOffset, gp_Dir(0.0, 0.0, aDirection));
+                const occ::handle<Geom_Curve> aCurve =
+                  isTrimmed ? new Geom_TrimmedCurve(anOffsetCurve, 0.1, 0.9) : anOffsetCurve;
+                const occ::handle<Geom2d_Curve> aResult =
+                  GeomProjLib::Curve2d(aCurve, 0.2, 0.8, aPlane);
+                ASSERT_FALSE(aResult.IsNull());
+                const occ::handle<Geom_Curve> aResult3d =
+                  GeomProjLib::ProjectOnPlane(aCurve, aPlane, gp_Dir(0.0, 0.0, 1.0), true);
+                ASSERT_FALSE(aResult3d.IsNull());
+                if (isTrimmed)
+                {
+                  EXPECT_DOUBLE_EQ(aResult->FirstParameter(), aCurve->FirstParameter());
+                  EXPECT_DOUBLE_EQ(aResult->LastParameter(), aCurve->LastParameter());
+                }
+                const GeomAdaptor_Curve   aReference(aCurve);
+                const Geom2dAdaptor_Curve aProjected(aResult);
+                constexpr int             aNbSamples = 32;
+                for (int anIndex = 0; anIndex <= aNbSamples; ++anIndex)
+                {
+                  const double aParameter     = 0.2 + 0.6 * double(anIndex) / aNbSamples;
+                  const auto [aPoint, aD1]    = aReference.EvalD1(aParameter);
+                  const auto [aPoint2d, aD1d] = aProjected.EvalD1(aParameter);
+                  const gp_Vec aPosition(aLocation, aPoint);
+                  const gp_Pnt aPlanarPoint(aPoint.X(), aPoint.Y(), aLocation.Z());
+                  EXPECT_LE(aResult3d->EvalD0(aParameter).Distance(aPlanarPoint),
+                            Precision::PConfusion());
+                  EXPECT_NEAR(aPoint2d.X(),
+                              aPosition.Dot(gp_Vec(anAxes.XDirection())),
+                              Precision::PConfusion());
+                  EXPECT_NEAR(aPoint2d.Y(),
+                              aPosition.Dot(gp_Vec(anAxes.YDirection())),
+                              Precision::PConfusion());
+                  EXPECT_NEAR(aD1d.X(),
+                              aD1.Dot(gp_Vec(anAxes.XDirection())),
+                              Precision::PConfusion());
+                  EXPECT_NEAR(aD1d.Y(),
+                              aD1.Dot(gp_Vec(anAxes.YDirection())),
+                              Precision::PConfusion());
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -16,21 +16,23 @@
 #define _GeomLProp_FuncCurNul2d_HeaderFile
 
 #include <Geom2d_Curve.hxx>
+#include <gp.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 #include <math_FunctionWithDerivative.hxx>
 
 //! Function used to find the inflection points of a 2D curve.
-//! Computes the normalized curvature function:
-//!   F = (V1 ^ V2).Z / (||V1|| * ||V2||)
-//! where V1 is the tangent and V2 is the second derivative.
+//! Computes the tangent angle derivative in the normalized parameter interval.
 //! The roots of F correspond to inflection points.
 class GeomLProp_FuncCurNul2d : public math_FunctionWithDerivative
 {
 public:
   //! Initializes the function with the curve to analyze.
-  //! @param theCurve [in] the 2D curve
-  GeomLProp_FuncCurNul2d(const occ::handle<Geom2d_Curve>& theCurve)
-      : myCurve(theCurve)
+  //! @param[in] theCurve the 2D curve
+  //! @param[in] theParameterSpan length of the analyzed parameter interval
+  GeomLProp_FuncCurNul2d(const occ::handle<Geom2d_Curve>& theCurve, double theParameterSpan)
+      : myCurve(theCurve),
+        myParameterSpan(theParameterSpan)
   {
   }
 
@@ -55,49 +57,31 @@ public:
   }
 
   //! Computes both function value and its derivative at parameter theU.
-  //! The derivative is computed analytically from:
-  //!   F  = (V1 ^ V2) / (||V1|| * ||V2||)
-  //!   F' = ((V1 ^ V3) - F*(V1.V2/||V1||^2) - F*(V2.V3/||V2||^2)) / (||V1||*||V2||)
+  //! The function remains continuous when the second derivative is zero.
   //! @param theU [in] the curve parameter
   //! @param theF [out] the function value
   //! @param theD [out] the derivative value
-  //! @return false if the derivative magnitudes are degenerate
+  //! @return false if the tangent is degenerate
   bool Values(const double theU, double& theF, double& theD) override
   {
-    gp_Pnt2d aPnt;
-    gp_Vec2d aDeriv1, aDeriv2, aDeriv3;
-    myCurve->D3(theU, aPnt, aDeriv1, aDeriv2, aDeriv3);
-    const double aCross12 = aDeriv1.Crossed(aDeriv2);
-    const double aCross13 = aDeriv1.Crossed(aDeriv3);
-    const double aDot12   = aDeriv1.Dot(aDeriv2);
-    const double aDot23   = aDeriv2.Dot(aDeriv3);
-    const double aNorm1   = aDeriv1.Magnitude();
-    const double aNorm2   = aDeriv2.Magnitude();
-
-    theF = 0.0;
-    theD = 0.0;
-
-    if (aNorm2 < 1.e-4)
-    {
-      return true;
-    }
-    else if (aNorm1 * aNorm2 < gp::Resolution())
+    const auto [aPnt, aDeriv1, aDeriv2, aDeriv3] = myCurve->EvalD3(theU);
+    const double aSpeed                          = aDeriv1.Magnitude();
+    if (aSpeed <= gp::Resolution())
     {
       return false;
     }
-    else
-    {
-      const double aNormProd = aNorm1 * aNorm2;
-      theF                   = aCross12 / aNormProd;
-      theD =
-        (aCross13 - aCross12 * aDot12 / (aNorm1 * aNorm1) - aCross12 * aDot23 / (aNorm2 * aNorm2))
-        / aNormProd;
-    }
+    const gp_Vec2d aTangent = aDeriv1 / aSpeed;
+    const gp_Vec2d aD2      = aDeriv2 / aSpeed;
+    const gp_Vec2d aD3      = aDeriv3 / aSpeed;
+    const double   aTurn    = aTangent.Crossed(aD2);
+    theF                    = myParameterSpan * aTurn;
+    theD = myParameterSpan * (aTangent.Crossed(aD3) - 2.0 * aTurn * aTangent.Dot(aD2));
     return true;
   }
 
 private:
-  occ::handle<Geom2d_Curve> myCurve; //!< The analyzed curve.
+  occ::handle<Geom2d_Curve> myCurve;         //!< The analyzed curve.
+  double                    myParameterSpan; //!< Length used to normalize the curve parameter.
 };
 
 #endif // _GeomLProp_FuncCurNul2d_HeaderFile

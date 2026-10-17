@@ -20,10 +20,13 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_Line.hxx>
+#include <gp_Dir.hxx>
 #include <Geom_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -260,4 +263,25 @@ TEST(BRep_Tool_Test, CurveOnPlane_RejectsEqualPeriodicRange)
   EXPECT_TRUE(aPCurve.IsNull());
   EXPECT_DOUBLE_EQ(aFirst, 0.0);
   EXPECT_DOUBLE_EQ(aLast, 0.0);
+}
+
+TEST(BRep_Tool_Test, CurveOnPlane_PreservesParametersForInclinedLine)
+{
+  const occ::handle<Geom_Line> aCurve = new Geom_Line(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(1.0, 2.0, 3.0));
+  BRepBuilderAPI_MakeEdge      anEdgeMaker(aCurve, -2.0, 3.0);
+  ASSERT_TRUE(anEdgeMaker.IsDone());
+  const occ::handle<Geom_Plane>   aPlane = new Geom_Plane(gp::XOY());
+  double                          aFirst = 0.0, aLast = 0.0;
+  const occ::handle<Geom2d_Curve> aPCurve =
+    BRep_Tool::CurveOnPlane(anEdgeMaker.Edge(), aPlane, TopLoc_Location(), aFirst, aLast);
+  ASSERT_FALSE(aPCurve.IsNull());
+  EXPECT_DOUBLE_EQ(aFirst, -2.0);
+  EXPECT_DOUBLE_EQ(aLast, 3.0);
+  for (const double aParameter : {-2.0, 0.0, 3.0})
+  {
+    const gp_Pnt   aPoint = aCurve->EvalD0(aParameter);
+    const gp_Pnt2d aUV    = aPCurve->EvalD0(aParameter);
+    EXPECT_NEAR(aUV.X(), aPoint.X(), Precision::PConfusion());
+    EXPECT_NEAR(aUV.Y(), aPoint.Y(), Precision::PConfusion());
+  }
 }

@@ -32,6 +32,7 @@ struct BSplCLib_CacheParams
   const int SpanIndexMax; ///< maximal index of span
 
   double SpanStart;  ///< parameter for the frst point of the span
+  double SpanEnd;    ///< parameter for the last point of the span
   double SpanLength; ///< length of the span
   int    SpanIndex;  ///< index of the span
 
@@ -49,6 +50,7 @@ struct BSplCLib_CacheParams
         SpanIndexMin(theFlatKnots.Lower() + theDegree),
         SpanIndexMax(theFlatKnots.Upper() - theDegree - 1),
         SpanStart(0.0),
+        SpanEnd(0.0),
         SpanLength(0.0),
         SpanIndex(0)
   {
@@ -80,9 +82,8 @@ struct BSplCLib_CacheParams
   bool IsCacheValid(double theParameter) const noexcept
   {
     const double aNewParam = PeriodicNormalization(theParameter);
-    const double aDelta    = aNewParam - SpanStart;
-    if ((aDelta < 0.0 && SpanIndex != SpanIndexMin)
-        || (aDelta >= SpanLength && SpanIndex != SpanIndexMax))
+    if ((aNewParam < SpanStart && SpanIndex != SpanIndexMin)
+        || (aNewParam >= SpanEnd && SpanIndex != SpanIndexMax))
     {
       return false;
     }
@@ -104,7 +105,8 @@ struct BSplCLib_CacheParams
                               SpanIndex,
                               theParameter);
     SpanStart  = theFlatKnots.Value(SpanIndex);
-    SpanLength = theFlatKnots.Value(SpanIndex + 1) - SpanStart;
+    SpanEnd    = theFlatKnots.Value(SpanIndex + 1);
+    SpanLength = SpanEnd - SpanStart;
   }
 
   // copying is prohibited

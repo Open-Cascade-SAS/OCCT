@@ -26,13 +26,13 @@ namespace
 {
 //==================================================================================================
 
-// Keep common coordinates outside interpolation and derivative differences.
+// Find a common coordinate origin whose subtraction preserves every pole.
 // The positive pole count and dimension bound the zero-based mutable accessor and origin.
 template <class Real, class PoleAccessor>
-void translateControlPolygon(const size_t        theNbPoles,
-                             const size_t        theDimension,
-                             const PoleAccessor& thePole,
-                             Real*               theOrigin)
+void controlPolygonOrigin(const size_t        theNbPoles,
+                          const size_t        theDimension,
+                          const PoleAccessor& thePole,
+                          Real*               theOrigin)
 {
   for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
   {
@@ -52,6 +52,22 @@ void translateControlPolygon(const size_t        theNbPoles,
       }
     }
     theOrigin[aCoordinate] = anOffset;
+  }
+}
+
+//==================================================================================================
+
+// Subtract the common coordinate origin from the control polygon.
+template <class Real, class PoleAccessor>
+void translateControlPolygon(const size_t        theNbPoles,
+                             const size_t        theDimension,
+                             const PoleAccessor& thePole,
+                             Real*               theOrigin)
+{
+  controlPolygonOrigin(theNbPoles, theDimension, thePole, theOrigin);
+  for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+  {
+    const Real anOffset = theOrigin[aCoordinate];
     if (static_cast<double>(anOffset) != 0.0)
     {
       for (size_t aPole = 0; aPole < theNbPoles; ++aPole)

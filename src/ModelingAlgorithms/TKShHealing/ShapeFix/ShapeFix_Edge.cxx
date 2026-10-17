@@ -879,7 +879,7 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
     aFace = anEmptyFace;
   }
 
-  sae.CheckSameParameter(edge, aFace, maxdev);
+  sae.CheckSameParameter(edge, aFace, maxdev, 23, true);
   if (sae.Status(ShapeExtend_FAIL2))
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
@@ -889,7 +889,7 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
   if (SP)
   {
     double BRLTol = BRep_Tool::Tolerance(copyedge), BRLDev;
-    sae.CheckSameParameter(copyedge, BRLDev);
+    sae.CheckSameParameter(copyedge, BRLDev, 23, true);
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
     if (BRLTol < BRLDev)
     {

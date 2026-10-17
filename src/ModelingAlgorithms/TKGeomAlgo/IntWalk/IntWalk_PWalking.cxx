@@ -1105,7 +1105,8 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
 
   previousPoint.Parameters(Param(1), Param(2), Param(3), Param(4));
 
-  if (IsTangentExtCheck(Caro1, Caro2, Param(1), Param(2), Param(3), Param(4), myTolTang, pasuv))
+  if (!previoustg
+      && IsTangentExtCheck(Caro1, Caro2, Param(1), Param(2), Param(3), Param(4), myTolTang, pasuv))
   {
     return;
   }
@@ -1382,7 +1383,8 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
             //
             do
             {
-              pastroppetit = true;
+              // The fixed parameter controls the next intersection point.
+              pastroppetit = pasuv[ChoixIso] >= pasInit[ChoixIso];
               //
               if (pasuv[0] < pasInit[0])
               {
@@ -1393,7 +1395,6 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                 }
 
                 pasuv[0] += t;
-                pastroppetit = false;
               }
 
               if (pasuv[1] < pasInit[1])
@@ -1405,7 +1406,6 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                 }
 
                 pasuv[1] += t;
-                pastroppetit = false;
               }
 
               if (pasuv[2] < pasInit[2])
@@ -1417,7 +1417,6 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                 }
 
                 pasuv[2] += t;
-                pastroppetit = false;
               }
 
               if (pasuv[3] < pasInit[3])
@@ -1428,7 +1427,6 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                   t = 0.1 * pasuv[3];
                 }
                 pasuv[3] += t;
-                pastroppetit = false;
               }
               if (pastroppetit)
               {

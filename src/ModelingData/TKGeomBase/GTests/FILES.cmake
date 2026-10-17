@@ -66,6 +66,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
   ProjLib_Cone_Test.cxx
+  ProjLib_CompProjectedCurve_Test.cxx
   ProjLib_ComputeApproxOnPolarSurface_Test.cxx
   gce_MakeCone_Test.cxx
   gce_MakeCirc2d_Test.cxx

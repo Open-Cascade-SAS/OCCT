@@ -6,6 +6,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntPatch_SurfFunction_Test.cxx
   IntPatch_Walking_Test.cxx
   Geom2dAPI_InterCurveCurve_Test.cxx
+  Geom2dInt_GInter_Test.cxx
   Geom2dAPI_ExtremaCurveCurve_Test.cxx
   Geom2dAPI_Interpolate_Test.cxx
   Geom2dAPI_PointsToBSpline_Test.cxx
