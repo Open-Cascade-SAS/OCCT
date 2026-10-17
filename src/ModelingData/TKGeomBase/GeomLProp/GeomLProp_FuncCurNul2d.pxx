@@ -65,7 +65,7 @@ public:
   bool Values(const double theU, double& theF, double& theD) override
   {
     const auto [aPnt, aDeriv1, aDeriv2, aDeriv3] = myCurve->EvalD3(theU);
-    const double aSpeed = aDeriv1.Magnitude();
+    const double aSpeed                          = aDeriv1.Magnitude();
     if (aSpeed <= gp::Resolution())
     {
       return false;

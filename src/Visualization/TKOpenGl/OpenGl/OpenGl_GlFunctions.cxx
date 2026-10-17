@@ -2998,10 +2998,9 @@ void OpenGl_GlFunctions::load(OpenGl_Context& theCtx, bool theIsCoreProfile)
   if (has45 && !hasGetnTexImage)
   {
     // Intel driver exports only ARB-suffixed functions in a violation to OpenGL 4.5 specs
-    hasGetnTexImage =
-      theCtx.FindProc("glGetnCompressedTexImageARB", this->glGetnCompressedTexImage)
-      && theCtx.FindProc("glGetnTexImageARB", this->glGetnTexImage)
-      && theCtx.FindProc("glGetnUniformdvARB", this->glGetnUniformdv);
+    hasGetnTexImage = theCtx.FindProc("glGetnCompressedTexImageARB", this->glGetnCompressedTexImage)
+                      && theCtx.FindProc("glGetnTexImageARB", this->glGetnTexImage)
+                      && theCtx.FindProc("glGetnUniformdvARB", this->glGetnUniformdv);
     has45 = hasGetnTexImage;
     if (hasGetnTexImage)
     {
