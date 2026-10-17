@@ -360,7 +360,10 @@ const NCollection_List<TopoDS_Shape>& BRepPrimAPI_MakeRevol::Generated(const Top
 {
   myGenerated.Clear();
 
-  if (!myRevol.IsUsed(S))
+  // IsUsed tells whether the copies of S at the sweep's ends are in the result. In a full turn
+  // they are only where a face needs them as its seam: a planar disc or ring swept from an edge
+  // square to the axis has none, though that face is in the result (GenIsUsed).
+  if (!myRevol.IsUsed(S) && !myRevol.GenIsUsed(S))
   {
     return myGenerated;
   }
