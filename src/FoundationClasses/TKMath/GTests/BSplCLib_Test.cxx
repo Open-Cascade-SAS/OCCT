@@ -18,6 +18,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_Real.hxx>
 #include <Precision.hxx>
@@ -26,6 +28,117 @@
 #include <cfenv>
 #include <cmath>
 #include <limits>
+
+namespace
+{
+//==================================================================================================
+
+template <class Point, class Vector, int Dimension>
+void checkRationalDerivativeTranslation()
+{
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  NCollection_Array1<int> aMults(1, 2);
+  aMults.Init(3);
+  NCollection_Array1<double> aWeights(1, 3);
+  aWeights(1)            = 1.0;
+  aWeights(2)            = 0.5;
+  aWeights(3)            = 1.0;
+  const auto aCoordinate = [](const auto& theValue, int theIndex) {
+    if constexpr (Dimension == 1)
+    {
+      return theValue;
+    }
+    else
+    {
+      return theValue.Coord(theIndex + 1);
+    }
+  };
+  for (const bool isConstant : {false, true})
+  {
+    for (const double aHeight : {0.0, 1000015.0, -1000015.0})
+    {
+      NCollection_Array1<Point> aPoles(1, 3), aRefPoles(1, 3);
+      for (int anIndex = 1; anIndex <= 3; ++anIndex)
+      {
+        const double aX = isConstant ? 0.0 : 10.0 * anIndex;
+        if constexpr (Dimension == 1)
+        {
+          aRefPoles(anIndex) = aX;
+          aPoles(anIndex)    = aX + aHeight;
+        }
+        else if constexpr (Dimension == 2)
+        {
+          aRefPoles(anIndex) = Point(aX, 0.0);
+          aPoles(anIndex)    = Point(aX + aHeight, aHeight);
+        }
+        else
+        {
+          aRefPoles(anIndex) = Point(aX, 5.0 * (anIndex % 2), 0.0);
+          aPoles(anIndex)    = Point(aX + aHeight, 5.0 * (anIndex % 2) + aHeight, aHeight);
+        }
+      }
+      for (const double aU : {0.0, 0.25, 0.5, 0.75, 1.0})
+      {
+        SCOPED_TRACE(isConstant);
+        SCOPED_TRACE(aHeight);
+        SCOPED_TRACE(aU);
+        Point      aPoint, aRefPoint;
+        Vector     aD1, aD2, aD3, aRefD1, aRefD2, aRefD3;
+        const auto check = [&](const Vector& theActual, const Vector& theExpected) {
+          for (int aCoord = 0; aCoord < Dimension; ++aCoord)
+          {
+            const double aRef = aCoordinate(theExpected, aCoord);
+            EXPECT_NEAR(aCoordinate(theActual, aCoord),
+                        aRef,
+                        1.e-12 * std::max(1.0, std::abs(aRef)));
+          }
+        };
+        BSplCLib::D3(aU,
+                     1,
+                     2,
+                     false,
+                     aRefPoles,
+                     &aWeights,
+                     aKnots,
+                     &aMults,
+                     aRefPoint,
+                     aRefD1,
+                     aRefD2,
+                     aRefD3);
+        const auto checkPoint = [&]() {
+          for (int aCoord = 0; aCoord < Dimension; ++aCoord)
+          {
+            EXPECT_NEAR(aCoordinate(aPoint, aCoord),
+                        aCoordinate(aRefPoint, aCoord) + aHeight,
+                        Precision::Confusion());
+          }
+        };
+        BSplCLib::D1(aU, 1, 2, false, aPoles, &aWeights, aKnots, &aMults, aPoint, aD1);
+        checkPoint();
+        check(aD1, aRefD1);
+        BSplCLib::D2(aU, 1, 2, false, aPoles, &aWeights, aKnots, &aMults, aPoint, aD1, aD2);
+        checkPoint();
+        check(aD1, aRefD1);
+        check(aD2, aRefD2);
+        BSplCLib::D3(aU, 1, 2, false, aPoles, &aWeights, aKnots, &aMults, aPoint, aD1, aD2, aD3);
+        checkPoint();
+        check(aD1, aRefD1);
+        check(aD2, aRefD2);
+        check(aD3, aRefD3);
+        for (int anOrder = 1; anOrder <= 4; ++anOrder)
+        {
+          Vector aDN, aRefDN;
+          BSplCLib::DN(aU, anOrder, 1, 2, false, aPoles, &aWeights, aKnots, &aMults, aDN);
+          BSplCLib::DN(aU, anOrder, 1, 2, false, aRefPoles, &aWeights, aKnots, &aMults, aRefDN);
+          check(aDN, aRefDN);
+        }
+      }
+    }
+  }
+}
+} // namespace
 
 TEST(BSplCLibTest, UnitWeights_SmallSize_ReturnsNonOwning)
 {
@@ -957,4 +1070,25 @@ TEST(BSplCLibTest, AllDerivativesRetainContributionsBelowBasisExponentRange)
     }
     aFactor *= static_cast<double>(aDegree - aDerivative);
   }
+}
+
+//==================================================================================================
+
+TEST(BSplCLibTest, RationalScalarDerivativesAreTranslationInvariant)
+{
+  checkRationalDerivativeTranslation<double, double, 1>();
+}
+
+//==================================================================================================
+
+TEST(BSplCLibTest, Rational2dDerivativesAreTranslationInvariant)
+{
+  checkRationalDerivativeTranslation<gp_Pnt2d, gp_Vec2d, 2>();
+}
+
+//==================================================================================================
+
+TEST(BSplCLibTest, Rational3dDerivativesAreTranslationInvariant)
+{
+  checkRationalDerivativeTranslation<gp_Pnt, gp_Vec, 3>();
 }
