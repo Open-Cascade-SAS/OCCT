@@ -82,8 +82,8 @@ public:
   }
 
 private:
-  Geom2dAdaptor_Curve       myCurve;         //!< Adaptor restricted to the smooth interval.
-  double                    myParameterSpan; //!< Length used to normalize the curve parameter.
+  Geom2dAdaptor_Curve myCurve;         //!< Adaptor restricted to the smooth interval.
+  double              myParameterSpan; //!< Length used to normalize the curve parameter.
 };
 
 #endif // _GeomLProp_FuncCurNul2d_HeaderFile
