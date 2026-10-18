@@ -27,6 +27,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class Geom2d_Curve;
+class Geom2dAdaptor_Curve;
 
 //! Circle-tangency equation for a guide point and a second curve.
 //! The residual is the chord projected onto a unit normal to the tangent
@@ -66,6 +67,16 @@ public:
                                      const gp_Vec2d&                  theTangent,
                                      double                           theReferenceParameter);
 
+  //! Reuses a curve adaptor during the root search.
+  //! @param[in] theCurve initialized adaptor, which must stay alive and unchanged during use
+  //! @param[in] thePoint point on the guide curve
+  //! @param[in] theTangent oriented guide tangent, with magnitude above gp::Resolution()
+  //! @param[in] theReferenceParameter parameter inside the search interval
+  Standard_EXPORT Bisector_FunctionH(const Geom2dAdaptor_Curve& theCurve,
+                                     const gp_Pnt2d&            thePoint,
+                                     const gp_Vec2d&            theTangent,
+                                     double                     theReferenceParameter);
+
   //! Evaluates the circle-tangency residual in length units.
   //! @param[in] X parameter on C2 within the selected search interval
   //! @param[out] F signed projection of the chord onto the tangent-bisector normal
@@ -86,10 +97,11 @@ public:
   Standard_EXPORT bool Values(const double X, double& F, double& D) override;
 
 private:
-  occ::handle<Geom2d_Curve> curve2;      //!< Shared source curve.
-  gp_Pnt2d                  p1;          //!< Guide point.
-  gp_Vec2d                  t1;          //!< Unit oriented guide tangent.
-  gp_Vec2d                  myReference; //!< Unit normal orientation, or zero if unresolved.
+  occ::handle<Geom2d_Curve>  curve2;      //!< Shared source curve.
+  gp_Pnt2d                   p1;          //!< Guide point.
+  gp_Vec2d                   t1;          //!< Unit oriented guide tangent.
+  gp_Vec2d                   myReference; //!< Unit normal orientation, or zero if unresolved.
+  const Geom2dAdaptor_Curve* myAdaptor = nullptr; //!< Borrowed evaluation cache, when provided.
 };
 
 #endif // _Bisector_FunctionH_HeaderFile

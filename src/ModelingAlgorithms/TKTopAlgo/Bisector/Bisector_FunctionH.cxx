@@ -16,6 +16,7 @@
 
 #include <Bisector_FunctionH.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <gp.hxx>
 
 #include <algorithm>
@@ -75,9 +76,29 @@ Bisector_FunctionH::Bisector_FunctionH(const occ::handle<Geom2d_Curve>& theCurve
 
 //==================================================================================================
 
+Bisector_FunctionH::Bisector_FunctionH(const Geom2dAdaptor_Curve& theCurve,
+                                       const gp_Pnt2d&            thePoint,
+                                       const gp_Vec2d&            theTangent,
+                                       const double               theReferenceParameter)
+    : curve2(theCurve.Curve()),
+      p1(thePoint),
+      t1(theTangent),
+      myAdaptor(&theCurve)
+{
+  t1.Normalize();
+  const gp_Vec2d aTangent = theCurve.EvalD1(theReferenceParameter).D1;
+  const double   aSpeed   = aTangent.Magnitude();
+  if (aSpeed > gp::Resolution())
+  {
+    myReference = bisectorNormal(t1, aTangent / aSpeed);
+  }
+}
+
+//==================================================================================================
+
 bool Bisector_FunctionH::Value(const double X, double& F)
 {
-  const auto [aPoint, aTangent] = curve2->EvalD1(X);
+  const auto [aPoint, aTangent] = myAdaptor != nullptr ? myAdaptor->EvalD1(X) : curve2->EvalD1(X);
   const double aSpeed           = aTangent.Magnitude();
   if (aSpeed <= gp::Resolution() || myReference.SquareMagnitude() == 0.0)
   {
@@ -105,8 +126,9 @@ bool Bisector_FunctionH::Derivative(const double X, double& D)
 
 bool Bisector_FunctionH::Values(const double X, double& F, double& D)
 {
-  const auto [aPoint, aTangent, aD2] = curve2->EvalD2(X);
-  const double aSpeed                = aTangent.Magnitude();
+  const auto [aPoint, aTangent, aD2] =
+    myAdaptor != nullptr ? myAdaptor->EvalD2(X) : curve2->EvalD2(X);
+  const double aSpeed = aTangent.Magnitude();
   if (aSpeed <= gp::Resolution() || myReference.SquareMagnitude() == 0.0)
   {
     return false;

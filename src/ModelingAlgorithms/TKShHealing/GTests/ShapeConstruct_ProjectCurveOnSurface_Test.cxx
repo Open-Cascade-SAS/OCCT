@@ -1478,7 +1478,7 @@ TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, AffineProjectionAcrossSur
         GC_MakeSegment aSegment(gp_Pnt(0.1 + aSkew * 0.2, 0.2, aGap),
                                 gp_Pnt(0.9 + aSkew * 0.8, 0.8, aGap));
         ASSERT_TRUE(aSegment.IsDone());
-        const occ::handle<Geom_Curve> aCurve = aSegment.Value();
+        const occ::handle<Geom_TrimmedCurve> aCurve = aSegment.Value();
         if (toReverse)
         {
           aCurve->Reverse();

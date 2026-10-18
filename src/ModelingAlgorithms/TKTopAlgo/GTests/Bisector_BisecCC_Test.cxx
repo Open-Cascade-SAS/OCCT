@@ -18,16 +18,19 @@
 #include <Bisector_FunctionH.hxx>
 #include <BSplCLib.hxx>
 #include <Geom2d_Circle.hxx>
+#include <Geom2d_Ellipse.hxx>
 #include <Geom2dConvert.hxx>
 #include <Bisector_Bisec.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Ax2d.hxx>
+#include <gp_Ax22d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -70,6 +73,39 @@ TEST(Bisector_BisecCCTest, ShortBranchStartsAtSeparateCurveEndpoint)
         EXPECT_LE(aPoint.Y(), 1.01 + Precision::Confusion());
       }
     }
+  }
+}
+
+TEST(Bisector_FunctionHTest, CachedBasisPreservesTrimBoundaryDerivatives)
+{
+  const gp_Pnt2d                  aPoles[]          = {gp_Pnt2d(-1.0, 1.0),
+                                                       gp_Pnt2d(-0.5, 0.0),
+                                                       gp_Pnt2d(0.0, 0.0),
+                                                       gp_Pnt2d(0.5, 0.0),
+                                                       gp_Pnt2d(1.0, 2.0)};
+  const double                    aKnots[]          = {0.0, 0.5, 1.0};
+  const int                       aMultiplicities[] = {3, 2, 3};
+  const occ::handle<Geom2d_Curve> aBasis =
+    new Geom2d_BSplineCurve(NCollection_Array1<gp_Pnt2d>(aPoles[0], 1, 5),
+                            NCollection_Array1<double>(aKnots[0], 1, 3),
+                            NCollection_Array1<int>(aMultiplicities[0], 1, 3),
+                            2);
+  const occ::handle<Geom2d_Curve> aTrimmed = new Geom2d_TrimmedCurve(aBasis, 0.0, 0.5);
+  const Geom2dAdaptor_Curve       anEvaluator(aBasis);
+  Bisector_FunctionH              aSource(aTrimmed, gp_Pnt2d(1.0, 1.0), gp_Vec2d(0.0, 1.0), 0.25);
+  Bisector_FunctionH aCached(anEvaluator, gp_Pnt2d(1.0, 1.0), gp_Vec2d(0.0, 1.0), 0.25);
+  EXPECT_NEAR(aBasis->EvalD2(0.5).D2.Y(), 16.0, Precision::Confusion());
+  for (const double aParameter : {0.0, 0.25, 0.5})
+  {
+    SCOPED_TRACE(aParameter);
+    double aSourceValue, aSourceDerivative, aCachedValue, aCachedDerivative;
+    ASSERT_TRUE(aSource.Values(aParameter, aSourceValue, aSourceDerivative));
+    ASSERT_TRUE(aCached.Values(aParameter, aCachedValue, aCachedDerivative));
+    EXPECT_NEAR(aCachedValue, aSourceValue, Precision::Confusion());
+    EXPECT_NEAR(aCachedDerivative, aSourceDerivative, Precision::Confusion());
+    double aValueOnly;
+    ASSERT_TRUE(aCached.Value(aParameter, aValueOnly));
+    EXPECT_NEAR(aValueOnly, aSourceValue, Precision::Confusion());
   }
 }
 
@@ -280,6 +316,50 @@ TEST(Bisector_BisecCCTest, SmallNonzeroDistancePreservesBisector)
   EXPECT_LE(aBisector.Value(aBisector.FirstParameter()).Distance(anOrigin), Precision::Confusion());
 }
 
+TEST(Bisector_BisecCCTest, NarrowSourceParameterRangePreservesPointDerivative)
+{
+  const occ::handle<Geom2d_Curve> aGuide =
+    new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0, 2.0);
+  const gp_Pnt2d aPoles[]          = {gp_Pnt2d(0.0, 1.0), gp_Pnt2d(0.0, 1.25), gp_Pnt2d(0.0, 2.0)};
+  const int      aMultiplicities[] = {3, 3};
+  for (const double aParameterSpan : {1.e-10, 1.e-8, 1.e-6})
+  {
+    for (const bool isReversed : {false, true})
+    {
+      SCOPED_TRACE(aParameterSpan);
+      SCOPED_TRACE(isReversed);
+      const double                    aKnots[] = {0.0, aParameterSpan};
+      const occ::handle<Geom2d_Curve> aSource =
+        new Geom2d_BSplineCurve(NCollection_Array1<gp_Pnt2d>(aPoles[0], 1, 3),
+                                NCollection_Array1<double>(aKnots[0], 1, 2),
+                                NCollection_Array1<int>(aMultiplicities[0], 1, 2),
+                                2);
+      if (isReversed)
+      {
+        aSource->Reverse();
+      }
+      const Bisector_BisecCC aBisector(aGuide,
+                                       aSource,
+                                       1.0,
+                                       isReversed ? 1.0 : -1.0,
+                                       gp_Pnt2d(1.0, 1.0));
+      ASSERT_FALSE(aBisector.IsEmpty());
+      for (const double aParameter : {1.025, 1.275, 1.725})
+      {
+        SCOPED_TRACE(aParameter);
+        constexpr double aStep = 1.e-4;
+        ASSERT_GT(aParameter - aStep, aBisector.FirstParameter());
+        ASSERT_LT(aParameter + aStep, aBisector.LastParameter());
+        const auto [aPoint, aD1] = aBisector.EvalD1(aParameter);
+        const gp_Vec2d aNumerical(aBisector.EvalD0(aParameter - aStep),
+                                  aBisector.EvalD0(aParameter + aStep));
+        EXPECT_NEAR(aD1.X(), aNumerical.X() / (2.0 * aStep), Precision::Confusion());
+        EXPECT_NEAR(aD1.Y(), aNumerical.Y() / (2.0 * aStep), Precision::Confusion());
+      }
+    }
+  }
+}
+
 TEST(Bisector_BisecCCTest, SmallNormalChordRetainsCircleCentre)
 {
   NCollection_Array1<gp_Pnt2d> aPoles(3);
@@ -303,6 +383,35 @@ TEST(Bisector_BisecCCTest, SmallNormalChordRetainsCircleCentre)
   Bisector_BisecCC aBisector(aCurve, aLine, 1.0, 1.0, aCentre);
   ASSERT_FALSE(aBisector.IsEmpty());
   EXPECT_LE(aBisector.EvalD0(aBisector.FirstParameter()).Distance(aCentre), Precision::Confusion());
+}
+
+TEST(Bisector_BisecCCTest, TangentEndpointResidualPreservesCircleTangency)
+{
+  const occ::handle<Geom2d_Curve> aGuide = new Geom2d_TrimmedCurve(
+    new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(4.3999999761580142, -4.1300523962914042),
+                                gp_Dir2d(0.0, 1.0),
+                                gp_Dir2d(-1.0, 0.0)),
+                       7.5213493612978652,
+                       7.5),
+    3.0806790980118501,
+    M_PI);
+  const occ::handle<Geom2d_Curve> aSource =
+    new Geom2d_TrimmedCurve(new Geom2d_Line(gp_Pnt2d(-11.27697735558136, -10.706532242628995),
+                                            gp_Dir2d(0.99813479862132282, -0.061048536273784489)),
+                            13.4270208573496,
+                            15.248850310852999);
+  const gp_Pnt2d   anOrigin = aGuide->EvalD0(aGuide->FirstParameter());
+  Bisector_BisecCC aBisector(aGuide, aSource, 1.0, 1.0, anOrigin);
+  double           aGuideParameter, aSourceParameter, aDistance;
+  const gp_Pnt2d   aCentre =
+    aBisector.ValueByInt(3.080680585159203, aGuideParameter, aSourceParameter, aDistance);
+  ASSERT_LT(aDistance, Precision::Infinite());
+  const auto [aContact, aTangent] = aSource->EvalD1(aSourceParameter);
+  EXPECT_LE(std::abs(gp_Vec2d(aContact, aCentre).Dot(aTangent)) / aTangent.Magnitude(),
+            Precision::Confusion());
+  EXPECT_NEAR(aCentre.Distance(aGuide->EvalD0(aGuideParameter)),
+              aCentre.Distance(aContact),
+              Precision::Confusion());
 }
 
 TEST(Bisector_BisecCCTest, NonparallelEndTangentsDoNotExtend)
@@ -529,6 +638,20 @@ TEST(Bisector_InterTest, NormalExtensionIntersectsAtCurveBoundary)
   const gp_Pnt2d                          aCentre = aJoin.Translated(aRadius * aNormal);
   const occ::handle<Geom2d_TrimmedCurve>& aC1     = aFirst.Value();
   const occ::handle<Geom2d_TrimmedCurve>& aC2     = aSecond.Value();
+  const occ::handle<Bisector_BisecCC>     aNormalBisector =
+    occ::down_cast<Bisector_BisecCC>(aC2->BasisCurve());
+  ASSERT_FALSE(aNormalBisector.IsNull());
+  ASSERT_TRUE(aNormalBisector->IsExtendAtStart());
+  const double aNormalFirst = aNormalBisector->IntervalFirst(1);
+  const double aNormalLast  = aNormalBisector->IntervalLast(1);
+  for (const double aFraction : {0.25, 0.5, 0.75})
+  {
+    const double   aParameter         = aNormalFirst + aFraction * (aNormalLast - aNormalFirst);
+    const gp_Pnt2d aPoint             = aNormalBisector->EvalD0(aParameter);
+    const double   anInverseParameter = aNormalBisector->Parameter(aPoint);
+    EXPECT_NEAR(anInverseParameter, aParameter, Precision::Confusion());
+    EXPECT_LE(aNormalBisector->EvalD0(anInverseParameter).Distance(aPoint), Precision::Confusion());
+  }
   const IntRes2d_Domain                   aD1(aC1->EvalD0(aC1->FirstParameter()),
                             aC1->FirstParameter(),
                             Precision::Confusion(),

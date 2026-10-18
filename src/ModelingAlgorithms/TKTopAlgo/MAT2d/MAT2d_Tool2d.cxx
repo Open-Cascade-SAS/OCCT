@@ -578,6 +578,10 @@ bool MAT2d_Tool2d::Projection(const int IEdge, const gp_Pnt2d& PCom, double& Dis
       {
         return false;
       }
+      double   aFirstDistance, aLastDistance;
+      gp_Pnt2d aFirstPoint, aLastPoint;
+      Extremas.TrimmedSquareDistances(aFirstDistance, aLastDistance, aFirstPoint, aLastPoint);
+      Distance = std::min(aFirstDistance, aLastDistance);
       for (int i = 1; i <= Extremas.NbExt(); i++)
       {
         if (Extremas.SquareDistance(i) < Distance)
