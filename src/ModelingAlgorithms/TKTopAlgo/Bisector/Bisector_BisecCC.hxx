@@ -31,7 +31,9 @@ class gp_Trsf2d;
 class gp_Vec2d;
 
 //! Construct the bisector between two curves.
-//! The curves can intersect only in their extremities.
+//! The curves can intersect only at their endpoints.
+//! The object keeps copies of both curves. The result can consist only of a
+//! finite normal segment at a common endpoint, without a curved part.
 class Bisector_BisecCC : public Bisector_Curve
 {
 
@@ -57,7 +59,8 @@ public:
                                    const double                     DistMax = 500);
 
   //! Computes the bisector between the curves <Cu1>
-  //! and <Cu2>.
+  //! and <Cu2>. The guide <Cu1> is followed in increasing parameter order
+  //! from its projection of <Origin>. Use IsEmpty() before evaluating the result.
   //!
   //! <Side1> (resp <Side2>) = 1 if the
   //! bisector curve is on the left of <Cu1> (resp <Cu2>)
@@ -125,11 +128,14 @@ public:
 
   Standard_EXPORT bool IsPeriodic() const override;
 
-  //! Returns the point of parameter U.
-  //! Computes the distance between the current point and
-  //! the two curves I separate.
-  //! Computes the parameters on each curve corresponding
-  //! of the projection of the current point.
+  //! Evaluates a bisector point and its projections onto both source curves.
+  //! Normal segments project onto source endpoints.
+  //! @param[in] U parameter within a bisector interval; IsEmpty() must be false
+  //! @param[out] U1 projection parameter on curve1
+  //! @param[out] U2 projection parameter on curve2
+  //! @param[out] Distance squared distance on a curved branch, or linear distance
+  //! on a normal segment
+  //! @return point on the bisector
   Standard_EXPORT gp_Pnt2d ValueAndDist(const double U,
                                         double&      U1,
                                         double&      U2,
@@ -156,15 +162,24 @@ public:
 
   Standard_EXPORT gp_Vec2d EvalDN(const double U, const int N) const override;
 
+  //! Returns true when no curved branch or finite normal segment was constructed.
   Standard_EXPORT bool IsEmpty() const;
 
-  //! Returns the parameter on the curve1 of the projection
-  //! of the point of parameter U on <me>.
+  //! Converts a curved-branch parameter to the guide curve parameter.
+  //! Use ValueAndDist() for endpoint projections on normal segments.
+  //! @param[in] U parameter on the curved branch
+  //! @return corresponding guide curve parameter
   Standard_EXPORT double LinkBisCurve(const double U) const;
 
-  //! Returns the reciproque of LinkBisCurve.
+  //! Inverts LinkBisCurve() on the curved branch.
+  //! Endpoint projections on normal segments do not have a unique inverse.
+  //! @param[in] U parameter on the guide curve
+  //! @return corresponding curved-branch parameter
   Standard_EXPORT double LinkCurveBis(const double U) const;
 
+  //! Returns a parameter within the domain of this non-empty bisector.
+  //! @param[in] P point on the bisector
+  //! @return parameter on the curved branch or normal extension
   Standard_EXPORT double Parameter(const gp_Pnt2d& P) const override;
 
   Standard_EXPORT occ::handle<Geom2d_Curve> Curve(const int IndCurve) const;

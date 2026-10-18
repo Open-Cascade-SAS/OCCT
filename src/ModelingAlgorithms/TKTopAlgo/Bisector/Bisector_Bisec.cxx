@@ -166,8 +166,8 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       {
         IsLine = true;
         if (std::abs(Fd.Crossed(Sd)) <= Precision::Angular()
-            && !Bisector::IsConvex(afirstcurve1, adirection)
-            && !Bisector::IsConvex(asecondcurve1, adirection))
+            && (!Bisector::IsConvex(afirstcurve1, adirection)
+                || !Bisector::IsConvex(asecondcurve1, adirection)))
         {
           const Geom2d_Curve::ResD2 aFirstDerivatives =
             Geom2dAdaptor_Curve(afirstcurve1).EvalD2(afirstcurve1->LastParameter());

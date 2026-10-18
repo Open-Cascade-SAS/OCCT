@@ -15,6 +15,7 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
@@ -77,7 +78,10 @@ void checkValidSolid(const TopoDS_Shape& theShape)
   EXPECT_TRUE(BRepCheck_Analyzer(theShape).IsValid());
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSolids;
   TopExp::MapShapes(theShape, TopAbs_SOLID, aSolids);
-  EXPECT_EQ(aSolids.Extent(), 1);
+  ASSERT_EQ(aSolids.Extent(), 1);
+  BRepClass3d_SolidClassifier aClassifier(aSolids(1));
+  aClassifier.PerformInfinitePoint(Precision::Confusion());
+  EXPECT_EQ(aClassifier.State(), TopAbs_OUT);
 }
 
 class BRepFilletAPI_ShallowLoft : public testing::TestWithParam<bool>
@@ -129,7 +133,8 @@ TEST_P(BRepFilletAPI_ShallowLoft, Fillet)
 
 TEST_P(BRepFilletAPI_ShallowLoft, Chamfer)
 {
-  for (double anAngle : {0.005, 0.02})
+  // Nearby angles exercise narrow corner plates with different rounding.
+  for (double anAngle : {0.005, 0.004999999999999994, 0.0050000000000000062, 0.02})
   {
     SCOPED_TRACE(anAngle);
     TopoDS_Shape aShape;

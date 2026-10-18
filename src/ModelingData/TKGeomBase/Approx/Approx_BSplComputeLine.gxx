@@ -635,6 +635,8 @@ Approx_BSplComputeLine::Approx_BSplComputeLine(const MultiLine&                 
 
 void Approx_BSplComputeLine::Perform(const MultiLine& Line)
 {
+  tolreached   = false;
+  currenttol3d = currenttol2d = RealLast();
 
 #if defined(OCCT_DEBUG) && defined(DRAW) && !defined(WNT)
   if (mydebug)

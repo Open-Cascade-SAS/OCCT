@@ -15,7 +15,24 @@
 #include <ElSLib.hxx>
 #include <GeomAPI_IntSS.hxx>
 #include <GeomInt_IntSS.hxx>
+#include <GeomInt_WLApprox.hxx>
+#include <BRepApprox_Approx.hxx>
+#include <AppParCurves_MultiBSpCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomInt_ThePrmPrmSvSurfacesOfWLApprox.hxx>
+#include <GeomInt_TheImpPrmSvSurfacesOfWLApprox.hxx>
+#include <BRepApprox_ThePrmPrmSvSurfacesOfApprox.hxx>
+#include <BRepApprox_TheImpPrmSvSurfacesOfApprox.hxx>
+#include <BRepApprox_ApproxLine.hxx>
+#include <BRepApprox_TheMultiLineOfApprox.hxx>
+#include <GeomInt_TheMultiLineOfWLApprox.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <array>
 #include <Geom_Ellipse.hxx>
+#include <Geom_Circle.hxx>
+#include <gp_Dir.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
@@ -31,6 +48,10 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <IntPatch_TheIWalking.hxx>
+#include <IntPatch_Point.hxx>
+#include <IntPatch_RstInt.hxx>
+#include <IntPatch_WLine.hxx>
+#include <Adaptor3d_TopolTool.hxx>
 #include <IntSurf_LineOn2S.hxx>
 #include <IntWalk_PWalking.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -64,6 +85,107 @@
 #include <math_Vector.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <IntWalk_TheInt2S.hxx>
+#include <NCollection_LinearVector.hxx>
+#include <tuple>
+
+namespace
+{
+//==================================================================================================
+
+template <class Approximation, class FirstSurface, class SecondSurface>
+void checkApproximationCache(const FirstSurface&                         theFirst,
+                             const SecondSurface&                        theSecond,
+                             const std::array<std::array<double, 4>, 2>& theSeeds = {
+                               {{2.0, 0.4, -2.9, 0.3}, {3.0, -0.2, -2.1, -0.1}}})
+{
+  Approximation aCached(theFirst, theSecond);
+  for (const int anIndex : {0, 0, 1, 0, 1})
+  {
+    SCOPED_TRACE(anIndex);
+    std::array<double, 4> aParameters = theSeeds[anIndex], anExpectedParameters = aParameters;
+    Approximation         aReference(theFirst, theSecond);
+    gp_Pnt                anExpectedPoint;
+    gp_Vec                anExpectedTangent;
+    gp_Vec2d              anExpectedTangent1, anExpectedTangent2;
+    ASSERT_TRUE(aReference.Compute(anExpectedParameters[0],
+                                   anExpectedParameters[1],
+                                   anExpectedParameters[2],
+                                   anExpectedParameters[3],
+                                   anExpectedPoint,
+                                   anExpectedTangent,
+                                   anExpectedTangent1,
+                                   anExpectedTangent2));
+    gp_Pnt   aPoint(-1.0, -2.0, -3.0);
+    gp_Vec   aTangent(-1.0, -2.0, -3.0);
+    gp_Vec2d aTangent1(-1.0, -2.0), aTangent2(-2.0, -3.0);
+    ASSERT_TRUE(aCached.Compute(aParameters[0],
+                                aParameters[1],
+                                aParameters[2],
+                                aParameters[3],
+                                aPoint,
+                                aTangent,
+                                aTangent1,
+                                aTangent2));
+    for (size_t i = 0; i < aParameters.size(); ++i)
+    {
+      EXPECT_DOUBLE_EQ(aParameters[i], anExpectedParameters[i]);
+    }
+    EXPECT_DOUBLE_EQ(aPoint.SquareDistance(anExpectedPoint), 0.0);
+    EXPECT_DOUBLE_EQ((aTangent - anExpectedTangent).SquareMagnitude(), 0.0);
+    EXPECT_DOUBLE_EQ((aTangent1 - anExpectedTangent1).SquareMagnitude(), 0.0);
+    EXPECT_DOUBLE_EQ((aTangent2 - anExpectedTangent2).SquareMagnitude(), 0.0);
+    IntSurf_PntOn2S aFound;
+    ASSERT_TRUE(aCached.SeekPoint(theSeeds[anIndex][0],
+                                  theSeeds[anIndex][1],
+                                  theSeeds[anIndex][2],
+                                  theSeeds[anIndex][3],
+                                  aFound));
+    EXPECT_DOUBLE_EQ(aFound.Value().SquareDistance(anExpectedPoint), 0.0);
+    aFound.Parameters(aParameters[0], aParameters[1], aParameters[2], aParameters[3]);
+    for (size_t i = 0; i < aParameters.size(); ++i)
+    {
+      EXPECT_DOUBLE_EQ(aParameters[i], anExpectedParameters[i]);
+    }
+    const std::array<double, 4>& anOtherSeed = theSeeds[1 - anIndex];
+    ASSERT_TRUE(
+      aCached.SeekPoint(anOtherSeed[0], anOtherSeed[1], anOtherSeed[2], anOtherSeed[3], aFound));
+    const std::array<double, 4>& aSeed = theSeeds[anIndex];
+    aCached.Pnt(aSeed[0], aSeed[1], aSeed[2], aSeed[3], aPoint);
+    EXPECT_DOUBLE_EQ(aPoint.SquareDistance(anExpectedPoint), 0.0);
+  }
+}
+
+//==================================================================================================
+
+template <class Approximation, class Surface>
+void checkImplicitApproximationCache(const Surface& thePlane)
+{
+  const IntSurf_Quadric                      aCylinder(gp_Cylinder(gp_Ax3(), 1.0));
+  const std::array<std::array<double, 4>, 2> aSeeds = {
+    {{0.0, 0.0, 1.0, 0.0}, {0.6, 0.0, std::cos(0.6), std::sin(0.6)}}};
+  checkApproximationCache<Approximation>(aCylinder, thePlane, aSeeds);
+  const std::array<std::array<double, 4>, 2> aReversedSeeds = {
+    {{1.0, 0.0, 0.0, 0.0}, {std::cos(0.6), std::sin(0.6), 0.6, 0.0}}};
+  checkApproximationCache<Approximation>(thePlane, aCylinder, aReversedSeeds);
+}
+} // namespace
+
+TEST(IntPatch_WalkingTest, SurfaceApproximationCacheRestoresOutputs)
+{
+  const occ::handle<Adaptor3d_Surface> aFirst = new GeomAdaptor_Surface(new Geom_Plane(gp::XOY()));
+  const occ::handle<Adaptor3d_Surface> aSecond =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Ax3(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX())));
+  checkApproximationCache<GeomInt_ThePrmPrmSvSurfacesOfWLApprox>(aFirst, aSecond);
+}
+
+TEST(IntPatch_WalkingTest, FaceApproximationCacheRestoresOutputs)
+{
+  const TopoDS_Face aFirstFace = BRepBuilderAPI_MakeFace(gp_Pln(gp_Ax3(gp::XOY()))).Face();
+  const TopoDS_Face aSecondFace =
+    BRepBuilderAPI_MakeFace(gp_Pln(gp_Ax3(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX()))).Face();
+  const BRepAdaptor_Surface aFirst(aFirstFace), aSecond(aSecondFace);
+  checkApproximationCache<BRepApprox_ThePrmPrmSvSurfacesOfApprox>(aFirst, aSecond);
+}
 
 TEST(IntPatch_WalkingTest, RegularSeedPreservesFixedParameterAfterTangencyProbe)
 {
@@ -507,10 +629,13 @@ TEST(IntPatch_WalkingTest, ExactSeedTraversesContactLine)
         const auto    aCurved = makeContactGraph(aScaleU, aScaleV, aSkew, 1.0, 0.0, aTransform);
         NCollection_Array1<double> aParameters(1, 4);
         aParameters.Init(0.5);
-        IntWalk_PWalking aWalking(aPlane, aCurved, 1.e-7, 1.e-7, 1.e-3, 0.01);
+        const double     anIncrement = 1.e-3;
+        IntWalk_PWalking aWalking(aPlane, aCurved, 1.e-7, 1.e-7, 1.e-3, anIncrement);
         aWalking.Perform(aParameters);
         ASSERT_TRUE(aWalking.IsDone());
         ASSERT_GT(aWalking.NbPoints(), 1);
+        // A straight contact permits step growth.
+        EXPECT_LT(aWalking.NbPoints(), static_cast<int>(1.0 / anIncrement));
         EXPECT_NEAR(aWalking.Value(1).Value().Distance(aWalking.Value(aWalking.NbPoints()).Value()),
                     std::hypot(aSkew, aScaleV),
                     1.e-6);
@@ -860,4 +985,821 @@ TEST(IntPatch_WalkingTest, ApproximationRejectsCoincidentLinearCurves)
     ASSERT_EQ(anIntersection.NbLines(), 6);
     checkCurveDistances(anIntersection, aFirstQuadric, aSecondQuadric, 6.0e-7, 297);
   }
+}
+
+TEST(IntPatch_WalkingTest, RestrictionKeepsEndpointsAndAddsNearbyCrossings)
+{
+  const occ::handle<GeomAdaptor_Surface> aPlane =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Ax3()), -1.0, 1.0, 0.0, 1.0);
+  const occ::handle<GeomAdaptor_Surface> aCrossPlane =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Ax3(gp::Origin(), gp::DX(), gp::DY())),
+                            -1.0,
+                            2.0,
+                            -1.0,
+                            1.0);
+  const occ::handle<Adaptor3d_TopolTool> aDomain = new Adaptor3d_TopolTool(aPlane);
+  for (const double aMargin : {0.0, 10.0 * Precision::Confusion()})
+  {
+    for (const bool isReversed : {false, true})
+    {
+      SCOPED_TRACE(::testing::Message() << aMargin << ' ' << isReversed);
+      const occ::handle<IntSurf_LineOn2S> aPoints = new IntSurf_LineOn2S();
+      for (const double aParameter : {-aMargin, 0.5, 1.0 + aMargin})
+      {
+        IntSurf_PntOn2S aPoint;
+        if (isReversed)
+        {
+          aPoint.SetValue(gp_Pnt(0.0, aParameter, 0.0), aParameter, 0.0, 0.0, aParameter);
+        }
+        else
+        {
+          aPoint.SetValue(gp_Pnt(0.0, aParameter, 0.0), 0.0, aParameter, aParameter, 0.0);
+        }
+        aPoints->Add(aPoint);
+      }
+      const occ::handle<IntPatch_WLine> aLine = new IntPatch_WLine(aPoints, false);
+      aLine->SetCreatingWayInfo(IntPatch_WLine::IntPatch_WLPrmPrm);
+      IntPatch_RstInt::PutVertexOnLine(aLine,
+                                       aPlane,
+                                       aDomain,
+                                       aCrossPlane,
+                                       !isReversed,
+                                       Precision::Confusion());
+      ASSERT_GE(aLine->NbPnts(), 3);
+      EXPECT_DOUBLE_EQ(aLine->Point(1).Value().Y(), -aMargin);
+      EXPECT_DOUBLE_EQ(aLine->Point(aLine->NbPnts()).Value().Y(), 1.0 + aMargin);
+      bool hasFirst = false, hasLast = false;
+      for (int i = 1; i <= aLine->NbVertex(); ++i)
+      {
+        const IntPatch_Point& aVertex = aLine->Vertex(i);
+        if (isReversed ? !aVertex.IsOnDomS2() : !aVertex.IsOnDomS1())
+        {
+          continue;
+        }
+        const gp_Pnt& aPoint = aVertex.Value();
+        EXPECT_NEAR(aPoint.X(), 0.0, Precision::Confusion());
+        EXPECT_NEAR(aPoint.Z(), 0.0, Precision::Confusion());
+        hasFirst = hasFirst || std::abs(aPoint.Y()) <= Precision::Confusion();
+        hasLast  = hasLast || std::abs(aPoint.Y() - 1.0) <= Precision::Confusion();
+      }
+      EXPECT_TRUE(hasFirst);
+      EXPECT_TRUE(hasLast);
+    }
+  }
+}
+
+namespace
+{
+//==================================================================================================
+
+template <class TheLine, class TheMultiLine, class TheSurfaceFunction>
+void checkResamplingTurn(TheSurfaceFunction& theSurfaces)
+{
+  struct Sample
+  {
+    std::array<double, 3> Parameters; // Positions along the intersection.
+    bool                  IsMonotone; // Whether the path keeps its direction.
+  };
+
+  const std::array<Sample, 4> aSamples{{{{0.0, 0.4, 1.0}, true},
+                                        {{0.0, 0.125, 1.0}, true},
+                                        {{0.0, 0.875, 1.0}, true},
+                                        {{0.0, 1.0, 0.0}, false}}};
+  for (const auto& aSample : aSamples)
+  {
+    SCOPED_TRACE(aSample.Parameters[1]);
+    const occ::handle<IntSurf_LineOn2S> aPoints = new IntSurf_LineOn2S();
+    for (const double aY : aSample.Parameters)
+    {
+      IntSurf_PntOn2S aPoint;
+      aPoint.SetValue(gp_Pnt(0.0, aY, 0.0), 0.0, aY, aY, 0.0);
+      aPoints->Add(aPoint);
+    }
+    const occ::handle<TheLine> aLine             = new TheLine(aPoints, false);
+    const int                  aNbInputPoints    = static_cast<int>(aSample.Parameters.size());
+    constexpr int              aNbPointsToInsert = 3;
+    const TheMultiLine         aSource(aLine,
+                               &theSurfaces,
+                               1,
+                               2,
+                               true,
+                               true,
+                               0.0,
+                               0.0,
+                               0.0,
+                               0.0,
+                               0.0,
+                               0.0,
+                               0.0,
+                               true,
+                               1,
+                               aNbInputPoints);
+    const TheMultiLine aResult = aSource.MakeMLBetween(1, aNbInputPoints, aNbPointsToInsert);
+    const int          aCount  = aResult.LastPoint() - aResult.FirstPoint() + 1;
+    if (!aSample.IsMonotone)
+    {
+      EXPECT_EQ(aCount, 1);
+      continue;
+    }
+    ASSERT_GE(aCount, aNbInputPoints + aNbPointsToInsert);
+    const TheMultiLine aRefined =
+      aResult.MakeMLBetween(aResult.FirstPoint(), aResult.LastPoint(), aNbPointsToInsert);
+    EXPECT_GE(aRefined.LastPoint() - aRefined.FirstPoint() + 1, aCount + aNbPointsToInsert);
+
+    NCollection_Array1<gp_Pnt>   aPoint(1, 1);
+    NCollection_Array1<gp_Pnt2d> aUV(1, 2);
+    double                       aPreviousY = -1.0;
+    std::array<bool, 3>          hasOriginal{};
+    for (int i = aResult.FirstPoint(); i <= aResult.LastPoint(); ++i)
+    {
+      aResult.Value(i, aPoint, aUV);
+      const double aY = aPoint.At(0).Y();
+      EXPECT_GT(aY, aPreviousY);
+      EXPECT_NEAR(aPoint.At(0).X(), 0.0, Precision::Confusion());
+      EXPECT_NEAR(aPoint.At(0).Z(), 0.0, Precision::Confusion());
+      EXPECT_NEAR(aUV.At(0).X(), 0.0, Precision::PConfusion());
+      EXPECT_NEAR(aUV.At(0).Y(), aY, Precision::PConfusion());
+      EXPECT_NEAR(aUV.At(1).X(), aY, Precision::PConfusion());
+      EXPECT_NEAR(aUV.At(1).Y(), 0.0, Precision::PConfusion());
+      aPreviousY = aY;
+      for (size_t j = 0; j < hasOriginal.size(); ++j)
+        hasOriginal[j] = hasOriginal[j] || aY == aSample.Parameters[j];
+    }
+    EXPECT_DOUBLE_EQ(aPreviousY, 1.0);
+    for (size_t j = 0; j < hasOriginal.size(); ++j)
+      EXPECT_TRUE(hasOriginal[j]) << aSample.Parameters[j];
+  }
+}
+
+//==================================================================================================
+
+template <class TheLine, class TheMultiLine, class TheSurfaceFunction>
+void checkResamplingCircle(TheSurfaceFunction& theSurfaces, const bool theReversed)
+{
+  const gp_Cylinder                   aCylinder(gp_Ax3(), 1.0);
+  const gp_Pln                        aPlane;
+  const occ::handle<IntSurf_LineOn2S> aPoints = new IntSurf_LineOn2S();
+  for (const double anAngle : {0.0, 0.3, 0.6})
+  {
+    const gp_Pnt    aPosition = ElSLib::Value(anAngle, 0.0, aCylinder);
+    IntSurf_PntOn2S aPoint;
+    aPoint.SetValue(aPosition, anAngle, 0.0, aPosition.X(), aPosition.Y());
+    if (theReversed)
+    {
+      aPoint.SetValue(aPosition, aPosition.X(), aPosition.Y(), anAngle, 0.0);
+    }
+    aPoints->Add(aPoint);
+  }
+  const occ::handle<TheLine> aLine = new TheLine(aPoints, false);
+  const TheMultiLine
+    aSource(aLine, &theSurfaces, 1, 2, true, true, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, 1, 3);
+  const TheMultiLine aResult = aSource.MakeMLBetween(1, 3, 3);
+  ASSERT_GE(aResult.LastPoint() - aResult.FirstPoint() + 1, 6);
+  NCollection_Array1<gp_Pnt>   aPoint(1, 1);
+  NCollection_Array1<gp_Pnt2d> aUV(1, 2);
+  for (int i = aResult.FirstPoint(); i <= aResult.LastPoint(); ++i)
+  {
+    aResult.Value(i, aPoint, aUV);
+    const gp_Pnt2d& aCylinderUV = aUV.At(theReversed ? 1 : 0);
+    const gp_Pnt2d& aPlaneUV    = aUV.At(theReversed ? 0 : 1);
+    EXPECT_LE(aPoint.At(0).Distance(ElSLib::Value(aCylinderUV.X(), aCylinderUV.Y(), aCylinder)),
+              Precision::Confusion());
+    EXPECT_LE(aPoint.At(0).Distance(ElSLib::Value(aPlaneUV.X(), aPlaneUV.Y(), aPlane)),
+              Precision::Confusion());
+  }
+}
+
+} // namespace
+
+TEST(ApproxInt_MultiLineTest, SurfaceResamplingSeparatesSpacingFromTurning)
+{
+  const occ::handle<Adaptor3d_Surface> aFirst =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pln(gp_Ax3(gp::Origin(), gp::DZ(), gp::DX()))),
+                            -1.0,
+                            1.0,
+                            -1.0,
+                            1.0);
+  const occ::handle<Adaptor3d_Surface> aSecond =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pln(gp_Ax3(gp::Origin(), gp::DX(), gp::DY()))),
+                            -1.0,
+                            1.0,
+                            -1.0,
+                            1.0);
+  GeomInt_ThePrmPrmSvSurfacesOfWLApprox aSurfaces(aFirst, aSecond);
+  checkResamplingTurn<IntPatch_WLine, GeomInt_TheMultiLineOfWLApprox>(aSurfaces);
+}
+
+TEST(ApproxInt_MultiLineTest, FaceResamplingSeparatesSpacingFromTurning)
+{
+  BRepBuilderAPI_MakeFace aFirstFace(gp_Pln(gp_Ax3(gp::Origin(), gp::DZ(), gp::DX())),
+                                     -1.0,
+                                     1.0,
+                                     -1.0,
+                                     1.0);
+  BRepBuilderAPI_MakeFace aSecondFace(gp_Pln(gp_Ax3(gp::Origin(), gp::DX(), gp::DY())),
+                                      -1.0,
+                                      1.0,
+                                      -1.0,
+                                      1.0);
+  ASSERT_TRUE(aFirstFace.IsDone());
+  ASSERT_TRUE(aSecondFace.IsDone());
+  const BRepAdaptor_Surface              aFirst(aFirstFace.Face());
+  const BRepAdaptor_Surface              aSecond(aSecondFace.Face());
+  BRepApprox_ThePrmPrmSvSurfacesOfApprox aSurfaces(aFirst, aSecond);
+  checkResamplingTurn<BRepApprox_ApproxLine, BRepApprox_TheMultiLineOfApprox>(aSurfaces);
+}
+
+TEST(ApproxInt_MultiLineTest, SurfaceResamplingKeepsPointsOnBothSurfaces)
+{
+  const IntSurf_Quadric                 aCylinder(gp_Cylinder(gp_Ax3(), 1.0));
+  const occ::handle<Adaptor3d_Surface>  aPlane = new GeomAdaptor_Surface(new Geom_Plane(gp_Pln()));
+  GeomInt_TheImpPrmSvSurfacesOfWLApprox aForward(aCylinder, aPlane);
+  GeomInt_TheImpPrmSvSurfacesOfWLApprox aReversed(aPlane, aCylinder);
+  checkResamplingCircle<IntPatch_WLine, GeomInt_TheMultiLineOfWLApprox>(aForward, false);
+  checkResamplingCircle<IntPatch_WLine, GeomInt_TheMultiLineOfWLApprox>(aReversed, true);
+}
+
+TEST(ApproxInt_MultiLineTest, FaceResamplingKeepsPointsOnBothSurfaces)
+{
+  const IntSurf_Quadric   aCylinder(gp_Cylinder(gp_Ax3(), 1.0));
+  BRepBuilderAPI_MakeFace aFace(gp_Pln(), -1.0, 1.0, -1.0, 1.0);
+  ASSERT_TRUE(aFace.IsDone());
+  const BRepAdaptor_Surface              aPlane(aFace.Face());
+  BRepApprox_TheImpPrmSvSurfacesOfApprox aForward(aCylinder, aPlane);
+  BRepApprox_TheImpPrmSvSurfacesOfApprox aReversed(aPlane, aCylinder);
+  checkResamplingCircle<BRepApprox_ApproxLine, BRepApprox_TheMultiLineOfApprox>(aForward, false);
+  checkResamplingCircle<BRepApprox_ApproxLine, BRepApprox_TheMultiLineOfApprox>(aReversed, true);
+}
+
+TEST(IntPatch_WalkingTest, ImplicitSurfaceApproximationKeepsEvaluationState)
+{
+  const occ::handle<Adaptor3d_Surface> aPlane = new GeomAdaptor_Surface(new Geom_Plane(gp_Pln()));
+  checkImplicitApproximationCache<GeomInt_TheImpPrmSvSurfacesOfWLApprox>(aPlane);
+}
+
+TEST(IntPatch_WalkingTest, ImplicitFaceApproximationKeepsEvaluationState)
+{
+  BRepBuilderAPI_MakeFace aFace(gp_Pln(), -1.0, 1.0, -1.0, 1.0);
+  ASSERT_TRUE(aFace.IsDone());
+  const BRepAdaptor_Surface aPlane(aFace.Face());
+  checkImplicitApproximationCache<BRepApprox_TheImpPrmSvSurfacesOfApprox>(aPlane);
+}
+
+namespace
+{
+//==================================================================================================
+
+template <class TheLine, class TheApproximation, class TheSurface>
+void checkApproximationFailure(const TheSurface& thePlane, const TheSurface& theCylinder)
+{
+  constexpr int    aNbPoints  = 5;
+  constexpr double aTolerance = Precision::Confusion();
+  TheApproximation anApproximation;
+  anApproximation.SetParameters(aTolerance, aTolerance, 2, 2, 0, aNbPoints, false);
+  for (int aRun = 0; aRun < 3; ++aRun)
+  {
+    SCOPED_TRACE(aRun);
+    const bool                          toFit       = aRun == 1;
+    const double                        anAngleSpan = toFit ? 0.001 : 2.0 * M_PI;
+    const occ::handle<IntSurf_LineOn2S> aPoints     = new IntSurf_LineOn2S();
+    for (int i = 0; i < aNbPoints; ++i)
+    {
+      const double    anAngle = anAngleSpan * i / (aNbPoints - 1);
+      const double    aX = std::cos(anAngle), aY = std::sin(anAngle);
+      IntSurf_PntOn2S aPoint;
+      aPoint.SetValue(gp_Pnt(aX, aY, 0.0), aX, aY, anAngle, 0.0);
+      aPoints->Add(aPoint);
+    }
+    const occ::handle<TheLine> aLine = new TheLine(aPoints, false);
+    anApproximation.Perform(thePlane, theCylinder, aLine, true, false, false, 1, aNbPoints);
+    ASSERT_EQ(anApproximation.IsDone(), toFit);
+    if (!toFit)
+    {
+      continue;
+    }
+    const AppParCurves_MultiBSpCurve& aResult = anApproximation.Value(1);
+    ASSERT_EQ(aResult.NbCurves(), 1);
+    NCollection_Array1<gp_Pnt> aPoles(1, aResult.NbPoles());
+    aResult.Curve(1, aPoles);
+    const occ::handle<Geom_BSplineCurve> aCurve =
+      new Geom_BSplineCurve(aPoles, aResult.Knots(), aResult.Multiplicities(), aResult.Degree());
+    const GeomAdaptor_Curve anAdaptor(aCurve);
+    constexpr int           aNbSamples = 16;
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aParameter =
+        aCurve->FirstParameter()
+        + (aCurve->LastParameter() - aCurve->FirstParameter()) * i / aNbSamples;
+      const gp_Pnt aPoint = anAdaptor.EvalD0(aParameter);
+      EXPECT_NEAR(std::hypot(aPoint.X(), aPoint.Y()), 1.0, aTolerance);
+      EXPECT_NEAR(aPoint.Z(), 0.0, aTolerance);
+    }
+  }
+}
+} // namespace
+
+TEST(ApproxInt_ApproxTest, SurfaceReportsUnreachedTolerance)
+{
+  const occ::handle<Adaptor3d_Surface> aPlane = new GeomAdaptor_Surface(new Geom_Plane(gp_Pln()));
+  const occ::handle<Adaptor3d_Surface> aCylinder =
+    new GeomAdaptor_Surface(new Geom_CylindricalSurface(gp_Cylinder(gp_Ax3(), 1.0)));
+  checkApproximationFailure<IntPatch_WLine, GeomInt_WLApprox>(aPlane, aCylinder);
+}
+
+TEST(ApproxInt_ApproxTest, FaceReportsUnreachedTolerance)
+{
+  BRepBuilderAPI_MakeFace aPlaneFace(gp_Pln(), -2.0, 2.0, -2.0, 2.0);
+  BRepBuilderAPI_MakeFace aCylinderFace(gp_Cylinder(gp_Ax3(), 1.0), 0.0, 2.0 * M_PI, -1.0, 1.0);
+  ASSERT_TRUE(aPlaneFace.IsDone());
+  ASSERT_TRUE(aCylinderFace.IsDone());
+  const BRepAdaptor_Surface aPlane(aPlaneFace.Face()), aCylinder(aCylinderFace.Face());
+  checkApproximationFailure<BRepApprox_ApproxLine, BRepApprox_Approx>(aPlane, aCylinder);
+}
+
+//==================================================================================================
+
+TEST(IntPatch_WalkingTest, ShortSubrangesPreserveSurfaceAccuracy)
+{
+  const double aCoordinates[][3] = {
+    {0, 0, -5.1},
+    {4.07532146808326, 7.22269932110671, -5.09999999999999},
+    {16.8843748832916, 4.96145448747163, -5.10000000000001},
+    {38.1484191375938, 23.2187231680138, -5.09999999999999},
+    {19.6238528888437, 58.7473213631888, -5.10000000000001},
+    {5.47634115036741, 70.8683779090066, -5.09999999999998},
+    {-13.7509651710097, 90.6382395206007, -5.10000000000001},
+    {-29.3218813389176, 100.841909668458, -5.09999999999999},
+    {-41.4368424510491, 103.083452055541, -5.1},
+    {0, 0, 4.61170555704949},
+    {3.82437075092074, 7.23978697999829, 4.6117055570495},
+    {17.2027492773699, 5.3063333687735, 4.61170555704946},
+    {36.6479742204899, 25.0801707707339, 4.61170555704954},
+    {21.8254468649805, 57.2660375503142, 4.61170555704943},
+    {2.93336679334539, 71.4995050502465, 4.6117055570495},
+    {-14.498204405723, 89.7265715721086, 4.61170555704943},
+    {-35.778413402781, 99.1737311786689, 4.6117055570495},
+    {-46.2683679126628, 100.761464904549, 4.61170555704949},
+    {0, 0, 12.2097326220285},
+    {5.15231604531722, 6.25005766185982, 12.2097326220284},
+    {17.1426842348232, 3.70035121338721, 12.2097326220286},
+    {41.4937368567691, 16.4622793167896, 12.2097326220283},
+    {29.7890220611776, 56.6228234952865, 12.2097326220287},
+    {6.28432593930254, 73.4788071728172, 12.2097326220284},
+    {-20.2145577990804, 89.9644310262281, 12.2097326220287},
+    {-31.8337446014426, 100.748344865393, 12.2097326220285},
+    {-43.4691187193245, 103.402372211472, 12.2097326220285},
+    {0, 0, 26.9445459006783},
+    {7.45413898898124, 1.96615204594949, 26.9445459006783},
+    {18.6355102895789, 0.399448619127453, 26.9445459006782},
+    {43.752012734361, 3.32860367537667, 26.9445459006784},
+    {62.7000665876363, 29.03058877219, 26.9445459006781},
+    {39.5238865888819, 69.8908248399692, 26.9445459006783},
+    {4.57994160388073, 91.2207365984017, 26.9445459006782},
+    {-3.15976601272166, 106.716028473289, 26.9445459006783},
+    {-9.37254707971436, 112.24813744932, 26.9445459006783},
+    {0, 0, 38.3300508581958},
+    {5.81584363519715, -2.58717723289163, 38.3300508581957},
+    {18.8051466067143, -5.10751507399171, 38.330050858196},
+    {39.9258113429699, -9.07491835492431, 38.3300508581957},
+    {63.4763437493813, -15.312788932262, 38.330050858196},
+    {57.7355450456725, 65.9437632171674, 38.3300508581958},
+    {5.98258524250968, 88.2174891571841, 38.3300508581959},
+    {-9.01368561061726, 106.198342938881, 38.3300508581958},
+    {-20.1534895952446, 108.795786209942, 38.3300508581958},
+    {0, -0, 44.76591},
+    {5.43621045502826, -2.983292965871, 44.76591},
+    {18.7350256971381, -5.42246471868835, 44.7659099999999},
+    {39.1135004609102, -10.8451112170494, 44.76591},
+    {61.4720749824439, -18.4555336308943, 44.7659099999999},
+    {61.9114733486087, 63.8593471742139, 44.76591},
+    {6.73801587599916, 88.9340282920019, 44.76591},
+    {-4.95616885353499, 106.571883518454, 44.7659099999999},
+    {-15.7227798068713, 109.98183575093, 44.76591},
+  };
+  NCollection_Array2<gp_Pnt> aPoles(1, 6, 1, 9);
+  for (size_t i = 0; i < aPoles.Size(); ++i)
+  {
+    aPoles.ChangeAt(i) = gp_Pnt(aCoordinates[i][0], aCoordinates[i][1], aCoordinates[i][2]);
+  }
+  const double aUKnotValues[] = {0.0, 0.259284280069896, 0.662667125329985, 1.0};
+  const int    aUMultValues[] = {4, 1, 1, 4};
+  const double aVKnotValues[] = {0.0,
+                                 0.104073335977061,
+                                 0.209990779146179,
+                                 0.36468787043736,
+                                 0.630152479120871,
+                                 0.843214221453166,
+                                 1.0};
+  const int    aVMultValues[] = {4, 1, 1, 1, 1, 1, 4};
+  const NCollection_Array1<double> aUKnots(aUKnotValues[0], 1, 4);
+  const NCollection_Array1<double> aVKnots(aVKnotValues[0], 1, 7);
+  const NCollection_Array1<int>    aUMults(aUMultValues[0], 1, 4);
+  const NCollection_Array1<int>    aVMults(aVMultValues[0], 1, 7);
+  const occ::handle<Geom_Surface>  aSpline =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+  const gp_Pnt aGeneratorPoints[] = {
+    gp_Pnt(-1.3535533683419, -3.76402620594628, 0),
+    gp_Pnt(-1.3535533683419, -3.76402620594628, 18.395644884786),
+    gp_Pnt(-1.3535533683419, -3.76402620594628, 39.66591),
+    gp_Pnt(-6.75302504833528, -18.7791363427977, 39.66591),
+    gp_Pnt(-35.8691642610603, -99.7466944575763, 39.66591),
+  };
+  const NCollection_Array1<gp_Pnt> aGeneratorPoles(aGeneratorPoints[0], 1, 5);
+  const occ::handle<Geom_Surface>  aRevolution =
+    new Geom_SurfaceOfRevolution(new Geom_BezierCurve(aGeneratorPoles),
+                                 gp_Ax1(gp::Origin(), gp::DZ()));
+  GeomAPI_ProjectPointOnSurf aSplineProjection, aRevolutionProjection;
+  aSplineProjection.Init(aSpline, 0.0, 1.0, 0.0, 1.0, Precision::Confusion());
+  aRevolutionProjection.Init(aRevolution, 0.0, 2.0 * M_PI, 0.0, 1.0, Precision::Confusion());
+  for (const bool isReversed : {false, true})
+  {
+    SCOPED_TRACE(isReversed);
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(isReversed ? aRevolution : aSpline,
+                           isReversed ? aSpline : aRevolution,
+                           Precision::Confusion(),
+                           true);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_EQ(anIntersection.NbLines(), 1);
+    const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(1);
+    ASSERT_FALSE(aCurve.IsNull());
+    double aMaximum = 0.0;
+    for (size_t i = 0; i <= 300; ++i)
+    {
+      const double aParameter =
+        aCurve->FirstParameter()
+        + (aCurve->LastParameter() - aCurve->FirstParameter()) * double(i) / 300.0;
+      const gp_Pnt aPoint = aCurve->EvalD0(aParameter);
+      aSplineProjection.Perform(aPoint);
+      aRevolutionProjection.Perform(aPoint);
+      ASSERT_TRUE(aSplineProjection.IsDone());
+      ASSERT_TRUE(aRevolutionProjection.IsDone());
+      ASSERT_GT(aSplineProjection.NbPoints(), 0);
+      ASSERT_GT(aRevolutionProjection.NbPoints(), 0);
+      aMaximum = std::max(
+        {aMaximum, aSplineProjection.LowerDistance(), aRevolutionProjection.LowerDistance()});
+    }
+    EXPECT_LE(aMaximum, 2.0 * Precision::Confusion());
+  }
+}
+
+//==================================================================================================
+
+namespace
+{
+//==================================================================================================
+
+void checkRevolutionIntersectionCoverage(const Geom_SurfaceOfRevolution& theFirst,
+                                         const Geom_SurfaceOfRevolution& theSecond,
+                                         const GeomInt_IntSS&            theIntersection)
+{
+  const occ::handle<Geom_Circle> aFirstCircle = occ::down_cast<Geom_Circle>(theFirst.BasisCurve());
+  const occ::handle<Geom_Circle> aSecondCircle =
+    occ::down_cast<Geom_Circle>(theSecond.BasisCurve());
+  ASSERT_FALSE(aFirstCircle.IsNull());
+  ASSERT_FALSE(aSecondCircle.IsNull());
+  const std::array<gp_Pnt, 2> anAxes   = {theFirst.Axis().Location(), theSecond.Axis().Location()};
+  const std::array<gp_Pnt, 2> aCentres = {aFirstCircle->Location(), aSecondCircle->Location()};
+  ASSERT_DOUBLE_EQ(aFirstCircle->Radius(), aSecondCircle->Radius());
+  ASSERT_DOUBLE_EQ(aCentres[0].Z(), aCentres[1].Z());
+  for (const gp_Dir& aDirection : {theFirst.Axis().Direction(), theSecond.Axis().Direction()})
+  {
+    ASSERT_DOUBLE_EQ(aDirection.X(), 0.0);
+    ASSERT_DOUBLE_EQ(aDirection.Y(), 0.0);
+    ASSERT_DOUBLE_EQ(std::abs(aDirection.Z()), 1.0);
+  }
+  for (const gp_Dir& aNormal :
+       {aFirstCircle->Axis().Direction(), aSecondCircle->Axis().Direction()})
+  {
+    ASSERT_DOUBLE_EQ(aNormal.X(), 0.0);
+    ASSERT_DOUBLE_EQ(std::abs(aNormal.Y()), 1.0);
+    ASSERT_DOUBLE_EQ(aNormal.Z(), 0.0);
+  }
+
+  // Each horizontal section contains two circles per surface. Their four pairs
+  // give independent intersection points, including the tangent junctions.
+  const double aRadius   = aFirstCircle->Radius();
+  const double aDX       = anAxes[1].X() - anAxes[0].X();
+  const double aDY       = anAxes[1].Y() - anAxes[0].Y();
+  const double aDistance = std::hypot(aDX, aDY);
+  ASSERT_GT(aDistance, 0.0);
+  constexpr int                                                aNbIntervals = 300;
+  NCollection_LinearVector<std::tuple<gp_Pnt, double, size_t>> aQueries;
+  aQueries.Reserve(8 * (aNbIntervals + 1));
+  for (int aLevel = 0; aLevel <= aNbIntervals; ++aLevel)
+  {
+    const double anAngle = -M_PI / 2.0 + M_PI * double(aLevel) / aNbIntervals;
+    const double aHeight = aRadius * std::sin(anAngle);
+    const double aSide   = aRadius * std::abs(std::cos(anAngle));
+    for (size_t aBranch1 = 0; aBranch1 < 2; ++aBranch1)
+    {
+      for (size_t aBranch2 = 0; aBranch2 < 2; ++aBranch2)
+      {
+        const double aMeridian1 =
+          aCentres[0].X() - anAxes[0].X() + (aBranch1 == 0 ? aSide : -aSide);
+        const double aMeridian2 =
+          aCentres[1].X() - anAxes[1].X() + (aBranch2 == 0 ? aSide : -aSide);
+        const double aRadius1 = std::hypot(aMeridian1, aCentres[0].Y() - anAxes[0].Y());
+        const double aRadius2 = std::hypot(aMeridian2, aCentres[1].Y() - anAxes[1].Y());
+        if (aRadius1 + aRadius2 < aDistance || std::abs(aRadius1 - aRadius2) > aDistance)
+        {
+          continue;
+        }
+        const double anAlong =
+          (aRadius1 * aRadius1 - aRadius2 * aRadius2 + aDistance * aDistance) / (2.0 * aDistance);
+        const double aHalfSquared = (aRadius1 - anAlong) * (aRadius1 + anAlong);
+        ASSERT_GE(aHalfSquared, 0.0);
+        const double aHalf = std::sqrt(aHalfSquared);
+        for (const double aSign : {-1.0, 1.0})
+        {
+          const gp_Pnt aPoint(anAxes[0].X() + (anAlong * aDX - aSign * aHalf * aDY) / aDistance,
+                              anAxes[0].Y() + (anAlong * aDY + aSign * aHalf * aDX) / aDistance,
+                              aCentres[0].Z() + aHeight);
+          aQueries.Append(std::make_tuple(aPoint, RealLast(), 2 * aBranch1 + aBranch2));
+        }
+      }
+    }
+  }
+
+  GeomAPI_ProjectPointOnCurve aProjection;
+  for (int aCurveIndex = 1; aCurveIndex <= theIntersection.NbLines(); ++aCurveIndex)
+  {
+    const occ::handle<Geom_Curve>& aCurve = theIntersection.Line(aCurveIndex);
+    ASSERT_FALSE(aCurve.IsNull());
+    const double aFirst = aCurve->FirstParameter();
+    const double aLast  = aCurve->LastParameter();
+    aProjection.Init(aCurve, aFirst, aLast);
+    for (auto& [aPoint, aMinimum, aBranch] : aQueries)
+    {
+      aMinimum = std::min({aMinimum,
+                           aPoint.Distance(aCurve->EvalD0(aFirst)),
+                           aPoint.Distance(aCurve->EvalD0(aLast))});
+      aProjection.Perform(aPoint);
+      if (aProjection.NbPoints() > 0)
+      {
+        aMinimum = std::min(aMinimum, aProjection.LowerDistance());
+      }
+    }
+  }
+  std::array<double, 4> aMaximum{};
+  std::array<size_t, 4> aSampleCounts{};
+  for (const auto& [aPoint, aMinimum, aBranch] : aQueries)
+  {
+    aMaximum[aBranch] = std::max(aMaximum[aBranch], aMinimum);
+    ++aSampleCounts[aBranch];
+  }
+  for (size_t aBranch = 0; aBranch < aMaximum.size(); ++aBranch)
+  {
+    SCOPED_TRACE(aBranch);
+    EXPECT_GT(aSampleCounts[aBranch], 0u);
+    // Check coverage near tangent junctions at curve approximation precision.
+    EXPECT_LE(aMaximum[aBranch], 2.0 * Precision::Approximation());
+  }
+}
+} // namespace
+
+//==================================================================================================
+
+TEST(IntPatch_WalkingTest, TangentReversalPreservesIntersectionBranch)
+{
+  const occ::handle<Geom_SurfaceOfRevolution> aFirst = new Geom_SurfaceOfRevolution(
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.4959754943848, 5.824995994568, -17.72396278381),
+                           gp_Dir(0, 1, 0),
+                           gp_Dir(0.999847661852972, 0, -0.0174543142845826)),
+                    0.2999649047852),
+    gp_Ax1(gp_Pnt(2.150002479553, 5.824993610382, -16.29999542236), gp_Dir(0, 0, -1)));
+  const occ::handle<Geom_SurfaceOfRevolution> aSecond = new Geom_SurfaceOfRevolution(
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.4959752559662, 3.074996232986, -17.72396278381),
+                           gp_Dir(0, 1, 0),
+                           gp_Dir(0.999847662095117, 0, -0.0174543004136144)),
+                    0.2999649047852),
+    gp_Ax1(gp_Pnt(2.150002002716, 3.074993848801, -16.29999542236), gp_Dir(0, 0, -1)));
+  GeomAPI_ProjectPointOnSurf aProjection1, aProjection2;
+  aProjection1.Init(aFirst, 0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, Precision::Confusion());
+  aProjection2.Init(aSecond, 0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, Precision::Confusion());
+  for (const bool isReversed : {false, true})
+  {
+    SCOPED_TRACE(isReversed);
+    GeomInt_IntSS anIntersection;
+    anIntersection.Perform(isReversed ? aSecond : aFirst,
+                           isReversed ? aFirst : aSecond,
+                           Precision::Confusion(),
+                           true);
+    ASSERT_TRUE(anIntersection.IsDone());
+    ASSERT_GT(anIntersection.NbLines(), 0);
+    checkRevolutionIntersectionCoverage(*aFirst, *aSecond, anIntersection);
+    for (int aCurveIndex = 1; aCurveIndex <= anIntersection.NbLines(); ++aCurveIndex)
+    {
+      SCOPED_TRACE(aCurveIndex);
+      const occ::handle<Geom_Curve>& aCurve = anIntersection.Line(aCurveIndex);
+      ASSERT_FALSE(aCurve.IsNull());
+      double aMaximum = 0.0;
+      for (int aPointIndex = 0; aPointIndex <= 300; ++aPointIndex)
+      {
+        const double aParameter =
+          aCurve->FirstParameter()
+          + (aCurve->LastParameter() - aCurve->FirstParameter()) * aPointIndex / 300.0;
+        const gp_Pnt aPoint = aCurve->EvalD0(aParameter);
+        aProjection1.Perform(aPoint);
+        aProjection2.Perform(aPoint);
+        ASSERT_TRUE(aProjection1.IsDone());
+        ASSERT_TRUE(aProjection2.IsDone());
+        ASSERT_GT(aProjection1.NbPoints(), 0);
+        ASSERT_GT(aProjection2.NbPoints(), 0);
+        aMaximum = std::max({aMaximum, aProjection1.LowerDistance(), aProjection2.LowerDistance()});
+      }
+      EXPECT_LE(aMaximum, 2.0 * Precision::Approximation());
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(IntPatch_WalkingTest, BoundaryCorrectionRespectsDeflection)
+{
+  // The intersection is (x, x*x, 0). It can touch or cross the plane's lower V bound.
+  NCollection_Array2<gp_Pnt> aCylinderPoles(1, 3, 1, 2);
+  for (int i = 1; i <= 3; ++i)
+  {
+    const double anX     = double(i - 2);
+    const double aY      = i == 2 ? -1.0 : 1.0;
+    aCylinderPoles(i, 1) = gp_Pnt(anX, aY, -1.0);
+    aCylinderPoles(i, 2) = gp_Pnt(anX, aY, 1.0);
+  }
+  const occ::handle<GeomAdaptor_Surface> aCylinder =
+    new GeomAdaptor_Surface(new Geom_BezierSurface(aCylinderPoles));
+  constexpr double aDeflection = 1.e-5;
+  for (const double aLowerY : {-0.01, 0.0, 0.0001, 0.01})
+  {
+    SCOPED_TRACE(aLowerY);
+    NCollection_Array2<gp_Pnt> aPlanePoles(1, 2, 1, 2);
+    aPlanePoles(1, 1) = gp_Pnt(-1.0, aLowerY, 0.0);
+    aPlanePoles(1, 2) = gp_Pnt(-1.0, 1.0, 0.0);
+    aPlanePoles(2, 1) = gp_Pnt(9.0, aLowerY, 0.0);
+    aPlanePoles(2, 2) = gp_Pnt(9.0, 1.0, 0.0);
+    const occ::handle<GeomAdaptor_Surface> aPlane =
+      new GeomAdaptor_Surface(new Geom_BezierSurface(aPlanePoles));
+    const double aStartY = (0.64 - aLowerY) / (1.0 - aLowerY);
+    for (const bool isReversed : {false, true})
+    {
+      SCOPED_TRACE(isReversed);
+      for (const double aStep : {0.001, 0.01, 0.05, 0.1})
+      {
+        SCOPED_TRACE(aStep);
+        NCollection_Array1<double> aParameters(1, 4);
+        aParameters(1) = isReversed ? 0.1 : 0.02;
+        aParameters(3) = isReversed ? 0.02 : 0.1;
+        aParameters(2) = isReversed ? 0.5 : aStartY;
+        aParameters(4) = isReversed ? aStartY : 0.5;
+        IntWalk_PWalking aWalk(isReversed ? aCylinder : aPlane,
+                               isReversed ? aPlane : aCylinder,
+                               Precision::Confusion(),
+                               Precision::Confusion(),
+                               aDeflection,
+                               aStep);
+        aWalk.Perform(aParameters, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0);
+        ASSERT_TRUE(aWalk.IsDone());
+        ASSERT_GT(aWalk.NbPoints(), 2);
+        double aMinX = 1.0, aMaxX = -1.0, aMaximumDeflection = 0.0;
+        for (int i = 1; i <= aWalk.NbPoints(); ++i)
+        {
+          const gp_Pnt& aPoint = aWalk.Value(i).Value();
+          EXPECT_NEAR(aPoint.Y(), aPoint.X() * aPoint.X(), Precision::Confusion());
+          EXPECT_NEAR(aPoint.Z(), 0.0, Precision::Confusion());
+          EXPECT_GE(aPoint.Y(), aLowerY - Precision::Confusion());
+          aMinX = std::min(aMinX, aPoint.X());
+          aMaxX = std::max(aMaxX, aPoint.X());
+          if (i > 1)
+          {
+            const gp_Pnt& aPrevious = aWalk.Value(i - 1).Value();
+            const double  aMiddleX  = 0.5 * (aPrevious.X() + aPoint.X());
+            const gp_Pnt  aMiddle(aMiddleX, aMiddleX * aMiddleX, 0.0);
+            const gp_Vec  aChord(aPrevious, aPoint), aToMiddle(aPrevious, aMiddle);
+            if (aChord.Magnitude() > gp::Resolution())
+            {
+              aMaximumDeflection =
+                std::max(aMaximumDeflection,
+                         aChord.Crossed(aToMiddle).Magnitude() / aChord.Magnitude());
+            }
+          }
+        }
+        EXPECT_NEAR(aMinX, -1.0, Precision::Confusion());
+        EXPECT_NEAR(aMaxX, aLowerY >= 0.0 ? -std::sqrt(aLowerY) : 1.0, Precision::Confusion());
+        EXPECT_LE(aMaximumDeflection, aDeflection);
+      }
+    }
+  }
+}
+
+namespace
+{
+//==================================================================================================
+
+occ::handle<Geom_Surface> makeResamplingBezierSurface()
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 2);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 2; ++j)
+    {
+      aPoles(i, j) = gp_Pnt(50.0 * (i - 1), (i == 2 ? -2.0 : 0.0) + j - 1, 0.0);
+    }
+  }
+  // The straight intersection Y = 0 has V = 4 * U * (1 - U) on this surface.
+  return new Geom_BezierSurface(aPoles);
+}
+
+//==================================================================================================
+
+template <class TheLine, class TheMultiLine, class TheSurfaceFunction>
+void checkResamplingCurvedParameters(TheSurfaceFunction& theSurfaces, const bool theReversed)
+{
+  const occ::handle<IntSurf_LineOn2S> aPoints = new IntSurf_LineOn2S();
+  for (const double aU : {0.0, 0.5, 1.0})
+  {
+    const double    aV = 4.0 * aU * (1.0 - aU);
+    IntSurf_PntOn2S aPoint;
+    const gp_Pnt    aPosition(100.0 * aU, 0.0, 0.0);
+    if (theReversed)
+    {
+      aPoint.SetValue(aPosition, aPosition.X(), 0.0, aU, aV);
+    }
+    else
+    {
+      aPoint.SetValue(aPosition, aU, aV, aPosition.X(), 0.0);
+    }
+    aPoints->Add(aPoint);
+  }
+  const occ::handle<TheLine> aLine = new TheLine(aPoints, false);
+  const TheMultiLine
+    aSource(aLine, &theSurfaces, 1, 2, true, true, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, 1, 3);
+  const TheMultiLine aResult = aSource.MakeMLBetween(1, 3, 3);
+  ASSERT_GE(aResult.LastPoint() - aResult.FirstPoint() + 1, 6);
+  const TheMultiLine aRefined = aResult.MakeMLBetween(aResult.FirstPoint(), aResult.LastPoint(), 3);
+  EXPECT_GT(aRefined.LastPoint() - aRefined.FirstPoint(),
+            aResult.LastPoint() - aResult.FirstPoint());
+
+  NCollection_Array1<gp_Pnt>   aPoint(1, 1);
+  NCollection_Array1<gp_Pnt2d> aUV(1, 2);
+  double                       aPreviousX = -1.0;
+  std::array<bool, 3>          hasOriginal{};
+  for (int i = aResult.FirstPoint(); i <= aResult.LastPoint(); ++i)
+  {
+    aResult.Value(i, aPoint, aUV);
+    const gp_Pnt&   aPosition = aPoint.At(0);
+    const gp_Pnt2d& aBezierUV = aUV.At(theReversed ? 1 : 0);
+    const gp_Pnt2d& aPlaneUV  = aUV.At(theReversed ? 0 : 1);
+    EXPECT_GT(aPosition.X(), aPreviousX);
+    EXPECT_NEAR(aPosition.Y(), 0.0, Precision::Confusion());
+    EXPECT_NEAR(aPosition.Z(), 0.0, Precision::Confusion());
+    EXPECT_NEAR(aPosition.X(), 100.0 * aBezierUV.X(), Precision::Confusion());
+    EXPECT_NEAR(aBezierUV.Y(),
+                4.0 * aBezierUV.X() * (1.0 - aBezierUV.X()),
+                Precision::PConfusion());
+    EXPECT_NEAR(aPlaneUV.X(), aPosition.X(), Precision::PConfusion());
+    EXPECT_NEAR(aPlaneUV.Y(), 0.0, Precision::PConfusion());
+    for (size_t j = 0; j < hasOriginal.size(); ++j)
+    {
+      hasOriginal[j] = hasOriginal[j] || aPosition.X() == 50.0 * j;
+    }
+    aPreviousX = aPosition.X();
+  }
+  EXPECT_DOUBLE_EQ(aPreviousX, 100.0);
+  for (const bool hasPoint : hasOriginal)
+  {
+    EXPECT_TRUE(hasPoint);
+  }
+}
+} // namespace
+
+TEST(ApproxInt_MultiLineTest, SurfaceResamplingUsesSpatialTurning)
+{
+  const occ::handle<Adaptor3d_Surface> aBezier =
+    new GeomAdaptor_Surface(makeResamplingBezierSurface());
+  const occ::handle<Adaptor3d_Surface> aPlane =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pln(gp_Ax3(gp::Origin(), gp::DY(), gp::DX()))));
+  GeomInt_ThePrmPrmSvSurfacesOfWLApprox aForward(aBezier, aPlane);
+  GeomInt_ThePrmPrmSvSurfacesOfWLApprox aReversed(aPlane, aBezier);
+  checkResamplingCurvedParameters<IntPatch_WLine, GeomInt_TheMultiLineOfWLApprox>(aForward, false);
+  checkResamplingCurvedParameters<IntPatch_WLine, GeomInt_TheMultiLineOfWLApprox>(aReversed, true);
+}
+
+TEST(ApproxInt_MultiLineTest, FaceResamplingUsesSpatialTurning)
+{
+  BRepBuilderAPI_MakeFace aBezierFace(makeResamplingBezierSurface(), Precision::Confusion());
+  BRepBuilderAPI_MakeFace aPlaneFace(gp_Pln(gp_Ax3(gp::Origin(), gp::DY(), gp::DX())),
+                                     0.0,
+                                     100.0,
+                                     -1.0,
+                                     1.0);
+  ASSERT_TRUE(aBezierFace.IsDone());
+  ASSERT_TRUE(aPlaneFace.IsDone());
+  const BRepAdaptor_Surface              aBezier(aBezierFace.Face());
+  const BRepAdaptor_Surface              aPlane(aPlaneFace.Face());
+  BRepApprox_ThePrmPrmSvSurfacesOfApprox aForward(aBezier, aPlane);
+  BRepApprox_ThePrmPrmSvSurfacesOfApprox aReversed(aPlane, aBezier);
+  checkResamplingCurvedParameters<BRepApprox_ApproxLine, BRepApprox_TheMultiLineOfApprox>(aForward,
+                                                                                          false);
+  checkResamplingCurvedParameters<BRepApprox_ApproxLine, BRepApprox_TheMultiLineOfApprox>(aReversed,
+                                                                                          true);
 }
