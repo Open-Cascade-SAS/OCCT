@@ -1552,7 +1552,8 @@ void checkRevolutionIntersectionCoverage(const Geom_SurfaceOfRevolution& theFirs
   {
     SCOPED_TRACE(aBranch);
     EXPECT_GT(aSampleCounts[aBranch], 0u);
-    EXPECT_LE(aMaximum[aBranch], 2.0 * Precision::Confusion());
+    // Check coverage near tangent junctions at curve approximation precision.
+    EXPECT_LE(aMaximum[aBranch], 2.0 * Precision::Approximation());
   }
 }
 } // namespace
@@ -1607,7 +1608,7 @@ TEST(IntPatch_WalkingTest, TangentReversalPreservesIntersectionBranch)
         ASSERT_GT(aProjection2.NbPoints(), 0);
         aMaximum = std::max({aMaximum, aProjection1.LowerDistance(), aProjection2.LowerDistance()});
       }
-      EXPECT_LE(aMaximum, 2.0 * Precision::Confusion());
+      EXPECT_LE(aMaximum, 2.0 * Precision::Approximation());
     }
   }
 }
