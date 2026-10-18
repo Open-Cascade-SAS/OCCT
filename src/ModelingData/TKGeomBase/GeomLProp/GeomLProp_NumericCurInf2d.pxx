@@ -105,7 +105,7 @@ public:
                   LProp_CurAndInf&                 theResult)
   {
     myIsDone = true;
-    GeomLProp_FuncCurNul2d aFunc(theCurve);
+    GeomLProp_FuncCurNul2d aFunc(theCurve, theUMin, theUMax);
     constexpr double       anEpsX     = 1.e-6;
     constexpr double       anEpsF     = 1.e-6;
     constexpr int          aNbSamples = 30;

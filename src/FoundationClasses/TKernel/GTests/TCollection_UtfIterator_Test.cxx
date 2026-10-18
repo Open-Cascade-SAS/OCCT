@@ -85,7 +85,7 @@ TEST(TCollection_UtfIteratorTest, EveryTwoByteInput)
 
 TEST(TCollection_UtfIteratorTest, CopiesBoundsAndFailedReset)
 {
-  const std::array<char, 4>           aData = {'A', 0, char(0xFF), 'B'};
+  const std::array<char, 4>           aData = {'A', 0, '\xFF', 'B'};
   TCollection_UtfIterator<char>       aRead(aData);
   const TCollection_UtfIterator<char> aCopy = aRead;
   TCollection_UtfIterator<char>       aShort(aData.data(), 1);
@@ -668,7 +668,7 @@ TEST(TCollection_UtfIteratorTest, ExplicitNullTerminatedInput)
   EXPECT_FALSE(Utf8("", Utf8::InputMode::NullTerminated).More());
 
   // The terminator is excluded from decoding even after a truncated prefix.
-  const std::array<char, 2> aTruncated = {char(0xE2), 0};
+  const std::array<char, 2> aTruncated = {'\xE2', 0};
   Utf8                      aBad(aTruncated.data(), Utf8::InputMode::NullTerminated);
   EXPECT_FALSE(aBad.IsValid());
   EXPECT_FALSE((++aBad).More());

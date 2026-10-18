@@ -64,5 +64,6 @@ if {$boxVolume <= 0 || $boxVolume > 28694.7} {
 checkprops ro -v $boxVolume
 
 smallview 
+donly result ra ro
 fit
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

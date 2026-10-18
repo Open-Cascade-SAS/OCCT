@@ -26,6 +26,7 @@
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -35,6 +36,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Parabola.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
@@ -42,12 +44,24 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
+#include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ProjLib_ProjectOnPlane.hxx>
 
 #include <cstdio>
+
+namespace
+{
+//===================================================================================================
+
+bool isParallel(const gp_Dir& theFirst, const gp_Dir& theSecond)
+{
+  const gp_XYZ aCross = theFirst.XYZ().Crossed(theSecond.XYZ());
+  return aCross.X() == 0.0 && aCross.Y() == 0.0 && aCross.Z() == 0.0;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -66,6 +80,35 @@ occ::handle<Geom2d_Curve> GeomProjLib::Curve2d(const occ::handle<Geom_Curve>&   
 
   GeomAdaptor_Curve   AC(C, First, Last);
   GeomAdaptor_Surface AS(S, UDeb, UFin, VDeb, VFin);
+
+  if (AS.GetType() == GeomAbs_Plane && AC.GetType() == GeomAbs_OffsetCurve)
+  {
+    const gp_Pln                        aPlane   = AS.Plane();
+    const occ::handle<Geom_OffsetCurve> anOffset = AC.OffsetCurve();
+    const GeomAdaptor_Curve             aBasisAdaptor(anOffset->BasisCurve(), First, Last);
+    if (isParallel(anOffset->Direction(), aPlane.Axis().Direction())
+        && (aBasisAdaptor.GetType() == GeomAbs_BSplineCurve
+            || aBasisAdaptor.GetType() == GeomAbs_BezierCurve))
+    {
+      const occ::handle<Geom2d_Curve> aBasis =
+        Curve2d(anOffset->BasisCurve(), First, Last, S, UDeb, UFin, VDeb, VFin, Tolerance);
+      if (aBasis.IsNull())
+      {
+        return aBasis;
+      }
+      // Offset orientation follows the plane parameter axes.
+      const double aSign =
+        (aPlane.Position().Direct() ? 1.0 : -1.0)
+        * (anOffset->Direction().Dot(aPlane.Axis().Direction()) > 0.0 ? 1.0 : -1.0);
+      const occ::handle<Geom2d_Curve> aProjected =
+        new Geom2d_OffsetCurve(aBasis, aSign * anOffset->Offset(), true);
+      if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+      {
+        return new Geom2d_TrimmedCurve(aProjected, C->FirstParameter(), C->LastParameter());
+      }
+      return aProjected;
+    }
+  }
 
   occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface(AS);
   occ::handle<GeomAdaptor_Curve>   HC = new GeomAdaptor_Curve(AC);
@@ -295,11 +338,47 @@ occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve
                                                     const gp_Dir&                  Dir,
                                                     const bool KeepParametrization)
 {
-  GeomAdaptor_Curve              AC(Curve);
+  return ProjectOnPlane(Curve, Plane, Dir, KeepParametrization, Precision::Approximation());
+}
+
+//===================================================================================================
+
+occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve>& Curve,
+                                                    const occ::handle<Geom_Plane>& Plane,
+                                                    const gp_Dir&                  Dir,
+                                                    const bool   KeepParametrization,
+                                                    const double theTolerance)
+{
+  GeomAdaptor_Curve AC(Curve);
+  if (KeepParametrization && AC.GetType() == GeomAbs_OffsetCurve
+      && isParallel(Dir, Plane->Position().Direction()))
+  {
+    const occ::handle<Geom_OffsetCurve> anOffset = AC.OffsetCurve();
+    const GeomAdaptor_Curve             aBasisAdaptor(anOffset->BasisCurve());
+    if (isParallel(anOffset->Direction(), Plane->Position().Direction())
+        && (aBasisAdaptor.GetType() == GeomAbs_BSplineCurve
+            || aBasisAdaptor.GetType() == GeomAbs_BezierCurve))
+    {
+      const occ::handle<Geom_Curve> aBasis =
+        ProjectOnPlane(anOffset->BasisCurve(), Plane, Dir, KeepParametrization, theTolerance);
+      if (aBasis.IsNull())
+      {
+        return aBasis;
+      }
+      const occ::handle<Geom_Curve> aProjected =
+        new Geom_OffsetCurve(aBasis, anOffset->Offset(), anOffset->Direction(), true);
+      if (Curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+      {
+        return new Geom_TrimmedCurve(aProjected, AC.FirstParameter(), AC.LastParameter());
+      }
+      return aProjected;
+    }
+  }
+
   occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve(AC);
 
   ProjLib_ProjectOnPlane Proj(Plane->Position(), Dir);
-  Proj.Load(HC, Precision::Approximation(), KeepParametrization);
+  Proj.Load(HC, theTolerance, KeepParametrization);
 
   occ::handle<Geom_Curve> GC;
 

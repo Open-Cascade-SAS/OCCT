@@ -15,6 +15,10 @@
 
 #include <GeomAdaptor_Surface.hxx>
 #include <Geom_Plane.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <gp_Pnt.hxx>
 #include <gp.hxx>
 #include <gp_Pln.hxx>
 
@@ -36,4 +40,44 @@ TEST(Contap_HContToolTest, SurfaceSamplingHasNoCrossCallState)
   Contap_HContTool::SamplePoint(aFirstSurface, 1, aU, aV);
   EXPECT_DOUBLE_EQ(aU, 1.0);
   EXPECT_DOUBLE_EQ(aV, 11.0);
+}
+
+TEST(Contap_HContToolTest, UnequalSplineDegreesKeepSamplesInsideDomain)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 10);
+  for (int i = 1; i <= 4; ++i)
+  {
+    for (int j = 1; j <= 10; ++j)
+    {
+      aPoles(i, j) = gp_Pnt((i - 1) / 3.0, (j - 1) / 9.0, 0.0);
+    }
+  }
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  NCollection_Array1<int> aUMultiplicities(1, 2), aVMultiplicities(1, 2);
+  aUMultiplicities.Init(4);
+  aVMultiplicities.Init(10);
+  for (bool isExchanged : {false, true})
+  {
+    const occ::handle<Geom_BSplineSurface> aSurface =
+      new Geom_BSplineSurface(aPoles, aKnots, aKnots, aUMultiplicities, aVMultiplicities, 3, 9);
+    if (isExchanged)
+    {
+      aSurface->ExchangeUV();
+    }
+    const occ::handle<Adaptor3d_Surface> anAdaptor = new GeomAdaptor_Surface(aSurface);
+    const int                            aCount    = Contap_HContTool::NbSamplePoints(anAdaptor);
+    ASSERT_GT(aCount, 5);
+    for (int i = 1; i <= aCount; ++i)
+    {
+      SCOPED_TRACE(::testing::Message() << isExchanged << ' ' << i);
+      double aU, aV;
+      Contap_HContTool::SamplePoint(anAdaptor, i, aU, aV);
+      EXPECT_GT(aU, anAdaptor->FirstUParameter());
+      EXPECT_LT(aU, anAdaptor->LastUParameter());
+      EXPECT_GT(aV, anAdaptor->FirstVParameter());
+      EXPECT_LT(aV, anAdaptor->LastVParameter());
+    }
+  }
 }

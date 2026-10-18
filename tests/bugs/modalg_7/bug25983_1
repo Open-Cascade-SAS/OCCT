@@ -1,5 +1,3 @@
-puts "TODO OCC25983 ALL: Error :  is WRONG because number of"
-
 puts "========"
 puts "OCC25983"
 puts "========"
@@ -22,7 +20,7 @@ tmirror Clone 0 0 0 1 0 0
 bfuse result Knurling Clone
 
 checkshape result
-checknbshapes result -wire 24 -face 24 -shell 1 -solid 1
+checknbshapes result -wire 20 -face 20 -shell 1 -solid 1
 checkprops result -s 262.476 -v 54.0383
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

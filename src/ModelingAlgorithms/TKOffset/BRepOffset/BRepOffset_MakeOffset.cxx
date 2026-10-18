@@ -78,6 +78,7 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -2426,6 +2427,12 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
     } // for (; fexp.More(); fexp.Next())
   } // if (myJoin == GeomAbs_Arc)
 
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSourceFaces;
+  if (!FacesOfCone.IsEmpty())
+  {
+    TopExp::MapShapes(myShape, TopAbs_FACE, aSourceFaces);
+  }
+
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
     Iterator      Cone(FacesOfCone);
   BRep_Builder    BB;
@@ -2440,11 +2447,26 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
     TopoDS_Vertex                            anApex = TopoDS::Vertex(Cone.Key());
     const NCollection_List<TopoDS_Shape>&    Faces  = Cone.Value(); // FacesOfCone(anApex);
     NCollection_List<TopoDS_Shape>::Iterator itFaces(Faces);
-    bool                                     isFirstFace = true;
-    gp_Pnt                                   FirstPoint;
-    TopoDS_Vertex                            theFirstVertex, CurFirstVertex;
-    for (; itFaces.More(); itFaces.Next())
+    // Keep the spherical seam tied to the input face order, preserving the face cycle.
+    int aFirstFaceIndex = 0;
+    for (NCollection_List<TopoDS_Shape>::Iterator anIt(Faces); anIt.More(); anIt.Next())
     {
+      const int anIndex = aSourceFaces.FindIndex(myInitOffsetFace.Root(anIt.Value()));
+      if (anIndex != 0 && (aFirstFaceIndex == 0 || anIndex < aFirstFaceIndex))
+      {
+        aFirstFaceIndex = anIndex;
+        itFaces         = anIt;
+      }
+    }
+    bool          isFirstFace = true;
+    gp_Pnt        FirstPoint;
+    TopoDS_Vertex theFirstVertex, CurFirstVertex;
+    for (size_t aFaceIndex = 0; aFaceIndex < Faces.Size(); ++aFaceIndex, itFaces.Next())
+    {
+      if (!itFaces.More())
+      {
+        itFaces.Initialize(Faces);
+      }
       TopoDS_Face aFace = TopoDS::Face(itFaces.Value()); // TopoDS::Face(Faces.First());
       TopoDS_Edge DegEdge;                               // = TopoDS::Edge(DegEdges(aFace));
       for (Explo.Init(aFace, TopAbs_EDGE); Explo.More(); Explo.Next())

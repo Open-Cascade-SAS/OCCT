@@ -73,7 +73,7 @@ void evalControlPolygon(const size_t  theDegree,
     const double* aPoleData = thePoles + aPole * theDimension;
     for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
     {
-      theResult[aCoordinate] += aWeight * aPoleData[aCoordinate];
+      theResult[aCoordinate] += aWeight * (aPoleData[aCoordinate] - theOrigin[aCoordinate]);
     }
   }
   for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
@@ -920,11 +920,11 @@ bool BSplCLib::IsRational(const NCollection_Array1<double>& Weights,
 
 //=================================================================================================
 
-void BSplCLib::Eval(const double U,
-                    const int    Degree,
-                    double&      Knots,
-                    const int    Dimension,
-                    double&      Poles)
+namespace
+{
+//==================================================================================================
+
+void evalDeBoor(const double U, const int Degree, double& Knots, const int Dimension, double& Poles)
 {
   if (Degree == 0)
   {
@@ -932,7 +932,7 @@ void BSplCLib::Eval(const double U,
   }
   NCollection_LocalArray<double, 16> anOrigin(Dimension);
   const size_t                       aDimension = static_cast<size_t>(Dimension);
-  translateControlPolygon<false>(
+  translateControlPolygon(
     static_cast<size_t>(Degree) + 1,
     aDimension,
     [&](size_t thePole, size_t theCoordinate) -> double& {
@@ -985,7 +985,25 @@ void BSplCLib::Eval(const double U,
   }
 }
 
-//=================================================================================================
+} // namespace
+
+//==================================================================================================
+
+void BSplCLib::Eval(const double U,
+                    const int    Degree,
+                    double&      Knots,
+                    const int    Dimension,
+                    double&      Poles)
+{
+  if (Degree > 3)
+  {
+    Bohm(U, Degree, 0, Knots, Dimension, Poles);
+    return;
+  }
+  evalDeBoor(U, Degree, Knots, Dimension, Poles);
+}
+
+//==================================================================================================
 
 void BSplCLib::BoorScheme(const double U,
                           const int    Degree,
@@ -1155,16 +1173,27 @@ void BSplCLib::Derivative(const int Degree,
 
   for (step = 1; step <= Order; step++)
   {
-    double* pole = &Poles;
+    double*      pole     = &Poles;
+    const double aMinSpan = span / RealLast();
 
     for (i = step; i < Length; i++)
     {
-      double coef = -span / (knot[i + span] - knot[i]);
-
-      for (k = 0; k < Dimension; k++)
+      const double aKnotSpan = knot[i + span] - knot[i];
+      if (std::abs(aKnotSpan) > aMinSpan)
       {
-        pole[k] -= pole[k + Dimension];
-        pole[k] *= coef;
+        const double coef = -span / aKnotSpan;
+        for (k = 0; k < Dimension; k++)
+        {
+          pole[k] -= pole[k + Dimension];
+          pole[k] *= coef;
+        }
+      }
+      else
+      {
+        for (k = 0; k < Dimension; k++)
+        {
+          pole[k] = span * ((pole[k + Dimension] - pole[k]) / aKnotSpan);
+        }
       }
       pole += Dimension;
     }
@@ -1190,28 +1219,43 @@ void BSplCLib::Bohm(const double U,
   {
     throw Standard_DomainError("BSplCLib::Bohm: invalid local knot span");
   }
-  if (N == 0)
+  // Derivative evaluations share the basis across the control polygons.
+  const bool isInSpan       = U >= aKnots[Degree - 1] && U <= aKnots[Degree];
+  const bool isFirstClamped = isInSpan && U == aKnots[0];
+  const bool isLastClamped  = isInSpan && U == aKnots[2 * Degree - 1];
+  const bool toUseBasis     = (N > 0 || Degree > 3) && isInSpan;
+  if (N == 0 && (isFirstClamped || isLastClamped))
   {
-    Eval(U, Degree, Knots, Dimension, Poles);
+    if (isLastClamped)
+    {
+      std::copy_n(&Poles + static_cast<size_t>(Degree) * Dimension, Dimension, &Poles);
+    }
+    return;
+  }
+  if (N == 0 && !toUseBasis)
+  {
+    evalDeBoor(U, Degree, Knots, Dimension, Poles);
     return;
   }
   if (N < 0)
   {
     return;
   }
-  const int    aDerivativeOrder = std::min(N, Degree);
-  const size_t aDimension       = static_cast<size_t>(Dimension);
-  const size_t aNbCoordinates   = static_cast<size_t>(Degree + 1) * aDimension;
+  const int aDerivativeOrder = std::min(N, Degree);
+  // At a clamped endpoint, only adjacent poles contribute to the requested derivatives.
+  const int    aFirstPole      = isLastClamped ? Degree - aDerivativeOrder : 0;
+  const int    aNbWorkingPoles = (isFirstClamped || isLastClamped ? aDerivativeOrder : Degree) + 1;
+  const size_t aDimension      = static_cast<size_t>(Dimension);
+  const size_t aNbCoordinates  = static_cast<size_t>(Degree + 1) * aDimension;
   NCollection_LocalArray<double, 2 * (MaxDegree() + 1)> aKnotData(2 * (Degree + 1));
   aKnotData[0] = aKnots[0];
   std::copy_n(aKnots, 2 * Degree, aKnotData + 1);
   aKnotData[2 * Degree + 1] = aKnots[2 * Degree - 1];
-  // Low-degree evaluation has little repeated work to offset basis setup.
-  const bool toUseBasis = Degree > 3 && U >= aKnots[Degree - 1] && U <= aKnots[Degree];
   NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aBasisData(
-    toUseBasis ? static_cast<size_t>(Degree + 1) * (Degree + 1) : 0);
+    toUseBasis && !isFirstClamped && !isLastClamped ? static_cast<size_t>(Degree + 1) * (Degree + 1)
+                                                    : 0);
   std::optional<math_Matrix> aBasis;
-  if (toUseBasis)
+  if (aBasisData.Size() != 0)
   {
     aBasis.emplace(aBasisData, 1, Degree + 1, 1, Degree + 1);
     // Derivative control polygons share the basis for every lower degree.
@@ -1225,50 +1269,63 @@ void BSplCLib::Bohm(const double U,
   NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> anOrigin(aDimension);
   NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aResult(aDimension);
   NCollection_LocalArray<double, 4 * (MaxDegree() + 1)> aWorkPoles;
-  for (size_t aDerivative = 0; aDerivative <= static_cast<size_t>(aDerivativeOrder); ++aDerivative)
+  // Differentiation already leaves the constant control polygon at the highest order.
+  for (int aDerivative = 0; aDerivative < Degree && aDerivative <= aDerivativeOrder; ++aDerivative)
   {
-    const int aDegree = Degree - static_cast<int>(aDerivative);
-    bool      isSafe  = false;
+    const int aDegree  = Degree - aDerivative;
+    bool      hasValue = false;
     if (aBasis)
     {
-      isSafe = translateControlPolygon<true>(
-        static_cast<size_t>(aDegree) + 1,
+      const size_t aNbPoles = static_cast<size_t>(aDegree) + 1;
+      // Reserve room for every weighted pole and the restored origin.
+      const double aLimit = RealLast() / static_cast<double>(aNbPoles + 1);
+      hasValue            = true;
+      for (size_t anIndex = 0; anIndex < aNbPoles * aDimension; ++anIndex)
+      {
+        hasValue &= std::abs((&Poles)[anIndex]) <= aLimit;
+      }
+      controlPolygonOrigin(
+        aNbPoles,
         aDimension,
         [&](size_t thePole, size_t theCoordinate) -> double& {
           return (&Poles)[thePole * aDimension + theCoordinate];
         },
         &anOrigin[0]);
+      if (hasValue)
+      {
+        evalControlPolygon(static_cast<size_t>(aDegree),
+                           aDimension,
+                           &Poles,
+                           &(*aBasis)(aDegree + 1, 1),
+                           anOrigin,
+                           aResult);
+      }
+    }
+    else if (isFirstClamped || isLastClamped)
+    {
+      const size_t aPole = isFirstClamped ? 0 : static_cast<size_t>(aDegree);
+      std::copy_n(&Poles + aPole * aDimension, aDimension, &aResult[0]);
+      hasValue = true;
     }
     double* aResultData = &aResult[0];
-    if (isSafe)
-    {
-      evalControlPolygon(static_cast<size_t>(aDegree),
-                         aDimension,
-                         &Poles,
-                         &(*aBasis)(aDegree + 1, 1),
-                         anOrigin,
-                         aResult);
-    }
-    else
+    if (!hasValue)
     {
       if (aWorkPoles.Size() == 0)
       {
         aWorkPoles.Allocate(aNbCoordinates);
       }
       std::copy_n(&Poles, static_cast<size_t>(aDegree + 1) * aDimension, &aWorkPoles[0]);
-      Eval(U, aDegree, aKnotData[aDerivative + 1], Dimension, aWorkPoles[0]);
+      evalDeBoor(U, aDegree, aKnotData[aDerivative + 1], Dimension, aWorkPoles[0]);
       aResultData = &aWorkPoles[0];
-      if (aBasis)
-      {
-        for (size_t aCoordinate = 0; aCoordinate < aDimension; ++aCoordinate)
-        {
-          aResultData[aCoordinate] += anOrigin[aCoordinate];
-        }
-      }
     }
-    if (aDerivative < static_cast<size_t>(aDerivativeOrder))
+    if (aDerivative < aDerivativeOrder)
     {
-      Derivative(aDegree, aKnotData[aDerivative], Dimension, aDegree + 1, 1, Poles);
+      Derivative(aDegree,
+                 aKnotData[aDerivative + aFirstPole],
+                 Dimension,
+                 aNbWorkingPoles - aDerivative,
+                 1,
+                 (&Poles)[static_cast<size_t>(aFirstPole) * aDimension]);
     }
     // Differentiation frees the last pole for the current result.
     std::copy_n(aResultData, aDimension, &Poles + static_cast<size_t>(aDegree) * aDimension);

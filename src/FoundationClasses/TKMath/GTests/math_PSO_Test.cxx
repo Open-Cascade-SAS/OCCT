@@ -41,6 +41,55 @@ public:
   }
 };
 
+class MathPSO_CountingQuadraticFunction : public QuadraticFunction
+{
+public:
+  bool Value(const math_Vector& theX, double& theF) override;
+
+  int NbCalls() const;
+
+private:
+  int myNbCalls = 0;
+};
+
+class MathPSO_FailingFunction : public math_MultipleVarFunction
+{
+public:
+  int NbVariables() const override;
+
+  bool Value(const math_Vector&, double& theF) override;
+};
+
+//==================================================================================================
+
+bool MathPSO_CountingQuadraticFunction::Value(const math_Vector& theX, double& theF)
+{
+  ++myNbCalls;
+  return QuadraticFunction::Value(theX, theF);
+}
+
+//==================================================================================================
+
+int MathPSO_CountingQuadraticFunction::NbCalls() const
+{
+  return myNbCalls;
+}
+
+//==================================================================================================
+
+int MathPSO_FailingFunction::NbVariables() const
+{
+  return 2;
+}
+
+//==================================================================================================
+
+bool MathPSO_FailingFunction::Value(const math_Vector&, double& theF)
+{
+  theF = -1.0;
+  return false;
+}
+
 // 1D quadratic function: f(x) = (x-3)^2, minimum at x = 3
 class Quadratic1DFunction : public math_MultipleVarFunction
 {
@@ -106,6 +155,128 @@ public:
 };
 
 } // anonymous namespace
+
+TEST(MathPSOTest, StationaryParticlesReuseEvaluatedDistance)
+{
+  for (const bool hasKnownDistance : {false, true})
+  {
+    SCOPED_TRACE(hasKnownDistance);
+    MathPSO_CountingQuadraticFunction aFunc;
+    math_Vector                       aLower(1, 2, -1.0);
+    math_Vector                       anUpper(1, 2, 1.0);
+    math_Vector                       aSteps(1, 2, 0.0);
+    math_PSOParticlesPool             aPool(1, 2);
+    if (hasKnownDistance)
+    {
+      aPool.GetParticle(1)->Distance     = 5.0;
+      aPool.GetParticle(1)->BestDistance = 5.0;
+    }
+    math_PSO aSolver(&aFunc, aLower, anUpper, aSteps);
+
+    double      aValue = RealLast();
+    math_Vector aSolution(1, 2);
+    aSolver.Perform(aPool, 1, aValue, aSolution);
+
+    EXPECT_EQ(aFunc.NbCalls(), hasKnownDistance ? 0 : 1);
+    EXPECT_EQ(aValue, 5.0);
+    EXPECT_EQ(aSolution(1), 0.0);
+    EXPECT_EQ(aSolution(2), 0.0);
+  }
+}
+
+TEST(MathPSOTest, MotionInAnyCoordinateUpdatesDistance)
+{
+  for (int anAxis = 1; anAxis <= 2; ++anAxis)
+  {
+    SCOPED_TRACE(anAxis);
+    MathPSO_CountingQuadraticFunction aFunc;
+    math_Vector                       aLower(1, 2, -4.0);
+    math_Vector                       anUpper(1, 2, 4.0);
+    math_Vector                       aSteps(1, 2, 0.0);
+    aSteps(anAxis) = 0.1;
+    math_PSOParticlesPool aPool(1, 2);
+    aPool.GetParticle(1)->Distance     = 5.0;
+    aPool.GetParticle(1)->BestDistance = 5.0;
+    math_PSO aSolver(&aFunc, aLower, anUpper, aSteps);
+
+    double      aValue = RealLast();
+    math_Vector aSolution(1, 2);
+    aSolver.Perform(aPool, 1, aValue, aSolution);
+
+    EXPECT_GT(aFunc.NbCalls(), 0);
+    EXPECT_LE(aValue, 5.0);
+    EXPECT_EQ(aSolution(3 - anAxis), 0.0);
+    double anExpectedValue = RealLast();
+    aFunc.Value(aSolution, anExpectedValue);
+    EXPECT_EQ(aValue, anExpectedValue);
+  }
+}
+
+TEST(MathPSOTest, FailedParticleEvaluationDoesNotPublishDistance)
+{
+  MathPSO_FailingFunction aFunc;
+  math_Vector             aLower(1, 2, -1.0);
+  math_Vector             anUpper(1, 2, 1.0);
+  math_Vector             aSteps(1, 2, 0.0);
+  math_PSOParticlesPool   aPool(1, 2);
+  math_PSO                aSolver(&aFunc, aLower, anUpper, aSteps);
+
+  double      aValue = RealLast();
+  math_Vector aSolution(1, 2);
+  aSolver.Perform(aPool, 1, aValue, aSolution);
+
+  EXPECT_EQ(aValue, RealLast());
+  EXPECT_EQ(aPool.GetParticle(1)->Distance, RealLast());
+  EXPECT_EQ(aPool.GetParticle(1)->BestDistance, RealLast());
+}
+
+TEST(MathPSOTest, ClampedParticleUpdatesDistance)
+{
+  MathPSO_CountingQuadraticFunction aFunc;
+  math_Vector                       aLower(1, 2, -1.0);
+  math_Vector                       anUpper(1, 2, 1.0);
+  math_Vector                       aSteps(1, 2, 0.0);
+  math_PSOParticlesPool             aPool(1, 2);
+  PSO_Particle*                     aParticle = aPool.GetParticle(1);
+  for (int anAxis = 0; anAxis < 2; ++anAxis)
+  {
+    aParticle->Position[anAxis]     = 1.0;
+    aParticle->BestPosition[anAxis] = 1.0;
+  }
+  aParticle->Distance     = 1.0;
+  aParticle->BestDistance = 1.0;
+  math_PSO aSolver(&aFunc, aLower, anUpper, aSteps);
+
+  double      aValue = RealLast();
+  math_Vector aSolution(1, 2);
+  aSolver.Perform(aPool, 1, aValue, aSolution);
+
+  EXPECT_EQ(aFunc.NbCalls(), 1);
+  math_Vector aPosition(1, 2);
+  aPosition(1) = aParticle->Position[0];
+  aPosition(2) = aParticle->Position[1];
+  EXPECT_LT(aPosition(1), anUpper(1));
+  EXPECT_LT(aPosition(2), anUpper(2));
+  double anExpectedValue = RealLast();
+  aFunc.Value(aPosition, anExpectedValue);
+  EXPECT_EQ(aParticle->Distance, anExpectedValue);
+  EXPECT_EQ(aValue, 1.0);
+}
+
+TEST(MathPSOTest, FailedGridEvaluationDoesNotPublishDistance)
+{
+  MathPSO_FailingFunction aFunc;
+  math_Vector             aLower(1, 2, -1.0);
+  math_Vector             anUpper(1, 2, 1.0);
+  math_Vector             aSteps(1, 2, 1.0);
+  math_PSO                aSolver(&aFunc, aLower, anUpper, aSteps);
+
+  double      aValue = RealLast();
+  math_Vector aSolution(1, 2);
+  aSolver.Perform(aSteps, aValue, aSolution);
+
+  EXPECT_EQ(aValue, RealLast());
+}
 
 TEST(MathPSOTest, QuadraticFunctionOptimization)
 {

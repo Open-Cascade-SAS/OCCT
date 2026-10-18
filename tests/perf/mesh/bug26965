@@ -11,7 +11,7 @@ vsetdispmode 1
 dchrono h restart
 vdisplay a
 dchrono h stop counter DisplayBug26965
-dchrono h 
+dchrono h
 
 vfit
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
@@ -20,4 +20,4 @@ if {[llength [tricheck a]] != 0} {
   puts "Error: Invalid mesh"
 }
 
-checktrinfo a -tri 15490 -nod 7950 -defl 0.25696012112765304 -tol_abs_defl 1e-6
+checktrinfo a -tri 15500 -nod 7955 -defl 0.25696012112765304 -tol_abs_defl 1e-6

@@ -26,7 +26,7 @@ checktrinfo result -tri 88140 -nod 84304 -defl 0.00073349807253346574 -tol_abs_d
 tclean result
 incmesh result 0.0001 -surf_def_all
 
-checktrinfo result -tri 103376 -nod 91922 -defl 0.00012553867394267057 -tol_abs_defl 1e-6
+checktrinfo result -tri 104638 -nod 92553 -max_defl 0.00012553867394267057
 
 ################## Deflection: 0.00005 ################
 
