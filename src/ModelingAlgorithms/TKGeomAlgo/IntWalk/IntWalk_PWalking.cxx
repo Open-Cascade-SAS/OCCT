@@ -32,6 +32,8 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <algorithm>
+
 //==================================================================================
 // function : ComputePasInit
 // purpose  : estimate of max step : To avoid abrupt changes during change of isos
@@ -1242,11 +1244,14 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
 
         for (int i = 0; i < 4; i++)
         {
-          if (std::abs(aNewPnt[i] - aParMin[i]) < aTol[i])
+          // The solved parameter and the surface bound can each carry a rounding step.
+          const double aTolMin = std::max(aTol[i], Epsilon(aNewPnt[i]) + Epsilon(aParMin[i]));
+          const double aTolMax = std::max(aTol[i], Epsilon(aNewPnt[i]) + Epsilon(aParMax[i]));
+          if (std::abs(aNewPnt[i] - aParMin[i]) <= aTolMin)
           {
             aNewPnt[i] = aParMin[i];
           }
-          else if (std::abs(aNewPnt[i] - aParMax[i]) < aTol[i])
+          else if (std::abs(aNewPnt[i] - aParMax[i]) <= aTolMax)
           {
             aNewPnt[i] = aParMax[i];
           }
