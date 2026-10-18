@@ -652,13 +652,13 @@ TEST(Bisector_InterTest, NormalExtensionIntersectsAtCurveBoundary)
     EXPECT_NEAR(anInverseParameter, aParameter, Precision::Confusion());
     EXPECT_LE(aNormalBisector->EvalD0(anInverseParameter).Distance(aPoint), Precision::Confusion());
   }
-  const IntRes2d_Domain                   aD1(aC1->EvalD0(aC1->FirstParameter()),
+  const IntRes2d_Domain aD1(aC1->EvalD0(aC1->FirstParameter()),
                             aC1->FirstParameter(),
                             Precision::Confusion(),
                             aC1->EvalD0(aC1->LastParameter()),
                             aC1->LastParameter(),
                             Precision::Confusion());
-  const IntRes2d_Domain                   aD2(aC2->EvalD0(aC2->FirstParameter()),
+  const IntRes2d_Domain aD2(aC2->EvalD0(aC2->FirstParameter()),
                             aC2->FirstParameter(),
                             Precision::Confusion(),
                             aC2->EvalD0(aC2->LastParameter()),
