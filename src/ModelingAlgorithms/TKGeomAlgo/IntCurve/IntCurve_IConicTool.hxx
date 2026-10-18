@@ -42,9 +42,7 @@ public:
 
   Standard_EXPORT IntCurve_IConicTool(const IntCurve_IConicTool& IT);
 
-  //! Copies the conic parameters, axes, and coordinate transformation.
-  //! @param[in] theOther conic tool to copy
-  //! @return this conic tool
+  //! Copies all conic data.
   IntCurve_IConicTool& operator=(const IntCurve_IConicTool& theOther) = default;
 
   Standard_EXPORT IntCurve_IConicTool(const gp_Elips2d& E);
@@ -67,14 +65,11 @@ public:
   //! the point P and the implicit curve.
   //! For a nondegenerate parabola, returns the displacement along its axis
   //! to the point on the parabola with the same transverse coordinate.
-  //! Its absolute value bounds the distance to that point from above.
   //! @param[in] P point to evaluate
   //! @return signed distance measure, in length units for a parabola
   Standard_EXPORT double Distance(const gp_Pnt2d& P) const;
 
-  //! Computes the Gradient of the Signed Distance
-  //! between a point and the implicit curve, at the
-  //! point P.
+  //! Computes the gradient of Distance() at P.
   //! @param[in] P point to evaluate
   //! @return gradient of Distance() in the global coordinate system
   Standard_EXPORT gp_Vec2d GradDistance(const gp_Pnt2d& P) const;

@@ -1618,7 +1618,8 @@ public:
                                     const int                         theNbControlPoints,
                                     std::optional<double>             theSquareDistanceLimit);
 
-  void operator()(int theThreadIndex, int theElemIndex) const;
+  // Returns true when this interval supplies a distance exceeding the limit.
+  bool operator()(int theThreadIndex, int theElemIndex) const;
 
   // Returns the minimum objective and parameter, or no result if an interval failed.
   std::optional<std::pair<double, double>> OptimalValues() const;
@@ -1662,7 +1663,7 @@ GeomLib_CheckCurveOnSurface_Local::GeomLib_CheckCurveOnSurface_Local(
 
 //==================================================================================================
 
-void GeomLib_CheckCurveOnSurface_Local::operator()(int theThreadIndex, int theElemIndex) const
+bool GeomLib_CheckCurveOnSurface_Local::operator()(int theThreadIndex, int theElemIndex) const
 {
   std::optional<BSplineResidual>& aResidual = myResiduals(theThreadIndex);
   if (!aResidual)
@@ -1689,23 +1690,28 @@ void GeomLib_CheckCurveOnSurface_Local::operator()(int theThreadIndex, int theEl
                     aPar))
   {
     myResults(theElemIndex) = std::nullopt;
-    return;
+    return false;
   }
 
   myResults(theElemIndex) = std::make_pair(aMinDist, aPar);
+  return mySquareDistanceLimit && -aMinDist > *mySquareDistanceLimit;
 }
 
 //==================================================================================================
 
 std::optional<std::pair<double, double>> GeomLib_CheckCurveOnSurface_Local::OptimalValues() const
 {
-  // Every interval is required for a complete maximum.
+  // A complete maximum needs every interval; a limit query can return an evaluated point.
   std::optional<std::pair<double, double>> aMinimum;
   for (const auto& aResult : myResults)
   {
     if (!aResult)
     {
       return std::nullopt;
+    }
+    if (mySquareDistanceLimit && -aResult->first > *mySquareDistanceLimit)
+    {
+      return aResult;
     }
     if (!aMinimum || aResult->first < aMinimum->first)
     {
@@ -1978,7 +1984,10 @@ void GeomLib_CheckCurveOnSurface::perform(
     {
       for (int anI = anIntervals.Lower(); anI < anIntervals.Upper(); ++anI)
       {
-        aComp(0, anI);
+        if (aComp(0, anI))
+        {
+          break;
+        }
       }
     }
     const std::optional<std::pair<double, double>> aMaximum = aComp.OptimalValues();

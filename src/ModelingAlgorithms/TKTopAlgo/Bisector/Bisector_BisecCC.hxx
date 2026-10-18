@@ -166,8 +166,7 @@ public:
   Standard_EXPORT bool IsEmpty() const;
 
   //! Converts a curved-branch parameter to the guide curve parameter.
-  //! This algebraic conversion does not give endpoint projection parameters on normal segments.
-  //! Use ValueAndDist() for projection parameters on every part of the bisector.
+  //! Use ValueAndDist() for endpoint projections on normal segments.
   //! @param[in] U parameter on the curved branch
   //! @return corresponding guide curve parameter
   Standard_EXPORT double LinkBisCurve(const double U) const;

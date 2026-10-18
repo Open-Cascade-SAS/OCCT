@@ -59,13 +59,12 @@ public:
     const Message_ProgressRange&                        theProgress = Message_ProgressRange(),
     const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg   = nullptr);
 
-  //! Fixes same parameterization through a replacement context.
-  //! Changed edges and vertices are recorded in the context. Unchanged topology and
-  //! geometry remain shared. A null context uses the in-place behavior of the overload above.
-  //! Already recorded context results can be changed in place.
+  //! Fixes same parameterization and records changed topology in theContext.
+  //! Unchanged topology and geometry remain shared. Existing context results can change in place.
+  //! A null context selects the in-place behavior of the overload above.
   //! @param[in] shape shape to process
   //! @param[in] enforce recompute parameterization even when its flags are set
-  //! @param[in] preci precision argument of the in-place overload
+  //! @param[in] preci positive precision, or each edge's tolerance if non-positive
   //! @param[in] theProgress progress range for cancellation
   //! @param[in] theMsgReg optional warning registrator; messages identify input edges
   //! @param[in] theContext replacement context; apply it to obtain the resulting shape

@@ -49,10 +49,9 @@ public:
   //! If isMultiThread == true then computation will be performed in parallel.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface);
 
-  //! Stops interval refinement when an evaluated distance exceeds the given limit.
+  //! Computes the maximum distance, or an evaluated distance above the limit.
   //! @param[in] theCurveOnSurface curve on surface to check
   //! @param[in] theDistanceLimit non-negative finite distance limit
-  //! When the limit is exceeded, MaxDistance() and MaxParameter() identify an evaluated point.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface,
                                double                                       theDistanceLimit);
 

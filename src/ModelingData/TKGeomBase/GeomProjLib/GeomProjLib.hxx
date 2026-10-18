@@ -142,7 +142,7 @@ public:
     const bool                     KeepParametrization);
 
   //! Projects a curve onto a plane with a requested approximation accuracy.
-  //! @param[in] theCurve source curve; ownership is shared during the call
+  //! @param[in] theCurve source curve
   //! @param[in] thePlane projection plane
   //! @param[in] theDirection projection direction, not parallel to the plane
   //! @param[in] theKeepParametrization whether to preserve source parameters

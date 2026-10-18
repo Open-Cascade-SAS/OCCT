@@ -1361,9 +1361,11 @@ public:
   double                       LastParameter() const override;
   GeomAbs_CurveType            GetType() const override;
   gp_Pnt                       EvalD0(double theParameter) const override;
+  size_t                       NbEvaluations() const;
 
 private:
-  FailureMode myFailure; // Evaluation failure in the second interval.
+  FailureMode    myFailure;           // Evaluation failure in the second interval.
+  mutable size_t myNbEvaluations = 0; // Number of requested curve points.
 };
 
 //==================================================================================================
@@ -1405,6 +1407,7 @@ GeomAbs_CurveType GeomLib_IntervalFailureCurve::GetType() const
 
 gp_Pnt GeomLib_IntervalFailureCurve::EvalD0(double theParameter) const
 {
+  ++myNbEvaluations;
   if (theParameter > THE_INTERVAL_BOUNDARY)
   {
     if (myFailure == FailureMode::UndefinedValue)
@@ -1424,6 +1427,13 @@ gp_Pnt GeomLib_IntervalFailureCurve::EvalD0(double theParameter) const
     }
   }
   return gp_Pnt(theParameter, 0.0, THE_CURVE_OFFSET);
+}
+
+//==================================================================================================
+
+size_t GeomLib_IntervalFailureCurve::NbEvaluations() const
+{
+  return myNbEvaluations;
 }
 
 //==================================================================================================
@@ -1479,6 +1489,12 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, FailedIntervalDoesNotReportPartialMaximum)
       EXPECT_EQ(aCheck.ErrorStatus(), 3);
       EXPECT_EQ(aCheck.MaxDistance(), RealLast());
       EXPECT_EQ(aCheck.MaxParameter(), 0.0);
+
+      aCheck.Perform(makeTwoIntervalPCurve(), 2.0 * THE_CURVE_OFFSET);
+      EXPECT_FALSE(aCheck.IsDone());
+      EXPECT_EQ(aCheck.ErrorStatus(), 3);
+      EXPECT_EQ(aCheck.MaxDistance(), RealLast());
+      EXPECT_EQ(aCheck.MaxParameter(), 0.0);
     }
   }
 }
@@ -1487,12 +1503,28 @@ TEST(GeomLib_CheckCurveOnSurfaceTest, FailedIntervalDoesNotReportPartialMaximum)
 
 TEST(GeomLib_CheckCurveOnSurfaceTest, RepeatedPerformResetsStatusAndDistance)
 {
-  GeomLib_CheckCurveOnSurface aCheck(
-    new GeomLib_IntervalFailureCurve(GeomLib_IntervalFailureCurve::FailureMode::None));
+  const occ::handle<GeomLib_IntervalFailureCurve> aCurve =
+    new GeomLib_IntervalFailureCurve(GeomLib_IntervalFailureCurve::FailureMode::None);
+  GeomLib_CheckCurveOnSurface                 aCheck(aCurve);
   const occ::handle<Adaptor3d_CurveOnSurface> aPCurve = makeTwoIntervalPCurve();
   aCheck.Perform(aPCurve);
   ASSERT_TRUE(aCheck.IsDone());
   EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), THE_CURVE_OFFSET);
+
+  const size_t aBeforeLimit = aCurve->NbEvaluations();
+  aCheck.Perform(aPCurve, 0.5 * THE_CURVE_OFFSET);
+  ASSERT_TRUE(aCheck.IsDone());
+  EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), THE_CURVE_OFFSET);
+  EXPECT_EQ(aCurve->NbEvaluations() - aBeforeLimit, 1u);
+
+  for (const double aLimit : {THE_CURVE_OFFSET, 2.0 * THE_CURVE_OFFSET})
+  {
+    const size_t aBeforeFullSearch = aCurve->NbEvaluations();
+    aCheck.Perform(aPCurve, aLimit);
+    ASSERT_TRUE(aCheck.IsDone());
+    EXPECT_DOUBLE_EQ(aCheck.MaxDistance(), THE_CURVE_OFFSET);
+    EXPECT_GT(aCurve->NbEvaluations() - aBeforeFullSearch, 1u);
+  }
 
   aCheck.Perform(nullptr);
   EXPECT_FALSE(aCheck.IsDone());

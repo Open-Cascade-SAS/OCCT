@@ -53,11 +53,10 @@ public:
   //! Returns an empty Reshape
   Standard_EXPORT ShapeBuild_ReShape();
 
-  //! Returns an edge that can be changed through this replacement context.
-  //! Applies existing replacements first. Reuses an edge already recorded as a result;
-  //! otherwise copies its topology and records the replacement. Geometry and unchanged
-  //! vertices remain shared. Vertex changes must be recorded separately with CopyVertex().
-  //! Polygon representations are not copied, as in TopoDS_Shape::EmptyCopied().
+  //! Returns a modifiable edge and records its replacement in this context.
+  //! Applies existing replacements and reuses edges already recorded as results.
+  //! Geometry and unchanged vertices remain shared; polygons are not copied.
+  //! Record vertex changes separately with CopyVertex().
   //! @param[in] theEdge edge to copy or reuse
   //! @return mutable replacement, or a null edge if the edge was removed or split
   Standard_EXPORT TopoDS_Edge CopyEdge(const TopoDS_Edge& theEdge);
