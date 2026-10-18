@@ -18,6 +18,14 @@
 
 #include <BRepMesh_NodeInsertionMeshAlgo.hxx>
 #include <BRepMesh_GeomTool.hxx>
+#include <BSplCLib.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <NCollection_LinearVector.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+
+#include <algorithm>
+#include <tuple>
 
 //! Extends base Delaunay meshing algo in order to enable possibility
 //! of addition of free vertices and internal nodes into the mesh.
@@ -51,6 +59,13 @@ public:
   }
 
 protected:
+  //! Surface point with its unscaled parameters.
+  struct SurfacePoint
+  {
+    gp_Pnt2d Parameter; //!< Surface parameters.
+    gp_Pnt   Point;     //!< Evaluated surface point.
+  };
+
   //! Performs initialization of data structure using existing model data.
   bool initDataStructure() override
   {
@@ -110,20 +125,58 @@ protected:
       return false;
     }
 
-    IMeshData::VectorOfInteger       aVertexIndexes(theNodes->Size(), this->getAllocator());
-    IMeshData::ListOfPnt2d::Iterator aNodesIt(*theNodes);
-    for (int aNodeIt = 1; aNodesIt.More(); aNodesIt.Next(), ++aNodeIt)
+    IMeshData::VectorOfInteger aVertexIndexes(theNodes->Size(), this->getAllocator());
+    if (this->getDFace()->GetSurface()->GetType() == GeomAbs_BSplineSurface)
     {
-      const gp_Pnt2d& aPnt2d = aNodesIt.Value();
-      if (this->getClassifier()->Perform(aPnt2d) == TopAbs_IN)
+      registerSplineNodes(theNodes, aVertexIndexes);
+    }
+    else
+    {
+      for (const gp_Pnt2d& aPnt2d : *theNodes)
       {
-        aVertexIndexes.Append(
-          this->registerNode(this->getRangeSplitter().Point(aPnt2d), aPnt2d, BRepMesh_Free, false));
+        if (this->getClassifier()->Perform(aPnt2d) == TopAbs_IN)
+        {
+          aVertexIndexes.Append(this->registerNode(this->getRangeSplitter().Point(aPnt2d),
+                                                   aPnt2d,
+                                                   BRepMesh_Free,
+                                                   false));
+        }
       }
     }
 
+    return insertVertices(aVertexIndexes, theMesher, theRange);
+  }
+
+  //! Inserts already evaluated surface points in their original order.
+  bool insertNodes(const NCollection_LinearVector<SurfacePoint>& theNodes,
+                   BRepMesh_Delaun&                              theMesher,
+                   const Message_ProgressRange&                  theRange)
+  {
+    if (theNodes.IsEmpty())
+    {
+      return false;
+    }
+
+    IMeshData::VectorOfInteger aVertexIndexes(theNodes.Size(), this->getAllocator());
+    for (const SurfacePoint& aNode : theNodes)
+    {
+      if (this->getClassifier()->Perform(aNode.Parameter) == TopAbs_IN)
+      {
+        aVertexIndexes.Append(
+          this->registerNode(aNode.Point, aNode.Parameter, BRepMesh_Free, false));
+      }
+    }
+    return insertVertices(aVertexIndexes, theMesher, theRange);
+  }
+
+private:
+  //! Adds registered vertices and reports whether the mesh grew.
+  bool insertVertices(IMeshData::VectorOfInteger&  theVertexIndexes,
+                      BRepMesh_Delaun&             theMesher,
+                      const Message_ProgressRange& theRange)
+  {
     const int aPreviousTriangles = this->getStructure()->ElementsOfDomain().Extent();
-    theMesher.AddVertices(aVertexIndexes, theRange);
+    theMesher.AddVertices(theVertexIndexes, theRange);
     if (!theRange.More())
     {
       return false;
@@ -131,7 +184,68 @@ protected:
     return this->getStructure()->ElementsOfDomain().Extent() > aPreviousTriangles;
   }
 
-private:
+  //! Evaluates each knot patch together, retaining the node insertion order.
+  void registerSplineNodes(const Handle(IMeshData::ListOfPnt2d)& theNodes,
+                           IMeshData::VectorOfInteger&           theVertexIndexes)
+  {
+    struct SurfaceNode
+    {
+      gp_Pnt2d Parameter; //!< Unscaled surface parameters.
+      gp_Pnt   Point;     //!< Evaluated surface point.
+      size_t   Index;     //!< Original insertion order.
+      int      USpan;     //!< U knot span.
+      int      VSpan;     //!< V knot span.
+    };
+
+    const occ::handle<Geom_BSplineSurface> aSpline =
+      this->getDFace()->GetSurface()->AdaptorSurfaceOriginal().BSpline();
+    NCollection_LinearVector<SurfaceNode> aNodes(theNodes->Size());
+    for (const gp_Pnt2d& aParameter : *theNodes)
+    {
+      if (this->getClassifier()->Perform(aParameter) != TopAbs_IN)
+      {
+        continue;
+      }
+      SurfaceNode aNode{aParameter, gp_Pnt(), aNodes.Size(), 0, 0};
+      double      aParameterInPeriod;
+      BSplCLib::LocateParameter(aSpline->UDegree(),
+                                aSpline->UKnotSequence(),
+                                BSplCLib::NoMults(),
+                                aParameter.X(),
+                                aSpline->IsUPeriodic(),
+                                aNode.USpan,
+                                aParameterInPeriod);
+      BSplCLib::LocateParameter(aSpline->VDegree(),
+                                aSpline->VKnotSequence(),
+                                BSplCLib::NoMults(),
+                                aParameter.Y(),
+                                aSpline->IsVPeriodic(),
+                                aNode.VSpan,
+                                aParameterInPeriod);
+      aNodes.Append(aNode);
+    }
+    std::sort(aNodes.begin(),
+              aNodes.end(),
+              [](const SurfaceNode& theLeft, const SurfaceNode& theRight) {
+                return std::tie(theLeft.USpan, theLeft.VSpan, theLeft.Index)
+                       < std::tie(theRight.USpan, theRight.VSpan, theRight.Index);
+              });
+    for (SurfaceNode& aNode : aNodes)
+    {
+      aNode.Point = this->getRangeSplitter().Point(aNode.Parameter);
+    }
+    std::sort(aNodes.begin(),
+              aNodes.end(),
+              [](const SurfaceNode& theLeft, const SurfaceNode& theRight) {
+                return theLeft.Index < theRight.Index;
+              });
+    for (const SurfaceNode& aNode : aNodes)
+    {
+      theVertexIndexes.Append(
+        this->registerNode(aNode.Point, aNode.Parameter, BRepMesh_Free, false));
+    }
+  }
+
   //! Registers surface nodes in data structure.
   bool registerSurfaceNodes(const Handle(IMeshData::ListOfPnt2d)& theNodes)
   {
@@ -140,11 +254,9 @@ private:
       return false;
     }
 
-    bool                             isAdded = false;
-    IMeshData::ListOfPnt2d::Iterator aNodesIt(*theNodes);
-    for (int aNodeIt = 1; aNodesIt.More(); aNodesIt.Next(), ++aNodeIt)
+    bool isAdded = false;
+    for (const gp_Pnt2d& aPnt2d : *theNodes)
     {
-      const gp_Pnt2d& aPnt2d = aNodesIt.Value();
       if (this->getClassifier()->Perform(aPnt2d) == TopAbs_IN)
       {
         isAdded = true;

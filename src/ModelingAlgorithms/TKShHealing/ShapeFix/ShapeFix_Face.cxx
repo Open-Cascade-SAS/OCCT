@@ -57,6 +57,7 @@
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
+#include <ShapeAnalysis_Wire.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend_CompositeSurface.hxx>
@@ -88,6 +89,8 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_IndexedMap.hxx>
+
+#include <algorithm>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Face, ShapeFix_Root)
 
@@ -1168,7 +1171,14 @@ bool ShapeFix_Face::isNeedAddNaturalBound(
     }
   }
 
-  return true;
+  // Null-area wires do not define holes.
+  return !std::all_of(theOrientedWires.cbegin(),
+                      theOrientedWires.cend(),
+                      [&](const TopoDS_Shape& theShape) {
+                        const TopoDS_Wire& aWire = TopoDS::Wire(theShape);
+                        ShapeAnalysis_Wire anAnalysis(aWire, myFace, Precision());
+                        return anAnalysis.CheckSmallArea(aWire);
+                      });
 }
 
 //=================================================================================================

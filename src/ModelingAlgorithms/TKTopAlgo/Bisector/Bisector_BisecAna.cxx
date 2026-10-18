@@ -1773,10 +1773,9 @@ bool Degenerate(occ::handle<GccInt_Bisec>& aBisector, const double Tolerance)
   {
     gpparabola = aBisector->Parabola();
 
-    // If the parabole is degenerated, it is replaces by the straight
-    // line starting at the Top and with direction of the axis of symmetry.
+    // Only zero focal length collapses a parabola to its axis.
 
-    if (gpparabola.Focal() < Tolerance)
+    if (gpparabola.Focal() == 0.0)
     {
       gp_Lin2d gpline(gpparabola.MirrorAxis());
       NewBisector = new GccInt_BLine(gpline);

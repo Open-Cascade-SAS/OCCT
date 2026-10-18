@@ -980,9 +980,9 @@ TEST_F(BSplSLib_CacheTest, D1_DifferentDegrees_VGreaterU)
 
 TEST_F(BSplSLib_CacheTest, RationalD1AsymmetricDegreesAndWeightScale)
 {
-  for (const int aUDegree : {1, 2, 5})
+  for (const int aUDegree : {1, 2, 5, 6, 11})
   {
-    for (const int aVDegree : {1, 3, 5})
+    for (const int aVDegree : {1, 3, 5, 6, 11})
     {
       for (const double aWeightScale : {1.e-6, 1.0, 1.e6})
       {
@@ -1063,9 +1063,9 @@ TEST_F(BSplSLib_CacheTest, RationalD1AsymmetricDegreesAndWeightScale)
 
 TEST_F(BSplSLib_CacheTest, HighDegreeCacheMatchesPolynomialDerivatives)
 {
-  for (const size_t aUDegree : {5u, 8u})
+  for (const size_t aUDegree : {5u, 8u, 11u, 25u})
   {
-    for (const size_t aVDegree : {5u, 8u})
+    for (const size_t aVDegree : {5u, 8u, 11u, 25u})
     {
       NCollection_Array2<gp_Pnt> aPoles(aUDegree + 1, aVDegree + 1);
       for (size_t aU = 0; aU <= aUDegree; ++aU)

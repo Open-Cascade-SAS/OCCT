@@ -1,5 +1,5 @@
-puts "TODO OCC24156 ALL: Tcl Exception: tolerance ang"
-puts "TODO OCC24156 ALL: TEST INCOMPLETE"
+puts "TODO OCC50 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO OCC50 ALL: Error : The area of result shape is 1645.59, expected 7677.49"
 
 puts "========"
 puts "OCC50"

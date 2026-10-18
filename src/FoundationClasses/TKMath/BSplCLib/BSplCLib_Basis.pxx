@@ -26,51 +26,48 @@ namespace
 {
 //==================================================================================================
 
-// Keep common coordinates outside interpolation and derivative differences.
+// Find a common coordinate origin whose subtraction preserves every pole.
 // The positive pole count and dimension bound the zero-based mutable accessor and origin.
-template <bool TheWeightedSum, class Real, class PoleAccessor>
-bool translateControlPolygon(const size_t        theNbPoles,
+template <class Real, class PoleAccessor>
+void controlPolygonOrigin(const size_t        theNbPoles,
+                          const size_t        theDimension,
+                          const PoleAccessor& thePole,
+                          Real*               theOrigin)
+{
+  for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
+  {
+    Real anOffset = thePole(0, aCoordinate);
+    // Like-signed double coordinates within a factor of two subtract exactly.
+    // Other coordinates keep their original values.
+    for (size_t aPole = 1; static_cast<double>(anOffset) != 0.0 && aPole < theNbPoles; ++aPole)
+    {
+      const double aValue = static_cast<double>(thePole(aPole, aCoordinate));
+      if (static_cast<double>(anOffset) > 0.0 ? (aValue < 0.5 * static_cast<double>(anOffset)
+                                                 || 0.5 * aValue > static_cast<double>(anOffset))
+                                              : (aValue > 0.5 * static_cast<double>(anOffset)
+                                                 || 0.5 * aValue < static_cast<double>(anOffset)))
+      {
+        anOffset = 0.0;
+        break;
+      }
+    }
+    theOrigin[aCoordinate] = anOffset;
+  }
+}
+
+//==================================================================================================
+
+// Subtract the common coordinate origin from the control polygon.
+template <class Real, class PoleAccessor>
+void translateControlPolygon(const size_t        theNbPoles,
                              const size_t        theDimension,
                              const PoleAccessor& thePole,
                              Real*               theOrigin)
 {
-  bool isSafe = true;
-  // Translation keeps the largest coordinate magnitude bounded.
-  // Reserve room for every weighted pole and the restored origin.
-  const double aLimit = RealLast() / static_cast<double>(theNbPoles + 1);
+  controlPolygonOrigin(theNbPoles, theDimension, thePole, theOrigin);
   for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
   {
-    Real anOffset = thePole(0, aCoordinate);
-    if constexpr (TheWeightedSum)
-    {
-      isSafe = isSafe && std::abs(static_cast<double>(anOffset)) <= aLimit;
-    }
-    // Like-signed double coordinates within a factor of two subtract exactly.
-    // Other coordinates keep their original values.
-    for (size_t aPole = 1;
-         (TheWeightedSum || static_cast<double>(anOffset) != 0.0) && aPole < theNbPoles;
-         ++aPole)
-    {
-      const double aValue = static_cast<double>(thePole(aPole, aCoordinate));
-      if constexpr (TheWeightedSum)
-      {
-        isSafe = isSafe && std::abs(aValue) <= aLimit;
-      }
-      if (static_cast<double>(anOffset) != 0.0
-          && (static_cast<double>(anOffset) > 0.0
-                ? (aValue < 0.5 * static_cast<double>(anOffset)
-                   || 0.5 * aValue > static_cast<double>(anOffset))
-                : (aValue > 0.5 * static_cast<double>(anOffset)
-                   || 0.5 * aValue < static_cast<double>(anOffset))))
-      {
-        anOffset = 0.0;
-        if constexpr (!TheWeightedSum)
-        {
-          break;
-        }
-      }
-    }
-    theOrigin[aCoordinate] = anOffset;
+    const Real anOffset = theOrigin[aCoordinate];
     if (static_cast<double>(anOffset) != 0.0)
     {
       for (size_t aPole = 0; aPole < theNbPoles; ++aPole)
@@ -79,7 +76,6 @@ bool translateControlPolygon(const size_t        theNbPoles,
       }
     }
   }
-  return isSafe;
 }
 
 //==================================================================================================

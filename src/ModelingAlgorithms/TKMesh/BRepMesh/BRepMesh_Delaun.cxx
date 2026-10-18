@@ -256,7 +256,11 @@ void BRepMesh_Delaun::InitCirclesTool(const int theCellsCountU, const int theCel
   Bnd_Box2d aBox;
   for (int aNodeIt = 1; aNodeIt <= myMeshData->NbNodes(); ++aNodeIt)
   {
-    aBox.Add(gp_Pnt2d(GetVertex(aNodeIt).Coord()));
+    const BRepMesh_Vertex& aVertex = GetVertex(aNodeIt);
+    if (aVertex.Movability() != BRepMesh_Deleted)
+    {
+      aBox.Add(gp_Pnt2d(aVertex.Coord()));
+    }
   }
   aBox.Enlarge(Precision);
 

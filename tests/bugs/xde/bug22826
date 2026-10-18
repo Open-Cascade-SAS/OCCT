@@ -15,4 +15,7 @@ proj s1 1500 1500 500 g
 renamevar ext_2 res
 proj s1 1500 1500 500 t
 
-checklength res -l -equal ext_1
+set length_precision 1.0e-12
+set length_res [lindex [length res $length_precision] end]
+set length_ext [lindex [length ext_1 $length_precision] end]
+checkreal "Projection length" $length_res $length_ext $length_precision 0.0

@@ -206,7 +206,7 @@ TEST(TCollection_UtfStringTest, ExtendedStringAliasedViews)
 
 TEST(TCollection_UtfStringTest, BoundedInputAndEmbeddedNulls)
 {
-  const std::array<char, 6>   aInput = {'A', 0, char(0xF0), char(0x90), char(0x80), char(0x80)};
+  const std::array<char, 6>   aInput = {'A', 0, '\xF0', '\x90', '\x80', '\x80'};
   TCollection_UtfString<char> aString(std::string_view(aInput.data(), aInput.size()));
   EXPECT_EQ(aString.Length(), static_cast<size_t>(3));
   EXPECT_EQ(aString.CodeUnits(), aInput.size());
@@ -289,7 +289,7 @@ TYPED_TEST(TCollection_UtfStringGenericTest, PartialScalarsRejectWithoutMutation
 {
   TCollection_UtfString<TypeParam>       aString(U"keep\U00010000");
   const TCollection_UtfString<TypeParam> aOriginal = aString;
-  const std::array<char, 5> aUtf8 = {char(0xF0), char(0x90), char(0x80), char(0x80), 'A'};
+  const std::array<char, 5>              aUtf8     = {'\xF0', '\x90', '\x80', '\x80', 'A'};
   for (size_t aSize = 1; aSize < 4; ++aSize)
   {
     EXPECT_FALSE(aString.FromUnicode(aUtf8.data(), aSize));
@@ -372,7 +372,7 @@ TYPED_TEST(TCollection_UtfStringGenericTest, MutationSequenceMatchesScalarModel)
 TEST(TCollection_UtfStringTest, MalformedInputIsTransactional)
 {
   TCollection_UtfString<char>   aString("unchanged");
-  constexpr std::array<char, 3> aBad = {'A', char(0xE2), char(0x82)};
+  constexpr std::array<char, 3> aBad = {'A', '\xE2', '\x82'};
   EXPECT_FALSE(aString.FromUnicode(aBad.data(), aBad.size()));
   EXPECT_EQ(aString.View(), "unchanged");
   constexpr std::array<char16_t, 2> aBad16 = {'A', 0xD800};

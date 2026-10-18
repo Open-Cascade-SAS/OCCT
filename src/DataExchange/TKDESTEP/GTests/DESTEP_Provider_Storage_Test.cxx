@@ -1310,7 +1310,7 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
               SCOPED_TRACE(aPass);
               std::stringstream aStream;
               ASSERT_TRUE(WriteStepStream(aDocument, aStream, aWriteUnit));
-              const TCollection_AsciiString aContent(aStream.str().c_str());
+              TCollection_AsciiString aContent(aStream.str().c_str());
               EXPECT_EQ(aContent.Search("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE(") > 0,
                         aValidMaximum);
               EXPECT_EQ(aContent.Search("GEOMETRIC_TOLERANCE_WITH_MODIFIERS(())"), -1);
@@ -1319,18 +1319,15 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
                         aDisplacement.has_value());
               if (aWithDatum && aDisplacement && aPass == 0)
               {
-                TCollection_AsciiString       aContent(aStream.str().c_str());
                 const TCollection_AsciiString aDatumName =
                   "GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE";
                 const int aPosition = aContent.Search(aDatumName);
                 ASSERT_GT(aPosition, 0);
                 aContent.Remove(aPosition, aDatumName.Length());
                 aContent.Insert(aPosition, "GTWDR");
-                aStream.str(aContent.ToCString());
               }
               if (aDisplacement && aPass == 0)
               {
-                TCollection_AsciiString       aContent(aStream.str().c_str());
                 const TCollection_AsciiString aTypeName =
                   aType == XCAFDimTolObjects_GeomToleranceType_Flatness
                     ? "FLATNESS_TOLERANCE"

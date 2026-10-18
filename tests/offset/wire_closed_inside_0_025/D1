@@ -1,13 +1,11 @@
 cpulimit 1000
-puts "TODO OCC23068 ALL: Error : The offset cannot be built."
-puts "TODO OCC23748 ALL: Error: The command cannot be built"
-puts "TODO OCC23748 ALL: Error: Offset is not done."
-#puts "TODO OCC24255 ALL: An exception was caught"
+puts "TODO OCC23748 ALL: Error : big tolerance of shape result"
+puts "TODO OCC23748 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 
 restore [locate_data_file offset_wire_041.brep] s
 
-set length 0
-set nbsh_v 0
-set nbsh_e 0
-set nbsh_w 0
+set length 2876.95
+set nbsh_v 704
+set nbsh_e 704
+set nbsh_w 1
 

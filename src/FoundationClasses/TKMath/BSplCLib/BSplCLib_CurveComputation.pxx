@@ -18,6 +18,7 @@
 #ifndef _BSplCLib_CurveComputation_pxx_HeaderFile
 #define _BSplCLib_CurveComputation_pxx_HeaderFile
 
+#include <BSplCLib_Basis.pxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
@@ -819,6 +820,7 @@ void BSplCLib_BuildEval(const int                         Degree,
 // @param[in] Knots - knot sequence
 // @param[in] Mults - multiplicities
 // @param[out] dc - data container for evaluation
+// @param[out] theOrigin - optional Cartesian origin for rational differentiation
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
 static void PrepareEval_T(double&                              u,
                           int&                                 index,
@@ -830,7 +832,8 @@ static void PrepareEval_T(double&                              u,
                           const NCollection_Array1<double>*    Weights,
                           const NCollection_Array1<double>&    Knots,
                           const NCollection_Array1<int>*       Mults,
-                          BSplCLib_DataContainer_T<Dimension>& dc)
+                          BSplCLib_DataContainer_T<Dimension>& dc,
+                          double*                              theOrigin = nullptr)
 {
   // Set the Index
   BSplCLib::LocateParameter(Degree, Knots, Mults, u, Periodic, index, u);
@@ -858,11 +861,45 @@ static void PrepareEval_T(double&                              u,
   if (rational)
   {
     dim = Dimension + 1;
-    BSplCLib_BuildEval<Point, Vector, Array1OfPoints, Dimension>(Degree,
-                                                                 index,
-                                                                 Poles,
-                                                                 Weights,
-                                                                 *dc.poles);
+    if (theOrigin == nullptr)
+    {
+      BSplCLib_BuildEval<Point, Vector, Array1OfPoints, Dimension>(Degree,
+                                                                   index,
+                                                                   Poles,
+                                                                   Weights,
+                                                                   *dc.poles);
+    }
+    else
+    {
+      // Differentiate Cartesian differences before applying rational weights.
+      // Constant coordinates then have exactly zero derivatives.
+      BSplCLib_BuildEval<Point, Vector, Array1OfPoints, Dimension>(Degree,
+                                                                   index,
+                                                                   Poles,
+                                                                   BSplCLib::NoWeights(),
+                                                                   *dc.poles);
+      translateControlPolygon(
+        static_cast<size_t>(Degree) + 1,
+        static_cast<size_t>(Dimension),
+        [&](size_t thePole, size_t theCoordinate) -> double& {
+          return dc.poles[thePole * Dimension + theCoordinate];
+        },
+        theOrigin);
+      const size_t aFirstPole =
+        static_cast<size_t>(index) < Poles.Size() ? static_cast<size_t>(index) : 0;
+      // Expand in reverse order to preserve the unread Cartesian coordinates.
+      for (int aPole = Degree; aPole >= 0; --aPole)
+      {
+        const double aWeight =
+          Weights->At((aFirstPole + static_cast<size_t>(aPole)) % Poles.Size());
+        for (int aCoordinate = Dimension - 1; aCoordinate >= 0; --aCoordinate)
+        {
+          dc.poles[aPole * (Dimension + 1) + aCoordinate] =
+            dc.poles[aPole * Dimension + aCoordinate] * aWeight;
+        }
+        dc.poles[aPole * (Dimension + 1) + Dimension] = aWeight;
+      }
+    }
   }
   else
   {
@@ -957,6 +994,7 @@ void BSplCLib_D1(const double                      U,
   bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
+  double                              anOrigin[Dimension] = {};
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -967,13 +1005,18 @@ void BSplCLib_D1(const double                      U,
                                                           Weights,
                                                           Knots,
                                                           Mults,
-                                                          dc);
+                                                          dc,
+                                                          anOrigin);
   BSplCLib::Bohm(u, Degree, 1, *dc.knots, dim, *dc.poles);
   double* result = dc.poles;
   if (rational)
   {
     PLib::RationalDerivative(Degree, 1, Dimension, *dc.poles, *dc.ders);
     result = dc.ders;
+    for (int aCoordinate = 0; aCoordinate < Dimension; ++aCoordinate)
+    {
+      result[aCoordinate] += anOrigin[aCoordinate];
+    }
   }
 
   Traits::CoordsToPointDirect(P, result);
@@ -1012,6 +1055,7 @@ void BSplCLib_D2(const double                      U,
   bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
+  double                              anOrigin[Dimension] = {};
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -1022,13 +1066,18 @@ void BSplCLib_D2(const double                      U,
                                                           Weights,
                                                           Knots,
                                                           Mults,
-                                                          dc);
+                                                          dc,
+                                                          anOrigin);
   BSplCLib::Bohm(u, Degree, 2, *dc.knots, dim, *dc.poles);
   double* result = dc.poles;
   if (rational)
   {
     PLib::RationalDerivative(Degree, 2, Dimension, *dc.poles, *dc.ders);
     result = dc.ders;
+    for (int aCoordinate = 0; aCoordinate < Dimension; ++aCoordinate)
+    {
+      result[aCoordinate] += anOrigin[aCoordinate];
+    }
   }
 
   Traits::CoordsToPointDirect(P, result);
@@ -1077,6 +1126,7 @@ void BSplCLib_D3(const double                      U,
   bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
+  double                              anOrigin[Dimension] = {};
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -1087,13 +1137,18 @@ void BSplCLib_D3(const double                      U,
                                                           Weights,
                                                           Knots,
                                                           Mults,
-                                                          dc);
+                                                          dc,
+                                                          anOrigin);
   BSplCLib::Bohm(u, Degree, 3, *dc.knots, dim, *dc.poles);
   double* result = dc.poles;
   if (rational)
   {
     PLib::RationalDerivative(Degree, 3, Dimension, *dc.poles, *dc.ders);
     result = dc.ders;
+    for (int aCoordinate = 0; aCoordinate < Dimension; ++aCoordinate)
+    {
+      result[aCoordinate] += anOrigin[aCoordinate];
+    }
   }
 
   Traits::CoordsToPointDirect(P, result);
@@ -1146,6 +1201,7 @@ void BSplCLib_DN(const double                      U,
   bool   rational;
   validateBSplineDegree(Degree);
   BSplCLib_DataContainer_T<Dimension> dc;
+  double                              anOrigin[Dimension] = {};
   PrepareEval_T<Point, Vector, Array1OfPoints, Dimension>(u,
                                                           index,
                                                           dim,
@@ -1156,7 +1212,8 @@ void BSplCLib_DN(const double                      U,
                                                           Weights,
                                                           Knots,
                                                           Mults,
-                                                          dc);
+                                                          dc,
+                                                          N > 0 ? anOrigin : nullptr);
   BSplCLib::Bohm(u, Degree, N, *dc.knots, dim, *dc.poles);
 
   if (rational)

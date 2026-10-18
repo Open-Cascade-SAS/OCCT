@@ -29,6 +29,7 @@ if {$NbCurv == 2} {
   mksurface surface2 b2_1
   CheckIntersectionResult surface1 surface2 {c_1 c_2} 1001 $Toler $Toler
   CheckOverlapIntCurves {c_1 c_2}
+  erase surface1 surface2 e1 e2
 }
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}_3d.png

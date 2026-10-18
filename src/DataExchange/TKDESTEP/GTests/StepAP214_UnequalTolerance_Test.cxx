@@ -248,12 +248,13 @@ TEST(StepAP214_UnequalToleranceTest, PreservesQualifiedLengthMeasureReference)
         {
           anUnequal = anEntity->GetUnequallyDisposedGeometricTolerance();
         }
-        else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol> anEntity =
-                   occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>(
-                     aModel->Value(anIndex)))
+        else if (const occ::handle<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>
+                   aMaximumEntity =
+                     occ::down_cast<StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol>(
+                       aModel->Value(anIndex)))
         {
-          anUnequal = anEntity->GetUnequallyDisposedGeometricTolerance();
-          aMaximum  = anEntity->GetMaxTolerance();
+          anUnequal = aMaximumEntity->GetUnequallyDisposedGeometricTolerance();
+          aMaximum  = aMaximumEntity->GetMaxTolerance();
         }
       }
       ASSERT_FALSE(anUnequal.IsNull());

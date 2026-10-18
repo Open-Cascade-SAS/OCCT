@@ -269,7 +269,7 @@ TEST(MathSVDTest, SingleRowMatrix)
 
 TEST(MathSVDTest, SingleRowWithZeroRotation)
 {
-  for (const double aScale : {1.0, 1.0e-12, 1.0e12})
+  for (const double aScale : {0.0, 1.0, 1.0e-12, 1.0e12})
   {
     math_Matrix aMatrix(1, 1, 1, 2);
     aMatrix(1, 1) = -0.96366013252215466 * aScale;
@@ -283,12 +283,14 @@ TEST(MathSVDTest, SingleRowWithZeroRotation)
     math_Vector aRightHandSide(1, 1), aSolution(1, 2);
     aRightHandSide(1) = aScale;
     aSVD.Solve(aRightHandSide, aSolution);
+    EXPECT_EQ(std::fetestexcept(FE_INVALID | FE_DIVBYZERO), 0);
+    std::feclearexcept(FE_ALL_EXCEPT);
     const double aNormSquared = aMatrix(1, 1) * aMatrix(1, 1) + aMatrix(1, 2) * aMatrix(1, 2);
     for (int anIndex = 1; anIndex <= 2; ++anIndex)
     {
       EXPECT_TRUE(std::isfinite(aSolution(anIndex)));
       EXPECT_NEAR(aSolution(anIndex),
-                  aMatrix(1, anIndex) * aRightHandSide(1) / aNormSquared,
+                  aScale == 0.0 ? 0.0 : aMatrix(1, anIndex) * aRightHandSide(1) / aNormSquared,
                   1.0e-12);
     }
     checkSolution(aMatrix, aSolution, aRightHandSide, std::abs(aScale) * 1.0e-12);

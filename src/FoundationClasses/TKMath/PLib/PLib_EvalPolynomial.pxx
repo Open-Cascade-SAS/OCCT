@@ -20,6 +20,15 @@ namespace
 {
 //==================================================================================================
 
+// Scalar types may provide a fused product and sum.
+template <class Real>
+Real multiplyAdd(const Real& theA, const Real& theB, const Real& theC)
+{
+  return theA * theB + theC;
+}
+
+//==================================================================================================
+
 // Horner evaluation with highest-order coefficient rows first.
 // Each borrowed row and the result contain at least theDimension elements.
 // The result must not overwrite coefficient rows that are still needed.
@@ -40,7 +49,8 @@ void evalPolynomialValue(const size_t               theDegree,
     const auto& aCoefficient = theCoefficient(aStep);
     for (size_t aCoordinate = 0; aCoordinate < theDimension; ++aCoordinate)
     {
-      theResult[aCoordinate] = theResult[aCoordinate] * theParameter + aCoefficient[aCoordinate];
+      theResult[aCoordinate] =
+        multiplyAdd(theResult[aCoordinate], theParameter, aCoefficient[aCoordinate]);
     }
   }
 }

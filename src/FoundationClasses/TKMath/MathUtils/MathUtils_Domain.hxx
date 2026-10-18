@@ -93,7 +93,15 @@ struct Domain1D
   //! Interpolate within domain.
   //! @param theT interpolation parameter in [0, 1]
   //! @return Min + theT * Length()
-  constexpr double Lerp(double theT) const { return Min + theT * (Max - Min); }
+  constexpr double Lerp(double theT) const
+  {
+    if ((Min <= 0.0 && Max >= 0.0) || (Min >= 0.0 && Max <= 0.0))
+    {
+      return (1.0 - theT) * Min + theT * Max;
+    }
+    const double aLength = Max - Min;
+    return theT <= 0.5 ? Min + theT * aLength : Max - (1.0 - theT) * aLength;
+  }
 
   //! Normalize parameter to [0, 1] range.
   //! @param theU parameter value

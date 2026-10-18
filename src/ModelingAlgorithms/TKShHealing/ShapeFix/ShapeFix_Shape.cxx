@@ -308,7 +308,7 @@ void ShapeFix_Shape::SameParameter(const TopoDS_Shape&          sh,
                                    const bool                   enforce,
                                    const Message_ProgressRange& theProgress)
 {
-  ShapeFix::SameParameter(sh, enforce, 0.0, theProgress);
+  ShapeFix::SameParameter(sh, enforce, 0.0, theProgress, nullptr, Context());
 }
 
 //=================================================================================================

@@ -1021,7 +1021,7 @@ static void AddIntervals(const occ::handle<NCollection_HSequence<double>>& thePa
   for (int i = 1; i <= nsol; i++)
   {
     double param = theRoots.Value(i);
-    if (param - theParameters->Value(1) < theTol)
+    if (param <= theParameters->Value(1) || param - theParameters->Value(1) < theTol)
     { // skip param if equal to or less than theParameters(1)
       continue;
     }
@@ -1078,6 +1078,8 @@ int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
   {
     aIntervals->Append(TabC(i));
   }
+  // Every surface knot bounds a polynomial patch in a CN partition.
+  const double aMergeTolerance = S == GeomAbs_CN ? 0.0 : Tol;
 
   if (nu > 1)
   {
@@ -1087,7 +1089,7 @@ int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
       U = TabU.Value(iu);
       Adaptor3d_InterFunc Func(myCurve, U, 1);
       math_FunctionRoots  Resol(Func, Tdeb, Tfin, NbSample, Tol, Tol, Tol, 0.);
-      AddIntervals(aIntervals, Resol, Tol);
+      AddIntervals(aIntervals, Resol, aMergeTolerance);
     }
   }
   if (nv > 1)
@@ -1098,7 +1100,7 @@ int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
       V = TabV.Value(iv);
       Adaptor3d_InterFunc Func(myCurve, V, 2);
       math_FunctionRoots  Resol(Func, Tdeb, Tfin, NbSample, Tol, Tol, Tol, 0.);
-      AddIntervals(aIntervals, Resol, Tol);
+      AddIntervals(aIntervals, Resol, aMergeTolerance);
     }
   }
 
