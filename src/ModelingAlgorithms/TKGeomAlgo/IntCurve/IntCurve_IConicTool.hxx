@@ -42,6 +42,11 @@ public:
 
   Standard_EXPORT IntCurve_IConicTool(const IntCurve_IConicTool& IT);
 
+  //! Copies the conic parameters, axes, and coordinate transformation.
+  //! @param[in] theOther conic tool to copy
+  //! @return this conic tool
+  IntCurve_IConicTool& operator=(const IntCurve_IConicTool& theOther) = default;
+
   Standard_EXPORT IntCurve_IConicTool(const gp_Elips2d& E);
 
   Standard_EXPORT IntCurve_IConicTool(const gp_Lin2d& L);
