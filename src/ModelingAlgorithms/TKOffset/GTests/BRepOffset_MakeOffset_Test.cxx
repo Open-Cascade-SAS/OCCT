@@ -32,6 +32,8 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRep_Tool.hxx>
+#include <TopLoc_Location.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <Geom_Circle.hxx>
@@ -61,6 +63,60 @@
 #include <cmath>
 #include <array>
 #include <utility>
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolid_EllipseRevolution_PoleBoundary)
+{
+  const gp_Elips anEllipse(gp_Ax2(gp::Origin(), gp::DZ()), 15.0, 10.0);
+  TopoDS_Edge    anArc = BRepBuilderAPI_MakeEdge(anEllipse, 0.0, M_PI / 2.0).Edge();
+  gp_Trsf        aRotation;
+  aRotation.SetRotation(gp::OX(), M_PI / 2.0);
+  anArc.Move(TopLoc_Location(aRotation));
+  BRepBuilderAPI_MakeWire aWire;
+  aWire.Add(anArc);
+  aWire.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 10.0), gp_Pnt(0.0, 0.0, -10.0)).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, -10.0), gp_Pnt(25.0, 0.0, -10.0)).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(25.0, 0.0, -10.0), gp_Pnt(15.0, 0.0, 0.0)).Edge());
+  ASSERT_TRUE(aWire.IsDone());
+  BRepBuilderAPI_MakeFace aFace(aWire.Wire(), true);
+  ASSERT_TRUE(aFace.IsDone());
+  BRepPrimAPI_MakeRevol aRevolution(aFace.Face(), gp::OZ(), 1.5 * M_PI);
+  ASSERT_TRUE(aRevolution.IsDone());
+  const TopoDS_Shape&   aShape = aRevolution.Shape();
+  BRepOffset_MakeOffset anOffset;
+  anOffset.Initialize(aShape,
+                      1.0,
+                      Precision::Confusion(),
+                      BRepOffset_Skin,
+                      true,
+                      false,
+                      GeomAbs_Intersection);
+  int aNbRemoved = 0;
+  for (TopExp_Explorer anExp(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Face         aClosingFace = TopoDS::Face(anExp.Current());
+    const BRepAdaptor_Surface aSurface(aClosingFace);
+    if (aSurface.GetType() == GeomAbs_Plane
+        && std::abs(aSurface.Plane().Axis().Direction().Dot(gp::DZ())) < Precision::Angular())
+    {
+      anOffset.AddFace(aClosingFace);
+      ++aNbRemoved;
+    }
+  }
+  ASSERT_EQ(aNbRemoved, 2);
+
+  anOffset.MakeThickSolid();
+  ASSERT_TRUE(anOffset.IsDone());
+  EXPECT_EQ(anOffset.Error(), BRepOffset_NoError);
+  const TopoDS_Shape& aResult = anOffset.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_EQ(aResult.ShapeType(), TopAbs_SOLID);
+  EXPECT_TRUE(BRepCheck_Analyzer(aResult, true, false, true).IsValid());
+  TopExp_Explorer aShells(aResult, TopAbs_SHELL);
+  ASSERT_TRUE(aShells.More());
+  EXPECT_TRUE(BRep_Tool::IsClosed(aShells.Current()));
+  aShells.Next();
+  EXPECT_FALSE(aShells.More());
+}
 
 TEST(BRepOffset_AnalyseTest, ConstructionContinuityOfSplineFace)
 {

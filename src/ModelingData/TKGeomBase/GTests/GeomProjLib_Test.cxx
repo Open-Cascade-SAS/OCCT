@@ -21,6 +21,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_Hyperbola.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <Geom_Parabola.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -42,6 +43,10 @@
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+
+#include <algorithm>
+#include <cmath>
 
 namespace
 {
@@ -55,6 +60,35 @@ gp_Ax2 makeOCC31661CurveAxis()
   return gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 1.0, 1.0), gp_Dir(2.0, 0.0, -2.0));
 }
 } // namespace
+
+//==================================================================================================
+
+TEST(GeomProjLibTest, ConeHyperbolaProjectionPreservesParameters)
+{
+  const double                           anAngle = M_PI / 12.0;
+  const occ::handle<Geom_ConicalSurface> aCone   = new Geom_ConicalSurface(gp_Ax3(), anAngle, 0.0);
+  const gp_Ax2 aFrame(gp_Pnt(39.0, 0.0, 0.0), gp_Dir(-1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const occ::handle<Geom_Hyperbola> aCurve =
+    new Geom_Hyperbola(aFrame, 39.0 / std::tan(anAngle), 39.0);
+  for (const double aLimit : {1.0, 5.0, 9.0})
+  {
+    SCOPED_TRACE(aLimit);
+    double                          aTolerance = Precision::Confusion();
+    const occ::handle<Geom2d_Curve> aPCurve =
+      GeomProjLib::Curve2d(aCurve, -aLimit, aLimit, aCone, aTolerance);
+    ASSERT_FALSE(aPCurve.IsNull());
+    double aMaximum = 0.0;
+    for (int aSample = 0; aSample <= 1000; ++aSample)
+    {
+      const double   aParameter = aLimit * (2.0 * aSample / 1000.0 - 1.0);
+      const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+      aMaximum =
+        std::max(aMaximum, aCurve->EvalD0(aParameter).Distance(aCone->EvalD0(aUV.X(), aUV.Y())));
+    }
+    // Allow the existing approximation error at the distant hyperbola ends.
+    EXPECT_LE(aMaximum, 50.0 * Precision::Approximation());
+  }
+}
 
 // Migrated from tests/bugs/moddata_3/bug31661_1. Projection of a parabola onto
 // the XY plane must preserve its conic type and the trimmed parameter range.

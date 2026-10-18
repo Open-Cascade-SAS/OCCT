@@ -177,6 +177,9 @@ public:
   //! @return corresponding curved-branch parameter
   Standard_EXPORT double LinkCurveBis(const double U) const;
 
+  //! Returns a parameter within the domain of this non-empty bisector.
+  //! @param[in] P point on the bisector
+  //! @return parameter on the curved branch or normal extension
   Standard_EXPORT double Parameter(const gp_Pnt2d& P) const override;
 
   Standard_EXPORT occ::handle<Geom2d_Curve> Curve(const int IndCurve) const;
