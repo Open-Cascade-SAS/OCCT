@@ -13,9 +13,11 @@
 
 #include <gtest/gtest.h>
 
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <HLRAlgo_Projector.hxx>
+#include <HLRBRep_BSurfaceTool.hxx>
 #include <HLRBRep_Surface.hxx>
 #include <HLRBRep_SurfaceTool.hxx>
 #include <NCollection_Array1.hxx>
@@ -55,4 +57,34 @@ TEST(HLRBRep_SurfaceTest, SplineSamplingAndEdgeOnProjection)
   EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesU(&aSurface), aSpline->NbUKnots() * aSpline->UDegree());
   EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesV(&aSurface), aSpline->NbVKnots() * aSpline->VDegree());
   EXPECT_TRUE(aSurface.IsSide(Precision::Confusion(), Precision::Angular()));
+
+  aSpline->IncreaseDegree(6, 11);
+  aKnots(1) = -2.0;
+  aKnots(2) = 6.0;
+  aSpline->SetUKnots(aKnots);
+  aKnots(1) = 100.0;
+  aKnots(2) = 104.0;
+  aSpline->SetVKnots(aKnots);
+  BRepBuilderAPI_MakeFace aHighDegreeBuilder(aSpline, Precision::Confusion());
+  ASSERT_TRUE(aHighDegreeBuilder.IsDone());
+  aSurface.Surface(aHighDegreeBuilder.Face());
+  const BRepAdaptor_Surface& anAdaptor = aSurface.Surface();
+  const int                  aUSamples = aSpline->NbUKnots() * aSpline->UDegree();
+  const int                  aVSamples = aSpline->NbVKnots() * aSpline->VDegree();
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesU(&aSurface, -2.0, 6.0), aUSamples);
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesV(&aSurface, 100.0, 104.0), aVSamples);
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesU(&aSurface, -2.0, 2.0), aUSamples / 2);
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesV(&aSurface, 102.0, 104.0), aVSamples / 2);
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesU(&aSurface, -2.0, -1.5), 5);
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesV(&aSurface, 100.0, 100.25), 5);
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesU(&aSurface, -4.0, 8.0), aUSamples);
+  EXPECT_EQ(HLRBRep_SurfaceTool::NbSamplesV(&aSurface, 98.0, 106.0), aVSamples);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesU(anAdaptor, -2.0, 6.0), aUSamples);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesV(anAdaptor, 100.0, 104.0), aVSamples);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesU(anAdaptor, -2.0, 2.0), aUSamples / 2);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesV(anAdaptor, 102.0, 104.0), aVSamples / 2);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesU(anAdaptor, -2.0, -1.5), 5);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesV(anAdaptor, 100.0, 100.25), 5);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesU(anAdaptor, -4.0, 8.0), aUSamples);
+  EXPECT_EQ(HLRBRep_BSurfaceTool::NbSamplesV(anAdaptor, 98.0, 106.0), aVSamples);
 }

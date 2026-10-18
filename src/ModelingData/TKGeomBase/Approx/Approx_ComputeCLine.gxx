@@ -22,6 +22,7 @@
 #include <AppParCurves_Constraint.hxx>
 #include <Approx_Status.hxx>
 #include <Precision.hxx>
+#include <Standard_Real.hxx>
 
 const static int MAXSEGM = 1000;
 
@@ -107,7 +108,8 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
   }
   else
   {
-    TolU = std::max((ULast - UFirst) * 1.e-05, Precision::PApproximation());
+    // Without hang checking, only parameter representability limits subdivision.
+    TolU = std::max(Epsilon(UFirst), Epsilon(ULast));
   }
   double myfirstU      = UFirst;
   double mylastU       = ULast;

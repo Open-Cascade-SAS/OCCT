@@ -53,6 +53,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #define FuncTol 1.e-10
 
@@ -1872,8 +1873,33 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
     }
   }
 
+  const auto aSortedUniqueCrossings =
+    [](NCollection_LinearVector<double>& theCrossings) -> occ::handle<NCollection_HArray1<double>> {
+    if (theCrossings.IsEmpty())
+    {
+      return nullptr;
+    }
+
+    // Surface knots are visited in surface order, which can reverse the curve order.
+    std::sort(theCrossings.begin(), theCrossings.end());
+    size_t aCount = 1;
+    for (size_t anIndex = 1; anIndex < theCrossings.Size(); ++anIndex)
+    {
+      const double aParameter = theCrossings[anIndex];
+      if (aParameter - theCrossings[aCount - 1] >= Precision::PConfusion())
+      {
+        theCrossings[aCount++] = aParameter;
+      }
+    }
+
+    const occ::handle<NCollection_HArray1<double>> aResult = new NCollection_HArray1<double>();
+    aResult->ChangeArray1().Resize(aCount, false);
+    std::copy_n(theCrossings.begin(), aCount, aResult->ChangeArray1().begin());
+    return aResult;
+  };
+
   // processing U-surface discontinuities
-  NCollection_Sequence<double> TUdisc;
+  NCollection_LinearVector<double> aCrossings;
 
   for (k = 2; k <= NbIntSurU; k++)
   {
@@ -1887,11 +1913,11 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 
         if (std::abs(Ul - CutPntsU(k)) <= myTolU)
         {
-          TUdisc.Append(mySequence->Value(i)->Value(j).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j).X());
         }
         else if (std::abs(Ur - CutPntsU(k)) <= myTolU)
         {
-          TUdisc.Append(mySequence->Value(i)->Value(j + 1).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j + 1).X());
         }
         else if ((Ul < CutPntsU(k) && CutPntsU(k) < Ur) || (Ur < CutPntsU(k) && CutPntsU(k) < Ul))
         {
@@ -1925,31 +1951,16 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           //
           if (Solver.IsDone())
           {
-            TUdisc.Append(Solver.Solution().X());
+            aCrossings.Append(Solver.Solution().X());
           }
         }
       }
     }
   }
-  for (i = 2; i <= TUdisc.Length(); i++)
-  {
-    if (TUdisc(i) - TUdisc(i - 1) < Precision::PConfusion())
-    {
-      TUdisc.Remove(i--);
-    }
-  }
+  UArr = aSortedUniqueCrossings(aCrossings);
+  aCrossings.Clear(false);
 
-  if (TUdisc.Length())
-  {
-    UArr = new NCollection_HArray1<double>(1, TUdisc.Length());
-    for (i = 1; i <= UArr->Length(); i++)
-    {
-      UArr->ChangeValue(i) = TUdisc(i);
-    }
-  }
   // processing V-surface discontinuities
-  NCollection_Sequence<double> TVdisc;
-
   for (k = 2; k <= NbIntSurV; k++)
   {
     for (i = 1; i <= myNbCurves; i++)
@@ -1963,11 +1974,11 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 
         if (std::abs(Vl - CutPntsV(k)) <= myTolV)
         {
-          TVdisc.Append(mySequence->Value(i)->Value(j).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j).X());
         }
         else if (std::abs(Vr - CutPntsV(k)) <= myTolV)
         {
-          TVdisc.Append(mySequence->Value(i)->Value(j + 1).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j + 1).X());
         }
         else if ((Vl < CutPntsV(k) && CutPntsV(k) < Vr) || (Vr < CutPntsV(k) && CutPntsV(k) < Vl))
         {
@@ -2001,29 +2012,14 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           //
           if (Solver.IsDone())
           {
-            TVdisc.Append(Solver.Solution().X());
+            aCrossings.Append(Solver.Solution().X());
           }
         }
       }
     }
   }
 
-  for (i = 2; i <= TVdisc.Length(); i++)
-  {
-    if (TVdisc(i) - TVdisc(i - 1) < Precision::PConfusion())
-    {
-      TVdisc.Remove(i--);
-    }
-  }
-
-  if (TVdisc.Length())
-  {
-    VArr = new NCollection_HArray1<double>(1, TVdisc.Length());
-    for (i = 1; i <= VArr->Length(); i++)
-    {
-      VArr->ChangeValue(i) = TVdisc(i);
-    }
-  }
+  VArr = aSortedUniqueCrossings(aCrossings);
 
   // fusion
   NCollection_Sequence<double> Fusion;

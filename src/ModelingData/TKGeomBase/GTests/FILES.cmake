@@ -8,6 +8,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   AdvApp2Var_Network_Test.cxx
   AdvApp2Var_Node_Test.cxx
   AppCont_ContMatrices_Test.cxx
+  Approx_FitAndDivide_Test.cxx
   BndLib_Test.cxx
   GeomBndLib_Curve_Test.cxx
   GeomBndLib_Curve2d_Test.cxx
@@ -49,6 +50,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   IntAna_IntQuadQuad_Test.cxx
   ProjLib_Cone_Test.cxx
   ProjLib_ComputeApproxOnPolarSurface_Test.cxx
+  ProjLib_CompProjectedCurve_Test.cxx
   ProjLib_ProjectionDerivative_Test.cxx
   gce_MakeCone_Test.cxx
   gce_MakeCirc2d_Test.cxx
