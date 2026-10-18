@@ -405,3 +405,86 @@ TEST(BRepCheckTest, ParallelFaceChecksMatchSerialForSharedBSplineEdge)
     EXPECT_EQ(aStatus.First(), BRepCheck_NoError) << i;
   }
 }
+
+TEST(BRepCheckTest, PlaneWithoutPCurveUsesAccurateOffsetProjection)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles.ChangeAt(0) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles.ChangeAt(1) = gp_Pnt(1.0, 2.0, 0.0);
+  aPoles.ChangeAt(2) = gp_Pnt(2.0, -2.0, 0.0);
+  aPoles.ChangeAt(3) = gp_Pnt(3.0, 0.0, 0.0);
+  const occ::handle<Geom_Curve> aCurve =
+    new Geom_OffsetCurve(new Geom_BezierCurve(aPoles), 0.1, gp_Dir(0.0, 0.0, 1.0));
+  BRepBuilderAPI_MakeEdge aMaker(aCurve, 0.01, 0.99);
+  ASSERT_TRUE(aMaker.IsDone());
+  const TopoDS_Edge anEdge = aMaker.Edge();
+  for (const double aPlaneHeight : {0.0, 1.0e-5})
+  {
+    for (const bool isExact : {false, true})
+    {
+      SCOPED_TRACE(aPlaneHeight);
+      SCOPED_TRACE(isExact);
+      const occ::handle<Geom_Plane> aPlane =
+        new Geom_Plane(gp_Pnt(0.0, 0.0, aPlaneHeight), gp_Dir(1.0e-16, 0.0, 1.0));
+      BRep_Builder aBuilder;
+      TopoDS_Face  aFace;
+      aBuilder.MakeFace(aFace, aPlane, Precision::Confusion());
+      TopoDS_Wire aWire;
+      aBuilder.MakeWire(aWire);
+      aBuilder.Add(aWire, anEdge);
+      aBuilder.Add(aFace, aWire);
+      BRepCheck_Edge aChecker(anEdge);
+      aChecker.SetExactMethod(isExact);
+      aChecker.InContext(aFace);
+      const NCollection_List<BRepCheck_Status>& aStatus = aChecker.StatusOnShape(aFace);
+      ASSERT_EQ(aStatus.Size(), 1u);
+      EXPECT_EQ(aStatus.First(),
+                aPlaneHeight == 0.0 ? BRepCheck_NoError : BRepCheck_InvalidCurveOnSurface);
+    }
+  }
+}
+
+TEST(BRepCheckTest, PlaneWithoutPCurveAtOffsetCurvatureJump)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 6);
+  aPoles.ChangeAt(0) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles.ChangeAt(1) = gp_Pnt(1.0, 2.0, 0.0);
+  aPoles.ChangeAt(2) = gp_Pnt(2.0, 0.0, 0.0);
+  aPoles.ChangeAt(3) = gp_Pnt(3.0, -2.0, 0.0);
+  aPoles.ChangeAt(4) = gp_Pnt(4.0, 0.0, 0.0);
+  aPoles.ChangeAt(5) = gp_Pnt(5.0, 0.0, 0.0);
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(2) = 1.0;
+  NCollection_Array1<int> aMults(1, 3);
+  aMults.ChangeAt(0) = 4;
+  aMults.ChangeAt(1) = 2;
+  aMults.ChangeAt(2) = 4;
+  for (const double aJoin : {0.1, 0.5, 0.9})
+  {
+    SCOPED_TRACE(aJoin);
+    aKnots.ChangeAt(1) = aJoin;
+    const occ::handle<Geom_Curve> aCurve =
+      new Geom_OffsetCurve(new Geom_BSplineCurve(aPoles, aKnots, aMults, 3),
+                           0.1,
+                           gp_Dir(0.0, 0.0, 1.0));
+    BRepBuilderAPI_MakeEdge aMaker(aCurve, 0.01, 0.99);
+    ASSERT_TRUE(aMaker.IsDone());
+    const TopoDS_Edge             anEdge = aMaker.Edge();
+    const occ::handle<Geom_Plane> aPlane =
+      new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0e-16, 0.0, 1.0));
+    BRep_Builder aBuilder;
+    TopoDS_Face  aFace;
+    aBuilder.MakeFace(aFace, aPlane, Precision::Confusion());
+    TopoDS_Wire aWire;
+    aBuilder.MakeWire(aWire);
+    aBuilder.Add(aWire, anEdge);
+    aBuilder.Add(aFace, aWire);
+    BRepCheck_Edge aChecker(anEdge);
+    aChecker.SetExactMethod(true);
+    aChecker.InContext(aFace);
+    const NCollection_List<BRepCheck_Status>& aStatus = aChecker.StatusOnShape(aFace);
+    ASSERT_EQ(aStatus.Size(), 1u);
+    EXPECT_EQ(aStatus.First(), BRepCheck_NoError);
+  }
+}

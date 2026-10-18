@@ -159,6 +159,9 @@ public:
 
   //! Tries to make edge SameParameter and sets corresponding
   //! tolerance and SameParameter flag.
+  //! With a context, source topology is preserved and replacements record the changes.
+  //! Existing context results can be changed in place. Apply Context() to obtain the repaired
+  //! edge. Without a context, changes are made in place on the input edge.
   //! First, it makes edge same range if SameRange flag is not set.
   //!
   //! If flag SameParameter is set, this method calls the
@@ -225,6 +228,9 @@ public:
   //! DONE4 - not used anymore
   //! DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
   //! (only for edges with not set SameParameter)
+  //! With a context, source topology is preserved and replacements record the changes.
+  //! Existing context results can be changed in place. Apply Context() to obtain the repaired
+  //! edge. Without a context, changes are made in place on the input edge.
   Standard_EXPORT bool FixSameParameter(const TopoDS_Edge& edge,
                                         const TopoDS_Face& face,
                                         const double       tolerance = 0.0);

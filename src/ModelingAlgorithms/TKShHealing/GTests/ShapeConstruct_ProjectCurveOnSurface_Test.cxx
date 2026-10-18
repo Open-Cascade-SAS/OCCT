@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <array>
+#include <algorithm>
 #include <cmath>
 #include <gp_XY.hxx>
 
@@ -22,8 +23,11 @@
 
 #include <GC_MakeSegment.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <GeomConvert.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
@@ -1249,6 +1253,80 @@ TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, PeriodicBoundaryWithSingu
 
 //==================================================================================================
 
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, NormalOffsetKeepsStraightProjection)
+{
+  constexpr double                           aRadius = 10.0;
+  const occ::handle<Geom_CylindricalSurface> aSurface =
+    new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  NCollection_Array1<double> aKnots(size_t{2});
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 10.0;
+  NCollection_Array1<int> aMults(size_t{2});
+  aMults.Init(2);
+  for (const double aGap : {0.0, -0.1, 0.1})
+  {
+    SCOPED_TRACE(aGap);
+    NCollection_Array1<gp_Pnt> aPoles(size_t{2});
+    aPoles.ChangeAt(0)                          = gp_Pnt(aRadius + aGap, 0.0, 0.0);
+    aPoles.ChangeAt(1)                          = gp_Pnt(aRadius + aGap, 0.0, 10.0);
+    const occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+    ShapeConstruct_ProjectCurveOnSurface aProjector;
+    aProjector.Init(aSurface, Precision::Confusion());
+    occ::handle<Geom2d_Curve> aPCurve;
+    ASSERT_TRUE(aProjector.Perform(aCurve, 0.0, 10.0, aPCurve));
+    ASSERT_FALSE(aPCurve.IsNull());
+    EXPECT_FALSE(occ::down_cast<Geom2d_Line>(aPCurve).IsNull());
+    for (const double aParameter : {0.0, 2.5, 5.0, 10.0})
+    {
+      const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+      const gp_Pnt   aProjected = aSurface->EvalD0(aUV.X(), aUV.Y());
+      EXPECT_NEAR(aProjected.X(), aRadius, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Y(), 0.0, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Z(), aParameter, Precision::Confusion());
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, NormalOffsetKeepsNonlinearParameters)
+{
+  constexpr double                           aRadius    = 10.0;
+  constexpr double                           aTolerance = 0.096;
+  const occ::handle<Geom_CylindricalSurface> aSurface =
+    new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  NCollection_Array1<double> aKnots(size_t{2});
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 1.0;
+  NCollection_Array1<int> aMults(size_t{2});
+  aMults.Init(4);
+  for (const double aGap : {-1.0, 1.0})
+  {
+    SCOPED_TRACE(aGap);
+    NCollection_Array1<gp_Pnt> aPoles(size_t{4});
+    aPoles.ChangeAt(0)                          = gp_Pnt(aRadius + aGap, 0.0, 0.0);
+    aPoles.ChangeAt(1)                          = gp_Pnt(aRadius + aGap, 0.0, 2.0 / 3.0);
+    aPoles.ChangeAt(2)                          = gp_Pnt(aRadius + aGap, 0.0, 1.0 / 3.0);
+    aPoles.ChangeAt(3)                          = gp_Pnt(aRadius + aGap, 0.0, 1.0);
+    const occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+    ShapeConstruct_ProjectCurveOnSurface aProjector;
+    aProjector.Init(aSurface, aTolerance);
+    occ::handle<Geom2d_Curve> aPCurve;
+    ASSERT_TRUE(aProjector.Perform(aCurve, 0.0, 1.0, aPCurve));
+    ASSERT_FALSE(aPCurve.IsNull());
+    for (const double aParameter : {(3.0 - std::sqrt(3.0)) / 6.0, (3.0 + std::sqrt(3.0)) / 6.0})
+    {
+      const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+      const gp_Pnt   aProjected = aSurface->EvalD0(aUV.X(), aUV.Y());
+      EXPECT_NEAR(aProjected.X(), aRadius, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Y(), 0.0, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Z(), aCurve->EvalD0(aParameter).Z(), aTolerance);
+    }
+  }
+}
+
+//==================================================================================================
+
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, PiecewiseLinearCurveKeepsKnotParameters)
 {
   constexpr double                           aRadius     = 100.0;
@@ -1429,6 +1507,71 @@ TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, AffineProjectionAcrossSur
                     aTolerance);
         }
       }
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, OpenSurfacePoleKeepsProjectionBranch)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  const double               aX[] = {-20.0, 0.0, 20.0};
+  const double               aY[] = {0.0, -20.0, 0.0};
+  for (size_t i = 0; i < 3; ++i)
+  {
+    aPoles.ChangeAt(i, 0) = gp_Pnt(aX[i], aY[i], 0.0);
+    aPoles.ChangeAt(i, 1) = gp_Pnt(aX[i], aY[i], -20.0);
+    aPoles.ChangeAt(i, 2) = gp_Pnt(0.0, 0.0, -20.0);
+  }
+  const double                     aKnotValues[] = {0.0, 1.0};
+  const int                        aMultValues[] = {3, 3};
+  const NCollection_Array1<double> aKnots(aKnotValues[0], 1, 2);
+  const NCollection_Array1<int>    aMults(aMultValues[0], 1, 2);
+  NCollection_Array1<gp_Pnt>       aCurvePoles(1, 3);
+  aCurvePoles.ChangeAt(0) = gp_Pnt(0.0, 0.0, -20.0);
+  aCurvePoles.ChangeAt(1) = gp_Pnt(10.0, 0.00005, -20.0);
+  aCurvePoles.ChangeAt(2) = gp_Pnt(15.0, 0.0001, -15.0);
+  const occ::handle<Geom_BSplineCurve> aBasis =
+    GeomConvert::CurveToBSplineCurve(new Geom_BezierCurve(aCurvePoles));
+  aBasis->InsertKnot(0.02, 1, Precision::PConfusion());
+  aBasis->InsertKnot(0.1, 1, Precision::PConfusion());
+  constexpr double aTolerance = 1.0;
+  for (const bool toExchange : {false, true})
+  {
+    SCOPED_TRACE(toExchange);
+    const occ::handle<Geom_BSplineSurface> aSurface =
+      new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 2, 2);
+    if (toExchange)
+    {
+      aSurface->ExchangeUV();
+    }
+    ASSERT_FALSE(aSurface->IsUClosed());
+    ASSERT_FALSE(aSurface->IsVClosed());
+    for (const bool toReverse : {false, true})
+    {
+      SCOPED_TRACE(toReverse);
+      const occ::handle<Geom_Curve> aCurve = occ::down_cast<Geom_Curve>(aBasis->Copy());
+      if (toReverse)
+      {
+        aCurve->Reverse();
+      }
+      ShapeConstruct_ProjectCurveOnSurface aProjector;
+      aProjector.Init(aSurface, aTolerance);
+      occ::handle<Geom2d_Curve> aPCurve;
+      const double              aFirst = aCurve->FirstParameter(), aLast = aCurve->LastParameter();
+      ASSERT_TRUE(aProjector.Perform(aCurve, aFirst, aLast, aPCurve));
+      ASSERT_FALSE(aPCurve.IsNull());
+      double aMaximum = 0.0;
+      for (int i = 0; i <= 300; ++i)
+      {
+        const double   aParameter = aFirst + (aLast - aFirst) * double(i) / 300.0;
+        const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+        aMaximum =
+          std::max(aMaximum,
+                   aCurve->EvalD0(aParameter).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())));
+      }
+      EXPECT_LE(aMaximum, aTolerance);
     }
   }
 }

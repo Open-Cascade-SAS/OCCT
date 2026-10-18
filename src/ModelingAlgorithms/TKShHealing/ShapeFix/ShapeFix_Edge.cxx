@@ -795,11 +795,25 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge, const double toler
 
 //=================================================================================================
 
-bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
+bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& theEdge,
                                      const TopoDS_Face& face,
                                      const double       tolerance)
 {
-  myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  myStatus         = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  TopoDS_Edge edge = theEdge;
+  if (!myContext.IsNull())
+  {
+    const TopoDS_Shape aReplacement = myContext->Apply(theEdge);
+    if (aReplacement.IsNull() || aReplacement.ShapeType() != TopAbs_EDGE)
+    {
+      return false;
+    }
+    edge = TopoDS::Edge(aReplacement);
+    if (!BRep_Tool::SameRange(edge) || !BRep_Tool::SameParameter(edge))
+    {
+      edge = myContext->CopyEdge(edge);
+    }
+  }
 
   if (BRep_Tool::Degenerated(edge))
   {
@@ -808,7 +822,10 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
     {
       TempSameRange(edge, Precision::PConfusion());
     }
-    B.SameParameter(edge, true);
+    if (!BRep_Tool::SameParameter(edge))
+    {
+      B.SameParameter(edge, true);
+    }
     return false;
   }
 
@@ -847,7 +864,12 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
         double aF, aL;
         BRep_Tool::Range(edge, aF, aL);
         B.Range(copyedge, aF, aL, true); // only 3D
-        BRepLib::SameParameter(copyedge, (tolerance >= Precision::Confusion() ? tolerance : tol));
+        // Defer vertex tolerance changes until the selected pcurves are known.
+        double aVertexTolerance = -1.0;
+        BRepLib::SameParameter(copyedge,
+                               (tolerance >= Precision::Confusion() ? tolerance : tol),
+                               aVertexTolerance,
+                               true);
         SP = BRep_Tool::SameParameter(copyedge);
         if (!SP)
         {
@@ -869,7 +891,10 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
 
   // compute deviation on the original pcurves
   double maxdev;
-  B.SameParameter(edge, true);
+  if (!BRep_Tool::SameParameter(edge))
+  {
+    B.SameParameter(edge, true);
+  }
 
   // Should check all pcurves in case of non-sameparametrization input.
   TopoDS_Face aFace = face;
@@ -911,18 +936,29 @@ bool ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
     }
   }
 
-  // restore tolerances because they could be modified by BRepLib
-  if (!V1.IsNull())
-  {
-    SFST.SetTolerance(V1, std::max(maxdev, TolFV), TopAbs_VERTEX);
-  }
-  if (!V2.IsNull())
-  {
-    SFST.SetTolerance(V2, std::max(maxdev, TolLV), TopAbs_VERTEX);
-  }
+  auto updateVertexTolerance = [&](const TopoDS_Vertex& theVertex, const double theTolerance) {
+    if (theVertex.IsNull() || theTolerance <= BRep_Tool::Tolerance(theVertex))
+    {
+      return;
+    }
+    if (!myContext.IsNull() && !myContext->IsNewShape(theVertex))
+    {
+      myContext->CopyVertex(theVertex, theTolerance);
+    }
+    else
+    {
+      SFST.SetTolerance(theVertex, theTolerance, TopAbs_VERTEX);
+    }
+  };
+  updateVertexTolerance(V1, std::max(maxdev, TolFV));
+  updateVertexTolerance(V2, std::max(maxdev, TolLV));
 
   if (maxdev > tol)
   {
+    if (!myContext.IsNull())
+    {
+      edge = myContext->CopyEdge(edge);
+    }
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
     B.UpdateEdge(edge, maxdev);
     // Keep the SameParameter result; the vertex check has its own status codes.

@@ -6,7 +6,7 @@ puts ""
 ## Intersection algorithm produces curves overlapped
 ###############################
 
-set ExpToler 1.5361108163989659e-007
+set ExpToler 1.907184185523026e-08
 set ExpLen 5.036361740755879
 
 restore [locate_data_file bug25890_f1.brep] f1

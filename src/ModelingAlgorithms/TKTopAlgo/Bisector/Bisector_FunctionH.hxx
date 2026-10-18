@@ -28,31 +28,68 @@
 #include <Standard_Real.hxx>
 class Geom2d_Curve;
 
-//! H(v) = (T1.P2(v) - P1) * ||T(v)|| -
-//! 2         2
-//! (T(v).P2(v) - P1) * ||T1||
+//! Circle-tangency equation for a guide point and a second curve.
+//! The residual is the chord projected onto a unit normal to the tangent
+//! bisector. It has length units and has no parallel-tangent zero factor.
+//! The reference parameter selects a continuous orientation of this normal.
+//! The continuous tangent-bisector normal must stay within a right angle of
+//! its reference direction. Splitting at parallel tangents bounds its rotation.
+//! The source curve is retained by a handle and must have regular tangents.
+//! @code
+//! Bisector_FunctionH aFunction(aCurve, aPoint, aGuideTangent, aMiddle);
+//! double aResidual;
+//! if (aFunction.Value(aParameter, aResidual))
+//! {
+//!   // Use the residual within the selected search interval.
+//! }
+//! @endcode
 class Bisector_FunctionH : public math_FunctionWithDerivative
 {
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Uses the midpoint of the source parameter range as the reference.
+  //! @param[in] C2 source curve, retained by a handle
+  //! @param[in] P1 point on the guide curve
+  //! @param[in] T1 oriented guide tangent, with magnitude above gp::Resolution()
   Standard_EXPORT Bisector_FunctionH(const occ::handle<Geom2d_Curve>& C2,
                                      const gp_Pnt2d&                  P1,
                                      const gp_Vec2d&                  T1);
 
-  //! Computes the values of the Functions for the variable <X>.
+  //! Selects the normal orientation using a tangent inside the search interval.
+  //! @param[in] theCurve source curve, retained by a handle
+  //! @param[in] thePoint point on the guide curve
+  //! @param[in] theTangent oriented guide tangent, with magnitude above gp::Resolution()
+  //! @param[in] theReferenceParameter parameter inside the search interval on the source curve
+  Standard_EXPORT Bisector_FunctionH(const occ::handle<Geom2d_Curve>& theCurve,
+                                     const gp_Pnt2d&                  thePoint,
+                                     const gp_Vec2d&                  theTangent,
+                                     double                           theReferenceParameter);
+
+  //! Evaluates the circle-tangency residual in length units.
+  //! @param[in] X parameter on C2 within the selected search interval
+  //! @param[out] F signed projection of the chord onto the tangent-bisector normal
+  //! @return false if a source or reference tangent is unresolved
   Standard_EXPORT bool Value(const double X, double& F) override;
 
+  //! Evaluates the residual derivative with respect to the parameter on C2.
+  //! @param[in] X parameter on C2 within the selected search interval
+  //! @param[out] D derivative of the residual
+  //! @return false if a source or reference tangent is unresolved
   Standard_EXPORT bool Derivative(const double X, double& D) override;
 
-  //! Returns the values of the functions and the derivatives
-  //! for the variable <X>.
+  //! Evaluates the residual and its derivative with respect to the parameter on C2.
+  //! @param[in] X parameter on C2 within the selected search interval
+  //! @param[out] F residual in length units
+  //! @param[out] D derivative of the residual
+  //! @return false if a source or reference tangent is unresolved
   Standard_EXPORT bool Values(const double X, double& F, double& D) override;
 
 private:
-  occ::handle<Geom2d_Curve> curve2;
-  gp_Pnt2d                  p1;
-  gp_Vec2d                  t1;
+  occ::handle<Geom2d_Curve> curve2;      //!< Shared source curve.
+  gp_Pnt2d                  p1;          //!< Guide point.
+  gp_Vec2d                  t1;          //!< Unit oriented guide tangent.
+  gp_Vec2d                  myReference; //!< Unit normal orientation, or zero if unresolved.
 };
 
 #endif // _Bisector_FunctionH_HeaderFile

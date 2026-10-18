@@ -23,26 +23,28 @@
 #include <Precision.hxx>
 #include <math_Vector.hxx>
 
-#include <gp_XY.hxx>
+#include <gp_XYZ.hxx>
 #include <cmath>
 
 namespace
 {
 //==================================================================================================
 
-bool hasSharpTurn(const gp_Pnt2d& theFirst, const gp_Pnt2d& theMiddle, const gp_Pnt2d& theLast)
+bool hasSharpTurn(const gp_Pnt& theFirst, const gp_Pnt& theMiddle, const gp_Pnt& theLast)
 {
+  // Use the spatial path: surface parameters can turn along a straight intersection.
   // Original and inserted points can have different spacing.
-  const gp_XY  aPrevious       = theMiddle.XY() - theFirst.XY();
-  const gp_XY  aNext           = theLast.XY() - theMiddle.XY();
-  const double aPreviousLength = std::hypot(aPrevious.X(), aPrevious.Y());
-  const double aNextLength     = std::hypot(aNext.X(), aNext.Y());
+  const gp_XYZ aPrevious       = theMiddle.XYZ() - theFirst.XYZ();
+  const gp_XYZ aNext           = theLast.XYZ() - theMiddle.XYZ();
+  const double aPreviousLength = std::hypot(aPrevious.X(), aPrevious.Y(), aPrevious.Z());
+  const double aNextLength     = std::hypot(aNext.X(), aNext.Y(), aNext.Z());
   if (aPreviousLength == 0.0 || aNextLength == 0.0)
   {
     return aPreviousLength != aNextLength;
   }
-  const gp_XY      aChange(aNext.X() / aNextLength - aPrevious.X() / aPreviousLength,
-                      aNext.Y() / aNextLength - aPrevious.Y() / aPreviousLength);
+  const gp_XYZ     aChange(aNext.X() / aNextLength - aPrevious.X() / aPreviousLength,
+                       aNext.Y() / aNextLength - aPrevious.Y() / aPreviousLength,
+                       aNext.Z() / aNextLength - aPrevious.Z() / aPreviousLength);
   constexpr double aMaxSquaredDirectionChange = 0.25;
   return aChange.SquareModulus() > aMaxSquaredDirectionChange;
 }
@@ -457,12 +459,7 @@ ApproxInt_MultiLine ApproxInt_MultiLine::MakeMLBetween(const int Low,
     const IntSurf_PntOn2S& aFirst  = temp->Point(i - 2);
     const IntSurf_PntOn2S& aMiddle = temp->Point(i - 1);
     const IntSurf_PntOn2S& aLast   = temp->Point(i);
-    if (hasSharpTurn(aFirst.ValueOnSurface(true),
-                     aMiddle.ValueOnSurface(true),
-                     aLast.ValueOnSurface(true))
-        || hasSharpTurn(aFirst.ValueOnSurface(false),
-                        aMiddle.ValueOnSurface(false),
-                        aLast.ValueOnSurface(false)))
+    if (hasSharpTurn(aFirst.Value(), aMiddle.Value(), aLast.Value()))
     {
       hasTurn = true;
       break;
@@ -472,8 +469,9 @@ ApproxInt_MultiLine ApproxInt_MultiLine::MakeMLBetween(const int Low,
   aSurfaces->SetUseSolver(aSaveUseSolver);
   if (temp->NbPnts() >= NbPnts && !hasTurn)
   {
+    // Keep surface access available for further subdivision.
     return (ApproxInt_MultiLine(temp,
-                                (High - Low > 10) ? PtrOnmySvSurfaces : NULL,
+                                PtrOnmySvSurfaces,
                                 nbp3d,
                                 nbp2d,
                                 myApproxU1V1,

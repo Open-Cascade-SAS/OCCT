@@ -38,6 +38,8 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <gp_Sphere.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <gp_Ax2.hxx>
@@ -1227,4 +1229,84 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolidWithDegeneratePoleEdges)
   anOffset.MakeThickSolid();
   ASSERT_TRUE(anOffset.IsDone());
   EXPECT_TRUE(BRepCheck_Analyzer(anOffset.Shape()).IsValid());
+}
+
+//==================================================================================================
+
+TEST(BRepOffset_MakeOffsetTest, ArcOffset_SplitSplineConeKeepsSeamAtFirstFace)
+{
+  // Each construction has independent topology and may have a different hash traversal order.
+  for (const double anAngle : {0.0, 0.5})
+  {
+    for (int aTrial = 0; aTrial < 8; ++aTrial)
+    {
+      SCOPED_TRACE(::testing::Message() << "angle " << anAngle << ", trial " << aTrial);
+      NCollection_Array1<gp_Pnt> aPoles(1, 4);
+      for (size_t anIndex = 0; anIndex < aPoles.Size(); ++anIndex)
+      {
+        const double aFraction   = static_cast<double>(anIndex) / 3.0;
+        aPoles.ChangeAt(anIndex) = gp_Pnt(50.0 * aFraction, 0.0, 80.0 * (1.0 - aFraction));
+      }
+      NCollection_Array1<double> aKnots(1, 2);
+      aKnots.ChangeAt(0) = 0.0;
+      aKnots.ChangeAt(1) = 1.0;
+      NCollection_Array1<int> aMultiplicities(1, 2);
+      aMultiplicities.Init(4);
+      const occ::handle<Geom_BSplineCurve> aMeridian =
+        new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 3);
+      const occ::handle<Geom_SurfaceOfRevolution> aSurface =
+        new Geom_SurfaceOfRevolution(aMeridian, gp::OZ());
+      BRepBuilderAPI_MakeFace aFirstFace(aSurface,
+                                         anAngle,
+                                         anAngle + M_PI,
+                                         0.0,
+                                         1.0,
+                                         Precision::Confusion());
+      BRepBuilderAPI_MakeFace aSecondFace(aSurface,
+                                          anAngle + M_PI,
+                                          anAngle + 2.0 * M_PI,
+                                          0.0,
+                                          1.0,
+                                          Precision::Confusion());
+      ASSERT_TRUE(aFirstFace.IsDone());
+      ASSERT_TRUE(aSecondFace.IsDone());
+      BRepBuilderAPI_Sewing aSewing;
+      aSewing.Add(aFirstFace.Face());
+      aSewing.Add(aSecondFace.Face());
+      aSewing.Perform();
+      const TopoDS_Shape& aCone = aSewing.SewedShape();
+      ASSERT_FALSE(aCone.IsNull());
+      ASSERT_TRUE(BRepCheck_Analyzer(aCone).IsValid());
+
+      BRepOffset_MakeOffset anOffset(aCone, 5.0, Precision::Confusion());
+      ASSERT_TRUE(anOffset.IsDone());
+      ASSERT_EQ(anOffset.Error(), BRepOffset_NoError);
+      const TopoDS_Shape& aResult = anOffset.Shape();
+      ASSERT_FALSE(aResult.IsNull());
+      EXPECT_TRUE(BRepCheck_Analyzer(aResult, true, false, true).IsValid());
+      int aNbSpheres = 0;
+      int aNbFaces   = 0;
+      for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next())
+      {
+        ++aNbFaces;
+        const BRepAdaptor_Surface aResultSurface(TopoDS::Face(anExp.Current()));
+        if (aResultSurface.GetType() != GeomAbs_Sphere)
+        {
+          continue;
+        }
+        ++aNbSpheres;
+        const gp_Sphere aSphere    = aResultSurface.Sphere();
+        const gp_Dir&   aDirection = aSphere.Position().XDirection();
+        EXPECT_NEAR(aDirection.X(), -std::cos(anAngle), Precision::Angular());
+        EXPECT_NEAR(aDirection.Y(), -std::sin(anAngle), Precision::Angular());
+        EXPECT_NEAR(aDirection.Z(), 0.0, Precision::Angular());
+        EXPECT_NEAR(aSphere.Radius(), 5.0, Precision::Confusion());
+        EXPECT_NEAR(aSphere.Location().Distance(gp_Pnt(0.0, 0.0, 80.0)),
+                    0.0,
+                    Precision::Confusion());
+      }
+      EXPECT_EQ(aNbSpheres, 1);
+      EXPECT_EQ(aNbFaces, 3);
+    }
+  }
 }

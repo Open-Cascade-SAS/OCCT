@@ -21,6 +21,7 @@
 #include <Bisector_PointOnBis.hxx>
 #include <Bisector_PolyBis.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
@@ -35,13 +36,74 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <math_BissecNewton.hxx>
 #include <math_FunctionRoot.hxx>
-#include <math_FunctionRoots.hxx>
+#include <MathRoot_Multiple.hxx>
 #include <Precision.hxx>
+#include <algorithm>
+#include <cmath>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Bisector_BisecCC, Bisector_Curve)
+
+namespace
+{
+// The source curve belongs to the caller and remains alive during the root search.
+class TangentCrossFunction
+{
+public:
+  TangentCrossFunction(const occ::handle<Geom2d_Curve>& theCurve, const gp_Vec2d& theGuide);
+  bool Value(double theParameter, double& theValue);
+  bool Values(double theParameter, double& theValue, double& theDerivative);
+
+private:
+  const occ::handle<Geom2d_Curve>& myCurve;      //!< Borrowed source curve.
+  gp_Vec2d                         myGuide;      //!< Guide tangent.
+  double                           myGuideSpeed; //!< Guide tangent magnitude.
+};
+
+//==================================================================================================
+
+TangentCrossFunction::TangentCrossFunction(const occ::handle<Geom2d_Curve>& theCurve,
+                                           const gp_Vec2d&                  theGuide)
+    : myCurve(theCurve),
+      myGuide(theGuide),
+      myGuideSpeed(theGuide.Magnitude())
+{
+}
+
+//==================================================================================================
+
+bool TangentCrossFunction::Value(const double theParameter, double& theValue)
+{
+  const gp_Vec2d aTangent = myCurve->EvalD1(theParameter).D1;
+  const double   aSpeed   = aTangent.Magnitude();
+  if (aSpeed <= gp::Resolution() || myGuideSpeed <= gp::Resolution())
+  {
+    return false;
+  }
+  theValue = myGuide.Crossed(aTangent) / (myGuideSpeed * aSpeed);
+  return true;
+}
+
+//==================================================================================================
+
+bool TangentCrossFunction::Values(const double theParameter,
+                                  double&      theValue,
+                                  double&      theDerivative)
+{
+  const auto [aPoint, aTangent, aD2] = myCurve->EvalD2(theParameter);
+  const double aSpeed                = aTangent.Magnitude();
+  if (aSpeed <= gp::Resolution() || myGuideSpeed <= gp::Resolution())
+  {
+    return false;
+  }
+  const gp_Vec2d aUnit = aTangent / aSpeed;
+  theValue             = myGuide.Crossed(aUnit) / myGuideSpeed;
+  theDerivative        = myGuide.Crossed(aD2 - aUnit * aUnit.Dot(aD2)) / (myGuideSpeed * aSpeed);
+  return true;
+}
+} // namespace
 
 static bool ProjOnCurve(const gp_Pnt2d& P, const occ::handle<Geom2d_Curve>& C, double& theParam);
 
@@ -238,8 +300,35 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
       else
       {
         USol = SearchBound(U - dU, U);
-        P    = ValueByInt(USol, UC1, UC2, Dist);
         endIntervals.SetValue(1, USol);
+        const gp_Pnt2d aBoundaryPoint = ValueByInt(USol, UC1, UC2, Dist);
+        if (i == 1 && aBoundaryPoint.Distance(prevPnt) > Precision::Confusion())
+        {
+          // Sample the valid interval when its boundary is inside the first step.
+          const double aFirst = FirstParameter();
+          const double aStep  = (USol - aFirst) / (NbPnts - 1);
+          for (int aSample = 1; aSample < NbPnts - 1; ++aSample)
+          {
+            const double aParameter = aFirst + aSample * aStep;
+            P                       = ValueByInt(aParameter, UC1, UC2, Dist);
+            if (Dist >= Precision::Infinite())
+            {
+              isEmpty = true;
+              return;
+            }
+            if (P.Distance(prevPnt) > Precision::Confusion())
+            {
+              myPolygon.Append(Bisector_PointOnBis(UC1, UC2, aParameter, Dist, P));
+              prevPnt = P;
+            }
+          }
+          // Appended points narrow the boundary search to the continuing branch.
+          P = ValueByInt(USol, UC1, UC2, Dist);
+        }
+        else
+        {
+          P = aBoundaryPoint;
+        }
         if (P.Distance(prevPnt) > Precision::Confusion())
         {
           myPolygon.Append(Bisector_PointOnBis(UC1, UC2, USol, Dist, P));
@@ -345,6 +434,49 @@ void Bisector_BisecCC::Perform(const occ::handle<Geom2d_Curve>& Cu1,
   if (!YaPoly && !extensionStart && !extensionEnd)
   {
     isEmpty = true;
+  }
+  if (myPolygon.Length() <= 1 && extensionStart != extensionEnd)
+  {
+    const double aLength =
+      myPolygon.IsEmpty()
+        ? pointStart.Distance(pointEnd)
+        : (extensionStart ? pointStart : pointEnd).Distance(myPolygon.First().Point());
+    if (aLength > Precision::Confusion() && !Precision::IsInfinite(aLength))
+    {
+      // Retain the normal segment when the curved part collapses to a point.
+      if (!myPolygon.IsEmpty())
+      {
+        const int aCollapsedInterval = extensionStart ? 2 : 1;
+        startIntervals.Remove(aCollapsedInterval);
+        endIntervals.Remove(aCollapsedInterval);
+      }
+      const double aFirst = startIntervals.First();
+      const double aLast  = endIntervals.First();
+      double       aU1, aU2, aFirstDistance, aLastDistance;
+      gp_Vec2d     aTangent;
+      Extension(aFirst, aU1, aU2, aFirstDistance, aTangent);
+      Extension(aLast, aU1, aU2, aLastDistance, aTangent);
+      if (aFirstDistance > distMax && aLastDistance > distMax)
+      {
+        isEmpty = true;
+        return;
+      }
+      if (aFirstDistance > distMax || aLastDistance > distMax)
+      {
+        const double aLimit =
+          aFirst + (aLast - aFirst) * (distMax - aFirstDistance) / (aLastDistance - aFirstDistance);
+        if (aFirstDistance > distMax)
+        {
+          startIntervals.SetValue(1, aLimit);
+        }
+        else
+        {
+          endIntervals.SetValue(1, aLimit);
+        }
+      }
+      isEmpty = endIntervals.First() - startIntervals.First() <= Precision::PConfusion();
+      return;
+    }
   }
   //  modified by NIZHNY-EAP Mon Jan 17 17:32:40 2000 ___BEGIN___
   if (myPolygon.Length() <= 2)
@@ -698,10 +830,13 @@ gp_Pnt2d Bisector_BisecCC::ValueAndDist(const double U, double& U1, double& U2, 
   }
   else
   {
-    Bisector_FunctionH H(curve2, P1, sign1 * sign2 * T1);
+    Bisector_FunctionH H(curve2, P1, sign1 * sign2 * T1, VInit);
     double             FInit;
-    H.Value(VInit, FInit);
-    if (FInit == 0.0)
+    if (!H.Value(VInit, FInit))
+    {
+      Valid = false;
+    }
+    else if (FInit == 0.0)
     {
       U2 = VInit;
     }
@@ -823,7 +958,8 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, do
   gp_Pnt2d P1, P2, P, PSol;
   gp_Vec2d Tan1, Tan2;
   curve1->D1(U1, P1, Tan1);
-  gp_Vec2d N1(Tan1.Y(), -Tan1.X());
+  gp_Vec2d     N1(Tan1.Y(), -Tan1.X());
+  const double aNormalPrecision = Precision::Confusion() * N1.Magnitude();
 
   //--------------------------------------------------------------------------
   // test confusion of P1 with extremity of curve2.
@@ -848,7 +984,6 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, do
              : Precision::Infinite();
     return P1;
   }
-
   bool   YaSol = false;
   double DMin  = Precision::Infinite();
   double USol;
@@ -880,20 +1015,53 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, do
 
   DiscretPar(std::abs(ULastOnC2 - UFirstOnC2), EpsH, EpsMax, 2, 20, EpsX, NbSamples);
 
-  Bisector_FunctionH H(curve2, P1, sign1 * sign2 * Tan1);
-  math_FunctionRoots SolRoot(H, UFirstOnC2, ULastOnC2, NbSamples, EpsX, EpsH, EpsH);
-  if (SolRoot.IsDone())
+  // Tangent-parallel parameters bound half-planes where the normal has a
+  // continuous orientation, including an antiparallel tangent at either end.
+  TangentCrossFunction     aTangentFunction(curve2, Tan1);
+  MathRoot::MultipleConfig aCutConfig;
+  aCutConfig.NbSamples = static_cast<size_t>(NbSamples);
+  aCutConfig.XTolerance =
+    std::min(EpsX, Geom2dAdaptor_Curve(curve2).Resolution(Precision::Confusion()));
+  aCutConfig.FTolerance    = Precision::Angular();
+  aCutConfig.NullTolerance = Precision::Angular();
+  const MathRoot::MultipleResult aCuts =
+    MathRoot::FindAllRootsWithDerivative(aTangentFunction, UFirstOnC2, ULastOnC2, aCutConfig);
+  if (!aCuts.IsDone())
   {
-    for (int j = 1; j <= SolRoot.NbSolutions(); j++)
+    Dist = Precision::Infinite();
+    return P1;
+  }
+  MathRoot::MultipleConfig aRootConfig = aCutConfig;
+  aRootConfig.FTolerance               = EpsH;
+  aRootConfig.NullTolerance            = EpsH;
+  double aStart                        = UFirstOnC2;
+  for (size_t aPart = 0; aPart <= aCuts.Roots.Size(); ++aPart)
+  {
+    const double aEnd = aPart < aCuts.Roots.Size() ? aCuts.Roots.Value(aPart) : ULastOnC2;
+    if (aEnd <= aStart)
     {
-      USol              = SolRoot.Value(j);
-      gp_Pnt2d P2Curve2 = curve2->Value(USol);
-      gp_Vec2d P2P1(P1.X() - P2Curve2.X(), P1.Y() - P2Curve2.Y());
-      double   SquareP2P1 = P2P1.SquareMagnitude();
-      double   N1P2P1     = N1.Dot(P2P1);
+      aStart = aEnd;
+      continue;
+    }
+    Bisector_FunctionH             H(curve2, P1, sign1 * sign2 * Tan1, 0.5 * (aStart + aEnd));
+    const MathRoot::MultipleResult aRoots =
+      MathRoot::FindAllRootsWithDerivative(H, aStart, aEnd, aRootConfig);
+    if (!aRoots.IsDone())
+    {
+      Dist = Precision::Infinite();
+      return P1;
+    }
+    for (const double aRoot : aRoots.Roots)
+    {
+      USol                    = aRoot;
+      const gp_Pnt2d P2Curve2 = curve2->EvalD0(USol);
+      gp_Vec2d       P2P1(P1.X() - P2Curve2.X(), P1.Y() - P2Curve2.Y());
+      double         SquareP2P1 = P2P1.SquareMagnitude();
+      double         N1P2P1     = N1.Dot(P2P1);
 
       // Test if the solution is at the proper side of the curves.
-      if (N1P2P1 * sign1 > 0)
+      // A circle centre is unresolved when the normal chord is within point precision.
+      if (N1P2P1 * sign1 > aNormalPrecision)
       {
         P       = P1.Translated(-(0.5 * SquareP2P1 / N1P2P1) * N1);
         DistPP1 = P1.SquareDistance(P);
@@ -906,6 +1074,7 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, do
         }
       }
     }
+    aStart = aEnd;
   }
 
   /*
@@ -1250,18 +1419,18 @@ gp_Pnt2d Bisector_BisecCC::Extension(const double U,
     dU = U - startIntervals.First();
     P  = pointStart;
     P1 = pointEnd;
-    U1 = curve1->LastParameter();
-    if (sign1 == sign2)
-    {
-      U2 = curve2->FirstParameter();
-    }
-    else
+    U1 = extensionStart ? curve1->FirstParameter() : curve1->LastParameter();
+    if (extensionStart == (sign1 == sign2))
     {
       U2 = curve2->LastParameter();
     }
+    else
+    {
+      U2 = curve2->FirstParameter();
+    }
     Tang.SetCoord(P1.X() - P.X(), P1.Y() - P.Y());
   }
-  else if (U < myPolygon.First().ParamOnBis())
+  else if (U < myPolygon.First().ParamOnBis() || (myPolygon.Length() == 1 && extensionStart))
   {
     PRef = myPolygon.First();
     P    = PRef.Point();
@@ -1288,7 +1457,7 @@ gp_Pnt2d Bisector_BisecCC::Extension(const double U,
       ExtensionTangent = true;
     }
   }
-  else if (U > myPolygon.Last().ParamOnBis())
+  else if (U > myPolygon.Last().ParamOnBis() || (myPolygon.Length() == 1 && extensionEnd))
   {
     PRef = myPolygon.Last();
     P    = PRef.Point();
@@ -1338,7 +1507,7 @@ gp_Pnt2d Bisector_BisecCC::Extension(const double U,
 
   T = Tang.Normalized();
   PBis.SetCoord(P.X() + dU * T.X(), P.Y() + dU * T.Y());
-  Dist = P1.Distance(PBis);
+  Dist = myPolygon.Length() <= 1 ? curve1->EvalD0(U1).Distance(PBis) : P1.Distance(PBis);
   return PBis;
 }
 

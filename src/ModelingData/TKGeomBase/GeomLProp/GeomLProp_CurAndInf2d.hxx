@@ -50,7 +50,8 @@ public:
   //! For the curve C, Computes the locals extremas of curvature.
   Standard_EXPORT void PerformCurExt(const occ::handle<Geom2d_Curve>& C);
 
-  //! For the curve C, Computes the inflections.
+  //! For the curve C, computes inflections, including changes of concavity
+  //! across regular G1 spline knots with discontinuous curvature.
   //! After computation, the following functions can be used:
   //! - IsDone to check if the computation was successful
   //! - NbPoints to obtain the number of computed particular points

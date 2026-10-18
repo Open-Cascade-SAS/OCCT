@@ -338,6 +338,17 @@ occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve
                                                     const gp_Dir&                  Dir,
                                                     const bool KeepParametrization)
 {
+  return ProjectOnPlane(Curve, Plane, Dir, KeepParametrization, Precision::Approximation());
+}
+
+//===================================================================================================
+
+occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve>& Curve,
+                                                    const occ::handle<Geom_Plane>& Plane,
+                                                    const gp_Dir&                  Dir,
+                                                    const bool   KeepParametrization,
+                                                    const double theTolerance)
+{
   GeomAdaptor_Curve AC(Curve);
   if (KeepParametrization && AC.GetType() == GeomAbs_OffsetCurve
       && isParallel(Dir, Plane->Position().Direction()))
@@ -349,7 +360,7 @@ occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve
             || aBasisAdaptor.GetType() == GeomAbs_BezierCurve))
     {
       const occ::handle<Geom_Curve> aBasis =
-        ProjectOnPlane(anOffset->BasisCurve(), Plane, Dir, KeepParametrization);
+        ProjectOnPlane(anOffset->BasisCurve(), Plane, Dir, KeepParametrization, theTolerance);
       if (aBasis.IsNull())
       {
         return aBasis;
@@ -367,7 +378,7 @@ occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve
   occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve(AC);
 
   ProjLib_ProjectOnPlane Proj(Plane->Position(), Dir);
-  Proj.Load(HC, Precision::Approximation(), KeepParametrization);
+  Proj.Load(HC, theTolerance, KeepParametrization);
 
   occ::handle<Geom_Curve> GC;
 

@@ -22,6 +22,7 @@
 #include <Message_ProgressIndicator.hxx>
 #include <ShapeExtend_MsgRegistrator.hxx>
 #include <ShapeFix.hxx>
+#include <ShapeBuild_ReShape.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
@@ -119,4 +120,39 @@ TEST(ShapeFixTest, SameParameterHandlesEmptyShapeAndCancellation)
   aBuilder.Add(aShape, anEdgeBuilder.Edge());
   EXPECT_FALSE(ShapeFix::SameParameter(aShape, true, 0.0, aProgress->Start()));
   EXPECT_TRUE(BRep_Tool::SameParameter(anEdgeBuilder.Edge()));
+  const occ::handle<ShapeBuild_ReShape> aContext = new ShapeBuild_ReShape;
+  EXPECT_FALSE(ShapeFix::SameParameter(aShape, true, 0.0, aProgress->Start(), nullptr, aContext));
+  EXPECT_FALSE(aContext->IsRecorded(anEdgeBuilder.Edge()));
+  EXPECT_TRUE(BRep_Tool::SameParameter(anEdgeBuilder.Edge()));
+}
+
+//==================================================================================================
+
+TEST(ShapeFixTest, SameParameterContextReportsSharedInputEdges)
+{
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(), gp_Dir(0.0, 0.0, 1.0)), 0.0, 1.0, 0.0, 1.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  BRep_Builder      aBuilder;
+  TopoDS_Compound   aShape;
+  aBuilder.MakeCompound(aShape);
+  aBuilder.Add(aShape, aFace);
+  aBuilder.Add(aShape, aFace.Reversed());
+  gp_Trsf aPlacement;
+  aPlacement.SetTranslation(gp_Vec(2.0, 0.0, 0.0));
+  aBuilder.Add(aShape, aFace.Moved(TopLoc_Location(aPlacement)));
+  const occ::handle<ShapeBuild_ReShape>         aContext  = new ShapeBuild_ReShape;
+  const occ::handle<ShapeExtend_MsgRegistrator> aMessages = new ShapeExtend_MsgRegistrator;
+  EXPECT_TRUE(
+    ShapeFix::SameParameter(aShape, true, 0.0, Message_ProgressRange(), aMessages, aContext));
+  EXPECT_EQ(aMessages->MapShape().Size(), 8u);
+  for (const auto& aList : aMessages->MapShape())
+  {
+    EXPECT_EQ(aList.Size(), 1u);
+  }
+  for (const auto& [anEdge, aList] : aMessages->MapShape().Items())
+  {
+    EXPECT_FALSE(aContext->IsNewShape(anEdge));
+  }
+  EXPECT_TRUE(BRepCheck_Analyzer(aContext->Apply(aShape), true, false, true).IsValid());
 }

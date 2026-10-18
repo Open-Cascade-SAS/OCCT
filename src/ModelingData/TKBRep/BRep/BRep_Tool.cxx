@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <algorithm>
 #include <BRep_Curve3D.hxx>
 #include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_CurveOnSurface.hxx>
@@ -465,8 +466,12 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&            
 
   const occ::handle<Geom_TrimmedCurve> aTrimmedCurve =
     new Geom_TrimmedCurve(C3D, f, l, true, false);
-  const occ::handle<Geom_Curve> aProjected =
-    GeomProjLib::ProjectOnPlane(aTrimmedCurve, GP, GP->Position().Direction(), true);
+  const occ::handle<Geom_Curve> aProjected = GeomProjLib::ProjectOnPlane(
+    aTrimmedCurve,
+    GP,
+    GP->Position().Direction(),
+    true,
+    std::min(Precision::Approximation(), 0.5 * BRep_Tool::Tolerance(E)));
   occ::handle<Geom2d_Curve> pc = GeomProjLib::Curve2d(aProjected, f, l, GP);
 
   if (!pc.IsNull() && pc->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))

@@ -60,11 +60,18 @@ public:
 
   //! Computes the value of the signed distance between
   //! the point P and the implicit curve.
+  //! For a nondegenerate parabola, returns the displacement along its axis
+  //! to the point on the parabola with the same transverse coordinate.
+  //! Its absolute value bounds the distance to that point from above.
+  //! @param[in] P point to evaluate
+  //! @return signed distance measure, in length units for a parabola
   Standard_EXPORT double Distance(const gp_Pnt2d& P) const;
 
   //! Computes the Gradient of the Signed Distance
   //! between a point and the implicit curve, at the
   //! point P.
+  //! @param[in] P point to evaluate
+  //! @return gradient of Distance() in the global coordinate system
   Standard_EXPORT gp_Vec2d GradDistance(const gp_Pnt2d& P) const;
 
   //! Returns the parameter U of the point on the implicit curve corresponding to the point P.

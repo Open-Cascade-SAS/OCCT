@@ -1860,7 +1860,7 @@ void BRepFill_OffsetWire::FixHoles()
       else if (Dist <= MaxTol)
       {
         // Creating new edge from Vl to Vf
-        TopoDS_Edge NewEdge = BRepLib_MakeEdge(Vf, Vl);
+        TopoDS_Edge NewEdge = BRepLib_MakeEdge(Vl, Vf);
         BB.Add(Base, NewEdge);
         Base.Closed(true);
       }

@@ -16,6 +16,7 @@
 #define _GeomLProp_FuncCurNul2d_HeaderFile
 
 #include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
@@ -29,10 +30,11 @@ class GeomLProp_FuncCurNul2d : public math_FunctionWithDerivative
 public:
   //! Initializes the function with the curve to analyze.
   //! @param[in] theCurve the 2D curve
-  //! @param[in] theParameterSpan length of the analyzed parameter interval
-  GeomLProp_FuncCurNul2d(const occ::handle<Geom2d_Curve>& theCurve, double theParameterSpan)
-      : myCurve(theCurve),
-        myParameterSpan(theParameterSpan)
+  //! @param[in] theUMin first parameter of the smooth interval
+  //! @param[in] theUMax last parameter of the smooth interval
+  GeomLProp_FuncCurNul2d(const occ::handle<Geom2d_Curve>& theCurve, double theUMin, double theUMax)
+      : myCurve(theCurve, theUMin, theUMax),
+        myParameterSpan(theUMax - theUMin)
   {
   }
 
@@ -64,7 +66,7 @@ public:
   //! @return false if the tangent is degenerate
   bool Values(const double theU, double& theF, double& theD) override
   {
-    const auto [aPnt, aDeriv1, aDeriv2, aDeriv3] = myCurve->EvalD3(theU);
+    const auto [aPnt, aDeriv1, aDeriv2, aDeriv3] = myCurve.EvalD3(theU);
     const double aSpeed                          = aDeriv1.Magnitude();
     if (aSpeed <= gp::Resolution())
     {
@@ -80,7 +82,7 @@ public:
   }
 
 private:
-  occ::handle<Geom2d_Curve> myCurve;         //!< The analyzed curve.
+  Geom2dAdaptor_Curve       myCurve;         //!< Adaptor restricted to the smooth interval.
   double                    myParameterSpan; //!< Length used to normalize the curve parameter.
 };
 

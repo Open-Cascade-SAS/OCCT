@@ -511,7 +511,8 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
                 GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(Gac->Curve(), First, Last),
                                             P,
                                             P->Position().Direction(),
-                                            true);
+                                            true,
+                                            std::min(Precision::Approximation(), 0.5 * Tol));
               occ::handle<Geom2d_Curve> PC = GeomProjLib::Curve2d(aProjected, First, Last, P);
               if (PC.IsNull())
               {

@@ -16,6 +16,55 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <MAT2d_Circuit.hxx>
+#include <MAT2d_CutCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <NCollection_Array1.hxx>
+#include <cmath>
+
+TEST(MAT2d_CutCurveTest, CurvatureJumpAtSplineKnot)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 5);
+  aPoles.ChangeAt(0) = gp_Pnt2d(-1.0, 1.0);
+  aPoles.ChangeAt(1) = gp_Pnt2d(-1.0, 0.0);
+  aPoles.ChangeAt(2) = gp_Pnt2d(0.0, 0.0);
+  aPoles.ChangeAt(3) = gp_Pnt2d(1.0, 0.0);
+  aPoles.ChangeAt(4) = gp_Pnt2d(1.0, -1.0);
+  NCollection_Array1<double> aWeights(1, 5);
+  aWeights.Init(1.0);
+  aWeights.ChangeAt(1) = std::sqrt(0.5);
+  aWeights.ChangeAt(3) = std::sqrt(0.5);
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 1.0;
+  aKnots.ChangeAt(2) = 2.0;
+  NCollection_Array1<int> aMultiplicities(1, 3);
+  aMultiplicities.ChangeAt(0) = 3;
+  aMultiplicities.ChangeAt(1) = 2;
+  aMultiplicities.ChangeAt(2) = 3;
+  const occ::handle<Geom2d_BSplineCurve> aCurve =
+    new Geom2d_BSplineCurve(aPoles, aWeights, aKnots, aMultiplicities, 2);
+
+  MAT2d_CutCurve aCutter(aCurve);
+  ASSERT_FALSE(aCutter.UnModified());
+  ASSERT_GE(aCutter.NbCurves(), 2);
+  EXPECT_DOUBLE_EQ(aCutter.Value(1)->FirstParameter(), 0.0);
+  EXPECT_DOUBLE_EQ(aCutter.Value(aCutter.NbCurves())->LastParameter(), 2.0);
+  bool hasKnotBoundary = false;
+  for (int i = 1; i <= aCutter.NbCurves(); ++i)
+  {
+    const occ::handle<Geom2d_TrimmedCurve> aPart = aCutter.Value(i);
+    hasKnotBoundary                              = hasKnotBoundary || aPart->LastParameter() == 1.0;
+    EXPECT_FALSE(aPart->FirstParameter() < 1.0 && aPart->LastParameter() > 1.0)
+      << aPart->FirstParameter() << "," << aPart->LastParameter();
+    for (int j = 0; j <= 10; ++j)
+    {
+      const double aParameter =
+        aPart->FirstParameter() + (aPart->LastParameter() - aPart->FirstParameter()) * j / 10.0;
+      EXPECT_DOUBLE_EQ(aPart->EvalD0(aParameter).Distance(aCurve->EvalD0(aParameter)), 0.0);
+    }
+  }
+  EXPECT_TRUE(hasKnotBoundary);
+}
 
 namespace
 {

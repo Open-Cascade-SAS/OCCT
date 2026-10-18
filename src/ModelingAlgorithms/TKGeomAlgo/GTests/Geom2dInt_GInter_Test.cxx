@@ -16,13 +16,24 @@
 #include <Geom2dInt_GInter.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Parabola.hxx>
+#include <Geom2d_Line.hxx>
+#include <IntCurve_IConicTool.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
+#include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Parab2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <gp.hxx>
 
 #include <array>
+#include <algorithm>
+#include <cmath>
 
 namespace
 {
@@ -211,4 +222,130 @@ TEST(Geom2dInt_GInterTest, CompositeSplineEndpointTolerance)
   ASSERT_TRUE(anIntersection.IsDone());
   EXPECT_EQ(anIntersection.NbPoints(), 1);
   EXPECT_EQ(anIntersection.NbSegments(), 0);
+}
+
+//==================================================================================================
+
+TEST(Geom2dInt_GInterTest, SmallFocalParabolaCrossesSpline)
+{
+  for (const double aFocal : {1.e-11, 1.e-7, 1.0})
+  {
+    SCOPED_TRACE(aFocal);
+    const double                 aRoot  = -std::sqrt(36.0 * aFocal);
+    const double                 aFirst = 2.0 * aRoot;
+    NCollection_Array1<gp_Pnt2d> aPoles(1, 2);
+    aPoles.ChangeAt(0)                             = gp_Pnt2d(9.0, aFirst);
+    aPoles.ChangeAt(1)                             = gp_Pnt2d(9.0, 0.0);
+    const double                     aKnotValues[] = {aFirst, 0.0};
+    const int                        aMultValues[] = {2, 2};
+    const NCollection_Array1<double> aKnots(aKnotValues[0], 1, 2);
+    const NCollection_Array1<int>    aMults(aMultValues[0], 1, 2);
+    Geom2dAdaptor_Curve              aSpline(new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 1));
+    Geom2dAdaptor_Curve              aParabola(
+      new Geom2d_Parabola(gp_Parab2d(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), aFocal)),
+      aFirst,
+      0.0);
+    for (const bool isReversed : {false, true})
+    {
+      Geom2dInt_GInter anIntersection(isReversed ? aSpline : aParabola,
+                                      isReversed ? aParabola : aSpline,
+                                      Precision::Confusion(),
+                                      Precision::Confusion());
+      ASSERT_TRUE(anIntersection.IsDone());
+      EXPECT_EQ(anIntersection.NbSegments(), 0);
+      ASSERT_EQ(anIntersection.NbPoints(), 1);
+      const IntRes2d_IntersectionPoint& aPoint = anIntersection.Point(1);
+      const double aParabolaParameter = isReversed ? aPoint.ParamOnSecond() : aPoint.ParamOnFirst();
+      const double aSplineParameter   = isReversed ? aPoint.ParamOnFirst() : aPoint.ParamOnSecond();
+      EXPECT_NEAR(aParabolaParameter, aRoot, Precision::PConfusion());
+      EXPECT_LE(aParabola.Value(aParabolaParameter).Distance(aSpline.Value(aSplineParameter)),
+                Precision::Confusion());
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(IntCurve_IConicToolTest, ParabolaDistanceHasLengthUnits)
+{
+  for (const double aFocal : {1.e-11, 1.e-7, 1.0, 1.e3})
+  {
+    SCOPED_TRACE(aFocal);
+    const IntCurve_IConicTool aTool(
+      gp_Parab2d(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), aFocal));
+    const double aParameter = std::sqrt(4.0 * aFocal);
+    EXPECT_NEAR(aTool.Distance(gp_Pnt2d(1.25, aParameter)), -0.25, Precision::PConfusion());
+    const gp_Vec2d aGradient = aTool.GradDistance(gp_Pnt2d(1.25, aParameter));
+    EXPECT_DOUBLE_EQ(aGradient.X(), -1.0);
+    EXPECT_NEAR(aGradient.Y(),
+                aParameter / (2.0 * aFocal),
+                Precision::PConfusion() * std::abs(aGradient.Y()));
+  }
+}
+
+//==================================================================================================
+
+TEST(IntCurve_IConicToolTest, DegenerateParabolaUsesItsAxis)
+{
+  for (const double aFocal : {0.0, gp::Resolution()})
+  {
+    const IntCurve_IConicTool aTool(
+      gp_Parab2d(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), aFocal));
+    const gp_Pnt2d aPoint(2.0, 0.125);
+    EXPECT_DOUBLE_EQ(std::abs(aTool.Distance(aPoint)), 0.125);
+    EXPECT_DOUBLE_EQ(aTool.GradDistance(aPoint).Magnitude(), 1.0);
+    EXPECT_DOUBLE_EQ(aTool.FindParameter(aPoint), 2.0);
+    EXPECT_DOUBLE_EQ(aTool.Value(2.0).Distance(gp_Pnt2d(2.0, 0.0)), 0.0);
+  }
+}
+
+//==================================================================================================
+
+TEST(Geom2dInt_GInterTest, SemiInfiniteCoincidentDomains)
+{
+  const double        aTolerance = Precision::Confusion();
+  Geom2dAdaptor_Curve aLine(new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)));
+  for (const bool hasFirst : {false, true})
+  {
+    IntRes2d_Domain aDomain;
+    aDomain.SetValues(gp_Pnt2d(0.0, 0.0), 0.0, aTolerance, hasFirst);
+    for (const bool isOutside : {false, true})
+    {
+      SCOPED_TRACE(::testing::Message() << hasFirst << ',' << isOutside);
+      const double                 aSign = hasFirst ? -1.0 : 1.0;
+      NCollection_Array1<gp_Pnt2d> aPoles(1, 2);
+      aPoles.ChangeAt(0) = gp_Pnt2d(aSign, 0.0);
+      aPoles.ChangeAt(1) = gp_Pnt2d(isOutside ? 2.0 * aSign : -aSign, 0.0);
+      const double                     aKnotValues[] = {0.0, 1.0};
+      const int                        aMultValues[] = {2, 2};
+      const NCollection_Array1<double> aKnots(aKnotValues[0], 1, 2);
+      const NCollection_Array1<int>    aMults(aMultValues[0], 1, 2);
+      Geom2dAdaptor_Curve              aSpline(new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 1));
+      Geom2dInt_GInter                 aTool;
+      const IntRes2d_Domain            aSplineDomain = aTool.ComputeDomain(aSpline, aTolerance);
+      for (const bool isReversed : {false, true})
+      {
+        Geom2dInt_GInter anIntersection;
+        ASSERT_NO_THROW(anIntersection.Perform(isReversed ? aSpline : aLine,
+                                               isReversed ? aSplineDomain : aDomain,
+                                               isReversed ? aLine : aSpline,
+                                               isReversed ? aDomain : aSplineDomain,
+                                               aTolerance,
+                                               aTolerance));
+        ASSERT_TRUE(anIntersection.IsDone());
+        EXPECT_EQ(anIntersection.NbPoints(), 0);
+        ASSERT_EQ(anIntersection.NbSegments(), isOutside ? 0 : 1);
+        if (!isOutside)
+        {
+          const IntRes2d_IntersectionSegment& aSegment = anIntersection.Segment(1);
+          ASSERT_TRUE(aSegment.HasFirstPoint());
+          ASSERT_TRUE(aSegment.HasLastPoint());
+          const double aFirst = aSegment.FirstPoint().Value().X();
+          const double aLast  = aSegment.LastPoint().Value().X();
+          EXPECT_NEAR(std::min(aFirst, aLast), hasFirst ? 0.0 : -1.0, aTolerance);
+          EXPECT_NEAR(std::max(aFirst, aLast), hasFirst ? 1.0 : 0.0, aTolerance);
+        }
+      }
+    }
+  }
 }

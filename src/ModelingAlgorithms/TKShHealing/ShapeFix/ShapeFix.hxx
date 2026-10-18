@@ -59,6 +59,25 @@ public:
     const Message_ProgressRange&                        theProgress = Message_ProgressRange(),
     const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg   = nullptr);
 
+  //! Fixes same parameterization through a replacement context.
+  //! Changed edges and vertices are recorded in the context. Unchanged topology and
+  //! geometry remain shared. A null context uses the in-place behavior of the overload above.
+  //! Already recorded context results can be changed in place.
+  //! @param[in] shape shape to process
+  //! @param[in] enforce recompute parameterization even when its flags are set
+  //! @param[in] preci precision argument of the in-place overload
+  //! @param[in] theProgress progress range for cancellation
+  //! @param[in] theMsgReg optional warning registrator; messages identify input edges
+  //! @param[in] theContext replacement context; apply it to obtain the resulting shape
+  //! @return true if processing completed and every edge has its SameParameter flag set
+  Standard_EXPORT static bool SameParameter(
+    const TopoDS_Shape&                                 shape,
+    const bool                                          enforce,
+    const double                                        preci,
+    const Message_ProgressRange&                        theProgress,
+    const occ::handle<ShapeExtend_BasicMsgRegistrator>& theMsgReg,
+    const occ::handle<ShapeBuild_ReShape>&              theContext);
+
   //! Runs EncodeRegularity from BRepLib taking into account
   //! shared components of assemblies, so that each component
   //! is processed only once

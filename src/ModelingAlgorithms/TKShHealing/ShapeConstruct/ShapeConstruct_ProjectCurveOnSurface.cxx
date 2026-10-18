@@ -15,7 +15,6 @@
 
 #include <Approx_CurveOnSurface.hxx>
 #include <Bnd_Range.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
@@ -26,7 +25,6 @@
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
@@ -44,9 +42,11 @@
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <GeomProjLib.hxx>
-#include <GeomLib_CheckCurveOnSurface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Vec.hxx>
 #include <IntCurve_IntConicConic.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <NCollection_IncAllocator.hxx>
@@ -56,6 +56,7 @@
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <MathRoot_Brent.hxx>
+#include <MathOpt_Brent.hxx>
 #include <MathUtils_FunctorScalar.hxx>
 #include <MathUtils_Config.hxx>
 #include <ShapeAnalysis.hxx>
@@ -72,6 +73,8 @@
 #include <Standard_Integer.hxx>
 
 #include <algorithm>
+#include <array>
+#include <cmath>
 #include <limits>
 #include <optional>
 
@@ -1314,14 +1317,55 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
   theC2D = getLine(thePoints, theParams, thePoints2d, myPreci, isRecompute, isFromCacheLine);
   if (!theC2D.IsNull())
   {
-    const double                                aFirst = theParams.First();
-    const double                                aLast  = theParams.Last();
-    const occ::handle<Adaptor3d_CurveOnSurface> aCurveOnSurface =
-      new Adaptor3d_CurveOnSurface(new Geom2dAdaptor_Curve(theC2D, aFirst, aLast),
-                                   mySurf->Adaptor3d());
-    GeomLib_CheckCurveOnSurface aCheck(new GeomAdaptor_Curve(theC3D, aFirst, aLast));
-    aCheck.Perform(aCurveOnSurface, myPreci);
-    if (!aCheck.IsDone() || aCheck.MaxDistance() > myPreci)
+    // A projection may have a normal offset from the source curve.
+    // Refine tangential error maxima between the sampled parameters.
+    GeomAdaptor_Curve          aCurve(theC3D, theParams.First(), theParams.Last());
+    const GeomAdaptor_Surface& aSurface         = *mySurf->Adaptor3d();
+    const double               aSquareTolerance = myPreci * myPreci;
+    auto aDistance = [&](double theParameter, const gp_Pnt& thePoint, double& theValue) {
+      const gp_Pnt2d aUV            = theC2D->EvalD0(theParameter);
+      const auto [aPoint, aDU, aDV] = aSurface.EvalD1(aUV.X(), aUV.Y());
+      const gp_Vec aNormal          = aDU.Crossed(aDV);
+      if (aNormal.SquareMagnitude() < Precision::SquareConfusion())
+      {
+        return false;
+      }
+      theValue = -gp_Lin(aPoint, gp_Dir(aNormal)).SquareDistance(thePoint);
+      return std::isfinite(theValue);
+    };
+    bool                  isStraight = true;
+    std::array<double, 2> aPreviousValues{};
+    for (size_t anIndex = 0; anIndex < theParams.Size(); ++anIndex)
+    {
+      double aValue;
+      if (!aDistance(theParams.At(anIndex), thePoints.At(anIndex), aValue)
+          || aValue < -aSquareTolerance)
+      {
+        isStraight = false;
+        break;
+      }
+      if (anIndex >= 2 && aPreviousValues[1] <= aPreviousValues[0] && aPreviousValues[1] <= aValue
+          && (aPreviousValues[1] < aPreviousValues[0] || aPreviousValues[1] < aValue))
+      {
+        const double aFirst    = theParams.At(anIndex - 2);
+        const double aSpan     = theParams.At(anIndex) - aFirst;
+        auto         aFunction = MathUtils::MakeScalar([&](double theParameter, double& theValue) {
+          const double aParameter = aFirst + aSpan * theParameter;
+          return aDistance(aParameter, aCurve.EvalD0(aParameter), theValue);
+        });
+        MathUtils::Config aConfig;
+        aConfig.XTolerance                     = Precision::PConfusion() / std::max(1.0, aSpan);
+        const MathUtils::ScalarResult aMinimum = MathOpt::Brent(aFunction, 0.0, 1.0, aConfig);
+        if (!aMinimum.IsDone() || *aMinimum.Value < -aSquareTolerance)
+        {
+          isStraight = false;
+          break;
+        }
+      }
+      aPreviousValues[0] = aPreviousValues[1];
+      aPreviousValues[1] = aValue;
+    }
+    if (!isStraight)
     {
       theC2D.Nullify();
     }
@@ -1713,7 +1757,8 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
   if (mySurf->IsUClosed(myPreci) || needResolveUJump)
   {
     double prevX, firstX = thePoints2d(1).X();
-    if (!isFromCache)
+    // A period shift preserves the projection only when the boundaries coincide.
+    if (!isFromCache && mySurf->IsUClosed(myPreci))
     {
       while (firstX < uf)
       {
@@ -1778,7 +1823,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       }
     }
 
-    if (!isFromCache)
+    if (!isFromCache && mySurf->IsUClosed(myPreci))
     {
       double midX   = 0.5 * (minX + maxX);
       double shiftX = 0.;
@@ -1805,7 +1850,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       || mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
     double prevY, firstY = thePoints2d(1).Y();
-    if (!isFromCache)
+    if (!isFromCache && mySurf->IsVClosed(myPreci))
     {
       while (firstY < vf)
       {
@@ -1870,7 +1915,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       }
     }
 
-    if (!isFromCache)
+    if (!isFromCache && mySurf->IsVClosed(myPreci))
     {
       double midY   = 0.5 * (minY + maxY);
       double shiftY = 0.;

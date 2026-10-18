@@ -1574,6 +1574,13 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
             //== Stop Test t   :  Frame on Param(.)     ==
             //=======================================================
             // xft arrive here
+            const IntImp_ConstIsoparametric aStepIso = ChoixIso;
+            double                          aStepStart[4], aStepEnd[4];
+            previousPoint.Parameters(aStepStart[0], aStepStart[1], aStepStart[2], aStepStart[3]);
+            myIntersectionOn2S.Point().Parameters(aStepEnd[0],
+                                                  aStepEnd[1],
+                                                  aStepEnd[2],
+                                                  aStepEnd[3]);
             Arrive = TestArret(DejaReparti, Param, ChoixIso);
             // JMB 30th December 1999.
             // Some statement below should not be put in comment because they are useful.
@@ -1589,6 +1596,58 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
             if (Arrive)
             {
               NbPasOKConseq = -10;
+            }
+
+            const bool bPrevNotTangent = !previoustg || !myIntersectionOn2S.IsTangent();
+            const IntImp_ConstIsoparametric SauvChoixIso = ChoixIso;
+            if (Arrive && !close)
+            {
+              const IntWalk_TheInt2S aStepIntersection = myIntersectionOn2S;
+              const int              aBoundaryIso      = int(ChoixIso);
+              const double aPredictorDelta = SvParam[aBoundaryIso] - aStepStart[aBoundaryIso];
+              // Start the boundary solve where the predictor reaches the selected bound.
+              if (aPredictorDelta != 0.0)
+              {
+                const double aFraction =
+                  (Param(aBoundaryIso + 1) - aStepStart[aBoundaryIso]) / aPredictorDelta;
+                if (aFraction > 0.0 && aFraction < 1.0)
+                {
+                  for (int i = 0; i < 4; ++i)
+                  {
+                    if (i != aBoundaryIso)
+                      Param(i + 1) = aStepStart[i] + aFraction * (SvParam[i] - aStepStart[i]);
+                  }
+                }
+              }
+              ChoixIso                = myIntersectionOn2S.Perform(Param, Rsnld, ChoixIso);
+              ChoixIso                = RefineContactPoint(Param, Rsnld, ChoixIso);
+              const bool isStepInside = aStepEnd[0] >= Um1 && aStepEnd[0] <= UM1
+                                        && aStepEnd[1] >= Vm1 && aStepEnd[1] <= VM1
+                                        && aStepEnd[2] >= Um2 && aStepEnd[2] <= UM2
+                                        && aStepEnd[3] >= Vm2 && aStepEnd[3] <= VM2;
+              if (isStepInside && myIntersectionOn2S.IsDone() && !myIntersectionOn2S.IsEmpty())
+              {
+                double aBoundaryParameters[4];
+                myIntersectionOn2S.Point().Parameters(aBoundaryParameters[0],
+                                                      aBoundaryParameters[1],
+                                                      aBoundaryParameters[2],
+                                                      aBoundaryParameters[3]);
+                const double aResolution[4] = {ResoU1, ResoV1, ResoU2, ResoV2};
+                const double aMinStep       = std::min(aStepStart[aStepIso], aStepEnd[aStepIso]);
+                const double aMaxStep       = std::max(aStepStart[aStepIso], aStepEnd[aStepIso]);
+                // A boundary beyond this step does not replace an interior intersection point.
+                if (aBoundaryParameters[aStepIso] < aMinStep - aResolution[aStepIso]
+                    || aBoundaryParameters[aStepIso] > aMaxStep + aResolution[aStepIso])
+                {
+                  myIntersectionOn2S = aStepIntersection;
+                  for (int i = 0; i < 4; ++i)
+                  {
+                    Param(i + 1) = aStepEnd[i];
+                  }
+                  ChoixIso = aStepIso;
+                  Arrive   = false;
+                }
+              }
             }
 
             if (!Arrive) // 005
@@ -1716,12 +1775,6 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
                 //====================================================
                 //== Param was not in the limits (was reframed)
                 //====================================================
-                bool bPrevNotTangent = !previoustg || !myIntersectionOn2S.IsTangent();
-
-                IntImp_ConstIsoparametric SauvChoixIso = ChoixIso;
-                ChoixIso = myIntersectionOn2S.Perform(Param, Rsnld, ChoixIso);
-                ChoixIso = RefineContactPoint(Param, Rsnld, ChoixIso);
-
                 //
                 if (!myIntersectionOn2S.IsEmpty()) // 002
                 {
@@ -3888,7 +3941,8 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
     aDir2      = myIntersectionOn2S.DirectionOnS2();
   }
 
-  const double aCosBetweenTangent = TgCourante.Dot(previousd);
+  const double aCosBetweenTangent  = TgCourante.Dot(previousd);
+  bool         isInflexionRecovery = false;
 
   //==================================================================================
   //=========   R i s k   o f    i n f l e x i o n   p o i n t  ============
@@ -3897,9 +3951,8 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
   {
     //------------------------------------------------------------
     //-- Risk of inflexion point : Divide the step by 2
-    //-- Initialize STATIC_PRECEDENT_INFLEXION so that
-    //-- at the next call to return Pas_OK if there is no
-    //-- more risk of the point of inflexion
+    //-- Stabilize the step after a tangent reversal, while keeping
+    //-- the direction checks active for every candidate.
     //------------------------------------------------------------
 
     pasuv[0] *= 0.5;
@@ -3921,7 +3974,7 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
     if (STATIC_PRECEDENT_INFLEXION > 0)
     {
       STATIC_PRECEDENT_INFLEXION--;
-      return IntWalk_OK;
+      isInflexionRecovery = true;
     }
   }
 
@@ -4117,6 +4170,11 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
     }
   }
   //<-OCC431(apo)
+  if (isInflexionRecovery)
+  {
+    // Keep the recovery step only after validating the UV direction.
+    return aStatus;
+  }
   //==================================================================================
   //== D e t e c t i o n   o f    :  Step Too Small
   //==                               STEP TOO Great
