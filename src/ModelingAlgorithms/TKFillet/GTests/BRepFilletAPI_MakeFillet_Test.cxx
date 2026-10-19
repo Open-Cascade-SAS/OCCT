@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
@@ -912,5 +913,59 @@ TEST(BRepFilletAPI_MakeFilletTest, CollapsedFreeBoundarySectionSharesEndpoint)
     GProp_GProps aProperties;
     BRepGProp::SurfaceProperties(aFillet.Shape(), aProperties);
     EXPECT_NEAR(aProperties.Mass(), 803799.0, 803799.0 * 1.e-4) << aShift;
+  }
+}
+
+// A concave fillet ending where the end face is tangent to one of the fillet's faces. A slab
+// (y in [-100, 100], z in [0, 60]) is fused with a cylinder (R100 along Z, up to z = 170): the
+// slab's sides y = +-100 are tangent to the cylinder along the vertical edges at x = 0. The fillet
+// runs on the half circle where the slab's top meets the cylinder and leaves the top face across
+// the edges y = +-100 before reaching the vertices at x = 0, so each end is trimmed by the side
+// face. The volume it adds is the fillet's section swept around the cylinder axis over x >= 0 and
+// clipped to |y| <= 100, integrated numerically. The ends used to be taken for corners where both
+// other edges are convex and were closed by a cap face that left the solid invalid.
+TEST(BRepFilletAPI_MakeFilletTest, FilletEndingOnFaceTangentToSupport)
+{
+  BRepPrimAPI_MakeBox      aSlab(gp_Pnt(0.0, -100.0, 0.0), 300.0, 200.0, 60.0);
+  BRepPrimAPI_MakeCylinder aCylinder(gp_Ax2(gp::Origin(), gp::DZ()), 100.0, 170.0);
+  BRepAlgoAPI_Fuse         aFuse(aSlab.Shape(), aCylinder.Shape());
+  ASSERT_TRUE(aFuse.IsDone());
+  ShapeUpgrade_UnifySameDomain anUnify(aFuse.Shape());
+  anUnify.Build();
+  const TopoDS_Shape& aSolid = anUnify.Shape();
+  ASSERT_TRUE(BRepCheck_Analyzer(aSolid).IsValid());
+
+  // An arc of the circle R100 at z = 60; tangent propagation adds the other half.
+  TopoDS_Edge                                                   anArc;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+  TopExp::MapShapes(aSolid, TopAbs_EDGE, anEdges);
+  for (int anIndex = 1; anIndex <= anEdges.Extent() && anArc.IsNull(); ++anIndex)
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdges(anIndex));
+    BRepAdaptor_Curve  aCurve(anEdge);
+    if (aCurve.GetType() == GeomAbs_Circle && std::abs(aCurve.Circle().Radius() - 100.0) < 1.e-6
+        && std::abs(aCurve.Circle().Location().Z() - 60.0) < 1.e-6)
+    {
+      anArc = anEdge;
+    }
+  }
+  ASSERT_FALSE(anArc.IsNull());
+
+  GProp_GProps aBefore;
+  BRepGProp::VolumeProperties(aSolid, aBefore);
+
+  const double aRadii[]  = {5.0, 10.0, 20.0};
+  const double anAdded[] = {1558.318, 6059.408, 23378.533};
+  for (int anIndex = 0; anIndex < 3; ++anIndex)
+  {
+    SCOPED_TRACE(aRadii[anIndex]);
+    BRepFilletAPI_MakeFillet aFillet(aSolid);
+    aFillet.Add(aRadii[anIndex], anArc);
+    ASSERT_NO_THROW(aFillet.Build());
+    ASSERT_TRUE(aFillet.IsDone());
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+    GProp_GProps anAfter;
+    BRepGProp::VolumeProperties(aFillet.Shape(), anAfter);
+    EXPECT_NEAR(anAfter.Mass() - aBefore.Mass(), anAdded[anIndex], 1.e-4 * anAdded[anIndex]);
   }
 }
