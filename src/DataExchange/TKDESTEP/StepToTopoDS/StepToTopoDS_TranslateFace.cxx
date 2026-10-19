@@ -140,10 +140,6 @@ static void SetNormals(const occ::handle<Poly_Triangulation>&          theMesh,
                        const int                                       theNormNum,
                        const int                                       theNbNodes)
 {
-  if (theNormals->RowLength() != 3)
-  {
-    return;
-  }
   gp_XYZ aNorm;
   if (theNormNum == 1)
   {
@@ -370,12 +366,13 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
   }
 
   const bool aHasUVNodes = false;
-  const bool aHasNormals = (aNormNum > 0);
   if (aNodes.IsNull())
   {
     return nullptr;
   }
-  const int aNbNodes = !aPnindices.IsNull() ? aPnindices->Length() : aNodes->Length();
+  const int  aNbNodes = !aPnindices.IsNull() ? aPnindices->Length() : aNodes->Length();
+  const bool aHasNormals =
+    aNormNum > 0 && (aNormNum == 1 || aNormNum == aNbNodes) && aNormals->NbColumns() == 3;
   if (!aPnindices.IsNull())
   {
     for (const int anIndex : *aPnindices)

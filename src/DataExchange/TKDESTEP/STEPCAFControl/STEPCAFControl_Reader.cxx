@@ -242,6 +242,8 @@
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 
+#include <cmath>
+
 namespace
 {
 // Returns a MeasureWithUnit from the given Standard_Transient object.
@@ -4485,6 +4487,35 @@ void convertAngleValue(const STEPConstruct_UnitContext& anUnitCtx, double& aVal)
   }
 }
 
+namespace
+{
+//==================================================================================================
+
+double convertDimToleranceValue(double                                  theValue,
+                                const occ::handle<StepBasic_NamedUnit>& theUnit,
+                                const StepData_Factors&                 theLocalFactors)
+{
+  STEPConstruct_UnitContext aUnitContext;
+  if (aUnitContext.ComputeFactors(theUnit, theLocalFactors) != 0)
+  {
+    return theValue;
+  }
+
+  // The named unit defines the conversion for a generic MEASURE_WITH_UNIT.
+  const double anAngleFactor = aUnitContext.PlaneAngleFactor();
+  const double aLengthFactor = aUnitContext.LengthFactor();
+  if (aUnitContext.PlaneAngleDone() && anAngleFactor > 0.0 && std::isfinite(anAngleFactor * 180.0))
+  {
+    convertAngleValue(aUnitContext, theValue);
+  }
+  else if (aUnitContext.LengthDone() && aLengthFactor > 0.0 && std::isfinite(aLengthFactor))
+  {
+    theValue *= aLengthFactor;
+  }
+  return theValue;
+}
+} // namespace
+
 //=================================================================================================
 
 static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
@@ -4700,7 +4731,6 @@ static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
         {
           continue;
         }
-        double         aVal   = aMWU->ValueComponent();
         StepBasic_Unit anUnit = aMWU->UnitComponent();
         if (anUnit.IsNull())
         {
@@ -4710,21 +4740,8 @@ static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
         {
           continue;
         }
-        occ::handle<StepBasic_NamedUnit> NU = anUnit.NamedUnit();
-        STEPConstruct_UnitContext        anUnitCtxUpperBound;
-        anUnitCtxUpperBound.ComputeFactors(NU, theLocalFactors);
-        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit))
-            || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
-        {
-          convertAngleValue(anUnitCtxUpperBound, aVal);
-        }
-        else if ((aMWU->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit))
-                  && anUnitCtxUpperBound.LengthFactor() > 0.)
-                 || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
-        {
-          aVal = aVal * anUnitCtxUpperBound.LengthFactor();
-        }
-        aDim3 = aVal;
+        aDim3 =
+          convertDimToleranceValue(aMWU->ValueComponent(), anUnit.NamedUnit(), theLocalFactors);
 
         occ::handle<Standard_Transient> aLowerBound = aTV->LowerBound();
         if (aLowerBound.IsNull())
@@ -4738,7 +4755,6 @@ static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
           continue;
         }
 
-        aVal   = aMWU->ValueComponent();
         anUnit = aMWU->UnitComponent();
         if (anUnit.IsNull())
         {
@@ -4748,21 +4764,8 @@ static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
         {
           continue;
         }
-        NU = anUnit.NamedUnit();
-        STEPConstruct_UnitContext anUnitCtxLowerBound;
-        anUnitCtxLowerBound.ComputeFactors(NU, theLocalFactors);
-        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit))
-            || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
-        {
-          convertAngleValue(anUnitCtxLowerBound, aVal);
-        }
-        else if ((aMWU->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit))
-                  && anUnitCtxLowerBound.LengthFactor() > 0.)
-                 || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
-        {
-          aVal = aVal * anUnitCtxLowerBound.LengthFactor();
-        }
-        aDim2 = std::abs(aVal);
+        aDim2 = std::abs(
+          convertDimToleranceValue(aMWU->ValueComponent(), anUnit.NamedUnit(), theLocalFactors));
       }
       else
       {

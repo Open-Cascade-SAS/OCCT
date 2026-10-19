@@ -17,10 +17,13 @@
 #include <NCollection_HArray1.hxx>
 #include <STEPControl_Controller.hxx>
 #include <StepAP214_Protocol.hxx>
+#include <StepBasic_LengthMeasureWithUnit.hxx>
+#include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepData_WriterLib.hxx>
 #include <StepData_ReadWriteModule.hxx>
+#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 #include <StepDimTol_RunoutZoneDefinition.hxx>
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
@@ -38,6 +41,9 @@ TEST(StepDimTol_ReferencesTest, RunoutZone_WritesAndSharesOrientation)
   const occ::handle<StepDimTol_ToleranceZone>         aZone     = new StepDimTol_ToleranceZone;
   const occ::handle<StepDimTol_RunoutZoneOrientation> anOrientation =
     new StepDimTol_RunoutZoneOrientation;
+  const occ::handle<StepBasic_PlaneAngleMeasureWithUnit> anAngle =
+    new StepBasic_PlaneAngleMeasureWithUnit;
+  anOrientation->Init(anAngle);
   const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>> aBoundaries =
     new NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>(1, 1);
   aBoundaries->SetValue(1, new StepRepr_ShapeAspect);
@@ -69,4 +75,40 @@ TEST(StepDimTol_ReferencesTest, RunoutZone_WritesAndSharesOrientation)
     hasOrientation = hasOrientation || aShared.Value() == anOrientation;
   }
   EXPECT_TRUE(hasOrientation);
+
+  const occ::handle<StepData_StepModel> aReferencedModel = new StepData_StepModel;
+  aReferencedModel->AddWithRefs(aDefinition, aProtocol);
+  EXPECT_GT(aReferencedModel->Number(anOrientation), 0);
+  EXPECT_GT(aReferencedModel->Number(anAngle), 0);
+}
+
+//==================================================================================================
+
+TEST(StepDimTol_ReferencesTest, DatumModifier_AddWithRefsIncludesLengthMeasure)
+{
+  STEPControl_Controller::Init();
+  const occ::handle<StepAP214_Protocol> aProtocol = new StepAP214_Protocol;
+  const occ::handle<StepBasic_LengthMeasureWithUnit> aMeasure = new StepBasic_LengthMeasureWithUnit;
+  const occ::handle<StepDimTol_DatumReferenceModifierWithValue> aModifier =
+    new StepDimTol_DatumReferenceModifierWithValue;
+  aModifier->Init(StepDimTol_Distance, aMeasure);
+
+  const occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
+  aModel->AddWithRefs(aModifier, aProtocol);
+  const int aMeasureNumber = aModel->Number(aMeasure);
+  ASSERT_GT(aMeasureNumber, 0);
+
+  StepData_WriterLib                    aWriterLibrary(aProtocol);
+  occ::handle<StepData_ReadWriteModule> aWriterModule;
+  int                                   aWriterCase = 0;
+  ASSERT_TRUE(aWriterLibrary.Select(aModifier, aWriterModule, aWriterCase));
+
+  StepData_StepWriter aWriter(aModel);
+  aWriter.StartEntity("DATUM_REFERENCE_MODIFIER_WITH_VALUE");
+  aWriterModule->WriteStep(aWriterCase, aWriter, aModifier);
+  aWriter.EndEntity();
+  TCollection_AsciiString anExpected("DATUM_REFERENCE_MODIFIER_WITH_VALUE(.DISTANCE.,#");
+  anExpected += aMeasureNumber;
+  anExpected += ");";
+  EXPECT_STREQ(aWriter.Line(1)->ToCString(), anExpected.ToCString());
 }

@@ -7,6 +7,7 @@ set(OCCT_TKDESTEP_GTests_FILES
     STEPConstruct_RenderingProperties_Test.cxx
     StepData_SelectMember_Test.cxx
     StepData_StepWriter_Test.cxx
+    StepData_StepReaderData_Test.cxx
     StepTidy_BaseTestFixture.pxx
     StepTidy_Axis2Placement3dReducer_Test.cxx
     RWStepDimTol_RWRunoutZoneDefinition_Test.cxx
@@ -25,5 +26,6 @@ set(OCCT_TKDESTEP_GTests_FILES
     StepToGeom_Test.cxx
     StepTransientReplacements_Test.cxx
     STEPCAFControl_Controller_Test.cxx
+    STEPCAFControl_DimensionUnits_Test.cxx
     StepData_FieldArray_Test.cxx
 )
