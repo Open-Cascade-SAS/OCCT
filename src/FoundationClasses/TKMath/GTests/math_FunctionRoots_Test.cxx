@@ -219,7 +219,7 @@ public:
 class ReturnCrossingFunction : public math_FunctionWithDerivative
 {
 public:
-  explicit ReturnCrossingFunction(double theTarget, bool theReverse = false);
+  explicit ReturnCrossingFunction(double theTarget, bool theReverse = false, double theGap = .01);
   bool Value(double theX, double& theValue) override;
   bool Derivative(double theX, double& theValue) override;
   bool Values(double theX, double& theValue, double& theDerivative) override;
@@ -227,13 +227,15 @@ public:
 private:
   double myTarget;  //!< Constant added to the quadratic.
   bool   myReverse; //!< Places the sampled root at the upper bound.
+  double myGap;     //!< Distance between the two roots.
 };
 
 //==================================================================================================
 
-ReturnCrossingFunction::ReturnCrossingFunction(double theTarget, bool theReverse)
+ReturnCrossingFunction::ReturnCrossingFunction(double theTarget, bool theReverse, double theGap)
     : myTarget(theTarget),
-      myReverse(theReverse)
+      myReverse(theReverse),
+      myGap(theGap)
 {
 }
 
@@ -242,7 +244,7 @@ ReturnCrossingFunction::ReturnCrossingFunction(double theTarget, bool theReverse
 bool ReturnCrossingFunction::Value(double theX, double& theValue)
 {
   const double aParameter = myReverse ? 1.0 - theX : theX;
-  theValue                = aParameter * (aParameter - .01) + myTarget;
+  theValue                = aParameter * (aParameter - myGap) + myTarget;
   return true;
 }
 
@@ -251,7 +253,7 @@ bool ReturnCrossingFunction::Value(double theX, double& theValue)
 bool ReturnCrossingFunction::Derivative(double theX, double& theValue)
 {
   const double aParameter = myReverse ? 1.0 - theX : theX;
-  theValue                = (2.0 * aParameter - .01) * (myReverse ? -1.0 : 1.0);
+  theValue                = (2.0 * aParameter - myGap) * (myReverse ? -1.0 : 1.0);
   return true;
 }
 
@@ -679,6 +681,13 @@ TEST(math_RootFailureTest, SampledRootAndReturnCrossing)
   const math_FunctionRoots  aNoRoots(aMaximum, 0.0, 1.0, 10, 1.e-12, 1.e-12, 0.0, 0.001);
   ASSERT_TRUE(aNoRoots.IsDone());
   EXPECT_EQ(aNoRoots.NbSolutions(), 0);
+
+  // The second root rounds to the sampled upper bound.
+  ReturnCrossingFunction   aCloseRoots(0.0, true, Precision::Computational() * 0.25);
+  const math_FunctionRoots aRoots(aCloseRoots, 0.0, 1.0, 10, Precision::PConfusion());
+  ASSERT_TRUE(aRoots.IsDone());
+  ASSERT_EQ(aRoots.NbSolutions(), 1);
+  EXPECT_EQ(aRoots.Value(1), 1.0);
 }
 
 //==================================================================================================

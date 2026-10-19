@@ -411,13 +411,12 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             continue;
           }
           double anOuter = aNeighbor == N ? XN : X0 + aNeighbor * dx;
-          while (true)
+          while (std::abs(anOuter - X) > NEpsX)
           {
             const double aMiddle = MathUtils::Domain1D(X, anOuter).Mid();
             if (aMiddle == X || aMiddle == anOuter)
             {
-              Done = false;
-              return;
+              break;
             }
             double aValue = 0.0;
             if (!F.Value(aMiddle, aValue) || !std::isfinite(aValue))
