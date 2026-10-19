@@ -668,6 +668,8 @@ static const char* schemaAP242DIS =
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
+#include <StepVisual_DraughtingModelAndTessellatedShapeRepresentation.hxx>
+#include <StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <StepVisual_CameraModelD3MultiClipping.hxx>
@@ -1585,6 +1587,10 @@ StepAP214_Protocol::StepAP214_Protocol()
              830);
   types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol),
              831);
+  types.Bind(STANDARD_TYPE(StepVisual_DraughtingModelAndTessellatedShapeRepresentation), 832);
+  types.Bind(
+    STANDARD_TYPE(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation),
+    833);
 }
 
 //=================================================================================================

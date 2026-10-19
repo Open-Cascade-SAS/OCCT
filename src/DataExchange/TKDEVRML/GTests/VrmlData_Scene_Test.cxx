@@ -14,6 +14,7 @@
 #include <VrmlData_InBuffer.hxx>
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_Node.hxx>
+#include <VrmlData_Sphere.hxx>
 #include <NCollection_List.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -21,6 +22,40 @@
 
 #include <sstream>
 #include <string>
+#include <utility>
+
+//==================================================================================================
+
+TEST(VrmlData_SceneTest, ReadsSupportedHeadersAndRejectsUnknownVersion)
+{
+  for (const auto& [aHeader, anExpectedStatus] :
+       {std::pair{"#VRML V1.0 ascii", VrmlData_StatusOK},
+        std::pair{"#VRML V2.0 utf8", VrmlData_StatusOK},
+        std::pair{"#VRML V3.0 utf8", VrmlData_NotVrmlFile},
+        std::pair{"", VrmlData_NotVrmlFile}})
+  {
+    SCOPED_TRACE(aHeader);
+    const TCollection_AsciiString aText =
+      TCollection_AsciiString(aHeader) + "\nDEF Ball Sphere { radius 2 }\n";
+    std::istringstream anInput(aText.ToCString());
+    VrmlData_Scene     aScene;
+    aScene << anInput;
+    ASSERT_EQ(aScene.Status(), anExpectedStatus);
+    const occ::handle<VrmlData_Sphere> aSphere =
+      occ::down_cast<VrmlData_Sphere>(aScene.FindNode("Ball"));
+    if (anExpectedStatus == VrmlData_StatusOK)
+    {
+      ASSERT_FALSE(aSphere.IsNull());
+      EXPECT_DOUBLE_EQ(aSphere->Radius(), 2.0);
+    }
+    else
+    {
+      EXPECT_TRUE(aSphere.IsNull());
+    }
+  }
+}
+
+//==================================================================================================
 
 TEST(VrmlData_SceneTest, ReadsStringLists)
 {

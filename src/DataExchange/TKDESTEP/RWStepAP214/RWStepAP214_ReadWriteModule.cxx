@@ -19,6 +19,9 @@
 #include <Interface_Check.hxx>
 #include <Interface_ParamType.hxx>
 #include <Interface_ReaderLib.hxx>
+#include <StepVisual_DraughtingModelAndTessellatedShapeRepresentation.hxx>
+#include <StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.hxx>
+
 #include "RWStepAP214_ReadWriteModule.pxx"
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -1624,6 +1627,9 @@
 #include <StepRepr_RepresentationReference.hxx>
 
 #include <NCollection_IncAllocator.hxx>
+
+#include "../RWStepVisual/RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation.pxx"
+#include "../RWStepVisual/RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation.pxx"
 
 #include <string_view>
 #include <mutex>
@@ -4541,6 +4547,12 @@ int RWStepAP214_ReadWriteModule::CaseStep(
       {
         return 831;
       }
+      else if (types(1).IsEqual(StepType(402)) && types(2).IsEqual(StepType(714))
+               && types(3).IsEqual(StepType(441)) && types(4).IsEqual(StepType(245))
+               && types(5).IsEqual(StepType(262)) && types(6).IsEqual(StepType(807)))
+      {
+        return 833;
+      }
     }
     else if (NbComp == 5)
     {
@@ -4709,6 +4721,11 @@ int RWStepAP214_ReadWriteModule::CaseStep(
                    && types(4).IsEqual(StepType(677))))
       {
         return 828;
+      }
+      else if (types(1).IsEqual(StepType(441)) && types(2).IsEqual(StepType(245))
+               && types(3).IsEqual(StepType(262)) && types(4).IsEqual(StepType(807)))
+      {
+        return 832;
       }
     }
     else if (NbComp == 3)
@@ -5010,6 +5027,8 @@ bool RWStepAP214_ReadWriteModule::IsComplex(const int CN) const
     case 830:
       return true;
     case 831:
+    case 832:
+    case 833:
       return true;
     default:
       return false;
@@ -6788,6 +6807,20 @@ bool RWStepAP214_ReadWriteModule::ComplexType(
       types.Append(TCollection_AsciiString(StepType(714)));
       types.Append(TCollection_AsciiString(StepType(441)));
       types.Append(TCollection_AsciiString(StepType(245)));
+      break;
+    case 832:
+      types.Append(TCollection_AsciiString(StepType(441)));
+      types.Append(TCollection_AsciiString(StepType(245)));
+      types.Append(TCollection_AsciiString(StepType(262)));
+      types.Append(TCollection_AsciiString(StepType(807)));
+      break;
+    case 833:
+      types.Append(TCollection_AsciiString(StepType(402)));
+      types.Append(TCollection_AsciiString(StepType(714)));
+      types.Append(TCollection_AsciiString(StepType(441)));
+      types.Append(TCollection_AsciiString(StepType(245)));
+      types.Append(TCollection_AsciiString(StepType(262)));
+      types.Append(TCollection_AsciiString(StepType(807)));
       break;
     case 719:
       types.Append(TCollection_AsciiString(StepType(4)));
@@ -10801,6 +10834,20 @@ void RWStepAP214_ReadWriteModule::ReadStep(const int                            
       DeclareAndCast(StepRepr_CharacterizedRepresentation, anent, ent);
       RWStepRepr_RWCharacterizedRepresentation tool;
       tool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 832: {
+      DeclareAndCast(StepVisual_DraughtingModelAndTessellatedShapeRepresentation, anEntity, ent);
+      RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.ReadStep(data, num, ach, anEntity);
+    }
+    break;
+    case 833: {
+      DeclareAndCast(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation,
+                     anEntity,
+                     ent);
+      RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.ReadStep(data, num, ach, anEntity);
     }
     break;
     case 715: {
@@ -15736,6 +15783,20 @@ void RWStepAP214_ReadWriteModule::WriteStep(const int                           
       DeclareAndCast(StepRepr_CharacterizedRepresentation, anent, ent);
       RWStepRepr_RWCharacterizedRepresentation tool;
       tool.WriteStep(SW, anent);
+    }
+    break;
+    case 832: {
+      DeclareAndCast(StepVisual_DraughtingModelAndTessellatedShapeRepresentation, anEntity, ent);
+      RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.WriteStep(SW, anEntity);
+    }
+    break;
+    case 833: {
+      DeclareAndCast(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation,
+                     anEntity,
+                     ent);
+      RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.WriteStep(SW, anEntity);
     }
     break;
     case 715: {

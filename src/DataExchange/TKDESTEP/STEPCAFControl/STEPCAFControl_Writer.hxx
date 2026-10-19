@@ -404,7 +404,8 @@ protected:
   void writeToleranceZone(const occ::handle<XSControl_WorkSession>&                 theWS,
                           const occ::handle<XCAFDimTolObjects_GeomToleranceObject>& theObject,
                           const occ::handle<StepDimTol_GeometricTolerance>&         theEntity,
-                          const occ::handle<StepRepr_RepresentationContext>&        theRC);
+                          const occ::handle<StepRepr_RepresentationContext>&        theRC,
+                          const StepData_Factors& theLocalFactors);
 
   void writeGeomTolerance(
     const occ::handle<XSControl_WorkSession>&                                  theWS,

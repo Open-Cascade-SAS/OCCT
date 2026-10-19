@@ -16,6 +16,7 @@
 #include <Interface_GeneralModule.hxx>
 #include <NCollection_HArray1.hxx>
 #include <STEPControl_Controller.hxx>
+#include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
 #include <StepAP214_Protocol.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
@@ -38,6 +39,9 @@ TEST(StepDimTol_ReferencesTest, RunoutZone_WritesAndSharesOrientation)
   const occ::handle<StepDimTol_ToleranceZone>         aZone     = new StepDimTol_ToleranceZone;
   const occ::handle<StepDimTol_RunoutZoneOrientation> anOrientation =
     new StepDimTol_RunoutZoneOrientation;
+  const occ::handle<StepBasic_PlaneAngleMeasureWithUnit> anAngle =
+    new StepBasic_PlaneAngleMeasureWithUnit;
+  anOrientation->Init(anAngle);
   const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>> aBoundaries =
     new NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>(1, 1);
   aBoundaries->SetValue(1, new StepRepr_ShapeAspect);
@@ -69,4 +73,9 @@ TEST(StepDimTol_ReferencesTest, RunoutZone_WritesAndSharesOrientation)
     hasOrientation = hasOrientation || aShared.Value() == anOrientation;
   }
   EXPECT_TRUE(hasOrientation);
+
+  const occ::handle<StepData_StepModel> aReferencedModel = new StepData_StepModel;
+  aReferencedModel->AddWithRefs(aDefinition, aProtocol);
+  EXPECT_NE(aReferencedModel->Number(anOrientation), 0);
+  EXPECT_NE(aReferencedModel->Number(anAngle), 0);
 }

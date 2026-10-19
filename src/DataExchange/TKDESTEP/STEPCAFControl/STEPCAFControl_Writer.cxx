@@ -35,6 +35,7 @@
 #include <Standard_Transient.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <OSD_Path.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
@@ -3478,9 +3479,16 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
         occ::handle<StepShape_ShapeRepresentationWithParameters> aSRWP =
           new StepShape_ShapeRepresentationWithParameters();
         // Common for all datum targets
-        StepBasic_Unit                         aUnit   = GetUnit(aRC);
-        gp_Ax2                                 aDTAxis = anObject->GetDatumTargetAxis();
-        GeomToStep_MakeAxis2Placement3d        anAxisMaker(aDTAxis, theLocalFactors);
+        StepBasic_Unit            aUnit = GetUnit(aRC);
+        STEPConstruct_UnitContext aUnitContext;
+        aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+        const double     aLengthFactor  = aUnitContext.LengthFactor();
+        gp_Ax2           aDTAxis        = anObject->GetDatumTargetAxis();
+        StepData_Factors aTargetFactors = theLocalFactors;
+        aTargetFactors.InitializeFactors(aLengthFactor,
+                                         theLocalFactors.PlaneAngleFactor(),
+                                         theLocalFactors.SolidAngleFactor());
+        GeomToStep_MakeAxis2Placement3d        anAxisMaker(aDTAxis, aTargetFactors);
         occ::handle<StepGeom_Axis2Placement3d> anA2P3D = anAxisMaker.Value();
         anA2P3D->SetName(new TCollection_HAsciiString("orientation"));
         occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems;
@@ -3503,7 +3511,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
             aTargetValueName = new TCollection_HAsciiString("target length");
             // Additional value
             occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aTargetValue =
-              CreateDimValue(anObject->GetDatumTargetWidth(),
+              CreateDimValue(anObject->GetDatumTargetWidth() / aLengthFactor,
                              aUnit,
                              new TCollection_HAsciiString("target width"),
                              "POSITIVE_LENGTH_MEASURE",
@@ -3518,7 +3526,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
           }
           // Value
           occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aTargetValue =
-            CreateDimValue(anObject->GetDatumTargetLength(),
+            CreateDimValue(anObject->GetDatumTargetLength() / aLengthFactor,
                            aUnit,
                            aTargetValueName,
                            "POSITIVE_LENGTH_MEASURE",
@@ -3628,8 +3636,12 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
                  || aDim->IsKind(STANDARD_TYPE(StepShape_AngularSize));
 
   // Unit
-  StepBasic_Unit aUnit = GetUnit(theRC, isAngle);
-  const char*    aMeasureName;
+  StepBasic_Unit            aUnit = GetUnit(theRC, isAngle);
+  STEPConstruct_UnitContext aUnitContext;
+  aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+  const double aValueFactor =
+    isAngle ? M_PI / (180.0 * aUnitContext.PlaneAngleFactor()) : 1.0 / aUnitContext.LengthFactor();
+  const char* aMeasureName;
   if (isAngle)
   {
     aMeasureName = "POSITIVE_PLANE_ANGLE_MEASURE";
@@ -3658,7 +3670,7 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
   aValues = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, aNbItems);
 
   // Nominal value
-  double aNominal = theObject->GetValue();
+  double aNominal = theObject->GetValue() * aValueFactor;
   int    aLeftNbDigits, aRightNbDigits;
   theObject->GetNbOfDecimalPlaces(aLeftNbDigits, aRightNbDigits);
   int aNbQualifiers = 0;
@@ -3733,13 +3745,13 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
   if (theObject->IsDimWithRange())
   {
     occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aLowerItem =
-      CreateDimValue(theObject->GetLowerBound(),
+      CreateDimValue(theObject->GetLowerBound() * aValueFactor,
                      aUnit,
                      new TCollection_HAsciiString("lower limit"),
                      aMeasureName,
                      isAngle);
     occ::handle<StepRepr_ReprItemAndMeasureWithUnit> anUpperItem =
-      CreateDimValue(theObject->GetUpperBound(),
+      CreateDimValue(theObject->GetUpperBound() * aValueFactor,
                      aUnit,
                      new TCollection_HAsciiString("upper limit"),
                      aMeasureName,
@@ -3823,11 +3835,9 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
   // Plus_Minus_Tolerance
   if (theObject->IsDimWithPlusMinusTolerance())
   {
-    occ::handle<TCollection_HAsciiString> aDummyName = new TCollection_HAsciiString(aMeasureName);
-    aDummyName             = aDummyName->SubString(9, aDummyName->Length()); // delete "POSITIVE_"
-    aMeasureName           = aDummyName->ToCString();
-    double aLowerTolValue  = -theObject->GetLowerTolValue(),
-           anUpperTolValue = theObject->GetUpperTolValue();
+    aMeasureName           = isAngle ? "PLANE_ANGLE_MEASURE" : "LENGTH_MEASURE";
+    double aLowerTolValue  = -theObject->GetLowerTolValue() * aValueFactor,
+           anUpperTolValue = theObject->GetUpperTolValue() * aValueFactor;
     // Upper
     occ::handle<StepBasic_MeasureWithUnit>    anUpperMWU   = new StepBasic_MeasureWithUnit();
     occ::handle<StepBasic_MeasureValueMember> anUpperValue = new StepBasic_MeasureValueMember();
@@ -3993,10 +4003,14 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
   }
 
   // Unit
-  StepBasic_Unit aUnit = GetUnit(theRC);
+  StepBasic_Unit            aUnit = GetUnit(theRC);
+  STEPConstruct_UnitContext aUnitContext;
+  aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+  const double aLengthFactor = aUnitContext.LengthFactor();
 
-  NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>> aDatums;
-  int                                                              aMaxDatumNum = 0;
+  NCollection_LinearVector<occ::handle<XCAFDimTolObjects_DatumObject>> aDatums;
+  aDatums.Reserve(theDatumSeq.Size());
+  int aMaxDatumNum = 0;
 
   for (NCollection_Sequence<TDF_Label>::Iterator aDatumIter(theDatumSeq); aDatumIter.More();
        aDatumIter.Next())
@@ -4023,22 +4037,21 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
     aConstituents =
       new NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>(1, aMaxDatumNum);
   // Auxiliary datum to initialize attributes in Datum_System
-  occ::handle<StepDimTol_Datum> aFirstDatum;
+  occ::handle<StepDimTol_Datum>                                        aFirstDatum;
+  NCollection_LinearVector<occ::handle<XCAFDimTolObjects_DatumObject>> aDatumSeqPos;
+  aDatumSeqPos.Reserve(aDatums.Size());
   for (int aConstituentsNum = 1; aConstituentsNum <= aMaxDatumNum; aConstituentsNum++)
   {
     // Collect datums with i-th position
-    NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>> aDatumSeqPos;
-    for (NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>::Iterator aDatumIter(
-           aDatums);
-         aDatumIter.More();
-         aDatumIter.Next())
+    aDatumSeqPos.Clear(false);
+    for (const occ::handle<XCAFDimTolObjects_DatumObject>& aDatumObj : aDatums)
     {
-      if (aDatumIter.Value()->GetPosition() == aConstituentsNum)
+      if (aDatumObj->GetPosition() == aConstituentsNum)
       {
-        aDatumSeqPos.Append(aDatumIter.Value());
+        aDatumSeqPos.Append(aDatumObj);
       }
     }
-    if (aDatumSeqPos.Length() < 1)
+    if (aDatumSeqPos.IsEmpty())
     {
       continue;
     }
@@ -4047,11 +4060,11 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
     occ::handle<StepDimTol_DatumReferenceCompartment> aCompartment =
       new StepDimTol_DatumReferenceCompartment();
     occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> aModifiers;
-    if (aDatumSeqPos.Length() == 1)
+    if (aDatumSeqPos.Size() == 1)
     {
       // Datum entity
       occ::handle<Standard_Transient> aFDValue;
-      if (theDatumMap.Find(aDatumSeqPos.Value(1)->GetName()->String(), aFDValue)
+      if (theDatumMap.Find(aDatumSeqPos.First()->GetName()->String(), aFDValue)
           && !aFDValue.IsNull())
       {
         aFirstDatum = occ::down_cast<StepDimTol_Datum>(aFDValue);
@@ -4059,13 +4072,13 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
       aDatumRef.SetValue(aFirstDatum);
       // Modifiers
       NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aSimpleModifiers =
-        aDatumSeqPos.Value(1)->GetModifiers();
+        aDatumSeqPos.First()->GetModifiers();
       XCAFDimTolObjects_DatumModifWithValue aModifWithVal;
       double                                aValue = 0;
-      aDatumSeqPos.Value(1)->GetModifierWithValue(aModifWithVal, aValue);
+      aDatumSeqPos.First()->GetModifierWithValue(aModifWithVal, aValue);
       aModifiers = STEPCAFControl_GDTProperty::GetDatumRefModifiers(aSimpleModifiers,
                                                                     aModifWithVal,
-                                                                    aValue,
+                                                                    aValue / aLengthFactor,
                                                                     aUnit);
       // Add Datum_Reference_Modifier_With_Value
       if (!aModifiers.IsNull())
@@ -4084,16 +4097,12 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
       occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>>
         aCommonDatumList = new NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>(
           1,
-          aDatumSeqPos.Length());
-      for (NCollection_Sequence<occ::handle<XCAFDimTolObjects_DatumObject>>::Iterator aDatumIter(
-             aDatumSeqPos);
-           aDatumIter.More();
-           aDatumIter.Next())
+          static_cast<int>(aDatumSeqPos.Size()));
+      for (const occ::handle<XCAFDimTolObjects_DatumObject>& aDatumObj : aDatumSeqPos)
       {
         // Datum entity
-        const occ::handle<XCAFDimTolObjects_DatumObject>& aDatumObj = aDatumIter.Value();
-        occ::handle<StepDimTol_Datum>                     aDatum;
-        occ::handle<Standard_Transient>                   aDValue;
+        occ::handle<StepDimTol_Datum>   aDatum;
+        occ::handle<Standard_Transient> aDValue;
         if (theDatumMap.Find(aDatumObj->GetName()->String(), aDValue))
         {
           aDatum = occ::down_cast<StepDimTol_Datum>(aDValue);
@@ -4113,7 +4122,7 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
         occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>> anElemModifiers =
           STEPCAFControl_GDTProperty::GetDatumRefModifiers(aSimpleModifiers,
                                                            aModifWithVal,
-                                                           aValue,
+                                                           aValue / aLengthFactor,
                                                            aUnit);
         // Add Datum_Reference_Modifier_With_Value
         if (!anElemModifiers.IsNull())
@@ -4238,7 +4247,8 @@ void STEPCAFControl_Writer::writeToleranceZone(
   const occ::handle<XSControl_WorkSession>&                 theWS,
   const occ::handle<XCAFDimTolObjects_GeomToleranceObject>& theObject,
   const occ::handle<StepDimTol_GeometricTolerance>&         theEntity,
-  const occ::handle<StepRepr_RepresentationContext>&        theRC)
+  const occ::handle<StepRepr_RepresentationContext>&        theRC,
+  const StepData_Factors&                                   theLocalFactors)
 {
   // Get working data
   const occ::handle<Interface_InterfaceModel>& aModel = theWS->Model();
@@ -4273,20 +4283,26 @@ void STEPCAFControl_Writer::writeToleranceZone(
   aModel->AddWithRefs(aZone);
 
   // Runout_Tolerance_Zone
+  if (theObject->GetZoneModifier() != XCAFDimTolObjects_GeomToleranceZoneModif_Runout)
+  {
+    return;
+  }
   occ::handle<StepBasic_PlaneAngleMeasureWithUnit> aPAMWU =
     new StepBasic_PlaneAngleMeasureWithUnit();
   occ::handle<StepBasic_MeasureValueMember> aValueMember = new StepBasic_MeasureValueMember();
   aValueMember->SetName("PLANE_ANGLE_MEASURE");
-  aValueMember->SetReal(theObject->GetValueOfZoneModifier());
-  aPAMWU->Init(aValueMember, GetUnit(theRC, true));
+  const StepBasic_Unit      aUnit = GetUnit(theRC, true);
+  STEPConstruct_UnitContext aUnitContext;
+  aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+  aValueMember->SetReal(theObject->GetValueOfZoneModifier() * M_PI
+                        / (180.0 * aUnitContext.PlaneAngleFactor()));
+  aPAMWU->Init(aValueMember, aUnit);
   occ::handle<StepDimTol_RunoutZoneOrientation> anOrientation =
     new StepDimTol_RunoutZoneOrientation();
   anOrientation->Init(aPAMWU);
   occ::handle<StepDimTol_RunoutZoneDefinition> aDefinition = new StepDimTol_RunoutZoneDefinition();
   aDefinition->Init(aZone, nullptr, anOrientation);
   aModel->AddWithRefs(aDefinition);
-  aModel->AddWithRefs(anOrientation);
-  aModel->AddWithRefs(aPAMWU);
 }
 
 //=======================================================================
@@ -4600,7 +4616,11 @@ void STEPCAFControl_Writer::writeGeomTolerance(
     }
   }
   aModel->AddWithRefs(aGeomTol);
-  writeToleranceZone(theWS, anObject, aGeomTol, theRC);
+  writeToleranceZone(theWS,
+                     anObject,
+                     aGeomTol,
+                     dummyRC.IsNull() ? theRC : dummyRC,
+                     theLocalFactors);
   // Annotation plane and Presentation
   writePresentation(theWS,
                     anObject->GetPresentation(),
