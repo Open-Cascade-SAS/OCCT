@@ -22,7 +22,7 @@
 #include <Graphic3d_GroupDefinitionError.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Text.hxx>
-#include <NCollection_String.hxx>
+#include <TCollection_UtfString.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>

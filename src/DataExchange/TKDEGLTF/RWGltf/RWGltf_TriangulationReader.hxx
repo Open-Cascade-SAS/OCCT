@@ -124,6 +124,14 @@ protected:
     const occ::handle<Poly_Triangulation>&            theDestMesh,
     const occ::handle<OSD_FileSystem>&                theFileSystem) const;
 
+private:
+  //! Read triangle indices or point/line node indices with the accessor's component type.
+  template <typename TheIndexType>
+  bool readIndices(const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceMesh,
+                   const occ::handle<Poly_Triangulation>&            theDestMesh,
+                   std::istream&                                     theStream,
+                   const RWGltf_GltfAccessor&                        theAccessor) const;
+
 protected:
   occ::handle<RWMesh_TriangulationSource> myTriangulation;
 };

@@ -211,7 +211,11 @@ static size_t fillIntervalBounds(const double                      theA,
                                  NCollection_Array1<double>&       theError,
                                  NCollection_Array1<double>*       theCommonError)
 {
-  const size_t aSize = std::max(theKnots.Size(), maxSubs(theKnots.Size() - 1, theNumSubs));
+  const auto   aFirstKnot = std::upper_bound(theKnots.cbegin(), theKnots.cend(), theA);
+  const auto   aLastKnot  = std::lower_bound(aFirstKnot, theKnots.cend(), theB);
+  const size_t aNbKnots   = static_cast<size_t>(aLastKnot - aFirstKnot);
+  // Two requested bounds and N interior knots form at most N + 1 intervals.
+  const size_t aSize = maxSubs(theKnots.Size() + 1, theNumSubs);
 
   if (aSize > theParam1.Size())
   {
@@ -219,18 +223,12 @@ static size_t fillIntervalBounds(const double                      theA,
     theParam1.Resize(aSize, false);
     theParam2.Resize(aSize, false);
     theError.Resize(aSize, false);
-    theError.Init(0.0);
 
     if (theCommonError != nullptr)
     {
       theCommonError->Resize(aSize, false);
-      theCommonError->Init(0.0);
     }
   }
-
-  const auto aFirstKnot = std::upper_bound(theKnots.cbegin(), theKnots.cend(), theA);
-  const auto aLastKnot  = std::lower_bound(aFirstKnot, theKnots.cend(), theB);
-  const auto aNbKnots   = static_cast<size_t>(aLastKnot - aFirstKnot);
 
   theParam1.ChangeAt(0) = theA;
   std::copy(aFirstKnot, aLastKnot, theParam1.begin() + 1);
@@ -500,8 +498,8 @@ double BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
   double anEpsilon = std::abs(theEps);
 
   BRepGProp_Gauss::Inertia    anInertia;
-  NCollection_Array1<Inertia> anInertiaL(SM);
-  NCollection_Array1<Inertia> anInertiaU(SM);
+  NCollection_Array1<Inertia> anInertiaL;
+  NCollection_Array1<Inertia> anInertiaU;
 
   // Prepare Gauss points and weights
   const int aNbGaussPoint = RealToInt(std::ceil(ERROR_ALGEBR_RATIO * GPM));
@@ -519,17 +517,14 @@ double BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
     NCollection_LocalArray<double, THE_GAUSS_INLINE_SIZE>(static_cast<size_t>(GPM)),
     NCollection_LocalArray<double, THE_GAUSS_INLINE_SIZE>(static_cast<size_t>(aNbGaussPoint))};
 
-  NCollection_Array1<double> L1(SM);
-  NCollection_Array1<double> L2(SM);
-  NCollection_Array1<double> U1(SM);
-  NCollection_Array1<double> U2(SM);
+  NCollection_Array1<double> L1;
+  NCollection_Array1<double> L2;
+  NCollection_Array1<double> U1;
+  NCollection_Array1<double> U2;
 
-  NCollection_Array1<double> ErrL(SM);
-  NCollection_Array1<double> ErrU(SM);
-  NCollection_Array1<double> ErrUL(SM);
-  ErrL.Init(0.0);
-  ErrU.Init(0.0);
-  ErrUL.Init(0.0);
+  NCollection_Array1<double> ErrL;
+  NCollection_Array1<double> ErrU;
+  NCollection_Array1<double> ErrUL;
 
   // Face parametrization in U and V direction
   double BV1, BV2, BU1, BU2;
@@ -633,9 +628,6 @@ double BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
         LMaxSubs = SM;
       }
 
-      std::for_each(anInertiaL.begin(), anInertiaL.end(), [](Inertia& theInertia) {
-        theInertia.Mass = 0.0;
-      });
       ErrL.Init(0.0);
       ErrUL.Init(0.0);
 
@@ -744,9 +736,6 @@ double BRepGProp_Gauss::Compute(BRepGProp_Face&   theSurface,
                   UMaxSubs = SM;
                 }
 
-                std::for_each(anInertiaU.begin(), anInertiaU.end(), [](Inertia& theInertia) {
-                  theInertia.Mass = 0.0;
-                });
                 ErrU.Init(0.0);
                 ErrorU = 0.0;
 

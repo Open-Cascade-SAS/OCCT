@@ -8,9 +8,10 @@ restore [locate_data_file bug30703s2] s2
 
 set info [intersect res s1 s2]
 # Number of solutions check. 
-# There should be only 2 solution.
+# Overlapping branches should produce one distinct curve.
 if {[llength $info] != 1} {
-  Error: Incorrect number of solutions.
+  puts "Error: Incorrect number of solutions."
+  return
 } 
 
 checklength res -l 22.9782037

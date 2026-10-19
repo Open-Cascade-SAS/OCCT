@@ -116,8 +116,18 @@ public:
       const double                                                    theValue,
       const StepBasic_Unit&                                           theUnit);
 
+  //! Creates a tessellated presentation with coordinates in STEP units.
+  //! @param[in] theShape shape with curve edges or existing face triangulations
+  //! @param[in] theLengthFactor model units per STEP length unit
+  //! @param[in] theDeflection curve chord deflection in model units
+  //! @param[in] theAngularDeflection curve angular deflection in radians
+  //! @return the presentation, or a null handle when no geometry can be tessellated
+  //! @throws Standard_DomainError if a factor or deflection is not positive and finite
   Standard_EXPORT static occ::handle<StepVisual_TessellatedGeometricSet> GetTessellation(
-    const TopoDS_Shape& theShape);
+    const TopoDS_Shape& theShape,
+    const double        theLengthFactor      = 1.0,
+    const double        theDeflection        = 0.01,
+    const double        theAngularDeflection = 0.1);
 };
 
 #endif // _STEPCAFControl_GDTProperty_HeaderFile

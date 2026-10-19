@@ -168,21 +168,22 @@ void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
     }
     else
     {
-      // Some of edges may be modified.
+      // A binder can retain a shape whose edges or vertices were replaced during healing.
       BRepTools_ReShape aReShaper;
-      bool              aHasModifiedEdges = false;
-      // Remember modifications.
-      for (TopExp_Explorer anExpSE(anOriginalShape, TopAbs_EDGE); anExpSE.More(); anExpSE.Next())
+      bool              aHasModifiedSubShapes = false;
+      for (const TopAbs_ShapeEnum aType : {TopAbs_EDGE, TopAbs_VERTEX})
       {
-        if (theModifiedShapesMap.IsBound(anExpSE.Current()))
+        for (TopExp_Explorer anExpSE(anOriginalShape, aType); anExpSE.More(); anExpSE.Next())
         {
-          aHasModifiedEdges           = true;
-          TopoDS_Shape aModifiedShape = theModifiedShapesMap.Find(anExpSE.Current());
-          aReShaper.Replace(anExpSE.Current(), aModifiedShape);
+          if (const TopoDS_Shape* aModifiedShape = theModifiedShapesMap.Seek(anExpSE.Current()))
+          {
+            aHasModifiedSubShapes = true;
+            aReShaper.Replace(anExpSE.Current(), *aModifiedShape);
+          }
         }
       }
       // Apply modifications and store result in binder.
-      if (aHasModifiedEdges)
+      if (aHasModifiedSubShapes)
       {
         TopoDS_Shape aReshapedShape = aReShaper.Apply(anOriginalShape);
         aShapeBinder->SetResult(aReshapedShape);

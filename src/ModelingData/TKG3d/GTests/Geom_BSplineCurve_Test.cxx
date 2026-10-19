@@ -11,10 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
-#include <cmath>
-
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
@@ -22,6 +18,10 @@
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+
+#include <gtest/gtest.h>
+
+#include <cmath>
 
 class Geom_BSplineCurve_Test : public ::testing::Test
 {
@@ -864,4 +864,32 @@ TEST_F(Geom_BSplineCurve_Test, WeightsArray_Rational_ReturnsOwning)
   EXPECT_DOUBLE_EQ(aWeights(4), 1.0);
   // Verify that the reference is stable
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}
+
+//==================================================================================================
+
+TEST(Geom_BSplineCurveTest, IsG1TranslatedPeriodicIntervalsAndSeam)
+{
+  NCollection_Array1<gp_Pnt> aPoles(size_t{4});
+  aPoles.ChangeAt(0) = gp_Pnt(0, 0, 0);
+  aPoles.ChangeAt(1) = gp_Pnt(4, 0, 0);
+  aPoles.ChangeAt(2) = gp_Pnt(4, 4, 0);
+  aPoles.ChangeAt(3) = gp_Pnt(0, 4, 0);
+
+  NCollection_Array1<double> aKnots(size_t{5});
+  NCollection_Array1<int>    aMults(size_t{5});
+  aMults.Init(1);
+  for (size_t i = 0; i < aKnots.Size(); ++i)
+  {
+    aKnots.ChangeAt(i) = static_cast<double>(i);
+  }
+  const Geom_BSplineCurve aCurve(aPoles, aKnots, aMults, 1, true);
+  for (const double aShift : {-8., 0., 4., 12.})
+  {
+    EXPECT_TRUE(aCurve.IsG1(aShift + .25, aShift + .75, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift + .25, aShift + 1.75, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift + 3.75, aShift + 4.25, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift, aShift, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift + .25, aShift + 8.25, Precision::Angular()));
+  }
 }

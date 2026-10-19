@@ -186,7 +186,9 @@ void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(
       }
       else
       { //====== la borne2 et la borne1 sont hors domaine =====
-        if (param1 < TheImpCurveDomain.FirstParameter()
+        // Only a bounded domain can lie between two excluded endpoints.
+        if (TheImpCurveDomain.HasFirstPoint() && TheImpCurveDomain.HasLastPoint()
+            && param1 < TheImpCurveDomain.FirstParameter()
             && param2 > TheImpCurveDomain.LastParameter())
         {
           double t;

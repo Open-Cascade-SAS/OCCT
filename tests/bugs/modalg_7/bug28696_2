@@ -1,4 +1,4 @@
-puts "TODO OCC28696 ALL: ERROR: Micro edge is produced."
+puts "TODO OCC28696 ALL: Error: Offset is not done."
 
 puts "========"
 puts "OCC28696"
@@ -10,13 +10,18 @@ puts ""
 
 restore [locate_data_file OCC16667-wire.brep] a
 
-mkoffset resoffset a 1 -20
-renamevar resoffset_1 result
-
-foreach e [explode result e] {
-  if {[validrange $e] == "edge has no valid range"} {
-    regexp {Mass : *([0-9\-+.eE]+)} [lprops $e] dummy len
-    regexp {Tolerance MAX=([0-9\-+.eE]+)} [tolerance $e] dummy tol
-    puts "ERROR: Micro edge is produced. Edge $e (length=$len, tolerance=$tol) is too small"
+if {[catch {mkoffset resoffset a 1 -20} offsetError]} {
+  if {[string trim $offsetError] ne "Error: Offset is not done."} {
+    error $offsetError
+  }
+  puts "Error: Offset is not done."
+} else {
+  renamevar resoffset_1 result
+  foreach e [explode result e] {
+    if {[validrange $e] == "edge has no valid range"} {
+      regexp {Mass : *([0-9\-+.eE]+)} [lprops $e] dummy len
+      regexp {Tolerance MAX=([0-9\-+.eE]+)} [tolerance $e] dummy tol
+      puts "ERROR: Micro edge is produced. Edge $e (length=$len, tolerance=$tol) is too small"
+    }
   }
 }

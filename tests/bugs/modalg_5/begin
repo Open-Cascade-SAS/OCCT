@@ -10,11 +10,28 @@ proc OFFSETSHAPE {distance faces calcul type} {
         uplevel #0 offsetperform result
 }
 
-
-
-
-
-
-
-
-
+# Projection roots are geometric results; their last parameter bits depend on
+# evaluation rounding, especially where the curve's first derivative vanishes.
+# Check root count and evaluated positions at the standard model-space precision.
+proc checkProjectionPoints {theCurve theOutput theReferenceParameters} {
+  upvar 1 $theCurve curve
+  set matches [regexp -all -inline {parameter [0-9]+ += +([-0-9.+eE]+)} $theOutput]
+  if {[llength $matches] != 2 * [llength $theReferenceParameters]} {
+    puts "Error: Incorrect number of projection roots"
+    return
+  }
+  bounds curve projectionFirst projectionLast
+  set index 0
+  foreach reference $theReferenceParameters {
+    set actual [lindex $matches [expr {2 * $index + 1}]]
+    if {$actual < [dval projectionFirst] || $actual > [dval projectionLast]} {
+      puts "Error: Projection root is outside the curve domain"
+    }
+    cvalue curve $actual projectionX projectionY projectionZ
+    cvalue curve $reference referenceX referenceY referenceZ
+    set actualPoint [list [dval projectionX] [dval projectionY] [dval projectionZ]]
+    set referencePoint [list [dval referenceX] [dval referenceY] [dval referenceZ]]
+    checkpoint "projection root $index" $actualPoint $referencePoint 1.e-7
+    incr index
+  }
+}

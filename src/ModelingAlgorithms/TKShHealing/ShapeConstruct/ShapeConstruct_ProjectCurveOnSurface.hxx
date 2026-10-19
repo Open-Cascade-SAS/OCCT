@@ -41,12 +41,8 @@ class ShapeAnalysis_Surface;
 
 //! This tool provides a method for computing pcurve by projecting
 //! 3d curve onto a surface.
-//! Projection is done by 23 or more points (this number is changed
-//! for B-Splines according to the following rule:
-//! the total number of the points is not less than number of spans *
-//! (degree + 1);
-//! it is increased recursively starting with 23 and is added with 22
-//! until the condition is fulfilled).
+//! Projection samples continuity intervals and preserves parameter values
+//! and C0 joins when interpolating the projected points.
 //! Isoparametric cases (if curve corresponds to U=const or V=const on
 //! the surface) are recognized with the given precision.
 class ShapeConstruct_ProjectCurveOnSurface : public Standard_Transient
@@ -133,8 +129,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
 
 protected:
-  //! Try to approximate 3D curve by Geom2d_Line
-  //! or Geom2d_BSplineCurve with degree 1 with specified tolerance.
+  //! Fits a straight pcurve to sampled 3D points with the specified tolerance.
   //! @param[in] thePoints points obtained from 3d curve
   //! @param[in] theParams parameters corresponding points on 3d curve
   //! @param[out] thePoints2d 2d points lies on line in parametric space

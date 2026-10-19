@@ -1,7 +1,3 @@
-puts "TODO OCC25919 ALL: Error: Offset is not done."
-puts "TODO OCC25919 ALL: Faulty BUC60782: mkoffset works wrongly"
-puts "TODO OCC25919 ALL: Error : The area of result shape is"
-
 puts "========================"
 puts "BUC60782"
 puts "CASE 3"
@@ -30,9 +26,15 @@ if { [regexp {OK} $che ] != 1 } {
 	renamevar a result
     } else {
 	puts "OK BUC60782: offset is created"
-	tpcompound result
+	renamevar result_1 result
     }
 }
-checkprops result -s 0 
+checkprops result -l 3475.56
+checknbshapes result -wire 1
+if {![regexp {This shape seems to be OK} [bopcheck result]]} {
+    puts "Error: Offset wire has self-intersections"
+}
+distmini offset_distance a result
+checkreal "Offset distance" [dval offset_distance_val] 10 [checkmaxtol a] 0
 checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

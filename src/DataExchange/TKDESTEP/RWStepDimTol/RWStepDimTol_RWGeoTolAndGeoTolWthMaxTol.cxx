@@ -13,10 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include "RWStepDimTol_LengthMeasure.pxx"
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include "RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol.pxx"
-#include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -52,13 +52,8 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol::ReadStep(
   data->ReadEntity(num, 4, "toleranced_shape_aspect", ach, aTolerancedShapeAspect);
 
   data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE", num0, num, ach);
-  occ::handle<StepBasic_LengthMeasureWithUnit> aMaxTol;
-  data->ReadEntity(num,
-                   1,
-                   "maximum_upper_tolerance",
-                   ach,
-                   STANDARD_TYPE(StepBasic_LengthMeasureWithUnit),
-                   aMaxTol);
+  occ::handle<Standard_Transient> aMaxTol;
+  RWStepDimTol_LengthMeasure::Read(data, num, 1, "maximum_upper_tolerance", ach, aMaxTol);
 
   data->NamedForComplex("GEOMETRIC_TOLERANCE_WITH_MODIFIERS", num0, num, ach);
   // Own fields of ModifiedGeometricTolerance
@@ -368,4 +363,5 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol::Share(
   // Own fields of GeometricTolerance
   iter.AddItem(ent->Magnitude());
   iter.AddItem(ent->TolerancedShapeAspect().Value());
+  iter.AddItem(ent->GetMaxTolerance());
 }

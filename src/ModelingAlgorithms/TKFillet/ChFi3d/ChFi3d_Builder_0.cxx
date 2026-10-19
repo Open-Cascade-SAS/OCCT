@@ -4045,13 +4045,17 @@ bool ChFi3d_ComputeCurves(const occ::handle<Adaptor3d_Surface>& S1,
           inter.Perform(gs2, gs1, tolap, 1, 1, 1);
           //          inter.Perform(gs2,dom2,gs1,dom1,tolap,1,1,1);
           if (!inter.IsDone())
+          {
             return false;
+          }
           nbl = inter.NbLines();
 
           //  if GeomInt does not make the intersection the solution of adjustment
           //  is not attempted
           if (nbl == 0)
+          {
             return false;
+          }
         }
 #endif
         GeomAPI_ProjectPointOnCurve proj;

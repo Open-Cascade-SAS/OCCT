@@ -20,6 +20,8 @@
 #include <math_Matrix.hxx>
 #include <Precision.hxx>
 
+#include <Adaptor3d_CurveOnSurface.hxx>
+
 //=================================================================================================
 
 BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const occ::handle<Adaptor3d_Surface>& S1,
@@ -67,7 +69,8 @@ void BlendFunc_ChAsymInv::Set(const bool OnFirst, const occ::handle<Adaptor2d_Cu
 
 void BlendFunc_ChAsymInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
-  Tolerance(1) = csurf->Resolution(Tol);
+  const occ::handle<Adaptor3d_Surface>& aSurface = first ? surf1 : surf2;
+  Tolerance(1) = Adaptor3d_CurveOnSurface::Resolution(*csurf, *aSurface, Tol);
   Tolerance(2) = curv->Resolution(Tol);
   if (first)
   {

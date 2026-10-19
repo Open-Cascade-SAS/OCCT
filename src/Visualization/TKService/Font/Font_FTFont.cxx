@@ -31,6 +31,7 @@
   #include <ft2build.h>
   #include FT_FREETYPE_H
   #include FT_OUTLINE_H
+  #include "Font_FTFontBitmap.pxx"
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
@@ -530,7 +531,10 @@ bool Font_FTFont::FindAndInit(const TCollection_AsciiString& theFontName,
   const occ::handle<Font_FontMgr>    aFontMgr = Font_FontMgr::GetInstance();
   Font_FontAspect                    anAspect = theFontAspect;
   const occ::handle<Font_SystemFont> aSystemFont =
-    aFontMgr->FindFont(theFontName, theStrictLevel, anAspect);
+    aFontMgr->FindFont(theFontName,
+                       theStrictLevel,
+                       anAspect,
+                       theStrictLevel != Font_StrictLevel_Any);
   if (!aSystemFont.IsNull())
   {
     aParams.IsSingleStrokeFont = aParams.IsSingleStrokeFont || aSystemFont->IsSingleStrokeFont();
@@ -732,7 +736,25 @@ std::optional<Font_GlyphOutline::Glyph> Font_FTFont::ResolveGlyph(const char32_t
            : std::nullopt;
 }
 
-//=================================================================================================
+//==================================================================================================
+
+const FT_Outline* Font_FTFont::renderGlyphOutline(const char32_t theChar)
+{
+  myGlyphImg.Clear();
+  myLoadedGlyph.Reset();
+#ifdef HAVE_FREETYPE
+  if (!loadGlyph(theChar) || myLoadedGlyph.Face->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
+  {
+    return nullptr;
+  }
+  return &myLoadedGlyph.Face->glyph->outline;
+#else
+  (void)theChar;
+  return nullptr;
+#endif
+}
+
+//==================================================================================================
 
 std::optional<Font_GlyphOutline> Font_FTFont::LoadGlyphOutline(const char32_t theUChar)
 {
@@ -784,7 +806,7 @@ std::optional<Font_GlyphOutline> Font_FTFont::LoadGlyphOutline(
   const Font_GlyphOutline::Glyph& theGlyph)
 {
   myGlyphImg.Clear();
-  myLoadedGlyph.Reset();
+  myLoadedGlyph.HasBitmap = false;
 #ifdef HAVE_FREETYPE
   const Font_FTFont* aFont = fontForGlyph(theGlyph);
   if (aFont == nullptr || aFont->myFTFace == nullptr || aFont->myFTFace->units_per_EM == 0
@@ -817,7 +839,21 @@ std::optional<Font_GlyphOutline> Font_FTFont::LoadGlyphOutline(
 #endif
 }
 
-//=================================================================================================
+//==================================================================================================
+
+void Font_FTFont::setLoadedGlyph(FT_Face theFace, char32_t theCharacter, bool theHasBitmap)
+{
+  myLoadedGlyph.Face      = theFace;
+  myLoadedGlyph.Character = theCharacter;
+  myLoadedGlyph.HasBitmap = theHasBitmap;
+#ifdef HAVE_FREETYPE
+  myLoadedGlyph.myAdvanceX = static_cast<int64_t>(theFace->glyph->advance.x)
+                             + theFace->glyph->lsb_delta - theFace->glyph->rsb_delta;
+  myLoadedGlyph.myAdvanceY = static_cast<int64_t>(theFace->glyph->advance.y);
+#endif
+}
+
+//==================================================================================================
 
 bool Font_FTFont::loadGlyph(const char32_t theUChar)
 {
@@ -844,8 +880,7 @@ bool Font_FTFont::loadGlyph(const char32_t theUChar)
     return false;
   }
 
-  myLoadedGlyph.Face      = aSelection->Provider->myFTFace;
-  myLoadedGlyph.Character = theUChar;
+  setLoadedGlyph(aSelection->Provider->myFTFace, theUChar, false);
   return true;
 #else
   (void)theUChar;
@@ -883,45 +918,12 @@ bool Font_FTFont::RenderGlyph(const char32_t theUChar)
     return false;
   }
 
-  if (aBitmap.pixel_mode == FT_PIXEL_MODE_GRAY)
-  {
-    if (!myGlyphImg.InitWrapper(Image_Format_Alpha,
-                                aBitmap.buffer,
-                                aBitmap.width,
-                                aBitmap.rows,
-                                std::abs(aBitmap.pitch)))
-    {
-      return false;
-    }
-    myGlyphImg.SetTopDown(aBitmap.pitch > 0);
-  }
-  else if (aBitmap.pixel_mode == FT_PIXEL_MODE_MONO)
-  {
-    if (!myGlyphImg.InitTrash(Image_Format_Gray, aBitmap.width, aBitmap.rows))
-    {
-      return false;
-    }
-
-    myGlyphImg.SetTopDown(aBitmap.pitch > 0);
-    const int aNumOfBytesInRow = aBitmap.width / 8 + (aBitmap.width % 8 ? 1 : 0);
-    for (int aRow = 0; aRow < static_cast<int>(aBitmap.rows); ++aRow)
-    {
-      for (int aCol = 0; aCol < static_cast<int>(aBitmap.width); ++aCol)
-      {
-        const int aBitOn =
-          aBitmap.buffer[aNumOfBytesInRow * aRow + aCol / 8] & (0x80 >> (aCol % 8));
-        *myGlyphImg.ChangeRawValue(aRow, aCol) = aBitOn ? 255 : 0;
-      }
-    }
-  }
-  else
+  if (!Font_FTFontBitmap::initGlyphBitmap(myFTLib->Instance(), aBitmap, myGlyphImg))
   {
     return false;
   }
 
-  myLoadedGlyph.Face      = aSelection->Provider->myFTFace;
-  myLoadedGlyph.Character = theUChar;
-  myLoadedGlyph.HasBitmap = true;
+  setLoadedGlyph(aSelection->Provider->myFTFace, theUChar, true);
   return true;
 #else
   (void)theUChar;
@@ -1147,10 +1149,7 @@ float Font_FTFont::AdvanceX(char32_t theUCharNext) const
   }
   FT_Vector aKern;
   getKerning(aKern, myLoadedGlyph.Character, theUCharNext);
-  return myWidthScaling
-         * fromFTPoints<float>(myLoadedGlyph.Face->glyph->advance.x + aKern.x
-                               + myLoadedGlyph.Face->glyph->lsb_delta
-                               - myLoadedGlyph.Face->glyph->rsb_delta);
+  return myWidthScaling * fromFTPoints<float>(myLoadedGlyph.myAdvanceX + aKern.x);
 #else
   (void)theUCharNext;
   return 0.0f;
@@ -1173,7 +1172,7 @@ float Font_FTFont::AdvanceY(char32_t theUCharNext) const
   }
   FT_Vector aKern;
   getKerning(aKern, myLoadedGlyph.Character, theUCharNext);
-  return fromFTPoints<float>(myLoadedGlyph.Face->glyph->advance.y + aKern.y);
+  return fromFTPoints<float>(myLoadedGlyph.myAdvanceY + aKern.y);
 #else
   (void)theUCharNext;
   return 0.0f;
@@ -1230,7 +1229,7 @@ void Font_FTFont::GlyphRect(Font_Rect& theRect) const
 
 //=================================================================================================
 
-Font_Rect Font_FTFont::BoundingBox(const NCollection_String&               theString,
+Font_Rect Font_FTFont::BoundingBox(const TCollection_UtfString<char>&      theString,
                                    const Graphic3d_HorizontalTextAlignment theAlignX,
                                    const Graphic3d_VerticalTextAlignment   theAlignY)
 {
@@ -1244,4 +1243,22 @@ Font_Rect Font_FTFont::BoundingBox(const NCollection_String&               theSt
   Font_Rect aBndBox;
   aFormatter.BndBox(aBndBox);
   return aBndBox;
+}
+
+//==================================================================================================
+
+occ::handle<Font_FTFont> Font_FTFont::copy() const
+{
+  occ::handle<Font_FTFont> aFont = new Font_FTFont();
+#ifdef HAVE_FREETYPE
+  if (IsValid()
+      && !aFont->Init(myBuffer, myFontPath, myFontParams, static_cast<int>(myFTFace->face_index)))
+  {
+    return {};
+  }
+#endif
+  aFont->myFontAspect                 = myFontAspect;
+  aFont->myWidthScaling               = myWidthScaling;
+  aFont->myToUseUnicodeSubsetFallback = myToUseUnicodeSubsetFallback;
+  return aFont;
 }

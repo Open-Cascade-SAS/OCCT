@@ -1,4 +1,5 @@
 puts "TODO OCC25940 ALL: Error: MakeThickSolid creates C0 continuous edges"
+puts "TODO OCC25940 ALL: Error: MakeThickSolid creates invalid curves on surfaces"
 
 puts "============"
 puts "OCC25940"
@@ -24,6 +25,12 @@ if { [regexp ${Message} ${Log}] != 1 } {
     puts "OK: MakeThickSolid don't creates C0 continuous edges"
 } else {
     puts "Error: MakeThickSolid creates C0 continuous edges"
+}
+
+if { [regexp {Invalid Curve on Surface +: YES} ${Log}] } {
+    puts "Error: MakeThickSolid creates invalid curves on surfaces"
+} else {
+    puts "OK: MakeThickSolid creates valid curves on surfaces"
 }
 
 smallview

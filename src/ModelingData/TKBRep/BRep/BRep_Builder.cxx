@@ -986,8 +986,7 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
 
   if (!P1.IsNull() && !P2.IsNull())
   {
-    occ::handle<BRep_PolygonOnClosedSurface> PS =
-      new BRep_PolygonOnClosedSurface(P1, P2, S, TopLoc_Location());
+    occ::handle<BRep_PolygonOnClosedSurface> PS = new BRep_PolygonOnClosedSurface(P1, P2, S, l);
     lcr.Append(PS);
   }
 

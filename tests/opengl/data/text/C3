@@ -3,7 +3,6 @@ puts "0031079: Visualization - embed minimal fallback font"
 puts "================"
 puts ""
 
-puts "REQUIRED All: Font_FontMgr, error: unable to find any font!"
 puts "REQUIRED All: Font_FontMgr, error: unable to find Western fallback font!"
 
 pload MODELING VISUALIZATION
