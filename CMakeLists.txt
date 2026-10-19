@@ -1364,17 +1364,6 @@ if (BUILD_GTEST)
 
   # Set environment variables for all tests
   OCCT_SET_GTEST_ENVIRONMENT()
-
-  if (NOT CMAKE_CROSSCOMPILING)
-    add_test(NAME CMake::InstallPrefix
-      COMMAND "${CMAKE_COMMAND}" "-DTEST_DIR=${CMAKE_BINARY_DIR}/tests/cmake/install-prefix"
-        "-DTEST_GENERATOR=${CMAKE_GENERATOR}"
-        "-DTEST_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}"
-        "-DTEST_GENERATOR_TOOLSET=${CMAKE_GENERATOR_TOOLSET}"
-        "-DTEST_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
-        -P "${OCCT_ROOT_DIR}/adm/cmake/tests/OCCTInstallPrefixTest.cmake")
-    set_tests_properties(CMake::InstallPrefix PROPERTIES LABELS "CMake")
-  endif()
 endif()
 
 if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)

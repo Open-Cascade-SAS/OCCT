@@ -166,31 +166,27 @@ bool Solve(math_FunctionWithDerivative&  F,
       Xp = b;
       do
       {
-        Ok = F.Values(Xp, Yp, Dp);
-        if (!Ok || !std::isfinite(Yp) || !std::isfinite(Dp))
+        if (!F.Values(Xp, Yp, Dp) || !std::isfinite(Yp) || !std::isfinite(Dp))
         {
           return false;
         }
-        if (Ok)
+        Ok = false;
+        if (Dp > 1e-10 || Dp < -1e-10)
         {
-          Ok = false;
-          if (Dp > 1e-10 || Dp < -1e-10)
+          Xp = Xp - (Yp - K) / Dp;
+        }
+        if (Xp <= x2 && Xp >= x1)
+        {
+          if (!F.Value(Xp, Yp) || !std::isfinite(Yp))
           {
-            Xp = Xp - (Yp - K) / Dp;
+            return false;
           }
-          if (Xp <= x2 && Xp >= x1)
+          Yp -= K;
+          if (std::abs(Yp) < std::abs(fb))
           {
-            if (!F.Value(Xp, Yp) || !std::isfinite(Yp))
-            {
-              return false;
-            }
-            Yp -= K;
-            if (std::abs(Yp) < std::abs(fb))
-            {
-              b  = Xp;
-              fb = Yp;
-              Ok = true;
-            }
+            b  = Xp;
+            fb = Yp;
+            Ok = true;
           }
         }
       } while (Ok && --itern >= 0);
@@ -315,29 +311,21 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     //-- A .............................................................. B
     //-- X0   X1   X2 ........................................  Xn-1      Xn
     int                        i;
-    double                     X = X0;
-    bool                       Ok;
+    double                     X  = X0;
     double                     dx = (XN - X0) / N;
     NCollection_Array1<double> ptrval(0, N);
-    int                        Nvalid = -1;
-    double                     aux    = 0;
     for (i = 0; i <= N; ++i)
     {
-      X  = i == N ? XN : X0 + i * dx;
-      Ok = F.Value(X, aux);
-      if (Ok && std::isfinite(aux))
+      X             = i == N ? XN : X0 + i * dx;
+      double aValue = 0.0;
+      if (!F.Value(X, aValue) || !std::isfinite(aValue))
       {
-        ptrval(++Nvalid) = aux - K;
+        Done = false;
+        return;
       }
-      //      ptrval(i)-=K;
+      ptrval(i) = aValue - K;
     }
     //-- Toute la fonction est nulle ?
-
-    if (Nvalid < N)
-    {
-      Done = false;
-      return;
-    }
 
     AllNull = true;
     //    for(i=0;AllNull && i<=N;i++) {

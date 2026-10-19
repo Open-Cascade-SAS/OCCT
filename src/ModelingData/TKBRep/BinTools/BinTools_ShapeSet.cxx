@@ -252,11 +252,8 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
       occ::handle<Poly_Triangulation> Tr = TF->Triangulation();
       if (!Tr.IsNull())
       {
-        const int aTriangulationIndex = myTriangulations.Add(Tr, needNormals);
-        if (needNormals)
-        {
-          myTriangulations.ChangeFromIndex(aTriangulationIndex) = true;
-        }
+        bool& aWithNormals = myTriangulations.TryBound(Tr, needNormals);
+        aWithNormals       = aWithNormals || needNormals;
       }
     }
 
