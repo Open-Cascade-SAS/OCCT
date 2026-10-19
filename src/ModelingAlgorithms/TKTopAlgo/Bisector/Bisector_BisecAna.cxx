@@ -960,6 +960,11 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       throw StdFail_NotDone();
       break;
   }
+  // Analytic intersection domains use the principal period.
+  if (!thebisector.IsNull() && thebisector->BasisCurve()->IsPeriodic())
+  {
+    thebisector->SetTrim(thebisector->FirstParameter(), thebisector->LastParameter());
+  }
 }
 
 //===========================================================================
@@ -1219,6 +1224,11 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       std::cout << "Not yet implemented" << '\n';
       break;
     }
+  }
+  // Analytic intersection domains use the principal period.
+  if (!thebisector.IsNull() && thebisector->BasisCurve()->IsPeriodic())
+  {
+    thebisector->SetTrim(thebisector->FirstParameter(), thebisector->LastParameter());
   }
 }
 
@@ -1773,10 +1783,9 @@ bool Degenerate(occ::handle<GccInt_Bisec>& aBisector, const double Tolerance)
   {
     gpparabola = aBisector->Parabola();
 
-    // If the parabole is degenerated, it is replaces by the straight
-    // line starting at the Top and with direction of the axis of symmetry.
+    // Only zero focal length collapses a parabola to its axis.
 
-    if (gpparabola.Focal() < Tolerance)
+    if (gpparabola.Focal() == 0.0)
     {
       gp_Lin2d gpline(gpparabola.MirrorAxis());
       NewBisector = new GccInt_BLine(gpline);

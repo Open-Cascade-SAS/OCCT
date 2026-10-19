@@ -16,13 +16,81 @@
 #include <BRep_Builder.hxx>
 #include <DE_ValidationUtils.hxx>
 #include <DEOBJ_ConfigurationNode.hxx>
+#include <Message.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <RWObj_CafReader.hxx>
 #include <RWObj_CafWriter.hxx>
+#include <RWObj_TriangulationReader.hxx>
+#include <RWMesh_CoordinateSystemConverter.hxx>
+#include <Poly_Triangulation.hxx>
+#include <TopoDS_Face.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DEOBJ_Provider, DE_Provider)
+
+namespace
+{
+//==================================================================================================
+
+void configureReader(RWObj_CafReader& theReader, const DEOBJ_ConfigurationNode& theNode)
+{
+  theReader.SetSinglePrecision(theNode.InternalParameters.ReadSinglePrecision);
+  theReader.SetSystemLengthUnit(theNode.GlobalParameters.LengthUnit / 1000);
+  theReader.SetSystemCoordinateSystem(theNode.InternalParameters.SystemCS);
+  theReader.SetFileLengthUnit(theNode.InternalParameters.FileLengthUnit);
+  theReader.SetFileCoordinateSystem(theNode.InternalParameters.FileCS);
+  theReader.SetRootPrefix(theNode.InternalParameters.ReadRootPrefix);
+  theReader.SetMemoryLimitMiB(theNode.InternalParameters.ReadMemoryLimitMiB);
+}
+
+//==================================================================================================
+
+bool configureShapeReader(RWObj_TriangulationReader&     theReader,
+                          const DEOBJ_ConfigurationNode& theNode)
+{
+  RWMesh_CoordinateSystemConverter aConverter;
+  aConverter.SetOutputLengthUnit(theNode.GlobalParameters.LengthUnit / 1000);
+  aConverter.SetOutputCoordinateSystem(theNode.InternalParameters.SystemCS);
+  aConverter.SetInputLengthUnit(theNode.InternalParameters.FileLengthUnit);
+  aConverter.SetInputCoordinateSystem(theNode.InternalParameters.FileCS);
+  theReader.SetTransformation(aConverter);
+  theReader.SetSinglePrecision(theNode.InternalParameters.ReadSinglePrecision);
+  theReader.SetCreateShapes(theNode.InternalParameters.ReadCreateShapes);
+  return theReader.SetMemoryLimitMiB(theNode.InternalParameters.ReadMemoryLimitMiB);
+}
+
+//==================================================================================================
+
+bool readShapeResult(RWObj_TriangulationReader&     theReader,
+                     const DEOBJ_ConfigurationNode& theNode,
+                     TopoDS_Shape&                  theShape)
+{
+  if (theNode.InternalParameters.ReadCreateShapes)
+  {
+    const TopoDS_Shape aResult = theReader.ResultShape();
+    if (aResult.IsNull())
+    {
+      Message::SendFail("Error: OBJ input contains no mesh shapes");
+      return false;
+    }
+    theShape = aResult;
+    return true;
+  }
+  const occ::handle<Poly_Triangulation> aTriangulation = theReader.GetTriangulation();
+  if (aTriangulation.IsNull())
+  {
+    Message::SendFail("Error: OBJ input contains no triangulation");
+    return false;
+  }
+  TopoDS_Face  aFace;
+  BRep_Builder aBuilder;
+  aBuilder.MakeFace(aFace, aTriangulation);
+  theShape = aFace;
+  return true;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -76,14 +144,8 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString&       thePath,
   }
   occ::handle<DEOBJ_ConfigurationNode> aNode = occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
   RWObj_CafReader                      aReader;
-  aReader.SetSinglePrecision(aNode->InternalParameters.ReadSinglePrecision);
-  aReader.SetSystemLengthUnit(aNode->GlobalParameters.LengthUnit / 1000);
-  aReader.SetSystemCoordinateSystem(aNode->InternalParameters.SystemCS);
-  aReader.SetFileLengthUnit(aNode->InternalParameters.FileLengthUnit);
-  aReader.SetFileCoordinateSystem(aNode->InternalParameters.FileCS);
+  configureReader(aReader, *aNode);
   aReader.SetDocument(theDocument);
-  aReader.SetRootPrefix(aNode->InternalParameters.ReadRootPrefix);
-  aReader.SetMemoryLimitMiB(aNode->InternalParameters.ReadMemoryLimitMiB);
   if (!aReader.Perform(thePath, theProgress))
   {
     Message::SendFail() << "Error in the DEOBJ_ConfigurationNode during reading the file "
@@ -178,38 +240,21 @@ bool DEOBJ_Provider::Read(const TCollection_AsciiString& thePath,
                           TopoDS_Shape&                  theShape,
                           const Message_ProgressRange&   theProgress)
 {
-  if (GetNode().IsNull() || !GetNode()->IsKind(STANDARD_TYPE(DEOBJ_ConfigurationNode)))
+  const TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
+  if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                     STANDARD_TYPE(DEOBJ_ConfigurationNode),
+                                                     aContext))
   {
-    Message::SendFail() << "Error in the DEOBJ_ConfigurationNode during writing the file "
-                        << thePath << "\t: Incorrect or empty Configuration Node";
     return false;
   }
-  occ::handle<DEOBJ_ConfigurationNode> aNode = occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
-  RWMesh_CoordinateSystemConverter     aConverter;
-  aConverter.SetOutputLengthUnit(aNode->GlobalParameters.LengthUnit / 1000);
-  aConverter.SetOutputCoordinateSystem(aNode->InternalParameters.SystemCS);
-  aConverter.SetInputLengthUnit(aNode->InternalParameters.FileLengthUnit);
-  aConverter.SetInputCoordinateSystem(aNode->InternalParameters.FileCS);
-
-  RWObj_TriangulationReader aSimpleReader;
-  aSimpleReader.SetTransformation(aConverter);
-  aSimpleReader.SetSinglePrecision(aNode->InternalParameters.ReadSinglePrecision);
-  aSimpleReader.SetCreateShapes(aNode->InternalParameters.ReadCreateShapes);
-  aSimpleReader.SetSinglePrecision(aNode->InternalParameters.ReadSinglePrecision);
-  aSimpleReader.SetMemoryLimit(aNode->InternalParameters.ReadMemoryLimitMiB);
-  if (!aSimpleReader.Read(thePath, theProgress))
+  const occ::handle<DEOBJ_ConfigurationNode> aNode =
+    occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
+  RWObj_TriangulationReader aReader;
+  if (!configureShapeReader(aReader, *aNode) || !aReader.Read(thePath, theProgress))
   {
-    Message::SendFail() << "Error in the DEOBJ_ConfigurationNode during reading the file "
-                        << thePath;
     return false;
   }
-  occ::handle<Poly_Triangulation> aTriangulation = aSimpleReader.GetTriangulation();
-  TopoDS_Face                     aFace;
-  BRep_Builder                    aBuiler;
-  aBuiler.MakeFace(aFace);
-  aBuiler.UpdateFace(aFace, aTriangulation);
-  theShape = aFace;
-  return true;
+  return readShapeResult(aReader, *aNode, theShape);
 }
 
 //=================================================================================================
@@ -224,7 +269,93 @@ bool DEOBJ_Provider::Write(const TCollection_AsciiString& thePath,
   return Write(thePath, aDoc, theProgress);
 }
 
-//=================================================================================================
+//==================================================================================================
+
+bool DEOBJ_Provider::Read(ReadStreamList&                      theStreams,
+                          const occ::handle<TDocStd_Document>& theDocument,
+                          occ::handle<XSControl_WorkSession>&  theWS,
+                          const Message_ProgressRange&         theProgress)
+{
+  (void)theWS;
+  return Read(theStreams, theDocument, theProgress);
+}
+
+//==================================================================================================
+
+bool DEOBJ_Provider::Read(ReadStreamList&                     theStreams,
+                          TopoDS_Shape&                       theShape,
+                          occ::handle<XSControl_WorkSession>& theWS,
+                          const Message_ProgressRange&        theProgress)
+{
+  (void)theWS;
+  return Read(theStreams, theShape, theProgress);
+}
+
+//==================================================================================================
+
+bool DEOBJ_Provider::Read(ReadStreamList&                      theStreams,
+                          const occ::handle<TDocStd_Document>& theDocument,
+                          const Message_ProgressRange&         theProgress)
+{
+  const TCollection_AsciiString aContext("reading OBJ stream");
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext, true, theStreams.Size() > 1)
+      || !DE_ValidationUtils::ValidateDocument(theDocument, aContext)
+      || !DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                        STANDARD_TYPE(DEOBJ_ConfigurationNode),
+                                                        aContext))
+  {
+    return false;
+  }
+  const occ::handle<DEOBJ_ConfigurationNode> aNode =
+    occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
+  RWObj_CafReader aReader;
+  configureReader(aReader, *aNode);
+  aReader.SetDocument(theDocument);
+  if (theStreams.Size() > 1)
+  {
+    aReader.SetResourceStreams(theStreams);
+    aReader.SetFillIncompleteDocument(false);
+  }
+  if (!aReader.Perform(theStreams.First().Stream, theProgress, theStreams.First().Path))
+  {
+    return false;
+  }
+  XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
+                                      aNode->GlobalParameters.LengthUnit,
+                                      UnitsMethods_LengthUnit_Millimeter);
+  return true;
+}
+
+//==================================================================================================
+
+bool DEOBJ_Provider::Read(ReadStreamList&              theStreams,
+                          TopoDS_Shape&                theShape,
+                          const Message_ProgressRange& theProgress)
+{
+  const TCollection_AsciiString aContext("reading OBJ stream");
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext, true, theStreams.Size() > 1)
+      || !DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
+                                                        STANDARD_TYPE(DEOBJ_ConfigurationNode),
+                                                        aContext))
+  {
+    return false;
+  }
+  const occ::handle<DEOBJ_ConfigurationNode> aNode =
+    occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
+  RWObj_TriangulationReader aReader;
+  if (theStreams.Size() > 1)
+  {
+    aReader.SetResourceStreams(theStreams);
+  }
+  if (!configureShapeReader(aReader, *aNode)
+      || !aReader.Read(theStreams.First().Stream, theStreams.First().Path, theProgress))
+  {
+    return false;
+  }
+  return readShapeResult(aReader, *aNode, theShape);
+}
+
+//==================================================================================================
 
 TCollection_AsciiString DEOBJ_Provider::GetFormat() const
 {

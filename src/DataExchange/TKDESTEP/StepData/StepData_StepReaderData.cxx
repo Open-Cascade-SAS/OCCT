@@ -38,7 +38,7 @@
 #include <NCollection_IncAllocator.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <NCollection_UtfIterator.hxx>
+#include <TCollection_UtfIterator.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
@@ -258,7 +258,7 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
               aUtfCharacter[0] |= convertCharacterTo16bit(aResString.Value(aCharInd + aFirstInd));
               if (aCharInd % 8 == 0)
               {
-                NCollection_UtfIterator<char32_t> aUtfIter(aUtfCharacter);
+                TCollection_UtfIterator<char32_t> aUtfIter(aUtfCharacter);
                 char16_t                          aStringBuffer[3];
                 char16_t*                         aUtfPntr = aUtfIter.GetUtf16(aStringBuffer);
                 *aUtfPntr++                                = '\0';
@@ -2281,6 +2281,7 @@ void StepData_StepReaderData::SetEntityNumbers(const bool withmap)
             FP.SetEntityNumber(-id);
             continue; // pbmap: we will find ourselves again
           }
+          FP.SetEntityNumber(0);
           char failmess[100];
           //  ...  Build the Check  ...
           Sprintf(failmess, "Unresolved Reference, Ent.Id.#%d Param.n0 %d (Id.#%d)", ident, na, id);

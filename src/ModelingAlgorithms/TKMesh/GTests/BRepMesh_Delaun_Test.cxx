@@ -16,9 +16,16 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepMesh_Delaun.hxx>
+#include <BRepMesh_CircleTool.hxx>
+#include <BRepMesh_DataStructureOfDelaun.hxx>
+#include <BRepMesh_Edge.hxx>
+#include <BRepMesh_Triangle.hxx>
+#include <BRepMesh_Vertex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Geom_Plane.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
@@ -27,8 +34,94 @@
 #include <TopoDS_Face.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Vec2d.hxx>
+#include <gp_XY.hxx>
 
+#include <cmath>
 #include <gtest/gtest.h>
+
+TEST(BRepMesh_DelaunTest, CircleSearchIgnoresDeletedVertices)
+{
+  for (const gp_XY& aDeletedPoint :
+       {gp_XY(-100.0, -100.0), gp_XY(-100.0, 100.0), gp_XY(100.0, -100.0), gp_XY(100.0, 100.0)})
+  {
+    const occ::handle<BRepMesh_DataStructureOfDelaun> aStructure =
+      new BRepMesh_DataStructureOfDelaun(new NCollection_IncAllocator);
+    const int aNodes[3] = {aStructure->AddNode(BRepMesh_Vertex(0.0, 0.0, BRepMesh_Free)),
+                           aStructure->AddNode(BRepMesh_Vertex(1.0, 0.0, BRepMesh_Free)),
+                           aStructure->AddNode(BRepMesh_Vertex(0.0, 1.0, BRepMesh_Free))};
+    int       aEdges[3];
+    bool      anOrientations[3];
+    for (int i = 0; i < 3; ++i)
+    {
+      const int anEdge =
+        aStructure->AddLink(BRepMesh_Edge(aNodes[i], aNodes[(i + 1) % 3], BRepMesh_Free));
+      aEdges[i]         = std::abs(anEdge);
+      anOrientations[i] = anEdge > 0;
+    }
+    const int aTriangle =
+      aStructure->AddElement(BRepMesh_Triangle(aEdges, anOrientations, BRepMesh_Free));
+    const int aDeletedNode = aStructure->AddNode(BRepMesh_Vertex(aDeletedPoint, 0, BRepMesh_Free));
+    aStructure->RemoveNode(aDeletedNode);
+    ASSERT_EQ(aStructure->GetNode(aDeletedNode).Movability(), BRepMesh_Deleted);
+
+    BRepMesh_Delaun                 aMesher(aStructure, 10, 10, true);
+    BRepMesh_CircleTool&            aCircles = const_cast<BRepMesh_CircleTool&>(aMesher.Circles());
+    const IMeshData::ListOfInteger& anInside = aCircles.Select(gp_XY(0.25, 0.25));
+    ASSERT_EQ(anInside.Size(), 1u);
+    EXPECT_EQ(anInside.First(), aTriangle);
+    for (const gp_XY& anOutside :
+         {gp_XY(-0.2, 0.5), gp_XY(1.2, 0.5), gp_XY(0.5, -0.2), gp_XY(0.5, 1.2)})
+    {
+      EXPECT_TRUE(aCircles.Select(anOutside).IsEmpty());
+    }
+  }
+}
+
+TEST(BRepMesh_DelaunTest, ContainsUsesEdgeToleranceForRefinementNodes)
+{
+  for (BRepMesh_DegreeOfFreedom aMovability : {BRepMesh_Free, BRepMesh_Frontier})
+  {
+    SCOPED_TRACE(static_cast<int>(aMovability));
+    const occ::handle<BRepMesh_DataStructureOfDelaun> aStructure =
+      new BRepMesh_DataStructureOfDelaun(new NCollection_IncAllocator);
+    const int aNodes[3] = {aStructure->AddNode(BRepMesh_Vertex(0.0, 0.0, BRepMesh_Free)),
+                           aStructure->AddNode(BRepMesh_Vertex(1.0, 0.0, BRepMesh_Free)),
+                           aStructure->AddNode(BRepMesh_Vertex(0.0, 1.0, BRepMesh_Free))};
+    int       aEdges[3];
+    bool      anOrientations[3];
+    for (int i = 0; i < 3; ++i)
+    {
+      const int anEdge =
+        aStructure->AddLink(BRepMesh_Edge(aNodes[i], aNodes[(i + 1) % 3], aMovability));
+      aEdges[i]         = std::abs(anEdge);
+      anOrientations[i] = anEdge > 0;
+    }
+    const int aTriangle =
+      aStructure->AddElement(BRepMesh_Triangle(aEdges, anOrientations, BRepMesh_Free));
+    BRepMesh_Delaun  aMesher(aStructure, 2, 2, true);
+    int              anEdgeOn     = 0;
+    constexpr double aSqTolerance = 1.e-20;
+    for (double anOffset : {-1.e-12, 0.0, 1.e-12})
+    {
+      SCOPED_TRACE(anOffset);
+      const BRepMesh_Vertex aPoint(0.5, anOffset, BRepMesh_Free);
+      EXPECT_EQ(aMesher.Contains(aTriangle, aPoint, aSqTolerance, anEdgeOn),
+                aMovability == BRepMesh_Free);
+      if (aMovability == BRepMesh_Free)
+      {
+        EXPECT_EQ(anEdgeOn, aEdges[0]);
+      }
+    }
+    EXPECT_FALSE(aMesher.Contains(aTriangle,
+                                  BRepMesh_Vertex(0.5, -1.e-6, BRepMesh_Free),
+                                  aSqTolerance,
+                                  anEdgeOn));
+    EXPECT_TRUE(aMesher.Contains(aTriangle,
+                                 BRepMesh_Vertex(0.25, 0.25, BRepMesh_Free),
+                                 aSqTolerance,
+                                 anEdgeOn));
+  }
+}
 
 // Test for bug 0032395: BRepMesh_Delaun::isVertexInsidePolygon
 // The method uses winding number algorithm to check if a point is inside a polygon.

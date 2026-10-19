@@ -26,6 +26,7 @@ class StepData_StepReaderData;
 class Interface_Check;
 class StepDimTol_DatumReferenceModifierWithValue;
 class StepData_StepWriter;
+class Interface_EntityIterator;
 
 //! Read & Write tool for DatumReferenceModifierWithValue
 class RWStepDimTol_RWDatumReferenceModifierWithValue
@@ -47,5 +48,10 @@ public:
   Standard_HIDDEN void WriteStep(
     StepData_StepWriter&                                           SW,
     const occ::handle<StepDimTol_DatumReferenceModifierWithValue>& ent) const;
+
+  //! Visit the length measure referenced by the datum modifier.
+  Standard_HIDDEN void Share(
+    const occ::handle<StepDimTol_DatumReferenceModifierWithValue>& theEntity,
+    Interface_EntityIterator&                                      theIterator) const;
 };
 #endif // _RWStepDimTol_RWDatumReferenceModifierWithValue_HeaderFile

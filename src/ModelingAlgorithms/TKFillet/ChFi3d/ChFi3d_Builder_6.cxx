@@ -900,41 +900,36 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   //   if (Du1.Dot(Du2)>0) Data->ChangeOrientation() = TopAbs_FORWARD;
   //   else Data->ChangeOrientation() = TopAbs_REVERSED;
 
-  double aDelta = VLast - VFirst;
-  int    aDenom = 2;
+  double aDeltav = (VLast - VFirst) / 2.0;
 
   for (;;)
   {
-    double   aDeltav = aDelta / aDenom;
-    double   aParam  = VFirst + aDeltav;
-    gp_Pnt2d PUV     = PCurveOnFace->Value(aParam);
-    gp_Pnt   P;
-    gp_Vec   Du1, Du2, Dv1, Dv2;
-
-    Sref->D1(PUV.X(), PUV.Y(), P, Du1, Dv1);
-    Du1.Cross(Dv1);
+    const double   aParam            = VFirst + aDeltav;
+    const gp_Pnt2d aUV               = PCurveOnFace->EvalD0(aParam);
+    const auto [aPoint1, aDu1, aDv1] = Sref->EvalD1(aUV.X(), aUV.Y());
+    gp_Vec aNormal1                  = aDu1.Crossed(aDv1);
 
     if (Or1 == TopAbs_REVERSED)
     {
-      Du1.Reverse();
+      aNormal1.Reverse();
     }
 
-    Surf->D1(UFirst, aParam, P, Du2, Dv2);
-    Du2.Cross(Dv2);
+    const auto [aPoint2, aDu2, aDv2] = Surf->EvalD1(UFirst, aParam);
+    const gp_Vec aNormal2            = aDu2.Crossed(aDv2);
 
-    if (Du1.Magnitude() <= tolget3d || Du2.Magnitude() <= tolget3d)
+    if (aNormal1.Magnitude() <= tolget3d || aNormal2.Magnitude() <= tolget3d)
     {
-      aDenom++;
-
-      if (std::abs(aDeltav) <= tolget2d)
+      if (std::abs(aDeltav) <= tolget2d || aParam == VFirst)
       {
         return false;
       }
 
+      // Approach the first parameter geometrically, including when the reached tolerance is zero.
+      aDeltav *= 0.5;
       continue;
     }
 
-    if (Du1.Dot(Du2) > 0)
+    if (aNormal1.Dot(aNormal2) > 0)
     {
       Data->ChangeOrientation() = TopAbs_FORWARD;
     }

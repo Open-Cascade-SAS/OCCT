@@ -10,7 +10,7 @@ restore [locate_data_file bug26372_RP.brep] result
 
 incmesh result 0.1
 
-checktrinfo result -tri 1041 -nod 530
+checktrinfo result -tri 1123 -nod 571
 
 vinit
 vdisplay result

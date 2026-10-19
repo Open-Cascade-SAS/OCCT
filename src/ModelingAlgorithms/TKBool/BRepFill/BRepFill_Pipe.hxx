@@ -53,11 +53,22 @@ public:
 
   Standard_EXPORT BRepFill_Pipe();
 
+  //! Builds a pipe with the default surface approximation tolerance of 1.0e-4.
   Standard_EXPORT BRepFill_Pipe(const TopoDS_Wire&       Spine,
                                 const TopoDS_Shape&      Profile,
                                 const GeomFill_Trihedron aMode         = GeomFill_IsCorrectedFrenet,
                                 const bool               ForceApproxC1 = false,
                                 const bool               GeneratePartCase = false);
+
+  //! Builds a pipe with a finite, positive surface approximation tolerance.
+  //! @param[in] theTolerance requested surface approximation tolerance in model units
+  //! Invalid tolerance values raise Standard_ConstructionError.
+  Standard_EXPORT BRepFill_Pipe(const TopoDS_Wire&       Spine,
+                                const TopoDS_Shape&      Profile,
+                                const GeomFill_Trihedron aMode,
+                                const bool               ForceApproxC1,
+                                const bool               GeneratePartCase,
+                                const double             theTolerance);
 
   Standard_EXPORT void Perform(const TopoDS_Wire&  Spine,
                                const TopoDS_Shape& Profile,
@@ -145,6 +156,7 @@ private:
   GeomFill_Trihedron myMode;
   bool               myForceApproxC1;
   double             myErrorOnSurf;
+  double             myTolerance; //!< Surface approximation tolerance in model units.
 };
 
 #endif // _BRepFill_Pipe_HeaderFile

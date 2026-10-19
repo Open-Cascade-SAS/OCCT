@@ -16,6 +16,7 @@
 #ifndef VrmlData_Scene_HeaderFile
 #define VrmlData_Scene_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <NCollection_List.hxx>
 #include <VrmlData_Node.hxx>
 #include <NCollection_Map.hxx>
@@ -29,6 +30,8 @@
 #include <NCollection_DataMap.hxx>
 #include <VrmlData_Appearance.hxx>
 #include <TopoDS_TShape.hxx>
+
+#include <Image_Texture.hxx>
 
 #include <mutex>
 
@@ -50,6 +53,26 @@ public:
    * Iterator type to get all contained Nodes one-by-one.
    */
   typedef NCollection_List<occ::handle<VrmlData_Node>>::Iterator Iterator;
+
+  //! Set streams for Inline and image references instead of files.
+  //! @param[in] theStreams caller-owned list used while reading; null restores file lookup
+  //! @param[in] theName scene name for resolving relative references
+  void SetResourceStreams(const DE_Provider::ReadStreamList* theStreams,
+                          const TCollection_AsciiString&     theName)
+  {
+    myResourceStreams = theStreams;
+    myResourceName    = theName;
+    myResourceParent  = nullptr;
+    myImages.Clear();
+  }
+
+  //! Read an image from the URL alternatives when companion streams are set.
+  //! @param[in] theURLs image URLs; an empty list requests no image
+  //! @param[out] theImage image data, or null if no image is read
+  //! @return VrmlData_CannotOpenFile if the requested image cannot be read
+  Standard_EXPORT VrmlData_ErrorStatus
+    ReadImage(const NCollection_List<TCollection_AsciiString>& theURLs,
+              occ::handle<Image_Texture>&                      theImage) const;
 
   // ---------- PUBLIC METHODS ----------
 
@@ -344,6 +367,11 @@ protected:
 
 private:
   // ---------- PRIVATE FIELDS ----------
+  const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed companion streams.
+  TCollection_AsciiString            myResourceName; //!< Name used for relative references.
+  const VrmlData_Scene* myResourceParent = nullptr;  //!< Parent used to detect Inline cycles.
+  mutable NCollection_DataMap<TCollection_AsciiString, occ::handle<Image_Texture>>
+                                               myImages; //!< Images shared by nested scenes.
   double                                       myLinearScale;
   NCollection_List<occ::handle<VrmlData_Node>> myLstNodes; ///! top-level nodes
   NCollection_List<occ::handle<VrmlData_Node>> myAllNodes; ///! all nodes

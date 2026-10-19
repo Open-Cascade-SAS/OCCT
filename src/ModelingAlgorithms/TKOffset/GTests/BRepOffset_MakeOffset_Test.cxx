@@ -17,32 +17,98 @@
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffset_MakeOffset.hxx>
+#include <BRepOffset_Analyse.hxx>
 #include <BRepOffset_Error.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Trsf.hxx>
+#include <gp.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_SurfaceOfRevolution.hxx>
+#include <gp_Sphere.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pln.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
 #include <NCollection_List.hxx>
+#include <Precision.hxx>
 
 #include <cmath>
+#include <array>
+#include <utility>
+
+TEST(BRepOffset_AnalyseTest, ConstructionContinuityOfSplineFace)
+{
+  BRepBuilderAPI_MakeFace aFirstMaker(gp_Pln(gp::XOY()), 0.0, 1.0, -1.0, 0.0);
+  ASSERT_TRUE(aFirstMaker.IsDone());
+  const TopoDS_Face                            aFirstFace = aFirstMaker.Face();
+  const std::array<std::pair<double, bool>, 3> aCases = {{{0.0, true}, {0.03, true}, {0.2, false}}};
+  for (const auto& [anAngle, aTangentExpected] : aCases)
+  {
+    NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+    for (int anIndex = 1; anIndex <= 2; ++anIndex)
+    {
+      aPoles(anIndex, 1) = gp_Pnt(anIndex - 1.0, 0.0, 0.0);
+      aPoles(anIndex, 2) = gp_Pnt(anIndex - 1.0, std::cos(anAngle), std::sin(anAngle));
+    }
+    const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles);
+    BRepBuilderAPI_MakeFace               aSecondMaker(aSurface, Precision::Confusion());
+    ASSERT_TRUE(aSecondMaker.IsDone());
+    const TopoDS_Face     aSecondFace = aSecondMaker.Face();
+    BRepBuilderAPI_Sewing aSewing(Precision::Confusion());
+    aSewing.Add(aFirstFace);
+    aSewing.Add(aSecondFace);
+    aSewing.Perform();
+    const TopoDS_Shape& aShell = aSewing.SewedShape();
+    ASSERT_FALSE(aShell.IsNull());
+    ASSERT_TRUE(BRepCheck_Analyzer(aShell).IsValid());
+
+    for (const double aClassificationAngle : {1.0e-4, 0.01})
+    {
+      BRepOffset_Analyse anAnalysis(aShell, aClassificationAngle);
+      ASSERT_TRUE(anAnalysis.IsDone());
+      int aNbSharedEdges = 0;
+      for (TopExp_Explorer anEdges(aShell, TopAbs_EDGE); anEdges.More(); anEdges.Next())
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdges.Current());
+        if (anAnalysis.Ancestors(anEdge).Size() != 2)
+        {
+          continue;
+        }
+        ++aNbSharedEdges;
+        const NCollection_List<BRepOffset_Interval>& anIntervals = anAnalysis.Type(anEdge);
+        ASSERT_EQ(anIntervals.Size(), 1);
+        EXPECT_EQ(anIntervals.First().Type() == ChFiDS_Tangential, aTangentExpected);
+      }
+      EXPECT_EQ(aNbSharedEdges, 2);
+    }
+  }
+}
 
 //=================================================================================================
 // Helper function to create a circular wire
@@ -1096,4 +1162,151 @@ TEST(BRepOffset_MakeOffsetTest, CollapsedCircularWireOffsetIsNotDone)
   bool isDone = true;
   ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(2.0, -1.0));
   EXPECT_FALSE(isDone);
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidDoesNotReportOpenShellsAsSuccess)
+{
+  const occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(gp_Ax2(), 15.0, 10.0);
+  gp_Trsf                         aRotation;
+  aRotation.SetRotation(gp_Ax1(gp::Origin(), gp::DX()), M_PI / 2.0);
+  anEllipse->Transform(aRotation);
+  BRepBuilderAPI_MakeEdge anEdge(anEllipse, 0.0, M_PI / 2.0);
+  ASSERT_TRUE(anEdge.IsDone());
+  BRepBuilderAPI_MakePolygon aPolygon(gp_Pnt(0.0, 0.0, 10.0),
+                                      gp_Pnt(0.0, 0.0, -10.0),
+                                      gp_Pnt(25.0, 0.0, -10.0),
+                                      gp_Pnt(15.0, 0.0, 0.0));
+  ASSERT_TRUE(aPolygon.IsDone());
+  BRepBuilderAPI_MakeWire aWire(anEdge.Edge());
+  aWire.Add(aPolygon.Wire());
+  ASSERT_TRUE(aWire.IsDone());
+  BRepBuilderAPI_MakeFace aFace(aWire.Wire(), true);
+  ASSERT_TRUE(aFace.IsDone());
+  BRepPrimAPI_MakeRevol aRevolution(aFace.Face(), gp_Ax1(gp::Origin(), gp::DZ()), M_PI / 2.0);
+  ASSERT_TRUE(aRevolution.IsDone());
+  ASSERT_TRUE(BRepCheck_Analyzer(aRevolution.Shape()).IsValid());
+
+  BRepOffset_MakeOffset anOffset;
+  anOffset.Initialize(aRevolution.Shape(),
+                      1.0,
+                      1.0e-7,
+                      BRepOffset_Skin,
+                      true,
+                      false,
+                      GeomAbs_Intersection);
+  anOffset.AddFace(TopoDS::Face(aRevolution.FirstShape()));
+  anOffset.AddFace(TopoDS::Face(aRevolution.LastShape()));
+  anOffset.MakeThickSolid();
+  if (anOffset.IsDone())
+  {
+    EXPECT_TRUE(BRepCheck_Analyzer(anOffset.Shape()).IsValid());
+  }
+  else
+  {
+    EXPECT_NE(anOffset.Error(), BRepOffset_NoError);
+  }
+}
+
+TEST(BRepOffset_MakeOffsetTest, ThickSolidWithDegeneratePoleEdges)
+{
+  BRepPrimAPI_MakeSphere aSphere(5.0, -M_PI / 2.0, 40.0 * M_PI / 180.0, 2.0 * M_PI);
+  const TopoDS_Shape     aShape = aSphere.Shape();
+  ASSERT_TRUE(BRepCheck_Analyzer(aShape).IsValid());
+
+  BRepOffset_MakeOffset anOffset;
+  anOffset.Initialize(aShape, -1.0, 1.0e-7, BRepOffset_Skin, false, false, GeomAbs_Arc);
+  size_t aRemovedFaces = 0;
+  for (TopExp_Explorer anExp(aShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+    if (BRepAdaptor_Surface(aFace).GetType() == GeomAbs_Plane)
+    {
+      anOffset.AddFace(aFace);
+      ++aRemovedFaces;
+    }
+  }
+  ASSERT_EQ(aRemovedFaces, 1u);
+  anOffset.MakeThickSolid();
+  ASSERT_TRUE(anOffset.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(anOffset.Shape()).IsValid());
+}
+
+//==================================================================================================
+
+TEST(BRepOffset_MakeOffsetTest, ArcOffset_SplitSplineConeKeepsSeamAtFirstFace)
+{
+  // Each construction has independent topology and may have a different hash traversal order.
+  for (const double anAngle : {0.0, 0.5})
+  {
+    for (int aTrial = 0; aTrial < 8; ++aTrial)
+    {
+      SCOPED_TRACE(::testing::Message() << "angle " << anAngle << ", trial " << aTrial);
+      NCollection_Array1<gp_Pnt> aPoles(1, 4);
+      for (size_t anIndex = 0; anIndex < aPoles.Size(); ++anIndex)
+      {
+        const double aFraction   = static_cast<double>(anIndex) / 3.0;
+        aPoles.ChangeAt(anIndex) = gp_Pnt(50.0 * aFraction, 0.0, 80.0 * (1.0 - aFraction));
+      }
+      NCollection_Array1<double> aKnots(1, 2);
+      aKnots.ChangeAt(0) = 0.0;
+      aKnots.ChangeAt(1) = 1.0;
+      NCollection_Array1<int> aMultiplicities(1, 2);
+      aMultiplicities.Init(4);
+      const occ::handle<Geom_BSplineCurve> aMeridian =
+        new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 3);
+      const occ::handle<Geom_SurfaceOfRevolution> aSurface =
+        new Geom_SurfaceOfRevolution(aMeridian, gp::OZ());
+      BRepBuilderAPI_MakeFace aFirstFace(aSurface,
+                                         anAngle,
+                                         anAngle + M_PI,
+                                         0.0,
+                                         1.0,
+                                         Precision::Confusion());
+      BRepBuilderAPI_MakeFace aSecondFace(aSurface,
+                                          anAngle + M_PI,
+                                          anAngle + 2.0 * M_PI,
+                                          0.0,
+                                          1.0,
+                                          Precision::Confusion());
+      ASSERT_TRUE(aFirstFace.IsDone());
+      ASSERT_TRUE(aSecondFace.IsDone());
+      BRepBuilderAPI_Sewing aSewing;
+      aSewing.Add(aFirstFace.Face());
+      aSewing.Add(aSecondFace.Face());
+      aSewing.Perform();
+      const TopoDS_Shape& aCone = aSewing.SewedShape();
+      ASSERT_FALSE(aCone.IsNull());
+      ASSERT_TRUE(BRepCheck_Analyzer(aCone).IsValid());
+
+      BRepOffset_MakeOffset anOffset(aCone, 5.0, Precision::Confusion());
+      ASSERT_TRUE(anOffset.IsDone());
+      ASSERT_EQ(anOffset.Error(), BRepOffset_NoError);
+      const TopoDS_Shape& aResult = anOffset.Shape();
+      ASSERT_FALSE(aResult.IsNull());
+      EXPECT_TRUE(BRepCheck_Analyzer(aResult, true, false, true).IsValid());
+      int aNbSpheres = 0;
+      int aNbFaces   = 0;
+      for (TopExp_Explorer anExp(aResult, TopAbs_FACE); anExp.More(); anExp.Next())
+      {
+        ++aNbFaces;
+        const BRepAdaptor_Surface aResultSurface(TopoDS::Face(anExp.Current()));
+        if (aResultSurface.GetType() != GeomAbs_Sphere)
+        {
+          continue;
+        }
+        ++aNbSpheres;
+        const gp_Sphere aSphere    = aResultSurface.Sphere();
+        const gp_Dir&   aDirection = aSphere.Position().XDirection();
+        EXPECT_NEAR(aDirection.X(), -std::cos(anAngle), Precision::Angular());
+        EXPECT_NEAR(aDirection.Y(), -std::sin(anAngle), Precision::Angular());
+        EXPECT_NEAR(aDirection.Z(), 0.0, Precision::Angular());
+        EXPECT_NEAR(aSphere.Radius(), 5.0, Precision::Confusion());
+        EXPECT_NEAR(aSphere.Location().Distance(gp_Pnt(0.0, 0.0, 80.0)),
+                    0.0,
+                    Precision::Confusion());
+      }
+      EXPECT_EQ(aNbSpheres, 1);
+      EXPECT_EQ(aNbFaces, 3);
+    }
+  }
 }

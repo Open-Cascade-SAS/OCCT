@@ -17,14 +17,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject, Standard_Transient)
 
 //=================================================================================================
 
-XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject()
-{
-  myIsDTarget  = false;
-  myIsValidDT  = false;
-  myHasPlane   = false;
-  myHasPnt     = false;
-  myHasPntText = false;
-}
+XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject() = default;
 
 //=================================================================================================
 

@@ -11,8 +11,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <GeomEval_RepCurveDesc.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <NCollection_Array2.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomAdaptor_TransformedCurve.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
@@ -33,7 +47,10 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <gtest/gtest.h>
+
 #include <cmath>
+#include <array>
 
 namespace
 {
@@ -1068,5 +1085,303 @@ TEST(GeomGridEval_BSplineCurveTest, DerivativeDN_MultiSpan)
       gp_Vec aExpected = aCurve->DN(aParams.Value(i), aOrder);
       EXPECT_NEAR((aGrid.Value(i) - aExpected).Magnitude(), 0.0, THE_TOLERANCE);
     }
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomGridEval_CurveTest, NativeBSplineTrimsPreserveDerivativeSidesAndSampleOrder)
+{
+  NCollection_Array1<gp_Pnt> aPoles(5);
+  aPoles.ChangeAt(0) = gp_Pnt(0, 0, 0);
+  aPoles.ChangeAt(1) = gp_Pnt(0.25, 0, 0);
+  aPoles.ChangeAt(2) = gp_Pnt(0.5, 0, 0);
+  aPoles.ChangeAt(3) = gp_Pnt(0.75, 1, 0);
+  aPoles.ChangeAt(4) = gp_Pnt(1, 3, 0);
+  NCollection_Array1<double> aKnots(3);
+  aKnots.ChangeAt(0) = 0;
+  aKnots.ChangeAt(1) = 0.5;
+  aKnots.ChangeAt(2) = 1;
+  NCollection_Array1<int> aMultiplicities(3);
+  aMultiplicities.ChangeAt(0) = 3;
+  aMultiplicities.ChangeAt(1) = 2;
+  aMultiplicities.ChangeAt(2) = 3;
+  const occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 2);
+  for (const auto& aBounds :
+       {std::array<double, 2>{0, 0.5}, std::array<double, 2>{0.5, 1}, std::array<double, 2>{0, 1}})
+  {
+    const GeomAdaptor_Curve  anAdaptor(aCurve, aBounds[0], aBounds[1]);
+    const GeomGridEval_Curve aUnified(anAdaptor);
+
+    const GeomGridEval_Curve aWrapped(
+      occ::handle<Geom_Curve>(new Geom_TrimmedCurve(aCurve, aBounds[0], aBounds[1])));
+    NCollection_Array1<double> aParameters(-2, 2);
+    aParameters.ChangeAt(0) = aBounds[1];
+    aParameters.ChangeAt(1) = aBounds[0] + (aBounds[1] - aBounds[0]) * 0.25;
+    aParameters.ChangeAt(2) = aBounds[0];
+    aParameters.ChangeAt(3) = aBounds[0] + (aBounds[1] - aBounds[0]) * 0.75;
+    aParameters.ChangeAt(4) = aBounds[1];
+
+    const NCollection_Array1<GeomGridEval::CurveD3> aUnifiedValues =
+      aUnified.EvaluateGridD3(aParameters);
+    const NCollection_Array1<GeomGridEval::CurveD1> aWrappedValues =
+      aWrapped.EvaluateGridD1(aParameters);
+    gp_Trsf aPlacement;
+    aPlacement.SetScale(gp_Pnt(2.0, 1.0, 3.0), -2.0);
+    const GeomAdaptor_TransformedCurve aLocated(aCurve, aBounds[0], aBounds[1], aPlacement);
+    const GeomGridEval_Curve           aLocatedEvaluator(aLocated);
+    const NCollection_Array1<GeomGridEval::CurveD3> aLocatedValues =
+      aLocatedEvaluator.EvaluateGridD3(aParameters);
+    ASSERT_EQ(aUnifiedValues.Size(), aParameters.Size());
+    ASSERT_EQ(aWrappedValues.Size(), aParameters.Size());
+    ASSERT_EQ(aLocatedValues.Size(), aParameters.Size());
+    for (size_t anIndex = 0; anIndex < aParameters.Size(); ++anIndex)
+    {
+      const Geom_Curve::ResD3 anExpected       = anAdaptor.EvalD3(aParameters.At(anIndex));
+      const Geom_Curve::ResD3 aLocatedExpected = aLocated.EvalD3(aParameters.At(anIndex));
+      const auto&             aLocatedValue    = aLocatedValues.At(anIndex);
+      EXPECT_NEAR(aLocatedValue.Point.Distance(aLocatedExpected.Point), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aLocatedValue.D1 - aLocatedExpected.D1).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aLocatedValue.D2 - aLocatedExpected.D2).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aLocatedValue.D3 - aLocatedExpected.D3).Magnitude(), 0.0, THE_TOLERANCE);
+      const auto& aValue = aUnifiedValues.At(anIndex);
+      EXPECT_NEAR(aValue.Point.Distance(anExpected.Point), 0, 1.e-10);
+      EXPECT_NEAR((aValue.D1 - anExpected.D1).Magnitude(), 0, 1.e-10);
+      EXPECT_NEAR((aValue.D2 - anExpected.D2).Magnitude(), 0, 1.e-10);
+      EXPECT_NEAR((aValue.D3 - anExpected.D3).Magnitude(), 0, 1.e-10);
+      EXPECT_NEAR((aWrappedValues.At(anIndex).D1 - anExpected.D1).Magnitude(), 0, 1.e-10);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomGridEval_CurveTest, RationalDerivativeAbovePolynomialDegree)
+{
+  NCollection_Array1<gp_Pnt> aPoles(2);
+  aPoles.ChangeAt(0) = gp_Pnt(0, 0, 0);
+  aPoles.ChangeAt(1) = gp_Pnt(1, 0, 0);
+  NCollection_Array1<double> aWeights(2);
+  aWeights.ChangeAt(0) = 2;
+  aWeights.ChangeAt(1) = 1;
+  NCollection_Array1<double> aKnots(2);
+  aKnots.ChangeAt(0) = 0;
+  aKnots.ChangeAt(1) = 1;
+  NCollection_Array1<int> aMultiplicities(2);
+  aMultiplicities.Init(2);
+  const occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMultiplicities, 1);
+  const GeomGridEval_BSplineCurve anEvaluator(aCurve);
+  NCollection_Array1<double>      aParameters(3);
+  aParameters.ChangeAt(0)                  = 1;
+  aParameters.ChangeAt(1)                  = 0.3;
+  aParameters.ChangeAt(2)                  = 0;
+  const NCollection_Array1<gp_Vec> aValues = anEvaluator.EvaluateGridDN(aParameters, 3);
+  for (size_t anIndex = 0; anIndex < aParameters.Size(); ++anIndex)
+  {
+    EXPECT_NEAR(aValues.At(anIndex).X(), 12 / std::pow(2 - aParameters.At(anIndex), 4), 1.e-10);
+  }
+}
+
+//==================================================================================================
+
+TEST(Adaptor3d_CurveOnSurfaceTest, ReloadRebuildsEndpointSurfaces)
+{
+  const occ::handle<Adaptor2d_Curve2d> aCurve =
+    new Geom2dAdaptor_Curve(new Geom2d_Line(gp_Pnt2d(0.0, 0.25), gp_Dir2d(1.0, 0.0)), 0.1, 0.9);
+  const occ::handle<Geom_Surface> anExtrusion =
+    new Geom_SurfaceOfLinearExtrusion(CreateSimpleBSpline(), gp_Dir(0.0, 0.0, 1.0));
+  const occ::handle<Adaptor3d_Surface> anOldSurface =
+    new GeomAdaptor_Surface(anExtrusion, 0.0, 1.0, 0.0, 1.0);
+  const occ::handle<Adaptor3d_Surface> aNewSurface =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pnt(0.0, 0.0, 10.0), gp_Dir(0.0, 0.0, 1.0)));
+  for (const bool aLoadBoth : {false, true})
+  {
+    Adaptor3d_CurveOnSurface           anAdaptor(aCurve, anOldSurface);
+    const occ::handle<Adaptor3d_Curve> anOldCopy = anAdaptor.ShallowCopy();
+    if (aLoadBoth)
+    {
+      anAdaptor.Load(aCurve, aNewSurface);
+    }
+    else
+    {
+      anAdaptor.Load(aNewSurface);
+    }
+    const Adaptor3d_CurveOnSurface aFresh(aCurve, aNewSurface);
+    for (const double aParameter : {0.1, 0.5, 0.9})
+    {
+      const Geom_Curve::ResD3 aResult    = anAdaptor.EvalD3(aParameter);
+      const Geom_Curve::ResD3 anExpected = aFresh.EvalD3(aParameter);
+      EXPECT_NEAR(aResult.Point.Distance(anExpected.Point), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D1 - anExpected.D1).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D2 - anExpected.D2).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR((aResult.D3 - anExpected.D3).Magnitude(), 0.0, THE_TOLERANCE);
+      EXPECT_NEAR(anOldCopy->EvalD1(aParameter).Point.Z(), 0.25, THE_TOLERANCE);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(Adaptor3d_CurveOnSurfaceTest, ReloadInvalidatesContinuityIntervals)
+{
+  const occ::handle<Adaptor3d_Surface> aSurface =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
+  const occ::handle<Adaptor2d_Curve2d> aLine =
+    new Geom2dAdaptor_Curve(new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 0.1, 0.9);
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
+  aPoles.ChangeAt(0) = gp_Pnt2d(0.0, 0.0);
+  aPoles.ChangeAt(1) = gp_Pnt2d(0.5, 0.0);
+  aPoles.ChangeAt(2) = gp_Pnt2d(1.0, 1.0);
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 0.5;
+  aKnots.ChangeAt(2) = 1.0;
+  NCollection_Array1<int> aMultiplicities(1, 3);
+  aMultiplicities.ChangeAt(0) = 2;
+  aMultiplicities.ChangeAt(1) = 1;
+  aMultiplicities.ChangeAt(2) = 2;
+  const occ::handle<Adaptor2d_Curve2d> aSpline =
+    new Geom2dAdaptor_Curve(new Geom2d_BSplineCurve(aPoles, aKnots, aMultiplicities, 1));
+  Adaptor3d_CurveOnSurface anAdaptor(aLine, aSurface);
+  ASSERT_EQ(anAdaptor.NbIntervals(GeomAbs_C1), 1);
+  const occ::handle<Adaptor3d_Curve> anOldCopy = anAdaptor.ShallowCopy();
+  anAdaptor.Load(aSpline);
+  ASSERT_EQ(anAdaptor.NbIntervals(GeomAbs_C1), 2);
+  NCollection_Array1<double> anIntervals(1, 3);
+  anAdaptor.Intervals(anIntervals, GeomAbs_C1);
+  EXPECT_DOUBLE_EQ(anIntervals.At(0), 0.0);
+  EXPECT_DOUBLE_EQ(anIntervals.At(1), 0.5);
+  EXPECT_DOUBLE_EQ(anIntervals.At(2), 1.0);
+  ASSERT_EQ(anOldCopy->NbIntervals(GeomAbs_C1), 1);
+  anAdaptor.Load(aLine, aSurface);
+  EXPECT_EQ(anAdaptor.NbIntervals(GeomAbs_C1), 1);
+}
+
+//==================================================================================================
+
+TEST(GeomGridEval_BSplineCurveTest, DecreasingSamplesCrossSpanBoundary)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles.ChangeAt(0) = gp_Pnt(0, 0, 0);
+  aPoles.ChangeAt(1) = gp_Pnt(0.5, 0, 0);
+  aPoles.ChangeAt(2) = gp_Pnt(2, 0, 0);
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots.ChangeAt(0) = 0;
+  aKnots.ChangeAt(1) = 0.5;
+  aKnots.ChangeAt(2) = 1;
+  NCollection_Array1<int> aMultiplicities(1, 3);
+  aMultiplicities.ChangeAt(0) = 2;
+  aMultiplicities.ChangeAt(1) = 1;
+  aMultiplicities.ChangeAt(2) = 2;
+  const occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 1);
+  const GeomGridEval_BSplineCurve anEvaluator(aCurve);
+  NCollection_Array1<double>      aParameters(1, 4);
+  aParameters.ChangeAt(0)                  = 0.75;
+  aParameters.ChangeAt(1)                  = 0.8;
+  aParameters.ChangeAt(2)                  = 0.85;
+  aParameters.ChangeAt(3)                  = 0.25;
+  const NCollection_Array1<gp_Pnt> aPoints = anEvaluator.EvaluateGrid(aParameters);
+  ASSERT_EQ(aPoints.Size(), aParameters.Size());
+  for (size_t anIndex = 0; anIndex < aParameters.Size(); ++anIndex)
+  {
+    EXPECT_LT(aPoints.At(anIndex).Distance(aCurve->EvalD0(aParameters.At(anIndex))), 1.e-13);
+  }
+}
+
+//==================================================================================================
+
+TEST(Adaptor3d_CurveOnSurfaceTest, CubicOnPlaneThirdDerivative)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
+  aPoles.Init(gp_Pnt2d(0, 0));
+  aPoles.ChangeAt(3)                                   = gp_Pnt2d(1, 0);
+  const occ::handle<Geom2d_Curve>      aCurve          = new Geom2d_BezierCurve(aPoles);
+  const occ::handle<Adaptor2d_Curve2d> aCurveAdaptor   = new Geom2dAdaptor_Curve(aCurve);
+  const occ::handle<Geom_Surface>      aPlane          = new Geom_Plane(gp_Ax3());
+  const occ::handle<Adaptor3d_Surface> aSurfaceAdaptor = new GeomAdaptor_Surface(aPlane);
+  const Adaptor3d_CurveOnSurface       anAdaptor(aCurveAdaptor, aSurfaceAdaptor);
+  const Geom_Curve::ResD3              aResult = anAdaptor.EvalD3(0.5);
+  EXPECT_DOUBLE_EQ(aResult.D3.X(), 6);
+  EXPECT_DOUBLE_EQ(aResult.D3.Y(), 0);
+  EXPECT_DOUBLE_EQ(aResult.D3.Z(), 0);
+}
+
+//==================================================================================================
+
+TEST(GeomGridEval_CurveTest, AlternateSplineEvaluationMatchesScalarEvaluation)
+{
+  NCollection_Array1<gp_Pnt> aPoles(0, 1);
+  aPoles.ChangeAt(0) = gp_Pnt(0, 0, 0);
+  aPoles.ChangeAt(1) = gp_Pnt(1, 0, 0);
+  NCollection_Array1<double> aKnots(0, 1);
+  aKnots.ChangeAt(0) = 0;
+  aKnots.ChangeAt(1) = 1;
+  NCollection_Array1<int> aMultiplicities(0, 1);
+  aMultiplicities.Init(2);
+  const occ::handle<GeomEval_RepCurveDesc::Full> aDescriptor = new GeomEval_RepCurveDesc::Full();
+  aDescriptor->Representation                  = new Geom_Line(gp_Pnt(100, 20, 5), gp_Dir(1, 0, 0));
+  const occ::handle<Geom_BezierCurve>  aBezier = new Geom_BezierCurve(aPoles);
+  const occ::handle<Geom_BSplineCurve> aSpline =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 1);
+  aBezier->SetEvalRepresentation(aDescriptor);
+  aSpline->SetEvalRepresentation(aDescriptor);
+  const std::array<occ::handle<Geom_Curve>, 2> aCurves{occ::handle<Geom_Curve>(aBezier),
+                                                       occ::handle<Geom_Curve>(aSpline)};
+  NCollection_Array1<double>                   aParameters(-2, -1);
+  aParameters.ChangeAt(0) = 0.25;
+  aParameters.ChangeAt(1) = 0.75;
+  for (const auto& aCurve : aCurves)
+  {
+    const GeomAdaptor_Curve  anAdaptor(aCurve);
+    const GeomGridEval_Curve aGeometryEvaluator(aCurve), anAdaptorEvaluator(anAdaptor);
+    for (const GeomGridEval_Curve* anEvaluator : {&aGeometryEvaluator, &anAdaptorEvaluator})
+    {
+      const NCollection_Array1<GeomGridEval::CurveD3> aValues =
+        anEvaluator->EvaluateGridD3(aParameters);
+      for (size_t anIndex = 0; anIndex < aParameters.Size(); ++anIndex)
+      {
+        const Geom_Curve::ResD3 anExpected = aCurve->EvalD3(aParameters.At(anIndex));
+        EXPECT_LE(aValues.At(anIndex).Point.Distance(anExpected.Point), 1.e-12);
+        EXPECT_LE((aValues.At(anIndex).D1 - anExpected.D1).Magnitude(), 1.e-12);
+        EXPECT_LE((aValues.At(anIndex).D2 - anExpected.D2).Magnitude(), 1.e-12);
+        EXPECT_LE((aValues.At(anIndex).D3 - anExpected.D3).Magnitude(), 1.e-12);
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(Adaptor3d_CurveOnSurfaceTest, MixedSurfaceThirdDerivative)
+{
+  // S(u,v) = (u,v,u*v*v), UV(t) = (t*t,t), so S(UV(t)).Z = t*t*t*t.
+  NCollection_Array2<gp_Pnt> aSurfacePoles(1, 2, 1, 3);
+  for (size_t aUIndex = 0; aUIndex < 2; ++aUIndex)
+  {
+    const double aU = static_cast<double>(aUIndex);
+    for (size_t aVIndex = 0; aVIndex < 3; ++aVIndex)
+    {
+      const double aV                          = 0.5 * static_cast<double>(aVIndex);
+      aSurfacePoles.ChangeAt(aUIndex, aVIndex) = gp_Pnt(aU, aV, aVIndex == 2 ? aU : 0.0);
+    }
+  }
+  const occ::handle<Geom_Surface> aSurface = new Geom_BezierSurface(aSurfacePoles);
+  NCollection_Array1<gp_Pnt2d>    aCurvePoles(1, 3);
+  aCurvePoles.ChangeAt(0)                = gp_Pnt2d(0, 0);
+  aCurvePoles.ChangeAt(1)                = gp_Pnt2d(0, 0.5);
+  aCurvePoles.ChangeAt(2)                = gp_Pnt2d(1, 1);
+  const occ::handle<Geom2d_Curve> aCurve = new Geom2d_BezierCurve(aCurvePoles);
+  const Adaptor3d_CurveOnSurface  anAdaptor(new Geom2dAdaptor_Curve(aCurve),
+                                           new GeomAdaptor_Surface(aSurface));
+  for (const double aParameter : {0.0, 0.5, 1.0})
+  {
+    const Geom_Curve::ResD3 aResult = anAdaptor.EvalD3(aParameter);
+    EXPECT_NEAR(aResult.D3.X(), 0, 1.e-12);
+    EXPECT_NEAR(aResult.D3.Y(), 0, 1.e-12);
+    EXPECT_NEAR(aResult.D2.Z(), 12 * aParameter * aParameter, 1.e-12);
+    EXPECT_NEAR(aResult.D3.Z(), 24 * aParameter, 1.e-12);
   }
 }

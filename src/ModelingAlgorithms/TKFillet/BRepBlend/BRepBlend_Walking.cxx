@@ -2009,12 +2009,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
       // Que faut il controler
       if (recad1 && recad2)
       {
-        if (std::abs(w1 - w2) <= 10 * tolgui)
+        if (std::abs(w1 - w2) <= tolgui)
         {
-          // pas besoin de controler les recadrage
-          // Le control pouvant se planter (cf model blend10)
-          // La tolerance est choisie grossse afin, de permetre au
-          // cheminement suivant, de poser quelques sections ...
+          // Merge only within the guide tolerance, as in PerformFirstSection.
+          // Enlarging it can skip the patch between two distinct boundary crossings.
+          // No further classification is needed for simultaneous crossings (blend10).
           control = false;
         }
         else if (sens * (w1 - w2) < 0.)

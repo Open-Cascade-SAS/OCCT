@@ -19,10 +19,12 @@
 #include <GCPnts_TCurveTypes.hxx>
 #include <Standard_ConstructionError.hxx>
 
+#include <cmath>
+
 //=================================================================================================
 
 template <class TheCurve>
-static double GetParameterLengthRatio(const TheCurve& theC)
+static double GetParameterLengthRatio(const TheCurve& theC, const double theParameter)
 {
   switch (theC.GetType())
   {
@@ -30,7 +32,7 @@ static double GetParameterLengthRatio(const TheCurve& theC)
       return theC.Circle().Radius();
     }
     case GeomAbs_Line: {
-      return 1.0;
+      return GCPnts_TCurveTypes<TheCurve>::D1Magnitude(theC, theParameter);
     }
     case GeomAbs_BezierCurve:
     case GeomAbs_BSplineCurve: {
@@ -180,8 +182,8 @@ static bool PerformLengthParametrized(NCollection_Array1<double>& theParameters,
 
   // Ratio is defined as dl = Ratio * du
   // for a circle of gp Ratio is equal to the radius of the circle.
-  // for a line of gp ratio is equal to 1.0
-  const double aRatio = GetParameterLengthRatio(theC);
+  // A line adaptor can retain a non-unit native parameter speed.
+  const double aRatio = GetParameterLengthRatio(theC, aUU1);
   if (theAbscissa < 0.0e0)
   {
     aUU2 = std::min(theU1, theU2);

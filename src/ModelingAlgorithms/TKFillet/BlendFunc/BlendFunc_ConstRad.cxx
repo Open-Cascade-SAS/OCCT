@@ -1903,14 +1903,14 @@ bool BlendFunc_ConstRad::Section(const Blend_Point&            P,
 gp_Ax1 BlendFunc_ConstRad::AxeRot(const double Prm)
 {
   gp_Ax1 axrot;
-  gp_Vec dirax, d1gui, d2gui, np, dnp;
-  gp_Pnt oriax, ptgui;
+  gp_Vec dirax, np, dnp;
+  gp_Pnt oriax;
 
-  curv->D2(Prm, ptgui, d1gui, d2gui);
+  const auto [aGuidePoint, aGuideD1, aGuideD2] = curv->EvalD2(Prm);
 
-  double normtg = d1gui.Magnitude();
-  np            = d1gui.Normalized();
-  dnp.SetLinearForm(1. / normtg, d2gui, -1. / normtg * (np.Dot(d2gui)), np);
+  double normtg = aGuideD1.Magnitude();
+  np            = aGuideD1.Normalized();
+  dnp.SetLinearForm(1. / normtg, aGuideD2, -1. / normtg * (np.Dot(aGuideD2)), np);
 
   dirax = np.Crossed(dnp);
   if (dirax.Magnitude() >= gp::Resolution())
@@ -1924,11 +1924,11 @@ gp_Ax1 BlendFunc_ConstRad::AxeRot(const double Prm)
   }
   if (dnp.Magnitude() >= gp::Resolution())
   {
-    oriax.SetXYZ(ptgui.XYZ() + (normtg / dnp.Magnitude()) * dnp.Normalized().XYZ());
+    oriax.SetXYZ(aGuidePoint.XYZ() + (normtg / dnp.Magnitude()) * dnp.Normalized().XYZ());
   }
   else
   {
-    oriax.SetXYZ(ptgui.XYZ());
+    oriax.SetXYZ(aGuidePoint.XYZ());
   }
   axrot.SetLocation(oriax);
   return axrot;
