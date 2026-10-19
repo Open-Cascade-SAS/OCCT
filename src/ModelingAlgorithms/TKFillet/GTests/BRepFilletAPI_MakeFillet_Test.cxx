@@ -969,3 +969,100 @@ TEST(BRepFilletAPI_MakeFilletTest, FilletEndingOnFaceTangentToSupport)
     EXPECT_NEAR(anAfter.Mass() - aBefore.Mass(), anAdded[anIndex], 1.e-4 * anAdded[anIndex]);
   }
 }
+
+// A lever: an arm 60 high whose sides are tangent to two bosses (R100 at the origin, R40 at
+// x = 300, both along Z) and whose outline follows each boss beyond its tangent points. The R40
+// boss's face is unified with the arm's rounded end below z = 60, so its seam only runs above
+// z = 60 and an edge at z = 60 closes the face from the seam to a tangent point. The fillet on
+// the R40 boss ends at that tangent point; the edge it adds there, on the extended tangent edge,
+// used to take its pcurve from below z = 60, a period away from the boss face above it, and the
+// face came out covering the wrong region. The volumes are the fillet's section swept around
+// each boss, clipped by the arm's sides and stopped at the tangent points, integrated numerically.
+TEST(BRepFilletAPI_MakeFilletTest, FilletEndingWhereSupportSeamEnds)
+{
+  const double            R1 = 100.0, R2 = 40.0, aDist = 300.0, aHeight = 60.0;
+  const double            anAngle = std::asin((R1 - R2) / aDist);
+  const gp_Pnt            aBig1(R1 * std::sin(anAngle), R1 * std::cos(anAngle), 0.0);
+  const gp_Pnt            aSmall1(aDist + R2 * std::sin(anAngle), R2 * std::cos(anAngle), 0.0);
+  const gp_Pnt            aBig2(aBig1.X(), -aBig1.Y(), 0.0);
+  const gp_Pnt            aSmall2(aSmall1.X(), -aSmall1.Y(), 0.0);
+  BRepBuilderAPI_MakeWire anOutline(
+    BRepBuilderAPI_MakeEdge(aBig1, aSmall1),
+    BRepBuilderAPI_MakeEdge(
+      GC_MakeArcOfCircle(aSmall1, gp_Pnt(aDist + R2, 0.0, 0.0), aSmall2).Value()),
+    BRepBuilderAPI_MakeEdge(aSmall2, aBig2),
+    BRepBuilderAPI_MakeEdge(GC_MakeArcOfCircle(aBig2, gp_Pnt(-R1, 0.0, 0.0), aBig1).Value()));
+  BRepPrimAPI_MakePrism    anArm(BRepBuilderAPI_MakeFace(anOutline.Wire()).Face(),
+                                 gp_Vec(0.0, 0.0, aHeight));
+  BRepPrimAPI_MakeCylinder aBigBoss(gp_Ax2(gp::Origin(), gp::DZ(), gp::DX()), R1, 170.0);
+  BRepPrimAPI_MakeCylinder aSmallBoss(gp_Ax2(gp_Pnt(aDist, 0.0, 0.0), gp::DZ(), gp::DX()),
+                                      R2,
+                                      110.0);
+  BRepAlgoAPI_Fuse         aFuse(BRepAlgoAPI_Fuse(anArm.Shape(), aBigBoss.Shape()).Shape(),
+                                 aSmallBoss.Shape());
+  ASSERT_TRUE(aFuse.IsDone());
+  ShapeUpgrade_UnifySameDomain anUnify(aFuse.Shape());
+  anUnify.Build();
+  const TopoDS_Shape& aSolid = anUnify.Shape();
+  ASSERT_TRUE(BRepCheck_Analyzer(aSolid).IsValid());
+
+  // The arcs where the arm's top meets each boss.
+  const auto anArcOn = [&aSolid, aHeight](const double theRadius) {
+    TopoDS_Edge                                                   anArc;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+    TopExp::MapShapes(aSolid, TopAbs_EDGE, anEdges);
+    for (int anIndex = 1; anIndex <= anEdges.Extent() && anArc.IsNull(); ++anIndex)
+    {
+      BRepAdaptor_Curve aCurve(TopoDS::Edge(anEdges(anIndex)));
+      if (aCurve.GetType() == GeomAbs_Circle
+          && std::abs(aCurve.Circle().Radius() - theRadius) < 1.e-6
+          && std::abs(aCurve.Circle().Location().Z() - aHeight) < 1.e-6)
+      {
+        anArc = TopoDS::Edge(anEdges(anIndex));
+      }
+    }
+    return anArc;
+  };
+  const TopoDS_Edge aBigArc   = anArcOn(R1);
+  const TopoDS_Edge aSmallArc = anArcOn(R2);
+  ASSERT_FALSE(aBigArc.IsNull());
+  ASSERT_FALSE(aSmallArc.IsNull());
+
+  const auto aVolume = [](const TopoDS_Shape& theShape) {
+    GProp_GProps aProps;
+    BRepGProp::VolumeProperties(theShape, aProps, 1.e-7);
+    return aProps.Mass();
+  };
+  const double aBefore = aVolume(aSolid);
+
+  struct Case
+  {
+    const char* Name;
+    double      Radius;
+    bool        OnBig, OnSmall;
+    double      Added;
+  };
+
+  const Case aCases[] = {{"R40 boss", 5.0, false, true, 688.3},
+                         {"R40 boss", 10.0, false, true, 2671.9},
+                         {"R100 boss", 10.0, true, false, 5175.8},
+                         {"both bosses", 10.0, true, true, 2671.9 + 5175.8}};
+  for (const Case& aCase : aCases)
+  {
+    SCOPED_TRACE(aCase.Name);
+    SCOPED_TRACE(aCase.Radius);
+    BRepFilletAPI_MakeFillet aFillet(aSolid);
+    if (aCase.OnBig)
+    {
+      aFillet.Add(aCase.Radius, aBigArc);
+    }
+    if (aCase.OnSmall)
+    {
+      aFillet.Add(aCase.Radius, aSmallArc);
+    }
+    ASSERT_NO_THROW(aFillet.Build());
+    ASSERT_TRUE(aFillet.IsDone());
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+    EXPECT_NEAR(aVolume(aFillet.Shape()) - aBefore, aCase.Added, 1.e-3 * aCase.Added);
+  }
+}

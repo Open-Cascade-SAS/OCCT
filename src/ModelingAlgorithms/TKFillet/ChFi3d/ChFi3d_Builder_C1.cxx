@@ -1452,7 +1452,10 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
     }
     pop1 = Hc->Value(parVtx);
     pop2 = Fiop.PCurveOnFace()->Value(Fiop.Parameter(isfirst));
-    Hc   = BRep_Tool::CurveOnSurface(Arcprol, Fv, Ubid, Ubid);
+    // Arcprol's pcurve and the fillet's contact can lie a period apart on Fop, when a seam
+    // of Fop ends at Vtx; the new curve starts where the contact is.
+    ChFi3d_Recale(Bop, pop1, pop2, false);
+    Hc = BRep_Tool::CurveOnSurface(Arcprol, Fv, Ubid, Ubid);
     if (Hc.IsNull())
     {
       throw Standard_ConstructionError("Failed to get p-curve of edge");
