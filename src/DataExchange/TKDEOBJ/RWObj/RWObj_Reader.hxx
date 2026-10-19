@@ -375,20 +375,20 @@ protected:
 
 protected:
   NCollection_IndexedMap<TCollection_AsciiString>
-                                   myExternalFiles; //!< list of external file references
-  TCollection_AsciiString          myFileComments;  //!< file header comments
-  TCollection_AsciiString          myFolder;        //!< folder containing the OBJ file
+                                     myExternalFiles; //!< list of external file references
+  TCollection_AsciiString            myFileComments;  //!< file header comments
+  TCollection_AsciiString            myFolder;        //!< folder containing the OBJ file
   const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed named input streams.
-  RWMesh_CoordinateSystemConverter myCSTrsf;        //!< coordinate system flipper
-  size_t                           myMemLimitBytes; //!< memory limit in bytes
-  size_t                           myMemEstim;      //!< estimated memory occupation in bytes
-                                                    // clang-format off
+  RWMesh_CoordinateSystemConverter   myCSTrsf;                    //!< coordinate system flipper
+  size_t                             myMemLimitBytes;             //!< memory limit in bytes
+  size_t                             myMemEstim; //!< estimated memory occupation in bytes
+                                                 // clang-format off
   int                   myNbLines;       //!< number of parsed lines (e.g. current line)
   int                   myNbProbeNodes;  //!< number of probed nodes
   int                   myNbProbeElems;  //!< number of probed elements
   int                   myNbElemsBig;    //!< number of big elements (polygons with 5+ nodes)
   bool                   myToAbort;       //!< flag indicating abort state (e.g. syntax error)
-                                                    // clang-format on
+                                                 // clang-format on
 
   // Each node in the Element specifies independent indices of Vertex position, Texture coordinates
   // and Normal. This scheme does not match natural definition of Primitive Array where each unique

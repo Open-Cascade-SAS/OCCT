@@ -682,7 +682,7 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
   Message_ProgressScope aPSE(aPSRoot.Next(), nullptr, ExtRefs.NbExternRefs());
   for (i = 1; i <= ExtRefs.NbExternRefs() && aPSE.More(); i++)
   {
-    Message_ProgressRange aRange = aPSE.Next();
+    Message_ProgressRange                    aRange = aPSE.Next();
     occ::handle<StepBasic_ProductDefinition> PD     = ExtRefs.ProdDef(i);
     if (PD.IsNull() || !PDFileMap.IsBound(PD))
     {
@@ -5469,7 +5469,7 @@ bool STEPCAFControl_Reader::ReadGDTs(const occ::handle<XSControl_WorkSession>& t
   }
 
   NCollection_IndexedMap<occ::handle<Standard_Transient>> aPresentationOwners;
-  int nb = aModel->NbEntities();
+  int                                                     nb = aModel->NbEntities();
   for (int i = 1; i <= nb; i++)
   {
     occ::handle<Standard_Transient> anEnt = aModel->Value(i);
@@ -5610,8 +5610,8 @@ bool STEPCAFControl_Reader::ReadGDTs(const occ::handle<XSControl_WorkSession>& t
       bool isCommonLabel = (aShapesL.Length() == 0);
 
       // Calculate unit
-      double           aFact         = 1.0;
-      StepData_Factors aLocalFactors = theLocalFactors;
+      double                               aFact         = 1.0;
+      StepData_Factors                     aLocalFactors = theLocalFactors;
       occ::handle<StepRepr_Representation> aRepresentation;
       if (!aDMIA.IsNull())
       {

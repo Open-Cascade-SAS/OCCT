@@ -494,6 +494,7 @@ TEST(DEGLTF_Bug_Test, FileReadResolvesPointAndLineAttributes)
   EXPECT_EQ(CountShapeElements(aShape, TopAbs_EDGE), 1);
   EXPECT_EQ(CountTriangulationTriangles(aShape), 1);
 }
+
 TEST(DEGLTF_Bug_Test, MeshBug_31312_GlbStreamEmbeddedTexture)
 {
   occ::handle<DEGLTF_Provider>    aProvider = new DEGLTF_Provider(new DEGLTF_ConfigurationNode());

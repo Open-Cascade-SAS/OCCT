@@ -539,7 +539,7 @@ private:
     const occ::handle<TDocStd_Document>& theDocument,
     const Message_ProgressRange&         theProgress);
 
-  STEPControl_Reader                                                                   myReader;
+  STEPControl_Reader                 myReader;
   const DE_Provider::ReadStreamList* myResourceStreams =
     nullptr; //!< Borrowed named external parts.
   NCollection_DataMap<TCollection_AsciiString, occ::handle<STEPCAFControl_ExternFile>> myFiles;

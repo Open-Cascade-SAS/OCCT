@@ -371,8 +371,8 @@ private:
   TCollection_AsciiString            myResourceName; //!< Name used for relative references.
   const VrmlData_Scene* myResourceParent = nullptr;  //!< Parent used to detect Inline cycles.
   mutable NCollection_DataMap<TCollection_AsciiString, occ::handle<Image_Texture>>
-         myImages; //!< Images shared by nested scenes.
-  double myLinearScale;
+                                               myImages; //!< Images shared by nested scenes.
+  double                                       myLinearScale;
   NCollection_List<occ::handle<VrmlData_Node>> myLstNodes; ///! top-level nodes
   NCollection_List<occ::handle<VrmlData_Node>> myAllNodes; ///! all nodes
   VrmlData_ErrorStatus                         myStatus;

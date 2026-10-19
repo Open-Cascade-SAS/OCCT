@@ -172,7 +172,7 @@ bool RWObj_MtlReader::Read(std::istream& theStream, const TCollection_AsciiStrin
         hasAspect = false;
       }
 
-      aMat     = RWObj_Material();
+      aMat = RWObj_Material();
       if (!RWObj_Tools::ReadName(aPos, aMatName))
       {
         Message::SendWarning(TCollection_AsciiString("Empty OBJ material at line ") + myNbLines

@@ -151,7 +151,7 @@ protected:
   bool myToPrintDebugMessages; //!< flag to print additional debug information
   bool myToApplyScale;         //!< flag to apply non-uniform scaling
   const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed companion streams.
-  bool myIsStreamInput;        //!< input is a caller-owned stream
+  bool                               myIsStreamInput; //!< input is a caller-owned stream
   NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*
     myShapeScaleMap; //!< map of shapes with non-uniform scalings
 };

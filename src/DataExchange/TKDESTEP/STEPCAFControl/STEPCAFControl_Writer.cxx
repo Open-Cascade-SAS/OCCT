@@ -3479,12 +3479,12 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
         occ::handle<StepShape_ShapeRepresentationWithParameters> aSRWP =
           new StepShape_ShapeRepresentationWithParameters();
         // Common for all datum targets
-        StepBasic_Unit                         aUnit   = GetUnit(aRC);
-        STEPConstruct_UnitContext              aUnitContext;
+        StepBasic_Unit            aUnit = GetUnit(aRC);
+        STEPConstruct_UnitContext aUnitContext;
         aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
-        const double                           aLengthFactor  = aUnitContext.LengthFactor();
-        gp_Ax2                                 aDTAxis = anObject->GetDatumTargetAxis();
-        StepData_Factors                       aTargetFactors = theLocalFactors;
+        const double     aLengthFactor  = aUnitContext.LengthFactor();
+        gp_Ax2           aDTAxis        = anObject->GetDatumTargetAxis();
+        StepData_Factors aTargetFactors = theLocalFactors;
         aTargetFactors.InitializeFactors(aLengthFactor,
                                          theLocalFactors.PlaneAngleFactor(),
                                          theLocalFactors.SolidAngleFactor());
@@ -3636,12 +3636,12 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
                  || aDim->IsKind(STANDARD_TYPE(StepShape_AngularSize));
 
   // Unit
-  StepBasic_Unit aUnit = GetUnit(theRC, isAngle);
+  StepBasic_Unit            aUnit = GetUnit(theRC, isAngle);
   STEPConstruct_UnitContext aUnitContext;
   aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
   const double aValueFactor =
     isAngle ? M_PI / (180.0 * aUnitContext.PlaneAngleFactor()) : 1.0 / aUnitContext.LengthFactor();
-  const char*    aMeasureName;
+  const char* aMeasureName;
   if (isAngle)
   {
     aMeasureName = "POSITIVE_PLANE_ANGLE_MEASURE";
@@ -4003,7 +4003,7 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
   }
 
   // Unit
-  StepBasic_Unit aUnit = GetUnit(theRC);
+  StepBasic_Unit            aUnit = GetUnit(theRC);
   STEPConstruct_UnitContext aUnitContext;
   aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
   const double aLengthFactor = aUnitContext.LengthFactor();
@@ -4037,7 +4037,7 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
     aConstituents =
       new NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceCompartment>>(1, aMaxDatumNum);
   // Auxiliary datum to initialize attributes in Datum_System
-  occ::handle<StepDimTol_Datum> aFirstDatum;
+  occ::handle<StepDimTol_Datum>                                        aFirstDatum;
   NCollection_LinearVector<occ::handle<XCAFDimTolObjects_DatumObject>> aDatumSeqPos;
   aDatumSeqPos.Reserve(aDatums.Size());
   for (int aConstituentsNum = 1; aConstituentsNum <= aMaxDatumNum; aConstituentsNum++)
@@ -4101,8 +4101,8 @@ static occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> Write
       for (const occ::handle<XCAFDimTolObjects_DatumObject>& aDatumObj : aDatumSeqPos)
       {
         // Datum entity
-        occ::handle<StepDimTol_Datum>                     aDatum;
-        occ::handle<Standard_Transient>                   aDValue;
+        occ::handle<StepDimTol_Datum>   aDatum;
+        occ::handle<Standard_Transient> aDValue;
         if (theDatumMap.Find(aDatumObj->GetName()->String(), aDValue))
         {
           aDatum = occ::down_cast<StepDimTol_Datum>(aDValue);
