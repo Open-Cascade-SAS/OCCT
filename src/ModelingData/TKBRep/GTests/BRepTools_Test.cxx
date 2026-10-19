@@ -614,7 +614,6 @@ TEST(BRepTools_Test, ModDataBug_20616_EmptyShapeSaveRestore)
   }
 }
 
-
 // bugs/modalg_7/bug29734: global properties computed from planar face
 // triangulations must agree with the exact-geometry calculations.
 TEST(BRepTools_Test, ModalgBug_29734_ExactAndTriangulatedProperties)
@@ -737,7 +736,6 @@ TEST(BRepTools_Test, ModalgBug_24404_BoxFaceUVBounds)
 }
 
 //==================================================================================================
-
 
 TEST(BRepTools_Test, SharedEdgeTriangulationsPreserveFaceNormalsAscii)
 {

@@ -69,7 +69,8 @@ double linearValue(const double theParameter,
   {
     return std::fma(aFraction, aNativeDifference, aNearValue);
   }
-  // Separate binary scales retain precision for subnormal fractions and avoid overflowing the width.
+  // Separate binary scales retain precision for subnormal fractions and avoid overflowing the
+  // width.
   int          aWidthExponent, aDistanceExponent, aValueExponent;
   const double aWidth      = scaledDifference(aFarParameter, aNearParameter, aWidthExponent);
   const double aDistance   = scaledDifference(theParameter, aNearParameter, aDistanceExponent);

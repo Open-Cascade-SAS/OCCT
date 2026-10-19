@@ -191,6 +191,7 @@ static bool Rational(const NCollection_Array1<double>& W)
   }
   return false;
 }
+
 //=================================================================================================
 
 occ::handle<Law_BSpline> Law_BSpline::Copy() const
@@ -229,13 +230,13 @@ Law_BSpline::Law_BSpline(const NCollection_Array1<double>& Poles,
 
   // copy arrays
 
-  poles                 = new NCollection_HArray1<double>(1, Poles.Length());
+  poles = new NCollection_HArray1<double>(1, Poles.Length());
   poles->ChangeArray1().CopyValues(Poles);
 
-  knots                 = new NCollection_HArray1<double>(1, Knots.Length());
+  knots = new NCollection_HArray1<double>(1, Knots.Length());
   knots->ChangeArray1().CopyValues(Knots);
 
-  mults                 = new NCollection_HArray1<int>(1, Mults.Length());
+  mults = new NCollection_HArray1<int>(1, Mults.Length());
   mults->ChangeArray1().CopyValues(Mults);
 
   UpdateKnots();
@@ -278,18 +279,18 @@ Law_BSpline::Law_BSpline(const NCollection_Array1<double>& Poles,
 
   // copy arrays
 
-  poles                 = new NCollection_HArray1<double>(1, Poles.Length());
+  poles = new NCollection_HArray1<double>(1, Poles.Length());
   poles->ChangeArray1().CopyValues(Poles);
   if (rational)
   {
-    weights                 = new NCollection_HArray1<double>(1, Weights.Length());
+    weights = new NCollection_HArray1<double>(1, Weights.Length());
     weights->ChangeArray1().CopyValues(Weights);
   }
 
-  knots                 = new NCollection_HArray1<double>(1, Knots.Length());
+  knots = new NCollection_HArray1<double>(1, Knots.Length());
   knots->ChangeArray1().CopyValues(Knots);
 
-  mults                 = new NCollection_HArray1<int>(1, Mults.Length());
+  mults = new NCollection_HArray1<int>(1, Mults.Length());
   mults->ChangeArray1().CopyValues(Mults);
 
   UpdateKnots();
