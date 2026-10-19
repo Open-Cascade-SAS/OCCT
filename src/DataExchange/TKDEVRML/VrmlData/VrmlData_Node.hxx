@@ -108,9 +108,10 @@ public:
   Standard_EXPORT static VrmlData_ErrorStatus ReadBoolean(VrmlData_InBuffer& theBuffer,
                                                           bool&              theResult);
 
-  /**
-   * Read one quoted string, the quotes are removed.
-   */
+  //! Read one quoted string and decode backslash escapes.
+  //! @param[in,out] theBuffer input buffer, advanced past the closing quote on success
+  //! @param[out] theRes decoded string; unchanged on failure
+  //! @return input status or VrmlData_StringInputError for an incomplete quoted string
   Standard_EXPORT static VrmlData_ErrorStatus ReadString(VrmlData_InBuffer&       theBuffer,
                                                          TCollection_AsciiString& theRes);
 

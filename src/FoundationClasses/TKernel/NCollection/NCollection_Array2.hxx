@@ -83,12 +83,12 @@ public:
 
   static size_t RangeSize(const int theLower, const int theUpper)
   {
-    return static_cast<size_t>(theUpper - theLower + 1);
+    return NCollection_Array1<TheItemType>::RangeSize(theLower, theUpper);
   }
 
   static int UpperForSize(const int theLower, const size_t theSize)
   {
-    return theLower + static_cast<int>(theSize) - 1;
+    return static_cast<int>(static_cast<size_t>(theLower) + theSize - 1);
   }
 
 private:
@@ -102,15 +102,12 @@ private:
 
   size_t offsetOf(const int theRow, const int theCol, [[maybe_unused]] const char* theMessage) const
   {
-    const std::ptrdiff_t aRowOffset =
-      static_cast<std::ptrdiff_t>(theRow) - static_cast<std::ptrdiff_t>(myLowerRow);
-    const std::ptrdiff_t aColOffset =
-      static_cast<std::ptrdiff_t>(theCol) - static_cast<std::ptrdiff_t>(myLowerCol);
-    Standard_OutOfRange_Raise_if(aRowOffset < 0 || aColOffset < 0
-                                   || static_cast<size_t>(aRowOffset) >= mySizeRow
-                                   || static_cast<size_t>(aColOffset) >= mySizeCol,
+    const size_t aRowOffset = static_cast<size_t>(theRow) - static_cast<size_t>(myLowerRow);
+    const size_t aColOffset = static_cast<size_t>(theCol) - static_cast<size_t>(myLowerCol);
+    Standard_OutOfRange_Raise_if(theRow < myLowerRow || theCol < myLowerCol
+                                   || aRowOffset >= mySizeRow || aColOffset >= mySizeCol,
                                  theMessage);
-    return static_cast<size_t>(aRowOffset) * mySizeCol + static_cast<size_t>(aColOffset);
+    return aRowOffset * mySizeCol + aColOffset;
   }
 
 public:
@@ -137,8 +134,8 @@ public:
                            int theColLower,
                            int theColUpper) noexcept
   {
-    // Calculate the offset for the beginning position
-    return theColLower + (theRowLower * (theColUpper - theColLower + 1));
+    return static_cast<int>(static_cast<size_t>(theRowLower) * RangeSize(theColLower, theColUpper)
+                            + static_cast<size_t>(theColLower));
   }
 
   static int LastPosition(int theRowLower,
@@ -146,8 +143,9 @@ public:
                           int theColLower,
                           int theColUpper) noexcept
   {
-    return ((theRowUpper - theRowLower + 1) * (theColUpper - theColLower + 1)) + theColLower
-           + (theRowLower * (theColUpper - theColLower + 1)) - 1;
+    return UpperForSize(
+      BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
+      ArraySize(RangeSize(theRowLower, theRowUpper), RangeSize(theColLower, theColUpper)));
   }
 
 public:
@@ -164,7 +162,7 @@ public:
   {
   }
 
-  //! Constructor
+  //! Construct with signed bounds. The associated flat signed interval must fit int.
   NCollection_Array2(const int theRowLower,
                      const int theRowUpper,
                      const int theColLower,
@@ -183,9 +181,9 @@ public:
   NCollection_Array2(const NCollection_Array2& theOther)
       : NCollection_Array1<TheItemType>(theOther),
         myLowerRow(theOther.LowerRow()),
-        mySizeRow(theOther.NbRows()),
+        mySizeRow(theOther.RowSize()),
         myLowerCol(theOther.LowerCol()),
-        mySizeCol(theOther.NbColumns())
+        mySizeCol(theOther.ColSize())
   {
   }
 
@@ -193,9 +191,9 @@ public:
   NCollection_Array2(NCollection_Array2&& theOther) noexcept
       : NCollection_Array1<TheItemType>(std::move(theOther)),
         myLowerRow(theOther.LowerRow()),
-        mySizeRow(theOther.NbRows()),
+        mySizeRow(theOther.RowSize()),
         myLowerCol(theOther.LowerCol()),
-        mySizeCol(theOther.NbColumns())
+        mySizeCol(theOther.ColSize())
   {
     theOther.myLowerRow = 1;
     theOther.mySizeRow  = 0;
@@ -264,6 +262,7 @@ public:
 
   //! Zero-based constructor: allocates theNbRows x theNbCols elements with lower bounds 0.
   //! Use At()/ChangeAt() or STL iterators for optimal access (no offset subtraction).
+  //! Legacy signed bound accessors require their result to fit int.
   explicit NCollection_Array2(const size_t theNbRows, const size_t theNbCols)
       : NCollection_Array1<TheItemType>(ArraySize(theNbRows, theNbCols)),
         myLowerRow(0),
@@ -292,15 +291,18 @@ public:
   bool IsEmpty() const noexcept { return NCollection_Array1<TheItemType>::IsEmpty(); }
 
   //! Length (legacy int-returning API).
-  int Length() const noexcept { return NbRows() * NbColumns(); }
+  //! @pre Size() fits int; use Size() for larger arrays.
+  int Length() const noexcept { return static_cast<int>(Size()); }
 
   //! Returns number of rows
+  //! @pre RowSize() fits int; use RowSize() for larger dimensions.
   int NbRows() const noexcept { return static_cast<int>(mySizeRow); }
 
   //! Returns number of rows as an unsigned size.
   size_t RowSize() const noexcept { return mySizeRow; }
 
   //! Returns number of columns
+  //! @pre ColSize() fits int; use ColSize() for larger dimensions.
   int NbColumns() const noexcept { return static_cast<int>(mySizeCol); }
 
   //! Returns number of columns as an unsigned size.
@@ -346,13 +348,13 @@ public:
   int LowerRow() const noexcept { return myLowerRow; }
 
   //! UpperRow
-  int UpperRow() const noexcept { return myLowerRow + static_cast<int>(mySizeRow) - 1; }
+  int UpperRow() const noexcept { return UpperForSize(myLowerRow, mySizeRow); }
 
   //! LowerCol
   int LowerCol() const noexcept { return myLowerCol; }
 
   //! UpperCol
-  int UpperCol() const noexcept { return myLowerCol + static_cast<int>(mySizeCol) - 1; }
+  int UpperCol() const noexcept { return UpperForSize(myLowerCol, mySizeCol); }
 
   //! Updates lower row
   void UpdateLowerRow(const int theLowerRow) noexcept { myLowerRow = theLowerRow; }
@@ -363,13 +365,13 @@ public:
   //! Updates upper row
   void UpdateUpperRow(const int theUpperRow) noexcept
   {
-    myLowerRow = myLowerRow - UpperRow() + theUpperRow;
+    myLowerRow = static_cast<int>(static_cast<size_t>(theUpperRow) - mySizeRow + 1);
   }
 
   //! Updates upper column
   void UpdateUpperCol(const int theUpperCol) noexcept
   {
-    myLowerCol = myLowerCol - UpperCol() + theUpperCol;
+    myLowerCol = static_cast<int>(static_cast<size_t>(theUpperCol) - mySizeCol + 1);
   }
 
   //! Replaces this array by a copy of theOther array.
@@ -654,24 +656,20 @@ protected:
     const size_t aNbColsToCopy = (std::min)(mySizeCol, aNewNbCols);
     const size_t aOldStride    = thePreserve2D ? mySizeCol : aNbColsToCopy;
 
-    NCollection_Array2<TheItemType> aTmpMovedCopy(std::move(*this));
-    TheItemType*                    anOldPointer = &aTmpMovedCopy.ChangeFirst();
-    NCollection_Array1<TheItemType>::Resize(
-      BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
-      LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
-      false);
-    mySizeRow  = aNewNbRows;
-    mySizeCol  = aNewNbCols;
-    myLowerRow = theRowLower;
-    myLowerCol = theColLower;
+    NCollection_Array2<TheItemType> aReplacement(theRowLower,
+                                                 theRowUpper,
+                                                 theColLower,
+                                                 theColUpper);
+    TheItemType*                    anOldPointer = Data();
     for (size_t aRowIter = 0; aRowIter < aNbRowsToCopy; ++aRowIter)
     {
       for (size_t aColIter = 0; aColIter < aNbColsToCopy; ++aColIter)
       {
-        NCollection_Array1<TheItemType>::ChangeAt(aRowIter * aNewNbCols + aColIter) =
+        aReplacement.ChangeAt(aRowIter, aColIter) =
           std::move(anOldPointer[aRowIter * aOldStride + aColIter]);
       }
     }
+    Move(std::move(aReplacement));
   }
 
 protected:

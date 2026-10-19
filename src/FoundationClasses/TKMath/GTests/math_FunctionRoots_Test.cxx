@@ -11,18 +11,20 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <math_FunctionAllRoots.hxx>
+#include <math_FunctionSample.hxx>
 #include <math_FunctionRoots.hxx>
 #include <math_FunctionWithDerivative.hxx>
-
-#include <gtest/gtest.h>
-
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Standard_RangeError.hxx>
 
+#include <gtest/gtest.h>
+
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace
 {
@@ -33,7 +35,8 @@ class QuadraticWithDerivative : public math_FunctionWithDerivative
 public:
   bool Value(const double theX, double& theF) override
   {
-    theF = theX * theX - 4.0;
+    myLastParameter = theX;
+    theF            = theX * theX - 4.0;
     return true;
   }
 
@@ -45,11 +48,24 @@ public:
 
   bool Values(const double theX, double& theF, double& theD) override
   {
-    theF = theX * theX - 4.0;
-    theD = 2.0 * theX;
+    myLastParameter = theX;
+    theF            = theX * theX - 4.0;
+    theD            = 2.0 * theX;
     return true;
   }
+
+  int GetStateNumber() override;
+
+private:
+  double myLastParameter = 0.0; //!< Last parameter evaluated by Value or Values.
 };
+
+//==================================================================================================
+
+int QuadraticWithDerivative::GetStateNumber()
+{
+  return myLastParameter < 0.0 ? 1 : 2;
+}
 
 // Cubic function: f(x) = x^3 - 6x^2 + 11x - 6 = (x-1)(x-2)(x-3), f'(x) = 3x^2 - 12x + 11
 class CubicWithDerivative : public math_FunctionWithDerivative
@@ -199,6 +215,184 @@ public:
   }
 };
 
+class ReturnCrossingFunction : public math_FunctionWithDerivative
+{
+public:
+  explicit ReturnCrossingFunction(double theTarget, bool theReverse = false);
+  bool Value(double theX, double& theValue) override;
+  bool Derivative(double theX, double& theValue) override;
+  bool Values(double theX, double& theValue, double& theDerivative) override;
+
+private:
+  double myTarget;  //!< Constant added to the quadratic.
+  bool   myReverse; //!< Places the sampled root at the upper bound.
+};
+
+//==================================================================================================
+
+ReturnCrossingFunction::ReturnCrossingFunction(double theTarget, bool theReverse)
+    : myTarget(theTarget),
+      myReverse(theReverse)
+{
+}
+
+//==================================================================================================
+
+bool ReturnCrossingFunction::Value(double theX, double& theValue)
+{
+  const double aParameter = myReverse ? 1.0 - theX : theX;
+  theValue                = aParameter * (aParameter - .01) + myTarget;
+  return true;
+}
+
+//==================================================================================================
+
+bool ReturnCrossingFunction::Derivative(double theX, double& theValue)
+{
+  const double aParameter = myReverse ? 1.0 - theX : theX;
+  theValue                = (2.0 * aParameter - .01) * (myReverse ? -1.0 : 1.0);
+  return true;
+}
+
+//==================================================================================================
+
+bool ReturnCrossingFunction::Values(double theX, double& theValue, double& theDerivative)
+{
+  return Value(theX, theValue) && Derivative(theX, theDerivative);
+}
+
+class FailedRootFunction : public math_FunctionWithDerivative
+{
+public:
+  explicit FailedRootFunction(bool theNonFinite);
+  bool Value(double theX, double& theValue) override;
+  bool Derivative(double theX, double& theValue) override;
+  bool Values(double theX, double& theValue, double& theDerivative) override;
+
+private:
+  bool myNonFinite; //!< Return NaN instead of a callback failure.
+};
+
+//==================================================================================================
+
+FailedRootFunction::FailedRootFunction(bool theNonFinite)
+    : myNonFinite(theNonFinite)
+{
+}
+
+//==================================================================================================
+
+bool FailedRootFunction::Value(double, double& theValue)
+{
+  if (myNonFinite)
+  {
+    theValue = std::numeric_limits<double>::quiet_NaN();
+    return true;
+  }
+  return false;
+}
+
+//==================================================================================================
+
+bool FailedRootFunction::Derivative(double, double&)
+{
+  return false;
+}
+
+//==================================================================================================
+
+bool FailedRootFunction::Values(double theX, double& theValue, double& theDerivative)
+{
+  return Value(theX, theValue) && Derivative(theX, theDerivative);
+}
+
+class InteriorDerivativeFailure : public math_FunctionWithDerivative
+{
+public:
+  explicit InteriorDerivativeFailure(bool theNonFinite);
+  bool Value(double theX, double& theValue) override;
+  bool Derivative(double theX, double& theValue) override;
+  bool Values(double theX, double& theValue, double& theDerivative) override;
+  bool HasFailed() const;
+
+private:
+  bool myNonFinite;         //!< Return a non-finite derivative instead of false.
+  bool myHasFailed = false; //!< The injected failure was reached.
+};
+
+//==================================================================================================
+
+InteriorDerivativeFailure::InteriorDerivativeFailure(bool theNonFinite)
+    : myNonFinite(theNonFinite)
+{
+}
+
+//==================================================================================================
+
+bool InteriorDerivativeFailure::Value(double theX, double& theValue)
+{
+  theValue = (theX - 0.51) * (theX - 0.51) + 0.001;
+  return true;
+}
+
+//==================================================================================================
+
+bool InteriorDerivativeFailure::Derivative(double theX, double& theValue)
+{
+  if (std::abs(theX - 0.51) < 1.e-8)
+  {
+    myHasFailed = true;
+    theValue    = std::numeric_limits<double>::quiet_NaN();
+    return myNonFinite;
+  }
+  theValue = 2.0 * (theX - 0.51);
+  return true;
+}
+
+//==================================================================================================
+
+bool InteriorDerivativeFailure::Values(double theX, double& theValue, double& theDerivative)
+{
+  return Value(theX, theValue) && Derivative(theX, theDerivative);
+}
+
+//==================================================================================================
+
+bool InteriorDerivativeFailure::HasFailed() const
+{
+  return myHasFailed;
+}
+
+class NegativeQuadraticFunction : public math_FunctionWithDerivative
+{
+public:
+  bool Value(double theX, double& theValue) override;
+  bool Derivative(double theX, double& theValue) override;
+  bool Values(double theX, double& theValue, double& theDerivative) override;
+};
+
+//==================================================================================================
+
+bool NegativeQuadraticFunction::Value(double theX, double& theValue)
+{
+  theValue = -(theX - 0.51) * (theX - 0.51);
+  return true;
+}
+
+//==================================================================================================
+
+bool NegativeQuadraticFunction::Derivative(double theX, double& theValue)
+{
+  theValue = -2.0 * (theX - 0.51);
+  return true;
+}
+
+//==================================================================================================
+
+bool NegativeQuadraticFunction::Values(double theX, double& theValue, double& theDerivative)
+{
+  return Value(theX, theValue) && Derivative(theX, theDerivative);
+}
 } // anonymous namespace
 
 TEST(MathFunctionRootsTest, QuadraticTwoRoots)
@@ -377,28 +571,12 @@ TEST(MathFunctionRootsTest, CustomSampleCount)
 
 TEST(MathFunctionRootsTest, StateNumberAccess)
 {
-  // Test state number access for roots
-  QuadraticWithDerivative aFunc;
-
-  math_FunctionRoots aRootFinder(aFunc, -5.0, 5.0, 20, 1.0e-10, 1.0e-10);
-
-  EXPECT_TRUE(aRootFinder.IsDone()) << "Should successfully find roots";
-  EXPECT_EQ(aRootFinder.NbSolutions(), 2) << "Should find 2 roots";
-
-  // Test valid state number access
-  if (aRootFinder.NbSolutions() >= 1)
-  {
-    int aState1 = aRootFinder.StateNumber(1);
-    EXPECT_GE(aState1, 0) << "State number should be non-negative";
-  }
-  if (aRootFinder.NbSolutions() >= 2)
-  {
-    int aState2 = aRootFinder.StateNumber(2);
-    EXPECT_GE(aState2, 0) << "State number should be non-negative";
-  }
-
-  // Test bounds checking in release builds
-  EXPECT_GE(aRootFinder.NbSolutions(), 0) << "Number of solutions should be non-negative";
+  QuadraticWithDerivative  aFunc;
+  const math_FunctionRoots aRootFinder(aFunc, -5.0, 5.0, 20, 1.0e-10, 1.0e-10);
+  ASSERT_TRUE(aRootFinder.IsDone());
+  ASSERT_EQ(aRootFinder.NbSolutions(), 2);
+  EXPECT_EQ(aRootFinder.StateNumber(1), 1);
+  EXPECT_EQ(aRootFinder.StateNumber(2), 2);
 }
 
 TEST(MathFunctionRootsTest, ShiftedTarget)
@@ -480,4 +658,54 @@ TEST(MathFunctionRootsTest, ReversedRange)
 
   EXPECT_TRUE(aRootFinder.IsDone()) << "Should handle reversed range";
   EXPECT_EQ(aRootFinder.NbSolutions(), 2) << "Should still find both roots";
+}
+
+//==================================================================================================
+
+TEST(math_RootFailureTest, SampledRootAndReturnCrossing)
+{
+  for (const bool isReversed : {false, true})
+  {
+    for (const double aTarget : {0.0, 2.0})
+    {
+      ReturnCrossingFunction   aFunction(aTarget, isReversed);
+      const math_FunctionRoots aRoots(aFunction, 0.0, 1.0, 10, 1.0e-12, 1.0e-12, 0.0, aTarget);
+      ASSERT_TRUE(aRoots.IsDone());
+      ASSERT_EQ(aRoots.NbSolutions(), 2);
+      EXPECT_NEAR(aRoots.Value(1), isReversed ? .99 : 0.0, 1.0e-8);
+      EXPECT_NEAR(aRoots.Value(2), isReversed ? 1.0 : .01, 1.0e-8);
+    }
+  }
+  NegativeQuadraticFunction aMaximum;
+  const math_FunctionRoots  aNoRoots(aMaximum, 0.0, 1.0, 10, 1.e-12, 1.e-12, 0.0, 0.001);
+  ASSERT_TRUE(aNoRoots.IsDone());
+  EXPECT_EQ(aNoRoots.NbSolutions(), 0);
+}
+
+//==================================================================================================
+
+TEST(math_RootFailureTest, CallbackFailureIsNotAResult)
+{
+  const math_FunctionSample aSamples(0.0, 1.0, 3);
+  for (const bool isNonFinite : {false, true})
+  {
+    FailedRootFunction          aFunction(isNonFinite);
+    const math_FunctionAllRoots aAllRoots(aFunction, aSamples, 1.0e-8, 1.0e-8, 1.0e-8);
+    EXPECT_FALSE(aAllRoots.IsDone());
+    const math_FunctionRoots aRoots(aFunction, 0.0, 1.0, 10, 1.0e-8, 1.0e-8, 0.0);
+    EXPECT_FALSE(aRoots.IsDone());
+  }
+}
+
+//==================================================================================================
+
+TEST(math_RootFailureTest, InteriorDerivativeFailureIsNotAnEmptySuccess)
+{
+  for (const bool isNonFinite : {false, true})
+  {
+    InteriorDerivativeFailure aFunction(isNonFinite);
+    const math_FunctionRoots  aRoots(aFunction, 0.0, 1.0, 10, 1.e-12, 1.e-12, 0.0);
+    ASSERT_TRUE(aFunction.HasFailed());
+    EXPECT_FALSE(aRoots.IsDone());
+  }
 }

@@ -633,3 +633,32 @@ TEST_F(Geom2d_BSplineCurve_Test, WeightsArray_Rational_ReturnsOwning)
   // Verify that the reference is stable
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
 }
+
+//==================================================================================================
+
+TEST(Geom2dBSplineCurveTest, IsG1_PeriodicTranslatedIntervals_CheckCornersAndTheSeam)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(4);
+  aPoles.ChangeAt(0) = gp_Pnt2d(0, 0);
+  aPoles.ChangeAt(1) = gp_Pnt2d(4, 0);
+  aPoles.ChangeAt(2) = gp_Pnt2d(4, 4);
+  aPoles.ChangeAt(3) = gp_Pnt2d(0, 4);
+  NCollection_Array1<double> aKnots(5);
+  NCollection_Array1<int>    aMults(5);
+  aMults.Init(1);
+  for (size_t anIndex = 0; anIndex < aKnots.Size(); ++anIndex)
+  {
+    aKnots.ChangeAt(anIndex) = static_cast<double>(anIndex);
+  }
+  const occ::handle<Geom2d_BSplineCurve> aSource =
+    new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 1, true);
+  for (const double aShift : {-8.0, 0.0, 4.0, 12.0})
+  {
+    EXPECT_TRUE(aSource->IsG1(aShift + 0.25, aShift + 0.75, Precision::Angular()));
+    EXPECT_FALSE(aSource->IsG1(aShift + 0.25, aShift + 1.75, Precision::Angular()));
+    EXPECT_FALSE(aSource->IsG1(aShift - 0.25, aShift + 0.25, Precision::Angular()));
+    EXPECT_FALSE(aSource->IsG1(aShift + 0.25, aShift + 4.25, Precision::Angular()));
+  }
+  EXPECT_EQ(aSource->FirstParameter(), 0.0);
+  EXPECT_EQ(aSource->LastParameter(), 4.0);
+}

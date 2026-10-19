@@ -182,19 +182,15 @@ static void KnotAnalysis(const int                         Degree,
 
 static bool Rational(const NCollection_Array1<double>& W)
 {
-  int  i, n = W.Length();
-  bool rat = false;
-  for (i = 1; i < n; i++)
+  for (size_t i = 1; i < W.Size(); ++i)
   {
-    rat = std::abs(W(i) - W(i + 1)) > gp::Resolution();
-    if (rat)
+    if (W.At(i - 1) != W.At(i))
     {
-      break;
+      return true;
     }
   }
-  return rat;
+  return false;
 }
-
 //=================================================================================================
 
 occ::handle<Law_BSpline> Law_BSpline::Copy() const
@@ -234,13 +230,13 @@ Law_BSpline::Law_BSpline(const NCollection_Array1<double>& Poles,
   // copy arrays
 
   poles                 = new NCollection_HArray1<double>(1, Poles.Length());
-  poles->ChangeArray1() = Poles;
+  poles->ChangeArray1().CopyValues(Poles);
 
   knots                 = new NCollection_HArray1<double>(1, Knots.Length());
-  knots->ChangeArray1() = Knots;
+  knots->ChangeArray1().CopyValues(Knots);
 
   mults                 = new NCollection_HArray1<int>(1, Mults.Length());
-  mults->ChangeArray1() = Mults;
+  mults->ChangeArray1().CopyValues(Mults);
 
   UpdateKnots();
 }
@@ -283,18 +279,18 @@ Law_BSpline::Law_BSpline(const NCollection_Array1<double>& Poles,
   // copy arrays
 
   poles                 = new NCollection_HArray1<double>(1, Poles.Length());
-  poles->ChangeArray1() = Poles;
+  poles->ChangeArray1().CopyValues(Poles);
   if (rational)
   {
     weights                 = new NCollection_HArray1<double>(1, Weights.Length());
-    weights->ChangeArray1() = Weights;
+    weights->ChangeArray1().CopyValues(Weights);
   }
 
   knots                 = new NCollection_HArray1<double>(1, Knots.Length());
-  knots->ChangeArray1() = Knots;
+  knots->ChangeArray1().CopyValues(Knots);
 
   mults                 = new NCollection_HArray1<int>(1, Mults.Length());
-  mults->ChangeArray1() = Mults;
+  mults->ChangeArray1().CopyValues(Mults);
 
   UpdateKnots();
 }
@@ -823,7 +819,7 @@ void Law_BSpline::SetKnot(const int Index, const double K)
 void Law_BSpline::SetKnots(const NCollection_Array1<double>& K)
 {
   CheckCurveData(poles->Array1(), K, mults->Array1(), deg, periodic);
-  knots->ChangeArray1() = K;
+  knots->ChangeArray1().CopyValues(K);
   UpdateKnots();
 }
 

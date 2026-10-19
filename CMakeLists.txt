@@ -276,7 +276,7 @@ endif()
 
 # Define layout boolean variables for optimization
 set(LAYOUT_IS_WINDOWS FALSE)
-set(LAYOUT_IS_UNIX FALSE) 
+set(LAYOUT_IS_UNIX FALSE)
 set(LAYOUT_IS_VCPKG FALSE)
 
 if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Windows")
@@ -1218,7 +1218,7 @@ if (LAYOUT_IS_VCPKG)
     export CSF_OCCTTestsPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/tests\"
     export CSF_OCCTDocPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/doc\"")
   endif()
-  
+
   # For vcpkg, we handle all paths in the bin/lib paths logic above
   set (OCCT_CUSTOM_ADDITIONAL_PATHS "")
 else()
@@ -1356,14 +1356,25 @@ if (BUILD_GTEST)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_gtest")
   # Initialize GTest environment and create the target first
   OCCT_INIT_GTEST()
-  
+
   # Collect test files from all active toolkits and add them to the target
   foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
     OCCT_COLLECT_TOOLKIT_TESTS(${BUILD_TOOLKIT})
   endforeach()
-  
+
   # Set environment variables for all tests
   OCCT_SET_GTEST_ENVIRONMENT()
+
+  if (NOT CMAKE_CROSSCOMPILING)
+    add_test(NAME CMake::InstallPrefix
+      COMMAND "${CMAKE_COMMAND}" "-DTEST_DIR=${CMAKE_BINARY_DIR}/tests/cmake/install-prefix"
+        "-DTEST_GENERATOR=${CMAKE_GENERATOR}"
+        "-DTEST_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}"
+        "-DTEST_GENERATOR_TOOLSET=${CMAKE_GENERATOR_TOOLSET}"
+        "-DTEST_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+        -P "${OCCT_ROOT_DIR}/adm/cmake/tests/OCCTInstallPrefixTest.cmake")
+    set_tests_properties(CMake::InstallPrefix PROPERTIES LABELS "CMake")
+  endif()
 endif()
 
 if (BUILD_DOC_Overview OR BUILD_DOC_RefMan)
@@ -1439,8 +1450,8 @@ foreach (OCCT_CONFIGURATION ${CMAKE_CONFIGURATION_TYPES})
   configure_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADECompileDefinitionsAndFlags.cmake.in" "OpenCASCADECompileDefinitionsAndFlags-${OCCT_CONFIGURATION_LOWER}.cmake" @ONLY)
 endforeach()
 # install OpenCASCADE config file with compile definitions and C/C++ flags ONLY for current configuration
-install (CODE "string (TOLOWER \"\${CMAKE_INSTALL_CONFIG_NAME}\" CMAKE_INSTALL_CONFIG_NAME_LOWER)")
-install (CODE "file(INSTALL FILES \"${CMAKE_BINARY_DIR}/OpenCASCADECompileDefinitionsAndFlags-\${CMAKE_INSTALL_CONFIG_NAME_LOWER}.cmake\" DESTINATION \"${INSTALL_DIR}/${INSTALL_DIR_CMAKE}/\" TYPE FILE)")
+install (FILES "${CMAKE_BINARY_DIR}/OpenCASCADECompileDefinitionsAndFlags-$<LOWER_CASE:$<CONFIG>>.cmake"
+         DESTINATION "${INSTALL_DIR_CMAKE}")
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   if (BUILD_MODULE_${OCCT_MODULE})
@@ -1479,12 +1490,35 @@ if (APPLE)
   set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_XLIB})")
 endif()
 
-# Configure and install cmake config file
+# The installed configuration uses paths relative to its installation prefix.
+include(CMakePackageConfigHelpers)
+set (OCCT_CONFIG_BUILD_TREE FALSE)
+set (SET_OpenCASCADE_BUILD_TREE_PATHS)
+configure_package_config_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADEConfig.cmake.in"
+  "${CMAKE_BINARY_DIR}/cmake_install/OpenCASCADEConfig.cmake"
+  INSTALL_DESTINATION "${INSTALL_DIR_CMAKE}"
+  PATH_VARS INSTALL_DIR_BIN INSTALL_DIR_LIB INSTALL_DIR_SCRIPT INSTALL_DIR_INCLUDE INSTALL_DIR_RESOURCE
+  NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+install(FILES "${CMAKE_BINARY_DIR}/cmake_install/OpenCASCADEConfig.cmake" DESTINATION "${INSTALL_DIR_CMAKE}")
+
+# The build-tree configuration uses the actual build and source directories.
+set (OCCT_CONFIG_BUILD_TREE TRUE)
+set (OCCT_CONFIG_BINARY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+set (OCCT_CONFIG_LIBRARY_DIR "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}")
+if (NOT OCCT_CONFIG_BINARY_DIR)
+  set (OCCT_CONFIG_BINARY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}")
+  set (OCCT_CONFIG_LIBRARY_DIR "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}")
+endif()
+set (SET_OpenCASCADE_BUILD_TREE_PATHS
+"set (OpenCASCADE_INSTALL_PREFIX \"${CMAKE_BINARY_DIR}\")
+set (OpenCASCADE_BINARY_DIR \"${OCCT_CONFIG_BINARY_DIR}\")
+set (OpenCASCADE_LIBRARY_DIR \"${OCCT_CONFIG_LIBRARY_DIR}\")
+set (OpenCASCADE_SCRIPT_DIR \"${CMAKE_BINARY_DIR}\")
+set (OpenCASCADE_INCLUDE_DIR \"${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}\")
+set (OpenCASCADE_RESOURCE_DIR \"${OCCT_ROOT_DIR}/resources\")")
 configure_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADEConfig.cmake.in" "OpenCASCADEConfig.cmake" @ONLY)
-install(FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfig.cmake" DESTINATION  "${INSTALL_DIR_CMAKE}")
 
 # Configure cmake version file
-include(CMakePackageConfigHelpers)
 write_basic_package_version_file( ${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.cmake
                                   VERSION ${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}
                                   COMPATIBILITY ExactVersion )

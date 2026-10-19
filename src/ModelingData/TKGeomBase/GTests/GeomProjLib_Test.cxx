@@ -11,8 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
+#include <Geom_Circle.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GeomProjLib.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -44,6 +43,8 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+
+#include <gtest/gtest.h>
 
 #include <algorithm>
 #include <cmath>
@@ -301,5 +302,29 @@ TEST(GeomProjLibTest, OffsetProjectionPreservesDistanceAndTrim)
         }
       }
     }
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomProjLibTest, ProjectionPreservesTrimmedPeriodicChart)
+{
+  const occ::handle<Geom_Curve> aCurve =
+    new Geom_TrimmedCurve(new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1)), 2),
+                          7,
+                          11,
+                          true,
+                          false);
+  const occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
+  const occ::handle<Geom_Curve> aResult =
+    GeomProjLib::ProjectOnPlane(aCurve, aPlane, gp_Dir(0, 0, 1), true);
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_DOUBLE_EQ(aResult->FirstParameter(), 7);
+  EXPECT_DOUBLE_EQ(aResult->LastParameter(), 11);
+  for (const double aParameter : {7.0, 9.0, 11.0})
+  {
+    gp_Pnt anExpected = aCurve->EvalD0(aParameter);
+    anExpected.SetZ(0);
+    EXPECT_LE(aResult->EvalD0(aParameter).Distance(anExpected), 1.e-12);
   }
 }

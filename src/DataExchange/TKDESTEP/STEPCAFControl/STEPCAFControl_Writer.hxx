@@ -381,14 +381,16 @@ protected:
     occ::handle<StepRepr_RepresentationContext>&       theRC,
     occ::handle<StepAP242_GeometricItemSpecificUsage>& theGISU);
 
-  void writePresentation(const occ::handle<XSControl_WorkSession>&    theWS,
-                         const TopoDS_Shape&                          thePresentation,
-                         const occ::handle<TCollection_HAsciiString>& thePrsName,
-                         const bool                                   theHasSemantic,
-                         const bool                                   theHasPlane,
-                         const gp_Ax2&                                theAnnotationPlane,
-                         const gp_Pnt&                                theTextPosition,
-                         const occ::handle<Standard_Transient>&       theDimension,
+  //! Write PMI curves and the annotation plane in the supplied representation context.
+  void writePresentation(const occ::handle<XSControl_WorkSession>&          theWS,
+                         const TopoDS_Shape&                                thePresentation,
+                         const occ::handle<TCollection_HAsciiString>&       thePrsName,
+                         const bool                                         theHasSemantic,
+                         const bool                                         theHasPlane,
+                         const gp_Ax2&                                      theAnnotationPlane,
+                         const gp_Pnt&                                      theTextPosition,
+                         const occ::handle<Standard_Transient>&             theDimension,
+                         const occ::handle<StepRepr_RepresentationContext>& theContext,
                          const StepData_Factors& theLocalFactors = StepData_Factors());
 
   occ::handle<StepDimTol_Datum> writeDatumAP242(

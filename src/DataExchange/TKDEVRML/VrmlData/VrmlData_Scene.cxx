@@ -304,9 +304,9 @@ nonempty_line:
       }
       else if (aChar == '\\' && isQuoted)
       {
+        *aWritePtr++ = aChar;
         if (*aReadPtr == '\0')
         {
-          *aWritePtr++ = aChar;
           break;
         }
         *aWritePtr++ = *aReadPtr++;

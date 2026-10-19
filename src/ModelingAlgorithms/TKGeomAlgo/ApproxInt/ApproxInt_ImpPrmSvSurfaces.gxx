@@ -459,11 +459,19 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
   double tv1 = v1;
   double tv2 = v2;
 
+  if (myCachedUseSolver != GetUseSolver())
+  {
+    MyHasBeenComputed = MyHasBeenComputedbis = false;
+    myCachedUseSolver                        = GetUseSolver();
+  }
+
   if (MyHasBeenComputed)
   {
     if ((MyParOnS1.X() == u1) && (MyParOnS1.Y() == v1) && (MyParOnS2.X() == u2)
         && (MyParOnS2.Y() == v2))
     {
+      myComputedParOnS1.Coord(u1, v1);
+      myComputedParOnS2.Coord(u2, v2);
       P     = MyPnt;
       Tg    = MyTg;
       Tguv1 = MyTguv1;
@@ -478,6 +486,8 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
       MyPntbis             = MyPnt;
       MyParOnS1bis         = MyParOnS1;
       MyParOnS2bis         = MyParOnS2;
+      myComputedParOnS1bis = myComputedParOnS1;
+      myComputedParOnS2bis = myComputedParOnS2;
       MyIsTangentbis       = MyIsTangent;
       MyHasBeenComputedbis = MyHasBeenComputed;
     }
@@ -495,8 +505,12 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
       std::swap(MyPnt, MyPntbis);
       std::swap(MyParOnS1, MyParOnS1bis);
       std::swap(MyParOnS2, MyParOnS2bis);
+      std::swap(myComputedParOnS1, myComputedParOnS1bis);
+      std::swap(myComputedParOnS2, myComputedParOnS2bis);
       std::swap(MyIsTangent, MyIsTangentbis);
 
+      myComputedParOnS1.Coord(u1, v1);
+      myComputedParOnS2.Coord(u2, v2);
       P     = MyPnt;
       Tg    = MyTg;
       Tguv1 = MyTguv1;
@@ -592,6 +606,8 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
       // Middle-point of P-P2 segment
       P.BaryCenter(1.0, aP2, 1.0);
       MyPnt = P;
+      myComputedParOnS1.SetCoord(u1, v1);
+      myComputedParOnS2.SetCoord(u2, v2);
 
       // Normals to the surfaces
       gp_Vec aNormalPrm(aD1uPrm.Crossed(aD1vPrm)), aNormalImp(aQSurf.Normale(MyPnt));

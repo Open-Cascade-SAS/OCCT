@@ -95,7 +95,7 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
     }
     if (aMax == 0.0)
     {
-      aResult.Status = Status::NumericalError; // Singular matrix
+      aResult.Status = Status::Singular;
       return aResult;
     }
     aRowScale[i] = aMax;
@@ -133,9 +133,14 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
     // Check for singular matrix
     const double anAbsPivot   = std::abs(aLU.At(k, k));
     const double aScaledPivot = anAbsPivot / aRowScale[k];
-    if (!std::isfinite(anAbsPivot) || !std::isfinite(aScaledPivot) || aScaledPivot <= aRelTol)
+    if (!std::isfinite(anAbsPivot) || !std::isfinite(aScaledPivot))
     {
       aResult.Status = Status::NumericalError;
+      return aResult;
+    }
+    if (aScaledPivot <= aRelTol)
+    {
+      aResult.Status = Status::Singular;
       return aResult;
     }
 

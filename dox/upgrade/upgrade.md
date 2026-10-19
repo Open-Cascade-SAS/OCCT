@@ -1932,6 +1932,41 @@ Deprecated (still compiles with warnings):
 
 @section upgrade_occt810 Upgrade to OCCT 8.1.0
 
+@subsection upgrade_810_de_configuration Data exchange configuration
+
+`DE_ShapeFixParameters::MaxTailAngle` and `MaxTailWidth` now have type `double`.
+The angle is in degrees and the width is in model units. Use numeric limits rather
+than `FixMode` values. The defaults remain 0 for the angle and -1 for the width.
+Healing configuration also saves and restores `DetalizationLevel` and `NonManifold`.
+
+Configuration loading returns false for file opening and syntax errors. Node file
+loading stops before applying settings when parsing fails. Recursive wrapper loading
+returns false when a provider rejects its configuration; providers loaded before
+that failure may already have changed.
+
+OBJ input is available through the existing `DE_Provider::Read` stream overloads.
+The first stream must support seeking and is borrowed during the call. Relative
+material and texture files use its path. Additional streams are ignored; OBJ output
+still uses file paths. Shape reads honor `ReadCreateShapes`, and their memory limit
+is in MiB.
+
+`STEPCAFControl_GDTProperty::GetTessellation` accepts a length factor and curve
+deflections. The length factor is model units per STEP unit; curve deflections use
+model units and radians. Calls with one argument keep their source compatibility.
+STEP PMI export samples the located curve and converts presentation coordinates
+and annotation text positions using the exported representation context.
+
+@subsection upgrade_810_cmake_package CMake package discovery
+
+Existing `OpenCASCADE<Module>Targets.cmake` filenames, library target names and
+`OpenCASCADE_*` path and library variables are preserved. Package discovery imports
+the available modules in dependency order, including dependencies of requested
+components. Existing `find_package(OpenCASCADE CONFIG COMPONENTS ...)` calls remain
+supported. Installed paths follow the installation prefix and SDK relocation.
+Component names are matched exactly on every call. Missing optional components do
+not reject the package. Build-only precompiled headers are excluded from installed
+target interfaces.
+
 @subsection upgrade_810_brepfont BRep font and text conversion
 
 Use `StdPrs_BRepFont` to create TopoDS glyph and text shapes. The construction algorithms are

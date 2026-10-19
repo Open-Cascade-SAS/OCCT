@@ -28,8 +28,54 @@
 #include <PLib.hxx>
 #include <math_Matrix.hxx>
 
+#include <cmath>
 #include <algorithm>
+#include <limits>
+#include <optional>
 #include <utility>
+
+namespace
+{
+//==================================================================================================
+
+int weightScaleExponent(const NCollection_Array1<double>& theWeights,
+                        const size_t                      theFirst,
+                        const size_t                      theCount)
+{
+  // Return a common binary exponent for the active cyclic weight range.
+  // Keep normal weights normal and do not reduce existing subnormal weights.
+  // The range must be nonempty and contain finite weights.
+  std::optional<std::pair<int, int>> anExponentRange;
+  for (size_t i = 0; i < theCount; ++i)
+  {
+    const double aWeight = theWeights.At((theFirst + i) % theWeights.Size());
+    if (aWeight != 0)
+    {
+      int anExponent = 0;
+      std::frexp(aWeight, &anExponent);
+      if (anExponentRange)
+      {
+        anExponentRange->first  = std::min(anExponentRange->first, anExponent);
+        anExponentRange->second = std::max(anExponentRange->second, anExponent);
+      }
+      else
+      {
+        anExponentRange.emplace(anExponent, anExponent);
+      }
+    }
+  }
+  if (!anExponentRange)
+  {
+    return 0;
+  }
+  const auto [aMinimum, aMaximum] = *anExponentRange;
+  if (aMaximum <= 0)
+  {
+    return aMaximum;
+  }
+  return std::max(0, std::min(aMaximum, aMinimum - std::numeric_limits<double>::min_exponent));
+}
+} // namespace
 
 // Template traits for scalar/2D/3D point and vector operations
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
@@ -767,12 +813,14 @@ void BSplCLib_Trimming(const int                         Degree,
 // @param[in] Poles - poles array
 // @param[in] Weights - optional weights for rational curves
 // @param[out] LP - local poles array for evaluation
+// @param[in] theToNormalize - scale internal rational coefficients by a common binary factor
 template <typename Point, typename Vector, typename Array1OfPoints, int Dimension>
 void BSplCLib_BuildEval(const int                         Degree,
                         const int                         Index,
                         const Array1OfPoints&             Poles,
                         const NCollection_Array1<double>* Weights,
-                        double&                           LP)
+                        double&                           LP,
+                        const bool                        theToNormalize = false)
 {
   using Traits = BSplCLib_CurveTraits<Point, Vector, Array1OfPoints, Dimension>;
 
@@ -793,6 +841,10 @@ void BSplCLib_BuildEval(const int                         Degree,
   }
   else
   {
+    const size_t aFirstPole = aPoleIndex < Poles.Size() ? aPoleIndex : 0;
+    const int    aScaleExponent =
+      theToNormalize ? weightScaleExponent(*Weights, aFirstPole, static_cast<size_t>(Degree) + 1)
+                        : 0;
     for (int i = 0; i <= Degree; ++i)
     {
       if (aPoleIndex >= Poles.Size())
@@ -800,7 +852,7 @@ void BSplCLib_BuildEval(const int                         Degree,
         aPoleIndex = 0;
       }
       const Point& P       = Poles.At(aPoleIndex);
-      const double aWeight = Weights->At(aPoleIndex++);
+      const double aWeight = std::scalbn(Weights->At(aPoleIndex++), -aScaleExponent);
       pole[Dimension]      = aWeight;
       Traits::PointToCoordsScaled(pole, P, aWeight);
       pole += Dimension + 1;
@@ -867,7 +919,8 @@ static void PrepareEval_T(double&                              u,
                                                                    index,
                                                                    Poles,
                                                                    Weights,
-                                                                   *dc.poles);
+                                                                   *dc.poles,
+                                                                   true);
     }
     else
     {
@@ -887,11 +940,14 @@ static void PrepareEval_T(double&                              u,
         theOrigin);
       const size_t aFirstPole =
         static_cast<size_t>(index) < Poles.Size() ? static_cast<size_t>(index) : 0;
+      const int aScaleExponent =
+        weightScaleExponent(*Weights, aFirstPole, static_cast<size_t>(Degree) + 1);
       // Expand in reverse order to preserve the unread Cartesian coordinates.
       for (int aPole = Degree; aPole >= 0; --aPole)
       {
         const double aWeight =
-          Weights->At((aFirstPole + static_cast<size_t>(aPole)) % Poles.Size());
+          std::scalbn(Weights->At((aFirstPole + static_cast<size_t>(aPole)) % Poles.Size()),
+                      -aScaleExponent);
         for (int aCoordinate = Dimension - 1; aCoordinate >= 0; --aCoordinate)
         {
           dc.poles[aPole * (Dimension + 1) + aCoordinate] =
