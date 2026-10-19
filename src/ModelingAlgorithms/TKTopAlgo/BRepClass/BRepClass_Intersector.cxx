@@ -331,6 +331,7 @@ void BRepClass_Intersector::Perform(const gp_Lin2d&       L,
                                     const double          Tol,
                                     const BRepClass_Edge& E)
 {
+  ResetFields();
   double                    deb = 0.0, fin = 0.0, aTolZ = Tol;
   occ::handle<Geom2d_Curve> aC2D;
   //

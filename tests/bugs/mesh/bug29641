@@ -15,6 +15,6 @@ vtop
 vrotate -0.1 0.1 1 0 0 0
 vfit
 
-checktrinfo result -tri 29040 -nod 15358
+checktrinfo result -tri 29724 -nod 15700
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

@@ -14,6 +14,9 @@
 #include <gtest/gtest.h>
 
 #include <BRepMesh_CircleTool.hxx>
+#include <BRepMesh_Circle.hxx>
+#include <BRepMesh_CircleInspector.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 #include <gp_XY.hxx>
 
@@ -23,6 +26,32 @@
 
 namespace
 {
+class BRepMesh_CountingIncAllocator : public NCollection_IncAllocator
+{
+public:
+  void* AllocateOptimal(size_t theSize) override;
+
+  size_t NbAllocations() const;
+
+private:
+  size_t myNbAllocations = 0;
+};
+
+//==================================================================================================
+
+void* BRepMesh_CountingIncAllocator::AllocateOptimal(size_t theSize)
+{
+  ++myNbAllocations;
+  return NCollection_IncAllocator::AllocateOptimal(theSize);
+}
+
+//==================================================================================================
+
+size_t BRepMesh_CountingIncAllocator::NbAllocations() const
+{
+  return myNbAllocations;
+}
+
 // Returns true if thePoint lies on the circle defined by theCenter and theRadius.
 bool isOnCircle(const gp_XY& thePoint, const gp_XY& theCenter, const double theRadius)
 {
@@ -31,6 +60,51 @@ bool isOnCircle(const gp_XY& thePoint, const gp_XY& theCenter, const double theR
   return aDiff.SquareModulus() - theRadius * theRadius < aSqPrec;
 }
 } // namespace
+
+TEST(BRepMesh_CircleInspectorTest, RepeatedSelectionsRetainCircleStorage)
+{
+  const occ::handle<BRepMesh_CountingIncAllocator> anAllocator = new BRepMesh_CountingIncAllocator;
+  BRepMesh_CircleInspector anInspector(Precision::PConfusion(), 3, anAllocator);
+  anInspector.Bind(1, BRepMesh_Circle(gp_XY(0.0, 0.0), 1.0));
+  anInspector.Bind(2, BRepMesh_Circle(gp_XY(4.0, 0.0), 1.0));
+  anInspector.Bind(3, BRepMesh_Circle(gp_XY(0.0, 0.0), -1.0));
+  const size_t aNbAllocations = anAllocator->NbAllocations();
+
+  for (int aRepeat = 0; aRepeat < 2; ++aRepeat)
+  {
+    for (int anIndex = 1; anIndex <= 2; ++anIndex)
+    {
+      anInspector.SetPoint(gp_XY(4.0 * (anIndex - 1), 0.0));
+      EXPECT_EQ(anInspector.Inspect(1), CellFilter_Keep);
+      EXPECT_EQ(anInspector.Inspect(2), CellFilter_Keep);
+      EXPECT_EQ(anInspector.Inspect(3), CellFilter_Purge);
+      ASSERT_EQ(anInspector.GetShotCircles().Size(), 1);
+      EXPECT_EQ(anInspector.GetShotCircles().First(), anIndex);
+    }
+    anInspector.SetPoint(gp_XY(8.0, 0.0));
+    anInspector.Inspect(1);
+    anInspector.Inspect(2);
+    EXPECT_TRUE(anInspector.GetShotCircles().IsEmpty());
+  }
+
+  EXPECT_EQ(anAllocator->NbAllocations(), aNbAllocations);
+  EXPECT_EQ(anInspector.Circle(1).Radius(), 1.0);
+  EXPECT_EQ(anInspector.Circle(2).Location().X(), 4.0);
+
+  anInspector.SetPoint(gp_XY(0.0, 0.0));
+  anInspector.Inspect(1);
+  BRepMesh_CircleInspector aCopy(anInspector);
+  anInspector.SetPoint(gp_XY(4.0, 0.0));
+  anInspector.Inspect(1);
+  anInspector.Inspect(2);
+  ASSERT_EQ(aCopy.GetShotCircles().Size(), 1);
+  EXPECT_EQ(aCopy.GetShotCircles().First(), 1);
+  aCopy.SetPoint(gp_XY(4.0, 0.0));
+  aCopy.Inspect(1);
+  aCopy.Inspect(2);
+  ASSERT_EQ(aCopy.GetShotCircles().Size(), 1);
+  EXPECT_EQ(aCopy.GetShotCircles().First(), 2);
+}
 
 // OCC24923: BRepMesh_CircleTool produces bad circles
 // For a large set of random non-degenerate triangles, every circumscribed circle

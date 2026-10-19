@@ -17,6 +17,7 @@ explode c
 # Compute minimal distance
 distmini d c_1 c_2
 set dist [dval d_val]
+dsetsignal 0
 
 # Check extrema distance
 if { $dist > 1e-7 } {

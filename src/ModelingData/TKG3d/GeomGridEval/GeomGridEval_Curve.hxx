@@ -136,8 +136,9 @@ protected:
   Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve);
 
 private:
-  EvaluatorVariant  myEvaluator;
-  GeomAbs_CurveType myCurveType;
+  occ::handle<Adaptor3d_Curve> myOwnedAdaptor; //!< Keeps geometry-based fallback evaluation alive.
+  EvaluatorVariant             myEvaluator;
+  GeomAbs_CurveType            myCurveType;
 };
 
 #endif // _GeomGridEval_Curve_HeaderFile

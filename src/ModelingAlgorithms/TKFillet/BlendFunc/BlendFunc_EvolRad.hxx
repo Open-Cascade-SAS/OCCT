@@ -227,6 +227,12 @@ private:
   int                            myTOrder;
   math_Vector                    xval;
   double                         tval;
+  gp_Pnt                         ptgui;
+  gp_Vec                         d1gui;
+  gp_Vec                         d2gui;
+  gp_Vec                         d3gui;
+  double                         invnormtg;
+  double                         dinvnormtg;
   gp_Vec                         d1u1;
   gp_Vec                         d1u2;
   gp_Vec                         d1v1;
@@ -237,6 +243,14 @@ private:
   gp_Vec                         d2u2;
   gp_Vec                         d2v2;
   gp_Vec                         d2uv2;
+  gp_Vec                         d3u1;
+  gp_Vec                         d3v1;
+  gp_Vec                         d3uuv1;
+  gp_Vec                         d3uvv1;
+  gp_Vec                         d3u2;
+  gp_Vec                         d3v2;
+  gp_Vec                         d3uuv2;
+  gp_Vec                         d3uvv2;
   gp_Vec                         dn1w;
   gp_Vec                         dn2w;
   gp_Vec                         d2n1w;

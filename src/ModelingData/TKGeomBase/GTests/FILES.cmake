@@ -2,12 +2,16 @@
 set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKGeomBase_GTests_FILES
+  GeomTools_Test.cxx
+  Approx_FitAndDivide_Test.cxx
   AdvApp2Var_Context_Test.cxx
   AdvApp2Var_Framework_Test.cxx
   AdvApp2Var_Iso_Test.cxx
+  AdvApp2Var_MathBase_Test.cxx
   AdvApp2Var_Network_Test.cxx
   AdvApp2Var_Node_Test.cxx
   AppCont_ContMatrices_Test.cxx
+  AppCont_LeastSquare_Test.cxx
   BndLib_Test.cxx
   GeomBndLib_Curve_Test.cxx
   GeomBndLib_Curve2d_Test.cxx
@@ -18,6 +22,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomBndLib_SurfaceOfExtrusion_Test.cxx
   GeomBndLib_SurfaceOfRevolution_Test.cxx
   Extrema_ExtPC_Test.cxx
+  Extrema_GlobOptFuncCC_Test.cxx
+  Extrema_GenLocateExtPS_Test.cxx
   ExtremaPC_BezierCurve_Test.cxx
   ExtremaPC_BSplineCurve_Test.cxx
   ExtremaPC_Circle_Test.cxx
@@ -43,6 +49,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   ExtremaPC2d_OtherCurve_Test.cxx
   ExtremaPC2d_Parabola_Test.cxx
   ExtremaPC2d_Test.cxx
+  FEmTool_LinearCriteria_Test.cxx
   GC_MakeArcOfCircle_Test.cxx
   GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx
@@ -62,6 +69,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
   ProjLib_Cone_Test.cxx
+  ProjLib_CompProjectedCurve_Test.cxx
   ProjLib_ComputeApproxOnPolarSurface_Test.cxx
   gce_MakeCone_Test.cxx
   gce_MakeCirc2d_Test.cxx

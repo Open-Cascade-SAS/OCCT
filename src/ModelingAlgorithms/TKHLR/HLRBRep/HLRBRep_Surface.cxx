@@ -46,6 +46,7 @@ void HLRBRep_Surface::Surface(const TopoDS_Face& F)
     case GeomAbs_Cone:
     case GeomAbs_Sphere:
     case GeomAbs_Torus:
+    case GeomAbs_BSplineSurface:
       // unchanged type
       myType = typ;
       break;

@@ -44,10 +44,12 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
+  //! @throw Standard_NotImplemented because edge_start is redefined by the oriented edge.
   Standard_EXPORT void SetEdgeStart(const occ::handle<StepShape_Vertex>& aEdgeStart) override;
 
   Standard_EXPORT occ::handle<StepShape_Vertex> EdgeStart() const override;
 
+  //! @throw Standard_NotImplemented because edge_end is redefined by the oriented edge.
   Standard_EXPORT void SetEdgeEnd(const occ::handle<StepShape_Vertex>& aEdgeEnd) override;
 
   Standard_EXPORT occ::handle<StepShape_Vertex> EdgeEnd() const override;

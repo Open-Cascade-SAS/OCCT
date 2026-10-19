@@ -33,6 +33,29 @@
 #include <TDocStd_Owner.hxx>
 #include <TDocStd_PathParser.hxx>
 #include <OSD_Thread.hxx>
+#include <ios>
+
+namespace
+{
+// Restore the standalone state after temporarily associating a storage application.
+struct TDocStd_ApplicationRestorer
+{
+  occ::handle<TDocStd_Document> Document; //!< Document being stored.
+  bool WasOpened; //!< Whether the document had an application before storage.
+
+  ~TDocStd_ApplicationRestorer();
+};
+
+//==================================================================================================
+
+TDocStd_ApplicationRestorer::~TDocStd_ApplicationRestorer()
+{
+  if (!WasOpened)
+  {
+    Document->Open(nullptr);
+  }
+}
+} // namespace
 
 IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Application, CDF_Application)
 
@@ -386,34 +409,8 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
                                              Standard_OStream&                    theOStream,
                                              const Message_ProgressRange&         theRange)
 {
-  try
-  {
-    occ::handle<PCDM_StorageDriver> aDocStorageDriver = WriterFromFormat(theDoc->StorageFormat());
-
-    if (aDocStorageDriver.IsNull())
-    {
-      return PCDM_SS_DriverFailure;
-    }
-
-    aDocStorageDriver->SetFormat(theDoc->StorageFormat());
-    aDocStorageDriver->Write(theDoc, theOStream, theRange);
-
-    if (aDocStorageDriver->GetStoreStatus() == PCDM_SS_OK)
-    {
-      theDoc->SetSaved();
-    }
-
-    return aDocStorageDriver->GetStoreStatus();
-  }
-  catch (Standard_Failure const& anException)
-  {
-    if (!MessageDriver().IsNull())
-    {
-      TCollection_ExtendedString aString(anException.what());
-      MessageDriver()->Send(aString.ToExtString(), Message_Fail);
-    }
-  }
-  return PCDM_SS_Failure;
+  TCollection_ExtendedString aStatusMessage;
+  return SaveAs(theDoc, theOStream, aStatusMessage, theRange);
 }
 
 //=================================================================================================
@@ -514,6 +511,12 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
                                              TCollection_ExtendedString&          theStatusMessage,
                                              const Message_ProgressRange&         theRange)
 {
+  theStatusMessage.Clear();
+  if (theDoc.IsNull())
+  {
+    theStatusMessage = "TDocStd_Application::SaveAs: null document";
+    return PCDM_SS_Doc_IsNull;
+  }
   try
   {
     occ::handle<PCDM_StorageDriver> aDocStorageDriver = WriterFromFormat(theDoc->StorageFormat());
@@ -525,6 +528,11 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
     }
 
     aDocStorageDriver->SetFormat(theDoc->StorageFormat());
+    const TDocStd_ApplicationRestorer aRestorer{theDoc, theDoc->IsOpened()};
+    if (!aRestorer.WasOpened)
+    {
+      theDoc->Open(this);
+    }
     aDocStorageDriver->Write(theDoc, theOStream, theRange);
 
     if (aDocStorageDriver->GetStoreStatus() == PCDM_SS_OK)
@@ -532,14 +540,33 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const occ::handle<TDocStd_Document>
       theDoc->SetSaved();
     }
 
-    return aDocStorageDriver->GetStoreStatus();
+    const PCDM_StoreStatus aStatus = aDocStorageDriver->GetStoreStatus();
+    if (aStatus != PCDM_SS_OK)
+    {
+      theStatusMessage = "TDocStd_Application::SaveAs: stream storage failed";
+    }
+    return aStatus;
+  }
+  catch (const std::ios_base::failure& anException)
+  {
+    theStatusMessage = TCollection_ExtendedString(anException.what());
+    if (!MessageDriver().IsNull())
+    {
+      MessageDriver()->Send(theStatusMessage.ToExtString(), Message_Fail);
+    }
+    return PCDM_SS_WriteFailure;
+  }
+  catch (const Standard_NoSuchObject& anException)
+  {
+    theStatusMessage = TCollection_ExtendedString(anException.what());
+    return PCDM_SS_DriverFailure;
   }
   catch (Standard_Failure const& anException)
   {
+    theStatusMessage = TCollection_ExtendedString(anException.what());
     if (!MessageDriver().IsNull())
     {
-      TCollection_ExtendedString aString(anException.what());
-      MessageDriver()->Send(aString.ToExtString(), Message_Fail);
+      MessageDriver()->Send(theStatusMessage.ToExtString(), Message_Fail);
     }
   }
   return PCDM_SS_Failure;

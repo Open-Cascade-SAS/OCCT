@@ -85,7 +85,7 @@ occ::handle<Geom_Curve> GeomAdaptor::MakeCurve(const Adaptor3d_Curve& HC)
       || (HC.LastParameter() != C->LastParameter()))
   {
 
-    C = new Geom_TrimmedCurve(C, HC.FirstParameter(), HC.LastParameter());
+    C = new Geom_TrimmedCurve(C, HC.FirstParameter(), HC.LastParameter(), true, false);
   }
 
   return C;

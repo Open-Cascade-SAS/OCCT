@@ -31,121 +31,6 @@
 #include <math_FunctionSetRoot.hxx>
 #include <TopAbs.hxx>
 
-#include <cstdio>
-#ifdef OCCT_DEBUG
-  #include <Standard_Integer.hxx>
-  #include <NCollection_Array1.hxx>
-  #include <Geom_BSplineCurve.hxx>
-static int  IndexOfSection = 0;
-extern bool Blend_GettraceDRAWSECT();
-
-  #ifdef OCCT_DEBUG_BBPP_N_TRDERIV
-//-----------------------------------------------------
-// For debug : visualisation of the section
-static bool BBPP(const double          param,
-                 Blend_RstRstFunction& Func,
-                 const math_Vector&    sol,
-                 const double          tol,
-                 Blend_Point&          BP)
-{
-  if (!Func.IsSolution(sol, tol))
-    return 0;
-  gp_Pnt   pntrst1 = Func.PointOnRst1();
-  gp_Pnt   pntrst2 = Func.PointOnRst2();
-  gp_Pnt2d p2drst1 = Func.Pnt2dOnRst1();
-  gp_Pnt2d p2drst2 = Func.Pnt2dOnRst2();
-  double   w1      = Func.ParameterOnRst1();
-  double   w2      = Func.ParameterOnRst2();
-  BP               = Blend_Point(pntrst1,
-                   pntrst2,
-                   param,
-                   p2drst1.X(),
-                   p2drst1.Y(),
-                   p2drst2.X(),
-                   p2drst2.Y(),
-                   w1,
-                   w2);
-  return 1;
-}
-
-//-----------------------------------------------------
-static void tracederiv(Blend_RstRstFunction& Func, const Blend_Point& BP1, const Blend_Point& BP2)
-{
-  int hp, hk, hd, hp2d, i;
-  Func.GetShape(hp, hk, hd, hp2d);
-  NCollection_Array1<gp_Pnt>   TP1(1, hp);
-  NCollection_Array1<gp_Vec>   TDP1(1, hp);
-  NCollection_Array1<gp_Pnt2d> TP2d1(1, hp2d);
-  NCollection_Array1<gp_Vec2d> TDP2d1(1, hp2d);
-  NCollection_Array1<double>   TW1(1, hp);
-  NCollection_Array1<double>   TDW1(1, hp);
-  Func.Section(BP1, TP1, TDP1, TP2d1, TDP2d1, TW1, TDW1);
-
-  NCollection_Array1<gp_Pnt>   TP2(1, hp);
-  NCollection_Array1<gp_Vec>   TDP2(1, hp);
-  NCollection_Array1<gp_Pnt2d> TP2d2(1, hp2d);
-  NCollection_Array1<gp_Vec2d> TDP2d2(1, hp2d);
-  NCollection_Array1<double>   TW2(1, hp);
-  NCollection_Array1<double>   TDW2(1, hp);
-  Func.Section(BP2, TP2, TDP2, TP2d2, TDP2d2, TW2, TDW2);
-
-  double param1 = BP1.Parameter();
-  double param2 = BP2.Parameter();
-  double scal   = 1. / (param1 - param2);
-
-  std::cout << std::endl;
-  std::cout << "control of derivatives at point : " << param1 << std::endl;
-
-  for (i = 1; i <= hp; i++)
-  {
-    std::cout << std::endl;
-    std::cout << "point : " << i << std::endl;
-    std::cout << "dx calculated : " << TDP1(i).X() << std::endl;
-    std::cout << "dx estimated  : " << scal * (TP1(i).X() - TP2(i).X()) << std::endl;
-    std::cout << "dy calculated : " << TDP1(i).Y() << std::endl;
-    std::cout << "dy estimated  : " << scal * (TP1(i).Y() - TP2(i).Y()) << std::endl;
-    std::cout << "dz calculated : " << TDP1(i).Z() << std::endl;
-    std::cout << "dz estimated  : " << scal * (TP1(i).Z() - TP2(i).Z()) << std::endl;
-    std::cout << "dw calculated : " << TDW1(i) << std::endl;
-    std::cout << "dw estimated  : " << scal * (TW1(i) - TW2(i)) << std::endl;
-  }
-  for (i = 1; i <= hp2d; i++)
-  {
-    std::cout << std::endl;
-    std::cout << "point 2d : " << i << std::endl;
-    std::cout << "dx calculated : " << TDP2d1(i).X() << std::endl;
-    std::cout << "dx estimated  : " << scal * (TP2d1(i).X() - TP2d2(i).X()) << std::endl;
-    std::cout << "dy calculated : " << TDP2d1(i).Y() << std::endl;
-    std::cout << "dy estimated  : " << scal * (TP2d1(i).Y() - TP2d2(i).Y()) << std::endl;
-  }
-}
-  #endif
-
-//-----------------------------------------------------
-static void Drawsect(const double param, Blend_RstRstFunction& Func)
-{
-  gp_Pnt      pntrst1 = Func.PointOnRst1();
-  gp_Pnt      pntrst2 = Func.PointOnRst2();
-  gp_Pnt2d    p2drst1 = Func.Pnt2dOnRst1();
-  gp_Pnt2d    p2drst2 = Func.Pnt2dOnRst2();
-  double      u       = Func.ParameterOnRst1();
-  double      v       = Func.ParameterOnRst2();
-  Blend_Point BP(pntrst1, pntrst2, param, p2drst1.X(), p2drst1.Y(), p2drst2.X(), p2drst2.Y(), u, v);
-  int         hp, hk, hd, hp2d;
-  Func.GetShape(hp, hk, hd, hp2d);
-  NCollection_Array1<double> TK(1, hk);
-  Func.Knots(TK);
-  NCollection_Array1<int> TMul(1, hk);
-  Func.Mults(TMul);
-  NCollection_Array1<gp_Pnt>   TP(1, hp);
-  NCollection_Array1<gp_Pnt2d> TP2d(1, hp2d);
-  NCollection_Array1<double>   TW(1, hp);
-  Func.Section(BP, TP, TP2d, TW);
-  occ::handle<Geom_BSplineCurve> sect = new Geom_BSplineCurve(TP, TW, TK, TMul, hd);
-  IndexOfSection++;
-}
-#endif
-
 //=================================================================================================
 
 BRepBlend_RstRstLineBuilder::BRepBlend_RstRstLineBuilder(
@@ -248,12 +133,6 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
   {
     return;
   }
-#ifdef OCCT_DEBUG
-  if (Blend_GettraceDRAWSECT())
-  {
-    Drawsect(param, Func);
-  }
-#endif
   // Update the line.
   line->Append(previousP);
   double U, V;
@@ -631,32 +510,6 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
   while (!Arrive)
   {
     bool bonpoint = true;
-#ifdef OCCT_DEBUG_BBPP_N_TRDERIV
-    // debdebdebdebdebdeb
-    Func.Set(param);
-    rsnld.Perform(Func, parinit, infbound, supbound);
-    if (rsnld.IsDone())
-    {
-      rsnld.Root(sol);
-      Blend_Point bp1;
-      if (BBPP(param, Func, sol, tolpoint3d, bp1))
-      {
-        double dw = 1.e-10;
-        Func.Set(param + dw);
-        rsnld.Perform(Func, parinit, infbound, supbound);
-        if (rsnld.IsDone())
-        {
-          rsnld.Root(sol);
-          Blend_Point bp2;
-          if (BBPP(param + dw, Func, sol, tolpoint3d, bp2))
-          {
-            tracederiv(Func, bp1, bp2);
-          }
-        }
-      }
-    }
-    // debdebdebdebdebdeb
-#endif
     Func.Set(param);
     rsnld.Perform(Func, parinit, infbound, supbound);
 
@@ -926,12 +779,6 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
     switch (State)
     {
       case Blend_OK: {
-#ifdef OCCT_DEBUG
-        if (Blend_GettraceDRAWSECT())
-        {
-          Drawsect(param, Func);
-        }
-#endif
         // Update the line.
         if (sens > 0.)
         {
@@ -994,12 +841,6 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       break;
 
       case Blend_StepTooSmall: {
-#ifdef OCCT_DEBUG
-        if (Blend_GettraceDRAWSECT())
-        {
-          Drawsect(param, Func);
-        }
-#endif
         // Update the line.
         if (sens > 0.)
         {
@@ -1035,12 +876,6 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       break;
 
       case Blend_OnRst1: {
-#ifdef OCCT_DEBUG
-        if (Blend_GettraceDRAWSECT())
-        {
-          Drawsect(param, Func);
-        }
-#endif
         if (sens > 0.)
         {
           line->Append(previousP);
@@ -1056,12 +891,6 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       break;
 
       case Blend_OnRst2: {
-#ifdef OCCT_DEBUG
-        if (Blend_GettraceDRAWSECT())
-        {
-          Drawsect(param, Func);
-        }
-#endif
         if (sens > 0.)
         {
           line->Append(previousP);
@@ -1078,12 +907,6 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
       break;
 
       case Blend_OnRst12: {
-#ifdef OCCT_DEBUG
-        if (Blend_GettraceDRAWSECT())
-        {
-          Drawsect(param, Func);
-        }
-#endif
         if (sens > 0.)
         {
           line->Append(previousP);

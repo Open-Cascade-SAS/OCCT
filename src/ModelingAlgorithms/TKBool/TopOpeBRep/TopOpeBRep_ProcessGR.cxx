@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRep_FacesFiller.hxx>
-#include <TopOpeBRep_FFDumper.hxx>
+#include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
@@ -35,24 +35,6 @@
 #include <TopOpeBRepTool_PROJECT.hxx>
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_SC.hxx>
-
-#ifdef OCCT_DEBUG
-  #include <Geom_TrimmedCurve.hxx>
-  #include <Geom_Line.hxx>
-extern bool TopOpeBRep_GettraceBIPS();
-extern bool TopOpeBRep_GettraceDEGEN();
-
-extern bool FUN_debnull(const TopoDS_Shape& s)
-{
-  bool isnull = s.IsNull();
-  if (isnull)
-    std::cout << "***";
-  return isnull;
-}
-#endif
-
-// Standard_EXPORT extern double GLOBAL_tolFF;
-Standard_EXPORTEXTERN double GLOBAL_tolFF;
 
 //=================================================================================================
 
@@ -97,12 +79,6 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF(const TopOpeBRep_VPointInter& vp
   //      we have to commutate these bounds.
   if (isperiodic)
   {
-#ifdef OCCT_DEBUG
-//    TopOpeBRep_FFDumper FFD(*this);
-//    std::cout <<"vpf :"; FFD.DumpVP(vpf,std::cout);
-//    std::cout <<"vpl :"; FFD.DumpVP(vpl,std::cout);
-#endif
-
     int IArc = 0;
     if (Lrest.ArcIsEdge(1))
     {
@@ -260,7 +236,7 @@ void TopOpeBRep_FacesFiller::Lminmax(const TopOpeBRep_LineInter& L, double& pmin
 //           at least one of the restriction edges of <ERL>.
 //=======================================================================
 bool TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInter&           L,
-                                            const NCollection_List<TopoDS_Shape>& ERL)
+                                            const NCollection_List<TopoDS_Shape>& ERL) const
 {
   bool isone = false;
   if (L.TypeLineCurve() == TopOpeBRep_WALKING)
@@ -271,6 +247,10 @@ bool TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInter&         
   double f, l;
   TopOpeBRep_FacesFiller::Lminmax(L, f, l);
   double d = std::abs(f - l);
+
+  double tol1, tol2;
+  myFacesIntersector->GetTolerances(tol1, tol2);
+  const double tolFF = std::max(tol1, tol2);
 
   {
     bool idINL = (L.INL() && (d == 0)); // null length line, made of VPoints only
@@ -298,7 +278,7 @@ bool TopOpeBRep_FacesFiller::LSameDomainERL(const TopOpeBRep_LineInter&         
   {
     const TopoDS_Edge& E      = TopoDS::Edge(it.Value());
     double             tolE   = BRep_Tool::Tolerance(E);
-    double             maxtol = std::max(tolE, GLOBAL_tolFF);
+    double             maxtol = std::max(tolE, tolFF);
     BRepAdaptor_Curve  BAC(E);
     f         = BAC.FirstParameter();
     l         = BAC.LastParameter();

@@ -2,6 +2,7 @@
 set(OCCT_TKG3d_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKG3d_GTests_FILES
+  Adaptor3d_TopolTool_Test.cxx
   Geom_BezierCurve_Test.cxx
   Geom_BezierSurface_Test.cxx
   Geom_BSplineCurve_Test.cxx
@@ -13,7 +14,11 @@ set(OCCT_TKG3d_GTests_FILES
   Geom_OffsetSurface_Test.cxx
   Geom_Plane_Test.cxx
   Geom_SurfaceEval_Test.cxx
+  Geom_TrimmedCurve_Test.cxx
+  Geom_RectangularTrimmedSurface_Test.cxx
+  GeomAdaptor_Test.cxx
   GeomAdaptor_Curve_Test.cxx
+  GeomAdaptor_Surface_Test.cxx
   GeomEval_AHTBezierCurve_Test.cxx
   GeomEval_AHTBezierSurface_Test.cxx
   GeomEval_CircularHelicoidSurface_Test.cxx
@@ -45,6 +50,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomGridEval_SurfaceOfRevolution_Test.cxx
   GeomGridEval_Torus_Test.cxx
   GeomHash_CurveHasher_Test.cxx
+  GeomHash_GeometryAppender_Test.cxx
   GeomHash_MeshHasher_Test.cxx
   GeomHash_SurfaceHasher_Test.cxx
 )

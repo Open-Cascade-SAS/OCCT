@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <gtest/gtest.h>
+#include <cfenv>
 #include <math_FunctionSetRoot.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
@@ -192,7 +193,89 @@ public:
     return true;
   }
 };
+
+// Linear systems with a scaled equation and an optional rank-one system.
+class ScaledLinearSystem : public math_FunctionSetWithDerivatives
+{
+public:
+  explicit ScaledLinearSystem(const double theScale          = 1.0e-10,
+                              const bool   theSingleEquation = false);
+  int  NbVariables() const override;
+  int  NbEquations() const override;
+  bool Value(const math_Vector& theX, math_Vector& theF) override;
+  bool Derivatives(const math_Vector& theX, math_Matrix& theD) override;
+  bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) override;
+
+private:
+  double myScale;          //!< Scale of the first equation.
+  bool   mySingleEquation; //!< Use one equation in three variables.
+};
+
+//==================================================================================================
+
+ScaledLinearSystem::ScaledLinearSystem(const double theScale, const bool theSingleEquation)
+    : myScale(theScale),
+      mySingleEquation(theSingleEquation)
+{
+}
+
+int ScaledLinearSystem::NbVariables() const
+{
+  return mySingleEquation ? 3 : 2;
+}
+
+int ScaledLinearSystem::NbEquations() const
+{
+  return mySingleEquation ? 1 : 2;
+}
+
+bool ScaledLinearSystem::Value(const math_Vector& theX, math_Vector& theF)
+{
+  theF.ChangeAt(0) = myScale * (theX.At(0) - 2.0);
+  if (mySingleEquation)
+  {
+    theF.ChangeAt(0) += myScale * (0.5 * theX.At(1) - 0.25 * theX.At(2));
+  }
+  else
+  {
+    theF.ChangeAt(1) = theX.At(1) - 1.0;
+  }
+  return true;
+}
+
+bool ScaledLinearSystem::Derivatives(const math_Vector&, math_Matrix& theD)
+{
+  theD.Init(0.0);
+  theD.ChangeAt(0, 0) = myScale;
+  if (mySingleEquation)
+  {
+    theD.ChangeAt(0, 1) = 0.5 * myScale;
+    theD.ChangeAt(0, 2) = -0.25 * myScale;
+  }
+  else
+  {
+    theD.ChangeAt(1, 1) = 1.0;
+  }
+  return true;
+}
+
+bool ScaledLinearSystem::Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD)
+{
+  return Value(theX, theF) && Derivatives(theX, theD);
+}
 } // namespace
+
+TEST(math_FunctionSetRoot, SmallNecessaryNewtonDirectionIsRetained)
+{
+  ScaledLinearSystem   aFunction;
+  math_Vector          aTolerance(1, 2, 1.0e-12);
+  math_Vector          aStart(1, 2, 0.0);
+  math_FunctionSetRoot aSolver(aFunction, aTolerance);
+  aSolver.Perform(aFunction, aStart);
+  ASSERT_TRUE(aSolver.IsDone());
+  EXPECT_NEAR(aSolver.Root().At(0), 2.0, 1.0e-12);
+  EXPECT_NEAR(aSolver.Root().At(1), 1.0, 1.0e-12);
+}
 
 TEST(math_FunctionSetRoot, LinearSystemBasic)
 {
@@ -635,4 +718,38 @@ TEST(math_FunctionSetRoot, BoundedSolution)
   // Check solution validity for linear system
   EXPECT_NEAR(root(1), 2.0, TOLERANCE);
   EXPECT_NEAR(root(2), 1.0, TOLERANCE);
+}
+
+TEST(math_FunctionSetRoot, SingleEquationMinimumNormDirectionWithScalesAndBounds)
+{
+  for (const double aScale : {-1.0e12, -1.0, -1.0e-12, 1.0e-12, 1.0, 1.0e12})
+  {
+    for (const bool aIsBounded : {false, true})
+    {
+      ScaledLinearSystem aFunction(aScale, true);
+      math_Vector        aTolerance(1, 3, 1.0e-12), aStart(1, 3, 0.0);
+      math_Vector        aLower(1, 3, -10.0), anUpper(1, 3, 10.0);
+      if (aIsBounded)
+      {
+        aLower.ChangeAt(0) = anUpper.ChangeAt(0) = 0.0;
+      }
+      math_FunctionSetRoot aSolver(aFunction, aTolerance);
+      aSolver.Perform(aFunction, aStart, aLower, anUpper);
+      ASSERT_TRUE(aSolver.IsDone());
+      EXPECT_NEAR(aSolver.Root().At(0), aIsBounded ? 0.0 : 32.0 / 21.0, 1.0e-12);
+      EXPECT_NEAR(aSolver.Root().At(1), aIsBounded ? 3.2 : 16.0 / 21.0, 1.0e-12);
+      EXPECT_NEAR(aSolver.Root().At(2), aIsBounded ? -1.6 : -8.0 / 21.0, 1.0e-12);
+    }
+  }
+}
+
+TEST(math_FunctionSetRoot, ZeroGradientDoesNotRaiseFloatingPointErrors)
+{
+  SingleVariableSystem aFunction;
+  math_Vector          aTolerance(1, 1, 1.0e-12), aStart(1, 1, 0.0);
+  math_FunctionSetRoot aSolver(aFunction, aTolerance);
+  std::feclearexcept(FE_ALL_EXCEPT);
+  aSolver.Perform(aFunction, aStart);
+  EXPECT_EQ(std::fetestexcept(FE_INVALID | FE_DIVBYZERO), 0);
+  std::feclearexcept(FE_ALL_EXCEPT);
 }

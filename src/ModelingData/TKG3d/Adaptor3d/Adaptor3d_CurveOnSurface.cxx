@@ -13,6 +13,7 @@
 
 #define No_Standard_OutOfRange
 
+#include <gp_Dir2d.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 
 #include <Adaptor2d_Curve2d.hxx>
@@ -111,14 +112,10 @@ static gp_Vec SetLinearForm(const gp_Vec2d& DW,
                             const gp_Vec&   D3UVV)
 {
   gp_Vec V31, V32, V33, V34, V3;
-  V31.SetLinearForm(DW.X(), D1U, D2W.X() * DW.X(), D2U, D2W.X() * DW.Y(), D2UV);
+  V31.SetLinearForm(D3W.X(), D1U, D2W.X() * DW.X(), D2U, D2W.X() * DW.Y(), D2UV);
   V31.SetLinearForm(D3W.Y(), D1V, D2W.Y() * DW.X(), D2UV, D2W.Y() * DW.Y(), D2V, V31);
   V32.SetLinearForm(DW.X() * DW.X() * DW.Y(), D3UUV, DW.X() * DW.Y() * DW.Y(), D3UVV);
-  V32.SetLinearForm(D2W.X() * DW.Y() + DW.X() * D2W.Y(),
-                    D2UV,
-                    DW.X() * DW.Y() * DW.Y(),
-                    D3UVV,
-                    V32);
+  V32.SetLinearForm(D2W.X() * DW.Y() + DW.X() * D2W.Y(), D2UV, V32);
   V33.SetLinearForm(2 * D2W.X() * DW.X(),
                     D2U,
                     DW.X() * DW.X() * DW.X(),
@@ -892,8 +889,7 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const occ::handle<Adaptor2d_C
     : myType(GeomAbs_OtherCurve),
       myIntCont(GeomAbs_CN)
 {
-  Load(S);
-  Load(C);
+  Load(C, S);
 }
 
 //=================================================================================================
@@ -932,47 +928,54 @@ occ::handle<Adaptor3d_Curve> Adaptor3d_CurveOnSurface::ShallowCopy() const
 void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurface = S;
-  if (!myCurve.IsNull())
-  {
-    EvalKPart();
-  }
+  rebuild();
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C)
 {
   myCurve = C;
-  if (mySurface.IsNull())
+  rebuild();
+}
+
+//==================================================================================================
+
+void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C,
+                                    const occ::handle<Adaptor3d_Surface>& S)
+{
+  myCurve   = C;
+  mySurface = S;
+  rebuild();
+}
+
+//==================================================================================================
+
+void Adaptor3d_CurveOnSurface::rebuild()
+{
+  myFirstSurf.Nullify();
+  myLastSurf.Nullify();
+  myIntervals.Nullify();
+  myIntCont = GeomAbs_CN;
+  myType    = GeomAbs_OtherCurve;
+  if (myCurve.IsNull() || mySurface.IsNull())
   {
     return;
   }
-
   EvalKPart();
-
-  GeomAbs_SurfaceType SType = mySurface->GetType();
-  if (SType == GeomAbs_OffsetSurface)
+  GeomAbs_SurfaceType aType = mySurface->GetType();
+  if (aType == GeomAbs_OffsetSurface)
   {
-    SType = mySurface->BasisSurface()->GetType();
+    aType = mySurface->BasisSurface()->GetType();
   }
-
-  if (SType == GeomAbs_BSplineSurface || SType == GeomAbs_SurfaceOfExtrusion
-      || SType == GeomAbs_SurfaceOfRevolution)
+  if (aType == GeomAbs_BSplineSurface || aType == GeomAbs_SurfaceOfExtrusion
+      || aType == GeomAbs_SurfaceOfRevolution)
   {
     EvalFirstLastSurf();
   }
 }
 
-//=================================================================================================
-
-void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C,
-                                    const occ::handle<Adaptor3d_Surface>& S)
-{
-  Load(C);
-  Load(S);
-}
-
-//=================================================================================================
+//==================================================================================================
 
 double Adaptor3d_CurveOnSurface::FirstParameter() const
 {
@@ -1020,7 +1023,7 @@ static void AddIntervals(const occ::handle<NCollection_HSequence<double>>& thePa
   for (int i = 1; i <= nsol; i++)
   {
     double param = theRoots.Value(i);
-    if (param - theParameters->Value(1) < theTol)
+    if (param <= theParameters->Value(1) || param - theParameters->Value(1) < theTol)
     { // skip param if equal to or less than theParameters(1)
       continue;
     }
@@ -1077,6 +1080,8 @@ int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
   {
     aIntervals->Append(TabC(i));
   }
+  // Every surface knot bounds a polynomial patch in a CN partition.
+  const double aMergeTolerance = S == GeomAbs_CN ? 0.0 : Tol;
 
   if (nu > 1)
   {
@@ -1086,7 +1091,7 @@ int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
       U = TabU.Value(iu);
       Adaptor3d_InterFunc Func(myCurve, U, 1);
       math_FunctionRoots  Resol(Func, Tdeb, Tfin, NbSample, Tol, Tol, Tol, 0.);
-      AddIntervals(aIntervals, Resol, Tol);
+      AddIntervals(aIntervals, Resol, aMergeTolerance);
     }
   }
   if (nv > 1)
@@ -1097,7 +1102,7 @@ int Adaptor3d_CurveOnSurface::NbIntervals(const GeomAbs_Shape S) const
       V = TabV.Value(iv);
       Adaptor3d_InterFunc Func(myCurve, V, 2);
       math_FunctionRoots  Resol(Func, Tdeb, Tfin, NbSample, Tol, Tol, Tol, 0.);
-      AddIntervals(aIntervals, Resol, Tol);
+      AddIntervals(aIntervals, Resol, aMergeTolerance);
     }
   }
 
@@ -1363,10 +1368,32 @@ gp_Vec Adaptor3d_CurveOnSurface::EvalDN(const double theU, const int theN) const
 
 double Adaptor3d_CurveOnSurface::Resolution(const double R3d) const
 {
-  double ru, rv;
-  ru = mySurface->UResolution(R3d);
-  rv = mySurface->VResolution(R3d);
-  return myCurve->Resolution(std::min(ru, rv));
+  return Resolution(*myCurve, *mySurface, R3d);
+}
+
+//==================================================================================================
+
+double Adaptor3d_CurveOnSurface::Resolution(const Adaptor2d_Curve2d& theCurve,
+                                            const Adaptor3d_Surface& theSurface,
+                                            const double             theTolerance)
+{
+  // An isoparametric line varies in only one surface parameter. The
+  // resolution of the constant parameter does not constrain its step.
+  if (theCurve.GetType() == GeomAbs_Line)
+  {
+    const gp_Dir2d aDirection = theCurve.Line().Direction();
+    if (aDirection.X() == 0.0)
+    {
+      return theCurve.Resolution(theSurface.VResolution(theTolerance));
+    }
+    if (aDirection.Y() == 0.0)
+    {
+      return theCurve.Resolution(theSurface.UResolution(theTolerance));
+    }
+  }
+  const double aRU = theSurface.UResolution(theTolerance);
+  const double aRV = theSurface.VResolution(theTolerance);
+  return theCurve.Resolution(std::min(aRU, aRV));
 }
 
 //=================================================================================================

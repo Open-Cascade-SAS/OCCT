@@ -589,7 +589,7 @@ const NCollection_List<TopoDS_Shape>& LocOpe_Spliter::DescendantShapes(const Top
   }
   else
   {
-    static NCollection_List<TopoDS_Shape> empty;
+    static const NCollection_List<TopoDS_Shape> empty;
     return empty;
   }
 }

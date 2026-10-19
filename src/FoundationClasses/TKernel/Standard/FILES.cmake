@@ -71,6 +71,8 @@ set(OCCT_Standard_FILES
 
   Standard_ProgramError.hxx
   Standard_RangeError.hxx
+  Standard_SHA256.cxx
+  Standard_SHA256.hxx
   Standard_ReadBuffer.hxx
   Standard_ReadLineBuffer.hxx
   Standard_Real.cxx
