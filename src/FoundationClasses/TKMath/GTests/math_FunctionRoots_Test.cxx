@@ -15,6 +15,7 @@
 #include <math_FunctionSample.hxx>
 #include <math_FunctionRoots.hxx>
 #include <math_FunctionWithDerivative.hxx>
+#include <Precision.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <StdFail_NotDone.hxx>
@@ -581,17 +582,15 @@ TEST(MathFunctionRootsTest, StateNumberAccess)
 
 TEST(MathFunctionRootsTest, ShiftedTarget)
 {
-  // Test finding roots of F(x) - K = 0 with non-zero K
-  QuadraticWithDerivative aFunc; // f(x) = x^2 - 4
+  // F(x) - (-3) = x*x - 1 has two simple roots.
+  constexpr double         aTolerance = Precision::PConfusion();
+  QuadraticWithDerivative  aFunc;
+  const math_FunctionRoots aRootFinder(aFunc, -2.0, 2.0, 20, aTolerance, aTolerance, 0.0, -3.0);
 
-  // Find roots of f(x) - (-4) = 0, i.e., x^2 = 0, so x = 0
-  math_FunctionRoots aRootFinder(aFunc, -2.0, 2.0, 20, 1.0e-10, 1.0e-10, 0.0, -4.0);
-
-  EXPECT_TRUE(aRootFinder.IsDone()) << "Should successfully find shifted roots";
-  EXPECT_EQ(aRootFinder.NbSolutions(), 1) << "Should find 1 root for x^2 = 0";
-
-  double aRoot = aRootFinder.Value(1);
-  EXPECT_NEAR(aRoot, 0.0, 1.0e-8) << "Root should be x = 0";
+  ASSERT_TRUE(aRootFinder.IsDone());
+  ASSERT_EQ(aRootFinder.NbSolutions(), 2);
+  EXPECT_NEAR(aRootFinder.Value(1), -1.0, aTolerance);
+  EXPECT_NEAR(aRootFinder.Value(2), 1.0, aTolerance);
 }
 
 TEST(MathFunctionRootsTest, NotDoneExceptions)

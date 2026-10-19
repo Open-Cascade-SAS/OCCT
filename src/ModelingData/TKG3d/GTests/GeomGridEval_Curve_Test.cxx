@@ -1328,7 +1328,8 @@ TEST(GeomGridEval_CurveTest, AlternateSplineEvaluationMatchesScalarEvaluation)
     new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 1);
   aBezier->SetEvalRepresentation(aDescriptor);
   aSpline->SetEvalRepresentation(aDescriptor);
-  const std::array<occ::handle<Geom_Curve>, 2> aCurves{aBezier, aSpline};
+  const std::array<occ::handle<Geom_Curve>, 2> aCurves{occ::handle<Geom_Curve>(aBezier),
+                                                       occ::handle<Geom_Curve>(aSpline)};
   NCollection_Array1<double>                   aParameters(-2, -1);
   aParameters.ChangeAt(0) = 0.25;
   aParameters.ChangeAt(1) = 0.75;
