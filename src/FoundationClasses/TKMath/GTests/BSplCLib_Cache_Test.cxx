@@ -13,6 +13,7 @@
 
 #include <BSplCLib.hxx>
 #include <BSplCLib_Cache.hxx>
+#include <BSplCLib_CacheParams.hxx>
 
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -29,6 +30,32 @@
 namespace
 {
 constexpr double THE_TOLERANCE = 1e-10;
+}
+
+//==================================================================================================
+
+TEST(BSplCLib_CacheParamsTest, InteriorParameterRemainsInLocatedSpan)
+{
+  for (const double aStart : {-1.0, -1.e16})
+  {
+    SCOPED_TRACE(aStart);
+    const double                     aKnotData[] = {aStart, aStart, 1.0, 2.0, 2.0};
+    const NCollection_Array1<double> aKnots(aKnotData[0], 1, 5);
+    BSplCLib_CacheParams             aParams(1, false, aKnots);
+    const double                     aBeforeKnot = std::nextafter(1.0, 0.0);
+    double                           aParameter  = aBeforeKnot;
+    aParams.LocateParameter(aParameter, aKnots);
+
+    ASSERT_EQ(aParams.SpanIndex, aParams.SpanIndexMin);
+    EXPECT_TRUE(aParams.IsCacheValid(aBeforeKnot));
+    EXPECT_FALSE(aParams.IsCacheValid(1.0));
+
+    aParameter = 1.0;
+    aParams.LocateParameter(aParameter, aKnots);
+    ASSERT_EQ(aParams.SpanIndex, aParams.SpanIndexMax);
+    EXPECT_TRUE(aParams.IsCacheValid(1.0));
+    EXPECT_FALSE(aParams.IsCacheValid(aBeforeKnot));
+  }
 }
 
 //=================================================================================================

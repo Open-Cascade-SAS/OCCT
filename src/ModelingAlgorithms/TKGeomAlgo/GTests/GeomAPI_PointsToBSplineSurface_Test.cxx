@@ -17,7 +17,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <NCollection_Array2.hxx>
 #include <Precision.hxx>
-#include <StdFail_NotDone.hxx>
 
 #include <gtest/gtest.h>
 
@@ -39,8 +38,19 @@ TEST(GeomAPI_PointsToBSplineSurface_Test, FailedDegenerateRebuildResetsDoneState
   aZPoints(2, 1) = 1.0;
   aZPoints(3, 1) = 0.0;
 
-  EXPECT_THROW(
-    anApprox.Init(aZPoints, 0.0, 1.0, 0.0, 0.0, 3, 5, GeomAbs_C2, Precision::Confusion()),
-    StdFail_NotDone);
+  EXPECT_NO_THROW(
+    anApprox.Init(aZPoints, 0.0, 1.0, 0.0, 0.0, 3, 5, GeomAbs_C2, Precision::Confusion()));
+  EXPECT_FALSE(anApprox.IsDone());
+}
+
+TEST(GeomAPI_PointsToBSplineSurface_Test, DegenerateSecondDirectionFailsWithoutResult)
+{
+  NCollection_Array2<double> aPoints(1, 1, 1, 3);
+  aPoints(1, 1) = 0.0;
+  aPoints(1, 2) = 1.0;
+  aPoints(1, 3) = 0.0;
+  GeomAPI_PointsToBSplineSurface anApprox;
+  EXPECT_NO_THROW(
+    anApprox.Init(aPoints, 0.0, 0.0, 0.0, 1.0, 3, 5, GeomAbs_C2, Precision::Confusion()));
   EXPECT_FALSE(anApprox.IsDone());
 }

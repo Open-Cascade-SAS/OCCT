@@ -13,4 +13,10 @@ set(OCCT_TCollection_FILES
   TCollection_HAsciiString.lxx
   TCollection_HExtendedString.cxx
   TCollection_HExtendedString.hxx
+  TCollection_UtfIterator.hxx
+  TCollection_UtfIterator.lxx
+  TCollection_UtfString.hxx
+  TCollection_UtfString.lxx
+  TCollection_UtfStringTool.hxx
+  TCollection_UtfStringTool.cxx
 )

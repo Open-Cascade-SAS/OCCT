@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include "RWStepDimTol_LengthMeasure.pxx"
 #include "RWStepDimTol_RWUnequallyDisposedGeometricTolerance.pxx"
 
 #include <Interface_EntityIterator.hxx>
@@ -64,13 +65,8 @@ void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::ReadStep(
 
   // own fields of UnequallyDisposedGeometricTolerance
 
-  occ::handle<StepBasic_LengthMeasureWithUnit> aDisplacement;
-  data->ReadEntity(num,
-                   5,
-                   "displacement",
-                   ach,
-                   STANDARD_TYPE(StepBasic_LengthMeasureWithUnit),
-                   aDisplacement);
+  occ::handle<Standard_Transient> aDisplacement;
+  RWStepDimTol_LengthMeasure::Read(data, num, 5, "displacement", ach, aDisplacement);
 
   // Initialize entity
   ent->Init(aName, aDescription, aMagnitude, aTolerancedShapeAspect, aDisplacement);
@@ -108,4 +104,6 @@ void RWStepDimTol_RWUnequallyDisposedGeometricTolerance::Share(
   iter.AddItem(ent->Magnitude());
 
   iter.AddItem(ent->TolerancedShapeAspect().Value());
+
+  iter.AddItem(ent->Displacement());
 }

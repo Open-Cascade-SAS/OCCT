@@ -528,6 +528,11 @@ void ChFi3d_ChercheBordsLibres(const ChFiDS_Map&    myVEMap,
 int ChFi3d_NbNotDegeneratedEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap);
 int ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap);
 
+//! Counts non-degenerate incident edges without construction G2 continuity.
+//! @param[in] Vtx vertex to inspect
+//! @param[in] VEMap vertex-to-edge adjacency map
+//! @param[in] EFmap edge-to-face adjacency map
+//! @return sharp edge count
 int ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
                               const ChFiDS_Map&    VEMap,
                               const ChFiDS_Map&    EFmap);

@@ -4,7 +4,7 @@ puts "====================================="
 puts ""
 
 set viewname "vleft"
-set length 278.723
+set length 278.715
 
 restore [locate_data_file bug27341_save.brep] a
 COMPUTE_HLR $viewname $algotype

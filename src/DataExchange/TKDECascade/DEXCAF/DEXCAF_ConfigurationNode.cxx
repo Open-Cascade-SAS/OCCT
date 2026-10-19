@@ -176,3 +176,10 @@ bool DEXCAF_ConfigurationNode::CheckContent(const occ::handle<NCollection_Buffer
   const char* aBytes = (const char*)theBuffer->Data();
   return ::strncmp(aBytes, "BINFILE", 7) == 0;
 }
+
+//==================================================================================================
+
+bool DEXCAF_ConfigurationNode::IsStreamSupported() const
+{
+  return true;
+}

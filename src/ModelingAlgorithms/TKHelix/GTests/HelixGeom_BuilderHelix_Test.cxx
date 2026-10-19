@@ -20,6 +20,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 
+#include <cmath>
+
 class HelixGeom_BuilderHelix_Test : public ::testing::Test
 {
 protected:
@@ -64,6 +66,34 @@ TEST_F(HelixGeom_BuilderHelix_Test, MultipleCoils)
   EXPECT_EQ(aCurves.Length(), 3); // Should split into 3 coils
 }
 
+TEST_F(HelixGeom_BuilderHelix_Test, TaperedMultipleCoilsPreserveRadius)
+{
+  const double aT1    = 0.7;
+  const double aT2    = aT1 + 2.5 * M_PI * 2.0;
+  const double aPitch = 4.6;
+  const double aR0    = 3.2;
+  const double aTaper = 0.23;
+  const double aDR    = aPitch / (2.0 * M_PI) * std::tan(aTaper);
+
+  HelixGeom_BuilderHelix aBuilder;
+  aBuilder.SetPosition(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X)));
+  aBuilder.SetTolerance(myTolerance);
+  aBuilder.SetCurveParameters(aT1, aT2, aPitch, aR0, aTaper, true);
+  aBuilder.Perform();
+
+  ASSERT_EQ(aBuilder.ErrorStatus(), 0);
+  const NCollection_Sequence<occ::handle<Geom_Curve>>& aCurves = aBuilder.Curves();
+  ASSERT_EQ(aCurves.Length(), 3);
+
+  gp_Pnt aStart, anEnd;
+  aCurves.First()->D0(aCurves.First()->FirstParameter(), aStart);
+  aCurves.Last()->D0(aCurves.Last()->LastParameter(), anEnd);
+  EXPECT_NEAR(aStart.X(), aR0 * std::cos(aT1), myTolerance);
+  EXPECT_NEAR(aStart.Y(), aR0 * std::sin(aT1), myTolerance);
+  EXPECT_NEAR(anEnd.X(), (aR0 + aDR * (aT2 - aT1)) * std::cos(aT2), myTolerance);
+  EXPECT_NEAR(anEnd.Y(), (aR0 + aDR * (aT2 - aT1)) * std::sin(aT2), myTolerance);
+}
+
 TEST_F(HelixGeom_BuilderHelix_Test, PositionGetterSetter)
 {
   HelixGeom_BuilderHelix aBuilder;
@@ -101,4 +131,56 @@ TEST_F(HelixGeom_BuilderHelix_Test, ParameterManagement)
   EXPECT_DOUBLE_EQ(aRStart, aRStart_out);
   EXPECT_DOUBLE_EQ(aTaperAngle, aTaperAngle_out);
   EXPECT_EQ(aIsClockwise, aIsClockwise_out);
+}
+
+//==================================================================================================
+
+TEST(HelixGeom_BuilderHelixTest, SmallTaperIsKeptAcrossCoils)
+{
+  const double aFirst       = 0.7;
+  const double aLast        = aFirst + 5 * M_PI;
+  const double aPitch       = 4.6;
+  const double aStartRadius = 3.2;
+  const double aTolerance   = 1.e-7;
+  for (const double aTaper : {-5.e-5, 0.0, 5.e-5})
+  {
+    SCOPED_TRACE(aTaper);
+    HelixGeom_BuilderHelix aBuilder;
+    aBuilder.SetTolerance(aTolerance);
+    aBuilder.SetCurveParameters(aFirst, aLast, aPitch, aStartRadius, aTaper, true);
+    aBuilder.Perform();
+    ASSERT_EQ(aBuilder.ErrorStatus(), 0);
+    const auto& aCurves = aBuilder.Curves();
+    ASSERT_EQ(aCurves.Length(), 3);
+    const double aRadius = aStartRadius + aPitch / (2 * M_PI) * std::tan(aTaper) * (aLast - aFirst);
+    const gp_Pnt anEnd   = aCurves.Last()->EvalD0(aCurves.Last()->LastParameter());
+    EXPECT_NEAR(anEnd.X(), aRadius * std::cos(aLast), aTolerance);
+    EXPECT_NEAR(anEnd.Y(), aRadius * std::sin(aLast), aTolerance);
+    for (int anIndex = 2; anIndex <= aCurves.Length(); ++anIndex)
+    {
+      EXPECT_LE(aCurves(anIndex - 1)
+                  ->EvalD0(aCurves(anIndex - 1)->LastParameter())
+                  .Distance(aCurves(anIndex)->EvalD0(aCurves(anIndex)->FirstParameter())),
+                2 * aTolerance);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(HelixGeom_BuilderHelixTest, ShortFinalCoilKeepsRequestedEndpoint)
+{
+  const double           aLast      = 2 * M_PI + 1.e-7;
+  const double           aPitch     = 1.e4;
+  const double           aTolerance = 1.e-7;
+  HelixGeom_BuilderHelix aBuilder;
+  aBuilder.SetTolerance(aTolerance);
+  aBuilder.SetCurveParameters(0, aLast, aPitch, 3.2, 0, true);
+  aBuilder.Perform();
+  ASSERT_EQ(aBuilder.ErrorStatus(), 0);
+  const auto& aCurves = aBuilder.Curves();
+  ASSERT_FALSE(aCurves.IsEmpty());
+  const gp_Pnt anEnd = aCurves.Last()->EvalD0(aCurves.Last()->LastParameter());
+  EXPECT_NEAR(anEnd.Z(), aPitch / (2 * M_PI) * aLast, aTolerance);
+  EXPECT_NEAR(anEnd.Y(), 3.2 * std::sin(aLast), aTolerance);
 }

@@ -22,6 +22,10 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <GCPnts_DistFunction.hxx>
 #include <GCPnts_DistFunction2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
+
+#include <cmath>
 
 //! Auxiliary tool to resolve 2D/3D curve classes.
 template <class TheCurve>
@@ -38,6 +42,16 @@ struct GCPnts_TCurveTypes<Adaptor3d_Curve>
   typedef Geom_BSplineCurve     BSplineCurve;
   typedef GCPnts_DistFunction   DistFunction;
   typedef GCPnts_DistFunctionMV DistFunctionMV;
+
+  //! Return the curve speed in its native parameter units.
+  //! @param[in] theCurve curve to evaluate
+  //! @param[in] theParameter evaluation parameter
+  //! @return magnitude of the first derivative
+  static double D1Magnitude(const Adaptor3d_Curve& theCurve, const double theParameter)
+  {
+    const gp_Vec aD1 = theCurve.EvalDN(theParameter, 1);
+    return std::hypot(aD1.X(), aD1.Y(), aD1.Z());
+  }
 };
 
 //! Auxiliary tool to resolve 2D curve classes.
@@ -49,6 +63,16 @@ struct GCPnts_TCurveTypes<Adaptor2d_Curve2d>
   typedef Geom2d_BSplineCurve     BSplineCurve;
   typedef GCPnts_DistFunction2d   DistFunction;
   typedef GCPnts_DistFunction2dMV DistFunctionMV;
+
+  //! Return the curve speed in its native parameter units.
+  //! @param[in] theCurve curve to evaluate
+  //! @param[in] theParameter evaluation parameter
+  //! @return magnitude of the first derivative
+  static double D1Magnitude(const Adaptor2d_Curve2d& theCurve, const double theParameter)
+  {
+    const gp_Vec2d aD1 = theCurve.EvalDN(theParameter, 1);
+    return std::hypot(aD1.X(), aD1.Y());
+  }
 };
 
 #endif // _GCPnts_TCurveTypes_HeaderFile

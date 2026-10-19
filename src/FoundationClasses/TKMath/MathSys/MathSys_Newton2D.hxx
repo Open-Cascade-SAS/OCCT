@@ -455,8 +455,6 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
                        theOptions.AllowSoftBounds,
                        theOptions.AllowSoftBounds ? theOptions.SoftBoundsExtension : 0.0);
 
-        const double                aF[2]          = {aF1, aF2};
-        const double                aJ[2][2]       = {{aJ11, aJ12}, {aJ12, aJ22}};
         const std::array<double, 2> aProjectedStep = {aNewX[0] - aRes.X[0], aNewX[1] - aRes.X[1]};
         const long double           aProjectedDerivative =
           Utils::MeritDirectionalDerivative(aF, aJ, aProjectedStep);

@@ -41,7 +41,7 @@ static bool _Value(const Adaptor3d_Curve& C1,
     return false;
   }
 
-  F = C2.Value(v).Distance(C1.Value(u));
+  F = C2.EvalD0(v).SquareDistance(C1.EvalD0(u));
   return true;
 }
 
@@ -60,7 +60,7 @@ static bool _Value(const Adaptor2d_Curve2d& C1,
     return false;
   }
 
-  F = C2.Value(v).Distance(C1.Value(u));
+  F = C2.EvalD0(v).SquareDistance(C1.EvalD0(u));
   return true;
 }
 

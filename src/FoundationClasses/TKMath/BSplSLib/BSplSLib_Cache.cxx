@@ -20,6 +20,8 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
+#include <algorithm>
+#include <iterator>
 #include <utility>
 
 IMPLEMENT_STANDARD_RTTIEXT(BSplSLib_Cache, Standard_Transient)
@@ -144,19 +146,31 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
   {
     // Block 1: Evaluate derivatives along variable with minimal degree for D1_max
     // Writes to offset aRowStride (start of second row)
-    // If Rational, we need full row (up to aMinDeriv).
-    // If Not Rational, we can optimize: we strictly need (1,0) and (1,1).
-    // D1Local calls with (1,1) -> aMinDeriv=1. We need up to 1.
-    // D2Local calls with (2,2) -> aMinDeriv=2. We need up to 1 for mixed D2.
-    // So usually min(aMinDeriv, 1) is sufficient for non-rational.
-    const int aDeriv = theIsRational ? aMinDeriv : std::min(aMinDeriv, 1);
+    // D1 needs only the value of this row; its mixed derivative is unused.
+    // D2 retains the full rational row and the non-rational mixed derivative.
+    const int aDeriv = aMaxDeriv == 1 && aMinDeriv == 1 ? 0
+                       : theIsRational                  ? aMinDeriv
+                                                        : std::min(aMinDeriv, 1);
 
-    PLib::EvalPolynomial(aMinParam,
-                         aDeriv,
-                         isMaxU ? theParamsV.Degree : theParamsU.Degree,
-                         aDimension,
-                         aTransientCoeffs[aCacheCols],
-                         theResultArray[aRowStride]);
+    const int aMinDegree = isMaxU ? theParamsV.Degree : theParamsU.Degree;
+    if (aDeriv == 0)
+    {
+      PLib::NoDerivativeEvalPolynomial(aMinParam,
+                                       aMinDegree,
+                                       aDimension,
+                                       aMinDegree * aDimension,
+                                       aTransientCoeffs[aCacheCols],
+                                       theResultArray[aRowStride]);
+    }
+    else
+    {
+      PLib::EvalPolynomial(aMinParam,
+                           aDeriv,
+                           aMinDegree,
+                           aDimension,
+                           aTransientCoeffs[aCacheCols],
+                           theResultArray[aRowStride]);
+    }
 
     if (aMaxDeriv > 1)
     {
@@ -190,6 +204,24 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
 
   if (theIsRational)
   {
+    if (aMaxDeriv == 1 && aMinDeriv == 1)
+    {
+      // First-order quotient rule in the existing max/min parameter layout.
+      // Preserve homogeneous inputs until both tangents have been computed.
+      const double aInverseWeight = 1.0 / theResultArray[3];
+      double       aCartesian[9];
+      for (int aCoordIndex = 0; aCoordIndex < 3; ++aCoordIndex)
+      {
+        const double aPoint     = theResultArray[aCoordIndex] * aInverseWeight;
+        aCartesian[aCoordIndex] = aPoint;
+        aCartesian[3 + aCoordIndex] =
+          (theResultArray[4 + aCoordIndex] - theResultArray[7] * aPoint) * aInverseWeight;
+        aCartesian[6 + aCoordIndex] =
+          (theResultArray[8 + aCoordIndex] - theResultArray[11] * aPoint) * aInverseWeight;
+      }
+      std::copy(std::begin(aCartesian), std::end(aCartesian), theResultArray);
+      return;
+    }
     // RationalDerivative is NOT safe for in-place operation because it reads 4-component data
     // and writes 3-component data to potentially overlapping memory locations.
     // We need a separate temporary storage for the output.

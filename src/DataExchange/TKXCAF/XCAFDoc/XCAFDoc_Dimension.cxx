@@ -239,10 +239,9 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
     tnBuild.Generated(theObject->GetPath());
   }
 
-  if (theObject->GetType() == XCAFDimTolObjects_DimensionType_Location_Oriented)
+  gp_Dir aD;
+  if (theObject->GetDirection(aD))
   {
-    gp_Dir aD;
-    theObject->GetDirection(aD);
     setRealArrayXYZ(Label().FindChild(ChildLab_Dir), aD.XYZ());
   }
 

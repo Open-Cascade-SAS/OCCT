@@ -50,7 +50,7 @@ class TCollection_AsciiString;
 //! - Method ::Length() return the number of 16-bit code units, not the number of Unicode symbols.
 //! - Methods taking/returning symbol index work with 16-bit code units, not true Unicode symbols,
 //!   including ::Remove(), ::SetValue(), ::Value(), ::Search(), ::Trunc() and others.
-//! If application needs to process surrogate pairs, NCollection_UtfIterator<char16_t> class can be
+//! If application needs to process surrogate pairs, TCollection_UtfIterator<char16_t> class can be
 //! used for iterating through Unicode string (UTF-32 code unit will be returned for each position).
 class TCollection_ExtendedString
 {
@@ -146,31 +146,20 @@ public:
 
 #if Standard_CPP17_OR_HIGHER
   //! Initializes an ExtendedString from a std::u16string_view.
+  //! @pre the code-unit count fits in int
   //! @param[in] theStringView the string view to copy
   explicit TCollection_ExtendedString(const std::u16string_view& theStringView)
+      : TCollection_ExtendedString(theStringView.empty() ? u"" : theStringView.data(),
+                                   static_cast<int>(theStringView.size()))
   {
-    myLength = static_cast<int>(theStringView.size());
-    if (myLength == 0)
-    {
-      allocate(0);
-    }
-    else
-    {
-      allocate(myLength);
-      memcpy(myString, theStringView.data(), myLength * sizeof(char16_t));
-    }
   }
 
   //! Assignment from a std::u16string_view.
   //! @param[in] theStringView the string view to copy
   TCollection_ExtendedString& operator=(const std::u16string_view& theStringView)
   {
-    const int aNewLen = static_cast<int>(theStringView.size());
-    reallocate(aNewLen);
-    if (aNewLen > 0)
-    {
-      memcpy(myString, theStringView.data(), aNewLen * sizeof(char16_t));
-    }
+    TCollection_ExtendedString aCopy(theStringView);
+    Swap(aCopy);
     return *this;
   }
 
@@ -261,6 +250,7 @@ public:
 
 #if Standard_CPP17_OR_HIGHER
   //! Appends the std::u16string_view to this extended string.
+  //! @pre the resulting code-unit count fits in int
   //! @param[in] theStringView the string view to append
   void AssignCat(const std::u16string_view& theStringView)
   {
@@ -268,10 +258,7 @@ public:
     {
       return;
     }
-    const int anOtherLen = static_cast<int>(theStringView.size());
-    const int anOldLen   = myLength;
-    reallocate(myLength + anOtherLen);
-    memcpy(myString + anOldLen, theStringView.data(), anOtherLen * sizeof(char16_t));
+    AssignCat(theStringView.data(), static_cast<int>(theStringView.size()));
   }
 
   //! Appends the std::u16string_view to this extended string (alias of AssignCat()).

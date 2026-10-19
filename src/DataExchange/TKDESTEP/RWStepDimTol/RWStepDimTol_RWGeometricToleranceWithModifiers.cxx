@@ -81,67 +81,7 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
       if (data->ParamType(num2, i0) == Interface_ParamEnum)
       {
         const char* text = data->ParamCValue(num2, i0);
-        if (strcmp(text, ".ANY_CROSS_SECTION.") == 0)
-        {
-          anIt0 = StepDimTol_GTMAnyCrossSection;
-        }
-        else if (strcmp(text, ".COMMON_ZONE.") == 0)
-        {
-          anIt0 = StepDimTol_GTMCommonZone;
-        }
-        else if (strcmp(text, ".EACH_RADIAL_ELEMENT.") == 0)
-        {
-          anIt0 = StepDimTol_GTMEachRadialElement;
-        }
-        else if (strcmp(text, ".FREE_STATE.") == 0)
-        {
-          anIt0 = StepDimTol_GTMFreeState;
-        }
-        else if (strcmp(text, ".LEAST_MATERIAL_REQUIREMENT.") == 0)
-        {
-          anIt0 = StepDimTol_GTMLeastMaterialRequirement;
-        }
-        else if (strcmp(text, ".LINE_ELEMENT.") == 0)
-        {
-          anIt0 = StepDimTol_GTMLineElement;
-        }
-        else if (strcmp(text, ".MAJOR_DIAMETER.") == 0)
-        {
-          anIt0 = StepDimTol_GTMMajorDiameter;
-        }
-        else if (strcmp(text, ".MAXIMUM_MATERIAL_REQUIREMENT.") == 0)
-        {
-          anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
-        }
-        else if (strcmp(text, ".MINOR_DIAMETER.") == 0)
-        {
-          anIt0 = StepDimTol_GTMMinorDiameter;
-        }
-        else if (strcmp(text, ".NOT_CONVEX.") == 0)
-        {
-          anIt0 = StepDimTol_GTMNotConvex;
-        }
-        else if (strcmp(text, ".PITCH_DIAMETER.") == 0)
-        {
-          anIt0 = StepDimTol_GTMPitchDiameter;
-        }
-        else if (strcmp(text, ".RECIPROCITY_REQUIREMENT.") == 0)
-        {
-          anIt0 = StepDimTol_GTMReciprocityRequirement;
-        }
-        else if (strcmp(text, ".SEPARATE_REQUIREMENT.") == 0)
-        {
-          anIt0 = StepDimTol_GTMSeparateRequirement;
-        }
-        else if (strcmp(text, ".STATISTICAL_TOLERANCE.") == 0)
-        {
-          anIt0 = StepDimTol_GTMStatisticalTolerance;
-        }
-        else if (strcmp(text, ".TANGENT_PLANE.") == 0)
-        {
-          anIt0 = StepDimTol_GTMTangentPlane;
-        }
-        else
+        if (!GetModifier(text, anIt0))
         {
           ach->AddFail("Parameter #5 (modifiers) has not allowed value");
         }
@@ -180,53 +120,14 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::WriteStep(
   SW.OpenSub();
   for (int i = 1; i <= ent->NbModifiers(); i++)
   {
-    switch (ent->ModifierValue(i))
+    const char* aName = GetModifierName(ent->ModifierValue(i));
+    if (aName != nullptr)
     {
-      case StepDimTol_GTMAnyCrossSection:
-        SW.SendEnum(".ANY_CROSS_SECTION.");
-        break;
-      case StepDimTol_GTMCommonZone:
-        SW.SendEnum(".COMMON_ZONE.");
-        break;
-      case StepDimTol_GTMEachRadialElement:
-        SW.SendEnum(".EACH_RADIAL_ELEMENT.");
-        break;
-      case StepDimTol_GTMFreeState:
-        SW.SendEnum(".FREE_STATE.");
-        break;
-      case StepDimTol_GTMLeastMaterialRequirement:
-        SW.SendEnum(".LEAST_MATERIAL_REQUIREMENT.");
-        break;
-      case StepDimTol_GTMLineElement:
-        SW.SendEnum(".LINE_ELEMENT.");
-        break;
-      case StepDimTol_GTMMajorDiameter:
-        SW.SendEnum(".MAJOR_DIAMETER.");
-        break;
-      case StepDimTol_GTMMaximumMaterialRequirement:
-        SW.SendEnum(".MAXIMUM_MATERIAL_REQUIREMENT.");
-        break;
-      case StepDimTol_GTMMinorDiameter:
-        SW.SendEnum(".MINOR_DIAMETER.");
-        break;
-      case StepDimTol_GTMNotConvex:
-        SW.SendEnum(".NOT_CONVEX.");
-        break;
-      case StepDimTol_GTMPitchDiameter:
-        SW.SendEnum(".PITCH_DIAMETER.");
-        break;
-      case StepDimTol_GTMReciprocityRequirement:
-        SW.SendEnum(".RECIPROCITY_REQUIREMENT.");
-        break;
-      case StepDimTol_GTMSeparateRequirement:
-        SW.SendEnum(".SEPARATE_REQUIREMENT.");
-        break;
-      case StepDimTol_GTMStatisticalTolerance:
-        SW.SendEnum(".STATISTICAL_TOLERANCE.");
-        break;
-      case StepDimTol_GTMTangentPlane:
-        SW.SendEnum(".TANGENT_PLANE.");
-        break;
+      SW.SendEnum(aName);
+    }
+    else
+    {
+      SW.SendUndef();
     }
   }
   SW.CloseSub();
@@ -244,4 +145,50 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::Share(
   iter.AddItem(ent->Magnitude());
 
   iter.AddItem(ent->TolerancedShapeAspect().Value());
+}
+
+//==================================================================================================
+
+bool RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifier(
+  const char*                            theName,
+  StepDimTol_GeometricToleranceModifier& theModifier)
+{
+  for (int anIndex = StepDimTol_GTMAnyCrossSection; anIndex <= StepDimTol_GTMTangentPlane;
+       ++anIndex)
+  {
+    const StepDimTol_GeometricToleranceModifier aModifier =
+      static_cast<StepDimTol_GeometricToleranceModifier>(anIndex);
+    if (strcmp(theName, GetModifierName(aModifier)) == 0)
+    {
+      theModifier = aModifier;
+      return true;
+    }
+  }
+  return false;
+}
+
+//==================================================================================================
+
+const char* RWStepDimTol_RWGeometricToleranceWithModifiers::GetModifierName(
+  const StepDimTol_GeometricToleranceModifier theModifier)
+{
+  // Names follow the contiguous StepDimTol_GeometricToleranceModifier enumeration.
+  static constexpr const char* THE_NAMES[] = {".ANY_CROSS_SECTION.",
+                                              ".COMMON_ZONE.",
+                                              ".EACH_RADIAL_ELEMENT.",
+                                              ".FREE_STATE.",
+                                              ".LEAST_MATERIAL_REQUIREMENT.",
+                                              ".LINE_ELEMENT.",
+                                              ".MAJOR_DIAMETER.",
+                                              ".MAXIMUM_MATERIAL_REQUIREMENT.",
+                                              ".MINOR_DIAMETER.",
+                                              ".NOT_CONVEX.",
+                                              ".PITCH_DIAMETER.",
+                                              ".RECIPROCITY_REQUIREMENT.",
+                                              ".SEPARATE_REQUIREMENT.",
+                                              ".STATISTICAL_TOLERANCE.",
+                                              ".TANGENT_PLANE."};
+  return theModifier >= StepDimTol_GTMAnyCrossSection && theModifier <= StepDimTol_GTMTangentPlane
+           ? THE_NAMES[theModifier]
+           : nullptr;
 }

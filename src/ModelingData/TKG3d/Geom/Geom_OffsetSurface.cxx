@@ -31,8 +31,6 @@
 #include <Geom_Geometry.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetSurface.hxx>
-#include "Geom_OffsetSurfaceUtils.pxx"
-#include "Geom_OsculatingSurface.pxx"
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
@@ -61,6 +59,9 @@
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_HArray1.hxx>
+
+#include "Geom_OffsetSurfaceUtils.pxx"
+#include "Geom_OsculatingSurface.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)
 
@@ -900,9 +901,9 @@ occ::handle<Geom_Surface> Geom_OffsetSurface::Surface() const
   if (TheType == STANDARD_TYPE(Geom_Plane))
   {
     occ::handle<Geom_Plane> P = occ::down_cast<Geom_Plane>(Base);
-    // Plane normal is already available as Position().Direction().
+    // The UV normal changes sign when one in-plane axis is reversed.
     gp_Vec T(P->Position().Direction());
-    T *= offsetValue;
+    T *= P->Position().Direct() ? offsetValue : -offsetValue;
     Result = occ::down_cast<Geom_Plane>(P->Translated(T));
   }
   else if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))

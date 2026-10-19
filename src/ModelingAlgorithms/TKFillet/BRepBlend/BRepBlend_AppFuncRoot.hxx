@@ -165,12 +165,12 @@ protected:
                                         const double                 Tol2d);
 
 private:
-  Standard_EXPORT bool SearchPoint(Blend_AppFunction& Func, const double Param, Blend_Point& Pnt);
+  bool SearchPoint(Blend_AppFunction& Func, const double Param, Blend_Point& Pnt);
 
-  Standard_EXPORT bool SearchLocation(const double Param,
-                                      const int    FirstIndex,
-                                      const int    LastIndex,
-                                      int&         ParamIndex) const;
+  bool SearchLocation(const double Param,
+                      const int    FirstIndex,
+                      const int    LastIndex,
+                      int&         ParamIndex) const;
 
   occ::handle<BRepBlend_Line>           myLine;
   void*                                 myFunc;

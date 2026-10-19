@@ -1,3 +1,5 @@
+puts {TODO OCC00000 All: Error :  is WRONG because number of VERTEX entities in shape "r" is 25950}
+puts {TODO OCC00000 All: Error :  is WRONG because number of EDGE entities in shape "r" is 41999}
 pload XDE
 
 stepread [locate_data_file bug26261_ca07771-040x.stp] s *
