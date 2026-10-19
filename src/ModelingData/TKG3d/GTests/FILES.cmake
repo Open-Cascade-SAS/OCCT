@@ -14,6 +14,9 @@ set(OCCT_TKG3d_GTests_FILES
   Geom_OffsetSurface_Test.cxx
   Geom_Plane_Test.cxx
   Geom_SurfaceEval_Test.cxx
+  Geom_TrimmedCurve_Test.cxx
+  Geom_RectangularTrimmedSurface_Test.cxx
+  GeomAdaptor_Test.cxx
   GeomAdaptor_Curve_Test.cxx
   GeomAdaptor_Surface_Test.cxx
   GeomEval_AHTBezierCurve_Test.cxx

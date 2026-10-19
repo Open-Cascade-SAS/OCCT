@@ -53,6 +53,7 @@ public:
                                         const double                 EpsNul);
 
   //! Returns True if the computation has been done successfully.
+  //! Returns false if a callback fails, produces a non-finite value, or a child search fails.
   bool IsDone() const;
 
   //! Returns the number of intervals on which the function

@@ -22,6 +22,7 @@
 #include <gp_XYZ.hxx>
 #include <Standard_NullValue.hxx>
 
+#include <algorithm>
 #include <cmath>
 
 //! Internal helper namespace for 3D offset curve calculations.
@@ -222,87 +223,78 @@ inline bool CalculateD3(gp_Pnt&       theValue,
                         bool          theIsDirChange,
                         double        theTolerance = gp::Resolution())
 {
-  // P(u) = p(u) + Offset * Ndir / R
-  // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
+  // P = p + d*N/R, where p is the basis curve, d is the offset,
+  // N = p' x theDirXYZ and R = |N|. Primes denote parameter derivatives.
+  // For q = 1/R, let a = N.N', b = N'.N' + N.N'', c = 3*N'.N'' + N.N'''.
+  // q' = -a/R^3, q'' = 3*a^2/R^5 - b/R^3,
+  // q''' = 9*a*b/R^5 - 15*a^3/R^7 - c/R^3.
+  // P' = p' + d*(q*N' + q'*N).
+  // P'' = p'' + d*(q*N'' + 2*q'*N' + q''*N).
+  // P''' = p''' + d*(q*N''' + 3*q'*N'' + 3*q''*N' + q'''*N).
 
-  // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
-
-  // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
-  //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
-
-  // P"'(u) = p"'(u) + (Offset / R) * (D3Ndir - (3.0 * Dr/R**2) * D2Ndir -
-  //          (3.0 * D2r / R2) * DNdir + (3.0 * Dr * Dr / R4) * DNdir -
-  //          (D3r/R2) * Ndir + (6.0 * Dr * Dr / R4) * Ndir +
-  //          (6.0 * Dr * D2r / R4) * Ndir - (15.0 * Dr* Dr* Dr /R6) * Ndir
-
-  gp_XYZ       Ndir   = (theD1.XYZ()).Crossed(theDirXYZ);
-  gp_XYZ       DNdir  = (theD2.XYZ()).Crossed(theDirXYZ);
-  gp_XYZ       D2Ndir = (theD3.XYZ()).Crossed(theDirXYZ);
-  gp_XYZ       D3Ndir = (theD4.XYZ()).Crossed(theDirXYZ);
-  const double R2     = Ndir.SquareModulus();
-  const double R      = std::sqrt(R2);
-  const double R3     = R2 * R;
-  double       R4     = R2 * R2;
-  const double R5     = R3 * R2;
-  const double R6     = R3 * R3;
-  const double R7     = R5 * R2;
-  const double Dr     = Ndir.Dot(DNdir);
-  const double D2r    = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
-  const double D3r    = Ndir.Dot(D3Ndir) + 3.0 * DNdir.Dot(D2Ndir);
-  if (R7 <= theTolerance)
+  gp_XYZ aNormal   = (theD1.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ aNormalD1 = (theD2.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ aNormalD2 = (theD3.XYZ()).Crossed(theDirXYZ);
+  gp_XYZ aNormalD3 = (theD4.XYZ()).Crossed(theDirXYZ);
+  if (std::hypot(aNormal.X(), aNormal.Y(), aNormal.Z()) <= theTolerance)
   {
-    if (R6 <= theTolerance)
-    {
-      return false;
-    }
-    // V3 = P"' (U) :
-    D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * Dr / R2));
-    D3Ndir.Subtract(DNdir.Multiplied(3.0 * ((D2r / R2) + (Dr * Dr / R4))));
-    D3Ndir.Add(
-      Ndir.Multiplied(6.0 * Dr * Dr / R4 + 6.0 * Dr * D2r / R4 - 15.0 * Dr * Dr * Dr / R6 - D3r));
-    D3Ndir.Multiply(theOffset / R);
-    // V2 = P" (U) :
-    R4 = R2 * R2;
-    D2Ndir.Subtract(DNdir.Multiplied(2.0 * Dr / R2));
-    D2Ndir.Subtract(Ndir.Multiplied((3.0 * Dr * Dr / R4) - (D2r / R2)));
-    D2Ndir.Multiply(theOffset / R);
-    // V1 = P' (U) :
-    DNdir.Multiply(R);
-    DNdir.Subtract(Ndir.Multiplied(Dr / R));
-    DNdir.Multiply(theOffset / R2);
+    return false;
   }
-  else
+  // A common power-of-two scale leaves the normalized normal and its derivatives unchanged.
+  const double aMaxComponent =
+    std::max({std::abs(aNormal.X()), std::abs(aNormal.Y()), std::abs(aNormal.Z())});
+  if (!std::isfinite(aMaxComponent))
   {
-    // V3 = P"' (U) :
-    D3Ndir.Divide(R);
-    D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * Dr / R3));
-    D3Ndir.Subtract(DNdir.Multiplied((3.0 * ((D2r / R3) + (Dr * Dr) / R5))));
-    D3Ndir.Add(
-      Ndir.Multiplied(6.0 * Dr * Dr / R5 + 6.0 * Dr * D2r / R5 - 15.0 * Dr * Dr * Dr / R7 - D3r));
-    D3Ndir.Multiply(theOffset);
-    // V2 = P" (U) :
-    D2Ndir.Divide(R);
-    D2Ndir.Subtract(DNdir.Multiplied(2.0 * Dr / R3));
-    D2Ndir.Subtract(Ndir.Multiplied((3.0 * Dr * Dr / R5) - (D2r / R3)));
-    D2Ndir.Multiply(theOffset);
-    // V1 = P' (U) :
-    DNdir.Multiply(theOffset / R);
-    DNdir.Subtract(Ndir.Multiplied(theOffset * Dr / R3));
+    return false;
   }
+  int anExponent = 0;
+  std::frexp(aMaxComponent, &anExponent);
+  for (int aCoord = 1; aCoord <= 3; ++aCoord)
+  {
+    aNormal.SetCoord(aCoord, std::scalbn(aNormal.Coord(aCoord), -anExponent));
+    aNormalD1.SetCoord(aCoord, std::scalbn(aNormalD1.Coord(aCoord), -anExponent));
+    aNormalD2.SetCoord(aCoord, std::scalbn(aNormalD2.Coord(aCoord), -anExponent));
+    aNormalD3.SetCoord(aCoord, std::scalbn(aNormalD3.Coord(aCoord), -anExponent));
+  }
+  const double aRadius2 = aNormal.SquareModulus();
+  const double aRadius  = std::sqrt(aRadius2);
+  const double aRadius3 = aRadius2 * aRadius;
+  const double aRadius5 = aRadius3 * aRadius2;
+  const double aRadius7 = aRadius5 * aRadius2;
+  const double aDotD1   = aNormal.Dot(aNormalD1);
+  const double aDotD2   = aNormal.Dot(aNormalD2) + aNormalD1.Dot(aNormalD1);
+  const double aDotD3   = aNormal.Dot(aNormalD3) + 3.0 * aNormalD1.Dot(aNormalD2);
+  // Compute higher derivatives first, while the lower derivatives are unchanged.
+  aNormalD3.Divide(aRadius);
+  aNormalD3.Subtract(aNormalD2.Multiplied(3.0 * aDotD1 / aRadius3));
+  aNormalD3.Subtract(
+    aNormalD1.Multiplied((3.0 * aDotD2 / aRadius3 - 9.0 * aDotD1 * aDotD1 / aRadius5)));
+  aNormalD3.Add(aNormal.Multiplied(9.0 * aDotD1 * aDotD2 / aRadius5
+                                   - 15.0 * aDotD1 * aDotD1 * aDotD1 / aRadius7
+                                   - aDotD3 / aRadius3));
+  aNormalD3.Multiply(theOffset);
+  // V2 = P" (U) :
+  aNormalD2.Divide(aRadius);
+  aNormalD2.Subtract(aNormalD1.Multiplied(2.0 * aDotD1 / aRadius3));
+  aNormalD2.Add(aNormal.Multiplied((3.0 * aDotD1 * aDotD1 / aRadius5) - (aDotD2 / aRadius3)));
+  aNormalD2.Multiply(theOffset);
+  // V1 = P' (U) :
+  aNormalD1.Multiply(theOffset / aRadius);
+  aNormalD1.Subtract(aNormal.Multiplied(theOffset * aDotD1 / aRadius3));
 
-  Ndir.Multiply(theOffset / R);
+  aNormal.Multiply(theOffset / aRadius);
   // P(u)
-  theValue.ChangeCoord().Add(Ndir);
+  theValue.ChangeCoord().Add(aNormal);
   // P'(u) :
-  theD1.Add(gp_Vec(DNdir));
+  theD1.Add(gp_Vec(aNormalD1));
   // P"(u)
-  theD2.Add(gp_Vec(D2Ndir));
+  theD2.Add(gp_Vec(aNormalD2));
   // P"'(u)
   if (theIsDirChange)
   {
     theD3.Reverse();
   }
-  theD3.Add(gp_Vec(D3Ndir));
+  theD3.Add(gp_Vec(aNormalD3));
   return true;
 }
 

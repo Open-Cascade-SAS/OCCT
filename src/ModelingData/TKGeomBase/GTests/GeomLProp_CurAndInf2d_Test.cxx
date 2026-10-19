@@ -28,9 +28,60 @@
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 
-#include <cmath>
+#include "GeomLProp_NumericCurInf2d.pxx"
 
 #include <gtest/gtest.h>
+
+#include <cmath>
+
+//==================================================================================================
+
+TEST(GeomLProp_CurAndInf2dKnotTest, CurvatureSearchUsesIntervalDerivativeSides)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
+  aPoles.ChangeAt(0) = gp_Pnt2d(0.0, 0.0);
+  aPoles.ChangeAt(1) = gp_Pnt2d(1.0, 2.0);
+  aPoles.ChangeAt(2) = gp_Pnt2d(2.0, 0.0);
+  NCollection_Array1<double> aKnots(1, 4);
+  NCollection_Array1<int>    aMultiplicities(1, 4);
+  aMultiplicities.Init(1);
+  for (size_t i = 0; i < aKnots.Size(); ++i)
+  {
+    aKnots.ChangeAt(i) = static_cast<double>(i);
+  }
+  const occ::handle<Geom2d_BSplineCurve> aCurve =
+    new Geom2d_BSplineCurve(aPoles, aKnots, aMultiplicities, 2, true);
+  // Each quadratic span has one curvature maximum where D1.Dot(D2) is zero.
+  const double anExpected[] = {0.5, 1.0 + 7.0 / 13.0, 2.0 + 6.0 / 13.0};
+  for (int i = 0; i < 3; ++i)
+  {
+    SCOPED_TRACE(i);
+    GeomLProp_NumericCurInf2d anAnalyzer;
+    LProp_CurAndInf           aResult;
+    anAnalyzer.PerformCurExt(aCurve, i, i + 1.0, aResult);
+    ASSERT_TRUE(anAnalyzer.IsDone());
+    ASSERT_EQ(aResult.NbPoints(), 1);
+    EXPECT_NEAR(aResult.Parameter(1), anExpected[i], Precision::PConfusion());
+    EXPECT_EQ(aResult.Type(1), LProp_MinCur);
+  }
+
+  GeomLProp_CurAndInf2d anAnalyzer;
+  anAnalyzer.PerformCurExt(aCurve);
+  ASSERT_TRUE(anAnalyzer.IsDone());
+  for (const double aKnot : {1.0, 2.0})
+  {
+    bool hasKnotExtremum = false;
+    for (int i = 1; i <= anAnalyzer.NbPoints(); ++i)
+    {
+      if (anAnalyzer.Parameter(i) == aKnot)
+      {
+        hasKnotExtremum = true;
+        EXPECT_EQ(anAnalyzer.Type(i), LProp_MaxCur);
+      }
+    }
+    EXPECT_TRUE(hasKnotExtremum) << aKnot;
+  }
+}
 
 TEST(GeomLProp_CurAndInf2dKnotTest, CurvatureMaximumAtC2Knot)
 {

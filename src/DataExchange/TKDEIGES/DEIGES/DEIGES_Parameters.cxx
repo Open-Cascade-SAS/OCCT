@@ -67,6 +67,6 @@ DE_ShapeFixParameters DEIGES_Parameters::GetDefaultShapeFixParameters()
   aShapeFixParameters.DetalizationLevel   = TopAbs_EDGE;
   aShapeFixParameters.CreateOpenSolidMode = DE_ShapeFixParameters::FixMode::Fix;
   aShapeFixParameters.FixTailMode         = DE_ShapeFixParameters::FixMode::FixOrNot;
-  aShapeFixParameters.MaxTailAngle        = DE_ShapeFixParameters::FixMode::FixOrNot;
+  aShapeFixParameters.MaxTailAngle        = -1.0;
   return aShapeFixParameters;
 }

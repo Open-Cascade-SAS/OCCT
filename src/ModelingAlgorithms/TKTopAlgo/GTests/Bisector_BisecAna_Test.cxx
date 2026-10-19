@@ -13,9 +13,12 @@
 
 #include <Bisector_BisecAna.hxx>
 #include <Geom2d_CartesianPoint.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Precision.hxx>
+#include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
@@ -24,6 +27,44 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+
+//==================================================================================================
+
+TEST(Bisector_BisecAnaTest, PeriodicBisectorUsesPrincipalParameters)
+{
+  const occ::handle<Geom2d_Circle>         aCircle = new Geom2d_Circle(gp_Ax2d(), 5.0);
+  const occ::handle<Geom2d_CartesianPoint> aFocus  = new Geom2d_CartesianPoint(1.0, 0.0);
+  const gp_Pnt2d aPoint(0.5 + 2.5 * std::cos(0.7), std::sqrt(6.0) * std::sin(0.7));
+  for (const double aSide : {-1.0, 1.0})
+  {
+    SCOPED_TRACE(aSide);
+    Bisector_BisecAna aBisector;
+    aBisector.Perform(aCircle,
+                      aFocus,
+                      aPoint,
+                      gp_Vec2d(0.0, 1.0),
+                      gp_Vec2d(1.0, 0.0),
+                      aSide,
+                      Precision::Confusion(),
+                      false);
+    ASSERT_FALSE(aBisector.Geom2dCurve().IsNull());
+    ASSERT_TRUE(aBisector.Geom2dCurve()->IsKind(STANDARD_TYPE(Geom2d_Ellipse)));
+    EXPECT_GE(aBisector.FirstParameter(), 0.0);
+    EXPECT_LT(aBisector.FirstParameter(), 2.0 * M_PI);
+    EXPECT_NEAR(aBisector.LastParameter() - aBisector.FirstParameter(),
+                2.0 * M_PI,
+                Precision::PConfusion());
+    const occ::handle<Bisector_BisecAna> aCopy =
+      occ::down_cast<Bisector_BisecAna>(aBisector.Copy());
+    ASSERT_FALSE(aCopy.IsNull());
+    EXPECT_DOUBLE_EQ(aCopy->FirstParameter(), aBisector.FirstParameter());
+    EXPECT_DOUBLE_EQ(aCopy->LastParameter(), aBisector.LastParameter());
+    const gp_Pnt2d aSample = aBisector.EvalD0(aBisector.FirstParameter() + 1.0);
+    EXPECT_NEAR(std::abs(aSample.Distance(gp_Pnt2d(0.0, 0.0)) - aCircle->Radius()),
+                aSample.Distance(aFocus->Pnt2d()),
+                Precision::Confusion());
+  }
+}
 
 TEST(Bisector_BisecAnaTest, NonzeroFocalLengthRemainsParabolic)
 {

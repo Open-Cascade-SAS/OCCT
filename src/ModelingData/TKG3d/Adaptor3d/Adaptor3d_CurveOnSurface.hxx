@@ -155,6 +155,9 @@ public:
   Standard_EXPORT occ::handle<Geom_BSplineCurve> BSpline() const override;
 
 private:
+  //! Rebuild geometry-derived state after a curve or surface is loaded.
+  void rebuild();
+
   Standard_EXPORT void EvalKPart();
 
   //! Evaluates myFirstSurf and myLastSurf

@@ -803,7 +803,7 @@ bool STEPCAFControl_Writer::transfer(STEPControl_Writer&                    theW
     {
       if (aModel->InternalParameters.WriteSchema == 5)
       {
-        writeDGTsAP242(theWriter.WS(), aSubLabels, aLocalFactors);
+        writeDGTsAP242(theWriter.WS(), theLabels, aLocalFactors);
       }
       else
       {
@@ -3157,15 +3157,16 @@ occ::handle<StepRepr_ShapeAspect> STEPCAFControl_Writer::writeShapeAspect(
 // purpose  : auxiliary (write annotation plane and presentation)
 //======================================================================
 void STEPCAFControl_Writer::writePresentation(
-  const occ::handle<XSControl_WorkSession>&    theWS,
-  const TopoDS_Shape&                          thePresentation,
-  const occ::handle<TCollection_HAsciiString>& thePrsName,
-  const bool                                   theHasSemantic,
-  const bool                                   theHasPlane,
-  const gp_Ax2&                                theAnnotationPlane,
-  const gp_Pnt&                                theTextPosition,
-  const occ::handle<Standard_Transient>&       theDimension,
-  const StepData_Factors&                      theLocalFactors)
+  const occ::handle<XSControl_WorkSession>&          theWS,
+  const TopoDS_Shape&                                thePresentation,
+  const occ::handle<TCollection_HAsciiString>&       thePrsName,
+  const bool                                         theHasSemantic,
+  const bool                                         theHasPlane,
+  const gp_Ax2&                                      theAnnotationPlane,
+  const gp_Pnt&                                      theTextPosition,
+  const occ::handle<Standard_Transient>&             theDimension,
+  const occ::handle<StepRepr_RepresentationContext>& theContext,
+  const StepData_Factors&                            theLocalFactors)
 {
   if (thePresentation.IsNull())
   {
@@ -3174,9 +3175,15 @@ void STEPCAFControl_Writer::writePresentation(
   // Get working data
   const occ::handle<Interface_InterfaceModel>& aModel = theWS->Model();
 
+  STEPConstruct_UnitContext aUnitContext;
+  aUnitContext.ComputeFactors(GetUnit(theContext).NamedUnit(), theLocalFactors);
+  const double aLengthFactor = aUnitContext.LengthFactor();
+
   // Presentation
   occ::handle<StepVisual_TessellatedGeometricSet> aGeomSet =
-    STEPCAFControl_GDTProperty::GetTessellation(thePresentation);
+    STEPCAFControl_GDTProperty::GetTessellation(thePresentation,
+                                                aLengthFactor,
+                                                0.01 / theLocalFactors.CascadeUnit());
   if (aGeomSet.IsNull())
   {
     return;
@@ -3246,7 +3253,7 @@ void STEPCAFControl_Writer::writePresentation(
   occ::handle<NCollection_HArray1<double>> aCoords  = new NCollection_HArray1<double>(1, 3);
   for (int i = 1; i <= 3; i++)
   {
-    aCoords->SetValue(i, theTextPosition.Coord(i));
+    aCoords->SetValue(i, theTextPosition.Coord(i) / aLengthFactor);
   }
   aTextPos->Init(new TCollection_HAsciiString(), aCoords);
   anAxis->SetLocation(aTextPos);
@@ -3596,6 +3603,7 @@ occ::handle<StepDimTol_Datum> STEPCAFControl_Writer::writeDatumAP242(
                     anObject->GetPlane(),
                     anObject->GetPointTextAttach(),
                     aSA,
+                    aRC,
                     theLocalFactors);
 
   return aDatum;
@@ -4602,6 +4610,7 @@ void STEPCAFControl_Writer::writeGeomTolerance(
                     anObject->GetPlane(),
                     anObject->GetPointTextAttach(),
                     aGeomTol,
+                    theRC,
                     theLocalFactors);
 }
 
@@ -5016,7 +5025,6 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
                                            const NCollection_Sequence<TDF_Label>&    theLabels,
                                            const StepData_Factors& theLocalFactors)
 {
-  (void)theLabels;
   // Get working data
   const occ::handle<Interface_InterfaceModel>& aModel = theWS->Model();
 
@@ -5044,6 +5052,34 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
 
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> aDatumMap;
   occ::handle<StepRepr_RepresentationContext>                                   aRC;
+
+  // Presentation-only dimensions use a context belonging to this transfer.
+  const occ::handle<Transfer_FinderProcess>& aFinderProcess =
+    theWS->TransferWriter()->FinderProcess();
+  NCollection_Sequence<occ::handle<Standard_Transient>> aRepresentationItems;
+  for (NCollection_Sequence<TDF_Label>::Iterator anIter(theLabels); anIter.More() && aRC.IsNull();
+       anIter.Next())
+  {
+    TopoDS_Shape aShape;
+    if (!myPureRefLabels.Find(anIter.Value(), aShape))
+    {
+      aShape = XCAFDoc_ShapeTool::GetShape(anIter.Value());
+    }
+    if (aShape.IsNull())
+    {
+      continue;
+    }
+    TopLoc_Location aLocation;
+    aRepresentationItems.Clear();
+    FindEntities(aFinderProcess, aShape, aLocation, aRepresentationItems);
+    for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anItemIter(
+           aRepresentationItems);
+         anItemIter.More() && aRC.IsNull();
+         anItemIter.Next())
+    {
+      FindPDS(aGraph, anItemIter.Value(), aRC);
+    }
+  }
 
   NCollection_Sequence<TDF_Label> aDGTLabels;
   // Iterate on requested shapes collect Tools
@@ -5134,11 +5170,12 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
       writePresentation(theWS,
                         anObject->GetPresentation(),
                         anObject->GetPresentationName(),
-                        anObject->HasPlane(),
                         false,
+                        anObject->HasPlane(),
                         anObject->GetPlane(),
                         anObject->GetPointTextAttach(),
                         aSA,
+                        aRC,
                         theLocalFactors);
     }
 
@@ -5236,11 +5273,12 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
       writePresentation(theWS,
                         anObject->GetPresentation(),
                         anObject->GetPresentationName(),
-                        anObject->HasPlane(),
                         false,
+                        anObject->HasPlane(),
                         anObject->GetPlane(),
                         anObject->GetPointTextAttach(),
                         aFirstSA,
+                        aRC,
                         theLocalFactors);
       continue;
     }
@@ -5353,6 +5391,7 @@ bool STEPCAFControl_Writer::writeDGTsAP242(const occ::handle<XSControl_WorkSessi
                       anObject->GetPlane(),
                       anObject->GetPointTextAttach(),
                       aDimension.Value(),
+                      aRC,
                       theLocalFactors);
   }
   // Write Derived geometry

@@ -182,6 +182,11 @@ bool RWObj_Reader::read(std::istream&                  theStream,
       aTimer.Start();
     }
 
+    while (*aLine == ' ' || *aLine == '\t')
+    {
+      ++aLine;
+      --aLineLen;
+    }
     if (*aLine == '#')
     {
       if (isStart)
@@ -741,11 +746,31 @@ void RWObj_Reader::readMaterialLib(const std::string_view theFileName)
   }
 }
 
-//=================================================================================================
+//==================================================================================================
+
+bool RWObj_Reader::SetMemoryLimitMiB(int theLimitMiB)
+{
+  constexpr size_t aMiB = 1024 * 1024;
+  if (theLimitMiB < -1
+      || (theLimitMiB >= 0 && size_t(theLimitMiB) > std::numeric_limits<size_t>::max() / aMiB))
+  {
+    Message::SendFail("Error: OBJ reader memory limit cannot be represented in bytes");
+    return false;
+  }
+  myMemLimitBytes =
+    theLimitMiB == -1 ? std::numeric_limits<size_t>::max() : size_t(theLimitMiB) * aMiB;
+  return true;
+}
+
+//==================================================================================================
 
 bool RWObj_Reader::checkMemory()
 {
-  if (myMemEstim < myMemLimitBytes || myToAbort)
+  if (myToAbort)
+  {
+    return false;
+  }
+  if (myMemEstim < myMemLimitBytes)
   {
     return true;
   }

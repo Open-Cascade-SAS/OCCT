@@ -116,6 +116,12 @@ public:
   //! by specified limit before memory allocation error occurs.
   void SetMemoryLimit(size_t theMemLimit) { myMemLimitBytes = theMemLimit; }
 
+  //! Set the memory limit in MiB; -1 means no limit.
+  //! @param[in] theLimitMiB limit in MiB
+  //! @return false if the limit is negative other than -1 or exceeds size_t bytes;
+  //! the previous limit is then preserved.
+  Standard_EXPORT bool SetMemoryLimitMiB(int theLimitMiB);
+
   //! Return transformation from one coordinate system to another; no transformation by default.
   const RWMesh_CoordinateSystemConverter& Transformation() const { return myCSTrsf; }
 
