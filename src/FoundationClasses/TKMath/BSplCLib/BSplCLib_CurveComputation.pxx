@@ -38,9 +38,9 @@ namespace
 {
 //==================================================================================================
 
-int weightScaleExponent(const NCollection_Array1<double>& theWeights,
-                        const size_t                      theFirst,
-                        const size_t                      theCount)
+inline int weightScaleExponent(const NCollection_Array1<double>& theWeights,
+                               const size_t                      theFirst,
+                               const size_t                      theCount)
 {
   // Return a common binary exponent for the active cyclic weight range.
   // Keep normal weights normal and do not reduce existing subnormal weights.
