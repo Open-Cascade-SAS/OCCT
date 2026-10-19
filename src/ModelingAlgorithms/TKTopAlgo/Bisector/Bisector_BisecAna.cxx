@@ -960,6 +960,11 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       throw StdFail_NotDone();
       break;
   }
+  // Analytic intersection domains use the principal period.
+  if (!thebisector.IsNull() && thebisector->BasisCurve()->IsPeriodic())
+  {
+    thebisector->SetTrim(thebisector->FirstParameter(), thebisector->LastParameter());
+  }
 }
 
 //===========================================================================
@@ -1219,6 +1224,11 @@ void Bisector_BisecAna::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
       std::cout << "Not yet implemented" << '\n';
       break;
     }
+  }
+  // Analytic intersection domains use the principal period.
+  if (!thebisector.IsNull() && thebisector->BasisCurve()->IsPeriodic())
+  {
+    thebisector->SetTrim(thebisector->FirstParameter(), thebisector->LastParameter());
   }
 }
 

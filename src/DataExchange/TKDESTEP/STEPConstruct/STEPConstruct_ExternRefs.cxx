@@ -33,6 +33,7 @@
 #include <StepBasic_DocumentRepresentationType.hxx>
 #include <StepBasic_DocumentType.hxx>
 #include <StepBasic_ExternalSource.hxx>
+#include <StepData_Field.hxx>
 #include <StepBasic_IdentificationRole.hxx>
 #include <StepBasic_ObjectRole.hxx>
 #include <StepBasic_ProductDefinitionContext.hxx>
@@ -57,6 +58,28 @@
 #include <XSControl_TransferReader.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
+
+namespace
+{
+//==================================================================================================
+
+occ::handle<TCollection_HAsciiString> externalSourceName(
+  const occ::handle<StepBasic_ExternalSource>& theSource)
+{
+  // Keep embedded nulls available to input validation.
+  if (theSource.IsNull())
+  {
+    return {};
+  }
+  const occ::handle<StepData_SelectNamed> aName =
+    occ::down_cast<StepData_SelectNamed>(theSource->SourceId().Value());
+  if (aName.IsNull() || aName->Field().Kind() != StepData_Field::FieldKind::String)
+  {
+    return {};
+  }
+  return occ::down_cast<TCollection_HAsciiString>(aName->Field().Transient());
+}
+} // namespace
 
 //=================================================================================================
 
@@ -267,7 +290,7 @@ bool STEPConstruct_ExternRefs::LoadExternRefs()
             {
               continue;
             }
-            if (PDR->UsedRepresentation()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+            if (!PDR->UsedRepresentation().IsNull())
             {
               Format = PDR;
             }
@@ -332,6 +355,56 @@ int STEPConstruct_ExternRefs::NbExternRefs() const
 }
 
 //=================================================================================================
+
+TCollection_AsciiString STEPConstruct_ExternRefs::FileIdentifier(const int theNumber) const
+{
+  const occ::handle<StepBasic_DocumentFile> aDocument =
+    occ::down_cast<StepBasic_DocumentFile>(myDocFiles.Value(theNumber));
+  if (!aDocument.IsNull())
+  {
+    for (Interface_EntityIterator anIt = Graph().Sharings(aDocument); anIt.More(); anIt.Next())
+    {
+      const occ::handle<StepAP214_AppliedExternalIdentificationAssignment> anAssignment =
+        occ::down_cast<StepAP214_AppliedExternalIdentificationAssignment>(anIt.Value());
+      if (anAssignment.IsNull())
+      {
+        continue;
+      }
+      if (!anAssignment->AssignedId().IsNull() && !anAssignment->AssignedId()->IsEmpty()
+          && anAssignment->AssignedId()->Value(1) != '#')
+      {
+        return anAssignment->AssignedId()->String();
+      }
+      const occ::handle<TCollection_HAsciiString> aName =
+        externalSourceName(anAssignment->Source());
+      if (!aName.IsNull() && !aName->IsEmpty())
+      {
+        return aName->String();
+      }
+    }
+    if (!aDocument->Id().IsNull() && !aDocument->Id()->IsEmpty())
+    {
+      return aDocument->Id()->String();
+    }
+    return aDocument->Name().IsNull() ? TCollection_AsciiString() : aDocument->Name()->String();
+  }
+  const occ::handle<StepBasic_ProductDefinitionWithAssociatedDocuments> aProduct =
+    occ::down_cast<StepBasic_ProductDefinitionWithAssociatedDocuments>(myShapes.Value(theNumber));
+  if (!aProduct.IsNull() && !aProduct->DocIds().IsNull())
+  {
+    for (int i = 1; i <= aProduct->NbDocIds(); ++i)
+    {
+      const occ::handle<TCollection_HAsciiString> aName = aProduct->DocIdsValue(i)->Name();
+      if (!aName.IsNull() && !aName->IsEmpty())
+      {
+        return aName->String();
+      }
+    }
+  }
+  return TCollection_AsciiString();
+}
+
+//==================================================================================================
 
 const char* STEPConstruct_ExternRefs::FileName(const int num) const
 {
@@ -431,24 +504,10 @@ const char* STEPConstruct_ExternRefs::FileName(const int num) const
     }
     if (!aCStringFileName || !aCStringFileName[0])
     {
-      // try to take name from external source
-      occ::handle<StepBasic_ExternalSource> theSource = AEIA->Source();
-      if (!theSource.IsNull())
+      const occ::handle<TCollection_HAsciiString> aSourceName = externalSourceName(AEIA->Source());
+      if (!aSourceName.IsNull())
       {
-        StepBasic_SourceItem theSourceId = theSource->SourceId();
-        if (!theSourceId.IsNull())
-        {
-          occ::handle<StepData_SelectNamed> theFileName;
-          theFileName = occ::down_cast<StepData_SelectNamed>(theSourceId.Value());
-          if (theFileName.IsNull() || theFileName->Kind() != 6)
-          {
-            // nothing to do, hope could take name later.
-          }
-          else
-          {
-            aCStringFileName = theFileName->String();
-          }
-        }
+        aCStringFileName = aSourceName->ToCString();
       }
     }
   }

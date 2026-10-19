@@ -195,3 +195,17 @@ TEST_F(Geom2d_TrimmedCurveTest, CircleArc_StartEndPoints)
   EXPECT_NEAR(anEnd.X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(anEnd.Y(), 5.0, Precision::Confusion());
 }
+
+//==================================================================================================
+
+TEST_F(Geom2d_TrimmedCurveTest, CopyPreservesAuthoredPeriodicRange)
+{
+  const occ::handle<Geom2d_TrimmedCurve> aTrim =
+    new Geom2d_TrimmedCurve(myCircle, -1.2, -0.2, true, false);
+  const occ::handle<Geom2d_TrimmedCurve> aCopy = occ::down_cast<Geom2d_TrimmedCurve>(aTrim->Copy());
+  ASSERT_FALSE(aCopy.IsNull());
+  EXPECT_DOUBLE_EQ(aCopy->FirstParameter(), -1.2);
+  EXPECT_DOUBLE_EQ(aCopy->LastParameter(), -0.2);
+  const double aParameter = -0.7;
+  EXPECT_NEAR(aCopy->EvalD0(aParameter).Distance(aTrim->EvalD0(aParameter)), 0, 1e-12);
+}

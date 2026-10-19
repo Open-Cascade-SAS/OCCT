@@ -417,8 +417,8 @@ occ::handle<Geom_Curve> GeomProjLib::ProjectOnPlane(const occ::handle<Geom_Curve
 
   if (Curve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    occ::handle<Geom_TrimmedCurve> CTrim = occ::down_cast<Geom_TrimmedCurve>(Curve);
-    GC = new Geom_TrimmedCurve(GC, Proj.FirstParameter(), Proj.LastParameter());
+    // Projection bounds define the target chart, including directed complete turns.
+    GC = new Geom_TrimmedCurve(GC, Proj.FirstParameter(), Proj.LastParameter(), true, false);
   }
 
   return GC;

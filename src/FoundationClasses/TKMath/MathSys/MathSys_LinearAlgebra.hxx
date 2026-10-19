@@ -268,18 +268,21 @@ inline LinearStep SolveLinearized(const math_Matrix& theA,
       return aResult;
     }
     aResult.Solution = anSVDSolution.Solution;
-    aResult.Status =
-      IsFinite(*aResult.Solution) ? MathUtils::Status::OK : MathUtils::Status::NumericalError;
-    return aResult;
   }
-
-  aResult.Solution = math_Vector(aN, 0.0);
-  for (size_t aCol = 0; aCol < aN; ++aCol)
+  else
   {
-    aResult.Solution->ChangeAt(aCol) = aScaledSolution->At(aCol) / aScale.At(aCol);
+    aResult.Solution = math_Vector(aN, 0.0);
+    for (size_t aCol = 0; aCol < aN; ++aCol)
+    {
+      aResult.Solution->ChangeAt(aCol) = aScaledSolution->At(aCol) / aScale.At(aCol);
+    }
   }
   aResult.Status =
     IsFinite(*aResult.Solution) ? MathUtils::Status::OK : MathUtils::Status::NumericalError;
+  if (aResult.Status != MathUtils::Status::OK)
+  {
+    aResult.Solution.reset();
+  }
   return aResult;
 }
 

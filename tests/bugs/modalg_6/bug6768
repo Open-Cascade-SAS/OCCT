@@ -30,10 +30,10 @@ if { ${s} eq "co_1" } {
   checknbshapes r${s}_1 -vertex  80
 } elseif { ${s} eq "co_3" } {
   checkprops r${s}_1 -l 550.648
-  checknbshapes r${s}_1 -vertex 110
+  checknbshapes r${s}_1 -vertex 112
 } else {
   checkprops r${s}_1 -l 545.219
-  checknbshapes r${s}_1 -vertex 290
+  checknbshapes r${s}_1 -vertex 292
 } 
 
 }

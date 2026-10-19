@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <STEPCAFControl_Reader.hxx>
+#include <DE_ValidationUtils.hxx>
 
 #include <BRep_Builder.hxx>
 #include <Geom_Axis2Placement.hxx>
@@ -24,6 +25,8 @@
 #include <HeaderSection_FileSchema.hxx>
 #include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <OSD_Path.hxx>
 #include <Quantity_ColorRGBA.hxx>
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
@@ -329,6 +332,16 @@ void STEPCAFControl_Reader::Init(const occ::handle<XSControl_WorkSession>& WS, c
 {
   // necessary only in Writer, to set good actor:  WS->SelectNorm ( "STEP" );
   myReader.SetWS(WS, scratch);
+  myFiles.Clear();
+  myMap.Clear();
+  myResourceStreams = nullptr;
+}
+
+//==================================================================================================
+
+void STEPCAFControl_Reader::SetResourceStreams(const DE_Provider::ReadStreamList& theStreams)
+{
+  myResourceStreams = &theStreams;
   myFiles.Clear();
   myMap.Clear();
 }
@@ -669,7 +682,12 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
   Message_ProgressScope aPSE(aPSRoot.Next(), nullptr, ExtRefs.NbExternRefs());
   for (i = 1; i <= ExtRefs.NbExternRefs() && aPSE.More(); i++)
   {
-    Message_ProgressRange aRange = aPSE.Next();
+    Message_ProgressRange                    aRange = aPSE.Next();
+    occ::handle<StepBasic_ProductDefinition> PD     = ExtRefs.ProdDef(i);
+    if (PD.IsNull() || !PDFileMap.IsBound(PD))
+    {
+      continue;
+    }
     // check extern ref format
     occ::handle<TCollection_HAsciiString> format = ExtRefs.Format(i);
     if (!format.IsNull())
@@ -678,11 +696,19 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
         new TCollection_HAsciiString("STEP AP203");
       static occ::handle<TCollection_HAsciiString> ap214 =
         new TCollection_HAsciiString("STEP AP214");
-      if (!format->IsSameString(ap203, false) && !format->IsSameString(ap214, false))
+      static occ::handle<TCollection_HAsciiString> ap242 =
+        new TCollection_HAsciiString("STEP AP242");
+      if (!format->IsSameString(ap203, false) && !format->IsSameString(ap214, false)
+          && !format->IsSameString(ap242, false))
       {
+        if (myResourceStreams != nullptr)
+        {
+          Message::SendFail() << "Unsupported external STEP format: " << format->String();
+          return false;
+        }
 #ifdef OCCT_DEBUG
         std::cout << "Warning: STEPCAFControl_Reader::Transfer: Extern document is neither STEP "
-                     "AP203 nor AP214"
+                     "AP203, AP214 nor AP242"
                   << std::endl;
 #else
         continue;
@@ -696,14 +722,26 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
 #endif
 
     // get and check filename of the current extern ref
-    const char* const filename = ExtRefs.FileName(i);
-
+    TCollection_AsciiString aFileName;
+    if (myResourceStreams != nullptr)
+    {
+      aFileName = ExtRefs.FileIdentifier(i);
+    }
+    else if (const char* aName = ExtRefs.FileName(i))
+    {
+      aFileName = aName;
+    }
 #ifdef OCCT_DEBUG
-    std::cout << "filename=" << filename << std::endl;
+    std::cout << "filename=" << aFileName << std::endl;
 #endif
 
-    if (!filename || !filename[0])
+    if (aFileName.IsEmpty())
     {
+      if (myResourceStreams != nullptr)
+      {
+        Message::SendFail("External STEP reference has no file identifier");
+        return false;
+      }
 #ifdef OCCT_DEBUG
       std::cout << "Warning: STEPCAFControl_Reader::Transfer: Extern reference file name is empty"
                 << std::endl;
@@ -711,47 +749,53 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
       continue; // not a valid extern ref
     }
 
-    // compute true path to the extern file
-    TCollection_AsciiString fullname = OSD_Path::AbsolutePath(dpath, filename);
-    if (fullname.Length() <= 0)
+    TCollection_AsciiString fullname;
+    std::istream*           anExternalStream = nullptr;
+    if (myResourceStreams != nullptr)
     {
-      fullname = filename;
+      const TCollection_AsciiString aReferrer(reader.WS()->LoadedFile());
+      anExternalStream =
+        DE_ValidationUtils::FindReadStream(*myResourceStreams, aReferrer, aFileName, fullname);
+      TCollection_AsciiString aMainFile;
+      DE_ValidationUtils::FindReadStream(*myResourceStreams, "", aReferrer, aMainFile);
+      if (anExternalStream == nullptr || fullname == aMainFile)
+      {
+        Message::SendFail() << "Cannot resolve external STEP stream: " << aFileName;
+        return false;
+      }
     }
-
-    // check for not the same file
-    TCollection_AsciiString aMainFullName = OSD_Path::AbsolutePath(dpath, aMainName);
-    if (TCollection_AsciiString::IsSameString(aMainFullName, fullname, false))
+    else
     {
-      TP->AddWarning(ExtRefs.DocFile(i), "External reference file is the same main file");
-      continue; // not a valid extern ref
-    }
+      fullname = OSD_Path::AbsolutePath(dpath, aFileName);
+      if (fullname.Length() <= 0)
+      {
+        fullname = aFileName;
+      }
 
-    /*
-        char fullname[1024];
-        char *mainfile = reader.WS()->LoadedFile();
-        if ( ! mainfile ) mainfile = "";
-        int slash = 0;
-        for ( int k=0; mainfile[k]; k++ )
-          if ( mainfile[k] == '/' ) slash = k;
-        strncpy ( fullname, mainfile, slash );
-        Sprintf ( &fullname[slash], "%s%s", ( mainfile[0] ? "/" : "" ), filename );
-    */
-
-    // get and check PD associated with the current extern ref
-    occ::handle<StepBasic_ProductDefinition> PD = ExtRefs.ProdDef(i);
-    if (PD.IsNull())
-    {
-      continue; // not a valid extern ref
-    }
-    if (!PDFileMap.IsBound(PD))
-    {
-      continue; // this PD is not concerned by current transfer
+      // check for not the same file
+      TCollection_AsciiString aMainFullName = OSD_Path::AbsolutePath(dpath, aMainName);
+      if (TCollection_AsciiString::IsSameString(aMainFullName, fullname, false))
+      {
+        TP->AddWarning(ExtRefs.DocFile(i), "External reference file is the same main file");
+        continue; // not a valid extern ref
+      }
     }
 
     // read extern file (or use existing data) and record its data
     occ::handle<STEPCAFControl_ExternFile> EF =
-      ReadExternFile(filename, fullname.ToCString(), doc, aRange);
+      readExternFile(aFileName.ToCString(), fullname.ToCString(), anExternalStream, doc, aRange);
+    if (myResourceStreams != nullptr
+        && (EF->GetLoadStatus() != IFSelect_RetDone || !EF->GetTransferStatus()
+            || EF->GetLabel().IsNull()))
+    {
+      Message::SendFail() << "Cannot transfer external STEP stream: " << fullname;
+      return false;
+    }
     PDFileMap.Bind(PD, EF);
+  }
+  if (aPSE.UserBreak())
+  {
+    return false;
   }
 
   // and insert them to the document
@@ -978,14 +1022,26 @@ occ::handle<STEPCAFControl_ExternFile> STEPCAFControl_Reader::ReadExternFile(
   const occ::handle<TDocStd_Document>& doc,
   const Message_ProgressRange&         theProgress)
 {
-  // if the file is already read, associate it with SDR
-  if (myFiles.IsBound(file))
+  return readExternFile(file, fullname, nullptr, doc, theProgress);
+}
+
+//==================================================================================================
+
+occ::handle<STEPCAFControl_ExternFile> STEPCAFControl_Reader::readExternFile(
+  const char*                          theFile,
+  const char*                          theFullName,
+  std::istream*                        theStream,
+  const occ::handle<TDocStd_Document>& theDocument,
+  const Message_ProgressRange&         theProgress)
+{
+  const TCollection_AsciiString aKey(theStream != nullptr ? theFullName : theFile);
+  if (const occ::handle<STEPCAFControl_ExternFile>* aPrevious = myFiles.Seek(aKey))
   {
-    return myFiles.ChangeFind(file);
+    return *aPrevious;
   }
 
 #ifdef OCCT_DEBUG
-  std::cout << "Reading extern file: " << fullname << std::endl;
+  std::cout << "Reading extern file: " << theFullName << std::endl;
 #endif
 
   // create new WorkSession and Reader
@@ -996,16 +1052,35 @@ occ::handle<STEPCAFControl_ExternFile> STEPCAFControl_Reader::ReadExternFile(
   // start to fill the resulting ExternFile structure
   occ::handle<STEPCAFControl_ExternFile> EF = new STEPCAFControl_ExternFile;
   EF->SetWS(newWS);
-  EF->SetName(new TCollection_HAsciiString(file));
+  EF->SetName(new TCollection_HAsciiString(theFile));
 
-  // read file
-  EF->SetLoadStatus(sr.ReadFile(fullname));
+  if (theStream != nullptr)
+  {
+    // Cache before transfer to detect cyclic external references.
+    myFiles.Bind(aKey, EF);
+    theStream->clear();
+    theStream->seekg(0, std::ios::beg);
+    EF->SetLoadStatus(
+      theStream->good()
+        ? sr.ReadStream(theFullName, myReader.StepModel()->InternalParameters, *theStream)
+        : IFSelect_RetFail);
+    sr.SetShapeFixParameters(myReader.GetShapeFixParameters());
+    const auto& [aFlags, hasFlags] = myReader.GetShapeProcessFlags();
+    if (hasFlags)
+    {
+      sr.SetShapeProcessFlags(aFlags);
+    }
+  }
+  else
+  {
+    EF->SetLoadStatus(sr.ReadFile(theFullName));
+  }
 
   // transfer in single-result mode
   if (EF->GetLoadStatus() == IFSelect_RetDone)
   {
     NCollection_Sequence<TDF_Label> labels;
-    EF->SetTransferStatus(Transfer(sr, 0, doc, labels, false, theProgress));
+    EF->SetTransferStatus(Transfer(sr, 0, theDocument, labels, false, theProgress));
     if (labels.Length() > 0)
     {
       EF->SetLabel(labels.Value(1));
@@ -1013,7 +1088,10 @@ occ::handle<STEPCAFControl_ExternFile> STEPCAFControl_Reader::ReadExternFile(
   }
 
   // add read file to dictionary
-  myFiles.Bind(file, EF);
+  if (theStream == nullptr)
+  {
+    myFiles.Bind(aKey, EF);
+  }
 
   return EF;
 }
@@ -2558,7 +2636,7 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
   }
   occ::handle<Transfer_TransientProcess>                       aTP = theTR->TransientProcess();
   occ::handle<StepVisual_StyledItem>                           anAO;
-  NCollection_DynamicArray<occ::handle<StepVisual_StyledItem>> anAnnotations;
+  NCollection_LinearVector<occ::handle<StepVisual_StyledItem>> anAnnotations;
   if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence))
       || thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
   {
@@ -2566,6 +2644,7 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
     if (!anAO.IsNull())
     {
       thePresentName = anAO->Name();
+      anAnnotations.Reserve(1);
       anAnnotations.Append(anAO);
     }
   }
@@ -2574,7 +2653,8 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
     occ::handle<StepVisual_DraughtingCallout> aDCallout =
       occ::down_cast<StepVisual_DraughtingCallout>(thePresentEntity);
     thePresentName = aDCallout->Name();
-    for (int i = 1; i <= aDCallout->NbContents() && anAO.IsNull(); i++)
+    anAnnotations.Reserve(aDCallout->NbContents());
+    for (int i = 1; i <= aDCallout->NbContents(); i++)
     {
       anAO = occ::down_cast<StepVisual_AnnotationOccurrence>(aDCallout->ContentsValue(i).Value());
       if (!anAO.IsNull())
@@ -2591,7 +2671,7 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
     }
   }
 
-  if (!anAnnotations.Length())
+  if (anAnnotations.IsEmpty())
   {
     return false;
   }
@@ -2602,9 +2682,8 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
 
   Bnd_Box aBox;
   int     aNbShapes = 0;
-  for (int i = 0; i < anAnnotations.Length(); i++)
+  for (const occ::handle<StepVisual_StyledItem>& anItem : anAnnotations)
   {
-    occ::handle<StepVisual_StyledItem> anItem = anAnnotations(i);
     anAO = occ::down_cast<StepVisual_AnnotationOccurrence>(anItem);
     TopoDS_Shape anAnnotationShape;
     if (!anAO.IsNull())
@@ -2613,7 +2692,11 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
       anAnnotationShape = STEPConstruct::FindShape(aTP, aCurveItem);
       if (anAnnotationShape.IsNull())
       {
-        occ::handle<Transfer_Binder> aBinder = theTR->Actor()->Transfer(aCurveItem, aTP);
+        const occ::handle<STEPControl_ActorRead> anActor =
+          occ::down_cast<STEPControl_ActorRead>(theTR->Actor());
+        occ::handle<Transfer_Binder> aBinder =
+          anActor.IsNull() ? theTR->Actor()->Transfer(aCurveItem, aTP)
+                           : anActor->TransferShape(aCurveItem, aTP, theLocalFactors);
         if (!aBinder.IsNull() && aBinder->HasResult())
         {
           anAnnotationShape = TransferBRep::ShapeResult(aTP, aBinder);
@@ -2730,10 +2813,7 @@ bool readPMIPresentation(const occ::handle<Standard_Transient>&       thePresent
     {
       aNbShapes++;
       aB.Add(aResAnnotation, anAnnotationShape);
-      if (i == anAnnotations.Length() - 1)
-      {
-        BRepBndLib::AddClose(anAnnotationShape, aBox);
-      }
+      BRepBndLib::AddClose(anAnnotationShape, aBox);
     }
   }
 
@@ -4728,14 +4808,11 @@ static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
         occ::handle<StepBasic_NamedUnit> NU = anUnit.NamedUnit();
         STEPConstruct_UnitContext        anUnitCtxUpperBound;
         anUnitCtxUpperBound.ComputeFactors(NU, theLocalFactors);
-        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit))
-            || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
+        if (anUnitCtxUpperBound.PlaneAngleDone())
         {
           convertAngleValue(anUnitCtxUpperBound, aVal);
         }
-        else if ((aMWU->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit))
-                  && anUnitCtxUpperBound.LengthFactor() > 0.)
-                 || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
+        else if (anUnitCtxUpperBound.LengthDone())
         {
           aVal = aVal * anUnitCtxUpperBound.LengthFactor();
         }
@@ -4766,14 +4843,11 @@ static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
         NU = anUnit.NamedUnit();
         STEPConstruct_UnitContext anUnitCtxLowerBound;
         anUnitCtxLowerBound.ComputeFactors(NU, theLocalFactors);
-        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit))
-            || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
+        if (anUnitCtxLowerBound.PlaneAngleDone())
         {
           convertAngleValue(anUnitCtxLowerBound, aVal);
         }
-        else if ((aMWU->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit))
-                  && anUnitCtxLowerBound.LengthFactor() > 0.)
-                 || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
+        else if (anUnitCtxLowerBound.LengthDone())
         {
           aVal = aVal * anUnitCtxLowerBound.LengthFactor();
         }
@@ -5394,7 +5468,8 @@ bool STEPCAFControl_Reader::ReadGDTs(const occ::handle<XSControl_WorkSession>& t
     return false;
   }
 
-  int nb = aModel->NbEntities();
+  NCollection_IndexedMap<occ::handle<Standard_Transient>> aPresentationOwners;
+  int                                                     nb = aModel->NbEntities();
   for (int i = 1; i <= nb; i++)
   {
     occ::handle<Standard_Transient> anEnt = aModel->Value(i);
@@ -5468,30 +5543,31 @@ bool STEPCAFControl_Reader::ReadGDTs(const occ::handle<XSControl_WorkSession>& t
             }
             occ::handle<StepRepr_ShapeAspectRelationship> aSAR =
               occ::down_cast<StepRepr_ShapeAspectRelationship>(anIter.Value());
-            if (!aSAR.IsNull())
+            if (aSAR.IsNull())
             {
-              occ::handle<StepRepr_ShapeAspect> aSA = aSAR->RelatedShapeAspect();
-              if (!aSA.IsNull())
+              continue;
+            }
+            occ::handle<StepRepr_ShapeAspect> aSA = aSAR->RelatedShapeAspect();
+            if (aSA.IsNull())
+            {
+              continue;
+            }
+            if (aSA->IsKind(STANDARD_TYPE(StepDimTol_Datum))
+                || aSA->IsKind(STANDARD_TYPE(StepDimTol_DatumTarget))
+                || aSA->IsKind(STANDARD_TYPE(StepDimTol_DatumFeature))
+                || aSA->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
+            {
+              isConnectedToGDT = true;
+            }
+            for (Interface_EntityIterator aDimIter = aGraph.Sharings(aSA);
+                 aDimIter.More() && !isConnectedToGDT;
+                 aDimIter.Next())
+            {
+              if (aDimIter.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))
+                  || aDimIter.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))
+                  || aDimIter.Value()->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
               {
-                if (aSA->IsKind(STANDARD_TYPE(StepDimTol_Datum))
-                    || aSA->IsKind(STANDARD_TYPE(StepDimTol_DatumTarget))
-                    || aSA->IsKind(STANDARD_TYPE(StepDimTol_DatumFeature))
-                    || aSA->IsKind(STANDARD_TYPE(StepRepr_CompShAspAndDatumFeatAndShAsp)))
-                {
-                  isConnectedToGDT = true;
-                }
-                for (Interface_EntityIterator aDimIter = aGraph.Sharings(aSA);
-                     aDimIter.More() && !isConnectedToGDT;
-                     aDimIter.Next())
-                {
-                  if (aDimIter.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))
-                      || aDimIter.Value()->IsKind(STANDARD_TYPE(StepShape_DimensionalLocation))
-                      || aDimIter.Value()->IsKind(STANDARD_TYPE(StepDimTol_GeometricTolerance)))
-                  {
-                    isConnectedToGDT = true;
-                    continue;
-                  }
-                }
+                isConnectedToGDT = true;
               }
             }
           }
@@ -5523,9 +5599,7 @@ bool STEPCAFControl_Reader::ReadGDTs(const occ::handle<XSControl_WorkSession>& t
           }
           for (int anItemIt = 1; anItemIt <= aGISU->NbIdentifiedItem(); anItemIt++)
           {
-            TDF_Label aLabel = getShapeLabel(aGISU->IdentifiedItemValue(anItemIt),
-                                             theWS,
-                                             XCAFDoc_DocumentTool::ShapeTool(theDoc->Main()));
+            TDF_Label aLabel = getShapeLabel(aGISU->IdentifiedItemValue(anItemIt), theWS, aSTool);
             if (!aLabel.IsNull())
             {
               aShapesL.Append(aLabel);
@@ -5536,14 +5610,43 @@ bool STEPCAFControl_Reader::ReadGDTs(const occ::handle<XSControl_WorkSession>& t
       bool isCommonLabel = (aShapesL.Length() == 0);
 
       // Calculate unit
-      double           aFact         = 1.0;
-      StepData_Factors aLocalFactors = theLocalFactors;
+      double                               aFact         = 1.0;
+      StepData_Factors                     aLocalFactors = theLocalFactors;
+      occ::handle<StepRepr_Representation> aRepresentation;
       if (!aDMIA.IsNull())
+      {
+        aRepresentation = aDMIA->UsedRepresentation();
+      }
+      else
+      {
+        // Graphical notes inherit units through their callout or annotation plane.
+        aPresentationOwners.Clear(false);
+        aPresentationOwners.Add(anEnt);
+        for (size_t anOwnerIndex = 1;
+             anOwnerIndex <= aPresentationOwners.Size() && aRepresentation.IsNull();
+             ++anOwnerIndex)
+        {
+          for (Interface_EntityIterator anOwner =
+                 aGraph.Sharings(aPresentationOwners.FindKey(anOwnerIndex));
+               anOwner.More() && aRepresentation.IsNull();
+               anOwner.Next())
+          {
+            aRepresentation = occ::down_cast<StepRepr_Representation>(anOwner.Value());
+            if (aRepresentation.IsNull()
+                && (anOwner.Value()->IsKind(STANDARD_TYPE(StepVisual_AnnotationPlane))
+                    || anOwner.Value()->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout))))
+            {
+              aPresentationOwners.Add(anOwner.Value());
+            }
+          }
+        }
+      }
+      if (!aRepresentation.IsNull())
       {
         XSAlgo_ShapeProcessor::PrepareForTransfer();
         STEPControl_ActorRead                  anActor(aModel);
         occ::handle<Transfer_TransientProcess> aTP = aTR->TransientProcess();
-        anActor.PrepareUnits(aDMIA->UsedRepresentation(), aTP, aLocalFactors);
+        anActor.PrepareUnits(aRepresentation, aTP, aLocalFactors);
         aFact = aLocalFactors.LengthFactor();
       }
 

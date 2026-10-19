@@ -15,6 +15,7 @@
 #define _MathUtils_Domain_HeaderFile
 
 #include <cmath>
+#include <limits>
 
 //! @file MathUtils_Domain.hxx
 //! @brief Parameter domain types for curves and surfaces.
@@ -58,7 +59,13 @@ struct Domain1D
   bool IsValid() const { return std::isfinite(Min) && std::isfinite(Max) && Min <= Max; }
 
   //! Returns the midpoint of the domain.
-  constexpr double Mid() const { return (Min + Max) * 0.5; }
+  constexpr double Mid() const
+  {
+    constexpr double aHalfMax = std::numeric_limits<double>::max() * 0.5;
+    return Min >= -aHalfMax && Min <= aHalfMax && Max >= -aHalfMax && Max <= aHalfMax
+             ? (Min + Max) * 0.5
+             : Min * 0.5 + Max * 0.5;
+  }
 
   //! Check if value is within domain.
   //! @param theU parameter value to check
@@ -191,10 +198,10 @@ struct Domain2D
   bool IsValid() const { return U().IsValid() && V().IsValid(); }
 
   //! Returns U midpoint.
-  constexpr double UMid() const { return (UMin + UMax) * 0.5; }
+  constexpr double UMid() const { return U().Mid(); }
 
   //! Returns V midpoint.
-  constexpr double VMid() const { return (VMin + VMax) * 0.5; }
+  constexpr double VMid() const { return V().Mid(); }
 
   //! Check if UV point is within domain.
   //! @param theU U parameter

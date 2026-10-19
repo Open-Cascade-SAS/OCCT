@@ -47,4 +47,8 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   TopTrans_SurfaceTransition_Test.cxx
   GeomFill_SectionGenerator_Test.cxx
   LocalAnalysis_SurfaceContinuity_Test.cxx
+  ApproxInt_ImpPrmSvSurfaces_Test.cxx
+  Law_Linear_Test.cxx
+  Law_BSpFunc_Test.cxx
+  GeomAPI_Test.cxx
 )

@@ -24,86 +24,112 @@
 #include <math_FunctionWithDerivative.hxx>
 #include <math_BracketedRoot.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <MathUtils_Domain.hxx>
+
+#include <cmath>
+#include <algorithm>
+#include <utility>
 
 #define ITMAX 100
 #define EPS 1e-14
 #define EPSEPS 2e-14
 #define MAXBIS 100
 
+namespace
+{
 class DerivFunction : public math_Function
 {
-  math_FunctionWithDerivative* myF;
+  math_FunctionWithDerivative* myF; //!< Borrowed function kept alive by the solver caller.
+  bool myFailed = false; //!< A derivative callback failed or returned a non-finite value.
 
 public:
-  DerivFunction(math_FunctionWithDerivative& theF)
-      : myF(&theF)
-  {
-  }
-
-  bool Value(const double theX, double& theFval) override { return myF->Derivative(theX, theFval); }
+  DerivFunction(math_FunctionWithDerivative& theF);
+  bool Value(const double theX, double& theFval) override;
+  bool HasFailed() const;
 };
 
-static void AppendRoot(NCollection_Sequence<double>& Sol,
-                       NCollection_Sequence<int>&    NbStateSol,
-                       const double                  X,
-                       math_FunctionWithDerivative&  F,
-                       //			const double K,
-                       const double,
-                       const double dX)
-{
+//==================================================================================================
 
-  int    n = Sol.Length();
-  double t;
-  if (n == 0)
+DerivFunction::DerivFunction(math_FunctionWithDerivative& theF)
+    : myF(&theF)
+{
+}
+
+//==================================================================================================
+
+bool DerivFunction::Value(const double theX, double& theFval)
+{
+  if (!myF->Derivative(theX, theFval) || !std::isfinite(theFval))
   {
-    Sol.Append(X);
-    F.Value(X, t);
-    NbStateSol.Append(F.GetStateNumber());
+    myFailed = true;
+    return false;
+  }
+  return true;
+}
+
+//==================================================================================================
+
+bool DerivFunction::HasFailed() const
+{
+  return myFailed;
+}
+
+//==================================================================================================
+
+bool AppendRoot(NCollection_Sequence<double>& theRoots,
+                NCollection_Sequence<int>&    theStates,
+                const double                  theRoot,
+                math_FunctionWithDerivative&  theFunction,
+                const double                  theTolerance)
+{
+  int anInsertIndex = 1;
+  for (NCollection_Sequence<double>::Iterator anIterator(theRoots); anIterator.More();
+       anIterator.Next(), ++anInsertIndex)
+  {
+    const double anExistingRoot = anIterator.Value();
+    if (std::abs(theRoot - anExistingRoot) <= theTolerance)
+    {
+      return true;
+    }
+    if (anExistingRoot >= theRoot)
+    {
+      break;
+    }
+  }
+
+  // Refresh the function state at the root before storing it.
+  double aValue;
+  if (!theFunction.Value(theRoot, aValue) || !std::isfinite(aValue))
+  {
+    return false;
+  }
+  const int aState = theFunction.GetStateNumber();
+  if (anInsertIndex > theRoots.Length())
+  {
+    theRoots.Append(theRoot);
+    theStates.Append(aState);
   }
   else
   {
-    int i  = 1;
-    int pl = n + 1;
-    while (i <= n)
-    {
-      t = Sol.Value(i);
-      if (t >= X)
-      {
-        pl = i;
-        i  = n;
-      }
-      if (std::abs(X - t) <= dX)
-      {
-        pl = 0;
-        i  = n;
-      }
-      i++;
-    } //-- while
-    if (pl > n)
-    {
-      Sol.Append(X);
-      F.Value(X, t);
-      NbStateSol.Append(F.GetStateNumber());
-    }
-    else if (pl > 0)
-    {
-      Sol.InsertBefore(pl, X);
-      F.Value(X, t);
-      NbStateSol.InsertBefore(pl, F.GetStateNumber());
-    }
+    theRoots.InsertBefore(anInsertIndex, theRoot);
+    theStates.InsertBefore(anInsertIndex, aState);
   }
+  return true;
 }
 
-static void Solve(math_FunctionWithDerivative&  F,
-                  const double                  K,
-                  const double                  x1,
-                  const double                  y1,
-                  const double                  x2,
-                  const double                  y2,
-                  const double                  tol,
-                  const double                  dX,
-                  NCollection_Sequence<double>& Sol,
-                  NCollection_Sequence<int>&    NbStateSol)
+//==================================================================================================
+
+bool Solve(math_FunctionWithDerivative&  F,
+           const double                  K,
+           const double                  x1,
+           const double                  y1,
+           const double                  x2,
+           const double                  y2,
+           const double                  tol,
+           const double                  dX,
+           NCollection_Sequence<double>& Sol,
+           NCollection_Sequence<int>&    NbStateSol)
 {
   int    iter  = 0;
   double tols2 = 0.5 * tol;
@@ -140,30 +166,32 @@ static void Solve(math_FunctionWithDerivative&  F,
       Xp = b;
       do
       {
-        Ok = F.Values(Xp, Yp, Dp);
-        if (Ok)
+        if (!F.Values(Xp, Yp, Dp) || !std::isfinite(Yp) || !std::isfinite(Dp))
         {
-          Ok = false;
-          if (Dp > 1e-10 || Dp < -1e-10)
+          return false;
+        }
+        Ok = false;
+        if (Dp > 1e-10 || Dp < -1e-10)
+        {
+          Xp = Xp - (Yp - K) / Dp;
+        }
+        if (Xp <= x2 && Xp >= x1)
+        {
+          if (!F.Value(Xp, Yp) || !std::isfinite(Yp))
           {
-            Xp = Xp - (Yp - K) / Dp;
+            return false;
           }
-          if (Xp <= x2 && Xp >= x1)
+          Yp -= K;
+          if (std::abs(Yp) < std::abs(fb))
           {
-            F.Value(Xp, Yp);
-            Yp -= K;
-            if (std::abs(Yp) < std::abs(fb))
-            {
-              b  = Xp;
-              fb = Yp;
-              Ok = true;
-            }
+            b  = Xp;
+            fb = Yp;
+            Ok = true;
           }
         }
       } while (Ok && --itern >= 0);
 
-      AppendRoot(Sol, NbStateSol, b, F, K, dX);
-      return;
+      return AppendRoot(Sol, NbStateSol, b, F, dX);
     }
     if (std::abs(e) >= tol1 && std::abs(fa) > std::abs(fb))
     {
@@ -221,13 +249,19 @@ static void Solve(math_FunctionWithDerivative&  F,
         b += -std::abs(tol1);
       }
     }
-    F.Value(b, fb);
+    if (!F.Value(b, fb) || !std::isfinite(fb))
+    {
+      return false;
+    }
     fb -= K;
   }
 #ifdef OCCT_DEBUG
   std::cout << " Non Convergence dans math_FunctionRoots.cxx " << std::endl;
 #endif
+  return false;
 }
+
+} // namespace
 
 #define NEWSEQ 1
 
@@ -263,11 +297,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       X0 = B;
       XN = A;
     }
-    N *= 2;
-    if (N < 20)
-    {
-      N = 20;
-    }
+    N = std::max(N, 10) * 2;
     //--  On teste si EpsX est trop petit (ie : U+Nn*EpsX == U )
     double EpsX   = _EpsX;
     double DeltaU = std::abs(X0) + std::abs(XN);
@@ -281,32 +311,21 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     //-- A .............................................................. B
     //-- X0   X1   X2 ........................................  Xn-1      Xn
     int                        i;
-    double                     X = X0;
-    bool                       Ok;
+    double                     X  = X0;
     double                     dx = (XN - X0) / N;
     NCollection_Array1<double> ptrval(0, N);
-    int                        Nvalid = -1;
-    double                     aux    = 0;
-    for (i = 0; i <= N; i++, X += dx)
+    for (i = 0; i <= N; ++i)
     {
-      if (X > XN)
+      X             = i == N ? XN : X0 + i * dx;
+      double aValue = 0.0;
+      if (!F.Value(X, aValue) || !std::isfinite(aValue))
       {
-        X = XN;
+        Done = false;
+        return;
       }
-      Ok = F.Value(X, aux);
-      if (Ok)
-      {
-        ptrval(++Nvalid) = aux - K;
-      }
-      //      ptrval(i)-=K;
+      ptrval(i) = aValue - K;
     }
     //-- Toute la fonction est nulle ?
-
-    if (Nvalid < N)
-    {
-      Done = false;
-      return;
-    }
 
     AllNull = true;
     //    for(i=0;AllNull && i<=N;i++) {
@@ -329,84 +348,107 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       //      bool chgtsign=false;
       double tol = EpsX;
       double X2;
-      for (i = 0, ip1 = 1, X = X0; i < N; i++, ip1++, X += dx)
+      for (i = 0, ip1 = 1; i < N; ++i, ++ip1)
       {
-        X2 = X + dx;
-        if (X2 > XN)
+        X  = X0 + i * dx;
+        X2 = ip1 == N ? XN : X0 + ip1 * dx;
+        if ((ptrval(i) < 0.0 && ptrval(ip1) > 0.0) || (ptrval(i) >= 0.0 && ptrval(ip1) < 0.0))
         {
-          X2 = XN;
-        }
-        if (ptrval(i) < 0.0)
-        {
-          if (ptrval(ip1) > 0.0)
+          if (!Solve(F, K, X, ptrval(i), X2, ptrval(ip1), tol, NEpsX, Sol, NbStateSol))
           {
-            //-- --------------------------------------------------
-            //-- changement de signe dans Xi Xi+1
-            Solve(F, K, X, ptrval(i), X2, ptrval(ip1), tol, NEpsX, Sol, NbStateSol);
-          }
-        }
-        else
-        {
-          if (ptrval(ip1) < 0.0)
-          {
-            //-- --------------------------------------------------
-            //-- changement de signe dans Xi Xi+1
-            Solve(F, K, X, ptrval(i), X2, ptrval(ip1), tol, NEpsX, Sol, NbStateSol);
+            Done = false;
+            return;
           }
         }
       }
-      //-- On detecte les cas ou la fct s annule sur des Xi et est
-      //-- non nulle au voisinage de Xi
-      //--
-      //-- On prend 2 points u0,u1 au voisinage de Xi
-      //-- Si (F(u0)-K)*(F(u1)-K) <0   on lance une recherche
-      //-- Sinon si (F(u0)-K)*(F(u1)-K) !=0 on insere le point X
-      for (i = 0; i <= N; i++)
+      // Keep each isolated sampled root and find return crossings in either neighbor interval.
+      for (i = 0; i <= N; ++i)
       {
-        if (ptrval(i) == 0)
+        if (ptrval(i) != 0.0
+            || ((i == 0 || ptrval(i - 1) == 0.0) && (i == N || ptrval(i + 1) == 0.0)))
         {
-          //	  double Val,Deriv;
-          X = X0 + i * dx;
-          if (X > XN)
+          continue;
+        }
+        X = i == N ? XN : X0 + i * dx;
+        if (!AppendRoot(Sol, NbStateSol, X, F, NEpsX))
+        {
+          Done = false;
+          return;
+        }
+        double aDerivative = 0.0;
+        if (!F.Derivative(X, aDerivative) || !std::isfinite(aDerivative))
+        {
+          Done = false;
+          return;
+        }
+        if (aDerivative == 0.0)
+        {
+          continue;
+        }
+        for (const int aSide : {-1, 1})
+        {
+          const int aNeighbor = i + aSide;
+          if (aNeighbor < 0 || aNeighbor > N || ptrval(aNeighbor) == 0.0)
           {
-            X = XN;
+            continue;
           }
-          double u0, u1;
-          u0 = dx * 0.5;
-          u1 = X + u0;
-          u0 += X;
-          if (u0 < X0)
+          const double anInwardDerivative = aSide * aDerivative;
+          const double anOuterValue       = ptrval(aNeighbor);
+          if ((anInwardDerivative < 0.0) == (anOuterValue < 0.0))
           {
-            u0 = X0;
+            continue;
           }
-          if (u0 > XN)
+          double anOuter = aNeighbor == N ? XN : X0 + aNeighbor * dx;
+          while (std::abs(anOuter - X) > NEpsX)
           {
-            u0 = XN;
-          }
-          if (u1 < X0)
-          {
-            u1 = X0;
-          }
-          if (u1 > XN)
-          {
-            u1 = XN;
-          }
-
-          double y0, y1;
-          F.Value(u0, y0);
-          y0 -= K;
-          F.Value(u1, y1);
-          y1 -= K;
-          if (y0 * y1 < 0.0)
-          {
-            Solve(F, K, u0, y0, u1, y1, tol, NEpsX, Sol, NbStateSol);
-          }
-          else
-          {
-            if (y0 != 0.0 || y1 != 0.0)
+            const double aMiddle = MathUtils::Domain1D(X, anOuter).Mid();
+            if (aMiddle == X || aMiddle == anOuter)
             {
-              AppendRoot(Sol, NbStateSol, X, F, K, NEpsX);
+              break;
             }
+            double aValue = 0.0;
+            if (!F.Value(aMiddle, aValue) || !std::isfinite(aValue))
+            {
+              Done = false;
+              return;
+            }
+            aValue -= K;
+            if (aValue == 0.0)
+            {
+              if (!AppendRoot(Sol, NbStateSol, aMiddle, F, NEpsX))
+              {
+                Done = false;
+                return;
+              }
+              break;
+            }
+            if ((aValue < 0.0) != (anOuterValue < 0.0))
+            {
+              const double aNeighborParameter = aNeighbor == N ? XN : X0 + aNeighbor * dx;
+              double       aFirstParameter = aMiddle, aLastParameter = aNeighborParameter;
+              double       aFirstValue = aValue, aLastValue = anOuterValue;
+              if (aFirstParameter > aLastParameter)
+              {
+                std::swap(aFirstParameter, aLastParameter);
+                std::swap(aFirstValue, aLastValue);
+              }
+              if (!Solve(F,
+                         K,
+                         aFirstParameter,
+                         aFirstValue,
+                         aLastParameter,
+                         aLastValue,
+                         tol,
+                         NEpsX,
+                         Sol,
+                         NbStateSol))
+              {
+                Done = false;
+                return;
+              }
+              break;
+            }
+            anOuter = aMiddle;
           }
         }
       }
@@ -414,11 +456,19 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       //-- Il faut traiter differement le cas des points en bout :
       if (ptrval(0) <= EpsF && ptrval(0) >= -EpsF)
       {
-        AppendRoot(Sol, NbStateSol, X0, F, K, NEpsX);
+        if (!AppendRoot(Sol, NbStateSol, X0, F, NEpsX))
+        {
+          Done = false;
+          return;
+        }
       }
       if (ptrval(N) <= EpsF && ptrval(N) >= -EpsF)
       {
-        AppendRoot(Sol, NbStateSol, XN, F, K, NEpsX);
+        if (!AppendRoot(Sol, NbStateSol, XN, F, NEpsX))
+        {
+          Done = false;
+          return;
+        }
       }
 
       //-- --------------------------------------------------------------------------------
@@ -452,7 +502,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             {
               xm1 = X0;
             }
-            F.Values(xm1, ym, dym);
+            if (!F.Values(xm1, ym, dym) || !std::isfinite(ym) || !std::isfinite(dym))
+            {
+              Done = false;
+              return;
+            }
             ym -= K;
             if (dym < -1e-10 || dym > 1e-10)
             {                      // normalement dym < 0
@@ -470,7 +524,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               {
                 xp1 = XN;
               }
-              F.Values(xp1, ym, dym);
+              if (!F.Values(xp1, ym, dym) || !std::isfinite(ym) || !std::isfinite(dym))
+              {
+                Done = false;
+                return;
+              }
               ym -= K;
               if (dym < -1e-10 || dym > 1e-10)
               {                      // normalement dym > 0
@@ -494,7 +552,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             {
               xm1 = X0;
             }
-            F.Values(xm1, ym, dym);
+            if (!F.Values(xm1, ym, dym) || !std::isfinite(ym) || !std::isfinite(dym))
+            {
+              Done = false;
+              return;
+            }
             ym -= K;
             if (dym > 1e-10 || dym < -1e-10)
             {                      // normalement dym > 0
@@ -512,7 +574,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               {
                 xm1 = X0;
               }
-              F.Values(xm1, ym, dym);
+              if (!F.Values(xm1, ym, dym) || !std::isfinite(ym) || !std::isfinite(dym))
+              {
+                Done = false;
+                return;
+              }
               ym -= K;
               if (dym > 1e-10 || dym < -1e-10)
               {                      // normalement dym < 0
@@ -547,11 +613,20 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           //-- by searching for the zero of the function derivative
           DerivFunction      aDerF(F);
           math_BracketedRoot aBR(aDerF, x0, x3, _EpsX);
+          if (aDerF.HasFailed())
+          {
+            Done = false;
+            return;
+          }
           if (aBR.IsDone())
           {
             aSolX1 = aBR.Root();
-            F.Value(aSolX1, aVal1);
-            aVal1 = std::abs(aVal1);
+            if (!F.Value(aSolX1, aVal1) || !std::isfinite(aVal1))
+            {
+              Done = false;
+              return;
+            }
+            aVal1 = std::abs(aVal1 - K);
             if (aVal1 < EpsF)
             {
               isSol1 = true;
@@ -584,9 +659,17 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             x1 = xm - C * (xm - x0);
           }
           double f1, f2;
-          F.Value(x1, f1);
+          if (!F.Value(x1, f1) || !std::isfinite(f1))
+          {
+            Done = false;
+            return;
+          }
           f1 -= K;
-          F.Value(x2, f2);
+          if (!F.Value(x2, f2) || !std::isfinite(f2))
+          {
+            Done = false;
+            return;
+          }
           f2 -= K;
           //-- printf("\n *************** RECHERCHE MINIMUM **********\n");
           double tolX = 0.001 * NEpsX;
@@ -604,7 +687,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                 x2 = R * x1 + C * x3;
                 f0 = f1;
                 f1 = f2;
-                F.Value(x2, f2);
+                if (!F.Value(x2, f2) || !std::isfinite(f2))
+                {
+                  Done = false;
+                  return;
+                }
                 f2 -= K;
               }
               else
@@ -614,7 +701,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                 x1 = R * x2 + C * x0;
                 f3 = f2;
                 f2 = f1;
-                F.Value(x1, f1);
+                if (!F.Value(x1, f1) || !std::isfinite(f1))
+                {
+                  Done = false;
+                  return;
+                }
                 f1 -= K;
               }
             }
@@ -627,7 +718,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                 x2 = R * x1 + C * x3;
                 f0 = f1;
                 f1 = f2;
-                F.Value(x2, f2);
+                if (!F.Value(x2, f2) || !std::isfinite(f2))
+                {
+                  Done = false;
+                  return;
+                }
                 f2 -= K;
               }
               else
@@ -637,7 +732,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
                 x1 = R * x2 + C * x0;
                 f3 = f2;
                 f2 = f1;
-                F.Value(x1, f1);
+                if (!F.Value(x1, f1) || !std::isfinite(f1))
+                {
+                  Done = false;
+                  return;
+                }
                 f1 -= K;
               }
             }
@@ -646,12 +745,20 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             if (f1 * f0 < 0.0)
             {
               //-- printf("\n Recherche entre  (%10.5g,%10.5g) (%10.5g,%10.5g) ",x0,f0,x1,f1);
-              Solve(F, K, x0, f0, x1, f1, tol, NEpsX, Sol, NbStateSol);
+              if (!Solve(F, K, x0, f0, x1, f1, tol, NEpsX, Sol, NbStateSol))
+              {
+                Done = false;
+                return;
+              }
             }
             if (f2 * f3 < 0.0)
             {
               //-- printf("\n Recherche entre  (%10.5g,%10.5g) (%10.5g,%10.5g) ",x2,f2,x3,f3);
-              Solve(F, K, x2, f2, x3, f3, tol, NEpsX, Sol, NbStateSol);
+              if (!Solve(F, K, x2, f2, x3, f3, tol, NEpsX, Sol, NbStateSol))
+              {
+                Done = false;
+                return;
+              }
             }
           }
           if ((recherche_minimum && f1 < f2) || (!recherche_minimum && f1 > f2))
@@ -679,34 +786,62 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           {
             if (aVal2 - aVal1 > EpsF)
             {
-              AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+              if (!AppendRoot(Sol, NbStateSol, aSolX1, F, NEpsX))
+              {
+                Done = false;
+                return;
+              }
             }
             else if (aVal1 - aVal2 > EpsF)
             {
-              AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+              if (!AppendRoot(Sol, NbStateSol, aSolX2, F, NEpsX))
+              {
+                Done = false;
+                return;
+              }
             }
             else
             {
               aDer1 = std::abs(aDer1);
-              F.Derivative(aSolX2, aDer2);
+              if (!F.Derivative(aSolX2, aDer2) || !std::isfinite(aDer2))
+              {
+                Done = false;
+                return;
+              }
               aDer2 = std::abs(aDer2);
               if (aDer1 < aDer2)
               {
-                AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+                if (!AppendRoot(Sol, NbStateSol, aSolX1, F, NEpsX))
+                {
+                  Done = false;
+                  return;
+                }
               }
               else
               {
-                AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+                if (!AppendRoot(Sol, NbStateSol, aSolX2, F, NEpsX))
+                {
+                  Done = false;
+                  return;
+                }
               }
             }
           }
           else if (isSol1)
           {
-            AppendRoot(Sol, NbStateSol, aSolX1, F, K, NEpsX);
+            if (!AppendRoot(Sol, NbStateSol, aSolX1, F, NEpsX))
+            {
+              Done = false;
+              return;
+            }
           }
           else if (isSol2)
           {
-            AppendRoot(Sol, NbStateSol, aSolX2, F, K, NEpsX);
+            if (!AppendRoot(Sol, NbStateSol, aSolX2, F, NEpsX))
+            {
+              Done = false;
+              return;
+            }
           }
         } //-- Recherche d un extrema
       } //-- for

@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWStepDimTol_RWDatumReferenceModifierWithValue.pxx"
-
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
+
+#include "RWStepDimTol_RWDatumReferenceModifierWithValue.pxx"
 
 //=================================================================================================
 
@@ -108,4 +108,13 @@ void RWStepDimTol_RWDatumReferenceModifierWithValue::WriteStep(
   }
 
   SW.Send(ent->ModifierValue());
+}
+
+//==================================================================================================
+
+void RWStepDimTol_RWDatumReferenceModifierWithValue::Share(
+  const occ::handle<StepDimTol_DatumReferenceModifierWithValue>& theEntity,
+  Interface_EntityIterator&                                      theIterator) const
+{
+  theIterator.AddItem(theEntity->ModifierValue());
 }

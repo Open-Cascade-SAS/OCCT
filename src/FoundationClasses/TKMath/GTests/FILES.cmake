@@ -132,4 +132,6 @@ set(OCCT_TKMath_GTests_FILES
   PLib_JacobiPolynomial_Test.cxx
   PLib_HermitJacobi_Test.cxx
   ElSLib_Test.cxx
+  MathUtils_Domain_Test.cxx
+  MathSys_LinearAlgebra_Test.cxx
 )
