@@ -1512,11 +1512,17 @@ void ChFi3d_Builder::PerformOneCorner(const int Index, const bool thePrepareOnSa
       BRepLib_MakeEdge  Bedge(zob3d);
       TopoDS_Edge       edg = Bedge.Edge();
       BRepExtrema_ExtCC extCC(edgecouture, edg);
-      if (extCC.IsDone() && extCC.NbExt() != 0)
+      // A curve lying along the sewing edge (both on the line Arcprol continues) is not split
+      // by it; parallel curves have no extremum points to take.
+      if (extCC.IsDone() && !extCC.IsParallel() && extCC.NbExt() != 0)
       {
         for (int i = 1; i <= extCC.NbExt() && !intcouture; i++)
         {
-          if (extCC.SquareDistance(i) <= 1.e-8)
+          // A sewing edge that only touches the curve at one of its ends does not split it: an
+          // edge closing the face can end at Vtx.
+          if (extCC.SquareDistance(i) <= 1.e-8
+              && extCC.PointOnE1(i).Distance(zob3d->Value(Udeb)) > tolapp3d
+              && extCC.PointOnE1(i).Distance(zob3d->Value(Ufin)) > tolapp3d)
           {
             par1                  = extCC.ParameterOnE1(i);
             par2                  = extCC.ParameterOnE2(i);
