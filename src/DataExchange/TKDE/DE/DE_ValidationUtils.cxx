@@ -118,40 +118,28 @@ bool DE_ValidationUtils::ValidateFileForReading(const TCollection_AsciiString& t
     return false;
   }
 
-  try
-  {
-    OSD_Path aOSDPath(thePath);
-    OSD_File aFile(aOSDPath);
+  OSD_Path aOSDPath(thePath);
+  OSD_File aFile(aOSDPath);
 
-    // Check if file exists
-    if (!aFile.Exists())
-    {
-      if (theIsVerbose)
-      {
-        Message::SendFail() << "Error during " << theContext << ": File '" << thePath
-                            << "' does not exist";
-      }
-      return false;
-    }
-
-    // Try to open for reading to verify permissions
-    std::ifstream aTestFile(thePath.ToCString());
-    if (!aTestFile.is_open() || !aTestFile.good())
-    {
-      if (theIsVerbose)
-      {
-        Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
-                            << "' for reading";
-      }
-      return false;
-    }
-  }
-  catch (const std::exception& anException)
+  // Check if file exists
+  if (!aFile.Exists())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext << ": Cannot access file '" << thePath
-                          << "': " << anException.what();
+      Message::SendFail() << "Error during " << theContext << ": File '" << thePath
+                          << "' does not exist";
+    }
+    return false;
+  }
+
+  // Try to open for reading to verify permissions
+  std::ifstream aTestFile(thePath.ToCString());
+  if (!aTestFile.is_open() || !aTestFile.good())
+  {
+    if (theIsVerbose)
+    {
+      Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
+                          << "' for reading";
     }
     return false;
   }
@@ -174,27 +162,14 @@ bool DE_ValidationUtils::ValidateFileForWriting(const TCollection_AsciiString& t
     return false;
   }
 
-  try
-  {
-    // Try to open for writing to verify permissions
-    std::ofstream aTestFile(thePath.ToCString(), std::ios::out | std::ios::app);
-    if (!aTestFile.is_open() || !aTestFile.good())
-    {
-      if (theIsVerbose)
-      {
-        Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
-                            << "' for writing";
-      }
-      return false;
-    }
-    // File will be closed automatically when aTestFile goes out of scope
-  }
-  catch (const std::exception& anException)
+  // Try to open for writing to verify permissions
+  std::ofstream aTestFile(thePath.ToCString(), std::ios::out | std::ios::app);
+  if (!aTestFile.is_open() || !aTestFile.good())
   {
     if (theIsVerbose)
     {
-      Message::SendFail() << "Error during " << theContext << ": Cannot access file '" << thePath
-                          << "': " << anException.what();
+      Message::SendFail() << "Error during " << theContext << ": Cannot open file '" << thePath
+                          << "' for writing";
     }
     return false;
   }

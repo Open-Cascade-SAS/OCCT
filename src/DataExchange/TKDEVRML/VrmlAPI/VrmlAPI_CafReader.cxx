@@ -120,6 +120,10 @@ static void performMeshSubshape(
     }
     RWMesh_NodeAttributes& aFaceAttribs = theAttribMap.TryEmplaced(theShape);
     aFaceAttribs.Style.SetMaterial(aMaterial);
+    if (!anAppearance->Material().IsNull())
+    {
+      aFaceAttribs.Style.SetColorSurf(anAppearance->Material()->DiffuseColor());
+    }
   }
 
   for (TopoDS_Iterator aSubShapeIter(theShape, true, false); aSubShapeIter.More();

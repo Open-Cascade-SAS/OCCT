@@ -186,7 +186,7 @@ TEST_F(StepToTopoDS_TranslateFaceTest, TessellatedItems_OnlyAllocateSupportedNor
   aFans->SetValue(1, aFan);
   for (int aKind = 0; aKind < 4; ++aKind)
   {
-    for (const auto [aNormalCount, aNormalColumns] :
+    for (const auto& [aNormalCount, aNormalColumns] :
          {std::pair{0, 3}, std::pair{1, 3}, std::pair{2, 3}, std::pair{4, 3}, std::pair{1, 2}})
     {
       SCOPED_TRACE(testing::Message() << aKind << ", " << aNormalCount << ", " << aNormalColumns);

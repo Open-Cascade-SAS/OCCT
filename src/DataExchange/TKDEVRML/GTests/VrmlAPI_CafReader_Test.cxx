@@ -24,7 +24,9 @@
 #include <DEVRML_Provider.hxx>
 #include <Image_Texture.hxx>
 #include <NCollection_Buffer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Quantity_Color.hxx>
 #include <Standard_ArrayStreamBuffer.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
@@ -32,6 +34,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_VisMaterial.hxx>
 #include <XCAFDoc_VisMaterialTool.hxx>
@@ -115,6 +118,13 @@ TEST(VrmlAPI_CafReaderTest, NamedTextureAndMaterialSurviveInputLifetime)
   ASSERT_FALSE(aBytes.IsNull());
   ASSERT_EQ(aBytes->Size(), sizeof(THE_IMAGE));
   EXPECT_EQ(std::memcmp(aBytes->Data(), THE_IMAGE, sizeof(THE_IMAGE)), 0);
+  const occ::handle<XCAFDoc_ColorTool> aColors = XCAFDoc_DocumentTool::ColorTool(aDocument->Main());
+  NCollection_Sequence<TDF_Label>      aColorLabels;
+  aColors->GetColors(aColorLabels);
+  ASSERT_EQ(aColorLabels.Length(), 1);
+  Quantity_Color aColor;
+  ASSERT_TRUE(XCAFDoc_ColorTool::GetColor(aColorLabels.First(), aColor));
+  EXPECT_EQ(aColor, aMaterial.DiffuseColor);
 }
 
 //==================================================================================================
