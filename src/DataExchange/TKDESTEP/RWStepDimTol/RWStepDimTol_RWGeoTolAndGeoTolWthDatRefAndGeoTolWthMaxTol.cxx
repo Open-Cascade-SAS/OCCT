@@ -13,10 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWStepDimTol_LengthMeasure.pxx"
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.pxx"
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -26,6 +24,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
+
+#include "RWStepDimTol_LengthMeasure.pxx"
+#include "RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.pxx"
 
 //=================================================================================================
 
@@ -284,8 +285,6 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::WriteStep(
   SW.Send(ent->Description());
   SW.Send(ent->Magnitude());
   SW.Send(ent->TolerancedShapeAspect().Value());
-  SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
-  SW.Send(ent->GetMaxTolerance());
   SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE");
   SW.OpenSub();
   for (int i4 = 1;
@@ -298,6 +297,8 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::WriteStep(
   }
   SW.CloseSub();
 
+  SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MAXIMUM_TOLERANCE");
+  SW.Send(ent->GetMaxTolerance());
   SW.StartEntity("GEOMETRIC_TOLERANCE_WITH_MODIFIERS");
   SW.OpenSub();
   occ::handle<StepDimTol_GeometricToleranceWithModifiers> aGTWM =

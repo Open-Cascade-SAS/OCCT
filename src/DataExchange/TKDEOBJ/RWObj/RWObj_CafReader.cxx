@@ -13,6 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <RWObj_CafReader.hxx>
+#include <Image_Texture.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWObj_CafReader, RWMesh_CafReader)
 
@@ -58,7 +59,11 @@ void RWObj_CafReader::BindNamedShape(const TopoDS_Shape&            theShape,
       aMatXde.SpecularColor = theMaterial->SpecularColor;
       aMatXde.Shininess     = theMaterial->Shininess;
       aMatXde.Transparency  = theMaterial->Transparency;
-      if (!theMaterial->DiffuseTexture.IsEmpty())
+      if (!theMaterial->DiffuseTextureSource.IsNull())
+      {
+        aMatXde.DiffuseTexture = theMaterial->DiffuseTextureSource;
+      }
+      else if (!theMaterial->DiffuseTexture.IsEmpty())
       {
         aMatXde.DiffuseTexture = new Image_Texture(theMaterial->DiffuseTexture);
       }
@@ -94,6 +99,10 @@ bool RWObj_CafReader::performMesh(std::istream&                  theStream,
                                   const bool                     theToProbe)
 {
   occ::handle<RWObj_TriangulationReader> aCtx = createReaderContext();
+  if (myResourceStreams != nullptr)
+  {
+    aCtx->SetResourceStreams(*myResourceStreams);
+  }
   aCtx->SetSinglePrecision(myIsSinglePrecision);
   aCtx->SetCreateShapes(true);
   aCtx->SetShapeReceiver(this);

@@ -17,6 +17,9 @@
 
 #include <Quantity_Color.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Standard_Handle.hxx>
+
+class Image_Texture;
 
 //! Material definition for OBJ file format.
 struct RWObj_Material
@@ -27,6 +30,7 @@ struct RWObj_Material
   TCollection_AsciiString SpecularTexture; //!< path to the texture image file defining specular color
                                        // clang-format on
   TCollection_AsciiString BumpTexture; //!< path to the texture image file defining normal map
+  occ::handle<Image_Texture> DiffuseTextureSource; //!< Diffuse texture read from a stream.
   Quantity_Color          AmbientColor;
   Quantity_Color          DiffuseColor;
   Quantity_Color          SpecularColor;

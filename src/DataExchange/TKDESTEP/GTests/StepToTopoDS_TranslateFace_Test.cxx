@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
 #include <BRep_Tool.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_HArray2.hxx>
@@ -34,6 +32,10 @@
 #include <Transfer_TransientProcess.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_Vec.hxx>
+
+#include <gtest/gtest.h>
+
+#include <utility>
 
 namespace
 {
@@ -112,6 +114,158 @@ protected:
 };
 
 } // namespace
+
+//==================================================================================================
+
+TEST_F(StepToTopoDS_TranslateFaceTest, ComplexFan_RepeatedIndexKeepsOnlyValidTriangles)
+{
+  NCollection_Array1<gp_XYZ> aPoints(1, 4);
+  aPoints(1)                                       = gp_XYZ(0, 0, 0);
+  aPoints(2)                                       = gp_XYZ(1, 0, 0);
+  aPoints(3)                                       = gp_XYZ(1, 1, 0);
+  aPoints(4)                                       = gp_XYZ(0, 1, 0);
+  const occ::handle<NCollection_HArray1<int>> aFan = new NCollection_HArray1<int>(1, 5);
+  aFan->SetValue(1, 1);
+  aFan->SetValue(2, 2);
+  aFan->SetValue(3, 3);
+  aFan->SetValue(4, 3);
+  aFan->SetValue(5, 4);
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aFans =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+  aFans->SetValue(1, aFan);
+  const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+    new StepVisual_ComplexTriangulatedFace;
+  aFace->Init(new TCollection_HAsciiString("fan"),
+              createCoords(aPoints),
+              4,
+              nullptr,
+              false,
+              StepVisual_FaceOrSurface(),
+              nullptr,
+              nullptr,
+              aFans);
+  bool                       aHasGeometry = false;
+  StepToTopoDS_TranslateFace aTranslator(aFace, myTool, myNMTool, false, aHasGeometry);
+  ASSERT_TRUE(aTranslator.IsDone());
+  const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);
+  ASSERT_FALSE(aMesh.IsNull());
+  ASSERT_EQ(aMesh->NbTriangles(), 2);
+  for (int anIndex = 1; anIndex <= 2; ++anIndex)
+  {
+    int aFirst, aSecond, aThird;
+    aMesh->Triangle(anIndex).Get(aFirst, aSecond, aThird);
+    EXPECT_EQ(aFirst, 1);
+    EXPECT_EQ(aSecond, anIndex + 1);
+    EXPECT_EQ(aThird, anIndex + 2);
+  }
+}
+
+//==================================================================================================
+
+TEST_F(StepToTopoDS_TranslateFaceTest, TessellatedItems_OnlyAllocateSupportedNormals)
+{
+  NCollection_Array1<gp_XYZ> aPoints(1, 4);
+  aPoints(1)                                             = gp_XYZ(0, 0, 0);
+  aPoints(2)                                             = gp_XYZ(1, 0, 0);
+  aPoints(3)                                             = gp_XYZ(1, 1, 0);
+  aPoints(4)                                             = gp_XYZ(0, 1, 0);
+  const occ::handle<NCollection_HArray2<int>> aTriangles = new NCollection_HArray2<int>(1, 2, 1, 3);
+  aTriangles->SetValue(1, 1, 1);
+  aTriangles->SetValue(1, 2, 2);
+  aTriangles->SetValue(1, 3, 3);
+  aTriangles->SetValue(2, 1, 1);
+  aTriangles->SetValue(2, 2, 3);
+  aTriangles->SetValue(2, 3, 4);
+  const occ::handle<NCollection_HArray1<int>> aFan = new NCollection_HArray1<int>(1, 4);
+  for (int anIndex = 1; anIndex <= 4; ++anIndex)
+  {
+    aFan->SetValue(anIndex, anIndex);
+  }
+  const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aFans =
+    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, 1);
+  aFans->SetValue(1, aFan);
+  for (int aKind = 0; aKind < 4; ++aKind)
+  {
+    for (const auto [aNormalCount, aNormalColumns] :
+         {std::pair{0, 3}, std::pair{1, 3}, std::pair{2, 3}, std::pair{4, 3}, std::pair{1, 2}})
+    {
+      SCOPED_TRACE(testing::Message() << aKind << ", " << aNormalCount << ", " << aNormalColumns);
+      occ::handle<NCollection_HArray2<double>> aNormals;
+      if (aNormalCount != 0)
+      {
+        aNormals = new NCollection_HArray2<double>(1, aNormalCount, 1, aNormalColumns);
+        aNormals->Init(0.0);
+        for (int anIndex = 1; anIndex <= aNormalCount; ++anIndex)
+        {
+          aNormals->SetValue(anIndex, aNormalColumns, 1.0);
+        }
+      }
+      const occ::handle<StepVisual_CoordinatesList> aCoordinates = createCoords(aPoints);
+      const occ::handle<TCollection_HAsciiString>   aName = new TCollection_HAsciiString("normals");
+      StepToTopoDS_TranslateFace                    aTranslator;
+      bool                                          aHasGeometry = false;
+      switch (aKind)
+      {
+        case 0: {
+          const occ::handle<StepVisual_TriangulatedFace> aFace = new StepVisual_TriangulatedFace;
+          aFace->Init(aName,
+                      aCoordinates,
+                      4,
+                      aNormals,
+                      false,
+                      StepVisual_FaceOrSurface(),
+                      nullptr,
+                      aTriangles);
+          aTranslator.Init(aFace, myTool, myNMTool, false, aHasGeometry);
+          break;
+        }
+        case 1: {
+          const occ::handle<StepVisual_TriangulatedSurfaceSet> aSet =
+            new StepVisual_TriangulatedSurfaceSet;
+          aSet->Init(aName, aCoordinates, 4, aNormals, nullptr, aTriangles);
+          aTranslator.Init(aSet, myTool, myNMTool);
+          break;
+        }
+        case 2: {
+          const occ::handle<StepVisual_ComplexTriangulatedFace> aFace =
+            new StepVisual_ComplexTriangulatedFace;
+          aFace->Init(aName,
+                      aCoordinates,
+                      4,
+                      aNormals,
+                      false,
+                      StepVisual_FaceOrSurface(),
+                      nullptr,
+                      nullptr,
+                      aFans);
+          aTranslator.Init(aFace, myTool, myNMTool, false, aHasGeometry);
+          break;
+        }
+        case 3: {
+          const occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> aSet =
+            new StepVisual_ComplexTriangulatedSurfaceSet;
+          aSet->Init(aName, aCoordinates, 4, aNormals, nullptr, nullptr, aFans);
+          aTranslator.Init(aSet, myTool, myNMTool);
+          break;
+        }
+      }
+      ASSERT_TRUE(aTranslator.IsDone());
+      const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);
+      ASSERT_FALSE(aMesh.IsNull());
+      const bool hasSupportedNormals =
+        aNormalColumns == 3 && (aNormalCount == 1 || aNormalCount == 4);
+      ASSERT_EQ(aMesh->HasNormals(), hasSupportedNormals);
+      if (!hasSupportedNormals)
+      {
+        aMesh->ComputeNormals();
+      }
+      for (int anIndex = 1; anIndex <= aMesh->NbNodes(); ++anIndex)
+      {
+        EXPECT_DOUBLE_EQ(aMesh->Normal(anIndex).Z(), 1.0);
+      }
+    }
+  }
+}
 
 // Test: TriangulatedFace with direct node indexing (no pnindex).
 TEST_F(StepToTopoDS_TranslateFaceTest, TriangulatedFace_DirectNodes)

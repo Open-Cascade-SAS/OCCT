@@ -298,7 +298,7 @@ bool DEOBJ_Provider::Read(ReadStreamList&                      theStreams,
                           const Message_ProgressRange&         theProgress)
 {
   const TCollection_AsciiString aContext("reading OBJ stream");
-  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext)
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext, true, theStreams.Size() > 1)
       || !DE_ValidationUtils::ValidateDocument(theDocument, aContext)
       || !DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
                                                         STANDARD_TYPE(DEOBJ_ConfigurationNode),
@@ -311,6 +311,11 @@ bool DEOBJ_Provider::Read(ReadStreamList&                      theStreams,
   RWObj_CafReader aReader;
   configureReader(aReader, *aNode);
   aReader.SetDocument(theDocument);
+  if (theStreams.Size() > 1)
+  {
+    aReader.SetResourceStreams(theStreams);
+    aReader.SetFillIncompleteDocument(false);
+  }
   if (!aReader.Perform(theStreams.First().Stream, theProgress, theStreams.First().Path))
   {
     return false;
@@ -328,7 +333,7 @@ bool DEOBJ_Provider::Read(ReadStreamList&              theStreams,
                           const Message_ProgressRange& theProgress)
 {
   const TCollection_AsciiString aContext("reading OBJ stream");
-  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext)
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext, true, theStreams.Size() > 1)
       || !DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
                                                         STANDARD_TYPE(DEOBJ_ConfigurationNode),
                                                         aContext))
@@ -338,6 +343,10 @@ bool DEOBJ_Provider::Read(ReadStreamList&              theStreams,
   const occ::handle<DEOBJ_ConfigurationNode> aNode =
     occ::down_cast<DEOBJ_ConfigurationNode>(GetNode());
   RWObj_TriangulationReader aReader;
+  if (theStreams.Size() > 1)
+  {
+    aReader.SetResourceStreams(theStreams);
+  }
   if (!configureShapeReader(aReader, *aNode)
       || !aReader.Read(theStreams.First().Stream, theStreams.First().Path, theProgress))
   {

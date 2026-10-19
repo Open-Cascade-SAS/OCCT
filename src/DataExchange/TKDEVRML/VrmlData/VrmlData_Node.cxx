@@ -622,7 +622,8 @@ occ::handle<VrmlData_Node> VrmlData_ImageTexture::Clone(
   {
     aResult = new VrmlData_ImageTexture(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   }
-  aResult->myURL = myURL;
+  aResult->myURL   = myURL;
+  aResult->myImage = myImage;
   return aResult;
 }
 
@@ -661,6 +662,7 @@ VrmlData_ErrorStatus VrmlData_ImageTexture::Read(VrmlData_InBuffer& theBuffer)
   {
     SetRepeatS(aRepeatS);
     SetRepeatT(aRepeatT);
+    aStatus = Scene().ReadImage(myURL, myImage);
   }
   return aStatus;
 }

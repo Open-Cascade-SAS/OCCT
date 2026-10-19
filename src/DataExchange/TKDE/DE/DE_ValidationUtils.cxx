@@ -16,11 +16,61 @@
 #include <Message.hxx>
 #include <NCollection_Buffer.hxx>
 #include <NCollection_BaseAllocator.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Protection.hxx>
+
 #include <fstream>
+#include <string_view>
+#include <utility>
+
+namespace
+{
+//==================================================================================================
+
+bool reduceStreamName(const TCollection_AsciiString& theInput, TCollection_AsciiString& theOutput)
+{
+  theOutput.Clear();
+  const std::string_view aText = static_cast<std::string_view>(theInput);
+  if (aText.empty() || aText.front() == '/' || aText.find_first_of("\\:\0", 0, 3) != aText.npos)
+  {
+    return false;
+  }
+  size_t aBegin = 0;
+  while (aBegin <= aText.size())
+  {
+    const size_t           aSlash = aText.find('/', aBegin);
+    const size_t           anEnd  = aSlash == aText.npos ? aText.size() : aSlash;
+    const std::string_view aPart  = aText.substr(aBegin, anEnd - aBegin);
+    if (aPart == "..")
+    {
+      if (theOutput.IsEmpty())
+      {
+        return false;
+      }
+      const int aLastSlash = theOutput.SearchFromEnd("/");
+      theOutput.Trunc(aLastSlash > 0 ? aLastSlash - 1 : 0);
+    }
+    else if (!aPart.empty() && aPart != ".")
+    {
+      if (!theOutput.IsEmpty())
+      {
+        theOutput += '/';
+      }
+      theOutput += aPart;
+    }
+    if (aSlash == aText.npos)
+    {
+      break;
+    }
+    aBegin = aSlash + 1;
+  }
+  return !theOutput.IsEmpty();
+}
+
+} // namespace
 
 //=================================================================================================
 
@@ -158,6 +208,16 @@ bool DE_ValidationUtils::ValidateReadStreamList(const DE_Provider::ReadStreamLis
                                                 const TCollection_AsciiString&     theContext,
                                                 const bool                         theIsVerbose)
 {
+  return ValidateReadStreamList(theStreams, theContext, theIsVerbose, false);
+}
+
+//==================================================================================================
+
+bool DE_ValidationUtils::ValidateReadStreamList(const DE_Provider::ReadStreamList& theStreams,
+                                                const TCollection_AsciiString&     theContext,
+                                                const bool                         theIsVerbose,
+                                                const bool theWithCompanions)
+{
   if (theStreams.IsEmpty())
   {
     if (theIsVerbose)
@@ -167,7 +227,7 @@ bool DE_ValidationUtils::ValidateReadStreamList(const DE_Provider::ReadStreamLis
     return false;
   }
 
-  if (theStreams.Size() > 1)
+  if (theStreams.Size() > 1 && !theWithCompanions)
   {
     if (theIsVerbose)
     {
@@ -176,10 +236,14 @@ bool DE_ValidationUtils::ValidateReadStreamList(const DE_Provider::ReadStreamLis
     }
   }
 
-  // Additional validation for input streams
-  try
+  NCollection_FlatMap<TCollection_AsciiString> aNames;
+  if (theWithCompanions)
   {
-    const DE_Provider::ReadStreamNode& aNode = theStreams.First();
+    aNames.Reserve(theStreams.Size());
+  }
+  bool isFirst = true;
+  for (const DE_Provider::ReadStreamNode& aNode : theStreams)
+  {
     if (aNode.Stream.fail())
     {
       if (theIsVerbose)
@@ -190,17 +254,24 @@ bool DE_ValidationUtils::ValidateReadStreamList(const DE_Provider::ReadStreamLis
       }
       return false;
     }
-  }
-  catch (const std::exception&)
-  {
-    if (theIsVerbose)
+    if (theWithCompanions && !(isFirst && aNode.Path.IsEmpty()))
     {
-      const DE_Provider::ReadStreamNode& aNode = theStreams.First();
-      TCollection_AsciiString aKeyInfo         = aNode.Path.IsEmpty() ? "<empty path>" : aNode.Path;
-      Message::SendFail() << "Error during " << theContext << ": Cannot access input stream '"
-                          << aKeyInfo << "'";
+      TCollection_AsciiString aName;
+      if (!reduceStreamName(aNode.Path, aName) || !aNames.Add(std::move(aName)))
+      {
+        if (theIsVerbose)
+        {
+          Message::SendFail() << "Error during " << theContext
+                              << ": Invalid or duplicate input stream name '" << aNode.Path << "'";
+        }
+        return false;
+      }
     }
-    return false;
+    isFirst = false;
+    if (!theWithCompanions)
+    {
+      break;
+    }
   }
 
   return true;
@@ -337,4 +408,95 @@ bool DE_ValidationUtils::CreateContentBuffer(std::istream&                    th
   theStream.seekg(aOriginalPos);
 
   return true;
+}
+
+//==================================================================================================
+
+bool DE_ValidationUtils::ReadStreamBuffer(std::istream&                    theStream,
+                                          occ::handle<NCollection_Buffer>& theBuffer)
+{
+  theBuffer.Nullify();
+  if (theStream.bad())
+  {
+    return false;
+  }
+  theStream.clear();
+  theStream.seekg(0, std::ios_base::end);
+  const std::streampos anEnd = theStream.tellg();
+  if (anEnd < std::streampos(0))
+  {
+    return false;
+  }
+  const std::streamoff aLength = anEnd - std::streampos(0);
+  const size_t         aSize   = static_cast<size_t>(aLength);
+  if (static_cast<std::streamoff>(aSize) != aLength)
+  {
+    return false;
+  }
+  theStream.seekg(0, std::ios_base::beg);
+  if (!theStream.good())
+  {
+    return false;
+  }
+  occ::handle<NCollection_Buffer> aBuffer =
+    new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aSize);
+  if (aLength != 0 && aBuffer->IsEmpty())
+  {
+    return false;
+  }
+  if (aLength != 0)
+  {
+    theStream.read(reinterpret_cast<char*>(aBuffer->ChangeData()), aLength);
+    if (theStream.gcount() != aLength || !theStream.good())
+    {
+      return false;
+    }
+  }
+  theBuffer = aBuffer;
+  return true;
+}
+
+//==================================================================================================
+
+std::istream* DE_ValidationUtils::FindReadStream(const DE_Provider::ReadStreamList& theStreams,
+                                                 const TCollection_AsciiString&     theReferrer,
+                                                 const TCollection_AsciiString&     theReference,
+                                                 TCollection_AsciiString&           theName)
+{
+  theName.Clear();
+  if (theReference.IsEmpty())
+  {
+    return nullptr;
+  }
+  const std::string_view aReference = static_cast<std::string_view>(theReference);
+  if (aReference.front() == '/' || aReference.find_first_of("\\:\0", 0, 3) != aReference.npos)
+  {
+    return nullptr;
+  }
+  TCollection_AsciiString aReferrer;
+  if (!theReferrer.IsEmpty() && !reduceStreamName(theReferrer, aReferrer))
+  {
+    return nullptr;
+  }
+  TCollection_AsciiString aJoined;
+  const std::string_view  aBase  = static_cast<std::string_view>(aReferrer);
+  const size_t            aSlash = aBase.rfind('/');
+  if (aSlash != aBase.npos)
+  {
+    aJoined = TCollection_AsciiString(aBase.substr(0, aSlash + 1));
+  }
+  aJoined += theReference;
+  if (!reduceStreamName(aJoined, theName))
+  {
+    return nullptr;
+  }
+  TCollection_AsciiString aName;
+  for (const DE_Provider::ReadStreamNode& aNode : theStreams)
+  {
+    if (aNode.Path == theName || (reduceStreamName(aNode.Path, aName) && aName == theName))
+    {
+      return &aNode.Stream;
+    }
+  }
+  return nullptr;
 }
