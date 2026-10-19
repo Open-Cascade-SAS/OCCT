@@ -511,7 +511,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Tri
   BinTools::GetReal(IS, p2); // LastParameter
   occ::handle<Geom2d_Curve> BC;
   BinTools_Curve2dSet::ReadCurve2d(IS, BC);
-  C = new Geom2d_TrimmedCurve(BC, p1, p2);
+  C = new Geom2d_TrimmedCurve(BC, p1, p2, true, false);
   return IS;
 }
 

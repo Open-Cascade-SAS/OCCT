@@ -882,7 +882,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Trimm
   {
     return IS;
   }
-  C = new Geom_TrimmedCurve(BC, p1, p2);
+  C = new Geom_TrimmedCurve(BC, p1, p2, true, false);
   return IS;
 }
 

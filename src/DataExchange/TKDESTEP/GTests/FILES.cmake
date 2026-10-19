@@ -3,10 +3,13 @@ set(OCCT_TKDESTEP_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKDESTEP_GTests_FILES
     DESTEP_Provider_Test.cxx
+    STEPControl_ActorRead_Test.cxx
     STEPConstruct_RenderingProperties_Test.cxx
     StepData_StepWriter_Test.cxx
     StepTidy_BaseTestFixture.pxx
     StepTidy_Axis2Placement3dReducer_Test.cxx
+    RWStepDimTol_RWRunoutZoneDefinition_Test.cxx
+    RWStepShape_RWMeasureQualification_Test.cxx
     StepTidy_CartesianPointReducer_Test.cxx
     StepTidy_CircleReducer_Test.cxx
     StepTidy_DirectionReducer_Test.cxx
