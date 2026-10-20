@@ -11,7 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BOPAlgo_GlueEnum.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepAlgoAPI_BooleanOperation.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
@@ -23,6 +26,7 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
 #include <ChFi3d_FilletShape.hxx>
@@ -34,6 +38,7 @@
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
@@ -42,6 +47,7 @@
 #include <gp_Ax1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GC_MakeArcOfCircle.hxx>
+#include <GC_MakeCircle.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GProp_GProps.hxx>
 #include <NCollection_Array1.hxx>
@@ -912,5 +918,343 @@ TEST(BRepFilletAPI_MakeFilletTest, CollapsedFreeBoundarySectionSharesEndpoint)
     GProp_GProps aProperties;
     BRepGProp::SurfaceProperties(aFillet.Shape(), aProperties);
     EXPECT_NEAR(aProperties.Mass(), 803799.0, 803799.0 * 1.e-4) << aShift;
+  }
+}
+
+// A concave fillet ending where the end face is tangent to one of the fillet's faces. A slab
+// (y in [-100, 100], z in [0, 60]) is fused with a cylinder (R100 along Z, up to z = 170): the
+// slab's sides y = +-100 are tangent to the cylinder along the vertical edges at x = 0. The fillet
+// runs on the half circle where the slab's top meets the cylinder and leaves the top face across
+// the edges y = +-100 before reaching the vertices at x = 0, so each end is trimmed by the side
+// face. The volume it adds is the fillet's section swept around the cylinder axis over x >= 0 and
+// clipped to |y| <= 100, integrated numerically. The ends used to be taken for corners where both
+// other edges are convex and were closed by a cap face that left the solid invalid.
+TEST(BRepFilletAPI_MakeFilletTest, FilletEndingOnFaceTangentToSupport)
+{
+  BRepPrimAPI_MakeBox      aSlab(gp_Pnt(0.0, -100.0, 0.0), 300.0, 200.0, 60.0);
+  BRepPrimAPI_MakeCylinder aCylinder(gp_Ax2(gp::Origin(), gp::DZ()), 100.0, 170.0);
+  BRepAlgoAPI_Fuse         aFuse(aSlab.Shape(), aCylinder.Shape());
+  ASSERT_TRUE(aFuse.IsDone());
+  ShapeUpgrade_UnifySameDomain anUnify(aFuse.Shape());
+  anUnify.Build();
+  const TopoDS_Shape& aSolid = anUnify.Shape();
+  ASSERT_TRUE(BRepCheck_Analyzer(aSolid).IsValid());
+
+  // An arc of the circle R100 at z = 60; tangent propagation adds the other half.
+  TopoDS_Edge                                                   anArc;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+  TopExp::MapShapes(aSolid, TopAbs_EDGE, anEdges);
+  for (int anIndex = 1; anIndex <= anEdges.Extent() && anArc.IsNull(); ++anIndex)
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdges(anIndex));
+    BRepAdaptor_Curve  aCurve(anEdge);
+    if (aCurve.GetType() == GeomAbs_Circle && std::abs(aCurve.Circle().Radius() - 100.0) < 1.e-6
+        && std::abs(aCurve.Circle().Location().Z() - 60.0) < 1.e-6)
+    {
+      anArc = anEdge;
+    }
+  }
+  ASSERT_FALSE(anArc.IsNull());
+
+  GProp_GProps aBefore;
+  BRepGProp::VolumeProperties(aSolid, aBefore);
+
+  const double aRadii[]  = {5.0, 10.0, 20.0};
+  const double anAdded[] = {1558.318, 6059.408, 23378.533};
+  for (int anIndex = 0; anIndex < 3; ++anIndex)
+  {
+    SCOPED_TRACE(aRadii[anIndex]);
+    BRepFilletAPI_MakeFillet aFillet(aSolid);
+    aFillet.Add(aRadii[anIndex], anArc);
+    ASSERT_NO_THROW(aFillet.Build());
+    ASSERT_TRUE(aFillet.IsDone());
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+    GProp_GProps anAfter;
+    BRepGProp::VolumeProperties(aFillet.Shape(), anAfter);
+    EXPECT_NEAR(anAfter.Mass() - aBefore.Mass(), anAdded[anIndex], 1.e-4 * anAdded[anIndex]);
+  }
+}
+
+// A lever: an arm 60 high whose sides are tangent to two bosses (R100 at the origin, R40 at
+// x = 300, both along Z) and whose outline follows each boss beyond its tangent points. The R40
+// boss's face is unified with the arm's rounded end below z = 60, so its seam only runs above
+// z = 60 and an edge at z = 60 closes the face from the seam to a tangent point. The fillet on
+// the R40 boss ends at that tangent point; the edge it adds there, on the extended tangent edge,
+// used to take its pcurve from below z = 60, a period away from the boss face above it, and the
+// face came out covering the wrong region. The volumes are the fillet's section swept around
+// each boss, clipped by the arm's sides and stopped at the tangent points, integrated numerically.
+TEST(BRepFilletAPI_MakeFilletTest, FilletEndingWhereSupportSeamEnds)
+{
+  const double            R1 = 100.0, R2 = 40.0, aDist = 300.0, aHeight = 60.0;
+  const double            anAngle = std::asin((R1 - R2) / aDist);
+  const gp_Pnt            aBig1(R1 * std::sin(anAngle), R1 * std::cos(anAngle), 0.0);
+  const gp_Pnt            aSmall1(aDist + R2 * std::sin(anAngle), R2 * std::cos(anAngle), 0.0);
+  const gp_Pnt            aBig2(aBig1.X(), -aBig1.Y(), 0.0);
+  const gp_Pnt            aSmall2(aSmall1.X(), -aSmall1.Y(), 0.0);
+  BRepBuilderAPI_MakeWire anOutline(
+    BRepBuilderAPI_MakeEdge(aBig1, aSmall1),
+    BRepBuilderAPI_MakeEdge(
+      GC_MakeArcOfCircle(aSmall1, gp_Pnt(aDist + R2, 0.0, 0.0), aSmall2).Value()),
+    BRepBuilderAPI_MakeEdge(aSmall2, aBig2),
+    BRepBuilderAPI_MakeEdge(GC_MakeArcOfCircle(aBig2, gp_Pnt(-R1, 0.0, 0.0), aBig1).Value()));
+  BRepPrimAPI_MakePrism    anArm(BRepBuilderAPI_MakeFace(anOutline.Wire()).Face(),
+                                 gp_Vec(0.0, 0.0, aHeight));
+  BRepPrimAPI_MakeCylinder aBigBoss(gp_Ax2(gp::Origin(), gp::DZ(), gp::DX()), R1, 170.0);
+  BRepPrimAPI_MakeCylinder aSmallBoss(gp_Ax2(gp_Pnt(aDist, 0.0, 0.0), gp::DZ(), gp::DX()),
+                                      R2,
+                                      110.0);
+  BRepAlgoAPI_Fuse         aFuse(BRepAlgoAPI_Fuse(anArm.Shape(), aBigBoss.Shape()).Shape(),
+                                 aSmallBoss.Shape());
+  ASSERT_TRUE(aFuse.IsDone());
+  ShapeUpgrade_UnifySameDomain anUnify(aFuse.Shape());
+  anUnify.Build();
+  const TopoDS_Shape& aSolid = anUnify.Shape();
+  ASSERT_TRUE(BRepCheck_Analyzer(aSolid).IsValid());
+
+  // The arcs where the arm's top meets each boss.
+  const auto anArcOn = [&aSolid, aHeight](const double theRadius) {
+    TopoDS_Edge                                                   anArc;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+    TopExp::MapShapes(aSolid, TopAbs_EDGE, anEdges);
+    for (int anIndex = 1; anIndex <= anEdges.Extent() && anArc.IsNull(); ++anIndex)
+    {
+      BRepAdaptor_Curve aCurve(TopoDS::Edge(anEdges(anIndex)));
+      if (aCurve.GetType() == GeomAbs_Circle
+          && std::abs(aCurve.Circle().Radius() - theRadius) < 1.e-6
+          && std::abs(aCurve.Circle().Location().Z() - aHeight) < 1.e-6)
+      {
+        anArc = TopoDS::Edge(anEdges(anIndex));
+      }
+    }
+    return anArc;
+  };
+  const TopoDS_Edge aBigArc   = anArcOn(R1);
+  const TopoDS_Edge aSmallArc = anArcOn(R2);
+  ASSERT_FALSE(aBigArc.IsNull());
+  ASSERT_FALSE(aSmallArc.IsNull());
+
+  const auto aVolume = [](const TopoDS_Shape& theShape) {
+    GProp_GProps aProps;
+    BRepGProp::VolumeProperties(theShape, aProps, 1.e-7);
+    return aProps.Mass();
+  };
+  const double aBefore = aVolume(aSolid);
+
+  struct Case
+  {
+    const char* Name;
+    double      Radius;
+    bool        OnBig, OnSmall;
+    double      Added;
+  };
+
+  const Case aCases[] = {{"R40 boss", 5.0, false, true, 688.3},
+                         {"R40 boss", 10.0, false, true, 2671.9},
+                         {"R100 boss", 10.0, true, false, 5175.8},
+                         {"both bosses", 10.0, true, true, 2671.9 + 5175.8}};
+  for (const Case& aCase : aCases)
+  {
+    SCOPED_TRACE(aCase.Name);
+    SCOPED_TRACE(aCase.Radius);
+    BRepFilletAPI_MakeFillet aFillet(aSolid);
+    if (aCase.OnBig)
+    {
+      aFillet.Add(aCase.Radius, aBigArc);
+    }
+    if (aCase.OnSmall)
+    {
+      aFillet.Add(aCase.Radius, aSmallArc);
+    }
+    ASSERT_NO_THROW(aFillet.Build());
+    ASSERT_TRUE(aFillet.IsDone());
+    EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+    EXPECT_NEAR(aVolume(aFillet.Shape()) - aBefore, aCase.Added, 1.e-3 * aCase.Added);
+  }
+}
+
+// A lever modelled from a sketch of two circles and a rectangle reaching from inside the first
+// circle to the second's centre: the regions it makes (BOPAlgo_Tools::EdgesToWires and
+// WiresToFaces) are extruded together to the arm's height, and the four regions of the circles
+// again to the bosses' height, fused (on one thread, fuzzy value 1e-6, non-destructive,
+// SimplifyResult) in a given order. The order decides where the R39.84 boss's sewing edges lie at
+// the corner of the fillet on its arc at the arm's top, whose extension past the corner is checked
+// against them:
+// - a seam on the line the extension follows, from the arm's top up: the two are parallel, and
+//   asking BRepExtrema_ExtCC for their extremum points read an empty sequence (a crash in a build
+//   without exceptions);
+// - an edge closing the boss's face along the arm's top, ending at the corner: it was taken for a
+//   crossing at the extension's own start, and the zero-length piece split off failed the fillet
+//   (or, on some shapes, never finished projecting).
+// The added volume is the fillet's section swept around the boss, clipped to the arm's width,
+// integrated numerically.
+TEST(BRepFilletAPI_MakeFilletTest, FilletCornerExtendedAlongSeam)
+{
+  const double R1 = 71.17837530536337, R2 = 39.84213779071566, aX2 = 208.783941307075;
+  const double aW = 9.51997786041947, aXa = 54.96881671696694, aH = 26.37514170968751;
+  const double aHB   = 105.46342595333519;
+  const auto   aFuse = [](const TopoDS_Shape& theArg, const TopoDS_Shape& theTool) {
+    BRepAlgoAPI_Fuse               aBuilder;
+    NCollection_List<TopoDS_Shape> anArgs, aTools;
+    anArgs.Append(theArg);
+    aTools.Append(theTool);
+    aBuilder.SetArguments(anArgs);
+    aBuilder.SetTools(aTools);
+    aBuilder.SetRunParallel(false);
+    aBuilder.SetFuzzyValue(1.e-6);
+    aBuilder.SetGlue(BOPAlgo_GlueOff);
+    aBuilder.SetCheckInverted(true);
+    aBuilder.SetUseOBB(false);
+    aBuilder.SetToFillHistory(true);
+    aBuilder.SetNonDestructive(true);
+    aBuilder.Build();
+    aBuilder.SimplifyResult(true, true, 1.e-3);
+    return aBuilder.Shape();
+  };
+  const auto aPrism = [](const NCollection_List<TopoDS_Shape>& theFaces, const double theDepth) {
+    TopoDS_Compound aCompound;
+    BRep_Builder    aBuilder;
+    aBuilder.MakeCompound(aCompound);
+    for (const TopoDS_Shape& aFace : theFaces)
+    {
+      aBuilder.Add(aCompound, aFace);
+    }
+    NCollection_Sequence<TopoDS_Shape> aSolids;
+    for (TopExp_Explorer anExp(BRepPrimAPI_MakePrism(aCompound, gp_Vec(0, 0, theDepth)).Shape(),
+                               TopAbs_SOLID);
+         anExp.More();
+         anExp.Next())
+    {
+      aSolids.Append(anExp.Current());
+    }
+    return aSolids;
+  };
+
+  // The sketch's regions.
+  TopoDS_Compound anEdges;
+  BRep_Builder    aBuilder;
+  aBuilder.MakeCompound(anEdges);
+  aBuilder.Add(anEdges,
+               BRepBuilderAPI_MakeEdge(
+                 GC_MakeCircle(gp_Circ(gp_Ax2(gp::Origin(), gp::DZ(), gp::DX()), R1)).Value()));
+  aBuilder.Add(
+    anEdges,
+    BRepBuilderAPI_MakeEdge(
+      GC_MakeCircle(gp_Circ(gp_Ax2(gp_Pnt(aX2, 3.838566100485021e-14, 0), gp::DZ(), gp::DX()), R2))
+        .Value()));
+  // The rectangle's corners as the sketch solver left them: the crash depends on their last digits.
+  const gp_Pnt aCorners[] = {gp_Pnt(aXa, 9.51997786041947, 0),
+                             gp_Pnt(aX2, 9.519977860419486, 0),
+                             gp_Pnt(aX2, -9.519977860419452, 0),
+                             gp_Pnt(54.96881671696695, -9.519977860419463, 0)};
+  for (int anIndex = 0; anIndex < 4; ++anIndex)
+  {
+    aBuilder.Add(anEdges, BRepBuilderAPI_MakeEdge(aCorners[anIndex], aCorners[(anIndex + 1) % 4]));
+  }
+  TopoDS_Shape aWires, aFaces;
+  ASSERT_EQ(BOPAlgo_Tools::EdgesToWires(anEdges, aWires, false, 1.e-8), 0);
+  ASSERT_TRUE(BOPAlgo_Tools::WiresToFaces(aWires, aFaces, 1.e-8));
+  NCollection_List<TopoDS_Shape> anAll, aCircles;
+  for (TopExp_Explorer anExp(aFaces, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    TopoDS_Face aFace = TopoDS::Face(anExp.Current());
+    BRepTools::RemoveInternals(aFace);
+    anAll.Append(aFace);
+    // All but the arm between the circles.
+    if (BRepClass_FaceClassifier(aFace, gp_Pnt(0.5 * (R1 + aX2 - R2), 0, 0), 1.e-7).State()
+        != TopAbs_IN)
+    {
+      aCircles.Append(aFace);
+    }
+  }
+  ASSERT_EQ(anAll.Size(), 5);
+  ASSERT_EQ(aCircles.Size(), 4);
+
+  // Pieces fused level by level, two at a time.
+  const auto aFuseInPairs = [&aFuse](NCollection_Sequence<TopoDS_Shape> theLevel) {
+    while (theLevel.Size() > 1)
+    {
+      NCollection_Sequence<TopoDS_Shape> aNext;
+      for (int anIndex = 1; anIndex <= theLevel.Size(); anIndex += 2)
+      {
+        aNext.Append(anIndex < theLevel.Size() ? aFuse(theLevel(anIndex), theLevel(anIndex + 1))
+                                               : theLevel(anIndex));
+      }
+      theLevel = aNext;
+    }
+    return theLevel(1);
+  };
+  const TopoDS_Shape                       aPlate  = aFuseInPairs(aPrism(anAll, aH));
+  const NCollection_Sequence<TopoDS_Shape> aBosses = aPrism(aCircles, aHB);
+  ASSERT_EQ(aBosses.Size(), 4);
+
+  struct Case
+  {
+    const char* Order; // the plate (0) and the bosses' pieces (1 to 4), in the order they are fused
+    bool        IsSeamAlong;
+  };
+
+  for (const Case& aCase : {Case{"01234", true}, Case{"02341", false}})
+  {
+    SCOPED_TRACE(aCase.Order);
+    NCollection_Sequence<TopoDS_Shape> aPieces;
+    for (const char* aChar = aCase.Order; *aChar != 0; ++aChar)
+    {
+      aPieces.Append(*aChar == '0' ? aPlate : aBosses(*aChar - '0'));
+    }
+    const TopoDS_Shape aSolid = aFuseInPairs(aPieces);
+    ASSERT_TRUE(BRepCheck_Analyzer(aSolid).IsValid());
+
+    // The R39.84 boss's arc at the arm's top, and its sewing edge at the arc's +y corner.
+    const gp_Pnt aCorner(aX2 - std::sqrt(R2 * R2 - aW * aW), aW, aH);
+    TopoDS_Edge  anArc;
+    bool         isSeamAlong = false, isClosingEdgeAtCorner = false;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSolidEdges;
+    TopExp::MapShapes(aSolid, TopAbs_EDGE, aSolidEdges);
+    NCollection_IndexedDataMap<TopoDS_Shape,
+                               NCollection_List<TopoDS_Shape>,
+                               TopTools_ShapeMapHasher>
+      anEdgeFaces;
+    TopExp::MapShapesAndAncestors(aSolid, TopAbs_EDGE, TopAbs_FACE, anEdgeFaces);
+    for (int anIndex = 1; anIndex <= aSolidEdges.Extent(); ++anIndex)
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(aSolidEdges(anIndex));
+      BRepAdaptor_Curve  aCurve(anEdge);
+      const gp_Pnt       aFirst = aCurve.Value(aCurve.FirstParameter());
+      const gp_Pnt       aLast  = aCurve.Value(aCurve.LastParameter());
+      const gp_Pnt aMid = aCurve.Value(0.5 * (aCurve.FirstParameter() + aCurve.LastParameter()));
+      const NCollection_List<TopoDS_Shape>& aFacesOfEdge = anEdgeFaces.FindFromKey(anEdge);
+      const bool                            isSewing =
+        aFacesOfEdge.Size() == 2 && aFacesOfEdge.First().IsSame(aFacesOfEdge.Last());
+      const bool isAtCorner = aFirst.Distance(aCorner) < 1.e-6 || aLast.Distance(aCorner) < 1.e-6;
+      if (isSewing && isAtCorner)
+      {
+        (aCurve.GetType() == GeomAbs_Line ? isSeamAlong : isClosingEdgeAtCorner) = true;
+      }
+      if (aCurve.GetType() == GeomAbs_Circle && !isSewing
+          && std::abs(aCurve.Circle().Radius() - R2) < 1.e-6 && std::abs(aMid.Z() - aH) < 1.e-6
+          && aMid.X() < aX2)
+      {
+        anArc = anEdge;
+      }
+    }
+    ASSERT_FALSE(anArc.IsNull());
+    // The layout the fuse order is meant to give.
+    EXPECT_EQ(isSeamAlong, aCase.IsSeamAlong);
+    EXPECT_EQ(isClosingEdgeAtCorner, !aCase.IsSeamAlong);
+
+    GProp_GProps aBefore;
+    BRepGProp::VolumeProperties(aSolid, aBefore, 1.e-7);
+    BRepFilletAPI_MakeFillet aFillet(aSolid);
+    aFillet.Add(11.31318695020745, anArc);
+    ASSERT_NO_THROW(aFillet.Build());
+    ASSERT_TRUE(aFillet.IsDone());
+    // Along the seam the result is still invalid: the seam is not cut where the fillet meets it.
+    if (!aCase.IsSeamAlong)
+    {
+      EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+    }
+    GProp_GProps anAfter;
+    BRepGProp::VolumeProperties(aFillet.Shape(), anAfter, 1.e-7);
+    EXPECT_NEAR(anAfter.Mass() - aBefore.Mass(), 527.47, 1.e-3 * 527.47);
   }
 }

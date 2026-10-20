@@ -560,6 +560,18 @@ ChFiDS_State ChFi3d_EdgeState(TopoDS_Edge* E, const ChFiDS_Map& EFMap)
     else if (o12 == o22 || i == 10 || j == 10)
     {
       sst = ChFiDS_OnDiff;
+      // An edge whose faces are tangent has no concavity of its own: it is the limit of a
+      // concave edge as well as of a convex one. The end face then continues one face of the
+      // fillet, which the fillet's contact on that face can never cross, so the fillet ends
+      // with one point on an edge as on a corner OnSame.
+      if (i != 10 && j != 10
+          && (ChFi3d::IsTangentFaces(E[0], F1, F2) ? 1 : 0)
+                 + (ChFi3d::IsTangentFaces(E[1], F3, F4) ? 1 : 0)
+                 + (ChFi3d::IsTangentFaces(E[2], F5, F6) ? 1 : 0)
+               == 1)
+      {
+        sst = ChFiDS_OnSame;
+      }
     }
     else
     {
