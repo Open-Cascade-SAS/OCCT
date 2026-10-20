@@ -1078,77 +1078,60 @@ static void TransformPCurves(
     RefSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(RefSurf))->BasisSurface();
   }
 
-  occ::handle<Geom_Surface> SurfFace = BRep_Tool::Surface(theFace);
-  if (SurfFace->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  occ::handle<Geom_Surface> CurSurf = BRep_Tool::Surface(theFace);
+  if (CurSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
-    SurfFace = (occ::down_cast<Geom_RectangularTrimmedSurface>(SurfFace))->BasisSurface();
+    CurSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(CurSurf))->BasisSurface();
   }
 
-  bool ToModify = false, ToTranslate = false, ToRotate = false, X_Reverse = false,
-       Y_Reverse = false, ToProject = false;
+  bool ToModify = false, ToTranslate = false, ToRotate = false,
+       U_Reverse = false, V_Reverse = false, ToProject = false;
 
   double aTranslation = 0., anAngle = 0.;
 
   // Get axes of surface of face and of surface of RefFace
-  occ::handle<Geom_ElementarySurface> ElemSurfFace =
-    occ::down_cast<Geom_ElementarySurface>(SurfFace);
-  occ::handle<Geom_ElementarySurface> ElemRefSurf = occ::down_cast<Geom_ElementarySurface>(RefSurf);
+  occ::handle<Geom_ElementarySurface> ElemCurSurf =
+    occ::down_cast<Geom_ElementarySurface>(CurSurf);
+  occ::handle<Geom_ElementarySurface> ElemRefSurf =
+    occ::down_cast<Geom_ElementarySurface>(RefSurf);
 
-  if (!ElemSurfFace.IsNull() && !ElemRefSurf.IsNull())
+  if (!ElemCurSurf.IsNull() && !ElemRefSurf.IsNull())
   {
-    gp_Ax3 AxisOfSurfFace = ElemSurfFace->Position();
-    gp_Ax3 AxisOfRefSurf  = ElemRefSurf->Position();
+    gp_Ax3 AxisOfCurSurf = ElemCurSurf->Position();
+    gp_Ax3 AxisOfRefSurf = ElemRefSurf->Position();
 
     gp_Pnt OriginRefSurf = AxisOfRefSurf.Location();
 
-    double aParam = ElCLib::LineParameter(AxisOfSurfFace.Axis(), OriginRefSurf);
+    double aParam = ElCLib::LineParameter(AxisOfCurSurf.Axis(), OriginRefSurf);
 
     if (std::abs(aParam) > Precision::PConfusion())
     {
       aTranslation = -aParam;
     }
 
-    gp_Dir VdirSurfFace = AxisOfSurfFace.Direction();
-    gp_Dir VdirRefSurf  = AxisOfRefSurf.Direction();
-    gp_Dir XdirSurfFace = AxisOfSurfFace.XDirection();
-    gp_Dir XdirRefSurf  = AxisOfRefSurf.XDirection();
+    gp_Dir VdirCurSurf = AxisOfCurSurf.Direction();
+    gp_Dir VdirRefSurf = AxisOfRefSurf.Direction();
+    gp_Dir XdirCurSurf = AxisOfCurSurf.XDirection();
+    gp_Dir XdirRefSurf = AxisOfRefSurf.XDirection();
+    gp_Dir YdirCurSurf = AxisOfCurSurf.YDirection();
+    gp_Dir YdirRefSurf = AxisOfRefSurf.YDirection();
 
-    gp_Dir CrossProd1 = AxisOfRefSurf.XDirection() ^ AxisOfRefSurf.YDirection();
-    gp_Dir CrossProd2 = AxisOfSurfFace.XDirection() ^ AxisOfSurfFace.YDirection();
-    if (CrossProd1 * CrossProd2 < 0.)
-    {
-      X_Reverse = true;
-    }
+    V_Reverse = (VdirCurSurf * VdirRefSurf) < 0.;
 
-    double ScalProd = VdirSurfFace * VdirRefSurf;
-    if (ScalProd < 0.)
-    {
-      Y_Reverse = true;
-    }
+    gp_Dir CrossProdRef = XdirRefSurf ^ YdirRefSurf;
+    gp_Dir CrossProdCur = XdirCurSurf ^ YdirCurSurf;
 
-    if (!X_Reverse && !Y_Reverse)
-    {
-      gp_Dir DirRef = VdirRefSurf;
-      if (!AxisOfRefSurf.Direct())
-      {
-        DirRef.Reverse();
-      }
-      anAngle = XdirRefSurf.AngleWithRef(XdirSurfFace, DirRef);
-    }
-    else
-    {
-      anAngle = XdirRefSurf.Angle(XdirSurfFace);
-    }
+    U_Reverse = (CrossProdRef * CrossProdCur) < 0.;
 
-    ToRotate = (std::abs(anAngle) > Precision::PConfusion());
+    anAngle = XdirRefSurf.AngleWithRef(XdirCurSurf, CrossProdRef);
 
+    ToRotate    = (std::abs(anAngle) > Precision::PConfusion());
     ToTranslate = (std::abs(aTranslation) > Precision::PConfusion());
-
-    ToModify = ToTranslate || ToRotate || X_Reverse || Y_Reverse;
+    ToModify    = ToTranslate || ToRotate || U_Reverse || V_Reverse;
   }
   else
   {
-    if (!SameSurf(RefSurf, SurfFace))
+    if (!SameSurf(RefSurf, CurSurf))
     {
       ToProject = true;
     }
@@ -1223,11 +1206,11 @@ static void TransformPCurves(
       {
         NewPCurves[ii]->Translate(gp_Vec2d(0., aTranslation));
       }
-      if (Y_Reverse)
+      if (V_Reverse)
       {
         NewPCurves[ii]->Mirror(gp::OX2d());
       }
-      if (X_Reverse)
+      if (U_Reverse)
       {
         NewPCurves[ii]->Mirror(gp::OY2d());
         NewPCurves[ii]->Translate(gp_Vec2d(2 * M_PI, 0.));
