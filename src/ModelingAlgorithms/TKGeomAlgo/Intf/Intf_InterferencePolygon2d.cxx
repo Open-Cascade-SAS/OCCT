@@ -182,6 +182,7 @@ void Intf_InterferencePolygon2d::Interference(const Intf_Polygon2d& Obje)
 
   int    iObje1, iObje2, n = Obje.NbSegments();
   double d = Obje.DeflectionOverEstimation();
+  nbso     = n;
 
   gp_Pnt2d p1b, p1e, p2b, p2e;
   for (iObje1 = 1; iObje1 <= n; iObje1++)
@@ -715,7 +716,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
         mySPoins.Append(thePi(1));
       }
     }
-    else if (iObje2 - iObje1 != 1 && (!oClos || (iObje1 != 1 && iObje2 != nbso)))
+    else if (iObje2 - iObje1 != 1 && (!oClos || iObje1 != 1 || iObje2 != nbso))
     {
       mySPoins.Append(thePi(1));
     }

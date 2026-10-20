@@ -35,4 +35,5 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   Geom2dConvert_BSplineCurveToBezierCurve_Test.cxx
   TopTrans_SurfaceTransition_Test.cxx
   GeomFill_CoonsAlgPatch_Test.cxx
+  Intf_InterferencePolygon2d_Test.cxx
 )
