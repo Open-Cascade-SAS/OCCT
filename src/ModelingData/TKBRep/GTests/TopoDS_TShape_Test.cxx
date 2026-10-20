@@ -13,6 +13,10 @@
 
 #include <gtest/gtest.h>
 
+#include <atomic>
+#include <thread>
+#include <vector>
+
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -310,4 +314,107 @@ TEST(TopoDS_TShape_Test, NbChildren_ConsistencyWithIterator)
 
   EXPECT_EQ(aNbViaTShape, aNbViaIterator) << "NbChildren should match iterator count";
   EXPECT_EQ(aNbViaTShape, 1);
+}
+
+// Six threads each set a different flag of one TShape, released together by a barrier so their
+// read-modify-write sequences overlap. With a plain word a lost update clears another thread's
+// flag.
+//
+// Only flags that are independent of each other are used. Modified(true) also clears Checked by
+// design ("when a TShape is modified it is also unchecked"), so a Modified/Checked pair cannot be
+// asserted to both survive and is not part of this test.
+namespace
+{
+// File scope, so the worker lambda reads it without capturing it: MSVC rejects an uncaptured
+// constexpr local (C3493) and Clang with -Werror rejects a captured one (-Wunused-lambda-capture).
+constexpr int THE_FLAG_THREADS = 6;
+} // namespace
+
+TEST(TopoDS_TShape_Test, ConcurrentFlagWritesDoNotLoseEachOther)
+{
+  constexpr int aRepeats = 2000;
+
+  TopoDS_Shape               aBox    = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
+  occ::handle<TopoDS_TShape> aTShape = aBox.TShape();
+
+  for (int aRepeat = 0; aRepeat < aRepeats; ++aRepeat)
+  {
+    aTShape->Free(false);
+    aTShape->Locked(false);
+    aTShape->Orientable(false);
+    aTShape->Closed(false);
+    aTShape->Infinite(false);
+    aTShape->Convex(false);
+
+    std::atomic<int>         aReady(0);
+    std::vector<std::thread> aWorkers;
+    for (int aWorker = 0; aWorker < THE_FLAG_THREADS; ++aWorker)
+    {
+      aWorkers.emplace_back([&aTShape, &aReady, aWorker]() {
+        aReady.fetch_add(1);
+        while (aReady.load() < THE_FLAG_THREADS)
+        {
+          // spin until every worker is running, so the writes below start together
+        }
+        switch (aWorker)
+        {
+          case 0:
+            aTShape->Free(true);
+            break;
+          case 1:
+            aTShape->Locked(true);
+            break;
+          case 2:
+            aTShape->Orientable(true);
+            break;
+          case 3:
+            aTShape->Closed(true);
+            break;
+          case 4:
+            aTShape->Infinite(true);
+            break;
+          default:
+            aTShape->Convex(true);
+            break;
+        }
+      });
+    }
+    for (auto& aWorker : aWorkers)
+    {
+      aWorker.join();
+    }
+
+    ASSERT_TRUE(aTShape->Free()) << "Free was lost on repeat " << aRepeat;
+    ASSERT_TRUE(aTShape->Locked()) << "Locked was lost on repeat " << aRepeat;
+    ASSERT_TRUE(aTShape->Orientable()) << "Orientable was lost on repeat " << aRepeat;
+    ASSERT_TRUE(aTShape->Closed()) << "Closed was lost on repeat " << aRepeat;
+    ASSERT_TRUE(aTShape->Infinite()) << "Infinite was lost on repeat " << aRepeat;
+    ASSERT_TRUE(aTShape->Convex()) << "Convex was lost on repeat " << aRepeat;
+  }
+}
+
+// The shape type shares the same word as the flags, so a flag write must not disturb it.
+TEST(TopoDS_TShape_Test, ConcurrentFlagWritesPreserveShapeType)
+{
+  TopoDS_Shape               aBox      = BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape();
+  occ::handle<TopoDS_TShape> aTShape   = aBox.TShape();
+  const TopAbs_ShapeEnum     aExpected = aTShape->ShapeType();
+
+  std::vector<std::thread> aThreads;
+  for (int aThreadIndex = 0; aThreadIndex < 4; ++aThreadIndex)
+  {
+    aThreads.emplace_back([&aTShape]() {
+      for (int i = 0; i < 500; ++i)
+      {
+        aTShape->Modified(i % 2 == 0);
+        aTShape->Checked(i % 3 == 0);
+      }
+    });
+  }
+  for (auto& aThread : aThreads)
+  {
+    aThread.join();
+  }
+
+  EXPECT_EQ(aExpected, aTShape->ShapeType());
 }
