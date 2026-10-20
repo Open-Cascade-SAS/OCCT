@@ -18,7 +18,7 @@ runs:
     # For Windows, use standard GitHub action - no symlink issues
     - name: Upload artifacts (Windows)
       if: runner.os == 'Windows'
-      uses: actions/upload-artifact@v4.6.2
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ inputs.name }}
         path: ${{ inputs.path }}
@@ -46,7 +46,7 @@ runs:
     
     - name: Upload archive (Unix)
       if: runner.os != 'Windows'
-      uses: actions/upload-artifact@v4.6.2
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ inputs.name }}
         path: ${{ inputs.name }}.tar.gz
