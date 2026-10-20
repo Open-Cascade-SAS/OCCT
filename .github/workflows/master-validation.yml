@@ -46,7 +46,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Setup Windows MSVC dependencies
       uses: ./.github/actions/setup-windows-msvc-deps
@@ -107,7 +107,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Setup MSYS2
       uses: ./.github/actions/setup-msys2
@@ -148,7 +148,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -167,7 +167,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run tests
       uses: ./.github/actions/run-tests
@@ -187,7 +187,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run retest
       uses: ./.github/actions/retest-failures
@@ -207,7 +207,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run GTests
       uses: ./.github/actions/run-gtest
@@ -244,7 +244,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Setup Ubuntu dependencies
       uses: ./.github/actions/setup-ubuntu-deps
@@ -285,7 +285,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Build OCCT with vcpkg
       uses: ./.github/actions/build-occt
@@ -309,13 +309,13 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3.26.5
+      uses: github/codeql-action/init@v3.39.0
       with:
         languages: c-cpp
         build-mode: manual
@@ -330,7 +330,7 @@ jobs:
         compiler-flags: "-D USE_FREETYPE=OFF"
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3.26.5
+      uses: github/codeql-action/analyze@v3.39.0
       with:
         category: "/language:c-cpp"
 
@@ -350,7 +350,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Configure OCCT for analysis
       uses: ./.github/actions/configure-occt
@@ -370,6 +370,6 @@ jobs:
         ruleset: NativeRecommendedRules.ruleset
 
     - name: Upload SARIF to GitHub
-      uses: github/codeql-action/upload-sarif@v3.26.5
+      uses: github/codeql-action/upload-sarif@v3.39.0
       with:
         sarif_file: ${{ steps.run-analysis.outputs.sarif }}
