@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <CPnts_MyRootFunction.hxx>
-#include <math_GaussSingleIntegration.hxx>
+#include <CPnts_AdaptiveIntegration.hxx>
 #include <Standard_DomainError.hxx>
 
 void CPnts_MyRootFunction::Init(const CPnts_RealFunction& F, void* const D, const int Order)
@@ -38,26 +38,15 @@ void CPnts_MyRootFunction::Init(const double X0, const double L, const double To
 
 bool CPnts_MyRootFunction::Value(const double X, double& F)
 {
-  math_GaussSingleIntegration Length;
-
-  if (myTol <= 0)
-  {
-    Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder);
-  }
-  else
-  {
-    Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder, myTol);
-  }
-
-  if (Length.IsDone())
-  {
-    F = Length.Value() - myL;
-    return true;
-  }
-  else
+  // Subdivided like CPnts_AbscissaPoint::Length, whose integral this inverts: on a single rule the
+  // parameter returned would not agree with the length it was given.
+  double aLength = 0.;
+  if (!CPnts_AdaptiveIntegrate(myFunction, myX0, X, myOrder, myTol > 0 ? &myTol : nullptr, aLength))
   {
     return false;
   }
+  F = aLength - myL;
+  return true;
 }
 
 bool CPnts_MyRootFunction::Derivative(const double X, double& Df)
@@ -67,24 +56,11 @@ bool CPnts_MyRootFunction::Derivative(const double X, double& Df)
 
 bool CPnts_MyRootFunction::Values(const double X, double& F, double& Df)
 {
-  math_GaussSingleIntegration Length;
-
-  if (myTol <= 0)
-  {
-    Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder);
-  }
-  else
-  {
-    Length = math_GaussSingleIntegration(myFunction, myX0, X, myOrder, myTol);
-  }
-
-  if (Length.IsDone())
-  {
-    F = Length.Value() - myL;
-    return myFunction.Value(X, Df);
-  }
-  else
+  double aLength = 0.;
+  if (!CPnts_AdaptiveIntegrate(myFunction, myX0, X, myOrder, myTol > 0 ? &myTol : nullptr, aLength))
   {
     return false;
   }
+  F = aLength - myL;
+  return myFunction.Value(X, Df);
 }

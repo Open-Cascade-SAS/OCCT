@@ -26,13 +26,13 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <CPnts_AbscissaPoint.hxx>
+#include <CPnts_AdaptiveIntegration.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <math_FunctionRoot.hxx>
-#include <math_GaussSingleIntegration.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <StdFail_NotDone.hxx>
@@ -134,13 +134,12 @@ double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const double U1, co
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
   FG.Init(rf, (void*)&C);
-  //  FG.Init(f3d,(void*)&C);
-  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
-  if (!TheLength.IsDone())
+  double aLength = 0.;
+  if (!CPnts_AdaptiveIntegrate(FG, U1, U2, order(C), nullptr, aLength))
   {
     throw Standard_ConstructionError();
   }
-  return std::abs(TheLength.Value());
+  return std::abs(aLength);
 }
 
 //=================================================================================================
@@ -151,13 +150,12 @@ double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const double U1, 
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
   FG.Init(rf, (void*)&C);
-  //  FG.Init(f2d,(void*)&C);
-  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C));
-  if (!TheLength.IsDone())
+  double aLength = 0.;
+  if (!CPnts_AdaptiveIntegrate(FG, U1, U2, order(C), nullptr, aLength))
   {
     throw Standard_ConstructionError();
   }
-  return std::abs(TheLength.Value());
+  return std::abs(aLength);
 }
 
 //=======================================================================
@@ -174,13 +172,12 @@ double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
   FG.Init(rf, (void*)&C);
-  //  FG.Init(f3d,(void*)&C);
-  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
-  if (!TheLength.IsDone())
+  double aLength = 0.;
+  if (!CPnts_AdaptiveIntegrate(FG, U1, U2, order(C), &Tol, aLength))
   {
     throw Standard_ConstructionError();
   }
-  return std::abs(TheLength.Value());
+  return std::abs(aLength);
 }
 
 //=======================================================================
@@ -197,13 +194,12 @@ double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
   FG.Init(rf, (void*)&C);
-  //  FG.Init(f2d,(void*)&C);
-  math_GaussSingleIntegration TheLength(FG, U1, U2, order(C), Tol);
-  if (!TheLength.IsDone())
+  double aLength = 0.;
+  if (!CPnts_AdaptiveIntegrate(FG, U1, U2, order(C), &Tol, aLength))
   {
     throw Standard_ConstructionError();
   }
-  return std::abs(TheLength.Value());
+  return std::abs(aLength);
 }
 
 //=================================================================================================

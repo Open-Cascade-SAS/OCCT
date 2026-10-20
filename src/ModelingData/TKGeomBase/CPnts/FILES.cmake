@@ -5,6 +5,7 @@ set(OCCT_CPnts_FILES
   CPnts_AbscissaPoint.cxx
   CPnts_AbscissaPoint.hxx
   CPnts_AbscissaPoint.lxx
+  CPnts_AdaptiveIntegration.hxx
   CPnts_MyGaussFunction.cxx
   CPnts_MyGaussFunction.hxx
   CPnts_MyGaussFunction.lxx
