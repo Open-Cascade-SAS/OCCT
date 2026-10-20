@@ -211,7 +211,7 @@ void Contap_HContTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
       U = aBounds.UMin
           + ((aBounds.UMax - aBounds.UMin) / ((double)(nbIntU + 1))) * (double)(indU + 1);
       V = aBounds.VMin
-          + ((aBounds.VMax - aBounds.VMin) / ((double)(nbIntV + 2))) * (double)(indV + 1);
+          + ((aBounds.VMax - aBounds.VMin) / ((double)(nbIntV + 1))) * (double)(indV + 1);
 
       //-- std::cout<<"Index :"<<Index<<"  uinf:"<<uinf<<"  usup:"<<usup<<"  vinf:"<<vinf<<"
       // vsup:"<<vsup<<"  ";
