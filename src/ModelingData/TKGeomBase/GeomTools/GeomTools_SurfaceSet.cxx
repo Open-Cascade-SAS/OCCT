@@ -73,7 +73,7 @@ void GeomTools_SurfaceSet::Clear()
 
 int GeomTools_SurfaceSet::Add(const occ::handle<Geom_Surface>& S)
 {
-  return myMap.Add(S);
+  return (S.IsNull()) ? 0 : myMap.Add(S);
 }
 
 //=================================================================================================
@@ -91,7 +91,7 @@ occ::handle<Geom_Surface> GeomTools_SurfaceSet::Surface(const int I) const
 
 int GeomTools_SurfaceSet::Index(const occ::handle<Geom_Surface>& S) const
 {
-  return myMap.FindIndex(S);
+  return (S.IsNull()) ? 0 : myMap.FindIndex(S);
 }
 
 //=================================================================================================
