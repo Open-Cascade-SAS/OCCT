@@ -44,6 +44,7 @@ class Geom_Surface;
 class TopoDS_Edge;
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_ShapeWithState;
+class TopOpeBRepDS_HDataStructure;
 
 //! The DataStructure stores :
 //!
@@ -318,10 +319,11 @@ public:
                                              TopTools_ShapeMapHasher>&
                   ChangeMapOfShapeWithStateTool();
 
+  //! Returns the mutable state map containing the shape, or nullptr if the shape is not bound.
   Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape,
                                              TopOpeBRepDS_ShapeWithState,
-                                             TopTools_ShapeMapHasher>&
-                  ChangeMapOfShapeWithState(const TopoDS_Shape& aShape, bool& aFlag);
+                                             TopTools_ShapeMapHasher>*
+                  ChangeMapOfShapeWithState(const TopoDS_Shape& theShape);
 
   Standard_EXPORT const TopOpeBRepDS_ShapeWithState& GetShapeWithState(
     const TopoDS_Shape& aShape) const;
@@ -334,6 +336,18 @@ public:
 
   friend class TopOpeBRepDS_CurveExplorer;
   friend class TopOpeBRepDS_PointExplorer;
+  friend Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexityShapeIndex(
+    const TopoDS_Shape&,
+    const occ::handle<TopOpeBRepDS_HDataStructure>&,
+    const int);
+  friend Standard_EXPORT const NCollection_List<TopoDS_Shape>& FDSCNX_EdgeConnexitySameShape(
+    const TopoDS_Shape&,
+    const occ::handle<TopOpeBRepDS_HDataStructure>&);
+  friend Standard_EXPORT void FDSCNX_Prepare(const TopoDS_Shape&,
+                                             const TopoDS_Shape&,
+                                             const occ::handle<TopOpeBRepDS_HDataStructure>&);
+  friend Standard_EXPORT bool FDSCNX_HasConnexFace(const TopoDS_Shape&,
+                                                   const occ::handle<TopOpeBRepDS_HDataStructure>&);
 
 private:
   Standard_EXPORT bool FindInterference(
@@ -350,13 +364,6 @@ private:
   NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>
                                                                 myShapes;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mySectionEdges;
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>      myEmptyListOfInterference;
-  NCollection_List<TopoDS_Shape>                                myEmptyListOfShape;
-  TopoDS_Shape                                                  myEmptyShape;
-  TopOpeBRepDS_Point                                            myEmptyPoint;
-  TopOpeBRepDS_Surface                                          myEmptySurface;
-  TopOpeBRepDS_Curve                                            myEmptyCurve;
-  occ::handle<Geom_Surface>                                     myEmptyGSurface;
   NCollection_DataMap<TopoDS_Shape, occ::handle<Geom_Surface>, TopTools_ShapeMapHasher>
        myNewSurface;
   bool myIsfafa;
@@ -367,6 +374,13 @@ private:
                                                                 myMapOfShapeWithStateTool;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapOfRejectedShapesObj;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapOfRejectedShapesTool;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myConnexEdges1;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    myConnexEdges2;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+       myConnexFaceEdges;
+  bool myConnexPrepared;
 };
 
 #endif // _TopOpeBRepDS_DataStructure_HeaderFile

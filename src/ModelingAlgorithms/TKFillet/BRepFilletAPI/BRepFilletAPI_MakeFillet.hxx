@@ -65,6 +65,13 @@ public:
   Standard_EXPORT BRepFilletAPI_MakeFillet(const TopoDS_Shape&      S,
                                            const ChFi3d_FilletShape FShape = ChFi3d_Rational);
 
+  //! Sets construction and approximation tolerances.
+  //! @param[in] Tang angular tolerance for contour propagation, in radians
+  //! @param[in] Tesp spatial tolerance for blend construction
+  //! @param[in] T2d parametric tolerance for blend construction
+  //! @param[in] TApp3d spatial approximation tolerance
+  //! @param[in] TolApp2d parametric approximation tolerance
+  //! @param[in] Fleche deflection used for blend walking
   Standard_EXPORT void SetParams(const double Tang,
                                  const double Tesp,
                                  const double T2d,

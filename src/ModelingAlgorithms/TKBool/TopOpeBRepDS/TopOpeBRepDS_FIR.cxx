@@ -352,8 +352,9 @@ TopAbs_State FUN_stateedgeface(const TopoDS_Shape& E, const TopoDS_Shape& F, gp_
   bool   Pok = FUN_Parameters(P, F, u, v);
   if (Pok)
   { // classifier u,v dans F
-    TopOpeBRepTool_ShapeClassifier& PSC = FSC_GetPSC(F);
-    gp_Pnt2d                        Puv(u, v);
+    TopOpeBRepTool_ShapeClassifier PSC;
+    PSC.SetReference(F);
+    gp_Pnt2d Puv(u, v);
     PSC.StateP2DReference(Puv);
     state = PSC.State();
   }

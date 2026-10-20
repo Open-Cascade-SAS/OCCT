@@ -15,6 +15,7 @@
 #ifndef _RWGltf_CafReader_HeaderFile
 #define _RWGltf_CafReader_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <RWMesh_CafReader.hxx>
 #include <TopoDS_Face.hxx>
@@ -53,8 +54,15 @@ public:
   //! (default) scene will be loaded.
   void SetLoadAllScenes(bool theToLoadAll) { myToLoadAllScenes = theToLoadAll; }
 
-  //! Mark the input as a caller-owned stream so binary buffers can be cached in memory.
+  //! Enable stream input and retain binary data in memory.
   void SetStreamInput(bool theIsStream) { myIsStreamInput = theIsStream; }
+
+  //! Set companion streams for external buffers and images in stream mode.
+  //! @param[in] theStreams caller-owned list; must remain valid during Perform()
+  void SetResourceStreams(const DE_Provider::ReadStreamList& theStreams)
+  {
+    myResourceStreams = &theStreams;
+  }
 
   //! Set flag to use Mesh name in case if Node name is empty, TRUE by default.
   bool ToUseMeshNameAsFallback() { return myUseMeshNameAsFallback; }
@@ -71,7 +79,7 @@ public:
   //! Returns TRUE if data loading should be skipped and can be performed later; FALSE by default.
   bool ToSkipLateDataLoading() { return myToSkipLateDataLoading; }
 
-  //! Sets flag to skip data loading.
+  //! Skip deferred file loading; stream data is loaded immediately.
   void SetToSkipLateDataLoading(bool theToSkip) { myToSkipLateDataLoading = theToSkip; }
 
   //! Set flag to apply non-uniform scaling directly to the triangulation (modify nodes).
@@ -142,7 +150,8 @@ protected:
                                // clang-format on
   bool myToPrintDebugMessages; //!< flag to print additional debug information
   bool myToApplyScale;         //!< flag to apply non-uniform scaling
-  bool myIsStreamInput;        //!< input is a caller-owned stream
+  const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed companion streams.
+  bool                               myIsStreamInput; //!< input is a caller-owned stream
   NCollection_DataMap<TopoDS_Shape, gp_XYZ, TopTools_ShapeMapHasher>*
     myShapeScaleMap; //!< map of shapes with non-uniform scalings
 };

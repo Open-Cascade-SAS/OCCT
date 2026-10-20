@@ -181,7 +181,7 @@ public:
   //! @param[in] theElement  the element to check
   //! @param[in] theGroup    the group containing the element
   //! @return True if element can be rendered
-  bool ShouldRender(const OpenGl_Element* theElement, const OpenGl_Group* theGroup);
+  Standard_EXPORT bool ShouldRender(const OpenGl_Element* theElement, const OpenGl_Group* theGroup);
 
   //! Return the number of skipped transparent elements within active OpenGl_RenderFilter_OpaqueOnly
   //! filter.

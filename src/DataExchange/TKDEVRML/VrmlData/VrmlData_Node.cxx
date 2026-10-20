@@ -211,20 +211,28 @@ VrmlData_ErrorStatus VrmlData_Node::ReadString(VrmlData_InBuffer&       theBuffe
     }
     else
     {
-      char* ptr = &theBuffer.LinePtr[1];
-      while (*ptr != '\0' && *ptr != '\"')
+      char*                   aReadPtr = theBuffer.LinePtr + 1;
+      TCollection_AsciiString aString;
+      while (*aReadPtr != '\0' && *aReadPtr != '\"')
       {
-        ptr++;
+        if (*aReadPtr == '\\')
+        {
+          ++aReadPtr;
+          if (*aReadPtr == '\0')
+          {
+            return VrmlData_StringInputError;
+          }
+        }
+        aString += *aReadPtr++;
       }
-      if (*ptr == '\0')
+      if (*aReadPtr == '\0')
       {
         aStatus = VrmlData_StringInputError;
       }
       else
       {
-        *ptr              = '\0';
-        theResult         = (const char*)&theBuffer.LinePtr[1];
-        theBuffer.LinePtr = ptr + 1;
+        theResult         = aString;
+        theBuffer.LinePtr = aReadPtr + 1;
       }
     }
   }
@@ -237,48 +245,34 @@ VrmlData_ErrorStatus VrmlData_Node::ReadMultiString(
   VrmlData_InBuffer&                         theBuffer,
   NCollection_List<TCollection_AsciiString>& theResult)
 {
-  VrmlData_ErrorStatus aStatus;
-  bool                 isBracketed(false);
-  // Read the list of URL
-  if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+  VrmlData_ErrorStatus aStatus = VrmlData_Scene::ReadLine(theBuffer);
+  if (!OK(aStatus))
   {
-    if (theBuffer.LinePtr[0] == '[')
+    return aStatus;
+  }
+  const bool isBracketed = *theBuffer.LinePtr == '[';
+  if (isBracketed)
+  {
+    ++theBuffer.LinePtr;
+  }
+  while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+  {
+    if (isBracketed && *theBuffer.LinePtr == ']')
     {
-      theBuffer.LinePtr++;
-      isBracketed = true;
+      ++theBuffer.LinePtr;
+      return VrmlData_StatusOK;
     }
-    while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+    TCollection_AsciiString aString;
+    if (!OK(aStatus, ReadString(theBuffer, aString)))
     {
-      if (isBracketed && theBuffer.LinePtr[0] == ']')
-      { // closing bracket
-        theBuffer.LinePtr++;
-        break;
-      }
-      TCollection_AsciiString aString;
-      if (!OK(aStatus, ReadString(theBuffer, aString)))
-      {
-        break;
-      }
-      theResult.Append(aString);
-      if (!isBracketed || !OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
-      {
-        break;
-      }
-      if (theBuffer.LinePtr[0] == ',')
-      {
-        theBuffer.LinePtr++;
-        continue;
-      }
-      else if (theBuffer.LinePtr[0] == ']')
-      { // closing bracket
-        theBuffer.LinePtr++;
-      }
-      else
-      {
-        aStatus = VrmlData_VrmlFormatError;
-      }
-      break;
+      return aStatus;
     }
+    theResult.Append(aString);
+    if (!isBracketed)
+    {
+      return VrmlData_StatusOK;
+    }
+    // ReadLine consumes whitespace and commas between values.
   }
   return aStatus;
 }
@@ -628,7 +622,8 @@ occ::handle<VrmlData_Node> VrmlData_ImageTexture::Clone(
   {
     aResult = new VrmlData_ImageTexture(theOther.IsNull() ? Scene() : theOther->Scene(), Name());
   }
-  aResult->myURL = myURL;
+  aResult->myURL   = myURL;
+  aResult->myImage = myImage;
   return aResult;
 }
 
@@ -667,6 +662,7 @@ VrmlData_ErrorStatus VrmlData_ImageTexture::Read(VrmlData_InBuffer& theBuffer)
   {
     SetRepeatS(aRepeatS);
     SetRepeatT(aRepeatT);
+    aStatus = Scene().ReadImage(myURL, myImage);
   }
   return aStatus;
 }

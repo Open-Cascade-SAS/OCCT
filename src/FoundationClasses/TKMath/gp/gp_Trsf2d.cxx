@@ -225,10 +225,10 @@ void gp_Trsf2d::Invert()
   //
   // Pour les gp_Trsf2d puisque le scale est extrait de la matrice R
   // on a toujours determinant (R) = 1 et R-1 = R transposee.
-  if (shape == gp_Identity)
+  if (shape == gp_Identity || shape == gp_PntMirror)
   {
   }
-  else if (shape == gp_Translation || shape == gp_PntMirror)
+  else if (shape == gp_Translation)
   {
     loc.Reverse();
   }

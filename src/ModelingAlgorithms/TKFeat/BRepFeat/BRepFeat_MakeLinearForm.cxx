@@ -18,7 +18,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-#include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepExtrema_ExtCF.hxx>

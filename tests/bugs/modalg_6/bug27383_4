@@ -15,11 +15,11 @@ encoderegularity r
 
 explode r F
 explode r_1 E
-if { ! [regexp "G2" [getedgeregularity r_1_2 r_1 r_2]] } {
-  puts "Error: Invalid regularity of the edge, expected G2"
+if { ! [regexp "C2" [getedgeregularity r_1_2 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected C2"
 }
-if { ! [regexp "G2" [getedgeregularity r_1_4 r_1 r_2]] } {
-  puts "Error: Invalid regularity of the edge, expected G2"
+if { ! [regexp "C2" [getedgeregularity r_1_4 r_1 r_2]] } {
+  puts "Error: Invalid regularity of the edge, expected C2"
 }
 
 # make image in HLR mode as illustration

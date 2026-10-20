@@ -23,7 +23,7 @@ const LDOM_BasicNode& LDOM_Node::Origin() const
 {
   if (myOrigin == nullptr)
   {
-    static LDOM_BasicNode aNullNode;
+    static const LDOM_BasicNode aNullNode;
     return aNullNode;
   }
   return *myOrigin;

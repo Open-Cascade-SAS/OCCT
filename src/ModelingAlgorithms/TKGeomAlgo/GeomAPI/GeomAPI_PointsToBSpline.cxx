@@ -153,6 +153,11 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
 
   TheComputer.Perform(Points);
 
+  if (!TheComputer.IsAllApproximated())
+  {
+    return;
+  }
+
   AppParCurves_MultiBSpCurve TheCurve = TheComputer.Value();
 
   NCollection_Array1<gp_Pnt> Poles(1, TheCurve.NbPoles());
@@ -223,6 +228,11 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
   }
 
   TheComputer.Perform(Points);
+
+  if (!TheComputer.IsAllApproximated())
+  {
+    return;
+  }
 
   AppParCurves_MultiBSpCurve TheCurve = TheComputer.Value();
 

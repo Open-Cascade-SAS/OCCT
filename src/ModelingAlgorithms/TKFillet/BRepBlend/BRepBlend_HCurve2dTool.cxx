@@ -27,7 +27,7 @@ int BRepBlend_HCurve2dTool::NbSamples(const occ::handle<Adaptor2d_Curve2d>& C,
                                       const double                          U1)
 {
   GeomAbs_CurveType typC     = C->GetType();
-  static double     nbsOther = 10.0;
+  constexpr double  nbsOther = 10.0;
   double            nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)

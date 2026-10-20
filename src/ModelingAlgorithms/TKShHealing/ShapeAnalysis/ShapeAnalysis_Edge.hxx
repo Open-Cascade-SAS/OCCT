@@ -202,27 +202,49 @@ public:
   Standard_EXPORT bool Status(const ShapeExtend_Status status) const;
 
   //! Checks the edge to be SameParameter.
-  //! Calculates the maximal deviation between 3d curve and each
-  //! pcurve of the edge on <NbControl> equidistant points (the same
-  //! algorithm as in BRepCheck; default value is 23 as in BRepCheck).
-  //! This deviation is returned in <maxdev> parameter.
-  //! If deviation is greater than tolerance of the edge (i.e.
-  //! incorrect flag) returns False, else returns True.
+  //! Estimates the deviation between the 3D curve and its pcurves at
+  //! <NbControl> equidistant points, using projection when SameParameter is unset.
+  //! Returns the deviation in <maxdev> and True if the edge tolerance is
+  //! exceeded or the SameParameter flag is unset. Check Status() for failures.
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& edge,
                                           double&            maxdev,
                                           const int          NbControl = 23);
 
   //! Checks the edge to be SameParameter.
-  //! Calculates the maximal deviation between 3d curve and each
-  //! pcurve of the edge on <NbControl> equidistant points (the same
-  //! algorithm as in BRepCheck; default value is 23 as in BRepCheck).
-  //! This deviation is returned in <maxdev> parameter.
-  //! If deviation is greater than tolerance of the edge (i.e.
-  //! incorrect flag) returns False, else returns True.
+  //! Estimates the deviation between the 3D curve and its pcurves at
+  //! <NbControl> equidistant points, using projection when SameParameter is unset.
+  //! Returns the deviation in <maxdev> and True if the edge tolerance is
+  //! exceeded or the SameParameter flag is unset. Check Status() for failures.
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& theEdge,
                                           const TopoDS_Face& theFace,
                                           double&            theMaxdev,
                                           const int          theNbControl = 23);
+
+  //! Checks all pcurves using the selected deviation method.
+  //! @param[in] theEdge edge to check
+  //! @param[out] theMaxdev maximum deviation in model units
+  //! @param[in] theNbControl sample count for the sampled method
+  //! @param[in] theExact use GeomLib_CheckCurveOnSurface for SameParameter edges, else sample
+  //! @return true if the edge tolerance is exceeded or SameParameter is unset;
+  //! Check Status() for failures
+  Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& theEdge,
+                                          double&            theMaxdev,
+                                          const int          theNbControl,
+                                          const bool         theExact);
+
+  //! Checks the pcurves on a face using the selected deviation method.
+  //! @param[in] theEdge edge to check
+  //! @param[in] theFace face to check; a null face selects all pcurves
+  //! @param[out] theMaxdev maximum deviation in model units
+  //! @param[in] theNbControl sample count for the sampled method
+  //! @param[in] theExact use GeomLib_CheckCurveOnSurface for SameParameter edges, else sample
+  //! @return true if the edge tolerance is exceeded or SameParameter is unset;
+  //! Check Status() for failures
+  Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& theEdge,
+                                          const TopoDS_Face& theFace,
+                                          double&            theMaxdev,
+                                          const int          theNbControl,
+                                          const bool         theExact);
 
   //! Checks possibility for pcurve thePC to have range [theFirst, theLast] (edge range)
   //! having respect to real first, last parameters of thePC

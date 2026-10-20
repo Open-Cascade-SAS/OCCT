@@ -545,11 +545,9 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
     }
   }
 
-  int NumeroEdge = 0;
   Domain->Init();
   while (Domain->More())
   {
-    NumeroEdge++;
     arc = Domain->Value();
 
     // MSV Oct 15, 2001: use tolerance of this edge if possible
@@ -700,14 +698,6 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
 
         Brise.SetOffset(OffsetU, OffsetV);
 
-        static int debug_polygon2d = 0;
-        if (debug_polygon2d)
-        {
-          std::cout << " ***** Numero Restriction : " << NumeroEdge << " *****" << '\n';
-          PLin.Dump();
-          Brise.Dump();
-        }
-
         Commun.Perform(PLin, Brise);
         locpt.Clear();
         locpt2.Clear();
@@ -745,28 +735,58 @@ void IntPatch_RstInt::PutVertexOnLine(const occ::handle<IntPatch_Line>&       L,
           //--
           //-- On injecte ce point ds les intersections Courbe-Surface
           //--
-          IntPatch_CSFunction thefunc(OtherSurf, arc, Surf);
-          // MSV: extend UV bounds to not miss solution near the boundary
-          const double         margCoef = 0.004;
-          bool                 refined  = false;
-          IntPatch_CurvIntSurf IntCS(U, V, W, thefunc, edgeTol, margCoef);
-          if (IntCS.IsDone() && !IntCS.IsEmpty())
+          bool                   refined  = false;
+          const IntSurf_PntOn2S* aLineEnd = nullptr;
+          if (typL == IntPatch_Walking)
           {
-            ptsommet = IntCS.Point();
-            IntCS.ParameterOnSurface(U2, V2);
-            gp_Pnt anOldPnt, aNewPnt;
-            OtherSurf->D0(U, V, anOldPnt);
-            OtherSurf->D0(U2, V2, aNewPnt);
-            // if (anOldPnt.SquareDistance(aNewPnt) < Precision::SquareConfusion())
-            double aTolConf = std::max(Precision::Confusion(), edgeTol);
-
-            if (anOldPnt.SquareDistance(aNewPnt) < aTolConf * aTolConf)
+            if (aW1 <= 1.0)
             {
-              U2 = U;
-              V2 = V;
+              aLineEnd = &wlin->Point(1);
             }
-            paramarc = IntCS.ParameterOnCurve();
-            refined  = true;
+            else if (aW1 >= wlin->NbPnts() - 2)
+            {
+              aLineEnd = &wlin->Point(wlin->NbPnts());
+            }
+          }
+          if (aLineEnd != nullptr)
+          {
+            gp_Pnt2d anEndUV = aLineEnd->ValueOnSurface(OnFirst), aProjectedUV;
+            anEndUV.SetCoord(anEndUV.X() - OffsetU, anEndUV.Y() - OffsetV);
+            double aParamOnArc;
+            // Keep an existing intersection endpoint on the restriction.
+            if (IntPatch_HInterTool::Project(arc, anEndUV, aParamOnArc, aProjectedUV)
+                && anEndUV.SquareDistance(aProjectedUV) <= tolPLin * tolPLin)
+            {
+              ptsommet = aLineEnd->Value();
+              aLineEnd->ParametersOnSurface(!OnFirst, U2, V2);
+              paramarc = aParamOnArc;
+              refined  = true;
+            }
+          }
+          if (!refined)
+          {
+            IntPatch_CSFunction thefunc(OtherSurf, arc, Surf);
+            // MSV: extend UV bounds to not miss solution near the boundary
+            const double         margCoef = 0.004;
+            IntPatch_CurvIntSurf IntCS(U, V, W, thefunc, edgeTol, margCoef);
+            if (IntCS.IsDone() && !IntCS.IsEmpty())
+            {
+              ptsommet = IntCS.Point();
+              IntCS.ParameterOnSurface(U2, V2);
+              gp_Pnt anOldPnt, aNewPnt;
+              OtherSurf->D0(U, V, anOldPnt);
+              OtherSurf->D0(U2, V2, aNewPnt);
+              // if (anOldPnt.SquareDistance(aNewPnt) < Precision::SquareConfusion())
+              double aTolConf = std::max(Precision::Confusion(), edgeTol);
+
+              if (anOldPnt.SquareDistance(aNewPnt) < aTolConf * aTolConf)
+              {
+                U2 = U;
+                V2 = V;
+              }
+              paramarc = IntCS.ParameterOnCurve();
+              refined  = true;
+            }
           }
 
           if (refined)

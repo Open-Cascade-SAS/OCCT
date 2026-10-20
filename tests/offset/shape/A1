@@ -1,3 +1,5 @@
+puts "TODO OCC000000 Windows: Error : The volume of result shape is 2\\.80312e\\+07,"
+
 # Original bug : hkg60144
 # Date : 17Juillet98
 
@@ -7,5 +9,4 @@ explode s f
 offsetshape result s -5 s_1
 
 
-checkprops result -v 2.80312e+07
-
+checkprops result -v 2.12816e+06

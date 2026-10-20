@@ -6,13 +6,14 @@ puts ""
 ## Wrong section curves
 ###############################
 
-puts "TODO OCC29501 All: Error: The curve ii13_20 is possible"
-puts "TODO OCC29501 All: Error: The curve ii13_44 is possible"
-puts "TODO OCC00000 All: Error in ii13_23"
+puts "TODO OCC29501 All: Error: The curve ii13_46 is possible"
+puts "TODO OCC29501 All: Error: The curve ii13_7 is possible"
+puts "TODO OCC00000 All: Error in ii13_18:"
 
 pload QAcommands
 
 set MaxToler 1.5e-4
+set NbSamples 100
 
 restore [locate_data_file bug24472_Pipe_1.brep] b1
 
@@ -42,8 +43,8 @@ foreach c [directory ii12*] {
   # cos(~75.5deg)
   QACheckBends $c 0.25
   
-  xdistcs $c s1 U1 U2 10 $MaxToler
-  xdistcs $c s2 U1 U2 10 $MaxToler
+  xdistcs $c s1 U1 U2 $NbSamples $MaxToler
+  xdistcs $c s2 U1 U2 $NbSamples $MaxToler
 }
 
 puts ""
@@ -74,8 +75,8 @@ foreach c [directory ii13*] {
   # cos(~75.5deg)
   QACheckBends $c 0.25
 
-  xdistcs $c s1 U1 U2 10 $MaxToler
-  xdistcs $c s2 U1 U2 10 $MaxToler
+  xdistcs $c s1 U1 U2 $NbSamples $MaxToler
+  xdistcs $c s3 U1 U2 $NbSamples $MaxToler
 }
 
 puts ""

@@ -578,8 +578,14 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
               else if (P2.Distance(DomainOnCurve2.LastPoint()) <= DomainOnCurve2.LastTolerance())
                 Pos2 = IntRes2d_End;
               //-----------------------------------------------------------------
-              if (IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf)
-                  == false)
+              if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
+                  || !IntImpParGen::DetermineTransition(Pos1,
+                                                        Tan1,
+                                                        Trans1,
+                                                        Pos2,
+                                                        Tan2,
+                                                        Trans2,
+                                                        TolConf))
               {
                 TheCurveTool::D2(C1, U, P1, Tan1, Norm1);
                 TheCurveTool::D2(C1, V, P2, Tan2, Norm2);
@@ -755,7 +761,8 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                                             TheCurveTool::EpsX(C1));
     }
 
-    if (IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf) == false)
+    if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
+        || !IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf))
     {
       TheCurveTool::D2(C1, PolyUInf, P1, Tan1, Norm1);
       TheCurveTool::D2(C1, PolyVInf, P2, Tan2, Norm2);
@@ -835,8 +842,8 @@ void IntCurve_IntPolyPolyGen::Perform(const TheCurve&        C1,
                                               TheCurveTool::EpsX(C1));
       }
 
-      if (IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf)
-          == false)
+      if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
+          || !IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf))
       {
         TheCurveTool::D2(C1, PolyUSup, P1, Tan1, Norm1);
         TheCurveTool::D2(C1, PolyVSup, P2, Tan2, Norm2);
@@ -1017,7 +1024,8 @@ bool HeadOrEndPoint(const IntRes2d_Domain&      D1,
         return (false);
     }
 
-    if (IntImpParGen::DetermineTransition(Pos1, T1, Trans1, Pos2, T2, Trans2, TolConf) == false)
+    if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
+        || !IntImpParGen::DetermineTransition(Pos1, T1, Trans1, Pos2, T2, Trans2, TolConf))
     {
       TheCurveTool::D2(C1, svu, P1, T1, N1);
       TheCurveTool::D2(C2, svv, P2, T2, N2);
@@ -1259,8 +1267,8 @@ bool IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&              C1,
       //-----------------------------------------------------------------
       //-- Calculate the Transitions (see IntImpParGen.cxx)
       //--
-      if (IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf)
-          == false)
+      if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
+          || !IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf))
       {
         TheCurveTool::D2(C1, U, P1, Tan1, Norm1);
         TheCurveTool::D2(C2, V, P2, Tan2, Norm2);
@@ -1453,8 +1461,8 @@ bool IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&              C1,
                                               TheCurveTool::EpsX(C1));
       }
 
-      if (IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf)
-          == false)
+      if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
+          || !IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf))
       {
         TheCurveTool::D2(C1, PolyUInf, P1, Tan1, Norm1);
         TheCurveTool::D2(C2, PolyVInf, P2, Tan2, Norm2);
@@ -1534,8 +1542,8 @@ bool IntCurve_IntPolyPolyGen::findIntersect(const TheCurve&              C1,
                                                 TheCurveTool::EpsX(C1));
         }
 
-        if (IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf)
-            == false)
+        if (Pos1 != IntRes2d_Middle || Pos2 != IntRes2d_Middle
+            || !IntImpParGen::DetermineTransition(Pos1, Tan1, Trans1, Pos2, Tan2, Trans2, TolConf))
         {
           TheCurveTool::D2(C1, PolyUSup, P1, Tan1, Norm1);
           TheCurveTool::D2(C2, PolyVSup, P2, Tan2, Norm2);

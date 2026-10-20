@@ -36,30 +36,6 @@
 #include <gp_Vec.hxx>
 #include <math_Vector.hxx>
 
-#ifdef OCCT_DEBUG_CHRONO
-  #include <OSD_Timer.hxx>
-static OSD_Chronometer chr_total, chr_init, chr_approx;
-
-double t_total, t_init, t_approx;
-
-void InitChron(OSD_Chronometer& ch)
-{
-  ch.Reset();
-  ch.Start();
-}
-
-void ResultChron(OSD_Chronometer& ch, double& time)
-{
-  double tch;
-  ch.Stop();
-  ch.Show(tch);
-  time = time + tch;
-}
-
-Standard_IMPORT int    uparam_count;
-Standard_IMPORT double t_uparam;
-#endif
-
 //=================================================================================================
 
 class Approx_CurvilinearParameter_EvalCurv : public AdvApprox_EvaluatorFunction
@@ -135,11 +111,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
     : myMaxError2d1(0.0),
       myMaxError2d2(0.0)
 {
-#ifdef OCCT_DEBUG_CHRONO
-  t_total = t_init = t_approx = t_uparam = 0;
-  uparam_count                           = 0;
-  InitChron(chr_total);
-#endif
   myCase = 1;
   // Initialisation of input parameters of AdvApprox
 
@@ -147,14 +118,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
   occ::handle<NCollection_HArray1<double>> OneDTolNul, TwoDTolNul;
   occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol);
-
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_init);
-#endif
   occ::handle<Approx_CurvlinFunc> fonct = new Approx_CurvlinFunc(C3D, Tol / 10);
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_init, t_init);
-#endif
 
   double FirstS = fonct->FirstParameter();
   double LastS  = fonct->LastParameter();
@@ -166,10 +130,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
   NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   fonct->Intervals(CutPnts_C3, GeomAbs_C3);
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
-
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_approx);
-#endif
 
   Approx_CurvilinearParameter_EvalCurv evC(fonct, FirstS, LastS);
   AdvApprox_ApproxAFunction            aApprox(Num1DSS,
@@ -186,10 +146,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
                                     evC,
                                     CutTool);
 
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_approx, t_approx);
-#endif
-
   myDone      = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
 
@@ -203,16 +159,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
     myCurve3d = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
   }
   myMaxError3d = aApprox.MaxError(3, 1);
-
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_total, t_total);
-
-  std::cout << " total reparametrization time = " << t_total << std::endl;
-  std::cout << "initialization time = " << t_init << std::endl;
-  std::cout << "approximation time = " << t_approx << std::endl;
-  std::cout << "total time for uparam computation = " << t_uparam << std::endl;
-  std::cout << "number uparam calls = " << uparam_count << std::endl;
-#endif
 }
 
 //=================================================================================================
@@ -289,11 +235,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
                                                          const int           MaxDegree,
                                                          const int           MaxSegments)
 {
-#ifdef OCCT_DEBUG_CHRONO
-  t_total = t_init = t_approx = t_uparam = 0;
-  uparam_count                           = 0;
-  InitChron(chr_total);
-#endif
   myCase = 2;
 
   // Initialisation of input parameters of AdvApprox
@@ -313,14 +254,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
   occ::handle<NCollection_HArray1<double>> TwoDTolNul;
   occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol / 2.);
-
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_init);
-#endif
   occ::handle<Approx_CurvlinFunc> fonct = new Approx_CurvlinFunc(C2D, Surf, Tol / 20);
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_init, t_init);
-#endif
 
   double FirstS = fonct->FirstParameter();
   double LastS  = fonct->LastParameter();
@@ -332,10 +266,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
   NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   fonct->Intervals(CutPnts_C3, GeomAbs_C3);
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
-
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_approx);
-#endif
 
   Approx_CurvilinearParameter_EvalCurvOnSurf evCOnS(fonct, FirstS, LastS);
   AdvApprox_ApproxAFunction                  aApprox(Num1DSS,
@@ -351,10 +281,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
                                     MaxSegments,
                                     evCOnS,
                                     CutTool);
-
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_approx, t_approx);
-#endif
 
   myDone      = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
@@ -384,16 +310,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const occ::handle<Adapt
   }
   myMaxError2d1 = std::max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
   myMaxError3d  = aApprox.MaxError(3, 1);
-
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_total, t_total);
-
-  std::cout << " total reparametrization time = " << t_total << std::endl;
-  std::cout << "initialization time = " << t_init << std::endl;
-  std::cout << "approximation time = " << t_approx << std::endl;
-  std::cout << "total time for uparam computation = " << t_uparam << std::endl;
-  std::cout << "number uparam calls = " << uparam_count << std::endl;
-#endif
 }
 
 //=================================================================================================
@@ -474,12 +390,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(
   const int                             MaxSegments)
 {
   int i;
-
-#ifdef OCCT_DEBUG_CHRONO
-  t_total = t_init = t_approx = t_uparam = 0;
-  uparam_count                           = 0;
-  InitChron(chr_total);
-#endif
   myCase = 3;
 
   // Initialisation of input parameters of AdvApprox
@@ -499,15 +409,8 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(
   occ::handle<NCollection_HArray1<double>> TwoDTolNul;
   occ::handle<NCollection_HArray1<double>> ThreeDTol = new NCollection_HArray1<double>(1, Num3DSS);
   ThreeDTol->Init(Tol / 2);
-
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_init);
-#endif
   occ::handle<Approx_CurvlinFunc> fonct =
     new Approx_CurvlinFunc(C2D1, C2D2, Surf1, Surf2, Tol / 20);
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_init, t_init);
-#endif
 
   double FirstS = fonct->FirstParameter();
   double LastS  = fonct->LastParameter();
@@ -519,10 +422,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(
   NCollection_Array1<double> CutPnts_C3(1, NbInterv_C3 + 1);
   fonct->Intervals(CutPnts_C3, GeomAbs_C3);
   AdvApprox_PrefAndRec CutTool(CutPnts_C2, CutPnts_C3);
-
-#ifdef OCCT_DEBUG_CHRONO
-  InitChron(chr_approx);
-#endif
 
   Approx_CurvilinearParameter_EvalCurvOn2Surf evCOn2S(fonct, FirstS, LastS);
   AdvApprox_ApproxAFunction                   aApprox(Num1DSS,
@@ -538,10 +437,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(
                                     MaxSegments,
                                     evCOn2S,
                                     CutTool);
-
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_approx, t_approx);
-#endif
 
   myDone      = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
@@ -583,16 +478,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(
   myMaxError2d1 = std::max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
   myMaxError2d2 = std::max(aApprox.MaxError(1, 3), aApprox.MaxError(1, 4));
   myMaxError3d  = aApprox.MaxError(3, 1);
-
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_total, t_total);
-
-  std::cout << " total reparametrization time = " << t_total << std::endl;
-  std::cout << "initialization time = " << t_init << std::endl;
-  std::cout << "approximation time = " << t_approx << std::endl;
-  std::cout << "total time for uparam computation = " << t_uparam << std::endl;
-  std::cout << "number uparam calls = " << uparam_count << std::endl;
-#endif
 }
 
 //=================================================================================================

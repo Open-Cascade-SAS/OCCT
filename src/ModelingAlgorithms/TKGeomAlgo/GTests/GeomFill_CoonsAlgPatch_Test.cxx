@@ -19,36 +19,42 @@
 #include <GC_MakeSegment.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
 
 #include <gtest/gtest.h>
 
+#include <initializer_list>
+
 namespace
 {
-//! Boundary from a straight segment, parametrized on [0, 1].
+//==================================================================================================
+
+// Create a segment boundary with its native arc-length parameter range.
 static occ::handle<GeomFill_SimpleBound> Bound(const gp_Pnt& theP1, const gp_Pnt& theP2)
 {
-  occ::handle<Geom_TrimmedCurve> aSeg = GC_MakeSegment(theP1, theP2).Value();
-  occ::handle<Geom_Curve>        aCrv = aSeg;
-  occ::handle<GeomAdaptor_Curve> anAd =
-    new GeomAdaptor_Curve(aCrv, aCrv->FirstParameter(), aCrv->LastParameter());
-  return new GeomFill_SimpleBound(anAd, Precision::Confusion(), Precision::Angular());
+  const occ::handle<Geom_TrimmedCurve> aSegment = GC_MakeSegment(theP1, theP2).Value();
+  const occ::handle<GeomAdaptor_Curve> aCurve   = new GeomAdaptor_Curve(aSegment);
+  return new GeomFill_SimpleBound(aCurve, Precision::Confusion(), Precision::Angular());
 }
 } // namespace
+
+//==================================================================================================
 
 // The four boundaries of a planar square, in the order the constructor expects: B1 and B3 run
 // along U, B2 and B4 along V. Value(U, V) must sample B1 and B3 at U, as D1U and D1V do.
 TEST(GeomFill_CoonsAlgPatchTest, ValueUsesUForTheUDirectionBoundaries)
 {
-  const gp_Pnt p00(0., 0., 0.);
-  const gp_Pnt p10(10., 0., 0.);
-  const gp_Pnt p11(10., 10., 0.);
-  const gp_Pnt p01(0., 10., 0.);
+  const gp_Pnt aP00(0., 0., 0.);
+  const gp_Pnt aP10(10., 0., 0.);
+  const gp_Pnt aP11(10., 10., 0.);
+  const gp_Pnt aP01(0., 10., 0.);
 
-  occ::handle<GeomFill_Boundary> aB1 = Bound(p00, p10); // v = vMin, along U
-  occ::handle<GeomFill_Boundary> aB2 = Bound(p10, p11); // u = uMax, along V
-  occ::handle<GeomFill_Boundary> aB3 = Bound(p01, p11); // v = vMax, along U
-  occ::handle<GeomFill_Boundary> aB4 = Bound(p00, p01); // u = uMin, along V
-  GeomFill_CoonsAlgPatch         aPatch(aB1, aB2, aB3, aB4);
+  const occ::handle<GeomFill_Boundary> aB1 = Bound(aP00, aP10); // v = vMin, along U
+  const occ::handle<GeomFill_Boundary> aB2 = Bound(aP10, aP11); // u = uMax, along V
+  const occ::handle<GeomFill_Boundary> aB3 = Bound(aP01, aP11); // v = vMax, along U
+  const occ::handle<GeomFill_Boundary> aB4 = Bound(aP00, aP01); // u = uMin, along V
+  GeomFill_CoonsAlgPatch               aPatch(aB1, aB2, aB3, aB4);
 
   // The patch is parametrized on the boundaries' own ranges, U on B1's and V on B2's, which for
   // a segment is its arc length rather than [0, 1].
@@ -57,39 +63,95 @@ TEST(GeomFill_CoonsAlgPatchTest, ValueUsesUForTheUDirectionBoundaries)
   aB2->Bounds(aVMin, aVMax);
 
   // On a planar square the patch is the plane itself, so the answer is known in closed form.
-  const double aTol = 1.e-7;
-  EXPECT_NEAR(aPatch.Value(aUMin, aVMin).Distance(p00), 0., aTol);
-  EXPECT_NEAR(aPatch.Value(aUMax, aVMin).Distance(p10), 0., aTol);
-  EXPECT_NEAR(aPatch.Value(aUMax, aVMax).Distance(p11), 0., aTol);
-  EXPECT_NEAR(aPatch.Value(aUMin, aVMax).Distance(p01), 0., aTol);
+  const double aTol = Precision::Confusion();
+  EXPECT_NEAR(aPatch.Value(aUMin, aVMin).Distance(aP00), 0., aTol);
+  EXPECT_NEAR(aPatch.Value(aUMax, aVMin).Distance(aP10), 0., aTol);
+  EXPECT_NEAR(aPatch.Value(aUMax, aVMax).Distance(aP11), 0., aTol);
+  EXPECT_NEAR(aPatch.Value(aUMin, aVMax).Distance(aP01), 0., aTol);
 
-  // Off the diagonal is where sampling B1 and B3 at V instead of U shows: every such point
-  // collapsed onto x == y, so the whole patch degenerated to a line.
+  // Check distinct U and V values on the boundaries and inside the patch.
   const double aUMid = 0.5 * (aUMin + aUMax);
   const double aVMid = 0.5 * (aVMin + aVMax);
   EXPECT_NEAR(aPatch.Value(aUMax, aVMid).Distance(gp_Pnt(10., 5., 0.)), 0., aTol);
   EXPECT_NEAR(aPatch.Value(aUMin, aVMid).Distance(gp_Pnt(0., 5., 0.)), 0., aTol);
   EXPECT_NEAR(aPatch.Value(aUMid, aVMin).Distance(gp_Pnt(5., 0., 0.)), 0., aTol);
   EXPECT_NEAR(aPatch.Value(aUMid, aVMax).Distance(gp_Pnt(5., 10., 0.)), 0., aTol);
+  EXPECT_NEAR(aPatch.Value(3., 7.).Distance(gp_Pnt(3., 7., 0.)), 0., aTol);
 }
 
-// Value must agree with the derivatives it is differentiated from: a central difference of
-// Value along U reproduces D1U. This fails for any parameter mix-up in Value alone.
-TEST(GeomFill_CoonsAlgPatchTest, ValueAgreesWithD1U)
+//==================================================================================================
+
+TEST(GeomFill_CoonsAlgPatchTest, ValueUsesIndependentUAndVRanges)
 {
-  GeomFill_CoonsAlgPatch aPatch(Bound(gp_Pnt(0., 0., 0.), gp_Pnt(10., 0., 2.)),
-                                Bound(gp_Pnt(10., 0., 2.), gp_Pnt(10., 10., 0.)),
-                                Bound(gp_Pnt(0., 10., 1.), gp_Pnt(10., 10., 0.)),
-                                Bound(gp_Pnt(0., 0., 0.), gp_Pnt(0., 10., 1.)));
+  const occ::handle<GeomFill_Boundary> aB1 = Bound(gp_Pnt(-3., 2., 5.), gp_Pnt(7., 2., 5.));
+  const occ::handle<GeomFill_Boundary> aB2 = Bound(gp_Pnt(7., 2., 5.), gp_Pnt(7., 6., 5.));
+  const occ::handle<GeomFill_Boundary> aB3 = Bound(gp_Pnt(-3., 6., 5.), gp_Pnt(7., 6., 5.));
+  const occ::handle<GeomFill_Boundary> aB4 = Bound(gp_Pnt(-3., 2., 5.), gp_Pnt(-3., 6., 5.));
 
-  const double aStep = 1.e-6;
-  const double aU = 3.0, aV = 7.0;
-  const gp_XYZ aFwd = aPatch.Value(aU + aStep, aV).XYZ();
-  const gp_XYZ aBwd = aPatch.Value(aU - aStep, aV).XYZ();
-  const gp_XYZ aNum = (aFwd - aBwd) / (2. * aStep);
+  // Opposite boundaries share a range, while U and V have different, nonzero lower bounds.
+  aB1->Reparametrize(2., 5., false, false, 1., 1., false);
+  aB3->Reparametrize(2., 5., false, false, 1., 1., false);
+  aB2->Reparametrize(-3., -1., false, false, 1., 1., false);
+  aB4->Reparametrize(-3., -1., false, false, 1., 1., false);
+  for (const occ::handle<GeomFill_Boundary>& aBound : {aB1, aB2, aB3, aB4})
+  {
+    double aFirst, aLast;
+    aBound->Bounds(aFirst, aLast);
+    const bool isU = aBound == aB1 || aBound == aB3;
+    ASSERT_DOUBLE_EQ(aFirst, isU ? 2. : -3.);
+    ASSERT_DOUBLE_EQ(aLast, isU ? 5. : -1.);
+  }
 
-  const gp_Vec anAna = aPatch.D1U(aU, aV);
-  EXPECT_NEAR(aNum.X(), anAna.X(), 1.e-4);
-  EXPECT_NEAR(aNum.Y(), anAna.Y(), 1.e-4);
-  EXPECT_NEAR(aNum.Z(), anAna.Z(), 1.e-4);
+  const GeomFill_CoonsAlgPatch aPatch(aB1, aB2, aB3, aB4);
+  for (const double aU : {2., 2.9, 5.})
+  {
+    for (const double aV : {-3., -1.6, -1.})
+    {
+      const gp_Pnt anExpected(-3. + 10. * (aU - 2.) / 3., 2. + 4. * (aV + 3.) / 2., 5.);
+      EXPECT_NEAR(aPatch.Value(aU, aV).Distance(anExpected), 0., Precision::Confusion());
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomFill_CoonsAlgPatchTest, ValueAgreesWithPartialDerivatives)
+{
+  const occ::handle<GeomFill_Boundary> aB1 = Bound(gp_Pnt(0., 0., 0.), gp_Pnt(10., 0., 2.));
+  const occ::handle<GeomFill_Boundary> aB2 = Bound(gp_Pnt(10., 0., 2.), gp_Pnt(10., 10., 0.));
+  const occ::handle<GeomFill_Boundary> aB3 = Bound(gp_Pnt(0., 10., 1.), gp_Pnt(10., 10., 0.));
+  const occ::handle<GeomFill_Boundary> aB4 = Bound(gp_Pnt(0., 0., 0.), gp_Pnt(0., 10., 1.));
+  for (const occ::handle<GeomFill_Boundary>& aBound : {aB1, aB2, aB3, aB4})
+  {
+    aBound->Reparametrize(0., 1., false, false, 1., 1., false);
+    double aFirst, aLast;
+    aBound->Bounds(aFirst, aLast);
+    ASSERT_DOUBLE_EQ(aFirst, 0.);
+    ASSERT_DOUBLE_EQ(aLast, 1.);
+  }
+  const GeomFill_CoonsAlgPatch aPatch(aB1, aB2, aB3, aB4);
+
+  // For straight boundaries the patch is bilinear: (10 U, 10 V, 2 U + V - 3 U V).
+  // The step and derivative tolerance allow subtraction roundoff for coordinates near 10.
+  constexpr double aStep          = 1.e-5;
+  constexpr double aDerivativeTol = 1.e-7;
+  for (const double aU : {0.2, 0.3, 0.8})
+  {
+    for (const double aV : {0.1, 0.7, 0.9})
+    {
+      const gp_Pnt anExpected(10. * aU, 10. * aV, 2. * aU + aV - 3. * aU * aV);
+      EXPECT_NEAR(aPatch.Value(aU, aV).Distance(anExpected), 0., Precision::Confusion());
+
+      const gp_XYZ aNumU =
+        (aPatch.Value(aU + aStep, aV).XYZ() - aPatch.Value(aU - aStep, aV).XYZ()) / (2. * aStep);
+      const gp_XYZ aNumV =
+        (aPatch.Value(aU, aV + aStep).XYZ() - aPatch.Value(aU, aV - aStep).XYZ()) / (2. * aStep);
+      const gp_Vec aD1U = aPatch.D1U(aU, aV);
+      const gp_Vec aD1V = aPatch.D1V(aU, aV);
+      EXPECT_NEAR((aNumU - aD1U.XYZ()).Modulus(), 0., aDerivativeTol);
+      EXPECT_NEAR((aNumV - aD1V.XYZ()).Modulus(), 0., aDerivativeTol);
+      EXPECT_NEAR((aD1U - gp_Vec(10., 0., 2. - 3. * aV)).Magnitude(), 0., aDerivativeTol);
+      EXPECT_NEAR((aD1V - gp_Vec(0., 10., 1. - 3. * aU)).Magnitude(), 0., aDerivativeTol);
+    }
+  }
 }

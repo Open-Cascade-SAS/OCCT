@@ -38,8 +38,20 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
 
 #include <cmath>
+
+namespace
+{
+//=================================================================================================
+
+const NCollection_List<TopoDS_Shape>& EmptyShapeList()
+{
+  static const NCollection_List<TopoDS_Shape> anEmptyShapeList;
+  return anEmptyShapeList;
+}
+} // namespace
 
 // #include <DBRep.hxx>
 //------------
@@ -706,12 +718,12 @@ const NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::Merged(
   }
   if (p == nullptr)
   {
-    return myEmptyShapeList;
+    return EmptyShapeList();
   }
 
   if (!(*p).IsBound(S))
   {
-    return myEmptyShapeList;
+    return EmptyShapeList();
   }
   else
   {
@@ -741,7 +753,7 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepBuild_Builder::ChangeMerged(const Topo
   }
   if (p == nullptr)
   {
-    return myEmptyShapeList;
+    throw Standard_ProgramError("TopOpeBRepBuild_Builder::ChangeMerged");
   }
 
   if (!(*p).IsBound(S))

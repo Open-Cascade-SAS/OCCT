@@ -111,6 +111,19 @@ public:
                                   double                              theUMin,
                                   double                              theUMax);
 
+  //! Constructor with generic curve adaptor.
+  //! Uses the curve's natural parameter bounds as domain.
+  //! @param[in] theCurve curve adaptor; must remain alive while this object is used
+  Standard_EXPORT explicit ExtremaPC_Curve(const Adaptor3d_Curve& theCurve);
+
+  //! Constructor with generic curve adaptor and parameter range.
+  //! @param[in] theCurve curve adaptor; must remain alive while this object is used
+  //! @param[in] theUMin lower parameter bound
+  //! @param[in] theUMax upper parameter bound
+  Standard_EXPORT explicit ExtremaPC_Curve(const Adaptor3d_Curve& theCurve,
+                                           double                 theUMin,
+                                           double                 theUMax);
+
   //! Constructor with Geom_Curve.
   //! For non-trimmed curves, does NOT set domain (uses natural/unbounded behavior).
   //! For trimmed curves, uses the trimmed bounds as domain.

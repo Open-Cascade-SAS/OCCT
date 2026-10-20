@@ -25,7 +25,6 @@ class StepDimTol_GeometricToleranceTarget;
 class StepDimTol_GeometricToleranceWithDatumReference;
 class StepDimTol_GeometricToleranceWithModifiers;
 class TCollection_HAsciiString;
-class StepBasic_LengthMeasureWithUnit;
 class StepRepr_ShapeAspect;
 
 class StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol
@@ -42,7 +41,7 @@ public:
     const occ::handle<StepRepr_ShapeAspect>&                            theTolerancedShapeAspect,
     const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR,
     const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      theGTWM,
-    const occ::handle<StepBasic_LengthMeasureWithUnit>&                 theMaxTol,
+    const occ::handle<Standard_Transient>&                              theMaxTol,
     const StepDimTol_GeometricToleranceType                             theType);
 
   Standard_EXPORT void Init(
@@ -52,20 +51,23 @@ public:
     const StepDimTol_GeometricToleranceTarget&                          aTolerancedShapeAspect,
     const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& aGTWDR,
     const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      aGTWM,
-    const occ::handle<StepBasic_LengthMeasureWithUnit>&                 theMaxTol,
+    const occ::handle<Standard_Transient>&                              theMaxTol,
     const StepDimTol_GeometricToleranceType                             theType);
 
-  inline void SetMaxTolerance(const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaxTol)
+  //! Retain a length_measure_with_unit entity or its representation-item complex subtype.
+  //! The caller must supply matching magnitude units and satisfy the maximum-tolerance rules.
+  inline void SetMaxTolerance(const occ::handle<Standard_Transient>& theMaxTol)
   {
     myMaxTol = theMaxTol;
   }
 
-  inline occ::handle<StepBasic_LengthMeasureWithUnit> GetMaxTolerance() { return myMaxTol; }
+  //! Return the maximum length-measure entity, preserving complex constituents.
+  inline occ::handle<Standard_Transient> GetMaxTolerance() const { return myMaxTol; }
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol,
                           StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod)
 
 private:
-  occ::handle<StepBasic_LengthMeasureWithUnit> myMaxTol;
+  occ::handle<Standard_Transient> myMaxTol;
 };
-#endif // _StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod_HeaderFile
+#endif // _StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol_HeaderFile

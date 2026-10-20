@@ -26,6 +26,10 @@ set deltaX [dval dvx1-dvx2]
 set deltaY [dval dvy1-dvy2]
 set deltaZ [dval dvz1-dvz2]
 
-checkreal "deltaX" ${deltaX} -3.5527136788005009e-015 0 0.001
-checkreal "deltaY" ${deltaY} -3.5527136788005009e-015 0 0.001
-checkreal "deltaZ" ${deltaZ} 8.8817841970012523e-016  0 0.001
+# Matching Coons derivatives have zero difference. Bound evaluation roundoff
+# relative to the derivative scale rather than require a particular signed ulp.
+foreach component {X Y Z} first {dvx1 dvy1 dvz1} second {dvx2 dvy2 dvz2} {
+  set scale [expr {max(1.0, abs([dval $first]), abs([dval $second]))}]
+  set roundoff [expr {32.0 * 2.2204460492503131e-16 * $scale}]
+  checkreal "delta$component" [set delta$component] 0.0 $roundoff 0.0
+}

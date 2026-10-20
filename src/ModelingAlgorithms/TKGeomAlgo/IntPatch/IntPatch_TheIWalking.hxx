@@ -111,6 +111,14 @@ public:
   const IntSurf_PathPoint& SinglePnt(const int Index) const;
 
 protected:
+  //! Predict the next UV point and fix one parameter for root correction.
+  //! A natural boundary takes precedence over the larger tangent component.
+  //! @param[in,out] BornInf surface lower bounds, replaced by correction bounds
+  //! @param[in,out] BornSup surface upper bounds, replaced by correction bounds
+  //! @param[out] UVap predicted UV parameters
+  //! @param[in,out] Step parameter step, shortened when a boundary is reached
+  //! @param[in] StepSign walking direction, either -1 or 1
+  //! @return true when the prediction reaches a natural boundary
   Standard_EXPORT bool Cadrage(math_Vector& BornInf,
                                math_Vector& BornSup,
                                math_Vector& UVap,

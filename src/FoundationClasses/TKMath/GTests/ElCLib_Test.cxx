@@ -12,8 +12,12 @@
 // commercial license or contractual agreement.
 
 #include <ElCLib.hxx>
-
-#include <gtest/gtest.h>
+#include <gp_Ax2.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Vec2d.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Elips.hxx>
@@ -27,6 +31,8 @@
 #include <gp_Parab2d.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
+
+#include <gtest/gtest.h>
 
 #include <cmath>
 
@@ -411,4 +417,32 @@ TEST(ElClibTests, Parabola2D_AboveResolutionFocal_NotDegenerate)
 
   const gp_Vec2d aD2 = ElCLib::ParabolaDN(aU, anAxis, aFocal, 2);
   EXPECT_GT(aD2.Magnitude(), 1.0);
+}
+
+//==================================================================================================
+
+TEST(ElCLibTest, FiniteParabolaAcrossExponentRange)
+{
+  const gp_Ax2   aPosition;
+  const gp_Ax22d aPosition2d;
+  const double   aParameter = 1.0e200;
+  const double   aFocal     = 1.0e200;
+  const gp_Pnt   aPoint     = ElCLib::ParabolaValue(aParameter, aPosition, aFocal);
+  EXPECT_NEAR(aPoint.X() / 2.5e199, 1.0, 1.0e-14);
+  EXPECT_EQ(aPoint.Y(), aParameter);
+  EXPECT_EQ(aPoint.Z(), 0.0);
+  gp_Pnt aDPoint;
+  gp_Vec aD1, aD2;
+  ElCLib::ParabolaD2(aParameter, aPosition, aFocal, aDPoint, aD1, aD2);
+  EXPECT_NEAR(aDPoint.X() / 2.5e199, 1.0, 1.0e-14);
+  EXPECT_EQ(aD1.X(), 0.5);
+  EXPECT_NEAR(aD2.X() / 5.0e-201, 1.0, 1.0e-14);
+  gp_Pnt2d aPoint2d;
+  gp_Vec2d aD12d, aD22d;
+  ElCLib::ParabolaD2(aParameter, aPosition2d, aFocal, aPoint2d, aD12d, aD22d);
+  EXPECT_NEAR(aPoint2d.X() / 2.5e199, 1.0, 1.0e-14);
+  EXPECT_EQ(aD12d.X(), 0.5);
+  EXPECT_NEAR(aD22d.X() / 5.0e-201, 1.0, 1.0e-14);
+  EXPECT_EQ(ElCLib::ParabolaDN(aParameter, aPosition, aFocal, 1).X(), 0.5);
+  EXPECT_EQ(ElCLib::ParabolaValue(2.0, aPosition, 0.0).X(), 2.0);
 }

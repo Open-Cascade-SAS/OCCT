@@ -204,9 +204,12 @@ elseif (BUILD_SOVERSION_NUMBERS GREATER 0)
   set (OCC_SOVERSION "${OCC_VERSION_MAJOR}")
 endif()
 
-set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}"
-                                                  SOVERSION     "${OCC_SOVERSION}"
-                                                  VERSION       "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")
+set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_DEFS}")
+if (BUILD_SOVERSION_NUMBERS GREATER 0 OR WIN32)
+  set_target_properties (${PROJECT_NAME} PROPERTIES
+                          SOVERSION "${OCC_SOVERSION}"
+                          VERSION   "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")
+endif()
 
 set (USED_TOOLKITS_BY_CURRENT_PROJECT)
 set (USED_EXTERNLIB_AND_TOOLKITS)

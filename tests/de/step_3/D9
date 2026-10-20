@@ -7,11 +7,11 @@ set filename 53921163S0.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 10  ( 25 )  Summary  = 10  ( 25 )
-CHECKSHAPE  : Wires    = 8  ( 7 )  Faces    = 8  ( 8 )  Shells   = 0  ( 0 )   Solids   = 1 ( 1 )
-NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 3  ( 3 )  Face     = 556  ( 556 ) 
-STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 3  ( 3 )  Face     = 556  ( 556 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =     60.7897836  (    60.87179116 )  AvgTol   =     1.273471646  (     1.266003948 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 25 )  Summary  = 14  ( 25 )
+CHECKSHAPE  : Wires    = 8  ( 5 )  Faces    = 8  ( 5 )  Shells   = 0  ( 0 )   Solids   = 1 ( 1 )
+NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 3  ( 3 )  Face     = 558  ( 558 ) 
+STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 3  ( 3 )  Face     = 558  ( 558 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =     60.7897836  (    60.87179116 )  AvgTol   =      1.29598221  (     1.294829983 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

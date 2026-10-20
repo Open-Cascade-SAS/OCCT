@@ -25,6 +25,7 @@
 #include <STEPConstruct_Tool.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
+#include <TCollection_AsciiString.hxx>
 class StepBasic_ProductRelatedProductCategory;
 class StepBasic_DocumentType;
 class StepBasic_ProductDefinitionContext;
@@ -71,6 +72,11 @@ public:
   //! Returns filename for numth extern reference
   //! Returns Null if FileName is not defined or bad
   Standard_EXPORT const char* FileName(const int num) const;
+
+  //! Return the external file identifier without filesystem lookup.
+  //! @param[in] theNumber reference index in [1, NbExternRefs()]
+  //! @return identifier, or an empty string if undefined
+  Standard_EXPORT TCollection_AsciiString FileIdentifier(int theNumber) const;
 
   //! Returns ProductDefinition to which numth extern reference
   //! is associated.

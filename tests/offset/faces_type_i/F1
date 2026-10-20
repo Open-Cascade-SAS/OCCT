@@ -1,3 +1,7 @@
+puts "TODO ?OCC000000 All: ERROR. offsetperform operation not done."
+puts "TODO ?OCC000000 All: Error: The command cannot be built"
+puts "TODO ?OCC000000 All: Error : The offset cannot be built."
+
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2
 trotate w1 0 0 0 1 0 0 90

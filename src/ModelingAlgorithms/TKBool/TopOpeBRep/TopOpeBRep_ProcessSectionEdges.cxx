@@ -24,7 +24,6 @@
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
-#include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_PointClassifier.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
@@ -54,10 +53,6 @@ Standard_EXPORT bool FUN_EqualPonR(const TopOpeBRep_LineInter&   Lrest,
 void TopOpeBRep_FacesFiller::GetESL(NCollection_List<TopoDS_Shape>& LES)
 {
 
-#ifdef OCCT_DEBUG
-  bool trRL = false;
-#endif
-
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mapES;
 
   // !! : do NOT use  myFacesIntersector->Restrictions()
@@ -73,17 +68,6 @@ void TopOpeBRep_FacesFiller::GetESL(NCollection_List<TopoDS_Shape>& LES)
     if (isrest)
     {
       const TopoDS_Edge& E = TopoDS::Edge(L.Arc());
-
-#ifdef OCCT_DEBUG
-      if (trRL)
-      {
-        TopOpeBRep_VPointInterIterator VPI;
-        VPI.Init(L);
-        std::cout << std::endl << "------------ Dump Rline  --------------------" << std::endl;
-        for (; VPI.More(); VPI.Next())
-          myHFFD->DumpVP(VPI.CurrentVP());
-      }
-#endif
 
       bool add = !mapES.Contains(E);
       if (add)
