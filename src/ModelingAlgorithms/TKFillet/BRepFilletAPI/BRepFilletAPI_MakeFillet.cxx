@@ -14,7 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepBuilderAPI_Copy.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
+#include <BRepLib.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <Geom_Surface.hxx>
@@ -26,6 +29,21 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
+
+namespace
+{
+//! True if the shape is valid, or becomes valid under the SameParameter pass callers apply next.
+bool isValidResult(const TopoDS_Shape& theShape)
+{
+  if (BRepCheck_Analyzer(theShape).IsValid())
+  {
+    return true;
+  }
+  BRepBuilderAPI_Copy aCopy(theShape);
+  BRepLib::SameParameter(aCopy.Shape(), Precision::Confusion(), true);
+  return BRepCheck_Analyzer(aCopy.Shape()).IsValid();
+}
+} // namespace
 
 //=================================================================================================
 
@@ -371,7 +389,8 @@ occ::handle<TopOpeBRepBuild_HBuilder> BRepFilletAPI_MakeFillet::Builder() const
 void BRepFilletAPI_MakeFillet::Build(const Message_ProgressRange& /*theRange*/)
 {
   myBuilder.Compute();
-  if (myBuilder.IsDone())
+  // A result that is not a valid solid is a failure, as for a computation that failed.
+  if (myBuilder.IsDone() && isValidResult(myBuilder.Shape()))
   {
     Done();
     myShape = myBuilder.Shape();
