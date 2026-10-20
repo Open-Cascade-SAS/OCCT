@@ -183,8 +183,32 @@ inline int BinObjMgt_Persistent::prepareForPut(const int theSize)
 
 inline bool BinObjMgt_Persistent::noMoreData(const int theSize) const
 {
-  ((BinObjMgt_Persistent*)this)->myIsError = Position() + theSize > mySize;
+  // compare against what is left, Position() + theSize can overflow int
+  ((BinObjMgt_Persistent*)this)->myIsError = theSize < 0 || theSize > mySize - Position();
   return myIsError;
+}
+
+//=======================================================================
+// function : noMoreItems
+// purpose  : Checks if there is no more data for the given number of items
+//           of the given size, starting from the current position in myData
+//=======================================================================
+
+inline bool BinObjMgt_Persistent::noMoreItems(const int theNbItems, const int theItemSize) const
+{
+  ((BinObjMgt_Persistent*)this)->myIsError = !HasItems(theNbItems, theItemSize);
+  return myIsError;
+}
+
+//=======================================================================
+// function : HasItems
+// purpose  : Checks if the data left can hold the given number of items
+//           of at least the given size each
+//=======================================================================
+
+inline bool BinObjMgt_Persistent::HasItems(const int theNbItems, const int theItemSize) const
+{
+  return theNbItems >= 0 && theItemSize > 0 && theNbItems <= (mySize - Position()) / theItemSize;
 }
 
 //=================================================================================================

@@ -784,7 +784,8 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetLabel(const occ::handle<TDF
   aLen = InverseInt(aLen);
 #endif
   me->myOffset += BP_INTSIZE;
-  if (noMoreData(aLen * BP_INTSIZE))
+  // check the count against the data left, count * item size can overflow int
+  if (noMoreItems(aLen, BP_INTSIZE))
   {
     return *this;
   }
@@ -893,11 +894,12 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(char16_t* cons
                                                                   const int       theLength) const
 {
   alignOffset(BP_EXTCHARSIZE, true);
-  int aSize = theLength * BP_EXTCHARSIZE;
-  if (noMoreData(aSize))
+  // check the count against the data left, count * item size can overflow int
+  if (noMoreItems(theLength, BP_EXTCHARSIZE))
   {
     return *this;
   }
+  const int aSize = theLength * BP_EXTCHARSIZE;
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)
@@ -917,11 +919,12 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(int* const theArra
                                                               const int  theLength) const
 {
   alignOffset(BP_INTSIZE, true);
-  int aSize = theLength * BP_INTSIZE;
-  if (noMoreData(aSize))
+  // check the count against the data left, count * item size can overflow int
+  if (noMoreItems(theLength, BP_INTSIZE))
   {
     return *this;
   }
+  const int aSize = theLength * BP_INTSIZE;
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)
@@ -941,11 +944,12 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(double* const the
                                                                const int     theLength) const
 {
   alignOffset(BP_INTSIZE, true);
-  int aSize = theLength * BP_REALSIZE;
-  if (noMoreData(aSize))
+  // check the count against the data left, count * item size can overflow int
+  if (noMoreItems(theLength, BP_REALSIZE))
   {
     return *this;
   }
+  const int aSize = theLength * BP_REALSIZE;
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)
@@ -965,11 +969,12 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortRealArray(float* const
                                                                     const int    theLength) const
 {
   alignOffset(BP_INTSIZE, true);
-  int aSize = theLength * BP_SHORTREALSIZE;
-  if (noMoreData(aSize))
+  // check the count against the data left, count * item size can overflow int
+  if (noMoreItems(theLength, BP_SHORTREALSIZE))
   {
     return *this;
   }
+  const int aSize = theLength * BP_SHORTREALSIZE;
   getArray(theArray, aSize);
 #ifdef DO_INVERSE
   for (int i = 0; i < theLength; i++)

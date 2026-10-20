@@ -221,6 +221,11 @@ public:
   //! Tells the current position for get/put
   int Position() const;
 
+  //! Returns true if the data left after the current position can hold theNbItems items of at
+  //! least theItemSize bytes each. Does not overflow, so it can check a count read from the data
+  //! before memory is allocated for it.
+  bool HasItems(const int theNbItems, const int theItemSize) const;
+
   //! Sets the current position for get/put.
   //! Resets an error state depending on the validity of thePos.
   //! Returns the new state (value of IsOK())
@@ -310,6 +315,9 @@ private:
   //! Checks if there is no more data of the given size starting
   //! from the current position in myData
   bool noMoreData(const int theSize) const;
+
+  //! Checks if there is no more data for the given number of items of the given size
+  bool noMoreItems(const int theNbItems, const int theItemSize) const;
 
   //! Puts theLength bytes from theArray
   Standard_EXPORT void putArray(void* const theArray, const int theSize);
