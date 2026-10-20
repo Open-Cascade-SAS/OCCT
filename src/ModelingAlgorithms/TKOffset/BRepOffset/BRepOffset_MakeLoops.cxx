@@ -18,6 +18,7 @@
 #include <BRep_Tool.hxx>
 #include <BRep_TVertex.hxx>
 #include <BRepAlgo_AsDes.hxx>
+#include <BRepAlgo_Image.hxx>
 #include <BRepAlgo_Loop.hxx>
 #include <BRepOffset_Analyse.hxx>
 #include <BRepOffset_MakeLoops.hxx>
@@ -30,6 +31,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 
 #include <cstdio>
@@ -213,6 +215,87 @@ static bool IsBetweenCorks(const TopoDS_Shape&                   E,
 
 //=================================================================================================
 
+// Reverses a split of a cap whose edges shared with the offset faces run the same way as in them,
+// so that the orientation of the split does not depend on which face BRepTools_Quilt visits first.
+static void orientSplitsAgainstOffsetFaces(NCollection_List<TopoDS_Shape>&       theSplits,
+                                           const TopoDS_Shape&                   theCap,
+                                           const NCollection_List<TopoDS_Shape>& theCaps,
+                                           const occ::handle<BRepAlgo_AsDes>&    theAsDes,
+                                           const BRepAlgo_Image&                 theImage)
+{
+  // Orientation of every edge in the offset faces bordering the cap.
+  NCollection_DataMap<TopoDS_Shape, TopAbs_Orientation, TopTools_ShapeMapHasher> anOffsetEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                         aSeen;
+  for (NCollection_List<TopoDS_Shape>::Iterator anEdgeIt(theAsDes->Descendant(theCap));
+       anEdgeIt.More();
+       anEdgeIt.Next())
+  {
+    if (!theAsDes->HasAscendant(anEdgeIt.Value()))
+    {
+      continue;
+    }
+    for (NCollection_List<TopoDS_Shape>::Iterator aFaceIt(theAsDes->Ascendant(anEdgeIt.Value()));
+         aFaceIt.More();
+         aFaceIt.Next())
+    {
+      const TopoDS_Shape& aFace = aFaceIt.Value();
+      bool                isCap = false;
+      for (NCollection_List<TopoDS_Shape>::Iterator aCapIt(theCaps); aCapIt.More(); aCapIt.Next())
+      {
+        isCap = isCap || aCapIt.Value().IsSame(aFace);
+      }
+      if (isCap || !aSeen.Add(aFace))
+      {
+        continue;
+      }
+      NCollection_List<TopoDS_Shape> aSplits;
+      theImage.LastImage(aFace, aSplits);
+      for (NCollection_List<TopoDS_Shape>::Iterator aSplitIt(aSplits); aSplitIt.More();
+           aSplitIt.Next())
+      {
+        for (TopExp_Explorer anExp(aSplitIt.Value(), TopAbs_EDGE); anExp.More(); anExp.Next())
+        {
+          anOffsetEdges.Bind(anExp.Current(), anExp.Current().Orientation());
+        }
+      }
+    }
+  }
+  for (NCollection_List<TopoDS_Shape>::Iterator aSplitIt(theSplits); aSplitIt.More();
+       aSplitIt.Next())
+  {
+    NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aCount;
+    for (TopExp_Explorer anExp(aSplitIt.Value(), TopAbs_EDGE); anExp.More(); anExp.Next())
+    {
+      int* aN = aCount.ChangeSeek(anExp.Current());
+      if (aN != nullptr)
+      {
+        ++*aN;
+      }
+      else
+      {
+        aCount.Bind(anExp.Current(), 1);
+      }
+    }
+    int aSame     = 0;
+    int aOpposite = 0;
+    for (TopExp_Explorer anExp(aSplitIt.Value(), TopAbs_EDGE); anExp.More(); anExp.Next())
+    {
+      const TopAbs_Orientation* anOri = anOffsetEdges.Seek(anExp.Current());
+      if (anOri == nullptr || aCount.Find(anExp.Current()) != 1)
+      {
+        continue;
+      }
+      (*anOri == anExp.Current().Orientation() ? aSame : aOpposite)++;
+    }
+    if (aSame > aOpposite)
+    {
+      aSplitIt.ChangeValue().Reverse();
+    }
+  }
+}
+
+//=================================================================================================
+
 void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& LContext,
                                           const BRepOffset_Analyse&             Analyse,
                                           const occ::handle<BRepAlgo_AsDes>&    AsDes,
@@ -377,7 +460,8 @@ void BRepOffset_MakeLoops::BuildOnContext(const NCollection_List<TopoDS_Shape>& 
     //------------------------
     // MAJ SD.
     //------------------------
-    const NCollection_List<TopoDS_Shape>& NF = Loops.NewFaces();
+    NCollection_List<TopoDS_Shape> NF = Loops.NewFaces();
+    orientSplitsAgainstOffsetFaces(NF, F, LContext, AsDes, Image);
     //-----------------------
     // F => New faces;
     //-----------------------
