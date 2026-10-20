@@ -196,7 +196,8 @@ void Geom2d_BezierCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, con
 {
   int nbpoles = NbPoles();
 
-  Standard_ConstructionError_Raise_if(nbpoles >= Geom2d_BezierCurve::MaxDegree()
+  // MaxDegree() bounds the degree, so MaxDegree() + 1 poles are legal, as the constructors allow.
+  Standard_ConstructionError_Raise_if(nbpoles > Geom2d_BezierCurve::MaxDegree()
                                         || Weight <= gp::Resolution(),
                                       "Geom2d_BezierCurve::InsertPoleAfter");
 
