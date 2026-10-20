@@ -53,7 +53,7 @@ bool BinMDataStd_RealArrayDriver::Paste(const BinObjMgt_Persistent&       theSou
     return false;
   }
   const int aLength = aLastInd - aFirstInd + 1;
-  if (aLength <= 0)
+  if (aLength <= 0 || !theSource.HasItems(aLength, (int)sizeof(double)))
   {
     return false;
   }

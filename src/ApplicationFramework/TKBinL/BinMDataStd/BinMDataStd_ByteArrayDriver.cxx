@@ -52,7 +52,8 @@ bool BinMDataStd_ByteArrayDriver::Paste(const BinObjMgt_Persistent&       theSou
   {
     return false;
   }
-  if (aLastInd < aFirstInd)
+  const int aLength = aLastInd - aFirstInd + 1;
+  if (aLastInd < aFirstInd || !theSource.HasItems(aLength, 1))
   {
     return false;
   }

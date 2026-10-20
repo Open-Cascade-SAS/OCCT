@@ -184,6 +184,10 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&       theSou
       }
       if (up | low)
       {
+        if (!theSource.HasItems(up - low + 1, (int)sizeof(int)))
+        {
+          return false;
+        }
         occ::handle<NCollection_HArray1<int>> aTargetArray = new NCollection_HArray1<int>(low, up);
         if (!theSource.GetIntArray(&(aTargetArray->ChangeArray1())(low), up - low + 1))
         {
@@ -232,6 +236,10 @@ bool BinMDataStd_NamedDataDriver::Paste(const BinObjMgt_Persistent&       theSou
       }
       if (low | up)
       {
+        if (!theSource.HasItems(up - low + 1, (int)sizeof(double)))
+        {
+          return false;
+        }
         occ::handle<NCollection_HArray1<double>> aTargetArray =
           new NCollection_HArray1<double>(low, up);
         if (!theSource.GetRealArray(&(aTargetArray->ChangeArray1())(low), up - low + 1))

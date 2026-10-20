@@ -51,12 +51,13 @@ bool BinMDataStd_BooleanArrayDriver::Paste(const BinObjMgt_Persistent&       the
   {
     return false;
   }
-  if (aLastInd < aFirstInd)
+  const int aLength = aLastInd - aFirstInd + 1;
+  if (aLastInd < aFirstInd || aLength <= 0 || !theSource.HasItems((aLength >> 3) + 1, 1))
   {
     return false;
   }
 
-  NCollection_Array1<uint8_t> aTargetArray(0, (aLastInd - aFirstInd + 1) >> 3);
+  NCollection_Array1<uint8_t> aTargetArray(0, aLength >> 3);
   theSource.GetByteArray(&aTargetArray(0), aTargetArray.Length());
 
   const occ::handle<TDataStd_BooleanArray> anAtt = occ::down_cast<TDataStd_BooleanArray>(theTarget);

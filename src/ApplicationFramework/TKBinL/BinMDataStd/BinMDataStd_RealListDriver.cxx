@@ -59,6 +59,10 @@ bool BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&       theSour
     const int aLength = aLastInd - aFirstInd + 1;
     if (aLength > 0)
     {
+      if (!theSource.HasItems(aLength, (int)sizeof(double)))
+      {
+        return false;
+      }
       NCollection_Array1<double> aTargetArray(aFirstInd, aLastInd);
       theSource.GetRealArray(&aTargetArray(aFirstInd), aLength);
       for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)

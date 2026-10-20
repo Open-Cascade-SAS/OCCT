@@ -59,6 +59,10 @@ bool BinMDataStd_IntegerListDriver::Paste(const BinObjMgt_Persistent&       theS
     const int aLength = aLastInd - aFirstInd + 1;
     if (aLength > 0)
     {
+      if (!theSource.HasItems(aLength, (int)sizeof(int)))
+      {
+        return false;
+      }
       NCollection_Array1<int> aTargetArray(aFirstInd, aLastInd);
       theSource.GetIntArray(&aTargetArray(aFirstInd), aLength);
       for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)

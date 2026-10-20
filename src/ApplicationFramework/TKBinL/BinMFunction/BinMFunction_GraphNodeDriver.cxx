@@ -66,6 +66,10 @@ bool BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSo
   // Previous functions
   if (nb_previous)
   {
+    if (!theSource.HasItems(nb_previous, (int)sizeof(int)))
+    {
+      return false;
+    }
     NCollection_Array1<int> aTargetArray(1, nb_previous);
     theSource.GetIntArray(&aTargetArray(1), nb_previous);
 
@@ -78,6 +82,10 @@ bool BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSo
   // Next functions
   if (nb_next)
   {
+    if (!theSource.HasItems(nb_next, (int)sizeof(int)))
+    {
+      return false;
+    }
     NCollection_Array1<int> aTargetArray(1, nb_next);
     theSource.GetIntArray(&aTargetArray(1), nb_next);
 

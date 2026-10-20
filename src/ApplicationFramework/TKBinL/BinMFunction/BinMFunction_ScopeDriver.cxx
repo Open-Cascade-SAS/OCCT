@@ -69,6 +69,10 @@ bool BinMFunction_ScopeDriver::Paste(const BinObjMgt_Persistent&       theSource
   NCollection_DoubleMap<int, TDF_Label>& map = S->ChangeFunctions();
 
   // IDs
+  if (!theSource.HasItems(nb, (int)sizeof(int)))
+  {
+    return false;
+  }
   NCollection_Array1<int> IDs(1, nb);
   theSource.GetIntArray(&IDs(1), nb);
 

@@ -61,6 +61,10 @@ bool BinMDataStd_BooleanListDriver::Paste(const BinObjMgt_Persistent&       theS
     const int aLength = aLastInd - aFirstInd + 1;
     if (aLength > 0)
     {
+      if (!theSource.HasItems(aLength, 1))
+      {
+        return false;
+      }
       NCollection_Array1<uint8_t> aTargetArray(aFirstInd, aLastInd);
       theSource.GetByteArray(&aTargetArray(aFirstInd), aLength);
       for (aIndex = aFirstInd; aIndex <= aLastInd; aIndex++)

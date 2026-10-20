@@ -54,7 +54,7 @@ bool BinMDataStd_IntegerArrayDriver::Paste(const BinObjMgt_Persistent&       the
     return false;
   }
   const int aLength = aLastInd - aFirstInd + 1;
-  if (aLength <= 0)
+  if (aLength <= 0 || !theSource.HasItems(aLength, (int)sizeof(int)))
   {
     return false;
   }
