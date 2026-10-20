@@ -14,16 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <FEmTool_ElementsOfRefMatrix.hxx>
 #include <FEmTool_LinearJerk.hxx>
-#include <math.hxx>
-#include <math_GaussSetIntegration.hxx>
-#include <math_IntegerVector.hxx>
+#include "FEmTool_LinearCriterion.pxx"
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 #include <PLib.hxx>
-#include <PLib_HermitJacobi.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
@@ -36,45 +31,8 @@ IMPLEMENT_STANDARD_RTTIEXT(FEmTool_LinearJerk, FEmTool_ElementaryCriterion)
 FEmTool_LinearJerk::FEmTool_LinearJerk(const int WorkDegree, const GeomAbs_Shape ConstraintOrder)
     : RefMatrix(0, WorkDegree, 0, WorkDegree)
 {
-  static int         Order = -333, WDeg = 14;
-  static math_Vector MatrixElemts(0, ((WDeg + 2) * (WDeg + 1)) / 2 - 1);
-
   myOrder = PLib::NivConstr(ConstraintOrder);
-
-  // Calculating RefMatrix
-  if (myOrder != Order)
-  {
-    if (WorkDegree > WDeg)
-    {
-      throw Standard_ConstructionError("Degree too high");
-    }
-    Order        = myOrder;
-    int DerOrder = 3;
-
-    PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
-    FEmTool_ElementsOfRefMatrix Elem = FEmTool_ElementsOfRefMatrix(theBase, DerOrder);
-
-    int maxDegree = WDeg + 1;
-
-    math_IntegerVector anOrder(1, 1, std::min(4 * (maxDegree / 2 + 1), math::GaussPointsMax()));
-
-    math_Vector Lower(1, 1, -1.), Upper(1, 1, 1.);
-
-    math_GaussSetIntegration anInt(Elem, Lower, Upper, anOrder);
-
-    MatrixElemts = anInt.Value();
-  }
-
-  int i, j, ii, jj;
-  for (ii = i = 0; i <= WorkDegree; i++)
-  {
-    RefMatrix(i, i) = MatrixElemts(ii);
-    for (j = i + 1, jj = ii + 1; j <= WorkDegree; j++, jj++)
-    {
-      RefMatrix(j, i) = RefMatrix(i, j) = MatrixElemts(jj);
-    }
-    ii += WDeg + 1 - i;
-  }
+  FEmTool_LinearCriterion::initializeReferenceMatrix<3>(WorkDegree, ConstraintOrder, RefMatrix);
 }
 
 occ::handle<NCollection_HArray2<int>> FEmTool_LinearJerk::DependenceTable() const

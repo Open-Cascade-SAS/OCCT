@@ -127,28 +127,6 @@ void BOPDS_CommonBlock::SetRealPaveBlock(const occ::handle<BOPDS_PaveBlock>& the
 
 //=================================================================================================
 
-occ::handle<BOPDS_PaveBlock>& BOPDS_CommonBlock::PaveBlockOnEdge(const int aIx)
-{
-  static occ::handle<BOPDS_PaveBlock> aPBs;
-  //
-  int                                                      aIOr;
-  NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator anIt;
-  //
-  anIt.Initialize(myPaveBlocks);
-  for (; anIt.More(); anIt.Next())
-  {
-    occ::handle<BOPDS_PaveBlock>& aPB = anIt.ChangeValue();
-    aIOr                              = aPB->OriginalEdge();
-    if (aIOr == aIx)
-    {
-      return aPB;
-    }
-  }
-  return aPBs;
-}
-
-//=================================================================================================
-
 bool BOPDS_CommonBlock::IsPaveBlockOnFace(const int aIx) const
 {
   bool                            bFound;

@@ -153,10 +153,10 @@ namespace FNVHash
 
 inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noexcept
 {
-  const char* cptr = static_cast<const char*>(theKey);
+  const unsigned char* aPtr = static_cast<const unsigned char*>(theKey);
   for (; theLen; --theLen)
   {
-    theSeed ^= static_cast<uint32_t>(*cptr++);
+    theSeed ^= static_cast<uint32_t>(*aPtr++);
     theSeed *= static_cast<uint32_t>(16777619UL);
   }
   return theSeed;
@@ -166,10 +166,10 @@ inline uint32_t FNVHash1A(const void* theKey, int theLen, uint32_t theSeed) noex
 
 inline uint64_t FNVHash64A(const void* theKey, int theLen, uint64_t theSeed) noexcept
 {
-  const char* cptr = static_cast<const char*>(theKey);
+  const unsigned char* aPtr = static_cast<const unsigned char*>(theKey);
   for (; theLen; --theLen)
   {
-    theSeed ^= static_cast<uint64_t>(*cptr++);
+    theSeed ^= static_cast<uint64_t>(*aPtr++);
     theSeed *= static_cast<uint64_t>(1099511628211ULL);
   }
   return theSeed;

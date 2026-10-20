@@ -17,6 +17,7 @@
 #include <DEVRML_ConfigurationNode.hxx>
 #include <Message.hxx>
 #include <OSD_Path.hxx>
+#include <UnitsMethods_LengthUnit.hxx>
 #include <TDocStd_Document.hxx>
 #include <VrmlAPI_CafReader.hxx>
 #include <VrmlAPI_Writer.hxx>
@@ -204,6 +205,36 @@ static bool ProcessVrmlScene(Standard_IStream&                            theStr
   }
 
   return true;
+}
+
+//==================================================================================================
+
+bool readNamedStreams(DE_Provider::ReadStreamList&                 theStreams,
+                      const occ::handle<DEVRML_ConfigurationNode>& theNode,
+                      const occ::handle<TDocStd_Document>&         theDocument,
+                      TopoDS_Shape&                                theShape,
+                      const Message_ProgressRange&                 theProgress)
+{
+  VrmlAPI_CafReader aReader;
+  aReader.SetDocument(theDocument);
+  aReader.SetResourceStreams(&theStreams);
+  aReader.SetFileLengthUnit(theNode->InternalParameters.ReadFileUnit);
+  aReader.SetSystemLengthUnit(theNode->GlobalParameters.LengthUnit * 0.001);
+  aReader.SetFileCoordinateSystem(theNode->InternalParameters.ReadFileCoordinateSys);
+  aReader.SetSystemCoordinateSystem(theNode->InternalParameters.ReadSystemCoordinateSys);
+  aReader.SetFillIncompleteDocument(false);
+  if (!aReader.Perform(theStreams.First().Stream, theProgress, theStreams.First().Path))
+  {
+    return false;
+  }
+  theShape = aReader.SingleShape();
+  if (!theDocument.IsNull())
+  {
+    XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
+                                        theNode->GlobalParameters.LengthUnit,
+                                        UnitsMethods_LengthUnit_Millimeter);
+  }
+  return !theShape.IsNull();
 }
 } // namespace
 
@@ -431,7 +462,10 @@ bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
                            const Message_ProgressRange&         theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams,
+                                                  aContext,
+                                                  true,
+                                                  theStreams.Size() > 1))
   {
     return false;
   }
@@ -441,6 +475,18 @@ bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext))
   {
     return false;
+  }
+
+  if (theStreams.Size() > 1)
+  {
+    const occ::handle<DEVRML_ConfigurationNode> aNode =
+      ValidateConfigurationNode(GetNode(), aFullContext);
+    if (aNode.IsNull())
+    {
+      return false;
+    }
+    TopoDS_Shape aShape;
+    return readNamedStreams(theStreams, aNode, theDocument, aShape, theProgress);
   }
 
   TopoDS_Shape aShape;
@@ -507,7 +553,10 @@ bool DEVRML_Provider::Read(ReadStreamList&              theStreams,
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams,
+                                                  aContext,
+                                                  true,
+                                                  theStreams.Size() > 1))
   {
     return false;
   }
@@ -522,6 +571,10 @@ bool DEVRML_Provider::Read(ReadStreamList&              theStreams,
     return false;
   }
 
+  if (theStreams.Size() > 1)
+  {
+    return readNamedStreams(theStreams, aNode, nullptr, theShape, theProgress);
+  }
   return ProcessVrmlScene(aStream, aNode, ".", theShape, aContext);
 }
 

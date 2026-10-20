@@ -205,7 +205,12 @@ void BRepTools_ReShape::replace(const TopoDS_Shape&    ashape,
   // breaks any cycle at traversal time, returning the immediate Value() instead
   // of recursing.
   myShapeToReplacement.Bind(shape, TReplacement(newshape, theKind));
-  myNewShapes.Add(newshape);
+  TopoDS_Shape aNewShapeKey = newshape;
+  if (myConsiderLocation)
+  {
+    aNewShapeKey.Location(TopLoc_Location());
+  }
+  myNewShapes.Add(aNewShapeKey);
 }
 
 //=================================================================================================
@@ -639,7 +644,12 @@ TopoDS_Vertex BRepTools_ReShape::CopyVertex(const TopoDS_Vertex& theV,
 
 bool BRepTools_ReShape::IsNewShape(const TopoDS_Shape& theShape) const
 {
-  return myNewShapes.Contains(theShape);
+  TopoDS_Shape aShapeKey = theShape;
+  if (myConsiderLocation)
+  {
+    aShapeKey.Location(TopLoc_Location());
+  }
+  return myNewShapes.Contains(aShapeKey);
 }
 
 //=================================================================================================

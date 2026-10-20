@@ -21,8 +21,21 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>
+
+//=================================================================================================
+
+gp_Ax3 gp_Ax3::FromUnitAxes(const gp_Pnt& theP,
+                            const gp_Dir& theZ,
+                            const gp_Dir& theX,
+                            const gp_Dir& theY)
+{
+  gp_Ax3 aResult;
+  aResult.axis  = gp_Ax1(theP, theZ);
+  aResult.vxdir = theX;
+  aResult.vydir = theY;
+  return aResult;
+}
 
 //=================================================================================================
 

@@ -19,13 +19,17 @@
 #include <Standard_Failure.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_LocalArray.hxx>
+
+#include <algorithm>
+#include <utility>
 
 namespace
 {
-//! Minimum number of points along varying dimension to use isoline optimization.
-//! For small grids (e.g., 1x4), cache-based surface evaluation is faster than
-//! extracting an isoline curve and setting up a curve evaluator.
-constexpr int THE_ISOLINE_THRESHOLD = 8;
+//! Conservative measured isoline crossovers; base costs are relative point-degree work units.
+constexpr size_t THE_ISOLINE_MIN_POINTS           = 8;
+constexpr size_t THE_POLYNOMIAL_ISOLINE_BASE_COST = 128;
+constexpr size_t THE_RATIONAL_ISOLINE_BASE_COST   = 48;
 
 //! Create and build cache for Bezier surface evaluation.
 //! Bezier surfaces are single-span, so cache is built once at parameter (0.5, 0.5).
@@ -48,6 +52,98 @@ occ::handle<BSplSLib_Cache> buildBezierCache(const occ::handle<Geom_BezierSurfac
   aCache->BuildCache(0.5, 0.5, aUKnotSequence, aVKnotSequence, aPoles, aWeights);
   return aCache;
 }
+
+void prepareLocalParams(const NCollection_Array1<double>& theParams,
+                        NCollection_LocalArray<double>&   theLocalParams)
+{
+  for (size_t anIndex = 0; anIndex < theParams.Size(); ++anIndex)
+  {
+    theLocalParams[anIndex] = (theParams.At(anIndex) - 0.5) / 0.5;
+  }
+}
+
+//! Tests whether isoline extraction has a predictable measured benefit.
+bool isIsoPreferred(const occ::handle<Geom_BezierSurface>& theGeom,
+                    const size_t                           theNbParams,
+                    const int                              theFixedDegree,
+                    const int                              theVaryingDegree)
+{
+  if (!theGeom->IsURational() && !theGeom->IsVRational())
+  {
+    if (theFixedDegree != theVaryingDegree || theNbParams < THE_ISOLINE_MIN_POINTS)
+    {
+      return false;
+    }
+
+    // Isoline extraction has a fixed cost, while the saved surface work grows with point count and
+    // degree. Keeping this rule symmetric avoids direction-dependent surprises for polynomials.
+    return theNbParams * static_cast<size_t>(theFixedDegree + 1)
+           >= THE_POLYNOMIAL_ISOLINE_BASE_COST;
+  }
+
+  if (theNbParams < THE_ISOLINE_MIN_POINTS)
+  {
+    return false;
+  }
+
+  // Rational isoline construction is directional. Compare its degree-dependent fixed cost with
+  // the work saved over the evaluated points. The squared degree ratio accounts for the measured
+  // construction penalty on anisotropic surfaces.
+  const size_t aFixedWeight     = static_cast<size_t>(theFixedDegree + 1);
+  const size_t aVaryingWeight   = static_cast<size_t>(theVaryingDegree + 1);
+  const size_t aMinWeight       = std::min(aFixedWeight, aVaryingWeight);
+  const size_t aMaxWeight       = std::max(aFixedWeight, aVaryingWeight);
+  const size_t anEvaluationWork = theNbParams * aFixedWeight * aMinWeight * aMinWeight;
+  const size_t anIsolineCost    = THE_RATIONAL_ISOLINE_BASE_COST * aMaxWeight * aMaxWeight;
+  return anEvaluationWork >= anIsolineCost;
+}
+
+//! Evaluates a Bezier grid through the surface cache, sharing iteration and local-parameter setup
+//! between D0, D1, and D2.
+template <typename ResultT, typename LocalEvaluator, typename DirectEvaluator>
+NCollection_Array2<ResultT> evaluateCacheGrid(const occ::handle<Geom_BezierSurface>& theGeom,
+                                              const NCollection_Array1<double>&      theUParams,
+                                              const NCollection_Array1<double>&      theVParams,
+                                              const bool                             theUseLocal,
+                                              LocalEvaluator&&  theLocalEvaluator,
+                                              DirectEvaluator&& theDirectEvaluator)
+{
+  const size_t                      aNbU   = theUParams.Size();
+  const size_t                      aNbV   = theVParams.Size();
+  const occ::handle<BSplSLib_Cache> aCache = buildBezierCache(theGeom);
+  NCollection_Array2<ResultT>       aResult(1, static_cast<int>(aNbU), 1, static_cast<int>(aNbV));
+  if (theUseLocal)
+  {
+    NCollection_LocalArray<double> aLocalU(aNbU);
+    NCollection_LocalArray<double> aLocalV(aNbV);
+    prepareLocalParams(theUParams, aLocalU);
+    prepareLocalParams(theVParams, aLocalV);
+    for (size_t aUIndex = 0; aUIndex < aNbU; ++aUIndex)
+    {
+      for (size_t aVIndex = 0; aVIndex < aNbV; ++aVIndex)
+      {
+        theLocalEvaluator(*aCache,
+                          aLocalU[aUIndex],
+                          aLocalV[aVIndex],
+                          aResult.ChangeAt(aUIndex * aNbV + aVIndex));
+      }
+    }
+  }
+  else
+  {
+    for (size_t aUIndex = 0; aUIndex < aNbU; ++aUIndex)
+    {
+      for (size_t aVIndex = 0; aVIndex < aNbV; ++aVIndex)
+      {
+        theDirectEvaluator(*aCache,
+                           theUParams.At(aUIndex),
+                           theVParams.At(aVIndex),
+                           aResult.ChangeAt(aUIndex * aNbV + aVIndex));
+      }
+    }
+  }
+  return aResult;
+}
 } // namespace
 
 //=================================================================================================
@@ -61,63 +157,57 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
     return NCollection_Array2<gp_Pnt>();
   }
 
-  const int aNbU = theUParams.Length();
-  const int aNbV = theVParams.Length();
+  const size_t aNbU = theUParams.Size();
+  const size_t aNbV = theVParams.Size();
+  if (aNbU == 1 && aNbV == 1)
+  {
+    NCollection_Array2<gp_Pnt> aResult(1, 1, 1, 1);
+    aResult.ChangeAt(0) = myGeom->EvalD0(theUParams.At(0), theVParams.At(0));
+    return aResult;
+  }
 
-  // Check for V-isoline case (Nx1) - use 1D curve evaluation
-  // For U-isoline (1xN), cache-based surface evaluation is efficient since U span is fixed.
-  // For V-isoline (Nx1), extracting the isoline curve avoids repeated cache rebuilds.
-  // Only use isoline optimization when varying dimension is large enough.
-  const bool isVIso = (aNbV == 1 && aNbU >= THE_ISOLINE_THRESHOLD);
-
-  if (isVIso)
+  const bool   isVIso         = aNbV == 1;
+  const size_t aNbIsoParams   = isVIso ? aNbU : aNbV;
+  const int    aFixedDegree   = isVIso ? myGeom->VDegree() : myGeom->UDegree();
+  const int    aVaryingDegree = isVIso ? myGeom->UDegree() : myGeom->VDegree();
+  if ((isVIso || aNbU == 1) && isIsoPreferred(myGeom, aNbIsoParams, aFixedDegree, aVaryingDegree))
   {
     try
     {
       OCC_CATCH_SIGNALS
-      // Extract V-isoline curve (parameterized by U)
-      occ::handle<Geom_Curve> aCurve = myGeom->VIso(theVParams.Value(theVParams.Lower()));
-
+      const occ::handle<Geom_Curve> aCurve =
+        isVIso ? myGeom->VIso(theVParams.At(0)) : myGeom->UIso(theUParams.At(0));
       if (!aCurve.IsNull())
       {
-        // Use unified curve evaluator
-        GeomGridEval_Curve aCurveEval(aCurve);
-
-        NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid(theUParams);
-
-        // Reshape 1D curve result to 2D surface result (Nx1 grid)
-        NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, 1);
-        for (int k = 1; k <= aNbU; ++k)
-        {
-          aResult(k, 1) = aCurveResult(k);
-        }
-        return aResult;
+        const NCollection_Array1<double>& anIsoParams = isVIso ? theUParams : theVParams;
+        GeomGridEval_Curve                aCurveEvaluator(aCurve);
+        NCollection_Array1<gp_Pnt>        aCurveResult = aCurveEvaluator.EvaluateGrid(anIsoParams);
+        return NCollection_Array2<gp_Pnt>(std::move(aCurveResult),
+                                          1,
+                                          isVIso ? static_cast<int>(aNbU) : 1,
+                                          1,
+                                          isVIso ? 1 : static_cast<int>(aNbV));
       }
     }
     catch (const Standard_Failure&)
     {
-      // Isoline extraction failed, fall through to surface evaluation
+      // Fall back to surface-cache evaluation if isoline construction fails.
     }
   }
 
-  // Build cache (Bezier is single span, cache is built once)
-  occ::handle<BSplSLib_Cache> aCache = buildBezierCache(myGeom);
-
-  NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
-
-  // Single span - use cache for all points
-  for (int i = 0; i < aNbU; ++i)
-  {
-    const double aU = theUParams.Value(theUParams.Lower() + i);
-    for (int j = 0; j < aNbV; ++j)
-    {
-      gp_Pnt aPoint;
-      aCache->D0(aU, theVParams.Value(theVParams.Lower() + j), aPoint);
-      aResult.SetValue(i + 1, j + 1, aPoint);
-    }
-  }
-
-  return aResult;
+  const bool isLocalEvaluationUsed = myGeom->IsURational() || myGeom->IsVRational()
+                                     || (myGeom->UDegree() == 1 && myGeom->VDegree() == 1);
+  return evaluateCacheGrid<gp_Pnt>(
+    myGeom,
+    theUParams,
+    theVParams,
+    isLocalEvaluationUsed,
+    [](const BSplSLib_Cache& theCache, double theU, double theV, gp_Pnt& theResult) {
+      theCache.D0Local(theU, theV, theResult);
+    },
+    [](const BSplSLib_Cache& theCache, double theU, double theV, gp_Pnt& theResult) {
+      theCache.D0(theU, theV, theResult);
+    });
 }
 
 //=================================================================================================
@@ -130,28 +220,27 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluateGri
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
   }
-
-  // Build cache (Bezier is single span, cache is built once)
-  occ::handle<BSplSLib_Cache> aCache = buildBezierCache(myGeom);
-
-  const int                                aNbU = theUParams.Length();
-  const int                                aNbV = theVParams.Length();
-  NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
-
-  // Single span - use cache for all points
-  for (int i = 0; i < aNbU; ++i)
+  const size_t aNbU = theUParams.Size();
+  const size_t aNbV = theVParams.Size();
+  if (aNbU == 1 && aNbV == 1)
   {
-    const double aU = theUParams.Value(theUParams.Lower() + i);
-    for (int j = 0; j < aNbV; ++j)
-    {
-      gp_Pnt aPoint;
-      gp_Vec aD1U, aD1V;
-      aCache->D1(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V);
-      aResult.ChangeValue(i + 1, j + 1) = {aPoint, aD1U, aD1V};
-    }
+    NCollection_Array2<GeomGridEval::SurfD1> aResult(1, 1, 1, 1);
+    aResult.ChangeAt(0) = myGeom->EvalD1(theUParams.At(0), theVParams.At(0));
+    return aResult;
   }
 
-  return aResult;
+  const bool isLocalEvaluationUsed = myGeom->IsURational() || myGeom->IsVRational();
+  return evaluateCacheGrid<GeomGridEval::SurfD1>(
+    myGeom,
+    theUParams,
+    theVParams,
+    isLocalEvaluationUsed,
+    [](const BSplSLib_Cache& theCache, double theU, double theV, GeomGridEval::SurfD1& theResult) {
+      theCache.D1Local(theU, theV, theResult.Point, theResult.D1U, theResult.D1V);
+    },
+    [](const BSplSLib_Cache& theCache, double theU, double theV, GeomGridEval::SurfD1& theResult) {
+      theCache.D1(theU, theV, theResult.Point, theResult.D1U, theResult.D1V);
+    });
 }
 
 //=================================================================================================
@@ -164,29 +253,42 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGri
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
   }
-
-  // Build cache (Bezier is single span, cache is built once)
-  occ::handle<BSplSLib_Cache> aCache = buildBezierCache(myGeom);
-
-  const int                                aNbU = theUParams.Length();
-  const int                                aNbV = theVParams.Length();
-  NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
-
-  // Single span - use cache for all points
-  for (int i = 0; i < aNbU; ++i)
+  const size_t aNbU = theUParams.Size();
+  const size_t aNbV = theVParams.Size();
+  if (aNbU == 1 && aNbV == 1)
   {
-    const double aU = theUParams.Value(theUParams.Lower() + i);
-    for (int j = 0; j < aNbV; ++j)
-    {
-      gp_Pnt aPoint;
-      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      aCache
-        ->D2(aU, theVParams.Value(theVParams.Lower() + j), aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
-      aResult.ChangeValue(i + 1, j + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV};
-    }
+    NCollection_Array2<GeomGridEval::SurfD2> aResult(1, 1, 1, 1);
+    aResult.ChangeAt(0) = myGeom->EvalD2(theUParams.At(0), theVParams.At(0));
+    return aResult;
   }
 
-  return aResult;
+  const bool isLocalEvaluationUsed = myGeom->IsURational() || myGeom->IsVRational()
+                                     || (myGeom->UDegree() == 1 && myGeom->VDegree() == 1);
+  return evaluateCacheGrid<GeomGridEval::SurfD2>(
+    myGeom,
+    theUParams,
+    theVParams,
+    isLocalEvaluationUsed,
+    [](const BSplSLib_Cache& theCache, double theU, double theV, GeomGridEval::SurfD2& theResult) {
+      theCache.D2Local(theU,
+                       theV,
+                       theResult.Point,
+                       theResult.D1U,
+                       theResult.D1V,
+                       theResult.D2U,
+                       theResult.D2V,
+                       theResult.D2UV);
+    },
+    [](const BSplSLib_Cache& theCache, double theU, double theV, GeomGridEval::SurfD2& theResult) {
+      theCache.D2(theU,
+                  theV,
+                  theResult.Point,
+                  theResult.D1U,
+                  theResult.D1V,
+                  theResult.D2U,
+                  theResult.D2V,
+                  theResult.D2UV);
+    });
 }
 
 //=================================================================================================
@@ -200,11 +302,13 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
     return NCollection_Array2<GeomGridEval::SurfD3>();
   }
 
-  const int                                aNbU = theUParams.Length();
-  const int                                aNbV = theVParams.Length();
-  NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
+  const size_t                             aNbU = theUParams.Size();
+  const size_t                             aNbV = theVParams.Size();
+  NCollection_Array2<GeomGridEval::SurfD3> aResult(1,
+                                                   static_cast<int>(aNbU),
+                                                   1,
+                                                   static_cast<int>(aNbV));
 
-  // Get degrees, flat knots, poles, and weights from geometry
   const int                         aUDegree       = myGeom->UDegree();
   const int                         aVDegree       = myGeom->VDegree();
   const NCollection_Array1<double>& aUKnotSequence = myGeom->UKnotSequence();
@@ -213,46 +317,38 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
   const NCollection_Array2<double>* aWeights       = myGeom->Weights();
   const bool                        isRational     = (aWeights != nullptr);
 
-  // D3 evaluation using BSplSLib::D3 directly
-  // Bezier surface is single span (span index = 0), non-periodic
-  for (int i = 0; i < aNbU; ++i)
+  for (size_t aUIndex = 0; aUIndex < aNbU; ++aUIndex)
   {
-    const double aU = theUParams.Value(theUParams.Lower() + i);
-    for (int j = 0; j < aNbV; ++j)
+    const double aU = theUParams.At(aUIndex);
+    for (size_t aVIndex = 0; aVIndex < aNbV; ++aVIndex)
     {
-      gp_Pnt aPoint;
-      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-
+      GeomGridEval::SurfD3& aValue = aResult.ChangeAt(aUIndex * aNbV + aVIndex);
       BSplSLib::D3(aU,
-                   theVParams.Value(theVParams.Lower() + j),
-                   0, // U span index (single span for Bezier)
-                   0, // V span index (single span for Bezier)
+                   theVParams.At(aVIndex),
+                   0, // U span index (single span for Bezier with flat knots)
+                   0, // V span index (single span for Bezier with flat knots)
                    aPoles,
                    aWeights,
                    aUKnotSequence,
                    aVKnotSequence,
-                   nullptr, // U multiplicities (nullptr for flat knots)
-                   nullptr, // V multiplicities (nullptr for flat knots)
+                   BSplCLib::NoMults(),
+                   BSplCLib::NoMults(),
                    aUDegree,
                    aVDegree,
                    isRational,
                    isRational,
-                   false, // not U periodic
-                   false, // not V periodic
-                   aPoint,
-                   aD1U,
-                   aD1V,
-                   aD2U,
-                   aD2V,
-                   aD2UV,
-                   aD3U,
-                   aD3V,
-                   aD3UUV,
-                   aD3UVV);
-
-      aResult.ChangeValue(
-        i + 1,
-        j + 1) = {aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV};
+                   false, // not U-periodic
+                   false, // not V-periodic
+                   aValue.Point,
+                   aValue.D1U,
+                   aValue.D1V,
+                   aValue.D2U,
+                   aValue.D2V,
+                   aValue.D2UV,
+                   aValue.D3U,
+                   aValue.D3V,
+                   aValue.D3UUV,
+                   aValue.D3UVV);
     }
   }
 
@@ -273,45 +369,34 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
     return NCollection_Array2<gp_Vec>();
   }
 
-  const int aNbU = theUParams.Length();
-  const int aNbV = theVParams.Length();
+  const size_t aNbU = theUParams.Size();
+  const size_t aNbV = theVParams.Size();
 
-  NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
+  NCollection_Array2<gp_Vec> aResult(1, static_cast<int>(aNbU), 1, static_cast<int>(aNbV));
 
-  // For Bezier surfaces, derivatives become zero when order exceeds degree in that direction
   const int aUDegree = myGeom->UDegree();
   const int aVDegree = myGeom->VDegree();
 
+  // Bezier derivatives are zero when the requested order exceeds either directional degree.
   if (theNU > aUDegree || theNV > aVDegree)
   {
-    // All derivatives are zero
-    const gp_Vec aZeroVec(0.0, 0.0, 0.0);
-    for (int i = 1; i <= aNbU; ++i)
-    {
-      for (int j = 1; j <= aNbV; ++j)
-      {
-        aResult.SetValue(i, j, aZeroVec);
-      }
-    }
+    aResult.Init(gp_Vec(0.0, 0.0, 0.0));
     return aResult;
   }
 
-  // Get poles, weights, and flat knots from geometry
   const NCollection_Array2<gp_Pnt>& aPoles         = myGeom->Poles();
   const NCollection_Array2<double>* aWeights       = myGeom->Weights();
   const bool                        isRational     = (aWeights != nullptr);
   const NCollection_Array1<double>& aUKnotSequence = myGeom->UKnotSequence();
   const NCollection_Array1<double>& aVKnotSequence = myGeom->VKnotSequence();
 
-  // Bezier has a single span (index 0 with flat knots), non-periodic
-  for (int i = 0; i < aNbU; ++i)
+  for (size_t aUIndex = 0; aUIndex < aNbU; ++aUIndex)
   {
-    const double aU = theUParams.Value(theUParams.Lower() + i);
-    for (int j = 0; j < aNbV; ++j)
+    const double aU = theUParams.At(aUIndex);
+    for (size_t aVIndex = 0; aVIndex < aNbV; ++aVIndex)
     {
-      gp_Vec aDN;
       BSplSLib::DN(aU,
-                   theVParams.Value(theVParams.Lower() + j),
+                   theVParams.At(aVIndex),
                    theNU,
                    theNV,
                    0, // U span index (single span for Bezier with flat knots)
@@ -320,16 +405,15 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
                    aWeights,
                    aUKnotSequence,
                    aVKnotSequence,
-                   nullptr, // no U multiplicities with flat knots
-                   nullptr, // no V multiplicities with flat knots
+                   BSplCLib::NoMults(),
+                   BSplCLib::NoMults(),
                    aUDegree,
                    aVDegree,
                    isRational,
                    isRational,
                    false, // not U-periodic
                    false, // not V-periodic
-                   aDN);
-      aResult.SetValue(i + 1, j + 1, aDN);
+                   aResult.ChangeAt(aUIndex * aNbV + aVIndex));
     }
   }
 

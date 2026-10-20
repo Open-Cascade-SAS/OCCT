@@ -157,11 +157,22 @@ Geom_Surface::ResD1 Geom_BSplineSurface::EvalD1(const double U, const double V) 
 
   int uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg, myUKnots, &myUMults, U, myUPeriodic, uindex, aNewU);
-  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
+  // Flat knots preserve side-specific span selection near repeated knots.
+  BSplCLib::LocateParameter(myUDeg,
+                            myUFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myUPeriodic,
+                            uindex,
+                            aNewU);
 
-  BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
-  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
+  BSplCLib::LocateParameter(myVDeg,
+                            myVFlatKnots,
+                            BSplCLib::NoMults(),
+                            V,
+                            myVPeriodic,
+                            vindex,
+                            aNewV);
 
   Geom_Surface::ResD1 aResult;
   BSplSLib::D1(aNewU,
@@ -202,11 +213,22 @@ Geom_Surface::ResD2 Geom_BSplineSurface::EvalD2(const double U, const double V) 
 
   int uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg, myUKnots, &myUMults, U, myUPeriodic, uindex, aNewU);
-  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
+  // Flat knots preserve side-specific span selection near repeated knots.
+  BSplCLib::LocateParameter(myUDeg,
+                            myUFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myUPeriodic,
+                            uindex,
+                            aNewU);
 
-  BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
-  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
+  BSplCLib::LocateParameter(myVDeg,
+                            myVFlatKnots,
+                            BSplCLib::NoMults(),
+                            V,
+                            myVPeriodic,
+                            vindex,
+                            aNewV);
 
   Geom_Surface::ResD2 aResult;
   BSplSLib::D2(aNewU,

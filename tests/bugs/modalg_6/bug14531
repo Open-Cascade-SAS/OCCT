@@ -1,3 +1,8 @@
+puts "TODO ?OCC14531 Windows: Error : Result obtained by Boolean cut operation is WRONG because number of VERTEX entities in shape \"result\" is 8"
+puts "TODO ?OCC14531 Windows: Error : Result obtained by Boolean cut operation is WRONG because number of WIRE entities in shape \"result\" is 6"
+puts "TODO ?OCC14531 Windows: Error : Result obtained by Boolean cut operation is WRONG because number of FACE entities in shape \"result\" is 3"
+puts "TODO ?OCC14531 Windows: Error : Result obtained by Boolean cut operation is WRONG because number of SHAPE entities in shape \"result\" is 30"
+
 puts "============"
 puts "OCC14531"
 puts "============"

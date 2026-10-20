@@ -28,7 +28,7 @@
 namespace
 {
 //! Static result for uninitialized evaluator case
-static ExtremaPC2d::Result THE_NOT_DONE_RESULT = [] {
+static const ExtremaPC2d::Result THE_NOT_DONE_RESULT = [] {
   ExtremaPC2d::Result aResult;
   aResult.Status = ExtremaPC2d::Status::NotDone;
   return aResult;

@@ -1224,7 +1224,14 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
   const bool hasTextureMsaa = aCtx->HasTextureMultisampling();
 
   bool toUseOit = myRenderParams.TransparencyMethod != Graphic3d_RTM_BLEND_UNORDERED
-                  && !myIsSubviewComposer && checkOitCompatibility(aCtx, aNbSamples > 0);
+                  && !myIsSubviewComposer && checkOitCompatibility(aCtx);
+  if (toUseOit && aNbSamples > 0
+      && (myToDisableOITMSAA || !hasTextureMsaa
+          || aCtx->hasSampleVariables == OpenGl_FeatureNotAvailable))
+  {
+    // Fall back to single-sample OIT when MSAA OIT is unavailable.
+    aNbSamples = 0;
+  }
 
   const bool toInitImmediateFbo =
     myTransientDrawToFront && !myIsSubviewComposer
@@ -1633,6 +1640,18 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
     }
     if (anFboIt == 0) // only the first OIT framebuffer is mandatory
     {
+      if (aNbSamples > 0)
+      {
+        // Rebuild scene and OIT buffers with matching sample counts.
+        myToDisableOITMSAA = true;
+        aCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
+                          GL_DEBUG_TYPE_PORTABILITY,
+                          0,
+                          GL_DEBUG_SEVERITY_MEDIUM,
+                          "MSAA OIT framebuffer initialization failed. Retrying without MSAA.");
+        return prepareFrameBuffers(theProj);
+      }
+
       aCtx->PushMessage(GL_DEBUG_SOURCE_APPLICATION,
                         GL_DEBUG_TYPE_ERROR,
                         0,
@@ -1640,15 +1659,8 @@ bool OpenGl_View::prepareFrameBuffers(Graphic3d_Camera::Projection& theProj)
                         "Initialization of float texture framebuffer for use with\n"
                         "  blended order-independent transparency rendering algorithm has failed.\n"
                         "  Blended order-independent transparency will not be available.\n");
-      if (aNbSamples > 0)
-      {
-        myToDisableOITMSAA = true;
-      }
-      else
-      {
-        myToDisableOIT = true;
-      }
-      toUseOit = false;
+      myToDisableOIT = true;
+      toUseOit       = false;
     }
   }
   if (!toUseOit && myMainSceneFbosOit[0]->IsValid())
@@ -3378,12 +3390,10 @@ bool OpenGl_View::copyBackToFront()
 
 //=================================================================================================
 
-bool OpenGl_View::checkOitCompatibility(const occ::handle<OpenGl_Context>& theGlContext,
-                                        const bool                         theMSAA)
+bool OpenGl_View::checkOitCompatibility(const occ::handle<OpenGl_Context>& theGlContext)
 {
   // determine if OIT is supported by current OpenGl context
-  bool& aToDisableOIT = theMSAA ? myToDisableMSAA : myToDisableOIT;
-  if (aToDisableOIT)
+  if (myToDisableOIT)
   {
     return false;
   }
@@ -3394,10 +3404,6 @@ bool OpenGl_View::checkOitCompatibility(const occ::handle<OpenGl_Context>& theGl
   {
     aCompatibilityMsg +=
       "OpenGL context does not support floating-point RGBA color buffer format.\n";
-  }
-  if (theMSAA && theGlContext->hasSampleVariables == OpenGl_FeatureNotAvailable)
-  {
-    aCompatibilityMsg += "Current version of GLSL does not support built-in sample variables.\n";
   }
   if (theGlContext->hasDrawBuffers == OpenGl_FeatureNotAvailable)
   {
@@ -3415,7 +3421,7 @@ bool OpenGl_View::checkOitCompatibility(const occ::handle<OpenGl_Context>& theGl
                             GL_DEBUG_SEVERITY_HIGH,
                             aCompatibilityMsg);
 
-  aToDisableOIT = true;
+  myToDisableOIT = true;
   return false;
 }
 

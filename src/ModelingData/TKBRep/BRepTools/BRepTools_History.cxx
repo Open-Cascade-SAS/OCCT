@@ -25,6 +25,13 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepTools_History, Standard_Transient)
 namespace
 {
 
+const NCollection_List<TopoDS_Shape>   THE_EMPTY_LIST;
+[[maybe_unused]] constexpr const char* THE_MSG_UNSUPPORTED_TYPE = "Error: unsupported shape type.";
+[[maybe_unused]] constexpr const char* THE_MSG_MODIFIED_AND_REMOVED =
+  "Error: a shape is modified and removed simultaneously.";
+[[maybe_unused]] constexpr const char* THE_MSG_GENERATED_AND_MODIFIED =
+  "Error: a shape is generated and modified from the same shape simultaneously.";
+
 //=================================================================================================
 // function : add
 // purpose  : Adds the elements of the list to the map.
@@ -101,11 +108,13 @@ void BRepTools_History::AddModified(const TopoDS_Shape& theInitial, const TopoDS
 void BRepTools_History::Remove(const TopoDS_Shape& theRemoved)
 {
   // Apply the limitations.
-  Standard_ASSERT_RETURN(IsSupportedType(theRemoved), myMsgUnsupportedType, Standard_VOID_RETURN);
+  Standard_ASSERT_RETURN(IsSupportedType(theRemoved),
+                         THE_MSG_UNSUPPORTED_TYPE,
+                         Standard_VOID_RETURN);
 
   if (myShapeToModified.UnBind(theRemoved))
   {
-    Standard_ASSERT_INVOKE_(, myMsgModifiedAndRemoved);
+    Standard_ASSERT_INVOKE_(, THE_MSG_MODIFIED_AND_REMOVED);
   }
 
   myRemoved.Add(theRemoved);
@@ -148,12 +157,12 @@ const NCollection_List<TopoDS_Shape>& BRepTools_History::Generated(
 {
   // Apply the limitations.
   Standard_ASSERT_RETURN(theInitial.IsNull() || IsSupportedType(theInitial),
-                         myMsgUnsupportedType,
-                         emptyList());
+                         THE_MSG_UNSUPPORTED_TYPE,
+                         THE_EMPTY_LIST);
 
   //
   const NCollection_List<TopoDS_Shape>* aGenerations = myShapeToGenerated.Seek(theInitial);
-  return (aGenerations != nullptr) ? *aGenerations : emptyList();
+  return (aGenerations != nullptr) ? *aGenerations : THE_EMPTY_LIST;
 }
 
 //=================================================================================================
@@ -162,11 +171,11 @@ const NCollection_List<TopoDS_Shape>& BRepTools_History::Modified(
   const TopoDS_Shape& theInitial) const
 {
   // Apply the limitations.
-  Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, emptyList());
+  Standard_ASSERT_RETURN(IsSupportedType(theInitial), THE_MSG_UNSUPPORTED_TYPE, THE_EMPTY_LIST);
 
   //
   const NCollection_List<TopoDS_Shape>* aModifications = myShapeToModified.Seek(theInitial);
-  return (aModifications != nullptr) ? *aModifications : emptyList();
+  return (aModifications != nullptr) ? *aModifications : THE_EMPTY_LIST;
 }
 
 //=================================================================================================
@@ -174,7 +183,7 @@ const NCollection_List<TopoDS_Shape>& BRepTools_History::Modified(
 bool BRepTools_History::IsRemoved(const TopoDS_Shape& theInitial) const
 {
   // Apply the limitations.
-  Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, false);
+  Standard_ASSERT_RETURN(IsSupportedType(theInitial), THE_MSG_UNSUPPORTED_TYPE, false);
 
   //
   return myRemoved.Contains(theInitial);
@@ -335,12 +344,12 @@ bool BRepTools_History::prepareGenerated(const TopoDS_Shape& theInitial,
                                          const TopoDS_Shape& theGenerated)
 {
   Standard_ASSERT_RETURN(theInitial.IsNull() || IsSupportedType(theInitial),
-                         myMsgUnsupportedType,
+                         THE_MSG_UNSUPPORTED_TYPE,
                          false);
 
   if (myShapeToModified.IsBound(theInitial) && myShapeToModified(theInitial).Remove(theGenerated))
   {
-    Standard_ASSERT_INVOKE_(, myMsgGeneratedAndModified);
+    Standard_ASSERT_INVOKE_(, THE_MSG_GENERATED_AND_MODIFIED);
   }
 
   return true;
@@ -351,48 +360,19 @@ bool BRepTools_History::prepareGenerated(const TopoDS_Shape& theInitial,
 bool BRepTools_History::prepareModified(const TopoDS_Shape& theInitial,
                                         const TopoDS_Shape& theModified)
 {
-  Standard_ASSERT_RETURN(IsSupportedType(theInitial), myMsgUnsupportedType, false);
+  Standard_ASSERT_RETURN(IsSupportedType(theInitial), THE_MSG_UNSUPPORTED_TYPE, false);
 
   if (myRemoved.Remove(theInitial))
   {
-    Standard_ASSERT_INVOKE_(, myMsgModifiedAndRemoved);
+    Standard_ASSERT_INVOKE_(, THE_MSG_MODIFIED_AND_REMOVED);
   }
 
   if (myShapeToGenerated.IsBound(theInitial) && myShapeToGenerated(theInitial).Remove(theModified))
   {
-    Standard_ASSERT_INVOKE_(, myMsgGeneratedAndModified);
+    Standard_ASSERT_INVOKE_(, THE_MSG_GENERATED_AND_MODIFIED);
   }
 
   return true;
 }
 
 //=================================================================================================
-
-const NCollection_List<TopoDS_Shape> BRepTools_History::myEmptyList;
-
-//=================================================================================================
-
-const NCollection_List<TopoDS_Shape>& BRepTools_History::emptyList()
-{
-  return myEmptyList;
-}
-
-//=================================================================================================
-
-const char* BRepTools_History::myMsgUnsupportedType = "Error: unsupported shape type.";
-
-//=================================================================================================
-
-const char* BRepTools_History::myMsgGeneratedAndRemoved =
-  "Error: a shape is generated and removed simultaneously.";
-
-//=================================================================================================
-
-const char* BRepTools_History::myMsgModifiedAndRemoved =
-  "Error: a shape is modified and removed simultaneously.";
-
-//=================================================================================================
-
-const char* BRepTools_History::myMsgGeneratedAndModified =
-  "Error: a shape is generated and modified "
-  "from the same shape simultaneously.";

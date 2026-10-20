@@ -50,7 +50,6 @@
 
 #ifdef OCCT_DEBUG
 extern bool TopOpeBRep_GetcontextALWLNBP(int&);
-extern bool TopOpeBRep_GettraceCONIC();
 #endif
 
 //-----------------------------------------------------------------------
@@ -513,15 +512,6 @@ occ::handle<Geom_Curve> TopOpeBRep_LineInter::Curve(const double parmin, const d
   // Build the trimmed 3d curve
   occ::handle<Geom_Curve>        C3D  = Curve();
   occ::handle<Geom_TrimmedCurve> TC3D = new Geom_TrimmedCurve(C3D, parmin, parmax);
-#ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceCONIC())
-  {
-    std::cout << "TopOpeBRep_LineInter::Curve on a ";
-    TopOpeBRep::Print(myTypeLineCurve, std::cout);
-    std::cout << std::endl;
-    std::cout << "  ... Trimmed from " << parmin << " to " << parmax << std::endl;
-  }
-#endif
   return TC3D;
 }
 

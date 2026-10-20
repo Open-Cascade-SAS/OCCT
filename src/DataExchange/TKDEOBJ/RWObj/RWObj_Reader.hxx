@@ -15,6 +15,7 @@
 #ifndef _RWObj_Reader_HeaderFile
 #define _RWObj_Reader_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressRange.hxx>
@@ -32,6 +33,10 @@
 #include <Standard_HashUtils.hxx>
 #include <NCollection_LinearVector.hxx>
 
+#include <string_view>
+
+class RWObj_MtlReader;
+
 //! An abstract class implementing procedure to read OBJ file.
 //!
 //! This class is not bound to particular data structure
@@ -45,6 +50,13 @@ class RWObj_Reader : public Standard_Transient
 public:
   //! Empty constructor.
   Standard_EXPORT RWObj_Reader();
+
+  //! Set streams for material and texture references instead of files.
+  //! @param[in] theStreams caller-owned list; must remain valid during Read()
+  void SetResourceStreams(const DE_Provider::ReadStreamList& theStreams)
+  {
+    myResourceStreams = &theStreams;
+  }
 
   //! Open stream and pass it to Read method
   //! Returns true if success, false on error.
@@ -113,6 +125,12 @@ public:
   //! Specify memory limit in bytes, so that import will be aborted
   //! by specified limit before memory allocation error occurs.
   void SetMemoryLimit(size_t theMemLimit) { myMemLimitBytes = theMemLimit; }
+
+  //! Set the memory limit in MiB; -1 means no limit.
+  //! @param[in] theLimitMiB limit in MiB
+  //! @return false if the limit is negative other than -1 or exceeds size_t bytes;
+  //! the previous limit is then preserved.
+  Standard_EXPORT bool SetMemoryLimitMiB(int theLimitMiB);
 
   //! Return transformation from one coordinate system to another; no transformation by default.
   const RWMesh_CoordinateSystemConverter& Transformation() const { return myCSTrsf; }
@@ -245,19 +263,21 @@ private:
   int triangulatePolygon(const NCollection_Array1<int>& theIndices);
 
   //! Handle "o ObjectName".
-  void pushObject(const char* theObjectName);
+  void pushObject(const std::string_view theObjectName);
 
   //! Handle "g GroupName".
-  void pushGroup(const char* theGroupName);
+  void pushGroup(const std::string_view theGroupName);
 
   //! Handle "s SmoothGroupIndex".
-  void pushSmoothGroup(const char* theSmoothGroupIndex);
+  void pushSmoothGroup(const std::string_view theSmoothGroupIndex);
 
   //! Handle "usemtl MaterialName".
-  void pushMaterial(const char* theMaterialName);
+  void pushMaterial(const std::string_view theMaterialName);
 
   //! Handle "mtllib FileName".
-  void readMaterialLib(const char* theFileName);
+  bool readMaterialLib(std::string_view               theFileName,
+                       const TCollection_AsciiString& theReferrer,
+                       RWObj_MtlReader&               theReader);
 
   //! Check memory limits.
   //! @return FALSE on out of memory
@@ -355,19 +375,20 @@ protected:
 
 protected:
   NCollection_IndexedMap<TCollection_AsciiString>
-                                   myExternalFiles; //!< list of external file references
-  TCollection_AsciiString          myFileComments;  //!< file header comments
-  TCollection_AsciiString          myFolder;        //!< folder containing the OBJ file
-  RWMesh_CoordinateSystemConverter myCSTrsf;        //!< coordinate system flipper
-  size_t                           myMemLimitBytes; //!< memory limit in bytes
-  size_t                           myMemEstim;      //!< estimated memory occupation in bytes
-                                                    // clang-format off
+                                     myExternalFiles; //!< list of external file references
+  TCollection_AsciiString            myFileComments;  //!< file header comments
+  TCollection_AsciiString            myFolder;        //!< folder containing the OBJ file
+  const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed named input streams.
+  RWMesh_CoordinateSystemConverter   myCSTrsf;                    //!< coordinate system flipper
+  size_t                             myMemLimitBytes;             //!< memory limit in bytes
+  size_t                             myMemEstim; //!< estimated memory occupation in bytes
+                                                 // clang-format off
   int                   myNbLines;       //!< number of parsed lines (e.g. current line)
   int                   myNbProbeNodes;  //!< number of probed nodes
   int                   myNbProbeElems;  //!< number of probed elements
   int                   myNbElemsBig;    //!< number of big elements (polygons with 5+ nodes)
   bool                   myToAbort;       //!< flag indicating abort state (e.g. syntax error)
-                                                    // clang-format on
+                                                 // clang-format on
 
   // Each node in the Element specifies independent indices of Vertex position, Texture coordinates
   // and Normal. This scheme does not match natural definition of Primitive Array where each unique

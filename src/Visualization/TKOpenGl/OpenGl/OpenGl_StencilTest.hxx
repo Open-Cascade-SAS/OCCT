@@ -21,6 +21,9 @@
 class OpenGl_StencilTest : public OpenGl_Element
 {
 public:
+  //! @return true; this element changes rendering state.
+  bool IsRenderState() const override { return true; }
+
   //! Default constructor
   Standard_EXPORT OpenGl_StencilTest();
 

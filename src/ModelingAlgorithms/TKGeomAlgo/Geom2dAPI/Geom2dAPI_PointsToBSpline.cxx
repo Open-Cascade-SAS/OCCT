@@ -156,6 +156,11 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
 
   TheComputer.Perform(Points);
 
+  if (!TheComputer.IsAllApproximated())
+  {
+    return;
+  }
+
   AppParCurves_MultiBSpCurve TheCurve = TheComputer.Value();
 
   NCollection_Array1<gp_Pnt2d> Poles(1, TheCurve.NbPoles());
@@ -224,6 +229,11 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<double>& YValues,
   }
 
   TheComputer.Perform(Points);
+
+  if (!TheComputer.IsAllApproximated())
+  {
+    return;
+  }
 
   const AppParCurves_MultiBSpCurve& TheCurve = TheComputer.Value();
 
@@ -364,6 +374,11 @@ void Geom2dAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt2d>& Points,
   }
 
   TheComputer.Perform(Points);
+
+  if (!TheComputer.IsAllApproximated())
+  {
+    return;
+  }
 
   AppParCurves_MultiBSpCurve TheCurve = TheComputer.Value();
 
