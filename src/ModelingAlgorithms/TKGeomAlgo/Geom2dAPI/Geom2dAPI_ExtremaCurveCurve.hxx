@@ -102,6 +102,9 @@ public:
   //! number of extrema computed by this algorithm.
   Standard_EXPORT double Distance(const int Index) const;
 
+  //! Returns True if the two curves are parallel.
+  bool IsParallel() const { return myExtCC.IsParallel(); }
+
   //! Returns the points P1 on the first curve and P2 on
   //! the second curve, which are the ends of the shortest
   //! extremum computed by this algorithm.
