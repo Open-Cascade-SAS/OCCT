@@ -120,16 +120,16 @@ TEST(IntCurveSurface_InterUtils, SortingPreservesDistinctParameterTriples)
   // Parameter proximity does not imply geometric proximity: a reparameterized
   // curve or surface can travel an arbitrary distance over these intervals.
   IntCurveSurface_InterUtils::SortedStartPoints aPoints;
-  aPoints.Append(3.0e-12, 3.0, 2.0e-12);
-  aPoints.Append(2.0e-12, 2.0, 1.0e-12);
-  aPoints.Append(1.0e-12, 1.0, 0.0);
+  aPoints.Append({3.0e-12, 3.0, 2.0e-12});
+  aPoints.Append({2.0e-12, 2.0, 1.0e-12});
+  aPoints.Append({1.0e-12, 1.0, 0.0});
   IntCurveSurface_InterUtils::SortStartPoints(aPoints);
   ASSERT_EQ(aPoints.Size(), 3);
   for (int aPointIndex = 0; aPointIndex < 3; ++aPointIndex)
   {
-    EXPECT_DOUBLE_EQ(aPoints.TabU(aPointIndex), (aPointIndex + 1) * 1.0e-12);
-    EXPECT_DOUBLE_EQ(aPoints.TabV(aPointIndex), aPointIndex + 1);
-    EXPECT_DOUBLE_EQ(aPoints.TabW(aPointIndex), aPointIndex * 1.0e-12);
+    EXPECT_DOUBLE_EQ(aPoints.Value(aPointIndex).U, (aPointIndex + 1) * 1.0e-12);
+    EXPECT_DOUBLE_EQ(aPoints.Value(aPointIndex).V, aPointIndex + 1);
+    EXPECT_DOUBLE_EQ(aPoints.Value(aPointIndex).W, aPointIndex * 1.0e-12);
   }
 }
 
@@ -220,11 +220,11 @@ TEST(IntCurveSurface_InterUtils, SortingPreservesEqualComponentsAndDuplicates)
   IntCurveSurface_InterUtils::SortedStartPoints aPoints;
   IntCurveSurface_InterUtils::SortStartPoints(aPoints);
   EXPECT_EQ(aPoints.Size(), 0);
-  aPoints.Append(1, 2, 1);
-  aPoints.Append(0, 7, 1);
-  aPoints.Append(1, 2, 1);
-  aPoints.Append(1, 1, 1);
-  aPoints.Append(9, 9, 0);
+  aPoints.Append({1, 2, 1});
+  aPoints.Append({0, 7, 1});
+  aPoints.Append({1, 2, 1});
+  aPoints.Append({1, 1, 1});
+  aPoints.Append({9, 9, 0});
   const std::array<std::tuple<double, double, double>, 5> anExpected = {
     {{9, 9, 0}, {0, 7, 1}, {1, 1, 1}, {1, 2, 1}, {1, 2, 1}}};
   for (int anIteration = 0; anIteration < 2; ++anIteration)
@@ -234,11 +234,41 @@ TEST(IntCurveSurface_InterUtils, SortingPreservesEqualComponentsAndDuplicates)
     for (size_t anIndex = 0; anIndex < anExpected.size(); ++anIndex)
     {
       const auto& [aU, aV, aW] = anExpected[anIndex];
-      EXPECT_EQ(aPoints.TabU(anIndex), aU);
-      EXPECT_EQ(aPoints.TabV(anIndex), aV);
-      EXPECT_EQ(aPoints.TabW(anIndex), aW);
+      EXPECT_EQ(aPoints.Value(anIndex).U, aU);
+      EXPECT_EQ(aPoints.Value(anIndex).V, aV);
+      EXPECT_EQ(aPoints.Value(anIndex).W, aW);
     }
   }
+}
+
+//==================================================================================================
+
+TEST(IntCurveSurface_InterUtils, SortingPreservesLargeSeedSets)
+{
+  IntCurveSurface_InterUtils::SortedStartPoints aPoints;
+  constexpr size_t                              aCount = 2048;
+  aPoints.Reserve(aCount);
+  for (size_t anIndex = aCount; anIndex > 0; --anIndex)
+  {
+    const double aKey = static_cast<double>((anIndex * 73) % aCount);
+    aPoints.Append({aKey * 0.5, -aKey, aKey});
+  }
+  IntCurveSurface_InterUtils::SortStartPoints(aPoints);
+  ASSERT_EQ(aPoints.Size(), aCount);
+  for (size_t anIndex = 0; anIndex < aCount; ++anIndex)
+  {
+    const double aKey = static_cast<double>(anIndex);
+    EXPECT_EQ(aPoints.Value(anIndex).U, aKey * 0.5);
+    EXPECT_EQ(aPoints.Value(anIndex).V, -aKey);
+    EXPECT_EQ(aPoints.Value(anIndex).W, aKey);
+  }
+  aPoints.Clear(false);
+  aPoints.Append({2, 3, 1});
+  IntCurveSurface_InterUtils::SortStartPoints(aPoints);
+  ASSERT_EQ(aPoints.Size(), 1u);
+  EXPECT_EQ(aPoints.First().U, 2);
+  EXPECT_EQ(aPoints.First().V, 3);
+  EXPECT_EQ(aPoints.First().W, 1);
 }
 
 namespace
@@ -310,6 +340,97 @@ TEST(IntCurveSurface_InterUtilsTest, TransitionHandlesExtremeAndZeroDerivatives)
     aDerivatives[1] = gp_Vec(0, aScale, 0);
     aDerivatives[2] = gp_Vec();
     EXPECT_EQ(aTransition(), IntCurveSurface_Tangent);
+  }
+}
+
+//==================================================================================================
+
+TEST(IntCurveSurface_InterUtilsTest, TransitionHandlesObliqueAndNearlyParallelDerivatives)
+{
+  const std::array<double, 6> aScales = {
+    {std::nextafter(0., 1.), 1.e-200, 1.e-30, 1., 1.e30, 1.e200}};
+  for (const double aSurfaceScale : aScales)
+  {
+    for (const double aCurveScale : aScales)
+    {
+      SCOPED_TRACE(aSurfaceScale);
+      SCOPED_TRACE(aCurveScale);
+      std::array<gp_Vec, 3> aDerivatives = {{gp_Vec(1, 2, 3) * aSurfaceScale,
+                                             gp_Vec(3, 1, 2) * aSurfaceScale,
+                                             gp_Vec(1, 7, -5) * aCurveScale}};
+      for (const bool isReversed : {false, true})
+      {
+        if (isReversed)
+        {
+          aDerivatives[2].Reverse();
+        }
+        IntCurveSurface_TransitionOnCurve aTransition;
+        IntCurveSurface_InterUtils::ComputeTransitions<std::array<gp_Vec, 3>,
+                                                       IntCurveSurface_TestTransitionTools,
+                                                       std::array<gp_Vec, 3>,
+                                                       IntCurveSurface_TestTransitionTools>(
+          aDerivatives,
+          0,
+          aTransition,
+          aDerivatives,
+          0,
+          0);
+        EXPECT_EQ(aTransition, isReversed ? IntCurveSurface_In : IntCurveSurface_Out);
+      }
+    }
+  }
+  // The surface normal remains defined when the chart directions almost agree.
+  const std::array<gp_Vec, 3> aDerivatives = {
+    {gp_Vec(1, 1, 1), gp_Vec(1, 1 + 1.e-12, 1), gp_Vec(-1, 0, 1)}};
+  IntCurveSurface_TransitionOnCurve aTransition;
+  IntCurveSurface_InterUtils::ComputeTransitions<std::array<gp_Vec, 3>,
+                                                 IntCurveSurface_TestTransitionTools,
+                                                 std::array<gp_Vec, 3>,
+                                                 IntCurveSurface_TestTransitionTools>(aDerivatives,
+                                                                                      0,
+                                                                                      aTransition,
+                                                                                      aDerivatives,
+                                                                                      0,
+                                                                                      0);
+  EXPECT_EQ(aTransition, IntCurveSurface_Out);
+}
+
+//==================================================================================================
+
+TEST(IntCurveSurface_InterUtilsTest, TransitionPreservesObliqueAngularTangencyAcrossScales)
+{
+  for (const double aSurfaceScale : {1.e-200, 1., 1.e30, 1.e200})
+  {
+    for (const double aCurveScale : {1.e-200, 1., 1.e30, 1.e200})
+    {
+      for (const double aSlope : {0., 0.25e-12, -0.25e-12, 2.e-12, -2.e-12})
+      {
+        SCOPED_TRACE(aSurfaceScale);
+        SCOPED_TRACE(aCurveScale);
+        SCOPED_TRACE(aSlope);
+        const gp_Vec                aNormal(1, 7, -5);
+        const std::array<gp_Vec, 3> aDerivatives = {
+          {gp_Vec(1, 2, 3) * aSurfaceScale,
+           gp_Vec(3, 1, 2) * aSurfaceScale,
+           (gp_Vec(7, -1, 0) + aNormal * aSlope) * aCurveScale}};
+        IntCurveSurface_TransitionOnCurve aTransition;
+        IntCurveSurface_InterUtils::ComputeTransitions<std::array<gp_Vec, 3>,
+                                                       IntCurveSurface_TestTransitionTools,
+                                                       std::array<gp_Vec, 3>,
+                                                       IntCurveSurface_TestTransitionTools>(
+          aDerivatives,
+          0,
+          aTransition,
+          aDerivatives,
+          0,
+          0);
+        // The sine of the crossing angle is approximately slope * sqrt(75 / 50).
+        const IntCurveSurface_TransitionOnCurve anExpected =
+          std::abs(aSlope) < 1.e-12 ? IntCurveSurface_Tangent
+                                    : (aSlope < 0 ? IntCurveSurface_In : IntCurveSurface_Out);
+        EXPECT_EQ(aTransition, anExpected);
+      }
+    }
   }
 }
 

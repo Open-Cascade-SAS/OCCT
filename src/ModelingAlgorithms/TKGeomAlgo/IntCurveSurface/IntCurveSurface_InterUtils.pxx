@@ -43,11 +43,13 @@
 #include <Intf_TangentZone.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <ProjLib_Plane.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
+#include <Standard_Real.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -866,11 +868,10 @@ void ComputeTransitions(const CurveType&                   curve,
 {
   gp_Vec NSurf, D1U, D1V;
   gp_Pnt Psurf;
-  double CosDir;
 
   SurfaceTool::D1(surface, u, v, Psurf, D1U, D1V);
   // Derivative magnitudes depend on the parameterization, not the crossing angle.
-  const auto aNormalize = [](gp_Vec& theVector) {
+  const auto aScaleDirection = [](gp_Vec& theVector) {
     const double aScale =
       std::max({std::abs(theVector.X()), std::abs(theVector.Y()), std::abs(theVector.Z())});
     if (aScale == 0.0)
@@ -878,28 +879,24 @@ void ComputeTransitions(const CurveType&                   curve,
       return false;
     }
     theVector.SetCoord(theVector.X() / aScale, theVector.Y() / aScale, theVector.Z() / aScale);
-    theVector.Normalize();
     return true;
   };
-  if (!aNormalize(D1U) || !aNormalize(D1V))
+  if (!aScaleDirection(D1U) || !aScaleDirection(D1V))
   {
     TransOnCurve = IntCurveSurface_Tangent;
     return;
   }
   NSurf = D1U.Crossed(D1V);
   CurveTool::D1(curve, w, Psurf, D1U);
-  if (aNormalize(NSurf) && aNormalize(D1U))
+  if (aScaleDirection(NSurf) && aScaleDirection(D1U))
   {
-    CosDir = NSurf.Dot(D1U);
-    if (-CosDir > THE_TOLERANCE_ANGULAIRE)
+    // Component scaling bounds the squared lengths and prevents overflow in the angle test.
+    const double aDot              = NSurf.Dot(D1U);
+    const double aSquaredTolerance = THE_TOLERANCE_ANGULAIRE * THE_TOLERANCE_ANGULAIRE
+                                     * NSurf.SquareMagnitude() * D1U.SquareMagnitude();
+    if (aDot * aDot > aSquaredTolerance)
     {
-      //--  --Curve--->    <----Surface----
-      TransOnCurve = IntCurveSurface_In;
-    }
-    else if (CosDir > THE_TOLERANCE_ANGULAIRE)
-    {
-      //--  --Curve--->  ----Surface-->
-      TransOnCurve = IntCurveSurface_Out;
+      TransOnCurve = aDot < 0.0 ? IntCurveSurface_In : IntCurveSurface_Out;
     }
     else
     {
@@ -1332,29 +1329,15 @@ bool ProcessLinTorus(const gp_Lin&                                              
   return true;
 }
 
-//! Structure to hold sorted intersection start points.
-struct SortedStartPoints
+//! Parameters of an intersection start point.
+struct StartPoint
 {
-  NCollection_DynamicArray<double> TabU;
-  NCollection_DynamicArray<double> TabV;
-  NCollection_DynamicArray<double> TabW;
-
-  void Clear()
-  {
-    TabU.Clear();
-    TabV.Clear();
-    TabW.Clear();
-  }
-
-  int Size() const { return TabU.Length(); }
-
-  void Append(double theU, double theV, double theW)
-  {
-    TabU.Append(theU);
-    TabV.Append(theV);
-    TabW.Append(theW);
-  }
+  double U; //!< Surface U parameter.
+  double V; //!< Surface V parameter.
+  double W; //!< Curve parameter.
 };
+
+using SortedStartPoints = NCollection_LinearVector<StartPoint>;
 
 //! Collect section points from interference and convert to parameters.
 //! @tparam InterferenceType The interference type
@@ -1370,6 +1353,7 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
 
   int NbSectionPoints = theInterference.NbSectionPoints();
   int NbTangentZones  = theInterference.NbTangentZones();
+  thePoints.Reserve(static_cast<size_t>(NbSectionPoints));
 
   double u, v, w;
 
@@ -1377,7 +1361,7 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
   {
     const Intf_SectionPoint& SP = theInterference.PntValue(i);
     SectionPointToParameters<PolyhedronType, PolygonType>(SP, thePolyhedron, thePolygon, u, v, w);
-    thePoints.Append(u, v, w);
+    thePoints.Append({u, v, w});
   }
 
   for (int i = 1; i <= NbTangentZones; i++)
@@ -1388,7 +1372,7 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
     {
       const Intf_SectionPoint& SP = TZ.GetPoint(j);
       SectionPointToParameters<PolyhedronType, PolygonType>(SP, thePolyhedron, thePolygon, u, v, w);
-      thePoints.Append(u, v, w);
+      thePoints.Append({u, v, w});
     }
   }
 }
@@ -1396,26 +1380,14 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
 //! Sort complete parameter triples by W, then U, then V without changing coordinates.
 inline void SortStartPoints(SortedStartPoints& thePoints)
 {
-  const size_t aNbPoints = thePoints.TabU.Size();
-  for (size_t anIndex = 1; anIndex < aNbPoints; ++anIndex)
+  if (thePoints.Size() > 1)
   {
-    const double aU        = thePoints.TabU(anIndex);
-    const double aV        = thePoints.TabV(anIndex);
-    const double aW        = thePoints.TabW(anIndex);
-    size_t       aPosition = anIndex;
-    while (aPosition > 0
-           && std::tie(aW, aU, aV) < std::tie(thePoints.TabW(aPosition - 1),
-                                              thePoints.TabU(aPosition - 1),
-                                              thePoints.TabV(aPosition - 1)))
-    {
-      thePoints.TabU.ChangeValue(aPosition) = thePoints.TabU(aPosition - 1);
-      thePoints.TabV.ChangeValue(aPosition) = thePoints.TabV(aPosition - 1);
-      thePoints.TabW.ChangeValue(aPosition) = thePoints.TabW(aPosition - 1);
-      --aPosition;
-    }
-    thePoints.TabU.ChangeValue(aPosition) = aU;
-    thePoints.TabV.ChangeValue(aPosition) = aV;
-    thePoints.TabW.ChangeValue(aPosition) = aW;
+    std::sort(thePoints.begin(),
+              thePoints.end(),
+              [](const StartPoint& theLeft, const StartPoint& theRight) {
+                return std::tie(theLeft.W, theLeft.U, theLeft.V)
+                       < std::tie(theRight.W, theRight.U, theRight.V);
+              });
   }
 }
 
@@ -1445,7 +1417,7 @@ void ProcessSortedPoints(ExactInterType&                                        
 {
   theResult.Clear();
 
-  int NbStartPoints = thePoints.Size();
+  const size_t NbStartPoints = thePoints.Size();
   if (NbStartPoints == 0)
   {
     return;
@@ -1454,11 +1426,12 @@ void ProcessSortedPoints(ExactInterType&                                        
   double ptol = 10 * Precision::PConfusion();
   double su = 0, sv = 0, sw = 0;
 
-  for (int i = 0; i < NbStartPoints; i++)
+  for (size_t i = 0; i < NbStartPoints; i++)
   {
-    double u = thePoints.TabU(i);
-    double v = thePoints.TabV(i);
-    double w = thePoints.TabW(i);
+    const StartPoint& aStartPoint = thePoints.Value(i);
+    double            u           = aStartPoint.U;
+    double            v           = aStartPoint.V;
+    double            w           = aStartPoint.W;
 
     if (i == 0)
     {
@@ -1485,9 +1458,9 @@ void ProcessSortedPoints(ExactInterType&                                        
         }
       }
     }
-    su = thePoints.TabU(i);
-    sv = thePoints.TabV(i);
-    sw = thePoints.TabW(i);
+    su = aStartPoint.U;
+    sv = aStartPoint.V;
+    sw = aStartPoint.W;
   }
 }
 

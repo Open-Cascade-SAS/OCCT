@@ -20,6 +20,56 @@
 
 namespace
 {
+//! Independent quadratic equations with roots 1, 2, ... .
+struct MathSys_IndependentQuadratics
+{
+  int  Count; //!< Number of variables and equations.
+  int  NbVariables() const;
+  int  NbEquations() const;
+  bool Value(const math_Vector& theX, math_Vector& theF) const;
+  bool Values(const math_Vector& theX, math_Vector& theF, math_Matrix& theD) const;
+};
+
+//==================================================================================================
+
+int MathSys_IndependentQuadratics::NbVariables() const
+{
+  return Count;
+}
+
+//==================================================================================================
+
+int MathSys_IndependentQuadratics::NbEquations() const
+{
+  return Count;
+}
+
+//==================================================================================================
+
+bool MathSys_IndependentQuadratics::Value(const math_Vector& theX, math_Vector& theF) const
+{
+  for (size_t anIndex = 0; anIndex < static_cast<size_t>(Count); ++anIndex)
+  {
+    const double aRoot     = static_cast<double>(anIndex + 1);
+    theF.ChangeAt(anIndex) = theX.At(anIndex) * theX.At(anIndex) - aRoot * aRoot;
+  }
+  return true;
+}
+
+//==================================================================================================
+
+bool MathSys_IndependentQuadratics::Values(const math_Vector& theX,
+                                           math_Vector&       theF,
+                                           math_Matrix&       theD) const
+{
+  theD.Init(0.0);
+  for (size_t anIndex = 0; anIndex < static_cast<size_t>(Count); ++anIndex)
+  {
+    theD.ChangeAt(anIndex, anIndex) = 2.0 * theX.At(anIndex);
+  }
+  return Value(theX, theF);
+}
+
 //! A bounded exponential residual whose Newton direction needs deep backtracking.
 class MathSys_ExponentialBacktrackingSystem
 {
@@ -66,6 +116,37 @@ bool MathSys_ExponentialBacktrackingSystem::Values(const math_Vector& theX,
   return Value(theX, theF);
 }
 } // namespace
+
+//==================================================================================================
+
+TEST(MathSys_ComparisonTest, NewtonBounded_MultipleIterationsWithFixedVariable)
+{
+  for (const int aCount : {4, 40})
+  {
+    SCOPED_TRACE(aCount);
+    MathSys_IndependentQuadratics aFunction{aCount};
+    const size_t                  aSize = static_cast<size_t>(aCount);
+    math_Vector                   aStart(aSize);
+    math_Vector                   aLower(aSize, 0.0);
+    math_Vector                   anUpper(aSize, 100.0);
+    for (size_t anIndex = 0; anIndex < aSize; ++anIndex)
+    {
+      aStart.ChangeAt(anIndex) = static_cast<double>(anIndex + 2);
+    }
+    aLower.ChangeAt(0) = anUpper.ChangeAt(0) = 1.0;
+    const math_Vector           aTolerance(aSize, 1.e-10);
+    const MathSys::SystemResult aResult =
+      MathSys::NewtonBounded(aFunction, aStart, aLower, anUpper, aTolerance, 1.e-10);
+    ASSERT_TRUE(aResult.IsDone());
+    EXPECT_TRUE(aResult.IsRoot);
+    ASSERT_TRUE(aResult.Solution.has_value());
+    EXPECT_LE(aResult.ResidualNorm, 1.e-10);
+    for (size_t anIndex = 0; anIndex < aSize; ++anIndex)
+    {
+      EXPECT_NEAR(aResult.Solution->At(anIndex), static_cast<double>(anIndex + 1), 1.e-10);
+    }
+  }
+}
 
 //==================================================================================================
 
