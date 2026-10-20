@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <iomanip>
 #include <BinTools.hxx>
 #include <BinTools_CurveSet.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -636,7 +637,8 @@ Standard_IStream& BinTools_CurveSet::ReadCurve(Standard_IStream& IS, occ::handle
 void BinTools_CurveSet::Read(Standard_IStream& IS, const Message_ProgressRange& theRange)
 {
   char buffer[255];
-  IS >> buffer;
+  // a token longer than the buffer is cut, so it is not the table name
+  IS >> std::setw(sizeof(buffer)) >> buffer;
   if (IS.fail() || strcmp(buffer, "Curves"))
   {
     Standard_SStream aMsg;

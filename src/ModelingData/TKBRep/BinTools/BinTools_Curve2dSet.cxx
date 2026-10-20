@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <iomanip>
 #include <BinTools.hxx>
 #include <BinTools_Curve2dSet.hxx>
 #include <Geom2d_BezierCurve.hxx>
@@ -627,7 +628,8 @@ void BinTools_Curve2dSet::Read(Standard_IStream& IS, const Message_ProgressRange
 {
   char buffer[255];
 
-  IS >> buffer;
+  // a token longer than the buffer is cut, so it is not the table name
+  IS >> std::setw(sizeof(buffer)) >> buffer;
   if (IS.fail() || strcmp(buffer, "Curve2ds"))
   {
     Standard_SStream aMsg;

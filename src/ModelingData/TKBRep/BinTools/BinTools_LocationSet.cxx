@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <iomanip>
 #include <BinTools.hxx>
 #include <BinTools_LocationSet.hxx>
 #include <gp_Vec.hxx>
@@ -201,7 +202,8 @@ void BinTools_LocationSet::Read(Standard_IStream& IS)
   char buffer[255];
   int  l1, p;
 
-  IS >> buffer;
+  // a token longer than the buffer is cut, so it is not the table name
+  IS >> std::setw(sizeof(buffer)) >> buffer;
   if (IS.fail() || (strcmp(buffer, "Locations")))
   {
     Standard_SStream aMsg;
