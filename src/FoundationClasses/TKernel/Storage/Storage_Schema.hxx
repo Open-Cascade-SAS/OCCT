@@ -167,7 +167,7 @@ public:
 protected:
   bool HasTypeBinding(const TCollection_AsciiString& aTypeName) const
   {
-    return Storage_Schema::ICurrentData()->InternalData()->myTypeBinding.IsBound(aTypeName);
+    return myCurrentData->InternalData()->myTypeBinding.IsBound(aTypeName);
   }
 
   Standard_EXPORT void BindType(const TCollection_AsciiString&       aTypeName,
@@ -179,9 +179,8 @@ protected:
 private:
   Standard_EXPORT void Clear() const;
 
-  Standard_EXPORT static void ISetCurrentData(const occ::handle<Storage_Data>& dData);
-
-  Standard_EXPORT static occ::handle<Storage_Data>& ICurrentData();
+  //! Scratch state for the duration of one Write() call.
+  mutable occ::handle<Storage_Data> myCurrentData;
 
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>> myCallBack;
   bool                                                                             myCallBackState;
