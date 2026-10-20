@@ -8,6 +8,7 @@ set(OCCT_TKBool_GTests_FILES
   BRepAlgo_Image_Test.cxx
   BRepAlgoAPI_Section_Test.cxx
   BRepFill_PipeShell_Test.cxx
+  BRepFill_TrimEdgeTool_Test.cxx
   TopOpeBRepBuild_Builder_Test.cxx
   TopOpeBRepBuild_Builder1_Test.cxx
   TopOpeBRepTool_Test.cxx

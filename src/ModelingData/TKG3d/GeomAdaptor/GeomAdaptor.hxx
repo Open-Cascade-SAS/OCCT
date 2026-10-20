@@ -37,6 +37,7 @@ public:
   //! handled by reference.
   //! Build a Geom_Curve using the information from the
   //! Curve from Adaptor3d
+  //! Periodic trim parameters retain the adaptor's parameter chart.
   Standard_EXPORT static occ::handle<Geom_Curve> MakeCurve(const Adaptor3d_Curve& C);
 
   //! Build a Geom_Surface using the information from the Surface from Adaptor3d

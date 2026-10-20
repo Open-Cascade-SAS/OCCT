@@ -1779,262 +1779,130 @@ void ProjLib_CompProjectedCurve::Intervals(NCollection_Array1<double>& T,
 
 void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 {
-  GeomAbs_Shape SforS = GeomAbs_CN;
+  GeomAbs_Shape aSurfaceContinuity = GeomAbs_CN;
   switch (S)
   {
     case GeomAbs_C0:
-      SforS = GeomAbs_C1;
+      aSurfaceContinuity = GeomAbs_C1;
       break;
     case GeomAbs_C1:
-      SforS = GeomAbs_C2;
+      aSurfaceContinuity = GeomAbs_C2;
       break;
     case GeomAbs_C2:
-      SforS = GeomAbs_C3;
+      aSurfaceContinuity = GeomAbs_C3;
       break;
     case GeomAbs_C3:
-      SforS = GeomAbs_CN;
-      break;
     case GeomAbs_CN:
-      SforS = GeomAbs_CN;
+      aSurfaceContinuity = GeomAbs_CN;
       break;
     default:
       throw Standard_OutOfRange();
   }
-  int i, j, k;
-  int NbIntCur  = myCurve->NbIntervals(S);
-  int NbIntSurU = mySurface->NbUIntervals(SforS);
-  int NbIntSurV = mySurface->NbVIntervals(SforS);
+  const int                  aNbCurveIntervals = myCurve->NbIntervals(S);
+  NCollection_Array1<double> aCurveCuts(1, aNbCurveIntervals + 1);
+  NCollection_Array1<double> aUCuts(1, mySurface->NbUIntervals(aSurfaceContinuity) + 1);
+  NCollection_Array1<double> aVCuts(1, mySurface->NbVIntervals(aSurfaceContinuity) + 1);
+  myCurve->Intervals(aCurveCuts, S);
+  mySurface->UIntervals(aUCuts, aSurfaceContinuity);
+  mySurface->VIntervals(aVCuts, aSurfaceContinuity);
 
-  NCollection_Array1<double> CutPntsT(1, NbIntCur + 1);
-  NCollection_Array1<double> CutPntsU(1, NbIntSurU + 1);
-  NCollection_Array1<double> CutPntsV(1, NbIntSurV + 1);
-
-  myCurve->Intervals(CutPntsT, S);
-  mySurface->UIntervals(CutPntsU, SforS);
-  mySurface->VIntervals(CutPntsV, SforS);
-
-  double Tl, Tr, Ul, Ur, Vl, Vr, Tol;
-
-  occ::handle<NCollection_HArray1<double>> BArr = nullptr, CArr = nullptr, UArr = nullptr,
-                                           VArr = nullptr;
-
-  // processing projection bounds
-  BArr = new NCollection_HArray1<double>(1, 2 * myNbCurves);
-  for (i = 1; i <= myNbCurves; i++)
+  occ::handle<NCollection_HArray1<double>> anIntervals =
+    new NCollection_HArray1<double>(1, 2 * myNbCurves);
+  for (int i = 1; i <= myNbCurves; ++i)
   {
-    Bounds(i, BArr->ChangeValue(2 * i - 1), BArr->ChangeValue(2 * i));
+    Bounds(i, anIntervals->ChangeValue(2 * i - 1), anIntervals->ChangeValue(2 * i));
   }
 
-  // processing curve discontinuities
-  if (NbIntCur > 1)
+  NCollection_LinearVector<double> aMerged;
+  if (aNbCurveIntervals > 1)
   {
-    CArr = new NCollection_HArray1<double>(1, NbIntCur - 1);
-    for (i = 1; i <= CArr->Length(); i++)
-    {
-      CArr->ChangeValue(i) = CutPntsT(i + 1);
-    }
+    const NCollection_Array1<double> aCurveBreaks(aCurveCuts.At(1), 1, aNbCurveIntervals - 1);
+    GeomLib::FuseIntervals(anIntervals->Array1(), aCurveBreaks, aMerged, Precision::PConfusion());
+    anIntervals->Resize(1, static_cast<int>(aMerged.Size()), false);
+    std::copy(aMerged.cbegin(), aMerged.cend(), anIntervals->begin());
   }
 
-  // processing U-surface discontinuities
-  NCollection_Sequence<double> TUdisc;
-
-  for (k = 2; k <= NbIntSurU; k++)
+  NCollection_LinearVector<double> aDiscontinuities;
+  for (const bool isU : {true, false})
   {
-    //    std::cout<<"CutPntsU("<<k<<") = "<<CutPntsU(k)<<std::endl;
-    for (i = 1; i <= myNbCurves; i++)
+    aDiscontinuities.Clear(false);
+    const NCollection_Array1<double>& aCuts       = isU ? aUCuts : aVCuts;
+    const int                         aCoordinate = isU ? 2 : 3; // Stored points contain (t, u, v).
+    const double                      aSurfaceTolerance = isU ? myTolU : myTolV;
+    const double aFreeFirst = isU ? mySurface->FirstVParameter() : mySurface->FirstUParameter();
+    const double aFreeLast  = isU ? mySurface->LastVParameter() : mySurface->LastUParameter();
+    for (size_t aCutIndex = 1; aCutIndex + 1 < aCuts.Size(); ++aCutIndex)
     {
-      for (j = 1; j < mySequence->Value(i)->Length(); j++)
+      const double aCut = aCuts.At(aCutIndex);
+      for (int i = 1; i <= myNbCurves; ++i)
       {
-        Ul = mySequence->Value(i)->Value(j).Y();
-        Ur = mySequence->Value(i)->Value(j + 1).Y();
-
-        if (std::abs(Ul - CutPntsU(k)) <= myTolU)
+        const NCollection_Sequence<gp_Pnt>& aPoints = *mySequence->Value(i);
+        for (int j = 1; j < aPoints.Length(); ++j)
         {
-          TUdisc.Append(mySequence->Value(i)->Value(j).X());
-        }
-        else if (std::abs(Ur - CutPntsU(k)) <= myTolU)
-        {
-          TUdisc.Append(mySequence->Value(i)->Value(j + 1).X());
-        }
-        else if ((Ul < CutPntsU(k) && CutPntsU(k) < Ur) || (Ur < CutPntsU(k) && CutPntsU(k) < Ul))
-        {
-          double V;
-          V = (mySequence->Value(i)->Value(j).Z() + mySequence->Value(i)->Value(j + 1).Z()) / 2;
-          ProjLib_PrjResolve Solver(*myCurve, *mySurface, 2);
-
-          gp_Vec2d D;
-          gp_Pnt   Triple;
-          Triple = mySequence->Value(i)->Value(j);
-          d1(Triple.X(), Triple.Y(), Triple.Z(), D, myCurve, mySurface);
-          if (std::abs(D.X()) < Precision::Confusion())
+          const gp_Pnt& aFirst      = aPoints.Value(j);
+          const gp_Pnt& aLast       = aPoints.Value(j + 1);
+          const double  aFirstCoord = aFirst.Coord(aCoordinate);
+          const double  aLastCoord  = aLast.Coord(aCoordinate);
+          if (std::abs(aFirstCoord - aCut) <= aSurfaceTolerance)
           {
-            Tol = myTolU;
+            aDiscontinuities.Append(aFirst.X());
           }
-          else
+          else if (std::abs(aLastCoord - aCut) <= aSurfaceTolerance)
           {
-            Tol = std::min(myTolU, myTolU / std::abs(D.X()));
+            aDiscontinuities.Append(aLast.X());
           }
-
-          Tl = mySequence->Value(i)->Value(j).X();
-          Tr = mySequence->Value(i)->Value(j + 1).X();
-
-          Solver.Perform((Tl + Tr) / 2,
-                         CutPntsU(k),
-                         V,
-                         gp_Pnt2d(Tol, myTolV),
-                         gp_Pnt2d(Tl, mySurface->FirstVParameter()),
-                         gp_Pnt2d(Tr, mySurface->LastVParameter()),
-                         FuncTol);
-          //
-          if (Solver.IsDone())
+          else if ((aFirstCoord < aCut && aCut < aLastCoord)
+                   || (aLastCoord < aCut && aCut < aFirstCoord))
           {
-            TUdisc.Append(Solver.Solution().X());
+            gp_Vec2d aDerivative;
+            d1(aFirst.X(), aFirst.Y(), aFirst.Z(), aDerivative, myCurve, mySurface);
+            const double aSpeed     = std::abs(isU ? aDerivative.X() : aDerivative.Y());
+            const double aTolerance = aSpeed < Precision::Confusion()
+                                        ? aSurfaceTolerance
+                                        : std::min(aSurfaceTolerance, aSurfaceTolerance / aSpeed);
+            const double aFreeParameter =
+              (aFirst.Coord(isU ? 3 : 2) + aLast.Coord(isU ? 3 : 2)) / 2;
+            ProjLib_PrjResolve aSolver(*myCurve, *mySurface, aCoordinate);
+            aSolver.Perform((aFirst.X() + aLast.X()) / 2,
+                            isU ? aCut : aFreeParameter,
+                            isU ? aFreeParameter : aCut,
+                            gp_Pnt2d(aTolerance, myTolV),
+                            gp_Pnt2d(aFirst.X(), aFreeFirst),
+                            gp_Pnt2d(aLast.X(), aFreeLast),
+                            FuncTol);
+            if (aSolver.IsDone())
+            {
+              aDiscontinuities.Append(aSolver.Solution().X());
+            }
           }
         }
       }
     }
-  }
-  for (i = 2; i <= TUdisc.Length(); i++)
-  {
-    if (TUdisc(i) - TUdisc(i - 1) < Precision::PConfusion())
-    {
-      TUdisc.Remove(i--);
-    }
-  }
 
-  if (TUdisc.Length())
-  {
-    UArr = new NCollection_HArray1<double>(1, TUdisc.Length());
-    for (i = 1; i <= UArr->Length(); i++)
+    if (aDiscontinuities.IsEmpty())
     {
-      UArr->ChangeValue(i) = TUdisc(i);
+      continue;
     }
-  }
-  // processing V-surface discontinuities
-  NCollection_Sequence<double> TVdisc;
-
-  for (k = 2; k <= NbIntSurV; k++)
-  {
-    for (i = 1; i <= myNbCurves; i++)
+    // Surface-knot order can differ from curve-parameter order.
+    std::sort(aDiscontinuities.begin(), aDiscontinuities.end());
+    size_t aCount = 0;
+    for (const double aParameter : aDiscontinuities)
     {
-      //      std::cout<<"CutPntsV("<<k<<") = "<<CutPntsV(k)<<std::endl;
-      for (j = 1; j < mySequence->Value(i)->Length(); j++)
+      if (aCount == 0 || aParameter - aDiscontinuities.Value(aCount - 1) >= Precision::PConfusion())
       {
-
-        Vl = mySequence->Value(i)->Value(j).Z();
-        Vr = mySequence->Value(i)->Value(j + 1).Z();
-
-        if (std::abs(Vl - CutPntsV(k)) <= myTolV)
-        {
-          TVdisc.Append(mySequence->Value(i)->Value(j).X());
-        }
-        else if (std::abs(Vr - CutPntsV(k)) <= myTolV)
-        {
-          TVdisc.Append(mySequence->Value(i)->Value(j + 1).X());
-        }
-        else if ((Vl < CutPntsV(k) && CutPntsV(k) < Vr) || (Vr < CutPntsV(k) && CutPntsV(k) < Vl))
-        {
-          double U;
-          U = (mySequence->Value(i)->Value(j).Y() + mySequence->Value(i)->Value(j + 1).Y()) / 2;
-          ProjLib_PrjResolve Solver(*myCurve, *mySurface, 3);
-
-          gp_Vec2d D;
-          gp_Pnt   Triple;
-          Triple = mySequence->Value(i)->Value(j);
-          d1(Triple.X(), Triple.Y(), Triple.Z(), D, myCurve, mySurface);
-          if (std::abs(D.Y()) < Precision::Confusion())
-          {
-            Tol = myTolV;
-          }
-          else
-          {
-            Tol = std::min(myTolV, myTolV / std::abs(D.Y()));
-          }
-
-          Tl = mySequence->Value(i)->Value(j).X();
-          Tr = mySequence->Value(i)->Value(j + 1).X();
-
-          Solver.Perform((Tl + Tr) / 2,
-                         U,
-                         CutPntsV(k),
-                         gp_Pnt2d(Tol, myTolV),
-                         gp_Pnt2d(Tl, mySurface->FirstUParameter()),
-                         gp_Pnt2d(Tr, mySurface->LastUParameter()),
-                         FuncTol);
-          //
-          if (Solver.IsDone())
-          {
-            TVdisc.Append(Solver.Solution().X());
-          }
-        }
+        aDiscontinuities.ChangeValue(aCount++) = aParameter;
       }
     }
-  }
-
-  for (i = 2; i <= TVdisc.Length(); i++)
-  {
-    if (TVdisc(i) - TVdisc(i - 1) < Precision::PConfusion())
-    {
-      TVdisc.Remove(i--);
-    }
-  }
-
-  if (TVdisc.Length())
-  {
-    VArr = new NCollection_HArray1<double>(1, TVdisc.Length());
-    for (i = 1; i <= VArr->Length(); i++)
-    {
-      VArr->ChangeValue(i) = TVdisc(i);
-    }
-  }
-
-  // fusion
-  NCollection_LinearVector<double> Fusion;
-  if (!CArr.IsNull())
-  {
-    GeomLib::FuseIntervals(BArr->ChangeArray1(),
-                           CArr->ChangeArray1(),
-                           Fusion,
+    aDiscontinuities.Resize(aCount);
+    GeomLib::FuseIntervals(anIntervals->Array1(),
+                           aDiscontinuities.ToArray1(),
+                           aMerged,
                            Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
-    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
-    {
-      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
-    }
+    anIntervals->Resize(1, static_cast<int>(aMerged.Size()), false);
+    std::copy(aMerged.cbegin(), aMerged.cend(), anIntervals->begin());
   }
 
-  if (!UArr.IsNull())
-  {
-    GeomLib::FuseIntervals(BArr->ChangeArray1(),
-                           UArr->ChangeArray1(),
-                           Fusion,
-                           Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
-    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
-    {
-      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
-    }
-  }
-
-  if (!VArr.IsNull())
-  {
-    GeomLib::FuseIntervals(BArr->ChangeArray1(),
-                           VArr->ChangeArray1(),
-                           Fusion,
-                           Precision::PConfusion());
-    BArr = new NCollection_HArray1<double>(1, static_cast<int>(Fusion.Size()));
-    for (size_t anIndex = 0; anIndex < Fusion.Size(); ++anIndex)
-    {
-      BArr->ChangeArray1().ChangeAt(anIndex) = Fusion.Value(anIndex);
-    }
-  }
-
-  const_cast<ProjLib_CompProjectedCurve*>(this)->myTabInt =
-    new NCollection_HArray1<double>(1, BArr->Length());
-  for (i = 1; i <= BArr->Length(); i++)
-  {
-    myTabInt->ChangeValue(i) = BArr->Value(i);
-  }
+  const_cast<ProjLib_CompProjectedCurve*>(this)->myTabInt = anIntervals;
 }
 
 //=================================================================================================

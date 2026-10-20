@@ -363,6 +363,10 @@ bool IntImp_ZerParFunc::IsTangent(const math_Vector&          UVap,
     break;
   }
 
+  // Value() can move the solution without updating the stored derivatives.
+  ThePSurfaceTool::D1(SURF1, Param.At(0), Param.At(1), pntsol1, dpuv[0], dpuv[1]);
+  ThePSurfaceTool::D1(SURF2, Param.At(2), Param.At(3), pntsol2, dpuv[2], dpuv[3]);
+
   IntImp_ConstIsoparametric TabIso[4];
   double                    EpsUV[4];
   EpsUV[0] = ures1;

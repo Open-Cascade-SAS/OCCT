@@ -11,10 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
-#include <cmath>
-
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -29,6 +25,10 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
+
+#include <gtest/gtest.h>
+
+#include <cmath>
 
 class Geom_OffsetSurface_Test : public ::testing::Test
 {
@@ -1254,6 +1254,39 @@ TEST(Geom_OffsetSurface_ThreeWay, Cone_D0D1_ThreeWayConsistency)
         << "Cone Direct vs OffsetAdaptor D1V mismatch at u=" << u << ", v=" << v;
       EXPECT_TRUE(VectorsEqual(aDirectD1V, aEquivD1V, aTol))
         << "Cone Direct vs EquivAdaptor D1V mismatch at u=" << u << ", v=" << v;
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST_F(Geom_OffsetSurface_Test, PlaneOffsetUsesOriginalDirectedUVNormal)
+{
+  for (const bool isUReversed : {false, true})
+  {
+    for (const bool isVReversed : {false, true})
+    {
+      for (const double aDistance : {-.25, .25})
+      {
+        const occ::handle<Geom_Plane> aPlane =
+          new Geom_Plane(gp_Ax3(gp_Pnt(1, 2, 3), gp_Dir(1, 2, 3)));
+        if (isUReversed)
+        {
+          aPlane->UReverse();
+        }
+        if (isVReversed)
+        {
+          aPlane->VReverse();
+        }
+        const auto [aPoint, aDU, aDV]              = aPlane->EvalD1(.375, -.625);
+        const gp_Vec                    aNormal    = aDU.Crossed(aDV).Normalized();
+        const gp_Pnt                    anExpected = aPoint.Translated(aDistance * aNormal);
+        const Geom_OffsetSurface        anOffset(aPlane, aDistance);
+        const occ::handle<Geom_Surface> anEquivalent = anOffset.Surface();
+        ASSERT_FALSE(anEquivalent.IsNull());
+        EXPECT_LE(anEquivalent->EvalD0(.375, -.625).Distance(anExpected), 1e-12);
+        EXPECT_LE(anOffset.EvalD0(.375, -.625).Distance(anExpected), 1e-12);
+      }
     }
   }
 }

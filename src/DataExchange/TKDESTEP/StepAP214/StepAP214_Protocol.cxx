@@ -640,6 +640,11 @@ static const char* schemaAP242DIS =
 #include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_BooleanRepresentationItem.hxx>
@@ -663,6 +668,8 @@ static const char* schemaAP242DIS =
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
+#include <StepVisual_DraughtingModelAndTessellatedShapeRepresentation.hxx>
+#include <StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <StepVisual_CameraModelD3MultiClipping.hxx>
@@ -1573,6 +1580,17 @@ StepAP214_Protocol::StepAP214_Protocol()
   types.Bind(STANDARD_TYPE(StepRepr_MechanicalDesignAndDraughtingRelationship), 824);
   types.Bind(STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbientDiffuse), 825);
   types.Bind(STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular), 826);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndUneqDisGeoTol), 827);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol), 828);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol), 829);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol),
+             830);
+  types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol),
+             831);
+  types.Bind(STANDARD_TYPE(StepVisual_DraughtingModelAndTessellatedShapeRepresentation), 832);
+  types.Bind(
+    STANDARD_TYPE(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation),
+    833);
 }
 
 //=================================================================================================

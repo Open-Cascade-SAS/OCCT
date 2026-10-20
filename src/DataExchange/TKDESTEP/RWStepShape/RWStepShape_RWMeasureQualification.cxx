@@ -13,13 +13,14 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include "RWStepShape_RWMeasureQualification.pxx"
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_MeasureQualification.hxx>
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>
+
+#include "RWStepShape_RWMeasureQualification.pxx"
 
 RWStepShape_RWMeasureQualification::RWStepShape_RWMeasureQualification() = default;
 
@@ -95,6 +96,8 @@ void RWStepShape_RWMeasureQualification::Share(
   const occ::handle<StepShape_MeasureQualification>& ent,
   Interface_EntityIterator&                          iter) const
 {
+  // Reverse graph traversal links qualifications through their qualified measure.
+  iter.AddItem(ent->QualifiedMeasure());
   int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)
   {

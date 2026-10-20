@@ -156,14 +156,14 @@ bool Standard_SHA256::Finish(Digest& theDigest) const
   {
     std::fill(aFinal.myBuffer.begin() + static_cast<std::ptrdiff_t>(aFinal.myBufferSize),
               aFinal.myBuffer.end(),
-              0u);
+              uint8_t{0});
     aFinal.processBlock(aFinal.myBuffer.data());
     aFinal.myBufferSize = 0;
   }
 
   std::fill(aFinal.myBuffer.begin() + static_cast<std::ptrdiff_t>(aFinal.myBufferSize),
             aFinal.myBuffer.begin() + 56,
-            0u);
+            uint8_t{0});
   for (int anIndex = 0; anIndex < 8; ++anIndex)
   {
     aFinal.myBuffer[56 + static_cast<size_t>(anIndex)] =

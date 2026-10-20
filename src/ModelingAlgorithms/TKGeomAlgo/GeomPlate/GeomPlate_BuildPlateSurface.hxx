@@ -186,13 +186,16 @@ public:
   //! curves prior to computation.
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> Order() const;
 
-  //! Returns the max distance between the result and the constraints
+  //! Returns the maximum distance for curve constraints, excluding point constraints.
+  //! Returns zero before computation or when there are no curve constraints.
   Standard_EXPORT double G0Error() const;
 
-  //! Returns the max angle between the result and the constraints
+  //! Returns the maximum angle for curve constraints, excluding point constraints.
+  //! Returns zero before computation or when there are no curve constraints.
   Standard_EXPORT double G1Error() const;
 
-  //! Returns the max difference of curvature between the result and the constraints
+  //! Returns the maximum curvature difference for curve constraints, excluding point constraints.
+  //! Returns zero before computation or when there are no curve constraints.
   Standard_EXPORT double G2Error() const;
 
   //! Returns the max distance between the result and the constraint Index
@@ -258,9 +261,9 @@ private:
   occ::handle<NCollection_HArray1<int>>                                      mySense;
   int                                                                        myDegree;
   occ::handle<NCollection_HArray1<int>>                                      myInitOrder;
-  double                                                                     myG0Error;
-  double                                                                     myG1Error;
-  double                                                                     myG2Error;
+  double                                                                     myG0Error = 0.0;
+  double                                                                     myG1Error = 0.0;
+  double                                                                     myG2Error = 0.0;
   int                                                                        myNbPtsOnCur;
   bool                                                                       mySurfInitIsGive;
   int                                                                        myNbIter;

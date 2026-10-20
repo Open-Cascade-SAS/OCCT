@@ -233,7 +233,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       Coeff = TheWeights(i) * myVB(c, i);
       for (j = 1; j <= nbcol; j++)
       {
-        tmppoints(j) += myPoints(i, j) * Coeff;
+        tmppoints(j) += (myPoints(i, j) - myPoints(1, j)) * Coeff;
       }
     }
     for (k = 1; k <= nbcol; k++)
@@ -352,6 +352,19 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
           double aMult = myPoles(classe, aDimIdx) < myPoints(myNbPoints, aDimIdx) ? 1.0 : -1.0;
           myPoles(classe, aDimIdx) += aMult * myPerInfo(aDimIdx).myPeriod;
         }
+      }
+    }
+
+    // Solve relative to the first sample, keeping common coordinates out of the residuals.
+    for (k = 1; k <= nbcol; k++)
+    {
+      if (myFirstC == AppParCurves_PassPoint || myFirstC == AppParCurves_TangencyPoint)
+      {
+        myPoles(1, k) -= myPoints(1, k);
+      }
+      if (myLastC == AppParCurves_PassPoint || myLastC == AppParCurves_TangencyPoint)
+      {
+        myPoles(classe, k) -= myPoints(1, k);
       }
     }
 
@@ -512,6 +525,13 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       }
     }
   }
+  for (i = 1; i <= classe; i++)
+  {
+    for (k = 1; k <= nbcol; k++)
+    {
+      myPoles(i, k) += myPoints(1, k);
+    }
+  }
 }
 
 //=================================================================================================
@@ -555,7 +575,13 @@ void AppCont_LeastSquare::Error(double& F, double& MaxE3d, double& MaxE2d) const
   int    ncol = myPoints.UpperCol() - myPoints.LowerCol() + 1;
 
   math_Matrix MyPoints(1, myNbdiscret, 1, ncol);
-  MyPoints = myPoints;
+  for (i = 1; i <= myNbdiscret; i++)
+  {
+    for (j = 1; j <= ncol; j++)
+    {
+      MyPoints(i, j) = myPoints(i, j) - myPoints(1, j);
+    }
+  }
 
   MaxE3d = MaxE2d = F = 0.0;
 
@@ -565,7 +591,7 @@ void AppCont_LeastSquare::Error(double& F, double& MaxE3d, double& MaxE2d) const
   {
     for (k = 1; k <= ncol; k++)
     {
-      tmppoles(k) = myPoles(c, k);
+      tmppoles(k) = myPoles(c, k) - myPoints(1, k);
     }
     for (i = 1; i <= myNbdiscret; i++)
     {

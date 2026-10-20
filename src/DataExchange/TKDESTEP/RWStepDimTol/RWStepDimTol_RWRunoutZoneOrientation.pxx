@@ -26,6 +26,7 @@ class StepData_StepReaderData;
 class Interface_Check;
 class StepDimTol_RunoutZoneOrientation;
 class StepData_StepWriter;
+class Interface_EntityIterator;
 
 //! Read & Write tool for RunoutZoneOrientation
 class RWStepDimTol_RWRunoutZoneOrientation
@@ -45,5 +46,9 @@ public:
   //! Writes RunoutZoneOrientation
   Standard_HIDDEN void WriteStep(StepData_StepWriter&                                 SW,
                                  const occ::handle<StepDimTol_RunoutZoneOrientation>& ent) const;
+
+  //! Visit the angle measure referenced by the orientation.
+  Standard_HIDDEN void Share(const occ::handle<StepDimTol_RunoutZoneOrientation>& theEntity,
+                             Interface_EntityIterator& theIterator) const;
 };
 #endif // _RWStepDimTol_RWRunoutZoneOrientation_HeaderFile

@@ -11,8 +11,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2d_Ellipse.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Adaptor2d_OffsetCurve.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert_ApproxCurve.hxx>
@@ -24,6 +28,11 @@
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
+
+#include <gtest/gtest.h>
+
+#include <algorithm>
+#include <cmath>
 
 class Geom2d_OffsetCurve_Test : public ::testing::Test
 {
@@ -126,4 +135,103 @@ TEST(Geom2d_OffsetCurve_AdditionalTest, FClassesBug_31381_RationalBSplineApproxi
   Geom2dAdaptor_Curve anAdaptor(anApproximatedCurve);
   const double        aLength = GCPnts_AbscissaPoint::Length(anAdaptor);
   EXPECT_NEAR(aLength, 3.1415850499856011, 1.0e-6);
+}
+
+//==================================================================================================
+
+TEST(Geom2dOffsetCurveTest, TrimmedPeriodicBasis_PreservesCapturedParameterChart)
+{
+  const occ::handle<Geom2d_Curve> aCircle = new Geom2d_Circle(gp_Ax2d(), 5);
+  for (const double aShift : {-8.0, 0.0, 8.0})
+  {
+    const double                    aFirst = aShift + 0.25;
+    const double                    aLast  = aShift + 1.75;
+    const occ::handle<Geom2d_Curve> aSource =
+      new Geom2d_TrimmedCurve(aCircle, aFirst, aLast, true, false);
+    const occ::handle<Geom2d_OffsetCurve> aResult = new Geom2d_OffsetCurve(aSource, 1);
+    EXPECT_EQ(aResult->FirstParameter(), aFirst);
+    EXPECT_EQ(aResult->LastParameter(), aLast);
+    EXPECT_EQ(aResult->BasisCurve()->FirstParameter(), aFirst);
+    EXPECT_EQ(aResult->BasisCurve()->LastParameter(), aLast);
+    for (int anIndex = 0; anIndex <= 17; ++anIndex)
+    {
+      const double   aParameter = aFirst + (aLast - aFirst) * static_cast<double>(anIndex) / 17.0;
+      const gp_Pnt2d aPoint     = aResult->EvalD0(aParameter);
+      EXPECT_NEAR(aPoint.X(), 6.0 * std::cos(aParameter), 1e-12);
+      EXPECT_NEAR(aPoint.Y(), 6.0 * std::sin(aParameter), 1e-12);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(Geom2dOffsetCurveTest, EvalD3_RegularAndSmallEllipse_AgreesWithLowerOrders)
+{
+  for (const double aScale : {1.0, 1.e-45})
+  {
+    const occ::handle<Geom2d_Curve> anEllipse = new Geom2d_Ellipse(gp_Ax2d(), 2.0 * aScale, aScale);
+    const Geom2d_OffsetCurve        anOffset(anEllipse, 0.25 * aScale);
+    const occ::handle<Geom2dAdaptor_Curve> aBasis = new Geom2dAdaptor_Curve(anEllipse);
+    const Adaptor2d_OffsetCurve            anAdaptor(aBasis, 0.25 * aScale);
+    for (const double aParameter : {0.0, 0.37, 1.2})
+    {
+      const Geom2d_Curve::ResD2 aD2 = anOffset.EvalD2(aParameter);
+      const Geom2d_Curve::ResD3 aD3 = anOffset.EvalD3(aParameter);
+      const auto [anAdaptorPoint, anAdaptorD1, anAdaptorD2, anAdaptorD3] =
+        anAdaptor.EvalD3(aParameter);
+      EXPECT_NEAR(aD3.D2.X() / aScale, aD2.D2.X() / aScale, 1.e-12);
+      EXPECT_NEAR(aD3.D2.Y() / aScale, aD2.D2.Y() / aScale, 1.e-12);
+      EXPECT_NEAR(anAdaptorD2.X() / aScale, aD2.D2.X() / aScale, 1.e-12);
+      EXPECT_NEAR(anAdaptorD2.Y() / aScale, aD2.D2.Y() / aScale, 1.e-12);
+      EXPECT_NEAR(anAdaptorD3.X() / aScale, aD3.D3.X() / aScale, 1.e-12);
+      EXPECT_NEAR(anAdaptorD3.Y() / aScale, aD3.D3.Y() / aScale, 1.e-12);
+    }
+    EXPECT_NEAR(anOffset.EvalD3(0.0).D2.X() / aScale, -3.0, 1.e-12);
+    EXPECT_NEAR(anOffset.EvalD3(0.0).D3.Y() / aScale, -6.0, 1.e-12);
+  }
+}
+
+//==================================================================================================
+
+TEST(Geom2dOffsetCurveTest, EvalD3_ParabolicBasis_MatchesAnalyticDerivative)
+{
+  // These poles give p(u) = (u, u*u).
+  NCollection_Array1<gp_Pnt2d> aPoles(size_t{3});
+  aPoles.ChangeAt(0)                     = gp_Pnt2d(0.0, 0.0);
+  aPoles.ChangeAt(1)                     = gp_Pnt2d(0.5, 0.0);
+  aPoles.ChangeAt(2)                     = gp_Pnt2d(1.0, 1.0);
+  const occ::handle<Geom2d_Curve> aBasis = new Geom2d_BezierCurve(aPoles);
+  const Geom2d_OffsetCurve        anOffset(aBasis, 0.25);
+  const Geom2d_Curve::ResD3       aResult = anOffset.EvalD3(1.0);
+  // At u=1, the third derivative of (2u,-1)/sqrt(4u*u+1)
+  // is (72,48)/(25*sqrt(5)). The basis has zero third derivative.
+  const double aDenominator = 25.0 * std::sqrt(5.0);
+  EXPECT_NEAR(aResult.D3.X(), 18.0 / aDenominator, 1.e-12);
+  EXPECT_NEAR(aResult.D3.Y(), 12.0 / aDenominator, 1.e-12);
+}
+
+//==================================================================================================
+
+TEST(Geom2dOffsetCurveTest, ScaledParabolaHasFiniteThirdNormalDerivative)
+{
+  for (const double aScale : {1.0, 1.e-45, 1.e-53, 1.e53})
+  {
+    SCOPED_TRACE(aScale);
+    NCollection_Array1<gp_Pnt2d> aPoles(size_t{3});
+    aPoles.ChangeAt(0)                           = gp_Pnt2d(0, 0);
+    aPoles.ChangeAt(1)                           = gp_Pnt2d(.5 * aScale, 0);
+    aPoles.ChangeAt(2)                           = gp_Pnt2d(aScale, aScale);
+    const occ::handle<Geom2d_BezierCurve> aBasis = new Geom2d_BezierCurve(aPoles);
+    const Geom2d_OffsetCurve              anOffset(aBasis, .25);
+    Geom2d_Curve::ResD3                   aAtZero;
+    ASSERT_NO_THROW(aAtZero = anOffset.EvalD3(0));
+    EXPECT_NEAR(aAtZero.D3.X(), -6.0, 1.e-12);
+    EXPECT_NEAR(aAtZero.D3.Y(), 0.0, 1.e-12);
+    const Geom2d_Curve::ResD3 aAtOne       = anOffset.EvalD3(1);
+    const double              aDenominator = 25 * std::sqrt(5.0);
+    EXPECT_NEAR(aAtOne.D3.X(), 18 / aDenominator, 1.e-12);
+    EXPECT_NEAR(aAtOne.D3.Y(), 12 / aDenominator, 1.e-12);
+    const Geom2d_Curve::ResD2 aD2 = anOffset.EvalD2(0);
+    EXPECT_NEAR(aAtZero.D2.Y(), aD2.D2.Y(), 1.e-12 * std::max(1.0, aScale));
+  }
 }
