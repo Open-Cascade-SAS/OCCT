@@ -66,6 +66,10 @@ bool BinMXCAFDoc_NoteBinDataDriver::Paste(const BinObjMgt_Persistent&       theS
   occ::handle<NCollection_HArray1<uint8_t>> aData;
   if (nbSize > 0)
   {
+    if (!theSource.HasItems(nbSize, 1))
+    {
+      return false;
+    }
     aData.reset(new NCollection_HArray1<uint8_t>(1, nbSize));
     theSource.GetByteArray(&aData->ChangeFirst(), nbSize);
   }

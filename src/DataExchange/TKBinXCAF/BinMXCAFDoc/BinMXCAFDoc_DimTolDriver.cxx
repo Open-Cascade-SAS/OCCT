@@ -56,6 +56,10 @@ bool BinMXCAFDoc_DimTolDriver::Paste(const BinObjMgt_Persistent&       theSource
   const int                                aLength = aLastInd - aFirstInd + 1;
   if (aLength > 0)
   {
+    if (!theSource.HasItems(aLength, (int)sizeof(double)))
+    {
+      return false;
+    }
     aHArr = new NCollection_HArray1<double>(aFirstInd, aLastInd);
 
     NCollection_Array1<double>& aTargetArray = aHArr->ChangeArray1();

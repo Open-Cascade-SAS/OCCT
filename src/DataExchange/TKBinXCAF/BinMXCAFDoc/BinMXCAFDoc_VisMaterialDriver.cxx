@@ -197,6 +197,10 @@ static void readTexture(const BinObjMgt_Persistent& theSource,
     return;
   }
   theSource.GetInteger(aLength);
+  if (!theSource.HasItems(aLength, 1))
+  {
+    return;
+  }
   occ::handle<NCollection_Buffer> aBuff =
     new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aLength);
   theSource.GetByteArray(aBuff->ChangeData(), aLength);
