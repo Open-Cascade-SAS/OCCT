@@ -122,9 +122,10 @@ void GProp_SelGProps::Perform(const gp_Cone& S,
 
   double Auxi1 = R + (Z2 + Z1) * Snt / 2.;
   double Auxi2 = (Z2 * Z2 + Z1 * Z2 + Z1 * Z1) / 3.;
-  dim          = (Alpha2 - Alpha1) * Cnt * (Z2 - Z1) * Auxi1;
+  // The area element of gp_Cone is R + v sin(a) dv du.
+  dim = (Alpha2 - Alpha1) * (Z2 - Z1) * Auxi1;
 
-  double Ix = (R * R + R * (Z2 + Z1) * Snt + Snt * Auxi2) / Auxi1;
+  double Ix = (R * R + R * (Z2 + Z1) * Snt + Snt * Snt * Auxi2) / Auxi1;
   double Iy = Ix * (Cn1 - Cn2) / (Alpha2 - Alpha1);
   Ix        = Ix * (Sn2 - Sn1) / (Alpha2 - Alpha1);
   double Iz = Cnt * (R * (Z2 + Z1) / 2. + Snt * Auxi2) / Auxi1;
@@ -133,18 +134,21 @@ void GProp_SelGProps::Perform(const gp_Cone& S,
              Y0 + Ya1 * Ix + Ya2 * Iy + Ya3 * Iz,
              Z0 + Za1 * Ix + Za2 * Iy + Za3 * Iz);
 
-  double R1   = R + Z1 * Snt;
-  double R2   = R + Z2 * Snt;
-  double ZZ   = (Z2 - Z1) * Cnt;
-  double IR2  = ZZ * Snt * (R1 * R1 * R1 + R1 * R1 * R2 + R1 * R2 * R2 + R2 * R2 * R2) / 4.;
-  double ICn2 = IR2 * (Alpha2 - Alpha1 + Cn2 * Sn2 - Cn1 * Sn1) / 2.;
-  double ISn2 = IR2 * (Alpha2 - Alpha1 + Cn2 * Sn2 - Cn1 * Sn1) / 2.;
-  double IZ2  = ZZ * Cnt * Cnt * (Z2 - Z1) * (Alpha2 - Alpha1)
-               * (R * Auxi2 + Snt * (Z2 * Z2 * Z2 + Z2 * Z2 * Z1 + Z2 * Z1 * Z1 + Z1 * Z1 * Z1))
-               / 4.;
-  double ICnSn = IR2 * (Cn2 * Cn2 - Cn1 * Cn1);
-  double ICnz  = Cnt * Snt * ZZ * (R * (Z1 + Z2) / 2. + Auxi2) * (Sn2 - Sn1);
-  double ISnz  = Cnt * Snt * ZZ * (R * (Z1 + Z2) / 2. + Auxi2) * (Cn1 - Cn2);
+  double R1 = R + Z1 * Snt;
+  double R2 = R + Z2 * Snt;
+  double Z3 = Z2 * Z2 * Z2 + Z2 * Z2 * Z1 + Z2 * Z1 * Z1 + Z1 * Z1 * Z1;
+  double Z4 = (Z1 + Z2) * (Z1 * Z1 + Z2 * Z2);
+  // Per unit angle, r = R + v sin(a), z = v cos(a), dA = r dv: IR2 = int r^3, IZ2 = int z^2 r,
+  // IRZ = int r^2 z.
+  double IR2 = (Z2 - Z1) * (R1 * R1 * R1 + R1 * R1 * R2 + R1 * R2 * R2 + R2 * R2 * R2) / 4.;
+  double IRZ =
+    Cnt * (Z2 - Z1) * (R * R * (Z1 + Z2) / 2. + 2. * R * Snt * Auxi2 + Snt * Snt * Z4 / 4.);
+  double ICn2  = IR2 * (Alpha2 - Alpha1 + Cn2 * Sn2 - Cn1 * Sn1) / 2.;
+  double ISn2  = IR2 * (Alpha2 - Alpha1 - Cn2 * Sn2 + Cn1 * Sn1) / 2.;
+  double IZ2   = Cnt * Cnt * (Z2 - Z1) * (Alpha2 - Alpha1) * (R * Auxi2 + Snt * Z3 / 4.);
+  double ICnSn = IR2 * (Sn2 * Sn2 - Sn1 * Sn1) / 2.;
+  double ICnz  = IRZ * (Sn2 - Sn1);
+  double ISnz  = IRZ * (Cn1 - Cn2);
 
   math_Matrix Dm(1, 3, 1, 3);
   Dm(1, 1) = ISn2 + IZ2;
@@ -154,32 +158,13 @@ void GProp_SelGProps::Perform(const gp_Cone& S,
   Dm(1, 3) = Dm(3, 1) = -ICnz;
   Dm(3, 2) = Dm(2, 3) = -ISnz;
 
-  math_Matrix Passage(1, 3, 1, 3);
-  Passage(1, 1) = Xa1;
-  Passage(1, 2) = Xa2;
-  Passage(1, 3) = Xa3;
-  Passage(2, 1) = Ya1;
-  Passage(2, 2) = Ya2;
-  Passage(2, 3) = Ya3;
-  Passage(3, 1) = Za1;
-  Passage(3, 2) = Za2;
-  Passage(3, 3) = Za3;
-
-  math_Jacobi J(Dm);
-  math_Vector V1(1, 3), V2(1, 3), V3(1, 3);
-  J.Vector(1, V1);
-  V1.Multiply(Passage, V1);
-  V1.Multiply(J.Value(1));
-  J.Vector(2, V2);
-  V2.Multiply(Passage, V2);
-  V2.Multiply(J.Value(2));
-  J.Vector(3, V3);
-  V3.Multiply(Passage, V3);
-  V3.Multiply(J.Value(3));
-
-  inertia =
-    gp_Mat(gp_XYZ(V1(1), V2(1), V3(1)), gp_XYZ(V1(2), V2(2), V3(2)), gp_XYZ(V1(3), V2(3), V3(3)));
+  // Dm is about the cone location in the cone axes: take it to global axes, to g, then to loc.
+  gp_Mat Pm(Xa1, Xa2, Xa3, Ya1, Ya2, Ya3, Za1, Za2, Za3);
+  gp_Mat
+    Dg(Dm(1, 1), Dm(1, 2), Dm(1, 3), Dm(2, 1), Dm(2, 2), Dm(2, 3), Dm(3, 1), Dm(3, 2), Dm(3, 3));
   gp_Mat Hop;
+  GProp::HOperator(g, S.Location(), dim, Hop);
+  inertia = Pm * Dg * Pm.Transposed() - Hop;
   GProp::HOperator(g, loc, dim, Hop);
   inertia = inertia + Hop;
 }

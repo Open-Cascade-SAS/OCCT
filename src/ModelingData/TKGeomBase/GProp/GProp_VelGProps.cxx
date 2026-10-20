@@ -165,31 +165,46 @@ void GProp_VelGProps::Perform(const gp_Cone& S,
   double Sn1   = std::sin(Alpha1);
   double Cn2   = std::cos(Alpha2);
   double Cn1   = std::cos(Alpha1);
-  double ZZ    = (Z2 - Z1) * (Z2 - Z1) * Cnt * Snt;
-  double Auxi1 = 2 * R + (Z2 + Z1) * Snt;
+  double Auxi2 = (Z2 * Z2 + Z1 * Z2 + Z1 * Z1) / 3.;
 
-  dim = ZZ * (Alpha2 - Alpha1) * Auxi1 / 2.;
+  // Volume swept between the axis and the cone, the frustum for a full turn.
+  dim = (Alpha2 - Alpha1) * Cnt * (Z2 - Z1)
+        * (3 * R * R + 3 * R * (Z2 + Z1) * Snt + (Z2 * Z2 + Z2 * Z1 + Z1 * Z1) * Snt * Snt) / 6.;
 
-  double R1    = R + Z1 * Snt;
-  double R2    = R + Z2 * Snt;
+  double R1 = R + Z1 * Snt;
+  double R2 = R + Z2 * Snt;
+  double Z4 = (Z1 + Z2) * (Z1 * Z1 + Z2 * Z2);
+  double Z5 = Z2 * Z2 * Z2 * Z2 + Z2 * Z2 * Z2 * Z1 + Z2 * Z2 * Z1 * Z1 + Z2 * Z1 * Z1 * Z1
+              + Z1 * Z1 * Z1 * Z1;
   double Coef0 = (R1 * R1 + R1 * R2 + R2 * R2);
-  double Iz    = Cnt * (R * (Z2 + Z1) + 2 * Snt * (Z1 * Z1 + Z1 * Z2 + Z2 * Z2) / 3.) / Auxi1;
-  double Ix    = Coef0 * (Sn2 - Sn1) / (Alpha2 - Alpha1) / Auxi1;
-  double Iy    = Coef0 * (Cn1 - Cn2) / (Alpha2 - Alpha1) / Auxi1;
+  double Coef1 = (R1 * R1 * R1 + R1 * R1 * R2 + R1 * R2 * R2 + R2 * R2 * R2);
+  // int v r^2 dv with r = R + v sin(a).
+  double Coef2 = R * R * (Z1 + Z2) / 2. + 2. * R * Snt * Auxi2 + Snt * Snt * Z4 / 4.;
+  double Iz    = 3. * Cnt * Coef2 / Coef0;
+  double Ix    = Coef1 * (Sn2 - Sn1) / (Alpha2 - Alpha1) / (2. * Coef0);
+  double Iy    = Coef1 * (Cn1 - Cn2) / (Alpha2 - Alpha1) / (2. * Coef0);
 
   g.SetCoord(X0 + Xa1 * Ix + Xa2 * Iy + Xa3 * Iz,
              Y0 + Ya1 * Ix + Ya2 * Iy + Ya3 * Iz,
              Z0 + Za1 * Ix + Za2 * Iy + Za3 * Iz);
 
-  double IR2  = ZZ * (R2 * R2 * R2 + R2 * R2 * R1 + R1 * R1 * R2 + R1 * R1 * R1) / 4.;
+  // Per unit angle, r = R + v sin(a), z = v cos(a), dV = rho drho dz: IR2 = int r^4 / 4 dz,
+  // IZ2 = int z^2 r^2 / 2 dz, IRZ = int z r^3 / 3 dz.
+  double IR2 = Cnt * (Z2 - Z1)
+               * (R2 * R2 * R2 * R2 + R2 * R2 * R2 * R1 + R2 * R2 * R1 * R1 + R2 * R1 * R1 * R1
+                  + R1 * R1 * R1 * R1)
+               / 20.;
+  double IRZ = Cnt * Cnt * (Z2 - Z1)
+               * (R * R * R * (Z1 + Z2) / 2. + 3. * R * R * Snt * Auxi2
+                  + 3. * R * Snt * Snt * Z4 / 4. + Snt * Snt * Snt * Z5 / 5.)
+               / 3.;
   double ICn2 = IR2 * (Alpha2 - Alpha1 + Cn2 * Sn2 - Cn1 * Sn1) / 2.;
-  double ISn2 = IR2 * (Alpha2 - Alpha1 + Cn2 * Sn2 - Cn1 * Sn1) / 2.;
-  double IZ2  = ZZ * Cnt * Cnt * (Alpha2 - Alpha1)
-               * (Z1 * Z1 * (R / 3 + Z1 * Snt / 4) + Z2 * Z2 * (R / 3 + Z2 * Snt / 4)
-                  + Z1 * Z2 * (R / 3 + Z1 * Snt / 4 + Z2 * Snt / 4));
-  double ICnSn = IR2 * (Cn2 * Cn2 - Cn1 * Cn1);
-  double ICnz  = (Z1 + Z2) * ZZ * Coef0 * (Sn2 - Sn1) / 3;
-  double ISnz  = (Z1 + Z2) * ZZ * Coef0 * (Cn1 - Cn2) / 3;
+  double ISn2 = IR2 * (Alpha2 - Alpha1 - Cn2 * Sn2 + Cn1 * Sn1) / 2.;
+  double IZ2  = Cnt * Cnt * Cnt * (Z2 - Z1) * (Alpha2 - Alpha1)
+               * (R * R * Auxi2 + R * Snt * Z4 / 2. + Snt * Snt * Z5 / 5.) / 2.;
+  double ICnSn = IR2 * (Sn2 * Sn2 - Sn1 * Sn1) / 2.;
+  double ICnz  = IRZ * (Sn2 - Sn1);
+  double ISnz  = IRZ * (Cn1 - Cn2);
 
   math_Matrix Dm(1, 3, 1, 3);
   Dm(1, 1) = ISn2 + IZ2;
@@ -199,32 +214,13 @@ void GProp_VelGProps::Perform(const gp_Cone& S,
   Dm(1, 3) = Dm(3, 1) = -ICnz;
   Dm(3, 2) = Dm(2, 3) = -ISnz;
 
-  math_Matrix Passage(1, 3, 1, 3);
-  Passage(1, 1) = Xa1;
-  Passage(1, 2) = Xa2;
-  Passage(1, 3) = Xa3;
-  Passage(2, 1) = Ya1;
-  Passage(2, 2) = Ya2;
-  Passage(2, 3) = Ya3;
-  Passage(3, 1) = Za1;
-  Passage(3, 2) = Za2;
-  Passage(3, 3) = Za3;
-
-  math_Jacobi J(Dm);
-  math_Vector V1(1, 3), V2(1, 3), V3(1, 3);
-  J.Vector(1, V1);
-  V1.Multiply(Passage, V1);
-  V1.Multiply(J.Value(1));
-  J.Vector(2, V2);
-  V2.Multiply(Passage, V2);
-  V2.Multiply(J.Value(2));
-  J.Vector(3, V3);
-  V3.Multiply(Passage, V3);
-  V3.Multiply(J.Value(3));
-
-  inertia =
-    gp_Mat(gp_XYZ(V1(1), V2(1), V3(1)), gp_XYZ(V1(2), V2(2), V3(2)), gp_XYZ(V1(3), V2(3), V3(3)));
+  // Dm is about the cone location in the cone axes: take it to global axes, to g, then to loc.
+  gp_Mat Pm(Xa1, Xa2, Xa3, Ya1, Ya2, Ya3, Za1, Za2, Za3);
+  gp_Mat
+    Dg(Dm(1, 1), Dm(1, 2), Dm(1, 3), Dm(2, 1), Dm(2, 2), Dm(2, 3), Dm(3, 1), Dm(3, 2), Dm(3, 3));
   gp_Mat Hop;
+  GProp::HOperator(g, S.Location(), dim, Hop);
+  inertia = Pm * Dg * Pm.Transposed() - Hop;
   GProp::HOperator(g, loc, dim, Hop);
   inertia = inertia + Hop;
 }
