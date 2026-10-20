@@ -26,7 +26,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
       with:
         fetch-depth: 0
 
@@ -41,7 +41,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
       with:
         fetch-depth: 0
 
@@ -67,7 +67,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Build documentation
       uses: ./.github/actions/build-docs
@@ -78,7 +78,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -94,7 +94,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -110,7 +110,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -127,7 +127,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Build OCCT
       uses: ./.github/actions/build-occt
@@ -149,7 +149,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run tests
       uses: ./.github/actions/run-tests
@@ -167,7 +167,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
       
     - name: Run retest
       uses: ./.github/actions/retest-failures
@@ -185,7 +185,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run tests
       uses: ./.github/actions/run-tests
@@ -203,7 +203,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
       
     - name: Run retest
       uses: ./.github/actions/retest-failures
@@ -221,7 +221,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run tests
       uses: ./.github/actions/run-tests
@@ -239,7 +239,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
       
     - name: Run retest
       uses: ./.github/actions/retest-failures
@@ -257,7 +257,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run GTests
       uses: ./.github/actions/run-gtest
@@ -274,7 +274,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run GTests
       uses: ./.github/actions/run-gtest
@@ -291,7 +291,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run GTests
       uses: ./.github/actions/run-gtest
@@ -308,7 +308,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7
 
     - name: Run GTests
       uses: ./.github/actions/run-gtest
@@ -326,7 +326,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7
       
       - name: Generate Test Summary
         uses: ./.github/actions/test-summary
