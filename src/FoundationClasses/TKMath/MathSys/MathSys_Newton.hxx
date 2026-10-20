@@ -123,6 +123,7 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
 
   math_Vector aResidual(aM, 0.0);
   math_Vector aTrialResidual(aM, 0.0);
+  math_Vector aTrial(aN, 0.0);
   math_Matrix aJacobian(aM, aN, 0.0);
   bool        hasTakenStep      = false;
   bool        isLastStepWithinX = false;
@@ -285,11 +286,10 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
 
     const long double aMerit     = 0.5L * aResidualNorm * aResidualNorm;
     bool              isAccepted = false;
-    math_Vector       aTrial(aN, 0.0);
-    for (uint32_t aLineIter = 0; aLineIter < 24; ++aLineIter)
+    for (double anAlpha = 1.0; anAlpha > 0.0; anAlpha *= 0.5)
     {
-      const double anAlpha              = std::ldexp(1.0, -static_cast<int>(aLineIter));
-      double       aProjectedDerivative = 0.0;
+      double aProjectedDerivative = 0.0;
+      bool   hasMoved             = false;
       for (size_t anOffset = 0; anOffset < aN; ++anOffset)
       {
         aTrial.ChangeAt(anOffset) = aSolution.At(anOffset) + anAlpha * aDirection.At(anOffset);
@@ -300,8 +300,14 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
         }
         aProjectedDerivative +=
           aGradient.At(anOffset) * (aTrial.At(anOffset) - aSolution.At(anOffset));
+        hasMoved = hasMoved || aTrial.At(anOffset) != aSolution.At(anOffset);
       }
 
+      // Smaller steps cannot move a coordinate once rounding removes every change.
+      if (!hasMoved)
+      {
+        break;
+      }
       if (!(aProjectedDerivative < 0.0))
       {
         continue;

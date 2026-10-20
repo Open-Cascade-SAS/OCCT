@@ -25,5 +25,5 @@ inline bool GeomFill_Profiler::IsPeriodic() const
 
 inline const occ::handle<Geom_Curve>& GeomFill_Profiler::Curve(const int Index) const
 {
-  return mySequence(Index);
+  return myCurves.Value(static_cast<size_t>(Index) - 1);
 }

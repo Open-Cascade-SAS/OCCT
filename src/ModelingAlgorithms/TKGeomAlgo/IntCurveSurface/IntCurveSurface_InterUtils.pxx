@@ -49,6 +49,10 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <algorithm>
+#include <cmath>
+#include <tuple>
+
 namespace IntCurveSurface_InterUtils
 {
 
@@ -865,14 +869,28 @@ void ComputeTransitions(const CurveType&                   curve,
   double CosDir;
 
   SurfaceTool::D1(surface, u, v, Psurf, D1U, D1V);
+  // Derivative magnitudes depend on the parameterization, not the crossing angle.
+  const auto aNormalize = [](gp_Vec& theVector) {
+    const double aScale =
+      std::max({std::abs(theVector.X()), std::abs(theVector.Y()), std::abs(theVector.Z())});
+    if (aScale == 0.0)
+    {
+      return false;
+    }
+    theVector.SetCoord(theVector.X() / aScale, theVector.Y() / aScale, theVector.Z() / aScale);
+    theVector.Normalize();
+    return true;
+  };
+  if (!aNormalize(D1U) || !aNormalize(D1V))
+  {
+    TransOnCurve = IntCurveSurface_Tangent;
+    return;
+  }
   NSurf = D1U.Crossed(D1V);
   CurveTool::D1(curve, w, Psurf, D1U);
-  double Norm = NSurf.Magnitude();
-  if (Norm > THE_TOLERANCE_ANGULAIRE && D1U.SquareMagnitude() > THE_TOLERANCE_ANGULAIRE)
+  if (aNormalize(NSurf) && aNormalize(D1U))
   {
-    D1U.Normalize();
     CosDir = NSurf.Dot(D1U);
-    CosDir /= Norm;
     if (-CosDir > THE_TOLERANCE_ANGULAIRE)
     {
       //--  --Curve--->    <----Surface----
@@ -1375,75 +1393,30 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
   }
 }
 
-//! Sort start points by W, then U, then V parameters.
-//! Uses bubble sort to eliminate duplicates.
+//! Sort complete parameter triples by W, then U, then V without changing coordinates.
 inline void SortStartPoints(SortedStartPoints& thePoints)
 {
-  int NbStartPoints = thePoints.Size();
-  if (NbStartPoints == 0)
+  const size_t aNbPoints = thePoints.TabU.Size();
+  for (size_t anIndex = 1; anIndex < aNbPoints; ++anIndex)
   {
-    return;
+    const double aU        = thePoints.TabU(anIndex);
+    const double aV        = thePoints.TabV(anIndex);
+    const double aW        = thePoints.TabW(anIndex);
+    size_t       aPosition = anIndex;
+    while (aPosition > 0
+           && std::tie(aW, aU, aV) < std::tie(thePoints.TabW(aPosition - 1),
+                                              thePoints.TabU(aPosition - 1),
+                                              thePoints.TabV(aPosition - 1)))
+    {
+      thePoints.TabU.ChangeValue(aPosition) = thePoints.TabU(aPosition - 1);
+      thePoints.TabV.ChangeValue(aPosition) = thePoints.TabV(aPosition - 1);
+      thePoints.TabW.ChangeValue(aPosition) = thePoints.TabW(aPosition - 1);
+      --aPosition;
+    }
+    thePoints.TabU.ChangeValue(aPosition) = aU;
+    thePoints.TabV.ChangeValue(aPosition) = aV;
+    thePoints.TabW.ChangeValue(aPosition) = aW;
   }
-
-  double ptol = 10 * Precision::PConfusion();
-
-  // Sort by W
-  bool Triok;
-  do
-  {
-    Triok = true;
-    for (int i = 1; i < NbStartPoints; i++)
-    {
-      int im1 = i - 1;
-      if (thePoints.TabW(i) < thePoints.TabW(im1))
-      {
-        std::swap(thePoints.TabW.ChangeValue(i), thePoints.TabW.ChangeValue(im1));
-        std::swap(thePoints.TabU.ChangeValue(i), thePoints.TabU.ChangeValue(im1));
-        std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
-        Triok = false;
-      }
-    }
-  } while (!Triok);
-
-  // Sort by U for same W
-  do
-  {
-    Triok = true;
-    for (int i = 1; i < NbStartPoints; i++)
-    {
-      int im1 = i - 1;
-      if ((thePoints.TabW(i) - thePoints.TabW(im1)) < ptol)
-      {
-        thePoints.TabW.ChangeValue(i) = thePoints.TabW(im1);
-        if (thePoints.TabU(i) < thePoints.TabU(im1))
-        {
-          std::swap(thePoints.TabU.ChangeValue(i), thePoints.TabU.ChangeValue(im1));
-          std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
-          Triok = false;
-        }
-      }
-    }
-  } while (!Triok);
-
-  // Sort by V for same W and U
-  do
-  {
-    Triok = true;
-    for (int i = 1; i < NbStartPoints; i++)
-    {
-      int im1 = i - 1;
-      if (((thePoints.TabW(i) - thePoints.TabW(im1)) < ptol)
-          && ((thePoints.TabU(i) - thePoints.TabU(im1)) < ptol))
-      {
-        thePoints.TabU.ChangeValue(i) = thePoints.TabU(im1);
-        if (thePoints.TabV(i) < thePoints.TabV(im1))
-        {
-          std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
-          Triok = false;
-        }
-      }
-    }
-  } while (!Triok);
 }
 
 //! Process sorted start points through exact intersection.

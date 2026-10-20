@@ -12,6 +12,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   Geom2dAPI_PointsToBSpline_Test.cxx
   GeomFill_BSplineCurves_Test.cxx
   GeomFill_NSections_Test.cxx
+  GeomFill_Profiler_Test.cxx
   Geom2dHatch_Elements_Test.cxx
   Geom2dHatch_Intersector_Test.cxx
   GeomAPI_PointsToBSplineSurface_Test.cxx
@@ -30,6 +31,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntCurveSurface_ThePolyhedronOfHInter_Test.cxx
   IntCurveSurface_ThePolygonOfHInter_Test.cxx
   Intf_Tool_Test.cxx
+  Intf_InterferencePolygon2d_Test.cxx
   IntPatch_Polyhedron_Test.cxx
   IntPatch_PolyhedronBVH_Test.cxx
   IntPolyh_Intersection_Test.cxx
