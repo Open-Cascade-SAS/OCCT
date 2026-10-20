@@ -91,14 +91,15 @@ gp_Pnt GeomFill_CoonsAlgPatch::Value(const double U, const double V) const
   a3 = 1. - a1;
   gp_XYZ cor, cortemp;
 
-  cor = bound[0]->Value(V).XYZ();
+  // bound[0] and bound[2] run along U, so they are sampled at U, as D1U and D1V already do.
+  cor = bound[0]->Value(U).XYZ();
   cor.Multiply(a0);
 
   cortemp = bound[1]->Value(V).XYZ();
   cortemp.Multiply(a1);
   cor.Add(cortemp);
 
-  cortemp = bound[2]->Value(V).XYZ();
+  cortemp = bound[2]->Value(U).XYZ();
   cortemp.Multiply(a2);
   cor.Add(cortemp);
 
