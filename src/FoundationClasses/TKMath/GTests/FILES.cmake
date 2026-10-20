@@ -2,6 +2,7 @@
 set(OCCT_TKMath_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKMath_GTests_FILES
+  MathSys_Newton_Test.cxx
   Bnd_B2_Test.cxx
   Bnd_B3_Test.cxx
   Bnd_BoundSortBox_Test.cxx

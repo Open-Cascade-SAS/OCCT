@@ -12,6 +12,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   AdvApp2Var_Node_Test.cxx
   AppCont_ContMatrices_Test.cxx
   AppCont_LeastSquare_Test.cxx
+  AppDef_LeastSquare_Test.cxx
   BndLib_Test.cxx
   GeomBndLib_Curve_Test.cxx
   GeomBndLib_Curve2d_Test.cxx
