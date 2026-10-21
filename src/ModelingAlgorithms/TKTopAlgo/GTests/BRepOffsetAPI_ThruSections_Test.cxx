@@ -16,7 +16,9 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BSplCLib.hxx>
@@ -32,7 +34,11 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+
+#include <cmath>
 
 // Test OCC10006: BRepOffsetAPI_ThruSections loft operation with Boolean fusion
 TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
@@ -126,6 +132,24 @@ occ::handle<Geom_BSplineCurve> createBSplineCurve(const std::vector<double>& the
   BSplCLib::Knots(aKnotSeq, aKnots, aMults);
 
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree, false);
+}
+
+//==================================================================================================
+
+//! Closed polygonal wire on a cylinder of radius theRadius, with theK periods of sinusoidal
+//! out-of-plane variation of amplitude theAmp around the loop. theK <= 1 gives a planar wire
+//! (theK == 1 is the cylinder's intersection with a tilted plane); theK >= 2 is not planar.
+TopoDS_Wire createSaddleWire(double theRadius, int theK, double theAmp, double theZOffset, int theN)
+{
+  BRepBuilderAPI_MakePolygon aPolygon;
+  for (int i = 0; i < theN; ++i)
+  {
+    double aTheta = 2.0 * M_PI * i / theN;
+    double aZ     = theAmp * cos(theK * aTheta) + theZOffset;
+    aPolygon.Add(gp_Pnt(theRadius * cos(aTheta), theRadius * sin(aTheta), aZ));
+  }
+  aPolygon.Close();
+  return aPolygon.Wire();
 }
 } // namespace
 
@@ -390,4 +414,71 @@ TEST(BRepOffsetAPI_ThruSections_Test, OCC895_TwoCircularArcWires_NoTwist)
   GProp_GProps aProps;
   BRepGProp::SurfaceProperties(aThruSect.Shape(), aProps);
   EXPECT_NEAR(aProps.Mass(), 18.1614, 0.01) << "Surface area should be approximately 18.1614";
+}
+
+// A closed section with two or more out-of-plane periods has no capping plane or surface,
+// so Build() of a solid loft must report failure and expose no cap face.
+TEST(BRepOffsetAPI_ThruSections_Test, Build_NonPlanarClosedWire_IsNotDone)
+{
+  TopoDS_Wire anOuter = createSaddleWire(20.0, 2, 5.0, 0.0, 60);
+  TopoDS_Wire anInner = createSaddleWire(15.0, 2, 5.0, -10.0, 60);
+  ASSERT_FALSE(anOuter.IsNull());
+  ASSERT_FALSE(anInner.IsNull());
+
+  BRepOffsetAPI_ThruSections aLoft(true, false); // solid, smoothed
+  aLoft.CheckCompatibility(true);
+  aLoft.AddWire(anOuter);
+  aLoft.AddWire(anInner);
+  aLoft.Build();
+
+  EXPECT_FALSE(aLoft.IsDone());
+  EXPECT_TRUE(aLoft.FirstShape().IsNull());
+  EXPECT_TRUE(aLoft.LastShape().IsNull());
+}
+
+// The first section is capped and the last one is not: the first cap face must not stay
+// reachable through FirstShape() after the failed Build().
+TEST(BRepOffsetAPI_ThruSections_Test, Build_OnlyLastSectionNonPlanar_ClearsFirstCapFace)
+{
+  TopoDS_Wire aPlanar = createSaddleWire(20.0, 0, 0.0, 0.0, 60);
+  TopoDS_Wire aSaddle = createSaddleWire(15.0, 2, 5.0, -10.0, 60);
+  ASSERT_FALSE(aPlanar.IsNull());
+  ASSERT_FALSE(aSaddle.IsNull());
+
+  BRepOffsetAPI_ThruSections aLoft(true, false); // solid, smoothed
+  aLoft.CheckCompatibility(true);
+  aLoft.AddWire(aPlanar);
+  aLoft.AddWire(aSaddle);
+  aLoft.Build();
+
+  EXPECT_FALSE(aLoft.IsDone());
+  EXPECT_TRUE(aLoft.FirstShape().IsNull());
+  EXPECT_TRUE(aLoft.LastShape().IsNull());
+}
+
+// A degenerate (point) end needs no cap face and is not a capping failure.
+TEST(BRepOffsetAPI_ThruSections_Test, Build_DegenerateVertexEnd_ReturnsValidSolid)
+{
+  gce_MakeCirc aMakeCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp::DZ()), 10.0);
+  ASSERT_TRUE(aMakeCirc.IsDone());
+  BRepBuilderAPI_MakeEdge aMakeEdge(aMakeCirc.Value());
+  ASSERT_TRUE(aMakeEdge.IsDone());
+  BRepBuilderAPI_MakeWire aMakeWire(aMakeEdge.Edge());
+  ASSERT_TRUE(aMakeWire.IsDone());
+
+  BRepBuilderAPI_MakeVertex aMakeApex(gp_Pnt(0, 0, 20.0));
+  ASSERT_TRUE(aMakeApex.IsDone());
+
+  BRepOffsetAPI_ThruSections aLoft(true, true); // solid, ruled
+  aLoft.AddWire(aMakeWire.Wire());
+  aLoft.AddVertex(aMakeApex.Vertex());
+  aLoft.Build();
+
+  ASSERT_TRUE(aLoft.IsDone());
+  EXPECT_EQ(aLoft.Shape().ShapeType(), TopAbs_SOLID);
+  EXPECT_TRUE(BRepCheck_Analyzer(aLoft.Shape()).IsValid());
+
+  GProp_GProps aProps;
+  BRepGProp::VolumeProperties(aLoft.Shape(), aProps);
+  EXPECT_NEAR(aProps.Mass(), M_PI * 10.0 * 10.0 * 20.0 / 3.0, 1.0); // cone: pi r^2 h / 3
 }
