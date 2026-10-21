@@ -217,7 +217,11 @@ protected: //! @name Protected methods performing the removal
   //! Processes each feature separately.
   Standard_EXPORT void RemoveFeatures(const Message_ProgressRange& theRange);
 
-  //! Remove the single feature from the shape.
+  //! Remove the single feature from the given local shape.
+  //! The shape and history are passed explicitly instead of through the
+  //! myShape/myHistory members, so that this method is safe to call
+  //! concurrently from different threads, as long as each call is given
+  //! its own theShape/theHistory operating on a disjoint set of solids.
   //! @param[in] theFeature  The feature to remove;
   //! @param[in] theSolids  The solids to be reconstructed after feature removal;
   //! @param[in] theFeatureFacesMap  The map of feature faces;
@@ -227,6 +231,9 @@ protected: //! @name Protected methods performing the removal
   //! @param[in] theAdjFacesHistory  The history of the adjacent faces reconstruction;
   //! @param[in] theSolidsHistoryNeeded  Defines whether the history of solids
   //!                                    modifications should be tracked or not.
+  //! @param[in,out] theShape  The local shape to remove the feature from,
+  //!                          overwritten with the result.
+  //! @param[in,out] theHistory  The local history to update.
   Standard_EXPORT void RemoveFeature(
     const TopoDS_Shape&                                                  theFeature,
     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSolids,
@@ -237,6 +244,8 @@ protected: //! @name Protected methods performing the removal
                                      TopTools_ShapeMapHasher>&           theAdjFaces,
     const occ::handle<BRepTools_History>&                                theAdjFacesHistory,
     const bool                                                           theSolidsHistoryNeeded,
+    TopoDS_Shape&                                                        theShape,
+    occ::handle<BRepTools_History>&                                      theHistory,
     const Message_ProgressRange&                                         theRange);
 
   //! Updates history with the removed features
@@ -252,6 +261,13 @@ protected: //! @name Protected methods performing the removal
   //! Filling steps for constant operations
   Standard_EXPORT void fillPIConstants(const double     theWhole,
                                        BOPAlgo_PISteps& theSteps) const override;
+
+private:
+  //! Groups the features whose affected solids are disjoint from all
+  //! other groups' solids, so that groups can be processed independently
+  //! and in parallel, while features sharing a solid within one group stay
+  //! sequential. Defined in the .cxx file.
+  class RFGroup;
 
 protected: //! @name Fields
   // Inputs

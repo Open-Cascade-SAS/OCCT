@@ -1,0 +1,45 @@
+# Two disjoint solids, each with its own independent feature, removed
+# together in a single call. Exercises the disjoint-group path, which
+# the rest of this test suite does not cover.
+
+# Solid A, same recipe as removefeatures test G1
+polyline pA 0 0 0 10 0 0 10 0 5 5 0 5 0 0 0
+mkplane fA pA
+prism sA fA 0 5 0
+pcylinder cA 2 3
+ttranslate cA 7.5 2.5 2
+bclearobjects
+bcleartools
+baddobjects sA
+baddtools cA
+bfillds
+bbop modelA 2
+savehistory bopA_hist
+explode sA f
+modified featureA bopA_hist sA_3
+
+# Solid B: identical shape, translated far away so it's disjoint from A
+polyline pB 0 0 0 10 0 0 10 0 5 5 0 5 0 0 0
+mkplane fB pB
+prism sB fB 0 5 0
+ttranslate sB 100 0 0
+pcylinder cB 2 3
+ttranslate cB 107.5 2.5 2
+bclearobjects
+bcleartools
+baddobjects sB
+baddtools cB
+bfillds
+bbop modelB 2
+savehistory bopB_hist
+explode sB f
+modified featureB bopB_hist sB_3
+
+compound modelA modelB model
+compound featureA featureB gap
+
+removefeatures result model gap
+checkshape result
+checkprops result -s 669.241 -v 361.77 -deps 1.e-3
+checknbshapes result -vertex 16 -edge 24 -wire 16 -face 14 -shell 2 -solid 2 -t
+CheckIsFeatureRemoved gap {e f}
