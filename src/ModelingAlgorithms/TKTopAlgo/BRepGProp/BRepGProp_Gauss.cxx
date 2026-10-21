@@ -451,7 +451,8 @@ void BRepGProp_Gauss::convert(const BRepGProp_Gauss::Inertia& theInertia,
                               double&                         theOutMass)
 {
   convert(theInertia, theOutGravityCenter, theOutMatrixOfInertia, theOutMass);
-  if (std::abs(theInertia.Mass) >= EPS_DIM && theIsByPoint)
+  // Both modes have a mass; theIsByPoint only selects how the centre is formed.
+  if (std::abs(theInertia.Mass) >= EPS_DIM)
   {
     const double anInvMass = 1.0 / theInertia.Mass;
     if (theIsByPoint)
