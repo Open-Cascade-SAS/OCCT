@@ -1,0 +1,21 @@
+##################################################
+# UnifySameDomain incorrect work on left-handed face and its mirror
+##################################################
+
+pcone cone1 7 10 20
+tmirror cone1 0 0 10 0 0 1
+trotate cone1 0 0 0 0 0 1 160
+
+box box1 0 -32 -5 30 30 30
+
+bcommon comm1 cone1 box1
+tcopy comm1 comm2
+
+tmirror comm2 0 0 0 1 0 0
+
+bfuse a comm1 comm2
+
+unifysamedom result a
+
+checkshape result
+checknbshapes result -vertex 4 -edge 6 -wire 4 -face 4
