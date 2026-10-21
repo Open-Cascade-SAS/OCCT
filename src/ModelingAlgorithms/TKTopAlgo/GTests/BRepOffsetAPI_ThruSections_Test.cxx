@@ -13,10 +13,14 @@
 
 #include <gtest/gtest.h>
 
+#include <BRep_Builder.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRepFill_ThruSectionErrorStatus.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BSplCLib.hxx>
@@ -32,7 +36,12 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Wire.hxx>
+
+#include <cmath>
 
 // Test OCC10006: BRepOffsetAPI_ThruSections loft operation with Boolean fusion
 TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
@@ -390,4 +399,119 @@ TEST(BRepOffsetAPI_ThruSections_Test, OCC895_TwoCircularArcWires_NoTwist)
   GProp_GProps aProps;
   BRepGProp::SurfaceProperties(aThruSect.Shape(), aProps);
   EXPECT_NEAR(aProps.Mass(), 18.1614, 0.01) << "Surface area should be approximately 18.1614";
+}
+
+namespace
+{
+//==================================================================================================
+
+TopoDS_Wire makeCircleWire(double theRadius, double theZ)
+{
+  gp_Ax2                  anAxis(gp_Pnt(0, 0, theZ), gp::DZ());
+  gce_MakeCirc            aMakeCirc(anAxis, theRadius);
+  BRepBuilderAPI_MakeEdge aMakeEdge(aMakeCirc.Value());
+  return BRepBuilderAPI_MakeWire(aMakeEdge.Edge()).Wire();
+}
+
+//==================================================================================================
+
+TopoDS_Wire makeNGonWire(int theN, double theRadius, double theZ)
+{
+  BRepBuilderAPI_MakePolygon aPolygon;
+  for (int i = 0; i < theN; ++i)
+  {
+    double anAngle = 2.0 * M_PI * i / theN;
+    aPolygon.Add(gp_Pnt(theRadius * cos(anAngle), theRadius * sin(anAngle), theZ));
+  }
+  aPolygon.Close();
+  return aPolygon.Wire();
+}
+
+//==================================================================================================
+
+int countFaces(const TopoDS_Shape& theShape)
+{
+  int aCount = 0;
+  for (TopExp_Explorer anExp(theShape, TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    aCount++;
+  }
+  return aCount;
+}
+} // namespace
+
+// With CheckCompatibility(false), a section with more edges than the first section must make
+// Build() fail with ProfilesInconsistent instead of writing past the shapes array.
+TEST(BRepOffsetAPI_ThruSections_Test, Build_MoreEdgesThanFirstSection_NoCheck_IsNotDone)
+{
+  BRepOffsetAPI_ThruSections aThruSections(true, false);
+  aThruSections.CheckCompatibility(false);
+  aThruSections.AddWire(makeCircleWire(5.0, 0.0));
+  aThruSections.AddWire(makeCircleWire(3.0, 10.0));
+  aThruSections.AddWire(makeNGonWire(3, 2.0, 20.0));
+  ASSERT_NO_THROW(aThruSections.Build());
+  EXPECT_FALSE(aThruSections.IsDone());
+  EXPECT_EQ(aThruSections.GetStatus(), BRepFill_ThruSectionErrorStatus_ProfilesInconsistent);
+}
+
+// A section with fewer edges than the first must also fail, even when a later section has extra
+// edges that make the running edge total match (2 + 1 + 3 = 3 * 2).
+TEST(BRepOffsetAPI_ThruSections_Test, Build_FewerEdgesThanFirstSection_NoCheck_IsNotDone)
+{
+  BRepOffsetAPI_ThruSections aThruSections(true, false);
+  aThruSections.CheckCompatibility(false);
+  aThruSections.AddWire(makeNGonWire(2, 5.0, 0.0));  // first section: nbEdges = 2
+  aThruSections.AddWire(makeCircleWire(3.0, 10.0));  // 1 edge
+  aThruSections.AddWire(makeNGonWire(3, 2.0, 20.0)); // 3 edges
+  ASSERT_NO_THROW(aThruSections.Build());
+  EXPECT_FALSE(aThruSections.IsDone());
+  EXPECT_EQ(aThruSections.GetStatus(), BRepFill_ThruSectionErrorStatus_ProfilesInconsistent);
+}
+
+// An edgeless wire counts as a punctual section but has no degenerate edge to repeat, so Build()
+// must fail with ProfilesInconsistent.
+TEST(BRepOffsetAPI_ThruSections_Test, Build_EdgelessFirstSection_NoCheck_IsNotDone)
+{
+  TopoDS_Wire  anEmptyWire;
+  BRep_Builder aBuilder;
+  aBuilder.MakeWire(anEmptyWire);
+
+  BRepOffsetAPI_ThruSections aThruSections(true, false);
+  aThruSections.CheckCompatibility(false);
+  aThruSections.AddWire(anEmptyWire);
+  aThruSections.AddWire(makeNGonWire(4, 4.0, 5.0));
+  aThruSections.AddWire(makeNGonWire(4, 3.0, 10.0));
+  ASSERT_NO_THROW(aThruSections.Build());
+  EXPECT_FALSE(aThruSections.IsDone());
+  EXPECT_EQ(aThruSections.GetStatus(), BRepFill_ThruSectionErrorStatus_ProfilesInconsistent);
+}
+
+// Sections with equal edge counts, and a punctual first section, build without the compatibility
+// check.
+TEST(BRepOffsetAPI_ThruSections_Test, Build_EqualEdgeCounts_NoCheck_ReturnsValidSolid)
+{
+  {
+    BRepOffsetAPI_ThruSections aThruSections(true, false);
+    aThruSections.CheckCompatibility(false);
+    aThruSections.AddWire(makeNGonWire(4, 5.0, 0.0));
+    aThruSections.AddWire(makeNGonWire(4, 4.0, 5.0));
+    aThruSections.AddWire(makeNGonWire(4, 3.0, 10.0));
+    aThruSections.Build();
+    ASSERT_TRUE(aThruSections.IsDone());
+    EXPECT_EQ(aThruSections.Shape().ShapeType(), TopAbs_SOLID);
+    EXPECT_TRUE(BRepCheck_Analyzer(aThruSections.Shape()).IsValid());
+    EXPECT_EQ(countFaces(aThruSections.Shape()), 6); // 4 side faces and 2 caps
+  }
+  {
+    BRepOffsetAPI_ThruSections aThruSections(true, false);
+    aThruSections.CheckCompatibility(false);
+    aThruSections.AddVertex(BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+    aThruSections.AddWire(makeNGonWire(5, 4.0, 5.0));
+    aThruSections.AddWire(makeNGonWire(5, 3.0, 10.0));
+    aThruSections.Build();
+    ASSERT_TRUE(aThruSections.IsDone());
+    EXPECT_EQ(aThruSections.Shape().ShapeType(), TopAbs_SOLID);
+    EXPECT_TRUE(BRepCheck_Analyzer(aThruSections.Shape()).IsValid());
+    EXPECT_EQ(countFaces(aThruSections.Shape()), 6); // 5 side faces and 1 cap
+  }
 }
