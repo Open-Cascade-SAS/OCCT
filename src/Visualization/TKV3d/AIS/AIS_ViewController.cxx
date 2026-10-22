@@ -423,16 +423,16 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
       {
         const NCollection_Vec2<double> aRotDelta = aTouch.To - myStartRotCoord;
         myGL.OrbitRotation.ToRotate              = true;
-        myGL.OrbitRotation.PointTo = myStartRotCoord + aRotDelta * aRotAccel;
-        myGL.Dragging.ToMove       = true;
+        myGL.OrbitRotation.PointTo               = myStartRotCoord + aRotDelta * aRotAccel;
+        myGL.Dragging.ToMove                     = true;
         myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
       }
       else
       {
         const NCollection_Vec2<double> aRotDelta = aTouch.To - myStartRotCoord;
         myGL.ViewRotation.ToRotate               = true;
-        myGL.ViewRotation.PointTo = myStartRotCoord + aRotDelta * aRotAccel;
-        myGL.Dragging.ToMove      = true;
+        myGL.ViewRotation.PointTo                = myStartRotCoord + aRotDelta * aRotAccel;
+        myGL.Dragging.ToMove                     = true;
         myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
       }
 
