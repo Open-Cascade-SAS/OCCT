@@ -421,17 +421,17 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
         myNavigationMode == AIS_NavigationMode_FirstPersonWalk ? myMouseAccel : myOrbitAccel;
       if (myNavigationMode == AIS_NavigationMode_Orbit)
       {
-        const NCollection_Vec2<double> aRotDelta = aTouch.To - myGL.OrbitRotation.PointStart;
+        const NCollection_Vec2<double> aRotDelta = aTouch.To - myStartRotCoord;
         myGL.OrbitRotation.ToRotate              = true;
-        myGL.OrbitRotation.PointTo = myGL.OrbitRotation.PointStart + aRotDelta * aRotAccel;
+        myGL.OrbitRotation.PointTo = myStartRotCoord + aRotDelta * aRotAccel;
         myGL.Dragging.ToMove       = true;
         myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
       }
       else
       {
-        const NCollection_Vec2<double> aRotDelta = aTouch.To - myGL.ViewRotation.PointStart;
+        const NCollection_Vec2<double> aRotDelta = aTouch.To - myStartRotCoord;
         myGL.ViewRotation.ToRotate               = true;
-        myGL.ViewRotation.PointTo = myGL.ViewRotation.PointStart + aRotDelta * aRotAccel;
+        myGL.ViewRotation.PointTo = myStartRotCoord + aRotDelta * aRotAccel;
         myGL.Dragging.ToMove      = true;
         myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
       }
