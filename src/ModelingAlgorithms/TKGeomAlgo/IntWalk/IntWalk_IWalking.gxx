@@ -539,10 +539,13 @@ bool IntWalk_IWalking::Cadrage(math_Vector& BornInf,
   double U1 = UVap(1) + Step * Duvx * StepSign;
   double V1 = UVap(2) + Step * Duvy * StepSign;
 
-  bool infu = (U1 <= BornInf(1) + Precision::PConfusion());
-  bool supu = (U1 >= BornSup(1) - Precision::PConfusion());
-  bool infv = (V1 <= BornInf(2) + Precision::PConfusion());
-  bool supv = (V1 >= BornSup(2) - Precision::PConfusion());
+  // Resolve an approaching boundary within surface precision and the predicted step.
+  const double aTolU = std::min(tolerance(1), std::abs(Step * Duvx));
+  const double aTolV = std::min(tolerance(2), std::abs(Step * Duvy));
+  bool         infu  = U1 <= BornInf(1) || (Duvx * StepSign < 0.0 && U1 <= BornInf(1) + aTolU);
+  bool         supu  = U1 >= BornSup(1) || (Duvx * StepSign > 0.0 && U1 >= BornSup(1) - aTolU);
+  bool         infv  = V1 <= BornInf(2) || (Duvy * StepSign < 0.0 && V1 <= BornInf(2) + aTolV);
+  bool         supv  = V1 >= BornSup(2) || (Duvy * StepSign > 0.0 && V1 >= BornSup(2) - aTolV);
 
   double theStepU, theStepV;
 

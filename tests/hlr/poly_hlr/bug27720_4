@@ -1,4 +1,4 @@
-puts "TODO OCC30286 ALL: Error : The length of result shape is 0.798972, expected 0.81982"
+puts "TODO OCC30286 ALL: Error : The length of result shape is 0.798974, expected 0.81982"
 
 puts "============================================"
 puts "OCC27720: HLRBrep_Algo BSpline missing edges"

@@ -34,8 +34,6 @@
 #include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
 #include <gp_Vec.hxx>
-#include <algorithm>
-#include <limits>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -91,6 +89,9 @@
 #include <StepVisual_TriangulatedSurfaceSet.hxx>
 #include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 
+#include <algorithm>
+#include <limits>
+
 // #3 rln 16/02/98
 // #include <GeomAdaptor_Curve.hxx>
 // #include <GeomAdaptor_CurveOnSurface.hxx>
@@ -139,10 +140,6 @@ static void SetNormals(const occ::handle<Poly_Triangulation>&          theMesh,
                        const int                                       theNormNum,
                        const int                                       theNbNodes)
 {
-  if (theNormals->RowLength() != 3)
-  {
-    return;
-  }
   gp_XYZ aNorm;
   if (theNormNum == 1)
   {
@@ -368,12 +365,13 @@ static occ::handle<Poly_Triangulation> CreatePolyTriangulation(
   }
 
   const bool aHasUVNodes = false;
-  const bool aHasNormals = (aNormNum > 0);
   if (aNodes.IsNull())
   {
     return nullptr;
   }
-  const int aNbNodes = !aPnindices.IsNull() ? aPnindices->Length() : aNodes->Length();
+  const int  aNbNodes = !aPnindices.IsNull() ? aPnindices->Length() : aNodes->Length();
+  const bool aHasNormals =
+    aNormNum > 0 && (aNormNum == 1 || aNormNum == aNbNodes) && aNormals->RowLength() == 3;
   if (!aPnindices.IsNull())
   {
     for (const int anIndex : *aPnindices)

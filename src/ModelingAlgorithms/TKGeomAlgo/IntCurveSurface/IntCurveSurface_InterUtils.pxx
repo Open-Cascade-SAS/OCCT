@@ -43,11 +43,17 @@
 #include <Intf_TangentZone.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <ProjLib_Plane.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
+#include <Standard_Real.hxx>
+
+#include <algorithm>
+#include <cmath>
+#include <tuple>
 
 namespace IntCurveSurface_InterUtils
 {
@@ -862,26 +868,35 @@ void ComputeTransitions(const CurveType&                   curve,
 {
   gp_Vec NSurf, D1U, D1V;
   gp_Pnt Psurf;
-  double CosDir;
 
   SurfaceTool::D1(surface, u, v, Psurf, D1U, D1V);
+  // Derivative magnitudes depend on the parameterization, not the crossing angle.
+  const auto aScaleDirection = [](gp_Vec& theVector) {
+    const double aScale =
+      std::max({std::abs(theVector.X()), std::abs(theVector.Y()), std::abs(theVector.Z())});
+    if (aScale == 0.0)
+    {
+      return false;
+    }
+    theVector.SetCoord(theVector.X() / aScale, theVector.Y() / aScale, theVector.Z() / aScale);
+    return true;
+  };
+  if (!aScaleDirection(D1U) || !aScaleDirection(D1V))
+  {
+    TransOnCurve = IntCurveSurface_Tangent;
+    return;
+  }
   NSurf = D1U.Crossed(D1V);
   CurveTool::D1(curve, w, Psurf, D1U);
-  double Norm = NSurf.Magnitude();
-  if (Norm > THE_TOLERANCE_ANGULAIRE && D1U.SquareMagnitude() > THE_TOLERANCE_ANGULAIRE)
+  if (aScaleDirection(NSurf) && aScaleDirection(D1U))
   {
-    D1U.Normalize();
-    CosDir = NSurf.Dot(D1U);
-    CosDir /= Norm;
-    if (-CosDir > THE_TOLERANCE_ANGULAIRE)
+    // Component scaling bounds the squared lengths and prevents overflow in the angle test.
+    const double aDot              = NSurf.Dot(D1U);
+    const double aSquaredTolerance = THE_TOLERANCE_ANGULAIRE * THE_TOLERANCE_ANGULAIRE
+                                     * NSurf.SquareMagnitude() * D1U.SquareMagnitude();
+    if (aDot * aDot > aSquaredTolerance)
     {
-      //--  --Curve--->    <----Surface----
-      TransOnCurve = IntCurveSurface_In;
-    }
-    else if (CosDir > THE_TOLERANCE_ANGULAIRE)
-    {
-      //--  --Curve--->  ----Surface-->
-      TransOnCurve = IntCurveSurface_Out;
+      TransOnCurve = aDot < 0.0 ? IntCurveSurface_In : IntCurveSurface_Out;
     }
     else
     {
@@ -1314,29 +1329,15 @@ bool ProcessLinTorus(const gp_Lin&                                              
   return true;
 }
 
-//! Structure to hold sorted intersection start points.
-struct SortedStartPoints
+//! Parameters of an intersection start point.
+struct StartPoint
 {
-  NCollection_DynamicArray<double> TabU;
-  NCollection_DynamicArray<double> TabV;
-  NCollection_DynamicArray<double> TabW;
-
-  void Clear()
-  {
-    TabU.Clear();
-    TabV.Clear();
-    TabW.Clear();
-  }
-
-  int Size() const { return TabU.Length(); }
-
-  void Append(double theU, double theV, double theW)
-  {
-    TabU.Append(theU);
-    TabV.Append(theV);
-    TabW.Append(theW);
-  }
+  double U; //!< Surface U parameter.
+  double V; //!< Surface V parameter.
+  double W; //!< Curve parameter.
 };
+
+using SortedStartPoints = NCollection_LinearVector<StartPoint>;
 
 //! Collect section points from interference and convert to parameters.
 //! @tparam InterferenceType The interference type
@@ -1352,6 +1353,7 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
 
   int NbSectionPoints = theInterference.NbSectionPoints();
   int NbTangentZones  = theInterference.NbTangentZones();
+  thePoints.Reserve(static_cast<size_t>(NbSectionPoints));
 
   double u, v, w;
 
@@ -1359,7 +1361,7 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
   {
     const Intf_SectionPoint& SP = theInterference.PntValue(i);
     SectionPointToParameters<PolyhedronType, PolygonType>(SP, thePolyhedron, thePolygon, u, v, w);
-    thePoints.Append(u, v, w);
+    thePoints.Append({u, v, w});
   }
 
   for (int i = 1; i <= NbTangentZones; i++)
@@ -1370,80 +1372,23 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
     {
       const Intf_SectionPoint& SP = TZ.GetPoint(j);
       SectionPointToParameters<PolyhedronType, PolygonType>(SP, thePolyhedron, thePolygon, u, v, w);
-      thePoints.Append(u, v, w);
+      thePoints.Append({u, v, w});
     }
   }
 }
 
-//! Sort start points by W, then U, then V parameters.
-//! Uses bubble sort to eliminate duplicates.
+//! Sort complete parameter triples by W, then U, then V without changing coordinates.
 inline void SortStartPoints(SortedStartPoints& thePoints)
 {
-  int NbStartPoints = thePoints.Size();
-  if (NbStartPoints == 0)
+  if (thePoints.Size() > 1)
   {
-    return;
+    std::sort(thePoints.begin(),
+              thePoints.end(),
+              [](const StartPoint& theLeft, const StartPoint& theRight) {
+                return std::tie(theLeft.W, theLeft.U, theLeft.V)
+                       < std::tie(theRight.W, theRight.U, theRight.V);
+              });
   }
-
-  double ptol = 10 * Precision::PConfusion();
-
-  // Sort by W
-  bool Triok;
-  do
-  {
-    Triok = true;
-    for (int i = 1; i < NbStartPoints; i++)
-    {
-      int im1 = i - 1;
-      if (thePoints.TabW(i) < thePoints.TabW(im1))
-      {
-        std::swap(thePoints.TabW.ChangeValue(i), thePoints.TabW.ChangeValue(im1));
-        std::swap(thePoints.TabU.ChangeValue(i), thePoints.TabU.ChangeValue(im1));
-        std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
-        Triok = false;
-      }
-    }
-  } while (!Triok);
-
-  // Sort by U for same W
-  do
-  {
-    Triok = true;
-    for (int i = 1; i < NbStartPoints; i++)
-    {
-      int im1 = i - 1;
-      if ((thePoints.TabW(i) - thePoints.TabW(im1)) < ptol)
-      {
-        thePoints.TabW.ChangeValue(i) = thePoints.TabW(im1);
-        if (thePoints.TabU(i) < thePoints.TabU(im1))
-        {
-          std::swap(thePoints.TabU.ChangeValue(i), thePoints.TabU.ChangeValue(im1));
-          std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
-          Triok = false;
-        }
-      }
-    }
-  } while (!Triok);
-
-  // Sort by V for same W and U
-  do
-  {
-    Triok = true;
-    for (int i = 1; i < NbStartPoints; i++)
-    {
-      int im1 = i - 1;
-      if (((thePoints.TabW(i) - thePoints.TabW(im1)) < ptol)
-          && ((thePoints.TabU(i) - thePoints.TabU(im1)) < ptol))
-      {
-        thePoints.TabU.ChangeValue(i) = thePoints.TabU(im1);
-        if (thePoints.TabV(i) < thePoints.TabV(im1))
-        {
-          std::swap(thePoints.TabV.ChangeValue(i), thePoints.TabV.ChangeValue(im1));
-          Triok = false;
-        }
-      }
-    }
-  } while (!Triok);
 }
 
 //! Process sorted start points through exact intersection.
@@ -1472,7 +1417,7 @@ void ProcessSortedPoints(ExactInterType&                                        
 {
   theResult.Clear();
 
-  int NbStartPoints = thePoints.Size();
+  const size_t NbStartPoints = thePoints.Size();
   if (NbStartPoints == 0)
   {
     return;
@@ -1481,11 +1426,12 @@ void ProcessSortedPoints(ExactInterType&                                        
   double ptol = 10 * Precision::PConfusion();
   double su = 0, sv = 0, sw = 0;
 
-  for (int i = 0; i < NbStartPoints; i++)
+  for (size_t i = 0; i < NbStartPoints; i++)
   {
-    double u = thePoints.TabU(i);
-    double v = thePoints.TabV(i);
-    double w = thePoints.TabW(i);
+    const StartPoint& aStartPoint = thePoints.Value(i);
+    double            u           = aStartPoint.U;
+    double            v           = aStartPoint.V;
+    double            w           = aStartPoint.W;
 
     if (i == 0)
     {
@@ -1512,9 +1458,9 @@ void ProcessSortedPoints(ExactInterType&                                        
         }
       }
     }
-    su = thePoints.TabU(i);
-    sv = thePoints.TabV(i);
-    sw = thePoints.TabW(i);
+    su = aStartPoint.U;
+    sv = aStartPoint.V;
+    sw = aStartPoint.W;
   }
 }
 

@@ -25,11 +25,63 @@
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <LProp_CIType.hxx>
+#include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+
+#include "GeomLProp_NumericCurInf2d.pxx"
+
+#include <gtest/gtest.h>
 
 #include <cmath>
 
-#include <gtest/gtest.h>
+//==================================================================================================
+
+TEST(GeomLProp_CurAndInf2dKnotTest, CurvatureSearchUsesIntervalDerivativeSides)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
+  aPoles.ChangeAt(0) = gp_Pnt2d(0.0, 0.0);
+  aPoles.ChangeAt(1) = gp_Pnt2d(1.0, 2.0);
+  aPoles.ChangeAt(2) = gp_Pnt2d(2.0, 0.0);
+  NCollection_Array1<double> aKnots(1, 4);
+  NCollection_Array1<int>    aMultiplicities(1, 4);
+  aMultiplicities.Init(1);
+  for (size_t i = 0; i < aKnots.Size(); ++i)
+  {
+    aKnots.ChangeAt(i) = static_cast<double>(i);
+  }
+  const occ::handle<Geom2d_BSplineCurve> aCurve =
+    new Geom2d_BSplineCurve(aPoles, aKnots, aMultiplicities, 2, true);
+  // Each quadratic span has one curvature maximum where D1.Dot(D2) is zero.
+  const double anExpected[] = {0.5, 1.0 + 7.0 / 13.0, 2.0 + 6.0 / 13.0};
+  for (int i = 0; i < 3; ++i)
+  {
+    SCOPED_TRACE(i);
+    GeomLProp_NumericCurInf2d anAnalyzer;
+    LProp_CurAndInf           aResult;
+    anAnalyzer.PerformCurExt(aCurve, i, i + 1.0, aResult);
+    ASSERT_TRUE(anAnalyzer.IsDone());
+    ASSERT_EQ(aResult.NbPoints(), 1);
+    EXPECT_NEAR(aResult.Parameter(1), anExpected[i], Precision::PConfusion());
+    EXPECT_EQ(aResult.Type(1), LProp_MinCur);
+  }
+
+  GeomLProp_CurAndInf2d anAnalyzer;
+  anAnalyzer.PerformCurExt(aCurve);
+  ASSERT_TRUE(anAnalyzer.IsDone());
+  for (const double aKnot : {1.0, 2.0})
+  {
+    bool hasKnotExtremum = false;
+    for (int i = 1; i <= anAnalyzer.NbPoints(); ++i)
+    {
+      if (anAnalyzer.Parameter(i) == aKnot)
+      {
+        hasKnotExtremum = true;
+        EXPECT_EQ(anAnalyzer.Type(i), LProp_MaxCur);
+      }
+    }
+    EXPECT_TRUE(hasKnotExtremum) << aKnot;
+  }
+}
 
 TEST(GeomLProp_CurAndInf2dKnotTest, CurvatureMaximumAtC2Knot)
 {
@@ -80,6 +132,109 @@ TEST(GeomLProp_CurAndInf2dKnotTest, CurvatureMaximumAtC2Knot)
           }
         }
         EXPECT_EQ(aNbKnotExtrema, 1);
+      }
+    }
+  }
+}
+
+TEST(GeomLProp_CurAndInf2dParameterTest, InflectionsWithAffineParameters)
+{
+  for (const double aScale : {1.0, 1000.0})
+  {
+    NCollection_Array1<gp_Pnt2d> aPoles(1, 5);
+    aPoles.ChangeAt(0) = gp_Pnt2d(-aScale, 0.0);
+    aPoles.ChangeAt(1) = gp_Pnt2d(-2.0 * aScale / 3.0, aScale / 3.0);
+    aPoles.ChangeAt(2) = gp_Pnt2d(0.0, -aScale / 3.0);
+    aPoles.ChangeAt(3) = gp_Pnt2d(2.0 * aScale / 3.0, aScale / 3.0);
+    aPoles.ChangeAt(4) = gp_Pnt2d(aScale, 0.0);
+    NCollection_Array1<int> aMultiplicities(1, 3);
+    aMultiplicities.ChangeAt(0) = 4;
+    aMultiplicities.ChangeAt(1) = 1;
+    aMultiplicities.ChangeAt(2) = 4;
+    for (const double anOrigin : {0.0, 2000000.0})
+    {
+      for (const double aSpan : {1.0, 200.0})
+      {
+        NCollection_Array1<double> aKnots(1, 3);
+        aKnots.ChangeAt(0) = anOrigin - aSpan;
+        aKnots.ChangeAt(1) = anOrigin;
+        aKnots.ChangeAt(2) = anOrigin + aSpan;
+        occ::handle<Geom2d_BSplineCurve> aCurve =
+          new Geom2d_BSplineCurve(aPoles, aKnots, aMultiplicities, 3);
+        for (const bool isReversed : {false, true})
+        {
+          SCOPED_TRACE(::testing::Message()
+                       << aScale << "," << anOrigin << "," << aSpan << "," << isReversed);
+          if (isReversed)
+          {
+            aCurve->Reverse();
+          }
+          GeomLProp_CurAndInf2d anAnalyzer;
+          anAnalyzer.PerformInf(aCurve);
+          ASSERT_TRUE(anAnalyzer.IsDone());
+          ASSERT_EQ(anAnalyzer.NbPoints(), 2);
+          EXPECT_NEAR((anAnalyzer.Parameter(1) - anOrigin) / aSpan,
+                      -1.0 / 3.0,
+                      Precision::Confusion());
+          EXPECT_NEAR((anAnalyzer.Parameter(2) - anOrigin) / aSpan,
+                      1.0 / 3.0,
+                      Precision::Confusion());
+        }
+      }
+    }
+  }
+}
+
+TEST(GeomLProp_CurAndInf2dKnotTest, ConcavityChangesBetweenCircularArcs)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 13);
+  aPoles.ChangeAt(0)  = gp_Pnt2d(0.0, 0.0);
+  aPoles.ChangeAt(1)  = gp_Pnt2d(1.0, 0.0);
+  aPoles.ChangeAt(2)  = gp_Pnt2d(1.0, 1.0);
+  aPoles.ChangeAt(3)  = gp_Pnt2d(1.0, 2.0);
+  aPoles.ChangeAt(4)  = gp_Pnt2d(0.0, 2.0);
+  aPoles.ChangeAt(5)  = gp_Pnt2d(-1.0, 2.0);
+  aPoles.ChangeAt(6)  = gp_Pnt2d(-1.0, 3.0);
+  aPoles.ChangeAt(7)  = gp_Pnt2d(-1.0, 4.0);
+  aPoles.ChangeAt(8)  = gp_Pnt2d(0.0, 4.0);
+  aPoles.ChangeAt(9)  = gp_Pnt2d(1.0, 4.0);
+  aPoles.ChangeAt(10) = gp_Pnt2d(1.0, 5.0);
+  aPoles.ChangeAt(11) = gp_Pnt2d(1.0, 6.0);
+  aPoles.ChangeAt(12) = gp_Pnt2d(0.0, 6.0);
+  NCollection_Array1<double> aWeights(1, 13);
+  aWeights.Init(1.0);
+  for (size_t i = 1; i < aWeights.Size(); i += 2)
+  {
+    aWeights.ChangeAt(i) = std::sqrt(0.5);
+  }
+  NCollection_Array1<int> aMultiplicities(1, 7);
+  aMultiplicities.Init(2);
+  aMultiplicities.ChangeAt(0) = 3;
+  aMultiplicities.ChangeAt(6) = 3;
+  for (const double anOrigin : {0.0, 2000000.0})
+  {
+    for (const double aSpan : {1.0, 200.0})
+    {
+      NCollection_Array1<double> aKnots(1, 7);
+      for (size_t i = 0; i < aKnots.Size(); ++i)
+      {
+        aKnots.ChangeAt(i) = anOrigin + aSpan * i;
+      }
+      for (const bool isReversed : {false, true})
+      {
+        SCOPED_TRACE(::testing::Message() << anOrigin << "," << aSpan << "," << isReversed);
+        const occ::handle<Geom2d_BSplineCurve> aCurve =
+          new Geom2d_BSplineCurve(aPoles, aWeights, aKnots, aMultiplicities, 2);
+        if (isReversed)
+        {
+          aCurve->Reverse();
+        }
+        GeomLProp_CurAndInf2d anAnalyzer;
+        anAnalyzer.PerformInf(aCurve);
+        ASSERT_TRUE(anAnalyzer.IsDone());
+        ASSERT_EQ(anAnalyzer.NbPoints(), 2);
+        EXPECT_DOUBLE_EQ(anAnalyzer.Parameter(1), anOrigin + 2.0 * aSpan);
+        EXPECT_DOUBLE_EQ(anAnalyzer.Parameter(2), anOrigin + 4.0 * aSpan);
       }
     }
   }
@@ -273,4 +428,38 @@ TEST_F(GeomLProp_CurAndInf2dTest, PerformInf_ClearsPreviousExtrema)
 
   EXPECT_TRUE(aAnalyzer.IsDone());
   EXPECT_EQ(aAnalyzer.NbPoints(), 0);
+}
+
+//==================================================================================================
+
+TEST(GeomLProp_CurAndInf2dKnotTest, SmoothInflectionsSurroundConcavityJump)
+{
+  // Two cubic S curves meet with the same tangent and opposite signed curvature.
+  const gp_Pnt2d                         aPoleValues[] = {gp_Pnt2d(0.0, 0.0),
+                                                          gp_Pnt2d(1.0, 1.0),
+                                                          gp_Pnt2d(2.0, -1.0),
+                                                          gp_Pnt2d(3.0, 0.0),
+                                                          gp_Pnt2d(4.0, 1.0),
+                                                          gp_Pnt2d(5.0, -1.0),
+                                                          gp_Pnt2d(6.0, 0.0)};
+  const NCollection_Array1<gp_Pnt2d>     aPoles(aPoleValues[0], 1, 7);
+  const double                           aKnotValues[] = {0.0, 0.5, 1.0};
+  const int                              aMultValues[] = {4, 3, 4};
+  const NCollection_Array1<double>       aKnots(aKnotValues[0], 1, 3);
+  const NCollection_Array1<int>          aMults(aMultValues[0], 1, 3);
+  const occ::handle<Geom2d_BSplineCurve> aCurve =
+    new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  GeomLProp_CurAndInf2d anAnalyzer;
+  anAnalyzer.PerformInf(aCurve);
+
+  ASSERT_TRUE(anAnalyzer.IsDone());
+  ASSERT_EQ(anAnalyzer.NbPoints(), 3);
+  EXPECT_NEAR(anAnalyzer.Parameter(1), 0.25, Precision::PConfusion());
+  EXPECT_DOUBLE_EQ(anAnalyzer.Parameter(2), 0.5);
+  EXPECT_NEAR(anAnalyzer.Parameter(3), 0.75, Precision::PConfusion());
+  for (int i = 1; i <= anAnalyzer.NbPoints(); ++i)
+  {
+    EXPECT_EQ(anAnalyzer.Type(i), LProp_Inflection);
+  }
 }

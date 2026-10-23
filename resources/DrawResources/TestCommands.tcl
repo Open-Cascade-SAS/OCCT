@@ -2098,6 +2098,25 @@ proc _list_diff {list1 list2 _in1 _in2 _common} {
     return
 }
 
+# List case images without including images of longer case names.
+# theCases contains case names from both compared runs.
+proc _test_case_images {theDirectory theCaseName theCases} {
+    set aResult {}
+    foreach anImage [glob -directory $theDirectory -types f -tails -nocomplain ${theCaseName}.{png,gif} ${theCaseName}-*.{png,gif} ${theCaseName}_*.{png,gif}] {
+        set aPrefix [file rootname $anImage]
+        # A longer matching case name takes precedence over an image suffix.
+        while {$aPrefix ne $theCaseName && ![dict exists $theCases $aPrefix]} {
+            if {![regsub {[-_][^-_]*$} $aPrefix {} aPrefix]} {
+                break
+            }
+        }
+        if {$aPrefix eq $theCaseName} {
+            lappend aResult $anImage
+        }
+    }
+    return $aResult
+}
+
 # procedure to load a file to Tcl string
 proc _read_file {filename} {
     set fd [open $filename r]
@@ -2220,6 +2239,13 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
         # check log files (only if directory has no subdirs)
         set list1 [glob -directory $path1 -types f -tails -nocomplain *.log]
         set list2 [glob -directory $path2 -types f -tails -nocomplain *.log]
+        set aCompareImages [expr {$image != false || ($image == false && $cpu == false && $memory == false)}]
+        set aCases [dict create]
+        if {$aCompareImages} {
+            foreach aLogFile [concat $list1 $list2] {
+                dict set aCases [file rootname $aLogFile] 1
+            }
+        }
         _list_diff $list1 $list2 in1 in2 common
         if { "$verbose" > 1 } {
             if { [llength $in1] > 0 } { _log_and_puts log "Only in $path1: $in1" }
@@ -2308,11 +2334,11 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
             }
 
             # check images
-            if {$image != false || ($image == false && $cpu == false && $memory == false)} {
+            if {$aCompareImages} {
                 set aCaseDiffColorTol 0
                 if { [regexp {IMAGE_COLOR_TOLERANCE:\s*([\d.]+)} $log1 res1 imgtol1] } { set aCaseDiffColorTol $imgtol1 }
-                set imglist1 [glob -directory $path1 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
-                set imglist2 [glob -directory $path2 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
+                set imglist1 [_test_case_images $path1 $casename $aCases]
+                set imglist2 [_test_case_images $path2 $casename $aCases]
                 _list_diff $imglist1 $imglist2 imgin1 imgin2 imgcommon
                 if { "$verbose" > 1 } {
                     # Differences in image lists might reflect changes in test case or in list of tests (new/removed test cases),

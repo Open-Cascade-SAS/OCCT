@@ -116,7 +116,12 @@ IntCurve_IConicTool::IntCurve_IConicTool(const gp_Parab2d& P)
       prm2(0.0),
       prm3(0.0)
 {
-  Parab_f  = P.Focal();
+  Parab_f = P.Focal();
+  if (Parab_f <= gp::Resolution())
+  {
+    *this = IntCurve_IConicTool(gp_Lin2d(P.MirrorAxis()));
+    return;
+  }
   Parab_2p = 4.0 * Parab_f;
   Axis     = P.Axis();
   Abs_To_Object.SetTransformation(gp::OX2d(), Axis.XAxis());
@@ -250,10 +255,11 @@ double IntCurve_IConicTool::Distance(const gp_Pnt2d& ThePoint) const
       return (sqrt(Dx * Dx + Dy * Dy) - Circle_r);
     }
 
-    case GeomAbs_Parabola: { //-- Distance(X,Y) = Y**2 - 2 P X
+    case GeomAbs_Parabola: {
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
-      return (P.Y() * P.Y() - Parab_2p * P.X());
+      // The displacement along the axis has length units, independent of focal length.
+      return P.Y() * (P.Y() / Parab_2p) - P.X();
     }
 
     case GeomAbs_Hyperbola: { //-- Distance(X,Y) = (X/a)**2 - (Y/b)**2 -1
@@ -347,10 +353,10 @@ gp_Vec2d IntCurve_IConicTool::GradDistance(const gp_Pnt2d& ThePoint) const
 #endif
     }
 
-    case GeomAbs_Parabola: { //-- Distance(X,Y) = Y**2 - 2 P X
+    case GeomAbs_Parabola: {
       gp_Pnt2d P = ThePoint;
       P.Transform(Abs_To_Object);
-      gp_Vec2d Gradient(-Parab_2p, P.Y() + P.Y());
+      gp_Vec2d Gradient(-1.0, 2.0 * (P.Y() / Parab_2p));
       Gradient.Transform(Object_To_Abs);
       return (Gradient);
     }

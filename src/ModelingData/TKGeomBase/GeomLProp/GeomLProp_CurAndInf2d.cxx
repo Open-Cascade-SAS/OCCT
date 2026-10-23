@@ -21,6 +21,11 @@
 #include <GeomLProp_NumericCurInf2d.pxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <gp.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+
+#include <cmath>
 
 //=================================================================================================
 
@@ -124,11 +129,11 @@ void GeomLProp_CurAndInf2d::performCurExt(const occ::handle<Geom2d_Curve>& theCu
           const double aParameter = aParams.At(i);
           int          aFirstKnot, aLastKnot;
           aSpline->LocateU(aParameter, 0.0, aFirstKnot, aLastKnot);
-          if (aFirstKnot != aLastKnot || aSpline->Degree() - aSpline->Multiplicity(aFirstKnot) < 2)
+          if (aFirstKnot != aLastKnot || aSpline->Degree() - aSpline->Multiplicity(aFirstKnot) < 1)
           {
             continue;
           }
-          // Curvature is continuous at a C2 knot, but its derivative can change sign there.
+          // Opposite one-sided variations mark a curvature extremum at the knot.
           double aVariation[2];
           bool   isRegular = true;
           for (size_t aSide = 0; aSide < 2; ++aSide)
@@ -234,13 +239,57 @@ void GeomLProp_CurAndInf2d::performInf(const occ::handle<Geom2d_Curve>& theCurve
         NCollection_Array1<double> aParams(1, aNbIntervals + 1);
         anAdaptor.Intervals(aParams, GeomAbs_C3);
 
+        LProp_CurAndInf aNumericResult;
         for (int i = 1; i <= aNbIntervals; i++)
         {
-          aNumericInf.PerformInf(theCurve, aParams(i), aParams(i + 1), *this);
+          aNumericInf.PerformInf(theCurve, aParams(i), aParams(i + 1), aNumericResult);
           if (!aNumericInf.IsDone())
           {
             myIsDone = false;
           }
+        }
+        LProp_CurAndInf aKnotInflections;
+        for (size_t i = 1; i + 1 < aParams.Size(); ++i)
+        {
+          const double              aParameter = aParams.At(i);
+          const Geom2dAdaptor_Curve aLeft(theCurve, aParams.At(i - 1), aParameter);
+          const Geom2dAdaptor_Curve aRight(theCurve, aParameter, aParams.At(i + 1));
+          const auto [aLeftPoint, aLeftD1, aLeftD2]    = aLeft.EvalD2(aParameter);
+          const auto [aRightPoint, aRightD1, aRightD2] = aRight.EvalD2(aParameter);
+          if (aLeftD1.Magnitude() <= gp::Resolution() || aRightD1.Magnitude() <= gp::Resolution()
+              || aLeftD1.Dot(aRightD1) <= 0.0
+              || !aLeftD1.IsParallel(aRightD1, Precision::Angular()))
+          {
+            continue;
+          }
+          const double aLeftBend  = aLeftD1.Crossed(aLeftD2);
+          const double aRightBend = aRightD1.Crossed(aRightD2);
+          // A G1 join can change concavity without having zero curvature on either side.
+          if ((aLeftBend < 0.0 && aRightBend > 0.0) || (aLeftBend > 0.0 && aRightBend < 0.0))
+          {
+            aKnotInflections.AddInflection(aParameter);
+          }
+        }
+        // Merge sorted roots and keep the exact knot parameter for coincident roots.
+        int aKnotIndex = 1;
+        for (int i = 1; i <= aNumericResult.NbPoints(); ++i)
+        {
+          const double aParameter = aNumericResult.Parameter(i);
+          while (aKnotIndex <= aKnotInflections.NbPoints()
+                 && aKnotInflections.Parameter(aKnotIndex) < aParameter - Precision::PConfusion())
+          {
+            AddInflection(aKnotInflections.Parameter(aKnotIndex++));
+          }
+          if (aKnotIndex > aKnotInflections.NbPoints()
+              || std::abs(aKnotInflections.Parameter(aKnotIndex) - aParameter)
+                   > Precision::PConfusion())
+          {
+            AddInflection(aParameter);
+          }
+        }
+        while (aKnotIndex <= aKnotInflections.NbPoints())
+        {
+          AddInflection(aKnotInflections.Parameter(aKnotIndex++));
         }
       }
       break;

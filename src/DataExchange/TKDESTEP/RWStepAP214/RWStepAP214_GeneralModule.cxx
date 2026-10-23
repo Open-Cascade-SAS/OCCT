@@ -21,6 +21,9 @@
 #include <Interface_EntityIterator.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
+#include <StepVisual_DraughtingModelAndTessellatedShapeRepresentation.hxx>
+#include <StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.hxx>
+
 #include "../RWStepAP203/RWStepAP203_RWCcDesignApproval.pxx"
 #include "../RWStepAP203/RWStepAP203_RWCcDesignCertification.pxx"
 #include "../RWStepAP203/RWStepAP203_RWCcDesignContract.pxx"
@@ -1412,6 +1415,10 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule, StepData_GeneralModule)
 #include "../RWStepVisual/RWStepVisual_RWCubicBezierTessellatedEdge.pxx"
 #include "../RWStepVisual/RWStepVisual_RWCubicBezierTriangulatedFace.pxx"
 #include "../RWStepVisual/RWStepVisual_RWTriangulatedSurfaceSet.pxx"
+#include "../RWStepVisual/RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation.pxx"
+#include "../RWStepVisual/RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWDatumReferenceModifierWithValue.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWRunoutZoneOrientation.pxx"
 
 static int catsh, catdr, catstr, catdsc, cataux;
 
@@ -4520,7 +4527,12 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       tool.Share(anent, iter);
     }
     break;
-    // case 681: no shared attributes
+    case 681: {
+      DeclareAndCast(StepDimTol_RunoutZoneOrientation, anEntity, ent);
+      RWStepDimTol_RWRunoutZoneOrientation aTool;
+      aTool.Share(anEntity, iter);
+    }
+    break;
     case 682: {
       DeclareAndCast(StepDimTol_ToleranceZone, anent, ent);
       RWStepDimTol_RWToleranceZone tool;
@@ -4547,7 +4559,12 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       tool.Share(anent, iter);
     }
     break;
-    // case 688: no shared attributes
+    case 688: {
+      DeclareAndCast(StepDimTol_DatumReferenceModifierWithValue, anEntity, ent);
+      RWStepDimTol_RWDatumReferenceModifierWithValue aTool;
+      aTool.Share(anEntity, iter);
+    }
+    break;
     case 689: {
       DeclareAndCast(StepDimTol_DatumSystem, anent, ent);
       RWStepDimTol_RWDatumSystem tool;
@@ -4660,6 +4677,20 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       DeclareAndCast(StepRepr_CharacterizedRepresentation, anent, ent);
       RWStepRepr_RWCharacterizedRepresentation tool;
       tool.Share(anent, iter);
+    }
+    break;
+    case 832: {
+      DeclareAndCast(StepVisual_DraughtingModelAndTessellatedShapeRepresentation, anEntity, ent);
+      RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.Share(anEntity, iter);
+    }
+    break;
+    case 833: {
+      DeclareAndCast(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation,
+                     anEntity,
+                     ent);
+      RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.Share(anEntity, iter);
     }
     break;
     case 715: {
@@ -7670,6 +7701,12 @@ bool RWStepAP214_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Trans
     case 831:
       ent = new StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol;
       break;
+    case 832:
+      ent = new StepVisual_DraughtingModelAndTessellatedShapeRepresentation;
+      break;
+    case 833:
+      ent = new StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation;
+      break;
     default:
       return false;
   }
@@ -8407,6 +8444,8 @@ int RWStepAP214_GeneralModule::CategoryNumber(const int CN,
     case 714:
       return catstr;
     case 715:
+    case 832:
+    case 833:
       return catdsc;
     case 716:
     case 717:

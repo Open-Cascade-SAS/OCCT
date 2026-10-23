@@ -2281,6 +2281,7 @@ void StepData_StepReaderData::SetEntityNumbers(const bool withmap)
             FP.SetEntityNumber(-id);
             continue; // pbmap: we will find ourselves again
           }
+          FP.SetEntityNumber(0);
           char failmess[100];
           //  ...  Build the Check  ...
           Sprintf(failmess, "Unresolved Reference, Ent.Id.#%d Param.n0 %d (Id.#%d)", ident, na, id);

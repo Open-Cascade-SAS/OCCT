@@ -1,4 +1,4 @@
-puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_8315"
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_8271"
 puts "=========="
 puts "0032448: Provide exact validating (as option) using GeomLib_CheckCurveOnSurface"
 puts "=========="
@@ -7,9 +7,9 @@ puts ""
 restore [locate_data_file bug26278_E01754_000000_P00_01_0_VS3_1_20070102_sewed_fixed.brep] b
 set aCheck [checkshape b -exact -parallel]
 foreach {aStatus aCount} {
-  UnorientableShape 2023
-  InvalidCurveOnSurface 6277
-  InvalidSameParameterFlag 6171
+  UnorientableShape 1984
+  InvalidCurveOnSurface 6259
+  InvalidSameParameterFlag 6158
   NotClosed 23
   NotConnected 2
   SelfIntersectingWire 16

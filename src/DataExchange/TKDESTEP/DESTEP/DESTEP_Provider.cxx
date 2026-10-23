@@ -14,6 +14,9 @@
 #include <DESTEP_Provider.hxx>
 
 #include <DE_ValidationUtils.hxx>
+#include <TDF_Label.hxx>
+#include <TDocStd_Document.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 #include <DESTEP_ConfigurationNode.hxx>
 #include <DESTEP_Parameters.hxx>
 #include <Interface_Static.hxx>
@@ -403,7 +406,10 @@ bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
                            const Message_ProgressRange&         theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
-  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
+  if (!DE_ValidationUtils::ValidateReadStreamList(theStreams,
+                                                  aContext,
+                                                  true,
+                                                  theStreams.Size() > 1))
   {
     return false;
   }
@@ -411,8 +417,7 @@ bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
   TCollection_AsciiString aFirstKey    = theStreams.First().Path;
   TCollection_AsciiString aFullContext = aContext + " " + aFirstKey;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aFullContext)
-      || !validateNode(GetNode(), aFullContext)
-      || !DE_ValidationUtils::ValidateReadStreamList(theStreams, aFullContext))
+      || !validateNode(GetNode(), aFullContext))
   {
     return false;
   }
@@ -428,6 +433,11 @@ bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
                          theWS,
                          theDocument,
                          aNode->GlobalParameters.LengthUnit);
+
+  if (theStreams.Size() > 1)
+  {
+    aReader.SetResourceStreams(theStreams);
+  }
 
   bool isOk = aReader.ReadStream(aFirstKey.ToCString(), aNode->InternalParameters, aStream)
               == IFSelect_RetDone;
@@ -528,6 +538,21 @@ bool DESTEP_Provider::Read(ReadStreamList&                     theStreams,
                            occ::handle<XSControl_WorkSession>& theWS,
                            const Message_ProgressRange&        theProgress)
 {
+  if (theStreams.Size() > 1)
+  {
+    const occ::handle<TDocStd_Document> aDocument = new TDocStd_Document("BinXCAF");
+    if (!Read(theStreams, aDocument, theWS, theProgress))
+    {
+      return false;
+    }
+    const TopoDS_Shape aShape = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->GetOneShape();
+    if (aShape.IsNull())
+    {
+      return false;
+    }
+    theShape = aShape;
+    return true;
+  }
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
   {

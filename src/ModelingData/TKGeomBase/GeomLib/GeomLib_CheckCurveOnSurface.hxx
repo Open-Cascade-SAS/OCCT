@@ -19,6 +19,8 @@
 #include <Precision.hxx>
 #include <Standard.hxx>
 
+#include <optional>
+
 class Adaptor3d_CurveOnSurface;
 
 //! Computes the max distance between 3D-curve and 2D-curve
@@ -47,30 +49,40 @@ public:
   //! If isMultiThread == true then computation will be performed in parallel.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface);
 
+  //! Computes the maximum distance, or an evaluated distance above the limit.
+  //! @param[in] theCurveOnSurface curve on surface to check
+  //! @param[in] theDistanceLimit non-negative finite distance limit
+  Standard_EXPORT void Perform(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface,
+                               double                                       theDistanceLimit);
+
   //! Sets parallel flag
   void SetParallel(const bool theIsParallel) { myIsParallel = theIsParallel; }
 
   //! Returns true if parallel flag is set
   bool IsParallel() { return myIsParallel; }
 
-  //! Returns true if the max distance has been found
+  //! Returns true if the requested distance computation succeeded.
   bool IsDone() const { return (myErrorStatus == 0); }
 
   //! Returns error status
   //! The possible values are:
   //! 0 - OK;
   //! 1 - null curve or surface or 2d curve;
-  //! 2 - invalid parametric range;
+  //! 2 - invalid parametric range or distance limit;
   //! 3 - error in calculations.
   int ErrorStatus() const { return myErrorStatus; }
 
-  //! Returns max distance
+  //! Returns the maximum distance, or an evaluated distance exceeding the supplied limit.
   double MaxDistance() const { return myMaxDistance; }
 
-  //! Returns parameter in which the distance is maximal
+  //! Returns the parameter of the reported distance.
   double MaxParameter() const { return myMaxParameter; }
 
 private:
+  //! Computes a full maximum or a distance exceeding the supplied limit.
+  void perform(const occ::handle<Adaptor3d_CurveOnSurface>& theCurveOnSurface,
+               std::optional<double>                        theDistanceLimit);
+
   occ::handle<Adaptor3d_Curve> myCurve;
   int                          myErrorStatus;
   double                       myMaxDistance;
