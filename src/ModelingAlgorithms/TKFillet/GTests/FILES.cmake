@@ -3,6 +3,7 @@ set(OCCT_TKFillet_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKFillet_GTests_FILES
   BRepFilletAPI_MakeChamfer_Test.cxx
+  BRepFilletAPI_MakeFillet_OppositeEdges_Test.cxx
   BRepFilletAPI_MakeFillet_Test.cxx
   BRepFilletAPI_MakeFillet_WiderThanFace_Test.cxx
   ChFi3d_Builder_0_Test.cxx
