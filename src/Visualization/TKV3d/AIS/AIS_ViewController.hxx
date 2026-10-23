@@ -764,6 +764,8 @@ protected:
   occ::handle<AIS_RubberBand> myRubberBand;            //!< Rubber-band presentation
   occ::handle<SelectMgr_EntityOwner> myDragOwner;      //!< detected owner of currently dragged object
   occ::handle<AIS_InteractiveObject> myDragObject;     //!< currently dragged object
+  bool myWasDragActive;               //!< Whether an object drag was active at the last UI and rendering thread synchronization.
+  bool myDragStartIsPending;          //!< Whether a drag-start request was transferred but its result has not yet been observed by the UI thread.
   NCollection_Vec2<int>     myPrevMoveTo;               //!< previous position of MoveTo event in 3D viewer
   bool    myHasHlrOnBeforeRotation;   //!< flag for restoring Computed mode after rotation
 
@@ -802,7 +804,9 @@ protected: //! @name mouse input variables
   OSD_Timer           myMouseClickTimer;          //!< timer for handling double-click event
   int    myMouseClickCounter;        //!< counter for handling double-click event
   int    myMouseSingleButton;        //!< index of mouse button pressed alone (>0)
+  Aspect_VKeyMouse myMousePreviousPressButton;  //!< Mouse button detected as pressed by the previous button event (> 0).
   bool    myMouseStopDragOnUnclick;   //!< queue stop dragging even with at next mouse unclick
+  bool    myMouseIsSecondaryDragActive;   //!< Whether a secondary drag gesture is active alongside a different primary gesture.
 
 protected: //! @name multi-touch input variables
 
