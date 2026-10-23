@@ -1932,6 +1932,29 @@ Deprecated (still compiles with warnings):
 
 @section upgrade_occt810 Upgrade to OCCT 8.1.0
 
+@subsection upgrade_810_unbounded_isolines Isolines on unbounded faces
+
+Automatic isolines are disabled by default for faces that have infinite UV bounds,
+no boundary wires and no usable triangulation. This applies to wireframe presentations,
+the shaded fallback for faces without triangles, and shape highlights. Finite natural
+parameter domains, faces with boundary wires, faces with usable triangulation and standalone edges
+keep their existing behavior. The original topology and geometry are retained.
+
+Applications that display unbounded reference faces can restore the previous behavior:
+
+~~~{.cpp}
+aContext->DefaultDrawer()->SetIsoOnUnboundedFace(true);
+~~~
+
+The context default drawer also supplies this setting to its standard highlight styles.
+An object can override the setting through its own drawer. Standard highlight styles
+continue to inherit the context default. For per-object overrides, configure the
+corresponding highlight drawers with the desired value. After changing the setting,
+recompute existing presentations with `AIS_InteractiveContext::Redisplay()`.
+`Prs3d_Drawer::MaximalParameterValue()` continues to limit the displayed infinite curves.
+The `StdPrs_Isolines::AddOnSurface()` overload taking explicit isoline parameters is
+unchanged. Face selection entities and geometric bounding-box calculations are unchanged.
+
 @subsection upgrade_810_brepfont BRep font and text conversion
 
 Use `StdPrs_BRepFont` to create TopoDS glyph and text shapes. The construction algorithms are
