@@ -1747,6 +1747,9 @@ struct ViewerTest_AspectsChangeSet
 
   int ToEnableIsoOnTriangulation;
 
+  int  ToSetIsoOnUnboundedFace;
+  bool IsoOnUnboundedFace;
+
   int           ToSetFaceBoundaryDraw;
   int           ToSetFaceBoundaryUpperContinuity;
   GeomAbs_Shape FaceBoundaryUpperContinuity;
@@ -1826,6 +1829,8 @@ struct ViewerTest_AspectsChangeSet
         ToSetFreeBoundaryColor(0),
         FreeBoundaryColor(DEFAULT_FREEBOUNDARY_COLOR),
         ToEnableIsoOnTriangulation(0),
+        ToSetIsoOnUnboundedFace(0),
+        IsoOnUnboundedFace(false),
         //
         ToSetFaceBoundaryDraw(0),
         ToSetFaceBoundaryUpperContinuity(0),
@@ -1867,12 +1872,13 @@ struct ViewerTest_AspectsChangeSet
            && ToSetUseVertexColorForBackFaces == 0 && ToSetBackFaceColor == 0 && ToSetMaterial == 0
            && ToSetShowFreeBoundary == 0 && ToSetFreeBoundaryColor == 0
            && ToSetFreeBoundaryWidth == 0 && ToEnableIsoOnTriangulation == 0
-           && ToSetFaceBoundaryDraw == 0 && ToSetFaceBoundaryUpperContinuity == 0
-           && ToSetFaceBoundaryColor == 0 && ToSetFaceBoundaryWidth == 0
-           && ToSetTypeOfFaceBoundaryLine == 0 && ToSetMaxParamValue == 0 && ToSetSensitivity == 0
-           && ToSetHatch == 0 && ToSetShadingModel == 0 && ToSetInterior == 0
-           && ToSetDrawSilhouette == 0 && ToSetDrawEdges == 0 && ToSetQuadEdges == 0
-           && ToSetEdgeColor == 0 && ToSetEdgeWidth == 0 && ToSetTypeOfEdge == 0;
+           && ToSetIsoOnUnboundedFace == 0 && ToSetFaceBoundaryDraw == 0
+           && ToSetFaceBoundaryUpperContinuity == 0 && ToSetFaceBoundaryColor == 0
+           && ToSetFaceBoundaryWidth == 0 && ToSetTypeOfFaceBoundaryLine == 0
+           && ToSetMaxParamValue == 0 && ToSetSensitivity == 0 && ToSetHatch == 0
+           && ToSetShadingModel == 0 && ToSetInterior == 0 && ToSetDrawSilhouette == 0
+           && ToSetDrawEdges == 0 && ToSetQuadEdges == 0 && ToSetEdgeColor == 0
+           && ToSetEdgeWidth == 0 && ToSetTypeOfEdge == 0;
   }
 
   //! @return true if properties are valid
@@ -2011,6 +2017,18 @@ struct ViewerTest_AspectsChangeSet
         theDrawer->PointAspect()->SetScale(MarkerSize);
         toRecompute = true;
       }
+    }
+    if (ToSetIsoOnUnboundedFace != 0)
+    {
+      if (ToSetIsoOnUnboundedFace == -1)
+      {
+        theDrawer->UnsetOwnIsoOnUnboundedFace();
+      }
+      else
+      {
+        theDrawer->SetIsoOnUnboundedFace(IsoOnUnboundedFace);
+      }
+      toRecompute = true;
     }
     if (ToSetMaxParamValue != 0)
     {
@@ -2947,6 +2965,21 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
       ++anArgIter;
       aChangeSet->ToEnableIsoOnTriangulation = toEnable ? 1 : -1;
     }
+    else if (anArg == "-isoonunboundedface" || anArg == "-setisoonunboundedface")
+    {
+      if (!Draw::ParseOnOff(anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "",
+                            aChangeSet->IsoOnUnboundedFace))
+      {
+        Message::SendFail() << "Error: wrong syntax at " << anArg;
+        return 1;
+      }
+      ++anArgIter;
+      aChangeSet->ToSetIsoOnUnboundedFace = 1;
+    }
+    else if (anArg == "-unsetisoonunboundedface")
+    {
+      aChangeSet->ToSetIsoOnUnboundedFace = -1;
+    }
     else if (anArg == "-setfaceboundarydraw" || anArg == "-setdrawfaceboundary"
              || anArg == "-setdrawfaceboundaries" || anArg == "-setshowfaceboundary"
              || anArg == "-setshowfaceboundaries" || anArg == "-setdrawfaceedges"
@@ -3201,6 +3234,7 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
       aChangeSet->ToSetFreeBoundaryWidth     = -1;
       aChangeSet->FreeBoundaryWidth          = 1.0;
       aChangeSet->ToEnableIsoOnTriangulation = -1;
+      aChangeSet->ToSetIsoOnUnboundedFace    = -1;
       //
       aChangeSet->ToSetFaceBoundaryDraw            = -1;
       aChangeSet->ToSetFaceBoundaryUpperContinuity = -1;
@@ -6854,6 +6888,7 @@ vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults] [-subshapes subna
            [-freeBoundaryWidth Width] [-unsetFreeBoundaryWidth]
            [-freeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]
          [-isoOnTriangulation 0|1]
+         [-isoOnUnboundedFace {0|1}] [-unsetIsoOnUnboundedFace]
          [-maxParamValue {value}]
          [-sensitivity {selection_mode} {value}]
          [-shadingModel {unlit|flat|gouraud|phong|pbr|pbr_facet}]
@@ -6872,6 +6907,9 @@ When -defaults is specified than presentation properties will be
 assigned to all objects that have not their own specified properties
 and to all objects to be displayed in the future.
 If -defaults is used there should not be any objects' names nor -subshapes specifier.
+-isoOnUnboundedFace enables isolines on unbounded faces with neither wires nor usable triangulation.
+Use -defaults to apply this setting to both presentations and default highlight styles.
+-unsetIsoOnUnboundedFace restores the inherited setting.
 See also vlistcolors and vlistmaterials to list named colors and materials
 accepted by arguments -material and -color
 )" /* [vaspects] */);

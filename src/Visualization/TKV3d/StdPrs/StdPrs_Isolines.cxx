@@ -39,6 +39,7 @@
 #include <Geom_Surface.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <TopExp_Explorer.hxx>
 #include <algorithm>
 
 namespace
@@ -376,6 +377,21 @@ void StdPrs_Isolines::AddOnSurface(
                   aUmax,
                   aVmin,
                   aVmax);
+
+  // An unbounded face with neither wires nor a usable mesh has no finite region for automatic isos.
+  if (!theDrawer->IsoOnUnboundedFace()
+      && (Precision::IsInfinite(aUmin) || Precision::IsInfinite(aUmax)
+          || Precision::IsInfinite(aVmin) || Precision::IsInfinite(aVmax))
+      && !TopExp_Explorer(theFace, TopAbs_WIRE).More())
+  {
+    TopLoc_Location                        aLocation;
+    const occ::handle<Poly_Triangulation>& aTriangulation =
+      BRep_Tool::Triangulation(theFace, aLocation);
+    if (aTriangulation.IsNull() || aTriangulation->NbTriangles() == 0)
+    {
+      return;
+    }
+  }
 
   BRepAdaptor_Surface aSurface(theFace);
   addOnSurface(new BRepAdaptor_Surface(aSurface),
