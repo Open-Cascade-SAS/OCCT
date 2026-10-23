@@ -53,6 +53,8 @@ Prs3d_Drawer::Prs3d_Drawer()
       myDeviationAngle(-1.0),
       myIsoOnPlane(false),
       myHasOwnIsoOnPlane(false),
+      myIsoOnUnboundedFace(false),
+      myHasOwnIsoOnUnboundedFace(false),
       myIsoOnTriangulation(false),
       myHasOwnIsoOnTriangulation(false),
       myIsAutoTriangulated(true),
@@ -146,6 +148,14 @@ void Prs3d_Drawer::SetIsoOnPlane(const bool theIsEnabled)
 {
   myHasOwnIsoOnPlane = true;
   myIsoOnPlane       = theIsEnabled;
+}
+
+//=================================================================================================
+
+void Prs3d_Drawer::SetIsoOnUnboundedFace(const bool theIsEnabled)
+{
+  myHasOwnIsoOnUnboundedFace = true;
+  myIsoOnUnboundedFace       = theIsEnabled;
 }
 
 //=================================================================================================
@@ -556,6 +566,7 @@ void Prs3d_Drawer::ClearLocalAttributes()
   SetDeviationCoefficient();
   SetDeviationAngle();
   UnsetOwnIsoOnPlane();
+  UnsetOwnIsoOnUnboundedFace();
   UnsetOwnIsoOnTriangulation();
   UnsetOwnIsAutoTriangulation();
   UnsetOwnWireDraw();
@@ -858,6 +869,8 @@ void Prs3d_Drawer::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPreviousDeviationAngle)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsoOnPlane)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasOwnIsoOnPlane)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsoOnUnboundedFace)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasOwnIsoOnUnboundedFace)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsoOnTriangulation)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myHasOwnIsoOnTriangulation)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myIsAutoTriangulated)
