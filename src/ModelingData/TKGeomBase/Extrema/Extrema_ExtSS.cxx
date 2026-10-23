@@ -290,7 +290,12 @@ int Extrema_ExtSS::NbExt() const
 
 void Extrema_ExtSS::Points(const int N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const
 {
-  if (N < 1 || N > NbExt())
+  if (!IsDone())
+  {
+    throw StdFail_NotDone();
+  }
+
+  if (N < 1 || N > myPOnS1.Length())
   {
     throw Standard_OutOfRange();
   }
