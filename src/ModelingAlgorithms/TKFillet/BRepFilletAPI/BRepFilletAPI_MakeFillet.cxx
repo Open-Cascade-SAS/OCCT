@@ -29,6 +29,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -44,6 +45,7 @@
 #include <GProp_GProps.hxx>
 #include <Law_Linear.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Precision.hxx>
 #include <Standard_Failure.hxx>
 #include <TopExp.hxx>
@@ -334,6 +336,92 @@ TopoDS_Shape pivotFillet(ChFi3d_FilBuilder& theBuilder)
     return TopoDS_Shape();
   }
   return pivotCut(theBuilder.InitialShape(), aSpine->Edges(1), theBuilder.Radius(1));
+}
+
+//! The most contours the fallback intersects: each costs a fillet and a Boolean operation.
+const int THE_MAX_CONTOURS = 8;
+
+//! The fillets of the contours of theBuilder, computed after Compute() failed: each contour on its
+//! own, and the intersection of the results. Two fillets whose arcs cross are built this way.
+//! The contours must share no vertex, and every contour must be a constant radius.
+//! Null if not applicable.
+TopoDS_Shape fallbackFillets(ChFi3d_FilBuilder& theBuilder, const ChFi3d_FilletShape theShape)
+{
+  const int aNbContours = theBuilder.NbElements();
+  if (aNbContours < 2 || aNbContours > THE_MAX_CONTOURS)
+  {
+    return TopoDS_Shape();
+  }
+  const TopoDS_Shape&                                           aShape = theBuilder.InitialShape();
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertices;
+  for (int aContour = 1; aContour <= aNbContours; ++aContour)
+  {
+    const occ::handle<ChFiDS_Spine> aSpine = theBuilder.Value(aContour);
+    if (aSpine.IsNull() || aSpine->NbEdges() < 1 || !theBuilder.IsConstant(aContour))
+    {
+      return TopoDS_Shape();
+    }
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aOwn;
+    for (int anEdge = 1; anEdge <= aSpine->NbEdges(); ++anEdge)
+    {
+      TopExp::MapShapes(aSpine->Edges(anEdge), TopAbs_VERTEX, aOwn);
+    }
+    for (int aVertex = 1; aVertex <= aOwn.Extent(); ++aVertex)
+    {
+      if (aVertices.Contains(aOwn(aVertex)))
+      {
+        return TopoDS_Shape();
+      }
+    }
+    for (int aVertex = 1; aVertex <= aOwn.Extent(); ++aVertex)
+    {
+      aVertices.Add(aOwn(aVertex));
+    }
+  }
+
+  const double aVolume = volumeOf(aShape);
+  TopoDS_Shape aResult;
+  double       aSumRemoved = 0., aMaxRemoved = 0.;
+  for (int aContour = 1; aContour <= aNbContours; ++aContour)
+  {
+    const TopoDS_Edge&       aFirst  = theBuilder.Value(aContour)->Edges(1);
+    const double             aRadius = theBuilder.Radius(aContour);
+    BRepFilletAPI_MakeFillet aSingle(aShape, theShape);
+    aSingle.Add(aRadius, aFirst);
+    aSingle.Build();
+    if (!aSingle.IsDone() || !isClosedValidSolid(aSingle.Shape()))
+    {
+      return TopoDS_Shape();
+    }
+    const TopoDS_Shape& aOne     = aSingle.Shape();
+    const double        aRemoved = aVolume - volumeOf(aOne);
+    if (aRemoved <= 0.)
+    {
+      // Only fillets that take material away are an intersection.
+      return TopoDS_Shape();
+    }
+    aSumRemoved += aRemoved;
+    aMaxRemoved = std::max(aMaxRemoved, aRemoved);
+    if (aResult.IsNull())
+    {
+      aResult = aOne;
+      continue;
+    }
+    BRepAlgoAPI_Common aCommon(aResult, aOne);
+    if (!aCommon.IsDone() || aCommon.HasErrors() || !isClosedValidSolid(aCommon.Shape()))
+    {
+      return TopoDS_Shape();
+    }
+    aResult = aCommon.Shape();
+  }
+  // What the intersection removes is at least what any one fillet removes and at most the sum.
+  const double aTol     = 1.e-6 * aVolume;
+  const double aRemoved = aVolume - volumeOf(aResult);
+  if (aRemoved < aMaxRemoved - aTol || aRemoved > aSumRemoved + aTol)
+  {
+    return TopoDS_Shape();
+  }
+  return aResult;
 }
 } // namespace
 
@@ -683,20 +771,25 @@ void BRepFilletAPI_MakeFillet::Build(const Message_ProgressRange& /*theRange*/)
   myBuilder.Compute();
   if (!myBuilder.IsDone())
   {
-    // A fillet wider than its face has no start solution: see pivotCut.
-    TopoDS_Shape aPivot;
+    // A fillet wider than its face has no start solution: see pivotCut. Fillets whose arcs cross
+    // each other: see fallbackFillets.
+    TopoDS_Shape aFallback;
     try
     {
-      aPivot = pivotFillet(myBuilder);
+      aFallback = pivotFillet(myBuilder);
+      if (aFallback.IsNull())
+      {
+        aFallback = fallbackFillets(myBuilder, myBuilder.GetFilletShape());
+      }
     }
     catch (Standard_Failure const&)
     {
     }
-    if (!aPivot.IsNull())
+    if (!aFallback.IsNull())
     {
       myBuilder.Reset();
       Done();
-      myShape = aPivot;
+      myShape = aFallback;
       myMap.Clear();
       for (TopExp_Explorer anExp(myShape, TopAbs_FACE); anExp.More(); anExp.Next())
       {
