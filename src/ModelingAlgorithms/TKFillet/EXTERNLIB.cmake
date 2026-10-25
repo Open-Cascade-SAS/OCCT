@@ -11,4 +11,5 @@ set(OCCT_TKFillet_EXTERNAL_LIBS
   TKBool
   TKShHealing
   TKBO
+  TKPrim
 )
