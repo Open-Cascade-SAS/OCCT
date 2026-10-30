@@ -370,8 +370,7 @@ int Extrema_ExtCC::NbExt() const
 
 void Extrema_ExtCC::Points(const int N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const
 {
-  // NbExt() counts mySqDist; some parallel-curve branches append a distance with no matching
-  // point pair (an equidistant family has no unique point), so bound against mypoints instead.
+  // A parallel pair has a distance but no point pair, so NbExt() can exceed the point count.
   if (N < 1 || 2 * N > mypoints.Length())
   {
     throw Standard_OutOfRange();
