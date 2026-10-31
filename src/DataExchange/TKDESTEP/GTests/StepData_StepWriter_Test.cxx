@@ -510,6 +510,53 @@ TEST(StepData_StepWriterTest, Send_EscapeModeWritesControlDirectives)
   EXPECT_STREQ(joinLines(writeString("\xC3\xA9")).ToCString(), "TEST('\xC3\xA9');");
 }
 
+// Test that a \X2\ or \X4\ run longer than a line is closed at the end of the line and opened
+// again on the next one, instead of being cut or written on one very long line
+TEST(StepData_StepWriterTest, Send_LongRunIsClosedAndOpenedAgain)
+{
+  TCollection_AsciiString aKorean; // 40 times U+AC00
+  TCollection_AsciiString anEmoji; // 20 times U+1F600
+  TCollection_AsciiString aKept;   // a run already in the text, kept as it is in the default mode
+  for (int anIndex = 0; anIndex < 40; ++anIndex)
+  {
+    aKorean += "\xEA\xB0\x80";
+    aKept += anIndex == 0 ? "\\X2\\0041" : "0041";
+  }
+  aKept += "\\X0\\";
+  for (int anIndex = 0; anIndex < 20; ++anIndex)
+  {
+    anEmoji += "\xF0\x9F\x98\x80";
+  }
+
+  const struct
+  {
+    TCollection_AsciiString                     Text;
+    DESTEP_Parameters::WriteMode_StringEncoding Encoding;
+    const char*                                 Opening;
+  } aCases[] = {{aKorean, DESTEP_Parameters::WriteMode_StringEncoding_Escape, "\\X2\\"},
+                {anEmoji, DESTEP_Parameters::WriteMode_StringEncoding_Escape, "\\X4\\"},
+                {aKept, DESTEP_Parameters::WriteMode_StringEncoding_UTF8, "\\X2\\"}};
+
+  for (const auto& aCase : aCases)
+  {
+    SCOPED_TRACE(aCase.Opening);
+    const NCollection_Sequence<TCollection_AsciiString> aLines =
+      writeString(aCase.Text, aCase.Encoding);
+    ASSERT_GT(aLines.Length(), 2);
+    for (int aLine = 1; aLine <= aLines.Length(); ++aLine)
+    {
+      const TCollection_AsciiString& aText = aLines.Value(aLine);
+      EXPECT_LE(aText.Length(), 72) << aText;
+      if (aLine > 1 && aLine < aLines.Length())
+      {
+        // a whole part of the run on each line
+        EXPECT_EQ(aText.Search(aCase.Opening), aText.Value(1) == '\'' ? 2 : 1) << aText;
+        EXPECT_EQ(aText.SearchFromEnd("\\X0\\"), aText.Length() - 3) << aText;
+      }
+    }
+  }
+}
+
 // Test that a file written with escapes has only ASCII, keeps "2;1" and is read back exactly
 TEST(StepData_StepWriterTest, SendModel_EscapeModeRoundTrip)
 {

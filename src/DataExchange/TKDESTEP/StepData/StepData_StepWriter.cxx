@@ -185,6 +185,47 @@ int safeBreak(const TCollection_AsciiString& theText, const int theStop, const b
   return anEnd;
 }
 
+//! If theText starts (after the opening apostrophe when theIsQuoted) with a \X2\ or \X4\ run that
+//! does not fit in theMax bytes, cuts the run in two: the first part fills the line and is closed
+//! with \X0\, and the rest is opened again with the same directive. A line break inside a run is
+//! not read by many readers, also by OCCT 7.6 to 8.0.1. Returns the length of the first part,
+//! or 0 if theText does not start with such a run.
+int splitLongRun(TCollection_AsciiString& theText, const int theMax, const bool theIsQuoted)
+{
+  const int aFrom = theIsQuoted ? 2 : 1;
+  if (theText.Length() < aFrom + 3 || theText.Value(aFrom) != '\\'
+      || theText.Value(aFrom + 1) != 'X' || theText.Value(aFrom + 3) != '\\'
+      || (theText.Value(aFrom + 2) != '2' && theText.Value(aFrom + 2) != '4'))
+  {
+    return 0;
+  }
+  const int aWidth = theText.Value(aFrom + 2) == '2' ? 4 : 8; // hexadecimal digits per character
+  int       anEnd  = aFrom + 4;
+  while (anEnd <= theText.Length()
+         && std::isxdigit(static_cast<unsigned char>(theText.Value(anEnd))))
+  {
+    anEnd++;
+  }
+  const int aNbChars = (anEnd - aFrom - 4) / aWidth;
+  if (anEnd + 3 > theText.Length() || theText.Value(anEnd) != '\\'
+      || theText.Value(anEnd + 1) != 'X' || theText.Value(anEnd + 2) != '0'
+      || theText.Value(anEnd + 3) != '\\' || (anEnd - aFrom - 4) % aWidth != 0)
+  {
+    return 0; // not a complete run: leave it as it is
+  }
+  const int aNbFirst = (theMax - aFrom - 3 - 4) / aWidth; // characters before \X0\ on the line
+  if (aNbFirst < 1 || aNbFirst >= aNbChars)
+  {
+    return 0;
+  }
+  const int               aCut  = aFrom + 3 + aNbFirst * aWidth;
+  TCollection_AsciiString aRest = theText.SubString(aCut + 1, theText.Length());
+  theText.Trunc(aCut);
+  theText += aWidth == 4 ? "\\X0\\\\X2\\" : "\\X0\\\\X4\\";
+  theText += aRest;
+  return aCut + 4;
+}
+
 //! Returns true if one of theLines has a byte outside ASCII, that is raw UTF-8.
 bool hasNonAsciiByte(const NCollection_HSequence<occ::handle<TCollection_HAsciiString>>& theLines)
 {
@@ -1330,6 +1371,17 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
           if (anEarlier < aStop)
           {
             aStop = anEarlier;
+          }
+        }
+        if (aStop > StepLong)
+        {
+          // the first piece is longer than a line: if it is a \X2\ or \X4\ run, close it and
+          // open it again on the next line instead of writing a longer line
+          const int aSplit = splitLongRun(aVal, StepLong, isFirstLine);
+          if (aSplit > 0)
+          {
+            aStop = aSplit;
+            aNn   = aVal.Length();
           }
         }
         isFirstLine                   = false;
