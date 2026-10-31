@@ -145,10 +145,10 @@ TEST(StepData_StepWriterTest, CleanTextForSend_ControlDirectivePreservation)
   TCollection_AsciiString aResult2 = StepData_StepWriter::CleanTextForSend(anInput2);
   EXPECT_STREQ(aResult2.ToCString(), "\\X2\\03C0\\X0\\ is pi");
 
-  // Test \X4\ control directive preservation
-  TCollection_AsciiString anInput3("emoji \\X4\\001F600\\X0\\ face");
+  // Test \X4\ control directive preservation (8 hexadecimal digits per character)
+  TCollection_AsciiString anInput3("emoji \\X4\\0001F600\\X0\\ face");
   TCollection_AsciiString aResult3 = StepData_StepWriter::CleanTextForSend(anInput3);
-  EXPECT_STREQ(aResult3.ToCString(), "emoji \\X4\\001F600\\X0\\ face");
+  EXPECT_STREQ(aResult3.ToCString(), "emoji \\X4\\0001F600\\X0\\ face");
 
   // Test \S\ control directive preservation
   TCollection_AsciiString anInput4("text with \\S\\ directive");
@@ -241,14 +241,35 @@ TEST(StepData_StepWriterTest, CleanTextForSend_HexSequenceDetection)
   EXPECT_STREQ(aResult1.ToCString(), "\\X2\\03B103B203B3\\X0\\");
 
   // Test valid hex sequences in \X4\ directive
-  TCollection_AsciiString anInput2("\\X4\\001F600001F638\\X0\\");
+  TCollection_AsciiString anInput2("\\X4\\0001F6000001F638\\X0\\");
   TCollection_AsciiString aResult2 = StepData_StepWriter::CleanTextForSend(anInput2);
-  EXPECT_STREQ(aResult2.ToCString(), "\\X4\\001F600001F638\\X0\\");
+  EXPECT_STREQ(aResult2.ToCString(), "\\X4\\0001F6000001F638\\X0\\");
 
   // Test text around hex sequences
   TCollection_AsciiString anInput3("start \\X2\\03C0\\X0\\ end");
   TCollection_AsciiString aResult3 = StepData_StepWriter::CleanTextForSend(anInput3);
   EXPECT_STREQ(aResult3.ToCString(), "start \\X2\\03C0\\X0\\ end");
+}
+
+// Test that only complete \X2\ and \X4\ runs are kept: anything else is text, so its
+// backslashes and apostrophes are doubled and the string stays valid
+TEST(StepData_StepWriterTest, CleanTextForSend_IncompleteRunIsText)
+{
+  // other letters than hexadecimal digits, with an apostrophe
+  EXPECT_STREQ(StepData_StepWriter::CleanTextForSend("\\X2\\ don't \\X0\\").ToCString(),
+               "\\\\X2\\\\ don''t \\\\X0\\\\");
+  // no closing directive at the end
+  EXPECT_STREQ(StepData_StepWriter::CleanTextForSend("a\\X2\\03B3*b").ToCString(),
+               "a\\\\X2\\\\03B3*b");
+  // a number of digits that is not a multiple of 4 (or of 8 after X4)
+  EXPECT_STREQ(StepData_StepWriter::CleanTextForSend("\\X2\\03B\\X0\\").ToCString(),
+               "\\\\X2\\\\03B\\\\X0\\\\");
+  EXPECT_STREQ(StepData_StepWriter::CleanTextForSend("\\X4\\001F600\\X0\\").ToCString(),
+               "\\\\X4\\\\001F600\\\\X0\\\\");
+  // an empty run, and the closing directive alone
+  EXPECT_STREQ(StepData_StepWriter::CleanTextForSend("\\X2\\\\X0\\").ToCString(),
+               "\\\\X2\\\\\\\\X0\\\\");
+  EXPECT_STREQ(StepData_StepWriter::CleanTextForSend("end\\X0\\").ToCString(), "end\\\\X0\\\\");
 }
 
 namespace

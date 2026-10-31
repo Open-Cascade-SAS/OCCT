@@ -88,25 +88,27 @@ int directiveLength(const TCollection_AsciiString& theText, const int theIndex)
   {
     const char aThirdChar = theText.Value(theIndex + 2);
     // \X2, \X4, \X0 patterns - special control sequences
-    if (aThirdChar != '2' && aThirdChar != '4' && aThirdChar != '0')
+    if (aThirdChar != '2' && aThirdChar != '4')
+    {
+      return 0; // \X0\ alone does not end anything, it is text
+    }
+    // Keep only a complete run: \X2\ with groups of 4 hexadecimal digits, or \X4\ with groups
+    // of 8, up to \X0\ (ISO 10303-21, 6.4.3.3). Anything else is text, so its backslashes are
+    // doubled and its apostrophes too, which keeps the string valid.
+    const int aWidth = aThirdChar == '2' ? 4 : 8;
+    int       anEnd  = theIndex + 4;
+    while (anEnd <= aNb && std::isxdigit(static_cast<unsigned char>(theText.Value(anEnd))))
+    {
+      anEnd++;
+    }
+    const int aNbDigits = anEnd - theIndex - 4;
+    if (aNbDigits == 0 || aNbDigits % aWidth != 0 || anEnd + 3 > aNb || theText.Value(anEnd) != '\\'
+        || theText.Value(anEnd + 1) != 'X' || theText.Value(anEnd + 2) != '0'
+        || theText.Value(anEnd + 3) != '\\')
     {
       return 0;
     }
-    int aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\ (4 chars)
-    // For \X2 and \X4, find the terminating \X0 sequence
-    if (aThirdChar == '2' || aThirdChar == '4')
-    {
-      for (int aJ = theIndex + 4; aJ <= aNb - 3; aJ++)
-      {
-        if (theText.Value(aJ) == '\\' && theText.Value(aJ + 1) == 'X'
-            && theText.Value(aJ + 2) == '0' && theText.Value(aJ + 3) == '\\')
-        {
-          aDirectiveLength = (aJ + 4) - theIndex; // Include the \X0 sequence
-          break;
-        }
-      }
-    }
-    return aDirectiveLength;
+    return anEnd + 4 - theIndex; // Include the \X0 sequence
   }
   // Check for \X{HH}\ pattern (need exactly 5 characters: \X{HH}\)
   if (theIndex + 4 <= aNb && theText.Value(theIndex + 1) == 'X'
