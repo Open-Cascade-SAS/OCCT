@@ -235,6 +235,121 @@ void setEdition3Level(NCollection_HSequence<occ::handle<TCollection_HAsciiString
     return;
   }
 }
+
+//! Appends theValue to theText as theNbDigits upper case hexadecimal digits.
+void appendHex(TCollection_AsciiString& theText, const unsigned int theValue, const int theNbDigits)
+{
+  static const char THE_DIGITS[] = "0123456789ABCDEF";
+  for (int aShift = (theNbDigits - 1) * 4; aShift >= 0; aShift -= 4)
+  {
+    theText += THE_DIGITS[(theValue >> aShift) & 0xF];
+  }
+}
+
+//! Reads the UTF-8 character that starts at theIndex of theText into theCode.
+//! Returns its length in bytes, or 0 if the bytes there are not a valid UTF-8 character
+//! (a lone continuation byte, a cut or overlong sequence, a surrogate or a value above U+10FFFF).
+int readUtf8(const TCollection_AsciiString& theText, const int theIndex, unsigned int& theCode)
+{
+  const unsigned char aLead = static_cast<unsigned char>(theText.Value(theIndex));
+  int                 aLength;
+  unsigned int        aMin;
+  if (aLead >= 0xC2 && aLead <= 0xDF)
+  {
+    aLength = 2;
+    aMin    = 0x80;
+    theCode = aLead & 0x1F;
+  }
+  else if (aLead >= 0xE0 && aLead <= 0xEF)
+  {
+    aLength = 3;
+    aMin    = 0x800;
+    theCode = aLead & 0x0F;
+  }
+  else if (aLead >= 0xF0 && aLead <= 0xF4)
+  {
+    aLength = 4;
+    aMin    = 0x10000;
+    theCode = aLead & 0x07;
+  }
+  else
+  {
+    return 0;
+  }
+  if (theIndex + aLength - 1 > theText.Length())
+  {
+    return 0;
+  }
+  for (int anIndex = theIndex + 1; anIndex < theIndex + aLength; ++anIndex)
+  {
+    if (!isUtf8Continuation(theText.Value(anIndex)))
+    {
+      return 0;
+    }
+    theCode = (theCode << 6) | (static_cast<unsigned char>(theText.Value(anIndex)) & 0x3F);
+  }
+  if (theCode < aMin || theCode > 0x10FFFF || (theCode >= 0xD800 && theCode <= 0xDFFF))
+  {
+    return 0;
+  }
+  return aLength;
+}
+
+//! Writes the characters outside ASCII of theText (made by CleanTextForSend()) with the control
+//! directives of ISO 10303-21 (6.4.3.3): characters of the Basic Multilingual Plane as
+//! \X2\hhhh\X0\, the other characters as \X4\hhhhhhhh\X0\; characters next to each other share
+//! one directive. A byte that is not part of a valid UTF-8 character is written as \X\hh.
+TCollection_AsciiString escapeNonAscii(const TCollection_AsciiString& theText)
+{
+  TCollection_AsciiString aResult;
+  int                     anOpen = 0; // 2 inside \X2\, 4 inside \X4\, 0 outside
+  for (int anIndex = 1; anIndex <= theText.Length();)
+  {
+    const unsigned char aByte = static_cast<unsigned char>(theText.Value(anIndex));
+    if (anOpen != 0 && (aByte == 'N' || aByte == 'T') && anIndex < theText.Length()
+        && (theText.Value(anIndex + 1) == '\\'
+            || static_cast<unsigned char>(theText.Value(anIndex + 1)) >= 0x80))
+    {
+      // "\X0\N\" or "\X0\T\" would be read as a line feed or a tab by OCCT 7.5, which looks for
+      // these two directives anywhere in a string: keep the letter inside the directive instead
+      appendHex(aResult, aByte, anOpen == 2 ? 4 : 8);
+      ++anIndex;
+      continue;
+    }
+    unsigned int aCode   = 0;
+    const int    aLength = aByte < 0x80 ? 1 : readUtf8(theText, anIndex, aCode);
+    const int    aKind   = aByte < 0x80 || aLength == 0 ? 0 : (aCode > 0xFFFF ? 4 : 2);
+    if (anOpen != 0 && anOpen != aKind)
+    {
+      aResult += "\\X0\\";
+      anOpen = 0;
+    }
+    if (aByte < 0x80)
+    {
+      aResult += theText.Value(anIndex);
+    }
+    else if (aLength == 0)
+    {
+      aResult += "\\X\\";
+      appendHex(aResult, aByte, 2);
+    }
+    else
+    {
+      if (anOpen == 0)
+      {
+        aResult += aKind == 2 ? "\\X2\\" : "\\X4\\";
+        anOpen = aKind;
+      }
+      appendHex(aResult, aCode, aKind == 2 ? 4 : 8);
+    }
+    anIndex += aLength > 0 ? aLength : 1;
+  }
+  if (anOpen != 0)
+  {
+    aResult += "\\X0\\";
+  }
+  return aResult;
+}
 } // namespace
 
 //=================================================================================================
@@ -1125,7 +1240,13 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
   AddParam();
   // Use helper function to clean text while preserving control directives
   TCollection_AsciiString aVal = CleanTextForSend(val);
-  int                     aNn  = aVal.Length();
+  if (!themodel.IsNull()
+      && themodel->InternalParameters.WriteStringEncoding
+           == DESTEP_Parameters::WriteMode_StringEncoding_Escape)
+  {
+    aVal = escapeNonAscii(aVal); // for readers of the older editions of ISO 10303-21
+  }
+  int aNn = aVal.Length();
 
   // Add surrounding quotes
   aVal.Insert(1, '\'');

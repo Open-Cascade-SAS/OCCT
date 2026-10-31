@@ -14,7 +14,9 @@
 #include <APIHeaderSection_MakeHeader.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
+#include <STEPControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
+#include <Standard_ArrayStreamBuffer.hxx>
 #include <StepData_Field.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_SelectArrReal.hxx>
@@ -26,6 +28,8 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <gtest/gtest.h>
+
+#include <istream>
 
 namespace
 {
@@ -252,10 +256,14 @@ namespace
 //=================================================================================================
 
 //! Writes "TEST('<theText>');" and returns all written lines.
-NCollection_Sequence<TCollection_AsciiString> writeString(const TCollection_AsciiString& theText)
+NCollection_Sequence<TCollection_AsciiString> writeString(
+  const TCollection_AsciiString&                    theText,
+  const DESTEP_Parameters::WriteMode_StringEncoding theEncoding =
+    DESTEP_Parameters::WriteMode_StringEncoding_UTF8)
 {
-  occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
-  StepData_StepWriter             aWriter(aModel);
+  occ::handle<StepData_StepModel> aModel         = new StepData_StepModel;
+  aModel->InternalParameters.WriteStringEncoding = theEncoding;
+  StepData_StepWriter aWriter(aModel);
   aWriter.StartEntity("TEST");
   aWriter.Send(theText);
   aWriter.EndEntity();
@@ -419,4 +427,87 @@ TEST(StepData_StepWriterTest, SendModel_RawUtf8NeedsEdition3Level)
   EXPECT_STREQ(writtenLevel("4;1", anUtf8).ToCString(), "4;1");
   // other values are written as they are
   EXPECT_STREQ(writtenLevel("1", anUtf8).ToCString(), "1");
+}
+
+// Test that characters outside ASCII are written with \X2\ and \X4\ when the parameter asks it
+TEST(StepData_StepWriterTest, Send_EscapeModeWritesControlDirectives)
+{
+  const DESTEP_Parameters::WriteMode_StringEncoding anEscape =
+    DESTEP_Parameters::WriteMode_StringEncoding_Escape;
+  // "Box", U+C0C1 U+C790 (Korean), U+1F600 (outside the BMP) and U+00E9
+  EXPECT_STREQ(
+    joinLines(writeString("Box \xEC\x83\x81\xEC\x9E\x90 \xF0\x9F\x98\x80 \xC3\xA9", anEscape))
+      .ToCString(),
+    "TEST('Box \\X2\\C0C1C790\\X0\\ \\X4\\0001F600\\X0\\ \\X2\\00E9\\X0\\');");
+  // a character of the BMP right before one outside it, and an apostrophe
+  EXPECT_STREQ(joinLines(writeString("It's \xC3\xA9\xF0\x9F\x98\x80", anEscape)).ToCString(),
+               "TEST('It''s \\X2\\00E9\\X0\\\\X4\\0001F600\\X0\\');");
+  // a byte that is not valid UTF-8 is kept as \X\hh
+  EXPECT_STREQ(joinLines(writeString("a\xFFz", anEscape)).ToCString(), "TEST('a\\X\\FFz');");
+  // a single N or T right after a directive goes inside it, because OCCT 7.5 would read
+  // "\X0\T\X2\" as a tab; U+AC00, "T", U+B098 and then U+AC00, "N", a backslash, "x"
+  EXPECT_STREQ(joinLines(writeString("\xEA\xB0\x80T\xEB\x82\x98", anEscape)).ToCString(),
+               "TEST('\\X2\\AC000054B098\\X0\\');");
+  EXPECT_STREQ(joinLines(writeString("\xEA\xB0\x80N\\x", anEscape)).ToCString(),
+               "TEST('\\X2\\AC00004E\\X0\\\\\\x');");
+  EXPECT_STREQ(joinLines(writeString("\xEA\xB0\x80TT\xEB\x82\x98", anEscape)).ToCString(),
+               "TEST('\\X2\\AC00\\X0\\TT\\X2\\B098\\X0\\');");
+  // ASCII is written as before, and so is everything in the default mode
+  EXPECT_STREQ(joinLines(writeString("plain", anEscape)).ToCString(), "TEST('plain');");
+  EXPECT_STREQ(joinLines(writeString("\xC3\xA9")).ToCString(), "TEST('\xC3\xA9');");
+}
+
+// Test that a file written with escapes has only ASCII, keeps "2;1" and is read back exactly
+TEST(StepData_StepWriterTest, SendModel_EscapeModeRoundTrip)
+{
+  TCollection_AsciiString aLong; // 40 Korean characters, longer than one line when escaped
+  for (int anIndex = 0; anIndex < 40; ++anIndex)
+  {
+    aLong += "\xEA\xB0\x80";
+  }
+  const TCollection_AsciiString aNames[] = {"Box \xEC\x83\x81\xEC\x9E\x90",
+                                            "\xF0\x9F\x98\x80 \xF0\xA0\x80\x8B",
+                                            "Gr\xC3\xBC\xC3\x9F"
+                                            "e 'quoted' C:\\temp",
+                                            aLong};
+
+  STEPControl_Writer              aStepWriter; // creates a model with the STEP protocol
+  occ::handle<StepData_StepModel> aModel = aStepWriter.Model(true);
+  APIHeaderSection_MakeHeader     aHeader;
+  aHeader.Apply(aModel);
+  aModel->InternalParameters.WriteStringEncoding =
+    DESTEP_Parameters::WriteMode_StringEncoding_Escape;
+  for (const TCollection_AsciiString& aName : aNames)
+  {
+    occ::handle<StepVisual_ColourRgb> aColour = new StepVisual_ColourRgb;
+    aColour->Init(new TCollection_HAsciiString(aName), 1.0, 0.0, 0.0);
+    aModel->AddWithRefs(aColour);
+  }
+  StepData_StepWriter aWriter(aModel);
+  aWriter.SendModel(occ::down_cast<StepData_Protocol>(aModel->Protocol()));
+  TCollection_AsciiString aText;
+  for (int aLine = 1; aLine <= aWriter.NbLines(); ++aLine)
+  {
+    aText += aWriter.Line(aLine)->ToCString();
+    aText += "\n";
+  }
+  for (int anIndex = 1; anIndex <= aText.Length(); ++anIndex)
+  {
+    ASSERT_LT(static_cast<unsigned char>(aText.Value(anIndex)), 0x80) << anIndex;
+  }
+  EXPECT_GT(aText.Search("'2;1');"), 0);
+
+  Standard_ArrayStreamBuffer aBuffer(aText.ToCString(), aText.Length());
+  std::istream               aStream(&aBuffer);
+  STEPControl_Reader         aReader;
+  ASSERT_EQ(aReader.ReadStream("escape.stp", aStream), IFSelect_RetDone);
+  const occ::handle<StepData_StepModel> aReadModel = aReader.StepModel();
+  ASSERT_EQ(aReadModel->NbEntities(), 4);
+  for (int anIndex = 1; anIndex <= 4; ++anIndex)
+  {
+    const occ::handle<StepVisual_ColourRgb> aColour =
+      occ::down_cast<StepVisual_ColourRgb>(aReadModel->Value(anIndex));
+    ASSERT_FALSE(aColour.IsNull());
+    EXPECT_STREQ(aColour->Name()->ToCString(), aNames[anIndex - 1].ToCString());
+  }
 }
