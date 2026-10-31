@@ -79,6 +79,8 @@ void DESTEP_Parameters::InitFromStatic()
   WriteUnit           = (UnitsMethods_LengthUnit)Interface_Static::IVal("write.step.unit");
   WriteVertexMode =
     (DESTEP_Parameters::WriteMode_VertexMode)Interface_Static::IVal("write.step.vertex.mode");
+  WriteStringEncoding = (DESTEP_Parameters::WriteMode_StringEncoding)Interface_Static::IVal(
+    "write.step.string.encoding");
   WriteSubshapeNames = Interface_Static::IVal("write.stepcaf.subshapes.name") == 1;
   WriteColor         = Interface_Static::IVal("write.color") == 1;
   WriteNonmanifold   = Interface_Static::IVal("write.step.nonmanifold") == 1;

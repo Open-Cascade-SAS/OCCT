@@ -121,6 +121,12 @@ public:
     WriteMode_VertexMode_SingleVertex
   };
 
+  enum WriteMode_StringEncoding
+  {
+    WriteMode_StringEncoding_UTF8 = 0,
+    WriteMode_StringEncoding_Escape
+  };
+
 public:
   Standard_EXPORT DESTEP_Parameters();
 
@@ -193,6 +199,7 @@ public:
   bool WriteSurfaceCurMode = true; //<! Indicates whether parametric curves (curves in parametric space of surface) should be written into the STEP file
   UnitsMethods_LengthUnit WriteUnit = UnitsMethods_LengthUnit_Millimeter; //<! Defines a unit in which the STEP file should be written
   WriteMode_VertexMode WriteVertexMode = WriteMode_VertexMode_OneCompound; //<! Indicates which of free vertices writing mode is switch on
+  WriteMode_StringEncoding WriteStringEncoding = WriteMode_StringEncoding_UTF8; //<! Defines how characters outside ASCII are written in strings: as raw UTF-8, or escaped with the control directives \X2\ and \X4\ for older readers
   bool WriteSubshapeNames = false; //<! Indicates whether to write sub-shape names to 'Name' attributes of STEP Representation Items
   bool WriteColor = true; //<! ColorMode is used to indicate write Colors or not
   bool WriteNonmanifold = false; //<! Defines non-manifold topology writing
