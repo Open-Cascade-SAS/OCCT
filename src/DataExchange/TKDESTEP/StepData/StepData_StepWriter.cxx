@@ -184,6 +184,57 @@ int safeBreak(const TCollection_AsciiString& theText, const int theStop, const b
   }
   return anEnd;
 }
+
+//! Returns true if one of theLines has a byte outside ASCII, that is raw UTF-8.
+bool hasNonAsciiByte(const NCollection_HSequence<occ::handle<TCollection_HAsciiString>>& theLines)
+{
+  for (int aLine = 1; aLine <= theLines.Length(); ++aLine)
+  {
+    for (const char* aByte = theLines.Value(aLine)->ToCString(); *aByte != '\0'; ++aByte)
+    {
+      if (static_cast<unsigned char>(*aByte) >= 0x80)
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+//! Changes the implementation level "2;1" or "3;1" of the FILE_DESCRIPTION written on the lines
+//! theFirst to theLast into "4;1". The level is the last parameter, so it is the last string
+//! of the entity and only ")" , ";" or spaces may follow it.
+void setEdition3Level(NCollection_HSequence<occ::handle<TCollection_HAsciiString>>& theLines,
+                      const int                                                     theFirst,
+                      const int                                                     theLast)
+{
+  for (int aLine = theLast; aLine >= theFirst; --aLine)
+  {
+    const occ::handle<TCollection_HAsciiString>& aText  = theLines.Value(aLine);
+    int                                          aClose = aText->Length();
+    for (; aClose > 0 && aText->Value(aClose) != '\''; --aClose)
+    {
+      const char aChar = aText->Value(aClose);
+      if (aChar != ')' && aChar != ';' && aChar != ' ')
+      {
+        return; // something else follows the last string
+      }
+    }
+    if (aClose == 0)
+    {
+      continue; // only ")" or ";" on this line, the level is on a line above
+    }
+    // the level has three characters, like '2;1'
+    const int anOpen = aClose - 4;
+    if (anOpen >= 1 && aText->Value(anOpen) == '\''
+        && (aText->Value(anOpen + 1) == '2' || aText->Value(anOpen + 1) == '3')
+        && aText->Value(anOpen + 2) == ';' && aText->Value(anOpen + 3) == '1')
+    {
+      aText->SetValue(anOpen + 1, '4');
+    }
+    return;
+  }
+}
 } // namespace
 
 //=================================================================================================
@@ -301,6 +352,8 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
 
   Interface_EntityIterator header = themodel->Header();
   thenum                          = 0;
+  int aDescriptionFirst           = 0; // first and last line of FILE_DESCRIPTION
+  int aDescriptionLast            = 0;
   for (header.Start(); header.More(); header.Next())
   {
     const occ::handle<Standard_Transient>& anent = header.Value();
@@ -308,6 +361,7 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
     //   Write Entity via Lib  (similaire a SendEntity)
     occ::handle<StepData_ReadWriteModule> module;
     int                                   CN;
+    bool                                  isDescription = false;
     if (lib.Select(anent, module, CN))
     {
       if (module->IsComplex(CN))
@@ -324,6 +378,11 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
         if (styp.Length() == 0)
         {
           styp = module->StepType(CN);
+        }
+        isDescription = module->StepType(CN) == "FILE_DESCRIPTION";
+        if (isDescription)
+        {
+          aDescriptionFirst = thefile->Length() + 1;
         }
         StartEntity(styp);
       }
@@ -352,6 +411,10 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
       }
     }
     EndEntity();
+    if (isDescription)
+    {
+      aDescriptionLast = thefile->Length();
+    }
   }
   EndSec();
   if (headeronly)
@@ -397,6 +460,13 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
 
   EndSec();
   EndFile();
+
+  // Strings with raw UTF-8 need edition 3 of ISO 10303-21 (8.2.2): the implementation levels
+  // "2;1" and "3;1" of the older editions allow characters outside ASCII only as \X2\ and \X4\.
+  if (aDescriptionFirst > 0 && aDescriptionLast >= aDescriptionFirst && hasNonAsciiByte(*thefile))
+  {
+    setEdition3Level(*thefile, aDescriptionFirst, aDescriptionLast);
+  }
 }
 
 //  ....                FILE DIVISION INTO SECTIONS                ....

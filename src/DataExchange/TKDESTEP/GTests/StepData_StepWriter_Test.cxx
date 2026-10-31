@@ -11,14 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <APIHeaderSection_MakeHeader.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
+#include <STEPControl_Writer.hxx>
 #include <StepData_Field.hxx>
+#include <StepData_Protocol.hxx>
 #include <StepData_SelectArrReal.hxx>
 #include <StepData_SelectInt.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
+#include <StepVisual_ColourRgb.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 #include <gtest/gtest.h>
 
@@ -362,4 +367,56 @@ TEST(StepData_StepWriterTest, Send_LongStringKeepsEscapesWhole)
       }
     }
   }
+}
+
+namespace
+{
+//=================================================================================================
+
+//! Writes a model whose header has the implementation level theLevel and whose data has one
+//! COLOUR_RGB named theName. Returns the implementation level found in the written header.
+TCollection_AsciiString writtenLevel(const char* theLevel, const char* theName)
+{
+  STEPControl_Writer              aStepWriter; // creates a model with the STEP protocol
+  occ::handle<StepData_StepModel> aModel = aStepWriter.Model(true);
+  APIHeaderSection_MakeHeader     aHeader;
+  aHeader.SetImplementationLevel(new TCollection_HAsciiString(theLevel));
+  aHeader.Apply(aModel);
+  occ::handle<StepVisual_ColourRgb> aColour = new StepVisual_ColourRgb;
+  aColour->Init(new TCollection_HAsciiString(theName), 1.0, 0.0, 0.0);
+  aModel->AddWithRefs(aColour);
+
+  StepData_StepWriter aWriter(aModel);
+  aWriter.SendModel(occ::down_cast<StepData_Protocol>(aModel->Protocol()));
+  for (int aLine = 1; aLine <= aWriter.NbLines(); ++aLine)
+  {
+    const TCollection_AsciiString aText = aWriter.Line(aLine)->ToCString();
+    if (aText.Search("FILE_DESCRIPTION") == 1)
+    {
+      // FILE_DESCRIPTION(('...'),'<level>');
+      const int aClose = aText.SearchFromEnd("'");
+      int       anOpen = aClose - 1;
+      while (anOpen > 0 && aText.Value(anOpen) != '\'')
+      {
+        --anOpen;
+      }
+      return aText.SubString(anOpen + 1, aClose - 1);
+    }
+  }
+  return "";
+}
+} // namespace
+
+// Test that the header says "4;1" (ISO 10303-21:2016) when strings are written as raw UTF-8,
+// because the levels "2;1" and "3;1" allow other characters than ASCII only as \X2\ and \X4\.
+TEST(StepData_StepWriterTest, SendModel_RawUtf8NeedsEdition3Level)
+{
+  const char* const anAscii = "Box";
+  const char* const anUtf8  = "Box \xEC\x83\x81\xEC\x9E\x90"; // "Box" and two Korean characters
+  EXPECT_STREQ(writtenLevel("2;1", anAscii).ToCString(), "2;1");
+  EXPECT_STREQ(writtenLevel("2;1", anUtf8).ToCString(), "4;1");
+  EXPECT_STREQ(writtenLevel("3;1", anUtf8).ToCString(), "4;1");
+  EXPECT_STREQ(writtenLevel("4;1", anUtf8).ToCString(), "4;1");
+  // other values are written as they are
+  EXPECT_STREQ(writtenLevel("1", anUtf8).ToCString(), "1");
 }
