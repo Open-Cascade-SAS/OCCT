@@ -132,6 +132,58 @@ int directiveLength(const TCollection_AsciiString& theText, const int theIndex)
   }
   return 0;
 }
+
+//! Returns the length of the piece of theText (made by CleanTextForSend()) that starts at
+//! theIndex and must stay on one line: one UTF-8 character, a doubled apostrophe or backslash,
+//! or a control directive.
+int unitLength(const TCollection_AsciiString& theText, const int theIndex)
+{
+  const int  aNb   = theText.Length();
+  const char aChar = theText.Value(theIndex);
+  if (aChar == '\'' || aChar == '\\')
+  {
+    if (theIndex < aNb && theText.Value(theIndex + 1) == aChar)
+    {
+      return 2; // doubled apostrophe or backslash
+    }
+    const int aLength = directiveLength(theText, theIndex);
+    if (aLength == 3 && theText.Value(theIndex + 1) == 'S' && theIndex + 3 <= aNb)
+    {
+      return aLength + unitLength(theText, theIndex + 3); // \S\ changes the next character
+    }
+    return aLength > 0 ? aLength : 1;
+  }
+  int aLength = 1;
+  while (theIndex + aLength <= aNb && isUtf8Continuation(theText.Value(theIndex + aLength)))
+  {
+    aLength++;
+  }
+  return aLength;
+}
+
+//! Returns the last position, not after theStop, where theText can be cut without cutting a
+//! piece (see unitLength()). If the first piece is already longer than theStop, returns its end:
+//! the line is then longer than usual. theIsQuoted tells that theText starts with the opening
+//! apostrophe, which is kept together with the first character.
+int safeBreak(const TCollection_AsciiString& theText, const int theStop, const bool theIsQuoted)
+{
+  int anEnd = 0;
+  for (int anIndex = 1; anIndex <= theText.Length();)
+  {
+    int aLast = anIndex + unitLength(theText, anIndex) - 1;
+    if (anIndex == 1 && theIsQuoted && theText.Length() > 1)
+    {
+      aLast = 1 + unitLength(theText, 2);
+    }
+    if (aLast > theStop)
+    {
+      return anEnd > 0 ? anEnd : aLast;
+    }
+    anEnd   = aLast;
+    anIndex = aLast + 1;
+  }
+  return anEnd;
+}
 } // namespace
 
 //=================================================================================================
@@ -1040,6 +1092,7 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
     }
     else
     {
+      bool isFirstLine = true; // aVal still starts with the opening apostrophe
       while (aNn > 0)
       {
         if (aNn <= StepLong)
@@ -1073,11 +1126,9 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
             }
           }
         }
-        // do not cut a UTF-8 character: the next line must start with its first byte
-        while (aStop > 1 && isUtf8Continuation(aVal.Value(aStop + 1)))
-        {
-          aStop--;
-        }
+        // do not cut a UTF-8 character, a doubled apostrophe or backslash, or a control directive
+        aStop                         = safeBreak(aVal, aStop, isFirstLine);
+        isFirstLine                   = false;
         TCollection_AsciiString aBval = aVal.Split(aStop);
         thefile->Append(new TCollection_HAsciiString(aVal));
         aVal = aBval;

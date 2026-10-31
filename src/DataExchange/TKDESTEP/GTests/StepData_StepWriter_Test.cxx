@@ -304,3 +304,62 @@ TEST(StepData_StepWriterTest, Send_LongStringKeepsUtf8CharactersWhole)
                  (TCollection_AsciiString("TEST('") + aText + "');").ToCString());
   }
 }
+
+// Test that a long string is never wrapped between the two letters of '' or of \\,
+// nor inside a control directive that is kept as it is
+TEST(StepData_StepWriterTest, Send_LongStringKeepsEscapesWhole)
+{
+  const char* const aPieces[] = {"x'", "x\\", "x\\X2\\0041\\X0\\"};
+  for (const char* aPiece : aPieces)
+  {
+    for (int aPrefix = 0; aPrefix <= 12; ++aPrefix)
+    {
+      SCOPED_TRACE(TCollection_AsciiString(aPiece) + " after " + aPrefix);
+      TCollection_AsciiString aText;
+      for (int anIndex = 0; anIndex < aPrefix; ++anIndex)
+      {
+        aText += "a";
+      }
+      for (int anIndex = 0; anIndex < 30; ++anIndex)
+      {
+        aText += aPiece;
+      }
+      const NCollection_Sequence<TCollection_AsciiString> aLines = writeString(aText);
+      ASSERT_GT(aLines.Length(), 2);
+      const TCollection_AsciiString aJoined = joinLines(aLines);
+      EXPECT_STREQ(
+        aJoined.ToCString(),
+        (TCollection_AsciiString("TEST('") + StepData_StepWriter::CleanTextForSend(aText) + "');")
+          .ToCString());
+
+      // positions in aJoined where a line ends
+      NCollection_Sequence<int> aBreaks;
+      int                       aPosition = 0;
+      for (int aLine = 1; aLine < aLines.Length(); ++aLine)
+      {
+        aPosition += aLines.Value(aLine).Length();
+        aBreaks.Append(aPosition);
+      }
+      // walk the string token and check that no line ends inside '' , \\ or \X2\...\X0\ .
+      for (int anIndex = 7; anIndex < aJoined.Length() - 2;)
+      {
+        int aLength = 1;
+        if (aJoined.Value(anIndex) == '\\' && aJoined.Value(anIndex + 1) == 'X')
+        {
+          aLength = aJoined.Search("\\X0\\") > 0 ? 12 : 1; // the directive \X2\0041\X0\ above
+        }
+        else if ((aJoined.Value(anIndex) == '\'' || aJoined.Value(anIndex) == '\\')
+                 && aJoined.Value(anIndex + 1) == aJoined.Value(anIndex))
+        {
+          aLength = 2;
+        }
+        for (const int aBreak : aBreaks)
+        {
+          EXPECT_FALSE(aBreak >= anIndex && aBreak < anIndex + aLength - 1)
+            << "line ends at " << aBreak << " inside the piece at " << anIndex;
+        }
+        anIndex += aLength;
+      }
+    }
+  }
+}
