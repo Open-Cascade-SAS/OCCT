@@ -65,6 +65,15 @@ static TCollection_AsciiString texttrue(".T.");
 static TCollection_AsciiString textfalse(".F.");
 static TCollection_AsciiString textunknown(".U.");
 
+namespace
+{
+//! Returns true for the second, third or fourth byte of a UTF-8 character.
+inline bool isUtf8Continuation(const char theByte)
+{
+  return (static_cast<unsigned char>(theByte) & 0xC0) == 0x80;
+}
+} // namespace
+
 //=================================================================================================
 
 StepData_StepWriter::StepData_StepWriter(const occ::handle<StepData_StepModel>& amodel)
@@ -1003,6 +1012,11 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
               aStop = StepLong;
             }
           }
+        }
+        // do not cut a UTF-8 character: the next line must start with its first byte
+        while (aStop > 1 && isUtf8Continuation(aVal.Value(aStop + 1)))
+        {
+          aStop--;
         }
         TCollection_AsciiString aBval = aVal.Split(aStop);
         thefile->Append(new TCollection_HAsciiString(aVal));

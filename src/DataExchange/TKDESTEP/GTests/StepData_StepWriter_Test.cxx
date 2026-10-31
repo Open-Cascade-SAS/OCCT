@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Sequence.hxx>
 #include <StepData_Field.hxx>
 #include <StepData_SelectArrReal.hxx>
 #include <StepData_SelectInt.hxx>
@@ -239,4 +240,67 @@ TEST(StepData_StepWriterTest, CleanTextForSend_HexSequenceDetection)
   TCollection_AsciiString anInput3("start \\X2\\03C0\\X0\\ end");
   TCollection_AsciiString aResult3 = StepData_StepWriter::CleanTextForSend(anInput3);
   EXPECT_STREQ(aResult3.ToCString(), "start \\X2\\03C0\\X0\\ end");
+}
+
+namespace
+{
+//=================================================================================================
+
+//! Writes "TEST('<theText>');" and returns all written lines.
+NCollection_Sequence<TCollection_AsciiString> writeString(const TCollection_AsciiString& theText)
+{
+  occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
+  StepData_StepWriter             aWriter(aModel);
+  aWriter.StartEntity("TEST");
+  aWriter.Send(theText);
+  aWriter.EndEntity();
+  NCollection_Sequence<TCollection_AsciiString> aLines;
+  for (int aLine = 1; aLine <= aWriter.NbLines(); ++aLine)
+  {
+    aLines.Append(aWriter.Line(aLine)->ToCString());
+  }
+  return aLines;
+}
+
+//=================================================================================================
+
+//! Joins the lines again; line breaks are not part of a string (ISO 10303-21, 5.6).
+TCollection_AsciiString joinLines(const NCollection_Sequence<TCollection_AsciiString>& theLines)
+{
+  TCollection_AsciiString aText;
+  for (const TCollection_AsciiString& aLine : theLines)
+  {
+    aText += aLine;
+  }
+  return aText;
+}
+} // namespace
+
+// Test that a long string is wrapped between UTF-8 characters, never inside one
+TEST(StepData_StepWriterTest, Send_LongStringKeepsUtf8CharactersWhole)
+{
+  // 40 times U+AC00 (3 bytes in UTF-8) after 0 to 10 ASCII letters,
+  // so that the 72nd byte of the line falls on every byte of a character
+  for (int aPrefix = 0; aPrefix <= 10; ++aPrefix)
+  {
+    SCOPED_TRACE(aPrefix);
+    TCollection_AsciiString aText;
+    for (int anIndex = 0; anIndex < aPrefix; ++anIndex)
+    {
+      aText += "a";
+    }
+    for (int anIndex = 0; anIndex < 40; ++anIndex)
+    {
+      aText += "\xEA\xB0\x80";
+    }
+    const NCollection_Sequence<TCollection_AsciiString> aLines = writeString(aText);
+    ASSERT_GT(aLines.Length(), 2);
+    for (const TCollection_AsciiString& aLine : aLines)
+    {
+      EXPECT_LE(aLine.Length(), 72);
+      EXPECT_FALSE((static_cast<unsigned char>(aLine.Value(1)) & 0xC0) == 0x80) << aLine;
+    }
+    EXPECT_STREQ(joinLines(aLines).ToCString(),
+                 (TCollection_AsciiString("TEST('") + aText + "');").ToCString());
+  }
 }
