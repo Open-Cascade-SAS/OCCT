@@ -578,6 +578,34 @@ TEST(StepData_StepWriterTest, Send_LongRunIsClosedAndOpenedAgain)
   }
 }
 
+// Test that a long string with bytes that are not valid UTF-8 (written as \X\hh in the escape
+// mode) is never wrapped inside one of these directives
+TEST(StepData_StepWriterTest, Send_LongStringKeepsByteDirectivesWhole)
+{
+  for (int aPrefix = 0; aPrefix <= 6; ++aPrefix)
+  {
+    SCOPED_TRACE(aPrefix);
+    TCollection_AsciiString aText;
+    for (int anIndex = 0; anIndex < aPrefix; ++anIndex)
+    {
+      aText += "a";
+    }
+    for (int anIndex = 0; anIndex < 30; ++anIndex)
+    {
+      aText += "\xFF";
+    }
+    const NCollection_Sequence<TCollection_AsciiString> aLines =
+      writeString(aText, DESTEP_Parameters::WriteMode_StringEncoding_Escape);
+    ASSERT_GT(aLines.Length(), 2);
+    for (int aLine = 2; aLine <= aLines.Length(); ++aLine)
+    {
+      // every line of the string goes on with a whole directive or the closing apostrophe
+      const TCollection_AsciiString& aText2 = aLines.Value(aLine);
+      EXPECT_TRUE(aText2.Search("\\X\\FF") == 1 || aText2.Value(1) == '\'') << aText2;
+    }
+  }
+}
+
 // Test that a file written with escapes has only ASCII, keeps "2;1" and is read back exactly
 TEST(StepData_StepWriterTest, SendModel_EscapeModeRoundTrip)
 {

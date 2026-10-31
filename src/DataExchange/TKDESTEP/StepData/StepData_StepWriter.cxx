@@ -148,6 +148,11 @@ int unitLength(const TCollection_AsciiString& theText, const int theIndex)
     {
       return 2; // doubled apostrophe or backslash
     }
+    if (aChar == '\\' && theIndex + 4 <= aNb && theText.Value(theIndex + 1) == 'X'
+        && theText.Value(theIndex + 2) == '\\')
+    {
+      return 5; // \X\hh, written for a byte that is not valid UTF-8
+    }
     const int aLength = directiveLength(theText, theIndex);
     if (aLength == 3 && theText.Value(theIndex + 1) == 'S' && theIndex + 3 <= aNb)
     {
