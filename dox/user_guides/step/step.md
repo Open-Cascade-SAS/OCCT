@@ -1051,6 +1051,22 @@ if(!Interface_Static::SetIVal("write.step.vertex.mode",1))
 .. error .. 
 ~~~~
 Default value is 0. 
+
+<h4>write.step.string.encoding</h4>
+This parameter defines how characters outside ASCII are written in strings, for example in the names of products. 
+* 0 (UTF8) : (default) The characters are written as raw UTF-8, as the 2016 edition of ISO 10303-21 allows. If the file has such characters, the header gets the implementation level '4;1'. 
+* 1 (Escape) : The characters are written with the control directives of ISO 10303-21: `\X2\...\X0\` for the characters of the Basic Multilingual Plane, and `\X4\...\X0\` for the other ones. The file has only ASCII characters and keeps the implementation level '2;1'. Use this value when the file is read by applications made for the older editions of ISO 10303-21, which do not read raw UTF-8. 
+
+Read this parameter with: 
+~~~~{.cpp}
+int ic = Interface_Static::IVal("write.step.string.encoding"); 
+~~~~
+Modify this parameter with: 
+~~~~{.cpp}
+if(!Interface_Static::SetCVal("write.step.string.encoding","Escape"))  
+.. error .. 
+~~~~
+Default value is 0. 
  
 <h4>write.step.tessellated:</h4>
 
