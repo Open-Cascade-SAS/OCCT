@@ -124,3 +124,48 @@ TEST(StepData_StepReaderDataTest, ReadString_LineBreaksInsideStringAreIgnored)
     EXPECT_STREQ(aColour->Name()->ToCString(), aCases[anIndex - 1][1]);
   }
 }
+
+//==================================================================================================
+
+// A doubled apostrophe followed by a comma or a closing parenthesis is still inside the string.
+// Before, the string ended there, so the name was cut and the next entities were read wrongly.
+TEST(StepData_StepReaderDataTest, ReadString_DoubledApostropheBeforeCommaOrParenthesis)
+{
+  const char* const       aCases[][2] = {{"'Part ''A'', rev 2'", "Part 'A', rev 2"},
+                                         {"'Bolt (size ''M8'')'", "Bolt (size 'M8')"},
+                                         {"'x''),y'", "x'),y"},
+                                         {"''''", "'"},
+                                         {"''", ""},
+                                         {"'a'''", "a'"},
+                                         {"'It''s'", "It's"},
+                                         {"'A''\n,b'", "A',b"},
+                                         {"'last'", "last"}};
+  TCollection_AsciiString aText("ISO-10303-21;\nHEADER;\n"
+                                "FILE_DESCRIPTION(('Apostrophes'),'2;1');\n"
+                                "FILE_NAME('apostrophes.stp','',(''),(''),'','','');\n"
+                                "FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));\nENDSEC;\nDATA;\n");
+  for (int anIndex = 0; anIndex < int(sizeof(aCases) / sizeof(aCases[0])); ++anIndex)
+  {
+    aText += "#";
+    aText += anIndex + 1;
+    aText += "=COLOUR_RGB(";
+    aText += aCases[anIndex][0];
+    aText += ",1.,0.,0.);\n";
+  }
+  aText += "ENDSEC;\nEND-ISO-10303-21;\n";
+
+  Standard_ArrayStreamBuffer aBuffer(aText.ToCString(), aText.Length());
+  std::istream               aStream(&aBuffer);
+  STEPControl_Reader         aReader;
+  ASSERT_EQ(aReader.ReadStream("apostrophes.stp", aStream), IFSelect_RetDone);
+  const occ::handle<StepData_StepModel> aModel = aReader.StepModel();
+  ASSERT_EQ(aModel->NbEntities(), int(sizeof(aCases) / sizeof(aCases[0])));
+  for (int anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
+  {
+    SCOPED_TRACE(anIndex);
+    const occ::handle<StepVisual_ColourRgb> aColour =
+      occ::down_cast<StepVisual_ColourRgb>(aModel->Value(anIndex));
+    ASSERT_FALSE(aColour.IsNull());
+    EXPECT_STREQ(aColour->Name()->ToCString(), aCases[anIndex - 1][1]);
+  }
+}

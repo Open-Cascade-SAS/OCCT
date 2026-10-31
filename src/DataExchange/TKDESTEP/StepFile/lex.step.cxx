@@ -584,6 +584,27 @@ long string in files Henri.stp and 401.stp*/
   #pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
+// Returns true if the apostrophe at the end of theText (a string being read, which starts with
+// its opening apostrophe) is the second one of a doubled apostrophe, so not the end of the string:
+// then an even number of apostrophes follows the opening one at the end of theText.
+// Line breaks are not counted, as they may be between the two apostrophes (ISO 10303-21, 5.6).
+static bool isDoubledApostrophe(const char* theText, const int theLength)
+{
+  int aNbApostrophes = 0;
+  for (int anIndex = theLength - 1; anIndex > 0; --anIndex)
+  {
+    if (theText[anIndex] == '\'')
+    {
+      ++aNbApostrophes;
+    }
+    else if (theText[anIndex] != '\n' && theText[anIndex] != '\r')
+    {
+      break;
+    }
+  }
+  return aNbApostrophes % 2 == 0;
+}
+
 #define INITIAL 0
 #define Com 1
 #define End 2
@@ -867,12 +888,20 @@ YY_DECL
           YY_DO_BEFORE_ACTION; /* set up yytext again */
           YY_RULE_SETUP
           {
-            BEGIN(INITIAL);
-            CreateNewText(YYText(), YYLeng());
-            SetTypeArg(Interface_ParamText);
-            return (token::QUID);
-          } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the
-               scanner to initial state, record the value of all yytext collected */
+            if (isDoubledApostrophe(YYText(), YYLeng()))
+            {
+              yymore();
+            }
+            else
+            {
+              BEGIN(INITIAL);
+              CreateNewText(YYText(), YYLeng());
+              SetTypeArg(Interface_ParamText);
+              return (token::QUID);
+            }
+          } /* end of string (apostrophe followed by comma or closing parenthesis, but not the
+               second apostrophe of '') - reset the scanner to initial state, record the value of
+               all yytext collected */
           YY_BREAK
         case 10:
           YY_RULE_SETUP
