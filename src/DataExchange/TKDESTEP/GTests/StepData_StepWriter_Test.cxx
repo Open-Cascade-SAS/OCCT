@@ -377,6 +377,59 @@ TEST(StepData_StepWriterTest, Send_LongStringKeepsEscapesWhole)
   }
 }
 
+// Test that a line break next to a backslash or an apostrophe has at least three bytes of the
+// string after it (the reader of OCCT 7.5 fails otherwise), while plain text keeps its layout
+TEST(StepData_StepWriterTest, Send_LongStringLeavesBytesAfterBreakNextToEscape)
+{
+  const char* const aTails[] = {"\\y", "y\\", "'y", "y'", "\\\\", "''", "\\", "'"};
+  for (const char* aTail : aTails)
+  {
+    for (int aPrefix = 60; aPrefix <= 76; ++aPrefix)
+    {
+      SCOPED_TRACE(TCollection_AsciiString(aTail) + " after " + aPrefix);
+      TCollection_AsciiString aText;
+      for (int anIndex = 0; anIndex < aPrefix; ++anIndex)
+      {
+        aText += "x";
+      }
+      aText += aTail;
+      const NCollection_Sequence<TCollection_AsciiString> aLines  = writeString(aText);
+      const TCollection_AsciiString                       aJoined = joinLines(aLines);
+      // the string token, without the indentation that the writer may put outside of it
+      const int anOpen = aJoined.Search("'");
+      const int aClose = aJoined.SearchFromEnd("'");
+      ASSERT_GT(anOpen, 0);
+      EXPECT_STREQ(aJoined.SubString(anOpen + 1, aClose - 1).ToCString(),
+                   StepData_StepWriter::CleanTextForSend(aText).ToCString());
+      int aBreak = 0;
+      for (int aLine = 1; aLine < aLines.Length(); ++aLine)
+      {
+        aBreak += aLines.Value(aLine).Length();
+        if (aBreak <= anOpen || aBreak >= aClose)
+        {
+          continue; // not inside the string
+        }
+        const char aBefore = aJoined.Value(aBreak);
+        const char anAfter = aJoined.Value(aBreak + 1);
+        if (aBefore == '\\' || aBefore == '\''
+            || (aBreak + 1 < aClose && (anAfter == '\\' || anAfter == '\'')))
+        {
+          EXPECT_GE(aClose - aBreak - 1, 3) << "break at " << aBreak;
+        }
+      }
+    }
+  }
+  // plain text is wrapped as before: 72 letters give a line of 72 bytes and "x'" on the next one
+  TCollection_AsciiString aPlain;
+  for (int anIndex = 0; anIndex < 72; ++anIndex)
+  {
+    aPlain += "x";
+  }
+  const NCollection_Sequence<TCollection_AsciiString> aLines = writeString(aPlain);
+  ASSERT_GE(aLines.Length(), 2);
+  EXPECT_STREQ(aLines.Value(aLines.Length()).ToCString(), "x');");
+}
+
 namespace
 {
 //=================================================================================================

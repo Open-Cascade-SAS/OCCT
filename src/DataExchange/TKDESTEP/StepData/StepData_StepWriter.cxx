@@ -1318,7 +1318,20 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
           }
         }
         // do not cut a UTF-8 character, a doubled apostrophe or backslash, or a control directive
-        aStop                         = safeBreak(aVal, aStop, isFirstLine);
+        aStop = safeBreak(aVal, aStop, isFirstLine);
+        // the reader of OCCT 7.5 fails on a line break next to a backslash or an apostrophe when
+        // less than three bytes of the string follow it: then break earlier
+        const char aBefore = aVal.Value(aStop);
+        const char anAfter = aStop + 1 < aNn ? aVal.Value(aStop + 1) : ' '; // not the closing one
+        if (aNn - aStop < 4
+            && (aBefore == '\\' || aBefore == '\'' || anAfter == '\\' || anAfter == '\''))
+        {
+          const int anEarlier = safeBreak(aVal, aNn - 4, isFirstLine);
+          if (anEarlier < aStop)
+          {
+            aStop = anEarlier;
+          }
+        }
         isFirstLine                   = false;
         TCollection_AsciiString aBval = aVal.Split(aStop);
         thefile->Append(new TCollection_HAsciiString(aVal));
