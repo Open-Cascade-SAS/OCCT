@@ -72,6 +72,66 @@ inline bool isUtf8Continuation(const char theByte)
 {
   return (static_cast<unsigned char>(theByte) & 0xC0) == 0x80;
 }
+
+//! Returns the length of the control directive that starts at theIndex in theText,
+//! or 0 if there is no directive there (see StepData_StepWriter::CleanTextForSend()).
+int directiveLength(const TCollection_AsciiString& theText, const int theIndex)
+{
+  const int aNb = theText.Length();
+  if (theText.Value(theIndex) != '\\')
+  {
+    return 0;
+  }
+  // Check for \X2\ and \X4\ patterns first (need exactly 4 characters: \X2\)
+  if (theIndex + 3 <= aNb && theText.Value(theIndex + 1) == 'X'
+      && theText.Value(theIndex + 3) == '\\')
+  {
+    const char aThirdChar = theText.Value(theIndex + 2);
+    // \X2, \X4, \X0 patterns - special control sequences
+    if (aThirdChar != '2' && aThirdChar != '4' && aThirdChar != '0')
+    {
+      return 0;
+    }
+    int aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\ (4 chars)
+    // For \X2 and \X4, find the terminating \X0 sequence
+    if (aThirdChar == '2' || aThirdChar == '4')
+    {
+      for (int aJ = theIndex + 4; aJ <= aNb - 3; aJ++)
+      {
+        if (theText.Value(aJ) == '\\' && theText.Value(aJ + 1) == 'X'
+            && theText.Value(aJ + 2) == '0' && theText.Value(aJ + 3) == '\\')
+        {
+          aDirectiveLength = (aJ + 4) - theIndex; // Include the \X0 sequence
+          break;
+        }
+      }
+    }
+    return aDirectiveLength;
+  }
+  // Check for \X{HH}\ pattern (need exactly 5 characters: \X{HH}\)
+  if (theIndex + 4 <= aNb && theText.Value(theIndex + 1) == 'X'
+      && theText.Value(theIndex + 4) == '\\')
+  {
+    // Regular \X{HH}\ pattern - check for two hex characters
+    return std::isxdigit(static_cast<unsigned char>(theText.Value(theIndex + 2)))
+               && std::isxdigit(static_cast<unsigned char>(theText.Value(theIndex + 3)))
+             ? 5
+             : 0;
+  }
+  // Check for \S, \N, \T patterns (need exactly 3 characters: \S\)
+  if (theIndex + 2 <= aNb && theText.Value(theIndex + 2) == '\\')
+  {
+    const char aSecondChar = theText.Value(theIndex + 1);
+    return aSecondChar == 'S' || aSecondChar == 'N' || aSecondChar == 'T' ? 3 : 0;
+  }
+  // Check for \P{char}\ patterns (need exactly 4 characters: \P{char}\)
+  if (theIndex + 3 <= aNb && theText.Value(theIndex + 1) == 'P'
+      && theText.Value(theIndex + 3) == '\\')
+  {
+    return std::isalpha(static_cast<unsigned char>(theText.Value(theIndex + 2))) ? 4 : 0;
+  }
+  return 0;
+}
 } // namespace
 
 //=================================================================================================
@@ -1361,76 +1421,8 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
     const char anUncar = theText.Value(anI);
 
     // Check if we're at the start of a control directive
-    bool anIsDirective    = false;
-    int  aDirectiveLength = 0;
-
-    if (anUncar == '\\' && anI <= aNb)
-    {
-
-      // Check for \X2\ and \X4\ patterns first (need exactly 4 characters: \X2\)
-      if (anI + 3 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 3) == '\\')
-      {
-        const char aThirdChar = theText.Value(anI + 2);
-
-        // \X2, \X4, \X0 patterns - special control sequences
-        if (aThirdChar == '2' || aThirdChar == '4' || aThirdChar == '0')
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\ (4 chars)
-
-          // For \X2 and \X4, find the terminating \X0 sequence
-          if (aThirdChar == '2' || aThirdChar == '4')
-          {
-            int aJ = anI + 4;
-            while (aJ <= aNb - 3)
-            {
-              if (theText.Value(aJ) == '\\' && theText.Value(aJ + 1) == 'X'
-                  && theText.Value(aJ + 2) == '0' && theText.Value(aJ + 3) == '\\')
-              {
-                aDirectiveLength = (aJ + 4) - anI; // Include the \X0 sequence
-                break;
-              }
-              aJ++;
-            }
-          }
-        }
-      }
-      // Check for \X{HH}\ pattern (need exactly 5 characters: \X{HH}\)
-      else if (anI + 4 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 4) == '\\')
-      {
-        const char aThirdChar  = theText.Value(anI + 2);
-        const char aFourthChar = theText.Value(anI + 3);
-
-        // Regular \X{HH}\ pattern - check for two hex characters
-        if (std::isxdigit(aThirdChar) && std::isxdigit(aFourthChar))
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 5; // Control directive with two hex chars
-        }
-      }
-      // Check for \S, \N, \T patterns (need exactly 3 characters: \S\)
-      else if (anI + 2 <= aNb && theText.Value(anI + 2) == '\\')
-      {
-        const char aSecondChar = theText.Value(anI + 1);
-        if (aSecondChar == 'S' || aSecondChar == 'N' || aSecondChar == 'T')
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 3; // Simple directive pattern
-        }
-      }
-      // Check for \P{char}\ patterns (need exactly 4 characters: \P{char}\)
-      else if (anI + 3 <= aNb && theText.Value(anI + 1) == 'P' && theText.Value(anI + 3) == '\\')
-      {
-        const char aSecondChar = theText.Value(anI + 2);
-        if (std::isalpha(aSecondChar))
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 4; // P directive with parameter
-        }
-      }
-    }
-
-    if (anIsDirective)
+    const int aDirectiveLength = directiveLength(theText, anI);
+    if (aDirectiveLength > 0)
     {
       // Copy the entire directive as-is
       for (int aJ = 0; aJ < aDirectiveLength; aJ++)
