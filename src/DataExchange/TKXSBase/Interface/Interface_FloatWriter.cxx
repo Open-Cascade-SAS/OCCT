@@ -14,6 +14,10 @@
 // #52 rln 23.12.98
 
 #include <Interface_FloatWriter.hxx>
+#include <Standard_CLocaleSentry.hxx>
+#include <Standard_ProgramError.hxx>
+
+#include <cstdio>
 
 Interface_FloatWriter::Interface_FloatWriter(const int chars)
 {
@@ -95,10 +99,41 @@ int Interface_FloatWriter::Write(const double val, const char* const text) const
   return Convert(val, text, thezerosup, therange1, therange2, mainform, rangeform);
 }
 
+int Interface_FloatWriter::Write(const double val, char* const text, const size_t textSize) const
+{
+  return Convert(val, text, textSize, thezerosup, therange1, therange2, themainform, therangeform);
+}
+
 //=================================================================================================
 
 int Interface_FloatWriter::Convert(const double      val,
                                    const char* const text,
+                                   const bool        zsup,
+                                   const double      R1,
+                                   const double      R2,
+                                   const char* const mainform,
+                                   const char* const rangeform)
+{
+  // Preserve the legacy API, whose caller must provide sufficient storage.
+  return convert(val, const_cast<char*>(text), 0, false, zsup, R1, R2, mainform, rangeform);
+}
+
+int Interface_FloatWriter::Convert(const double      val,
+                                   char* const       text,
+                                   const size_t      textSize,
+                                   const bool        zsup,
+                                   const double      R1,
+                                   const double      R2,
+                                   const char* const mainform,
+                                   const char* const rangeform)
+{
+  return convert(val, text, textSize, true, zsup, R1, R2, mainform, rangeform);
+}
+
+int Interface_FloatWriter::convert(const double      val,
+                                   char* const       text,
+                                   const size_t      textSize,
+                                   const bool        bounded,
                                    const bool        zsup,
                                    const double      R1,
                                    const double      R2,
@@ -117,13 +152,26 @@ int Interface_FloatWriter::Convert(const double      val,
 
   pText = (char*)text;
   //
-  if ((val >= R1 && val < R2) || (val <= -R1 && val > -R2))
+  const char* aFormat =
+    ((val >= R1 && val < R2) || (val <= -R1 && val > -R2)) ? rangeform : mainform;
+  if (!bounded)
   {
-    Sprintf(pText, rangeform, val);
+    Sprintf(pText, aFormat, val);
   }
   else
   {
-    Sprintf(pText, mainform, val);
+    Standard_CLocaleSentry aLocaleSentry;
+    const int              aLength = std::snprintf(pText, textSize, aFormat, val);
+    if (aLength < 0)
+    {
+      throw Standard_ProgramError("Interface_FloatWriter: formatting failed");
+    }
+    // The legacy zero-suppression algorithm below uses up to 21 bytes of workspace.
+    const int aRequired = (zsup && aLength < 20) ? 20 : aLength;
+    if (static_cast<size_t>(aRequired) >= textSize)
+    {
+      return aRequired;
+    }
   }
 
   if (zsup)

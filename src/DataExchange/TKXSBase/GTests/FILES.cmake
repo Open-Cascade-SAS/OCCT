@@ -2,5 +2,6 @@
 set(OCCT_TKXSBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKXSBase_GTests_FILES
+  Interface_FloatWriter_Test.cxx
   XSAlgo_ShapeProcessor_Test.cxx
 )
