@@ -1649,6 +1649,11 @@ occ::handle<Geom2d_Hyperbola> StepToGeom::MakeHyperbola2d(const occ::handle<Step
 occ::handle<Geom_Line> StepToGeom::MakeLine(const occ::handle<StepGeom_Line>& SC,
                                             const StepData_Factors&           theLocalFactors)
 {
+  // X3 adapter patch P1: an unresolved inline VECTOR leaves Dir() null; refuse instead of dereferencing it.
+  if (SC.IsNull() || SC->Dir().IsNull())
+  {
+    return nullptr;
+  }
   occ::handle<Geom_CartesianPoint> P = MakeCartesianPoint(SC->Pnt(), theLocalFactors);
   if (!P.IsNull())
   {
@@ -1674,6 +1679,11 @@ occ::handle<Geom_Line> StepToGeom::MakeLine(const occ::handle<StepGeom_Line>& SC
 occ::handle<Geom2d_Line> StepToGeom::MakeLine2d(const occ::handle<StepGeom_Line>& SC,
                                                 const StepData_Factors&           theLocalFactors)
 {
+  // X3 adapter patch P1: see MakeLine.
+  if (SC.IsNull() || SC->Dir().IsNull())
+  {
+    return nullptr;
+  }
   occ::handle<Geom2d_CartesianPoint> P = MakeCartesianPoint2d(SC->Pnt(), theLocalFactors);
   if (!P.IsNull())
   {
@@ -2571,6 +2581,11 @@ occ::handle<Geom_VectorWithMagnitude> StepToGeom::MakeVectorWithMagnitude(
   const StepData_Factors&             theLocalFactors)
 {
   // sln 22.10.2001. CTS23496: Vector is not created if direction have not been successfully created
+  // X3 adapter patch P1: a null vector or orientation yields no vector instead of an access violation.
+  if (SV.IsNull() || SV->Orientation().IsNull())
+  {
+    return nullptr;
+  }
   occ::handle<Geom_Direction> D = MakeDirection(SV->Orientation());
   if (!D.IsNull())
   {
@@ -2589,6 +2604,11 @@ occ::handle<Geom2d_VectorWithMagnitude> StepToGeom::MakeVectorWithMagnitude2d(
 {
   // sln 23.10.2001. CTS23496: Vector is not created if direction have not been successfully created
   // (MakeVectorWithMagnitude2d(...) function)
+  // X3 adapter patch P1: see MakeVectorWithMagnitude.
+  if (SV.IsNull() || SV->Orientation().IsNull())
+  {
+    return nullptr;
+  }
   occ::handle<Geom2d_Direction> D = MakeDirection2d(SV->Orientation());
   if (!D.IsNull())
   {
