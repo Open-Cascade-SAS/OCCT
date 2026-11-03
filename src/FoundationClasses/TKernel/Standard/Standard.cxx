@@ -398,12 +398,21 @@ void* Standard::AllocateOptimal(const size_t theSize)
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Allocate(theSize);
-#elif defined OCCT_MMGT_OPT_JEMALLOC
-  return je_malloc(theSize);
-#elif defined OCCT_MMGT_OPT_TBB
-  return scalable_malloc(theSize);
 #else
-  return malloc(theSize);
+  // Callers such as NCollection_IncAllocator use the result without a check, so a failed
+  // allocation must throw as Standard::Allocate does rather than return null.
+#if defined OCCT_MMGT_OPT_JEMALLOC
+  void* aPtr = je_malloc(theSize);
+#elif defined OCCT_MMGT_OPT_TBB
+  void* aPtr = scalable_malloc(theSize);
+#else
+  void* aPtr = malloc(theSize);
+#endif
+  if (aPtr == nullptr && theSize != 0)
+  {
+    throw Standard_OutOfMemory("Standard::AllocateOptimal(): malloc failed");
+  }
+  return aPtr;
 #endif
 }
 
