@@ -24,6 +24,11 @@ Interface_FloatWriter::Interface_FloatWriter(const int chars)
 
 void Interface_FloatWriter::SetFormat(const char* const form, const bool reset)
 {
+  // X3 adapter patch P3: an over-long or null format leaves the current format unchanged instead of overflowing.
+  if (form == nullptr || strlen(form) >= sizeof(themainform))
+  {
+    return;
+  }
   strcpy(themainform, form);
   if (!reset)
   {
@@ -37,6 +42,11 @@ void Interface_FloatWriter::SetFormatForRange(const char* const form,
                                               const double      R1,
                                               const double      R2)
 {
+  // X3 adapter patch P3: see SetFormat.
+  if (form == nullptr || strlen(form) >= sizeof(therangeform))
+  {
+    return;
+  }
   strcpy(therangeform, form);
   therange1 = R1;
   therange2 = R2;
@@ -128,7 +138,10 @@ int Interface_FloatWriter::Convert(const double      val,
 
   if (zsup)
   {
-    for (int i = 0; i < 16; i++)
+    // X3 adapter patch P3: scan the whole formatted text; a 17-digit mantissa puts 'E' beyond index 15,
+    // where the fixed bound stopped early and truncated the mantissa and lost the exponent.
+    const int aLength = (int)strlen(text);
+    for (int i = 0; i <= aLength; i++)
     {
       i0 = i;
       if (text[i] == 'e' || text[i] == 'E')
