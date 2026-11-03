@@ -900,7 +900,8 @@ void StepData_StepWriter::Send(const int val)
 void StepData_StepWriter::Send(const double val)
 {
   //    Floating point value, cleaned of trailing "0000" and "E+00"
-  char lval[24] = {};
+  // X3 adapter patch P2: 24 bytes cannot hold e.g. "-1.2345678901234567E-308" plus NUL under a 17-digit format.
+  char lval[64] = {};
   int  lng      = thefloatw.Write(val, lval);
   AddParam();
   AddString(lval, lng); // handles specific format: if needed

@@ -582,7 +582,8 @@ void IGESData_IGESWriter::SendBoolean(const bool val)
 void IGESData_IGESWriter::Send(const double val)
 {
   //    Floating value, purged of trailing "0000" and "E+00"
-  char lval[24];
+  // X3 adapter patch P2: see StepData_StepWriter::Send(double).
+  char lval[64] = {};
   AddChar(thesep);
   int lng = thefloatw.Write(val, lval);
   AddString(lval, lng);
