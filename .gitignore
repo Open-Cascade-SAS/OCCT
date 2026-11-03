@@ -23,6 +23,12 @@
 !/tests/
 !/.github/
 !/samples/
+!/AGENTS.md
+!/CLAUDE.md
+!/GEMINI.md
+!/ANTIGRAVITY_INSTRUCTIONS.md
+!/OCCT_INTERNAL_VERSION
+!/.commits/
 
 # data/ level: Ignore everything except tracked subdirectories
 /data/*
