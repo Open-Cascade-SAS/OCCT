@@ -136,6 +136,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(
       continue;
     }
 
+    BOPAlgo_Tools::LimitCachedProjectors(theContext);
     aMFaces.Clear();
     anAllocTmp->Reset(false);
     // New common block
@@ -202,6 +203,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(
   aNb = aMPBLI.Extent();
   for (i = 1; i <= aNb; ++i)
   {
+    BOPAlgo_Tools::LimitCachedProjectors(theContext);
     aPB = aMPBLI.FindKey(i);
     if (pDS->IsCommonBlock(aPB))
     {
@@ -353,6 +355,18 @@ double BOPAlgo_Tools::ComputeToleranceOfCB(const occ::handle<BOPDS_CommonBlock>&
   }
   //
   return aTolMax;
+}
+
+//=================================================================================================
+
+void BOPAlgo_Tools::LimitCachedProjectors(const occ::handle<IntTools_Context>& theContext)
+{
+  // About 2 GB of sampling grids of B-spline faces
+  const int THE_MAX_NB_PROJECTORS = 4000;
+  if (!theContext.IsNull())
+  {
+    theContext->ClearPOnSProjectors(THE_MAX_NB_PROJECTORS);
+  }
 }
 
 //=================================================================================================

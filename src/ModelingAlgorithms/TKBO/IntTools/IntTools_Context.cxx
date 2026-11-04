@@ -1009,6 +1009,56 @@ void IntTools_Context::SetPOnSProjectionTolerance(const double theValue)
 
 //=================================================================================================
 
+namespace
+{
+//! Destroys the item bound to theShape in theMap, if any, and unbinds it
+template <class TypeItem>
+void releaseItem(NCollection_DataMap<TopoDS_Shape, TypeItem*, TopTools_ShapeMapHasher>& theMap,
+                 const TopoDS_Shape&                                                    theShape,
+                 const occ::handle<NCollection_BaseAllocator>& theAllocator)
+{
+  TypeItem* anItem = nullptr;
+  if (theMap.Find(theShape, anItem))
+  {
+    theMap.UnBind(theShape);
+    anItem->~TypeItem();
+    theAllocator->Free(anItem);
+  }
+}
+} // namespace
+
+//=================================================================================================
+
+void IntTools_Context::ClearFaceCache(const TopoDS_Face& theFace)
+{
+  releaseItem(myProjPSMap, theFace, myAllocator);
+  releaseItem(myFClass2dMap, theFace, myAllocator);
+  releaseItem(myHatcherMap, theFace, myAllocator);
+  releaseItem(myProjSDataMap, theFace, myAllocator);
+  releaseItem(mySurfAdaptorMap, theFace, myAllocator);
+  releaseItem(myBndBoxDataMap, theFace, myAllocator);
+  releaseItem(myOBBMap, theFace, myAllocator);
+}
+
+//=================================================================================================
+
+int IntTools_Context::NbPOnSProjectors() const
+{
+  return myProjPSMap.Extent();
+}
+
+//=================================================================================================
+
+void IntTools_Context::ClearPOnSProjectors(const int theMaxNb)
+{
+  if (myProjPSMap.Extent() > theMaxNb)
+  {
+    clearCachedPOnSProjectors();
+  }
+}
+
+//=================================================================================================
+
 void IntTools_Context::clearCachedPOnSProjectors()
 {
   for (NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnSurf*, TopTools_ShapeMapHasher>::

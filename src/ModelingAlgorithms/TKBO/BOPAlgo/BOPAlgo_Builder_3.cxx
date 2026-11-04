@@ -172,6 +172,8 @@ void BOPAlgo_Builder::FillIn3DParts(
     {
       return;
     }
+    // Building the draft solids projects points on the faces of all solids
+    BOPAlgo_Tools::LimitCachedProjectors(myContext);
     const TopoDS_Shape& aS     = aSI.Shape();
     const TopoDS_Solid& aSolid = (*(TopoDS_Solid*)(&aS));
     //
@@ -259,6 +261,11 @@ void BOPAlgo_Builder::FillIn3DParts(
         pLIN->Append(aItLS.Value());
       }
     }
+  }
+  // The building of the solids does not need the projectors on the faces
+  if (!myContext.IsNull())
+  {
+    myContext->ClearPOnSProjectors();
   }
 }
 

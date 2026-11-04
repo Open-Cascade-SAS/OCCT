@@ -236,6 +236,23 @@ public:
   //! correct value for all projectors
   Standard_EXPORT void SetPOnSProjectionTolerance(const double theValue);
 
+  //! Releases all data cached for the face theFace: point projector, 2D classifier, hatcher,
+  //! surface adaptor, surface localization data, bounding box and oriented bounding box.
+  //! The data is computed again when requested. A context performing the faces one after
+  //! another can so keep the data of one face at a time.
+  //! References to the data of this face obtained from the context before become invalid.
+  Standard_EXPORT void ClearFaceCache(const TopoDS_Face& theFace);
+
+  //! Returns the number of point projectors on surfaces cached by the context (see ProjPS()).
+  Standard_EXPORT int NbPOnSProjectors() const;
+
+  //! Releases all cached point projectors on surfaces (see ProjPS()) if there are more than
+  //! theMaxNb of them. For B-spline surfaces they are the largest data cached by the context,
+  //! as each one keeps a sampling grid of the surface after its first use. They are computed
+  //! again, with the same results, when requested.
+  //! References to projectors obtained from the context before become invalid.
+  Standard_EXPORT void ClearPOnSProjectors(const int theMaxNb = 0);
+
   DEFINE_STANDARD_RTTIEXT(IntTools_Context, Standard_Transient)
 
 protected:

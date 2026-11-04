@@ -29,6 +29,7 @@
 #include <IntTools_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Integer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
@@ -239,7 +240,20 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     aVertexFace.SetProgressRange(aPS.Next());
   }
   //================================================================
-  BOPTools_Parallel::Perform(myRunParallel, aVVF, myContext);
+  // Group the intersections by face, so that the data of each face (projector, classifier)
+  // is cached in one thread context only, and released once the face is done.
+  BOPTools_Parallel::PerformGroupedByKey(
+    myRunParallel,
+    aVVF,
+    [&aVVF](const int theIndex) {
+      int nVx, nFx;
+      aVVF(theIndex).Indices(nVx, nFx);
+      return nFx;
+    },
+    [this](const occ::handle<IntTools_Context>& theCtx, const int theFace) {
+      theCtx->ClearFaceCache(TopoDS::Face(myDS->Shape(theFace)));
+    },
+    myContext);
   //================================================================
   if (UserBreak(aPSOuter))
   {

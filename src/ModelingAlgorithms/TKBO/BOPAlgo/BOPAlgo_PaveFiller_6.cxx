@@ -280,6 +280,334 @@ protected:
 
 typedef NCollection_DynamicArray<BOPAlgo_FaceFace> BOPAlgo_VectorOfFaceFace;
 
+namespace
+{
+//! Integer values indexed by integer keys in [0, NbKeys), stored in compressed rows:
+//! the values of the key K are Value(i) for i in [First(K), First(K + 1)).
+class BOPAlgo_IndexOfValues
+{
+public:
+  //! Builds the index of the pairs (key, value) given by theVisitor.
+  //! theVisitor(theAdd) must call theAdd(theKey, theValue) for each pair, in the same
+  //! order at each call, as it is called twice. The values of a key keep this order.
+  template <class TypeVisitor>
+  void Build(const int theNbKeys, const TypeVisitor& theVisitor)
+  {
+    myFirst.Resize(0, theNbKeys, false);
+    myFirst.Init(0);
+    theVisitor([this](const int theKey, const int) { ++myFirst(theKey + 1); });
+    for (int aKey = 1; aKey <= theNbKeys; ++aKey)
+    {
+      myFirst(aKey) += myFirst(aKey - 1);
+    }
+    myValues.Resize(0, myFirst(theNbKeys) - 1, false);
+    NCollection_Array1<int> aNext(myFirst);
+    theVisitor([this, &aNext](const int theKey, const int theValue) {
+      myValues(aNext(theKey)++) = theValue;
+    });
+  }
+
+  //! Releases the index
+  void Clear()
+  {
+    myFirst  = NCollection_Array1<int>();
+    myValues = NCollection_Array1<int>();
+  }
+
+  //! Returns the position of the first value of the key
+  int First(const int theKey) const { return myFirst(theKey); }
+
+  //! Returns the value at the given position
+  int Value(const int thePos) const { return myValues(thePos); }
+
+private:
+  NCollection_Array1<int> myFirst;  //!< position of the first value of each key, and the end
+  NCollection_Array1<int> myValues; //!< values ordered by key
+};
+
+//! Adds to theListOfPnts the starting point for the intersection of the faces nF1 and nF2
+//! given by the Edge/Face interference theEF having a new vertex, if its edge and face
+//! are among the shapes theMI of the two faces (see BOPAlgo_PaveFiller::GetEFPnts()).
+void addEFPoint(BOPDS_DS&                          theDS,
+                IntTools_Context&                  theContext,
+                const int                          nF1,
+                const int                          nF2,
+                const NCollection_Map<int>&        theMI,
+                const BOPDS_InterfEF&              theEF,
+                NCollection_List<IntSurf_PntOn2S>& theListOfPnts)
+{
+  int nE, nFOpposite;
+  theEF.Indices(nE, nFOpposite);
+  if (!theMI.Contains(nE) || !theMI.Contains(nFOpposite))
+  {
+    return;
+  }
+  double                    U1, U2, V1, V2, f, l;
+  const IntTools_CommonPrt& aCP        = theEF.CommonPart();
+  double                    aPar       = aCP.VertexParameter1();
+  const TopoDS_Edge&        aE         = (*(TopoDS_Edge*)(&theDS.Shape(nE)));
+  const TopoDS_Face&        aFOpposite = (*(TopoDS_Face*)(&theDS.Shape(nFOpposite)));
+  //
+  const occ::handle<Geom_Curve>& aCurve = BRep_Tool::Curve(aE, f, l);
+  //
+  const int                 nF      = (nFOpposite == nF1) ? nF2 : nF1;
+  const TopoDS_Face&        aF      = (*(TopoDS_Face*)(&theDS.Shape(nF)));
+  occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(aE, aF, f, l);
+  //
+  GeomAPI_ProjectPointOnSurf& aProj = theContext.ProjPS(aFOpposite);
+  //
+  gp_Pnt aPoint;
+  aCurve->D0(aPar, aPoint);
+  IntSurf_PntOn2S aPnt;
+  if (!aPCurve.IsNull())
+  {
+    gp_Pnt2d aP2d = aPCurve->Value(aPar);
+    aProj.Perform(aPoint);
+    if (aProj.IsDone())
+    {
+      aProj.LowerDistanceParameters(U1, V1);
+      if (nF == nF1)
+      {
+        aPnt.SetValue(aP2d.X(), aP2d.Y(), U1, V1);
+      }
+      else
+      {
+        aPnt.SetValue(U1, V1, aP2d.X(), aP2d.Y());
+      }
+      theListOfPnts.Append(aPnt);
+    }
+  }
+  else
+  {
+    GeomAPI_ProjectPointOnSurf& aProj1 = theContext.ProjPS(aF);
+    aProj1.Perform(aPoint);
+    aProj.Perform(aPoint);
+    if (aProj1.IsDone() && aProj.IsDone())
+    {
+      aProj1.LowerDistanceParameters(U1, V1);
+      aProj.LowerDistanceParameters(U2, V2);
+      if (nF == nF1)
+      {
+        aPnt.SetValue(U1, V1, U2, V2);
+      }
+      else
+      {
+        aPnt.SetValue(U2, V2, U1, V1);
+      }
+      theListOfPnts.Append(aPnt);
+    }
+  }
+}
+
+//! Index of the Edge/Face interferences having a new vertex by the index of their face,
+//! to collect the starting points of the intersection of two faces from the interferences
+//! of these faces only, instead of scanning all Edge/Face interferences for each pair of faces.
+class BOPAlgo_EFPointsIndex
+{
+public:
+  //! Indexes the Edge/Face interferences of theDS
+  void Build(BOPDS_DS& theDS)
+  {
+    const NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = theDS.InterfEF();
+    myIndex.Build(theDS.NbShapes(), [&aEFs](const auto& theAdd) {
+      for (int i = 0; i < aEFs.Length(); ++i)
+      {
+        if (aEFs(i).HasIndexNew())
+        {
+          theAdd(aEFs(i).Index2(), i);
+        }
+      }
+    });
+  }
+
+  //! Releases the index
+  void Clear() { myIndex.Clear(); }
+
+  //! Returns true if there are indexed interferences with the face nF1 or the face nF2
+  bool HasInterfs(const int nF1, const int nF2) const
+  {
+    return myIndex.First(nF1 + 1) > myIndex.First(nF1)
+           || myIndex.First(nF2 + 1) > myIndex.First(nF2);
+  }
+
+  //! Calls theVisit(i) for the indices i of the indexed interferences with the faces
+  //! nF1 and nF2, by increasing index, as the full scan of BOPAlgo_PaveFiller::GetEFPnts().
+  template <class TypeVisit>
+  void Visit(const int nF1, const int nF2, const TypeVisit& theVisit) const
+  {
+    int       aPos1 = myIndex.First(nF1), aPos2 = myIndex.First(nF2);
+    const int anEnd1 = myIndex.First(nF1 + 1), anEnd2 = myIndex.First(nF2 + 1);
+    while (aPos1 < anEnd1 || aPos2 < anEnd2)
+    {
+      if (aPos2 == anEnd2 || (aPos1 < anEnd1 && myIndex.Value(aPos1) < myIndex.Value(aPos2)))
+      {
+        theVisit(myIndex.Value(aPos1++));
+      }
+      else
+      {
+        theVisit(myIndex.Value(aPos2++));
+      }
+    }
+  }
+
+private:
+  BOPAlgo_IndexOfValues myIndex;
+};
+
+//! Index of the interferences VV, VE, EE, VF and EF having a new vertex by the index of
+//! their first shape, to collect the vertices to stick on the section curves of two faces
+//! from the interferences of the sub-shapes of these faces only, instead of scanning all
+//! interferences for each pair of faces (see BOPAlgo_PaveFiller::GetStickVertices()).
+//! An interference is identified by its code: its index in the concatenation of the five
+//! tables of interferences, in the order of the full scan.
+class BOPAlgo_StickVerticesIndex
+{
+public:
+  //! Indexes the interferences of theDS
+  void Build(BOPDS_DS& theDS)
+  {
+    myDS = &theDS;
+    for (int aType = 0; aType < 5; ++aType)
+    {
+      myTypeFirst[aType + 1] = myTypeFirst[aType] + nbInterfs(aType);
+    }
+    myNbKeys = theDS.NbShapes();
+    myIndex.Build(myNbKeys, [this](const auto& theAdd) {
+      for (int aCode = 0; aCode < myTypeFirst[5]; ++aCode)
+      {
+        const BOPDS_Interf& anInterf = interf(aCode);
+        if (anInterf.HasIndexNew())
+        {
+          theAdd(anInterf.Index1(), aCode);
+        }
+      }
+    });
+  }
+
+  //! Releases the index
+  void Clear()
+  {
+    myIndex.Clear();
+    myCodes  = NCollection_Array1<int>();
+    myNbKeys = 0;
+  }
+
+  //! Same as BOPAlgo_PaveFiller::GetStickVertices() for the shapes theMI of two faces
+  //! (filled by BOPAlgo_PaveFiller::GetFullShapeMap()): adds to theMVStick the vertices
+  //! created by the interferences between the shapes theMI, and to theMVEF the ones
+  //! created by the Edge/Face interferences, in the order of the full scan.
+  void GetStickVertices(const NCollection_Map<int>& theMI,
+                        NCollection_Map<int>&       theMVStick,
+                        NCollection_Map<int>&       theMVEF)
+  {
+    // Interferences are not expected to be added while the index is used;
+    // if they are, the index is rebuilt to give the same result as the full scan.
+    for (int aType = 0; aType < 5; ++aType)
+    {
+      if (myTypeFirst[aType + 1] - myTypeFirst[aType] != nbInterfs(aType))
+      {
+        Build(*myDS);
+        break;
+      }
+    }
+
+    // The interferences with a first shape in theMI are indexed by this shape
+    int aNbCodes = 0;
+    for (const int nS : theMI)
+    {
+      if (nS < myNbKeys)
+      {
+        aNbCodes += myIndex.First(nS + 1) - myIndex.First(nS);
+      }
+    }
+    if (aNbCodes == 0)
+    {
+      return;
+    }
+    if (myCodes.Length() < aNbCodes)
+    {
+      myCodes.Resize(0, 2 * aNbCodes - 1, false);
+    }
+    aNbCodes = 0;
+    for (const int nS : theMI)
+    {
+      if (nS >= myNbKeys)
+      {
+        continue;
+      }
+      for (int aPos = myIndex.First(nS); aPos < myIndex.First(nS + 1); ++aPos)
+      {
+        const int aCode = myIndex.Value(aPos);
+        if (theMI.Contains(interf(aCode).Index2()))
+        {
+          myCodes(aNbCodes++) = aCode;
+        }
+      }
+    }
+    std::sort(&myCodes(0), &myCodes(0) + aNbCodes);
+    for (int i = 0; i < aNbCodes; ++i)
+    {
+      const int aCode = myCodes(i);
+      int       nVNew = interf(aCode).IndexNew();
+      myDS->HasShapeSD(nVNew, nVNew);
+      theMVStick.Add(nVNew);
+      if (aCode >= myTypeFirst[4])
+      {
+        theMVEF.Add(nVNew);
+      }
+    }
+  }
+
+private:
+  //! Returns the number of interferences of the type theType: VV, VE, EE, VF, EF for 0 to 4
+  int nbInterfs(const int theType) const
+  {
+    switch (theType)
+    {
+      case 0:
+        return myDS->InterfVV().Length();
+      case 1:
+        return myDS->InterfVE().Length();
+      case 2:
+        return myDS->InterfEE().Length();
+      case 3:
+        return myDS->InterfVF().Length();
+      default:
+        return myDS->InterfEF().Length();
+    }
+  }
+
+  //! Returns the interference with the given code
+  const BOPDS_Interf& interf(const int theCode) const
+  {
+    if (theCode < myTypeFirst[1])
+    {
+      return myDS->InterfVV()(theCode);
+    }
+    if (theCode < myTypeFirst[2])
+    {
+      return myDS->InterfVE()(theCode - myTypeFirst[1]);
+    }
+    if (theCode < myTypeFirst[3])
+    {
+      return myDS->InterfEE()(theCode - myTypeFirst[2]);
+    }
+    if (theCode < myTypeFirst[4])
+    {
+      return myDS->InterfVF()(theCode - myTypeFirst[3]);
+    }
+    return myDS->InterfEF()(theCode - myTypeFirst[4]);
+  }
+
+private:
+  BOPDS_DS*               myDS           = nullptr;
+  int                     myTypeFirst[6] = {0, 0, 0, 0, 0, 0}; //!< first code of each type
+  int                     myNbKeys       = 0;                  //!< number of indexed shapes
+  BOPAlgo_IndexOfValues   myIndex;                             //!< codes by first shape
+  NCollection_Array1<int> myCodes; //!< buffer for the codes found for a pair of faces
+};
+} // namespace
+
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
@@ -358,6 +686,12 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
       pPoints->Append(nVN);
     }
   }
+
+  // Edge/Face interferences giving the starting points of the intersection of each
+  // pair of faces, indexed by face (see GetEFPnts())
+  BOPAlgo_EFPointsIndex                           anEFPointsIndex;
+  const NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  anEFPointsIndex.Build(*myDS);
 
   // Prepare the pairs of faces for intersection
   BOPAlgo_VectorOfFaceFace aVFaceFace;
@@ -496,8 +830,17 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
       double aTolFF = std::max(aShiftValue, ToleranceFF(aBAS1, aBAS2));
       aFaceFace.SetTolFF(aTolFF);
       //
+      // Same as GetEFPnts(nF1, nF2, aListOfPnts), visiting the interferences of the faces only
       NCollection_List<IntSurf_PntOn2S> aListOfPnts;
-      GetEFPnts(nF1, nF2, aListOfPnts);
+      if (anEFPointsIndex.HasInterfs(nF1, nF2))
+      {
+        NCollection_Map<int> aMI;
+        GetFullShapeMap(nF1, aMI);
+        GetFullShapeMap(nF2, aMI);
+        anEFPointsIndex.Visit(nF1, nF2, [&](const int theIndex) {
+          addEFPoint(*myDS, *myContext, nF1, nF2, aMI, aEFs(theIndex), aListOfPnts);
+        });
+      }
       int aNbLP = aListOfPnts.Extent();
       if (aNbLP)
       {
@@ -516,6 +859,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
       aFF.Init(0, 0);
     }
   } // for (; myIterator->More(); myIterator->Next()) {
+  anEFPointsIndex.Clear();
   //
   int k, aNbFaceFace = aVFaceFace.Length();
   ;
@@ -716,6 +1060,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertsOnRejectedPB(100, aAllocator);
   // Map of PaveBlocks with the faces to which it has to be added
   BOPAlgo_DataMapOfPaveBlockListOfInteger aPBFacesMap(100, aAllocator);
+  // Interferences giving the vertices to stick on the section curves (see GetStickVertices())
+  BOPAlgo_StickVerticesIndex aStickVerticesIndex;
+  aStickVerticesIndex.Build(*myDS);
   //
   // The vector aFFToRecheck contains indices of potentially problematic Face-Face intersections
   NCollection_DynamicArray<int> aFFToRecheck;
@@ -753,6 +1100,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
     //
+    BOPAlgo_Tools::LimitCachedProjectors(myContext);
     // Clear per-iteration collections and reset allocator for memory reuse
     aMVOnIn.Clear();
     aMVCommon.Clear();
@@ -807,7 +1155,11 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     }
     //
     // 2. Treat Curves
-    GetStickVertices(nF1, nF2, aMVStick, aMVEF, aMI);
+    // Same as GetStickVertices(nF1, nF2, aMVStick, aMVEF, aMI), using the index
+    aMI.Clear();
+    GetFullShapeMap(nF1, aMI);
+    GetFullShapeMap(nF2, aMI);
+    aStickVerticesIndex.GetStickVertices(aMI, aMVStick, aMVEF);
     //
     for (j = 0; j < aNbC; ++j)
     {
@@ -1121,6 +1473,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
                               aPBFacesMap,
                               aMPBAdd);
   } // for (i=0; i<aNbFF; ++i) {
+  aStickVerticesIndex.Clear();
 
   // Remove "micro" section edges
   RemoveMicroSectionEdges(aMSCPB, aMicroPB);
@@ -1219,14 +1572,22 @@ void BOPAlgo_PaveFiller::PostTreatFF(
   // Find unused vertices
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> VertsUnused;
   NCollection_Map<int>                                          IndMap;
+  BOPAlgo_StickVerticesIndex                                    aStickVerticesIndex;
+  if (aNbFF > 0)
+  {
+    aStickVerticesIndex.Build(*myDS);
+  }
   for (int i = 0; i < aNbFF; i++)
   {
     BOPDS_InterfFF& aFF = aFFs(i);
     int             nF1, nF2;
     aFF.Indices(nF1, nF2);
 
+    // Same as GetStickVertices(nF1, nF2, aMV, aMVEF, aMI), using the index
     NCollection_Map<int> aMV, aMVEF, aMI;
-    GetStickVertices(nF1, nF2, aMV, aMVEF, aMI);
+    GetFullShapeMap(nF1, aMI);
+    GetFullShapeMap(nF2, aMI);
+    aStickVerticesIndex.GetStickVertices(aMI, aMV, aMVEF);
     NCollection_DynamicArray<BOPDS_Curve>& aVC = aFF.ChangeCurves();
     RemoveUsedVertices(aVC, aMV);
 
@@ -1245,6 +1606,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
       }
     }
   }
+  aStickVerticesIndex.Clear();
   /////////////////////
 
   int aNbME     = theMicroPB.Extent();
@@ -2626,80 +2988,18 @@ void BOPAlgo_PaveFiller::GetEFPnts(const int                          nF1,
                                    const int                          nF2,
                                    NCollection_List<IntSurf_PntOn2S>& aListOfPnts)
 {
-  int                  nE, nF, nFOpposite, aNbEFs, i;
-  double               U1, U2, V1, V2, f, l;
   NCollection_Map<int> aMI;
   //
   // collect indexes of all shapes from nF1 and nF2.
   GetFullShapeMap(nF1, aMI);
   GetFullShapeMap(nF2, aMI);
   //
-  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
-  aNbEFs                                         = aEFs.Length();
-  //
-  for (i = 0; i < aNbEFs; ++i)
+  const NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  for (int i = 0; i < aEFs.Length(); ++i)
   {
-    const BOPDS_InterfEF& aEF = aEFs(i);
-    if (aEF.HasIndexNew())
+    if (aEFs(i).HasIndexNew())
     {
-      aEF.Indices(nE, nFOpposite);
-      if (aMI.Contains(nE) && aMI.Contains(nFOpposite))
-      {
-        const IntTools_CommonPrt& aCP        = aEF.CommonPart();
-        double                    aPar       = aCP.VertexParameter1();
-        const TopoDS_Edge&        aE         = (*(TopoDS_Edge*)(&myDS->Shape(nE)));
-        const TopoDS_Face&        aFOpposite = (*(TopoDS_Face*)(&myDS->Shape(nFOpposite)));
-        //
-        const occ::handle<Geom_Curve>& aCurve = BRep_Tool::Curve(aE, f, l);
-        //
-        nF                                = (nFOpposite == nF1) ? nF2 : nF1;
-        const TopoDS_Face&        aF      = (*(TopoDS_Face*)(&myDS->Shape(nF)));
-        occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(aE, aF, f, l);
-        //
-        GeomAPI_ProjectPointOnSurf& aProj = myContext->ProjPS(aFOpposite);
-        //
-        gp_Pnt aPoint;
-        aCurve->D0(aPar, aPoint);
-        IntSurf_PntOn2S aPnt;
-        if (!aPCurve.IsNull())
-        {
-          gp_Pnt2d aP2d = aPCurve->Value(aPar);
-          aProj.Perform(aPoint);
-          if (aProj.IsDone())
-          {
-            aProj.LowerDistanceParameters(U1, V1);
-            if (nF == nF1)
-            {
-              aPnt.SetValue(aP2d.X(), aP2d.Y(), U1, V1);
-            }
-            else
-            {
-              aPnt.SetValue(U1, V1, aP2d.X(), aP2d.Y());
-            }
-            aListOfPnts.Append(aPnt);
-          }
-        }
-        else
-        {
-          GeomAPI_ProjectPointOnSurf& aProj1 = myContext->ProjPS(aF);
-          aProj1.Perform(aPoint);
-          aProj.Perform(aPoint);
-          if (aProj1.IsDone() && aProj.IsDone())
-          {
-            aProj1.LowerDistanceParameters(U1, V1);
-            aProj.LowerDistanceParameters(U2, V2);
-            if (nF == nF1)
-            {
-              aPnt.SetValue(U1, V1, U2, V2);
-            }
-            else
-            {
-              aPnt.SetValue(U2, V2, U1, V1);
-            }
-            aListOfPnts.Append(aPnt);
-          }
-        }
-      }
+      addEFPoint(*myDS, *myContext, nF1, nF2, aMI, aEFs(i), aListOfPnts);
     }
   }
 }

@@ -52,6 +52,7 @@
 #include <IntTools_Context.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -505,7 +506,22 @@ void BOPAlgo_PaveFiller::MakeSplitEdges(const Message_ProgressRange& theRange)
     aBSE.SetProgressRange(aPS.Next());
   }
   //======================================================
-  BOPTools_Parallel::Perform(myRunParallel, aVBSE, myContext);
+  // Group the splits by the face of their common block, as computing the tolerance
+  // of a common block with faces projects points on these faces.
+  BOPTools_Parallel::PerformGroupedByKey(
+    myRunParallel,
+    aVBSE,
+    [&aVBSE](const int theIndex) {
+      const occ::handle<BOPDS_CommonBlock>& aCB = aVBSE(theIndex).CommonBlock();
+      return (aCB.IsNull() || aCB->Faces().IsEmpty()) ? -1 : aCB->Faces().First();
+    },
+    [this](const occ::handle<IntTools_Context>& theCtx, const int theFace) {
+      if (theFace >= 0)
+      {
+        theCtx->ClearFaceCache(TopoDS::Face(myDS->Shape(theFace)));
+      }
+    },
+    myContext);
   //======================================================
   if (HasErrors())
   {

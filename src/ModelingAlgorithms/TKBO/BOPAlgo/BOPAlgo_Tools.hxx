@@ -109,6 +109,7 @@ public:
 
   //! Create Common Blocks from the groups of pave blocks of <theMBlocks>
   //! connection map.
+  //! The point projectors cached by theContext may be released (see LimitCachedProjectors()).
   Standard_EXPORT static void PerformCommonBlocks(
     NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>,
                                NCollection_List<occ::handle<BOPDS_PaveBlock>>>& theMBlocks,
@@ -117,6 +118,7 @@ public:
     const occ::handle<IntTools_Context>& theContext = occ::handle<IntTools_Context>());
 
   //! Create Common Blocks on faces using the PB->Faces connection map <theMBlocks>.
+  //! The point projectors cached by theContext may be released (see LimitCachedProjectors()).
   Standard_EXPORT static void PerformCommonBlocks(
     const NCollection_IndexedDataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<int>>&
                                                   theMBlocks,
@@ -128,6 +130,16 @@ public:
     const occ::handle<BOPDS_CommonBlock>& theCB,
     BOPDS_DS* const                       theDS,
     const occ::handle<IntTools_Context>&  theContext);
+
+  //! Bounds the memory taken by the point projectors on surfaces cached by theContext
+  //! (see IntTools_Context::ClearPOnSProjectors()): releases them all if there are more than
+  //! a few thousands of them. Each projector of a B-spline face keeps a sampling grid of about
+  //! 0.5 MB, so that steps visiting all faces of large models in no particular order would
+  //! otherwise keep gigabytes of them. The projectors are computed again, with the same
+  //! results, when requested. Must be called where no reference to a projector obtained
+  //! from theContext is kept. Does nothing for a null context.
+  Standard_EXPORT static void LimitCachedProjectors(
+    const occ::handle<IntTools_Context>& theContext);
 
   //! Creates planar wires from the given edges.
   //! The input edges are expected to be planar. And for the performance

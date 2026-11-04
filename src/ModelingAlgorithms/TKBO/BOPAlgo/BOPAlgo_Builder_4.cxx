@@ -16,6 +16,7 @@
 // commercial license or contractual agreement.
 
 #include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <TopExp.hxx>
@@ -199,6 +200,8 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
       return;
     }
 
+    // Orienting the splits of the faces projects points on the faces
+    BOPAlgo_Tools::LimitCachedProjectors(myContext);
     bool isModified = false;
 
     // Check if the shape has any splits
