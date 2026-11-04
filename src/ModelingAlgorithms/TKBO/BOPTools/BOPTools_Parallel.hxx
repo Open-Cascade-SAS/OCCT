@@ -21,6 +21,7 @@
 #include <OSD_Thread.hxx>
 
 #include <mutex>
+#include <shared_mutex>
 
 //! Implementation of Functors/Starters
 class BOPTools_Parallel
@@ -64,6 +65,7 @@ class BOPTools_Parallel
     //! Binds main thread context
     void SetContext(const opencascade::handle<TypeContext>& theContext)
     {
+      std::unique_lock<std::shared_mutex> aLock(myMutex);
       myContextMap.Bind(OSD_Thread::Current(), theContext);
     }
 
@@ -71,19 +73,25 @@ class BOPTools_Parallel
     const opencascade::handle<TypeContext>& GetThreadContext() const
     {
       const Standard_ThreadId aThreadID = OSD_Thread::Current();
-      if (const opencascade::handle<TypeContext>* aContextPtr = myContextMap.Seek(aThreadID))
       {
-        if (!aContextPtr->IsNull())
+        // Threads may look up their contexts together, but not while another thread binds
+        // its own one, as binding may resize the map.
+        std::shared_lock<std::shared_mutex> aLock(myMutex);
+        if (const opencascade::handle<TypeContext>* aContextPtr = myContextMap.Seek(aThreadID))
         {
-          return *aContextPtr;
+          if (!aContextPtr->IsNull())
+          {
+            return *aContextPtr;
+          }
         }
       }
 
-      // Create new context
+      // Create new context. Only this thread binds a context to its id, and the returned
+      // reference stays valid after the lock is released, as resizing the map does not
+      // move its items.
       opencascade::handle<TypeContext> aContext =
         new TypeContext(NCollection_BaseAllocator::CommonBaseAllocator());
-
-      std::lock_guard<std::mutex> aLock(myMutex);
+      std::unique_lock<std::shared_mutex> aLock(myMutex);
       myContextMap.Bind(aThreadID, aContext);
       return myContextMap(aThreadID);
     }
@@ -105,7 +113,7 @@ class BOPTools_Parallel
   private:
     TypeSolverVector&                                                                mySolverVector;
     mutable NCollection_DataMap<Standard_ThreadId, opencascade::handle<TypeContext>> myContextMap;
-    mutable std::mutex                                                               myMutex;
+    mutable std::shared_mutex                                                        myMutex;
   };
 
   //! Functor storing array of algorithm contexts per thread in pool
