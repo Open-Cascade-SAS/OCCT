@@ -1084,16 +1084,14 @@ static void TransformPCurves(
     CurSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(CurSurf))->BasisSurface();
   }
 
-  bool ToModify = false, ToTranslate = false, ToRotate = false,
-       U_Reverse = false, V_Reverse = false, ToProject = false;
+  bool ToModify = false, ToTranslate = false, ToRotate = false, U_Reverse = false,
+       V_Reverse = false, ToProject = false;
 
   double aTranslation = 0., anAngle = 0.;
 
   // Get axes of surface of face and of surface of RefFace
-  occ::handle<Geom_ElementarySurface> ElemCurSurf =
-    occ::down_cast<Geom_ElementarySurface>(CurSurf);
-  occ::handle<Geom_ElementarySurface> ElemRefSurf =
-    occ::down_cast<Geom_ElementarySurface>(RefSurf);
+  occ::handle<Geom_ElementarySurface> ElemCurSurf = occ::down_cast<Geom_ElementarySurface>(CurSurf);
+  occ::handle<Geom_ElementarySurface> ElemRefSurf = occ::down_cast<Geom_ElementarySurface>(RefSurf);
 
   if (!ElemCurSurf.IsNull() && !ElemRefSurf.IsNull())
   {
