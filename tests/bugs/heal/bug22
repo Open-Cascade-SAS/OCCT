@@ -31,6 +31,7 @@ if [catch { OCC22 res shape compoundToBeDivided 1 } ] {
 } else {
     puts "OCC22 OK; (case 2)"
 }
+checkshape res
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 

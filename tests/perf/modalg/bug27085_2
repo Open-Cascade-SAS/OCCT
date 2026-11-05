@@ -13,3 +13,4 @@ dchrono h restart
 unifysamedom res sp
 
 dchrono h stop counter unifysamedom
+checkshape res

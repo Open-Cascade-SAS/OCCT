@@ -13,5 +13,6 @@ bop b1 b2
 bopsection result
 
 checknbshapes result -vertex 2
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

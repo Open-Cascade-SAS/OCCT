@@ -30,6 +30,9 @@ vfit
 vdump ${imagedir}/${casename}_2.png
 
 modified x3 usd_hist b1_3
+checkshape x1
+checkshape x2
+checkshape x3
 vclear
 vdisplay x3
 vfit

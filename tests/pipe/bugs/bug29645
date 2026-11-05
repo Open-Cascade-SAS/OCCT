@@ -9,6 +9,7 @@ restore [locate_data_file bug29645_profile.brep] profile
 mksweep spine
 addsweep profile
 buildsweep result -S -C
+checkshape result
 
 puts "TEST COMPLETED"
 

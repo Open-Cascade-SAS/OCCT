@@ -12,4 +12,5 @@ donly cy cy_2
 fit
 
 offsetshape res cy -1. cy_2
+checkshape res
 donly res

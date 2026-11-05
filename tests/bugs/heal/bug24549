@@ -11,6 +11,7 @@ pload DATAEXCHANGEKERNEL IGES
 param xstep.cascade.unit M
 
 igesread [locate_data_file bug24549_Hull_B.igs] result *
+checkshape result
 
 regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTol_1
 

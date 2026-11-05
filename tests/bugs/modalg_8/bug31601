@@ -12,4 +12,5 @@ explode s F
 offsetparameter 1.e-7 c a
 offsetload s 1 s_11
 offsetperform r
+checkshape r
 checkview -display r -2d -path ${imagedir}/${test_image}.png

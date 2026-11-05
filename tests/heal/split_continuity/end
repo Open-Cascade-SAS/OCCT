@@ -1,4 +1,5 @@
 puts [DT_ShapeDivide result a 0.01]
+checkshape result
 set d [statshape result]
 puts $d
 

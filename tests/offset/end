@@ -110,6 +110,9 @@ if { [isdraw result] && $mist == 0} {
             }
         }
     }
+    if {[info exists result_unif]} {
+      checkshape result_unif
+    }
     if { $m > 0 } {
       if {[info exists result_unif]} {
         checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

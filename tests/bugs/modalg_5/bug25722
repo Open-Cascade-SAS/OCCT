@@ -17,6 +17,7 @@ bfillds
 bbop r 1
 
 checknbshapes r -solid 1
+checkshape r
 
 bfuzzyvalue 0.
 box b1 10 10 10
@@ -29,5 +30,6 @@ bfillds
 bbop result 1
 
 checknbshapes result -solid 2
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -48,6 +48,7 @@ bbuild rs
 
 checknbshapes rs -edge $GoodNbCurves
 checksection rs -r 0
+checkshape rs
 
 smallview
 don res_*

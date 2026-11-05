@@ -10,6 +10,7 @@ if { [info exists rel_tol] } {
    }
 }
 
+checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 
 # to end a test script

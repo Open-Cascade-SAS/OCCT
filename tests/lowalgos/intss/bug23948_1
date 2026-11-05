@@ -36,6 +36,7 @@ if { $NbCurv > 1 } {
   checksection rs -r 2
   checkmaxtol rs -ref $MaxTol
   checkprops rs -l 111.803
+  checkshape rs
 }
 
 smallview

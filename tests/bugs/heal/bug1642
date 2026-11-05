@@ -12,6 +12,7 @@ cpulimit 1000
 restore [locate_data_file OCC1642.brep] shape
 
 set list [OCC1642 result FinalFace InitWare InitFace shape FixReorder FixDegenerated FixConnected FixSelfIntersection]
+checkshape FinalFace
 
 set FixSelfIntersection [string last "FixSelfIntersection" $list]
 set Intersectingpt [string last "Intersecting pt :" $list]

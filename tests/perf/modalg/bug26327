@@ -18,3 +18,4 @@ for {set i 2} {$i < 22} {incr i} {
    }
 
 dchrono h stop counter stepread
+checkshape a_1

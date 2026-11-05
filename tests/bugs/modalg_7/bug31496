@@ -14,4 +14,5 @@ concatC0wire e w
 checknbshapes e -vertex 2 -edge 1
 nurbsconvert w w
 concatC0wire e w
+checkshape e
 checknbshapes e -vertex 2 -edge 1

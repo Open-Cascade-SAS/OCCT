@@ -31,5 +31,6 @@ bbuild result
 dchrono h stop counter EdgeIntersection
 
 buseobb 0
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

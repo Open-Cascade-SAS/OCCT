@@ -10,6 +10,7 @@ restore [locate_data_file bug26959.brep] aFace
 vinit
 vdisplay aFace
 fixshape aFace1 aFace
+checkshape aFace1
 
 vremove aFace
 vdisplay aFace1

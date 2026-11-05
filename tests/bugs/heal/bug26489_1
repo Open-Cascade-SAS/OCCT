@@ -10,6 +10,7 @@ restore [locate_data_file bug26489_p01usd.brep] poly
 
 mkplane ff poly
 unifysamedom result ff
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

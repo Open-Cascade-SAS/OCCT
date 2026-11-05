@@ -9,5 +9,6 @@ restore [locate_data_file bug30148_1.brep] profile
 restore [locate_data_file bug30148_2.brep] spine
 
 pipe pipe spine profile
+checkshape pipe
 
 puts "TEST COMPLETED"

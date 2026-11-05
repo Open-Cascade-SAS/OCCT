@@ -66,6 +66,7 @@ if { $ic != $aGoodNbCurves } {
   checkmaxtol result -min_tol 2.0e-7
 
   checknbshapes result -edge 1 -vertex 1
+  checkshape result
 }
 
 smallview
