@@ -14,6 +14,7 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <IntCurveSurface_PolyhedronCache.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <TopAbs_State.hxx>
@@ -123,4 +124,29 @@ TEST_F(IntTools_ContextTest, ClearPOnSProjectors_ReleasesAllProjectors)
   ASSERT_GT(aProj.NbPoints(), 0);
   EXPECT_NEAR(aProj.LowerDistance(), 1., 1.e-9);
   EXPECT_EQ(aContext->NbPOnSProjectors(), 1);
+}
+
+//=================================================================================================
+
+TEST_F(IntTools_ContextTest, PolyhedronCache_IsKeptPerFaceAndReleasedWithTheFace)
+{
+  occ::handle<IntTools_Context>    aContext = new IntTools_Context();
+  IntCurveSurface_PolyhedronCache& aCache   = aContext->PolyhedronCache(myLateral);
+  EXPECT_EQ(&aContext->PolyhedronCache(myLateral), &aCache);
+  EXPECT_NE(&aContext->PolyhedronCache(myPlane1), &aCache);
+
+  const occ::handle<BRepAdaptor_Surface> aSurf = new BRepAdaptor_Surface(myLateral);
+  aCache.Polyhedron(aSurf, 20, 20, 0., 0., 1., 1.);
+  EXPECT_EQ(aContext->PolyhedronCache(myLateral).NbPolyhedra(), 1);
+
+  aContext->ClearFaceCache(myLateral);
+  EXPECT_EQ(aContext->PolyhedronCache(myLateral).NbPolyhedra(), 0);
+
+  // The polyhedra are released when there are more faces than the limit
+  aContext->PolyhedronCache(myLateral).Polyhedron(aSurf, 20, 20, 0., 0., 1., 1.);
+  aContext->ClearPOnSProjectors(2);
+  EXPECT_EQ(aContext->PolyhedronCache(myLateral).NbPolyhedra(), 1);
+  aContext->PolyhedronCache(myPlane2);
+  aContext->ClearPOnSProjectors(2);
+  EXPECT_EQ(aContext->PolyhedronCache(myLateral).NbPolyhedra(), 0);
 }

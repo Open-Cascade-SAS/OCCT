@@ -96,6 +96,8 @@ void BOPAlgo_Builder::Clear()
   myShapesSD.Clear();
   myOrigins.Clear();
   myInParts.Clear();
+  myEEVerticesNew.Clear();
+  myEFVerticesNew.Clear();
 }
 
 //=================================================================================================

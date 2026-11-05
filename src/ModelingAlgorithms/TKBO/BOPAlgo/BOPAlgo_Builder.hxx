@@ -503,6 +503,8 @@ protected:                                    //! @name Fields
   bool myNonDestructive;            //!< Safe processing option allows avoiding modification of the input shapes
   BOPAlgo_GlueEnum myGlue;                      //!< Gluing option allows speeding up the intersection of the input shapes
   bool myCheckInverted;             //!< Check inverted option allows disabling the check of input solids on inverted status
+  NCollection_DataMap<int, NCollection_List<int>> myEEVerticesNew; //!< New vertices of Edge/Edge interferences per shape, filled while the history is prepared
+  NCollection_DataMap<int, NCollection_List<int>> myEFVerticesNew; //!< New vertices of Edge/Face interferences per shape, filled while the history is prepared
   // clang-format on
 };
 

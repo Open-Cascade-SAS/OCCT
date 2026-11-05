@@ -17,6 +17,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <IntCurveSurface_PolyhedronCache.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -61,6 +62,7 @@ IntTools_Context::IntTools_Context()
       myBndBoxDataMap(100, myAllocator),
       mySurfAdaptorMap(100, myAllocator),
       myOBBMap(100, myAllocator),
+      myPolyhedraMap(100, myAllocator),
       myCreateFlag(0),
       myPOnSTolerance(1.e-12)
 {
@@ -80,6 +82,7 @@ IntTools_Context::IntTools_Context(const occ::handle<NCollection_BaseAllocator>&
       myBndBoxDataMap(100, myAllocator),
       mySurfAdaptorMap(100, myAllocator),
       myOBBMap(100, myAllocator),
+      myPolyhedraMap(100, myAllocator),
       myCreateFlag(1),
       myPOnSTolerance(1.e-12)
 {
@@ -190,6 +193,18 @@ IntTools_Context::~IntTools_Context()
     myAllocator->Free(pOBB);
   }
   myOBBMap.Clear();
+
+  for (NCollection_DataMap<TopoDS_Shape,
+                           IntCurveSurface_PolyhedronCache*,
+                           TopTools_ShapeMapHasher>::Iterator anIt(myPolyhedraMap);
+       anIt.More();
+       anIt.Next())
+  {
+    IntCurveSurface_PolyhedronCache* pCache = anIt.Value();
+    (*pCache).~IntCurveSurface_PolyhedronCache();
+    myAllocator->Free(pCache);
+  }
+  myPolyhedraMap.Clear();
 }
 
 //=================================================================================================
@@ -411,6 +426,21 @@ Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS, const double theGap)
     myOBBMap.Bind(aS, pBox);
   }
   return *pBox;
+}
+
+//=================================================================================================
+
+IntCurveSurface_PolyhedronCache& IntTools_Context::PolyhedronCache(const TopoDS_Face& theFace)
+{
+  IntCurveSurface_PolyhedronCache* pCache = nullptr;
+  if (!myPolyhedraMap.Find(theFace, pCache))
+  {
+    pCache = (IntCurveSurface_PolyhedronCache*)myAllocator->Allocate(
+      sizeof(IntCurveSurface_PolyhedronCache));
+    new (pCache) IntCurveSurface_PolyhedronCache();
+    myPolyhedraMap.Bind(theFace, pCache);
+  }
+  return *pCache;
 }
 
 //=================================================================================================
@@ -1038,6 +1068,7 @@ void IntTools_Context::ClearFaceCache(const TopoDS_Face& theFace)
   releaseItem(mySurfAdaptorMap, theFace, myAllocator);
   releaseItem(myBndBoxDataMap, theFace, myAllocator);
   releaseItem(myOBBMap, theFace, myAllocator);
+  releaseItem(myPolyhedraMap, theFace, myAllocator);
 }
 
 //=================================================================================================
@@ -1054,6 +1085,21 @@ void IntTools_Context::ClearPOnSProjectors(const int theMaxNb)
   if (myProjPSMap.Extent() > theMaxNb)
   {
     clearCachedPOnSProjectors();
+  }
+  // The polyhedra of the faces are smaller, but are limited in the same way
+  if (myPolyhedraMap.Extent() > std::max(theMaxNb, 0))
+  {
+    for (NCollection_DataMap<TopoDS_Shape,
+                             IntCurveSurface_PolyhedronCache*,
+                             TopTools_ShapeMapHasher>::Iterator anIt(myPolyhedraMap);
+         anIt.More();
+         anIt.Next())
+    {
+      IntCurveSurface_PolyhedronCache* pCache = anIt.Value();
+      (*pCache).~IntCurveSurface_PolyhedronCache();
+      myAllocator->Free(pCache);
+    }
+    myPolyhedraMap.Clear();
   }
 }
 

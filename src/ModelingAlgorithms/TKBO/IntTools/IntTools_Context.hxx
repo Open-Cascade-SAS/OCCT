@@ -42,6 +42,7 @@ class gp_Pnt2d;
 class IntTools_Curve;
 class Bnd_Box;
 class Bnd_OBB;
+class IntCurveSurface_PolyhedronCache;
 
 //! The intersection Context contains geometrical
 //! and topological toolkit (classifiers, projectors, etc).
@@ -227,6 +228,10 @@ public:
 
   Standard_EXPORT Bnd_Box& BndBox(const TopoDS_Shape& theS);
 
+  //! Returns the cache of the polyhedra of the surface of the face, built for the
+  //! intersections of lines with the face (see IntCurveSurface_HInter::SetPolyhedronCache()).
+  Standard_EXPORT IntCurveSurface_PolyhedronCache& PolyhedronCache(const TopoDS_Face& theFace);
+
   //! Returns true if the solid <theFace> has
   //! infinite bounds
   Standard_EXPORT bool IsInfiniteFace(const TopoDS_Face& theFace);
@@ -237,7 +242,8 @@ public:
   Standard_EXPORT void SetPOnSProjectionTolerance(const double theValue);
 
   //! Releases all data cached for the face theFace: point projector, 2D classifier, hatcher,
-  //! surface adaptor, surface localization data, bounding box and oriented bounding box.
+  //! surface adaptor, surface localization data, bounding box, oriented bounding box and
+  //! polyhedra.
   //! The data is computed again when requested. A context performing the faces one after
   //! another can so keep the data of one face at a time.
   //! References to the data of this face obtained from the context before become invalid.
@@ -250,6 +256,7 @@ public:
   //! theMaxNb of them. For B-spline surfaces they are the largest data cached by the context,
   //! as each one keeps a sampling grid of the surface after its first use. They are computed
   //! again, with the same results, when requested.
+  //! The polyhedra of the faces (see PolyhedronCache()) are released in the same way.
   //! References to projectors obtained from the context before become invalid.
   Standard_EXPORT void ClearPOnSProjectors(const int theMaxNb = 0);
 
@@ -272,6 +279,7 @@ protected:
   NCollection_DataMap<TopoDS_Shape, BRepAdaptor_Surface*, TopTools_ShapeMapHasher> mySurfAdaptorMap;
   // clang-format off
   NCollection_DataMap<TopoDS_Shape, Bnd_OBB*, TopTools_ShapeMapHasher> myOBBMap; // Map of oriented bounding boxes
+  NCollection_DataMap<TopoDS_Shape, IntCurveSurface_PolyhedronCache*, TopTools_ShapeMapHasher> myPolyhedraMap; // Map of polyhedra of faces
   // clang-format on
   int    myCreateFlag;
   double myPOnSTolerance;
