@@ -134,7 +134,7 @@ public:
   //! Bounds the memory taken by the point projectors on surfaces cached by theContext
   //! (see IntTools_Context::ClearPOnSProjectors()): releases them all if there are more than
   //! a few thousands of them. Each projector of a B-spline face keeps a sampling grid of about
-  //! 0.5 MB, so that steps visiting all faces of large models in no particular order would
+  //! 0.25 MB, so that steps visiting all faces of large models in no particular order would
   //! otherwise keep gigabytes of them. The projectors are computed again, with the same
   //! results, when requested. Must be called where no reference to a projector obtained
   //! from theContext is kept. Does nothing for a null context.

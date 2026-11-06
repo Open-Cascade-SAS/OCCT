@@ -361,7 +361,7 @@ double BOPAlgo_Tools::ComputeToleranceOfCB(const occ::handle<BOPDS_CommonBlock>&
 
 void BOPAlgo_Tools::LimitCachedProjectors(const occ::handle<IntTools_Context>& theContext)
 {
-  // About 2 GB of sampling grids of B-spline faces
+  // About 1 GB of sampling grids of B-spline faces
   const int THE_MAX_NB_PROJECTORS = 4000;
   if (!theContext.IsNull())
   {

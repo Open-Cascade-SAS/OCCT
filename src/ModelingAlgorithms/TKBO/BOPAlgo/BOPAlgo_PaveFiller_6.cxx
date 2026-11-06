@@ -238,6 +238,13 @@ public:
     {
       AddError(new BOPAlgo_AlertIntersectionFailed);
     }
+    // The results are kept as curves and points; the lines of intersection of the
+    // surfaces and the context with the data computed for the faces are not used anymore.
+    // Release them, as the intersections of all pairs of faces are kept until the
+    // treatment of their results.
+    myIntersector = IntPatch_Intersection();
+    myLConstruct  = GeomInt_LineConstructor();
+    myContext.Nullify();
   }
 
   //
