@@ -655,6 +655,10 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 
   Message_ProgressScope aPSOuter(theRange, nullptr, 1);
 
+  // The pairs of faces are intersected with contexts of their own: release the point
+  // projectors of the main context instead of keeping them during the intersection.
+  myContext->ClearPOnSProjectors();
+
   NCollection_DynamicArray<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
   aFFs.SetIncrement(iSize);
   //
@@ -1107,7 +1111,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
     //
-    BOPAlgo_Tools::LimitCachedProjectors(myContext);
+    // The faces are visited in no particular order: the released projectors are
+    // initialized again for the next faces (released after MakeBlocks)
+    BOPAlgo_Tools::LimitCachedProjectors(myContext, true);
     // Clear per-iteration collections and reset allocator for memory reuse
     aMVOnIn.Clear();
     aMVCommon.Clear();

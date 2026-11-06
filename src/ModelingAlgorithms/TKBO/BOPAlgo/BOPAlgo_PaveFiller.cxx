@@ -332,6 +332,8 @@ void BOPAlgo_PaveFiller::PerformInternal(const Message_ProgressRange& theRange)
   {
     return;
   }
+  // Release the point projectors on the faces used to make the section edges
+  myContext->ClearPOnSProjectors();
   //
   CheckSelfInterference();
   //

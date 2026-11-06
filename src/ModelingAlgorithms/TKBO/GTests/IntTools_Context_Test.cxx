@@ -12,11 +12,14 @@
 // commercial license or contractual agreement.
 
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepBuilderAPI_NurbsConvert.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <IntCurveSurface_PolyhedronCache.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_FClass2d.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_State.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -149,4 +152,55 @@ TEST_F(IntTools_ContextTest, PolyhedronCache_IsKeptPerFaceAndReleasedWithTheFace
   aContext->PolyhedronCache(myPlane2);
   aContext->ClearPOnSProjectors(2);
   EXPECT_EQ(aContext->PolyhedronCache(myLateral).NbPolyhedra(), 0);
+}
+
+//=================================================================================================
+
+// The projectors released to be reused, initialized again for other faces, give the same
+// results as new projectors
+TEST_F(IntTools_ContextTest, ClearPOnSProjectors_ReusedProjectorsGiveSameResults)
+{
+  BRepBuilderAPI_NurbsConvert aConverter(BRepPrimAPI_MakeCylinder(2., 5.).Shape());
+  ASSERT_TRUE(aConverter.IsDone());
+  NCollection_DynamicArray<TopoDS_Face> aFaces;
+  for (TopExp_Explorer anExp(aConverter.Shape(), TopAbs_FACE); anExp.More(); anExp.Next())
+  {
+    aFaces.Append(TopoDS::Face(anExp.Current()));
+  }
+  ASSERT_EQ(aFaces.Length(), 3);
+
+  occ::handle<IntTools_Context> aContext = new IntTools_Context();
+  for (int aPass = 0; aPass < 2; ++aPass)
+  {
+    for (const TopoDS_Face& aFace : aFaces)
+    {
+      for (const gp_Pnt& aPoint : {gp_Pnt(1., 0.5, 2.5), gp_Pnt(3., -1., 4.), gp_Pnt(0.2, 0.1, 6.)})
+      {
+        GeomAPI_ProjectPointOnSurf& aProj = aContext->ProjPS(aFace);
+        aProj.Perform(aPoint);
+
+        double                     aU1, aU2, aV1, aV2;
+        GeomAPI_ProjectPointOnSurf aNew;
+        aContext->UVBounds(aFace, aU1, aU2, aV1, aV2);
+        aNew.Init(BRep_Tool::Surface(aFace), aU1, aU2, aV1, aV2, 1.e-12);
+        aNew.SetExtremaFlag(Extrema_ExtFlag_MIN);
+        aNew.Perform(aPoint);
+
+        ASSERT_EQ(aProj.IsDone(), aNew.IsDone());
+        ASSERT_EQ(aProj.NbPoints(), aNew.NbPoints());
+        if (aNew.NbPoints() > 0)
+        {
+          EXPECT_EQ(aProj.LowerDistance(), aNew.LowerDistance());
+          double aU, aV, aUNew, aVNew;
+          aProj.LowerDistanceParameters(aU, aV);
+          aNew.LowerDistanceParameters(aUNew, aVNew);
+          EXPECT_EQ(aU, aUNew);
+          EXPECT_EQ(aV, aVNew);
+        }
+      }
+      // Release the projector to be reused for the next face
+      aContext->ClearPOnSProjectors(0, true);
+      EXPECT_EQ(aContext->NbPOnSProjectors(), 0);
+    }
+  }
 }

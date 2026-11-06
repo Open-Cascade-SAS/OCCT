@@ -138,8 +138,10 @@ public:
   //! otherwise keep gigabytes of them. The projectors are computed again, with the same
   //! results, when requested. Must be called where no reference to a projector obtained
   //! from theContext is kept. Does nothing for a null context.
-  Standard_EXPORT static void LimitCachedProjectors(
-    const occ::handle<IntTools_Context>& theContext);
+  //! If theToReuse is true, the released projectors are initialized again for the next faces
+  //! (see IntTools_Context::ClearPOnSProjectors()).
+  Standard_EXPORT static void LimitCachedProjectors(const occ::handle<IntTools_Context>& theContext,
+                                                    const bool theToReuse = false);
 
   //! Creates planar wires from the given edges.
   //! The input edges are expected to be planar. And for the performance

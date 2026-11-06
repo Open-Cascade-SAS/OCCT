@@ -268,9 +268,18 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
     UVBounds(aF, Umin, Usup, Vmin, Vsup);
     const occ::handle<Geom_Surface>& aS = BRep_Tool::Surface(aF);
     //
-    pProjPS =
-      (GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
-    new (pProjPS) GeomAPI_ProjectPointOnSurf();
+    if (!myFreeProjPS.IsEmpty())
+    {
+      // Initialize a released projector again, keeping its sampling grid allocated
+      pProjPS = myFreeProjPS.Last();
+      myFreeProjPS.EraseLast();
+    }
+    else
+    {
+      pProjPS =
+        (GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
+      new (pProjPS) GeomAPI_ProjectPointOnSurf();
+    }
     pProjPS->Init(aS, Umin, Usup, Vmin, Vsup, myPOnSTolerance);
     pProjPS->SetExtremaFlag(Extrema_ExtFlag_MIN); ///
     //
@@ -1061,7 +1070,12 @@ void releaseItem(NCollection_DataMap<TopoDS_Shape, TypeItem*, TopTools_ShapeMapH
 
 void IntTools_Context::ClearFaceCache(const TopoDS_Face& theFace)
 {
-  releaseItem(myProjPSMap, theFace, myAllocator);
+  GeomAPI_ProjectPointOnSurf* pProjPS = nullptr;
+  if (myProjPSMap.Find(theFace, pProjPS))
+  {
+    myProjPSMap.UnBind(theFace);
+    myFreeProjPS.Append(pProjPS);
+  }
   releaseItem(myFClass2dMap, theFace, myAllocator);
   releaseItem(myHatcherMap, theFace, myAllocator);
   releaseItem(myProjSDataMap, theFace, myAllocator);
@@ -1080,11 +1094,11 @@ int IntTools_Context::NbPOnSProjectors() const
 
 //=================================================================================================
 
-void IntTools_Context::ClearPOnSProjectors(const int theMaxNb)
+void IntTools_Context::ClearPOnSProjectors(const int theMaxNb, const bool theToReuse)
 {
   if (myProjPSMap.Extent() > theMaxNb)
   {
-    clearCachedPOnSProjectors();
+    clearCachedPOnSProjectors(theToReuse);
   }
   // The polyhedra of the faces are smaller, but are limited in the same way
   if (myPolyhedraMap.Extent() > std::max(theMaxNb, 0))
@@ -1105,18 +1119,39 @@ void IntTools_Context::ClearPOnSProjectors(const int theMaxNb)
 
 //=================================================================================================
 
-void IntTools_Context::clearCachedPOnSProjectors()
+void IntTools_Context::clearCachedPOnSProjectors(const bool theToReuse)
 {
   for (NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnSurf*, TopTools_ShapeMapHasher>::
          Iterator aIt(myProjPSMap);
        aIt.More();
        aIt.Next())
   {
-    GeomAPI_ProjectPointOnSurf* pProjPS = aIt.Value();
-    (*pProjPS).~GeomAPI_ProjectPointOnSurf();
-    myAllocator->Free(pProjPS);
+    if (theToReuse)
+    {
+      myFreeProjPS.Append(aIt.Value());
+    }
+    else
+    {
+      destroyProjPS(aIt.Value());
+    }
   }
   myProjPSMap.Clear();
+  if (!theToReuse)
+  {
+    for (GeomAPI_ProjectPointOnSurf* pProjPS : myFreeProjPS)
+    {
+      destroyProjPS(pProjPS);
+    }
+    myFreeProjPS.Clear(true);
+  }
+}
+
+//=================================================================================================
+
+void IntTools_Context::destroyProjPS(GeomAPI_ProjectPointOnSurf* thePrj)
+{
+  thePrj->~GeomAPI_ProjectPointOnSurf();
+  myAllocator->Free(thePrj);
 }
 
 //=================================================================================================
