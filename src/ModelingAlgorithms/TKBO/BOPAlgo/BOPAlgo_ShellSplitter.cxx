@@ -26,6 +26,8 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopAbs.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <NCollection_List.hxx>
@@ -33,6 +35,168 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
+#include <NCollection_DataMap.hxx>
+#include <unordered_map>
+#include <vector>
+
+namespace
+{
+//! Finds the edges of the faces as BOPTools_AlgoTools::GetEdgeOff() does, without exploring
+//! all edges of a face for each search: faces imprinted by many shapes have thousands of edges,
+//! and each of them is searched for.
+class FaceEdgesIndex
+{
+public:
+  //! Returns the first edge of theFace, in the order of exploration, which is the same as theEdge
+  //! with the opposite orientation
+  bool GetEdgeOff(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace, TopoDS_Edge& theEdgeOff)
+  {
+    const NCollection_List<TopoDS_Shape>* aList = occurrences(theEdge, theFace);
+    if (aList)
+    {
+      const TopAbs_Orientation anOrOff = TopAbs::Reverse(theEdge.Orientation());
+      for (const TopoDS_Shape& anEdge : *aList)
+      {
+        if (anEdge.Orientation() == anOrOff)
+        {
+          theEdgeOff = TopoDS::Edge(anEdge);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+private:
+  //! Returns the occurrences of the edge in the face, in the order of exploration
+  const NCollection_List<TopoDS_Shape>* occurrences(const TopoDS_Shape& theEdge,
+                                                    const TopoDS_Shape& theFace)
+  {
+    EdgesMap* anEdges = myFaces.ChangeSeek(theFace);
+    if (!anEdges)
+    {
+      anEdges = myFaces.Bound(theFace, EdgesMap());
+      for (TopExp_Explorer anExp(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
+      {
+        NCollection_List<TopoDS_Shape>* aList = anEdges->ChangeSeek(anExp.Current());
+        if (!aList)
+        {
+          aList = anEdges->Bound(anExp.Current(), NCollection_List<TopoDS_Shape>());
+        }
+        aList->Append(anExp.Current());
+      }
+    }
+    return anEdges->Seek(theEdge);
+  }
+
+  typedef NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    EdgesMap;
+  //! Edges of the faces; the faces are distinguished by orientation, which the orientation of
+  //! their edges depends on
+  NCollection_DataMap<TopoDS_Shape, EdgesMap> myFaces;
+};
+
+//! Remembers the face selected by BOPTools_AlgoTools::GetFaceOff() for an edge of a face and
+//! a list of candidate faces. The selection only depends on these shapes, and a block whose
+//! shells cannot all be closed is grown again from many of its faces, which selects the same
+//! faces again and again.
+class FaceOffCache
+{
+public:
+  //! Returns the face selected for the edge theEdge of theFace among the candidates
+  const TopoDS_Face& Find(const TopoDS_Edge&                        theEdge,
+                          const TopoDS_Face&                        theFace,
+                          NCollection_List<BOPTools_CoupleOfShape>& theCandidates,
+                          const occ::handle<IntTools_Context>&      theContext)
+  {
+    myKey.clear();
+    myKey.push_back(theEdge);
+    myKey.push_back(theFace);
+    for (const BOPTools_CoupleOfShape& aCS : theCandidates)
+    {
+      myKey.push_back(aCS.Shape2());
+    }
+    auto anIt = myCache.find(myKey);
+    if (anIt == myCache.end())
+    {
+      TopoDS_Face aSelF;
+      BOPTools_AlgoTools::GetFaceOff(theEdge, theFace, theCandidates, aSelF, theContext);
+      anIt = myCache.emplace(myKey, aSelF).first;
+    }
+    return anIt->second;
+  }
+
+private:
+  struct KeyHasher
+  {
+    size_t operator()(const std::vector<TopoDS_Shape>& theKey) const
+    {
+      size_t aHash = theKey.size();
+      for (const TopoDS_Shape& aS : theKey)
+      {
+        aHash = aHash * 31 + std::hash<TopoDS_Shape>{}(aS) * 4 + aS.Orientation();
+      }
+      return aHash;
+    }
+  };
+
+  struct KeyEqual
+  {
+    bool operator()(const std::vector<TopoDS_Shape>& theK1,
+                    const std::vector<TopoDS_Shape>& theK2) const
+    {
+      if (theK1.size() != theK2.size())
+      {
+        return false;
+      }
+      for (size_t i = 0; i < theK1.size(); ++i)
+      {
+        if (!theK1[i].IsEqual(theK2[i]))
+        {
+          return false;
+        }
+      }
+      return true;
+    }
+  };
+
+  std::vector<TopoDS_Shape>                                                       myKey;
+  std::unordered_map<std::vector<TopoDS_Shape>, TopoDS_Face, KeyHasher, KeyEqual> myCache;
+};
+
+//! Maps the edges of the faces of theShape to the faces, as TopExp::MapShapesAndAncestors()
+//! does, and to the edges themselves in theMEO: for each face of the list of an edge in theMEF,
+//! the first occurrence of the edge in the face, at the same position in the list of theMEO.
+void mapEdgesOfFaces(
+  const TopoDS_Shape& theShape,
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    theMEF,
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
+    theMEO)
+{
+  for (TopExp_Explorer anExpF(theShape, TopAbs_FACE); anExpF.More(); anExpF.Next())
+  {
+    const TopoDS_Shape& aF = anExpF.Current();
+    for (TopExp_Explorer anExpE(aF, TopAbs_EDGE); anExpE.More(); anExpE.Next())
+    {
+      const TopoDS_Shape& aE    = anExpE.Current();
+      int                 anInd = theMEF.FindIndex(aE);
+      if (anInd == 0)
+      {
+        anInd = theMEF.Add(aE, NCollection_List<TopoDS_Shape>());
+        theMEO.Add(aE, NCollection_List<TopoDS_Shape>());
+      }
+      NCollection_List<TopoDS_Shape>& aLF = theMEF(anInd);
+      NCollection_List<TopoDS_Shape>& aLE = theMEO(anInd);
+      // An edge occurring twice in the face (seam) lists the face twice; the occurrences of
+      // the edge in a face are explored together, so the face is then the last of the list
+      const bool isRepeated = !aLF.IsEmpty() && aLF.Last().IsEqual(aF);
+      aLE.Append(isRepeated ? aLE.Last() : aE);
+      aLF.Append(aF);
+    }
+  }
+}
+} // namespace
 
 //
 static void MakeShell(const NCollection_List<TopoDS_Shape>&, TopoDS_Shell&);
@@ -41,6 +205,9 @@ static void RefineShell(TopoDS_Shell&                                           
                         const NCollection_IndexedDataMap<TopoDS_Shape,
                                                          NCollection_List<TopoDS_Shape>,
                                                          TopTools_ShapeMapHasher>& theMEF,
+                        const NCollection_IndexedDataMap<TopoDS_Shape,
+                                                         NCollection_List<TopoDS_Shape>,
+                                                         TopTools_ShapeMapHasher>& theMEO,
                         NCollection_List<TopoDS_Shape>&                            aLShX);
 
 //=================================================================================================
@@ -163,8 +330,10 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   BOPTools_CoupleOfShape                   aCSOff;
   NCollection_Map<TopoDS_Shape>            AddedFacesMap;
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                aEFMap, aMEFP;
+                                aEFMap, aMEFP, aMEOP;
   occ::handle<IntTools_Context> aContext;
+  FaceEdgesIndex                aFaceEdges;
+  FaceOffCache                  aFaceOffs;
   //
   aContext = new IntTools_Context;
   //
@@ -263,7 +432,8 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     aBB.Add(aShell, aFF);
 
     aMEFP.Clear();
-    TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, aMEFP);
+    aMEOP.Clear();
+    mapEdgesOfFaces(aShell, aMEFP, aMEOP);
     //
     // loop on faces added to Shell;
     // add their neighbor faces to Shell and so on
@@ -325,7 +495,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
           }
           //
           // find current edge in the face
-          if (!BOPTools_AlgoTools::GetEdgeOff(aE, aFL, aEL))
+          if (!aFaceEdges.GetEdgeOff(aE, aFL, aEL))
           {
             continue;
           }
@@ -356,21 +526,21 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
           }
           else if (aNbOff > 1)
           {
-            BOPTools_AlgoTools::GetFaceOff(aE, aF, aLCSOff, aSelF, aContext);
+            aSelF = aFaceOffs.Find(aE, aF, aLCSOff, aContext);
           }
         }
         //
         if (!aSelF.IsNull() && AddedFacesMap.Add(aSelF))
         {
           aBB.Add(aShell, aSelF);
-          TopExp::MapShapesAndAncestors(aSelF, TopAbs_EDGE, TopAbs_FACE, aMEFP);
+          mapEdgesOfFaces(aSelF, aMEFP, aMEOP);
         }
       } // for (; aExp.More(); aExp.Next()) {
     } // for (; aItS.More(); aItS.Next()) {
     //
     // split the shell on multi-connected edges
     NCollection_List<TopoDS_Shape> aLShSp;
-    RefineShell(aShell, aMEFP, aLShSp);
+    RefineShell(aShell, aMEFP, aMEOP, aLShSp);
     //
     // collect the not closed shells for further processing
     NCollection_List<TopoDS_Shape> aLShNC;
@@ -422,28 +592,13 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
 
 //=================================================================================================
 
-TopoDS_Shape FindShape(const TopoDS_Shape& theShapeToFind, const TopoDS_Shape& theShape)
-{
-  TopoDS_Shape    aRes;
-  TopExp_Explorer anExp(theShape, theShapeToFind.ShapeType());
-  for (; anExp.More(); anExp.Next())
-  {
-    const TopoDS_Shape& aShape = anExp.Current();
-    if (aShape.IsSame(theShapeToFind))
-    {
-      aRes = aShape;
-      break;
-    }
-  }
-  return aRes;
-}
-
-//=================================================================================================
-
 void RefineShell(TopoDS_Shell&                                              theShell,
                  const NCollection_IndexedDataMap<TopoDS_Shape,
                                                   NCollection_List<TopoDS_Shape>,
                                                   TopTools_ShapeMapHasher>& theMEF,
+                 const NCollection_IndexedDataMap<TopoDS_Shape,
+                                                  NCollection_List<TopoDS_Shape>,
+                                                  TopTools_ShapeMapHasher>& theMEO,
                  NCollection_List<TopoDS_Shape>&                            theLShSp)
 {
   TopoDS_Iterator aIt(theShell);
@@ -461,6 +616,8 @@ void RefineShell(TopoDS_Shell&                                              theS
   {
     const TopoDS_Edge&                    aE  = TopoDS::Edge(theMEF.FindKey(i));
     const NCollection_List<TopoDS_Shape>& aLF = theMEF(i);
+    // occurrences of the edge in the faces of aLF
+    const NCollection_List<TopoDS_Shape>& aLE = theMEO(i);
     if (aLF.Extent() > 2)
     {
       aMEStop.Add(aE);
@@ -469,13 +626,7 @@ void RefineShell(TopoDS_Shell&                                              theS
 
     if (aLF.Extent() == 2)
     {
-      const TopoDS_Face& aF1 = TopoDS::Face(aLF.First());
-      const TopoDS_Face& aF2 = TopoDS::Face(aLF.Last());
-
-      TopoDS_Shape aE1 = FindShape(aE, aF1);
-      TopoDS_Shape aE2 = FindShape(aE, aF2);
-
-      if (aE1.Orientation() == aE2.Orientation())
+      if (aLE.First().Orientation() == aLE.Last().Orientation())
       {
         aMEStop.Add(aE);
         continue;
@@ -485,23 +636,13 @@ void RefineShell(TopoDS_Shell&                                              theS
     // check for internal edges - count faces, in which the edge
     // is internal, twice
     int                                      aNbF = 0;
-    NCollection_List<TopoDS_Shape>::Iterator aItLF(aLF);
-    for (; aItLF.More() && aNbF <= 2; aItLF.Next())
+    NCollection_List<TopoDS_Shape>::Iterator aItLE(aLE);
+    for (; aItLE.More() && aNbF <= 2; aItLE.Next())
     {
-      const TopoDS_Face& aF = TopoDS::Face(aItLF.Value());
       ++aNbF;
-      TopExp_Explorer aExp(aF, TopAbs_EDGE);
-      for (; aExp.More(); aExp.Next())
+      if (aItLE.Value().Orientation() == TopAbs_INTERNAL)
       {
-        const TopoDS_Shape& aEF = aExp.Current();
-        if (aEF.IsSame(aE))
-        {
-          if (aEF.Orientation() == TopAbs_INTERNAL)
-          {
-            ++aNbF;
-          }
-          break;
-        }
+        ++aNbF;
       }
     }
     //

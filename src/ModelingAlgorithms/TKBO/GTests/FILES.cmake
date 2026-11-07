@@ -13,6 +13,7 @@ set(OCCT_TKBO_GTests_FILES
   BRepAlgoAPI_Common_Test.cxx
   BOPAlgo_BOP_Test.cxx
   BOPAlgo_Builder_Parallel_Test.cxx
+  BOPAlgo_ShellSplitter_Test.cxx
   BOPAlgo_MakePeriodic_Test.cxx
   BOPAlgo_PaveFiller_Test.cxx
   BRepAlgoAPI_Splitter_Test.cxx
