@@ -3898,11 +3898,11 @@ void ChFi3d_Builder::PerformMoreSurfdata(const int Index)
   int indSurface;
   if (is1stCP1OnArc)
   {
-    indSurface = myListStripe.First()->SetOfSurfData()->Value(anInd)->IndexOfS1();
+    indSurface = aStripe->SetOfSurfData()->Value(anInd)->IndexOfS1();
   }
   else
   {
-    indSurface = myListStripe.First()->SetOfSurfData()->Value(anInd)->IndexOfS2();
+    indSurface = aStripe->SetOfSurfData()->Value(anInd)->IndexOfS2();
   }
 
   aNeighborFace = TopoDS::Face(myDS->Shape(indSurface));
