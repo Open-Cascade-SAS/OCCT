@@ -14,7 +14,7 @@ libraries. OCCT can be best applied in development of software dealing with 3D
 modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
 
 @htmlonly<center>@endhtmlonly
-https://www.opencascade.com
+https://occt3d.com
 @figure{/resources/occ_logo.png}
 @htmlonly</center>@endhtmlonly
 
@@ -171,9 +171,9 @@ See the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms Us
 - data structures and algorithms to build triangular surface mesh from *BRep* objects (shapes);
 - tools for displaying meshes with associated pre- and post-processor data (scalars or vectors).
 
-Open CASCADE SAS also offers Advanced Mesh Products (commercial product pages, URLs may change):
-- <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
-- <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
+Open CASCADE SAS also offers commercial mesh products:
+- <a href="https://occt3d.com/components/mesh-framework/">Open CASCADE Mesh Framework (OMF)</a>
+- <a href="https://occt3d.com/components/express-mesh/">Express Mesh</a>
 
 @figure{/introduction/images/0003.png}
 
@@ -395,7 +395,7 @@ Don't forget to report these bugs to vendors.
 
 @section intro_install Download and Installation
 
-OCCT can be downloaded from https://dev.opencascade.org/release
+OCCT can be downloaded from https://github.com/Open-Cascade-SAS/OCCT/releases
 
 In most cases you would want to rebuild OCCT from sources on your platform (OS, compiler) before
 using it in your project, to ensure binary compatibility and appropriate configuration of the library.
@@ -483,7 +483,7 @@ At minimum the following should be considered:
    the application should be provided separately in a modifiable form, with all materials needed for the user to be able to run the application with a modified version of OCCT.
 
 If you want to use Open CASCADE Technology without being bound by LGPL requirements, 
-please <a href="https://dev.opencascade.org/webform/contact_us">contact Open CASCADE company</a> for a commercial license.
+please <a href="https://occt3d.com/contact">contact Open CASCADE company</a> for a commercial license.
 
 Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
 WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
