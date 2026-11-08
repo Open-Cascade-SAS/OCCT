@@ -129,7 +129,8 @@ user_guides/new_feature/new_feature.md
 
 @section  OCCT_DOC_SECTION_5 Additional Resources
 
-More information about OCCT can be found at https://www.opencascade.com and https://dev.opencascade.org sites.
+See the [OCCT3D website](https://occt3d.com/) for products and services.
+Read the [online guides](https://occt3d.com/dev/doc/overview/html/index.html) for build instructions and module usage, and the [C++ API reference](https://occt3d.com/dev/doc/refman/html/index.html) for class and method documentation.
 
 
 The information on formula syntax can be found at: <br>
