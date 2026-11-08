@@ -436,7 +436,8 @@ occ::handle<XCAFDimTolObjects_DatumObject> XCAFDoc_Datum::GetObject() const
   if (Label().FindChild(ChildLab_Pnt).FindAttribute(TDataStd_RealArray::GetID(), aPnt)
       && aPnt->Length() == 3)
   {
-    gp_Pnt aP(aLoc->Value(aPnt->Lower()),
+    // aLoc is the annotation plane's array and is null without a plane; read the point's own.
+    gp_Pnt aP(aPnt->Value(aPnt->Lower()),
               aPnt->Value(aPnt->Lower() + 1),
               aPnt->Value(aPnt->Lower() + 2));
     anObj->SetPoint(aP);
