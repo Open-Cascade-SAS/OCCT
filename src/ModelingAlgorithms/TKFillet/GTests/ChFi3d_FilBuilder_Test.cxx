@@ -11,8 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <ChFi3d_FilBuilder.hxx>
+#include <ChFiDS_ElSpine.hxx>
 #include <ChFiDS_FaceInterference.hxx>
+#include <ChFiDS_FilSpine.hxx>
+#include <Standard_DomainError.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBlend_Line.hxx>
@@ -90,4 +95,42 @@ TEST(ChFi3d_FilBuilder, SplitOnlyZeroWidthSections)
     aBuilder.SplitSurf(aSequence, aLine);
     EXPECT_EQ(aSequence.Length(), aMinimumWidth < 1.e-4 ? 2 : 1);
   }
+}
+
+//==================================================================================================
+
+TEST(ChFiDS_FilSpine, RefusesSectionAroundSingleVertex)
+{
+  const double aTolerance = 1.e-4;
+
+  const auto aMakeSpine = [aTolerance]() {
+    const TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+    const TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0));
+    const TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(2, 0, 0));
+
+    const occ::handle<ChFiDS_FilSpine> aSpine = new ChFiDS_FilSpine(aTolerance);
+    aSpine->SetEdges(BRepBuilderAPI_MakeEdge(aV1, aV2));
+    aSpine->SetEdges(BRepBuilderAPI_MakeEdge(aV2, aV3));
+    aSpine->Load();
+    aSpine->SetRadius(1.0);
+    return aSpine;
+  };
+  const auto aMakeSection = [](const double theFirst, const double theLast) {
+    const occ::handle<ChFiDS_ElSpine> aSection = new ChFiDS_ElSpine();
+    aSection->FirstParameter(theFirst);
+    aSection->LastParameter(theLast);
+    return aSection;
+  };
+
+  // Longer than the tolerance, but each end is within the tolerance of the vertex between the
+  // edges.
+  const occ::handle<ChFiDS_ElSpine> aShort =
+    aMakeSection(1.0 - 0.6 * aTolerance, 1.0 + 0.6 * aTolerance);
+  EXPECT_THROW(aMakeSpine()->AppendElSpine(aShort), Standard_DomainError);
+
+  // A section of real length across the same vertex keeps its law.
+  const occ::handle<ChFiDS_FilSpine> aSpine   = aMakeSpine();
+  const occ::handle<ChFiDS_ElSpine>  aSection = aMakeSection(0.5, 1.5);
+  aSpine->AppendElSpine(aSection);
+  EXPECT_FALSE(aSpine->Law(aSection).IsNull());
 }
