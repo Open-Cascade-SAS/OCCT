@@ -26,6 +26,7 @@
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
 #include <ChFi3d_FilletShape.hxx>
+#include <ChFiDS_CircSection.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
@@ -40,11 +41,13 @@
 #include <TopExp.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Ax1.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GProp_GProps.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
 #include <ShapeFix_Shape.hxx>
@@ -176,6 +179,27 @@ TopoDS_Shape occ1077CutBlend(const TopoDS_Shape& theShapeToCut,
 {
   BRepAlgoAPI_Cut aCut(theShapeToCut, theTool);
   return occ1077BoolBl(aCut, theRadius);
+}
+
+//==================================================================================================
+
+//! Find an edge of theShape that shares no vertex with theEdge.
+TopoDS_Edge findDisjointEdge(const TopoDS_Shape& theShape, const TopoDS_Edge& theEdge)
+{
+  const TopoDS_Vertex aFirst = TopExp::FirstVertex(theEdge);
+  const TopoDS_Vertex aLast  = TopExp::LastVertex(theEdge);
+  for (TopExp_Explorer anExp(theShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge&  anEdge   = TopoDS::Edge(anExp.Current());
+    const TopoDS_Vertex aVertex1 = TopExp::FirstVertex(anEdge);
+    const TopoDS_Vertex aVertex2 = TopExp::LastVertex(anEdge);
+    if (!aVertex1.IsSame(aFirst) && !aVertex1.IsSame(aLast) && !aVertex2.IsSame(aFirst)
+        && !aVertex2.IsSame(aLast))
+    {
+      return anEdge;
+    }
+  }
+  return TopoDS_Edge();
 }
 
 } // namespace
@@ -485,6 +509,193 @@ TEST(BRepFilletAPI_MakeFilletTest, FilletVariableRadius)
 
   BRepCheck_Analyzer anAnalyzer(aResult);
   EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+// A contour has no surface data until Build() or Simulate() reaches it, and Reset() clears it.
+TEST(BRepFilletAPI_MakeFilletTest, NbSurf_EdgeAddedNeverRun_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aFillet.NbContours(), 1);
+
+  EXPECT_EQ(aFillet.NbComputedSurfaces(1), 0);
+  EXPECT_EQ(aFillet.NbSurf(1), 0);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, NbSurf_AfterSimulateThenReset_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aFillet.Simulate(1);
+  ASSERT_EQ(aFillet.NbSurf(1), 1);
+
+  aFillet.Reset();
+  EXPECT_EQ(aFillet.NbComputedSurfaces(1), 0);
+  EXPECT_EQ(aFillet.NbSurf(1), 0);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, NbSurf_AfterBuildThenReset_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aFillet.Build();
+  ASSERT_TRUE(aFillet.IsDone());
+  ASSERT_EQ(aFillet.NbSurf(1), 1);
+
+  aFillet.Reset();
+  EXPECT_EQ(aFillet.NbComputedSurfaces(1), 0);
+  EXPECT_EQ(aFillet.NbSurf(1), 0);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, NbSurf_SecondContourNotSimulated_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Edge anEdge1 = TopoDS::Edge(anExp.Current());
+  const TopoDS_Edge anEdge2 = findDisjointEdge(aBox, anEdge1);
+  ASSERT_FALSE(anEdge2.IsNull());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, anEdge1);
+  aFillet.Add(1.0, anEdge2);
+  ASSERT_EQ(aFillet.NbContours(), 2);
+
+  aFillet.Simulate(1);
+  ASSERT_EQ(aFillet.NbSurf(1), 1);
+  EXPECT_EQ(aFillet.NbComputedSurfaces(2), 0);
+  EXPECT_EQ(aFillet.NbSurf(2), 0);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, NbSurf_ContourIndexOutOfRange_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aFillet.NbContours(), 1);
+
+  EXPECT_EQ(aFillet.NbSurf(0), 0);
+  EXPECT_EQ(aFillet.NbSurf(2), 0);
+  EXPECT_EQ(aFillet.NbSurf(99), 0);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, NbSurf_AfterSimulate_ReturnsSurfaceCountAndSections)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aFillet.Simulate(1);
+
+  EXPECT_EQ(aFillet.NbComputedSurfaces(1), 1);
+  EXPECT_EQ(aFillet.NbSurf(1), 1);
+  const occ::handle<NCollection_HArray1<ChFiDS_CircSection>> aSections = aFillet.Sect(1, 1);
+  ASSERT_FALSE(aSections.IsNull());
+  EXPECT_GT(aSections->Length(), 0);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, NbSurf_AfterBuild_ReturnsSurfaceCountAndSurface)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aFillet.Build();
+  ASSERT_TRUE(aFillet.IsDone());
+
+  EXPECT_EQ(aFillet.NbComputedSurfaces(1), 1);
+  EXPECT_EQ(aFillet.NbSurf(1), 1);
+  EXPECT_FALSE(aFillet.ComputedSurface(1, 1).IsNull());
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, Sect_EdgeAddedNeverRun_ReturnsNull)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aFillet.NbContours(), 1);
+
+  EXPECT_TRUE(aFillet.Sect(1, 1).IsNull());
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, ComputedSurface_EdgeAddedNeverRun_ReturnsNull)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aFillet.NbContours(), 1);
+
+  EXPECT_TRUE(aFillet.ComputedSurface(1, 1).IsNull());
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, ComputedSurface_ContourIndexOutOfRange_ReturnsNull)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  aFillet.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aFillet.NbContours(), 1);
+
+  EXPECT_TRUE(aFillet.ComputedSurface(0, 1).IsNull());
+  EXPECT_TRUE(aFillet.ComputedSurface(2, 1).IsNull());
+  EXPECT_TRUE(aFillet.ComputedSurface(99, 1).IsNull());
 }
 
 // Test OCC570: BRepFilletAPI_MakeFillet with mixed constant and variable radius.
