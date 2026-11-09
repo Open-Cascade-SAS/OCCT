@@ -288,6 +288,34 @@ TEST_F(Geom2d_BezierCurve_Test, MaxDegree)
   EXPECT_GE(Geom2d_BezierCurve::MaxDegree(), 25);
 }
 
+TEST_F(Geom2d_BezierCurve_Test, InsertPoleAfter_GrowsToTheConstructorLimit)
+{
+  // MaxDegree() bounds the degree, so MaxDegree() + 1 poles are legal, as the constructor allows.
+  const int aMaxPoles = Geom2d_BezierCurve::MaxDegree() + 1;
+
+  NCollection_Array1<gp_Pnt2d> aAllPoles(1, aMaxPoles);
+  for (int anIdx = 1; anIdx <= aMaxPoles; ++anIdx)
+  {
+    aAllPoles(anIdx) = gp_Pnt2d(anIdx, 0.0);
+  }
+  EXPECT_NO_THROW(new Geom2d_BezierCurve(aAllPoles));
+
+  NCollection_Array1<gp_Pnt2d> aPoles(1, aMaxPoles - 1);
+  for (int anIdx = 1; anIdx < aMaxPoles; ++anIdx)
+  {
+    aPoles(anIdx) = aAllPoles(anIdx);
+  }
+  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles);
+  EXPECT_NO_THROW(aCurve->InsertPoleAfter(aMaxPoles - 1, aAllPoles(aMaxPoles)));
+  EXPECT_EQ(aCurve->NbPoles(), aMaxPoles);
+  EXPECT_EQ(aCurve->Degree(), Geom2d_BezierCurve::MaxDegree());
+  EXPECT_NEAR(aCurve->EndPoint().X(), static_cast<double>(aMaxPoles), Precision::Confusion());
+
+  // The refusal past this length is not checked here. Geom2d_BezierCurve::InsertPoleAfter raises it
+  // with Standard_ConstructionError_Raise_if, which a release build defines away (No_Exception),
+  // and a 27th pole would then index past the static knot tables. Geom_BezierCurve throws instead.
+}
+
 TEST_F(Geom2d_BezierCurve_Test, RationalCurveEvaluation)
 {
   // Rational quadratic Bezier approximating circular arc
