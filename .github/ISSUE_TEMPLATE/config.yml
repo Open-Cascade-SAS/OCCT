@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Collaborative development portal
-    url: https://dev.opencascade.org/forums
-    about: You can also use the collaborative development portal to ask questions and discuss the problem you are seeing
+  - name: OCCT forum archive
+    url: https://occt3d.com/dev/
+    about: Search historical discussions in the read-only forum archive. Use GitHub Discussions for new questions.
   - name: GitHub discussions
     url: https://github.com/Open-Cascade-SAS/OCCT/discussions
-    about: You can also use GitHub discussions to ask questions and discuss the problem you are seeing
-  - name: Contact US form
-    url: https://dev.opencascade.org/webform/contact_us
-    about: You can also use the Contact US form to ask questions and discuss the problem you are seeing
+    about: Ask questions about using and developing OCCT.
+  - name: Contact OCCT3D
+    url: https://occt3d.com/contact
+    about: Request CLA documents, contribution information, or commercial support.

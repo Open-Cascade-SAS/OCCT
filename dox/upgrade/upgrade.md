@@ -28,7 +28,7 @@ When you upgrade the code by an automatic script, make sure to carefully review 
 
 @section upgrade_pre_7_1 Upgrades pre-7.1.0
 
-Detailed upgrade notes for OCCT versions 6.5.0 through 7.0.0 are available in the versioned documentation archives, e.g. https://dev.opencascade.org/doc/occt-7.0.0/overview/html/index.html. Refer to the [OCCT GitHub releases](https://github.com/Open-Cascade-SAS/OCCT/releases) for per-version change logs.
+For OCCT versions 6.5.0 through 7.0.0, consult the documentation sources in the corresponding [Git tags](https://github.com/Open-Cascade-SAS/OCCT/tags). Refer to the [OCCT GitHub releases](https://github.com/Open-Cascade-SAS/OCCT/releases) for per-version change logs.
 
 
 @section upgrade_occt710 Upgrade to OCCT 7.1.0
@@ -1440,18 +1440,18 @@ The most recommended manager is `JeMalloc`. To use it with a plugin system, like
 The entire code base has been formatted with `clang-format` 18.1.8 (Windows) using settings available in the root of the repository.
 Most custom patches on top of previous releases will likely have merge conflicts.
 When encountering merge conflicts, it is recommended to use `clang-format` to format the code.
-To maintain patches, it is recommended to merge them into the main repository as part of a contribution. See [Get Involved](https://dev.opencascade.org/get_involved) and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
+To maintain patches, it is recommended to merge them into the main repository as part of a contribution. See @ref contribution "Contribution" and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
 
 @subsection upgrade_790_migration Migration to GitHub
 
 The OCCT repository has been migrated to GitHub. The new repository is available at [GitHub](https://github.com/Open-Cascade-SAS/OCCT).
 The old repository will be available for some time, but it is recommended to use the new repository for all new changes.
-Contribution to the new repository is available through the GitHub interface - see [Get Involved](https://dev.opencascade.org/get_involved) and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
+Contribution to the new repository is available through the GitHub interface - see @ref contribution "Contribution" and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
 
 @subsection upgrade_790_configuration GenProj no longer supported
 
 The `GenProj` tool is no longer supported. It is recommended to use CMake for building OCCT.
-In case of problems, please refer to the [CMake Guide](https://dev.opencascade.org/doc/overview/html/build_upgrade__building_occt.html).
+In case of problems, please refer to the @ref build_upgrade__building_occt "Build OCCT".
 
 @subsection upgrade_790_modeling_scale_exception Disabling exception for transformation with scale
 

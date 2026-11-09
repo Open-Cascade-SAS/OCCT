@@ -47,7 +47,7 @@ runs:
           echo "has_files=true" >> $env:GITHUB_OUTPUT
         }
 
-    - name: Validate and add license headers
+    - name: Validate and add license headers and source reuse notices
       if: steps.changed-files.outputs.has_files == 'true'
       shell: pwsh
       run: |
