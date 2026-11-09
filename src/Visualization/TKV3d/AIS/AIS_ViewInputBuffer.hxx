@@ -102,20 +102,22 @@ public:
 
   struct _draggingParams
   {
-    bool                  ToStart;    //!< start dragging
-    bool                  ToConfirm;  //!< confirm dragging
-    bool                  ToMove;     //!< perform dragging
-    bool                  ToStop;     //!< stop  dragging
-    bool                  ToAbort;    //!< abort dragging (restore previous position)
-    NCollection_Vec2<int> PointStart; //!< drag start point
-    NCollection_Vec2<int> PointTo;    //!< drag end point
+    bool                  ToStart;           //!< start dragging
+    bool                  ToConfirm;         //!< confirm dragging
+    bool                  ToMove;            //!< perform dragging
+    bool                  ToStop;            //!< stop  dragging
+    bool                  ToAbort;           //!< abort dragging (restore previous position)
+    bool                  ToPreventGestures; //!< prevent other gestures on the next drag action
+    NCollection_Vec2<int> PointStart;        //!< drag start point
+    NCollection_Vec2<int> PointTo;           //!< drag end point
 
     _draggingParams()
         : ToStart(false),
           ToConfirm(false),
           ToMove(false),
           ToStop(false),
-          ToAbort(false)
+          ToAbort(false),
+          ToPreventGestures(false)
     {
     }
   } Dragging;
@@ -176,18 +178,19 @@ public:
     Selection.ToApplyTool       = false;
     IsNewGesture                = false;
     ZoomActions.Clear();
-    Panning.ToStart        = false;
-    Panning.ToPan          = false;
-    Dragging.ToStart       = false;
-    Dragging.ToConfirm     = false;
-    Dragging.ToMove        = false;
-    Dragging.ToStop        = false;
-    Dragging.ToAbort       = false;
-    OrbitRotation.ToStart  = false;
-    OrbitRotation.ToRotate = false;
-    ViewRotation.ToStart   = false;
-    ViewRotation.ToRotate  = false;
-    ZRotate.ToRotate       = false;
+    Panning.ToStart            = false;
+    Panning.ToPan              = false;
+    Dragging.ToStart           = false;
+    Dragging.ToConfirm         = false;
+    Dragging.ToMove            = false;
+    Dragging.ToStop            = false;
+    Dragging.ToAbort           = false;
+    Dragging.ToPreventGestures = false;
+    OrbitRotation.ToStart      = false;
+    OrbitRotation.ToRotate     = false;
+    ViewRotation.ToStart       = false;
+    ViewRotation.ToRotate      = false;
+    ZRotate.ToRotate           = false;
   }
 };
 
