@@ -384,6 +384,7 @@ public:
   //! surface
   //! ChFiDS_WalkingFailure : there is a problem in the walking
   //! ChFiDS_Error: other error different from above
+  //! Raises Standard_OutOfRange if IC < 1 or IC > NbContours().
   Standard_EXPORT ChFiDS_ErrorStatus StripeStatus(const int IC) const;
 
 private:

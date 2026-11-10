@@ -65,11 +65,14 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <Precision.hxx>
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <limits>
 
 namespace
 {
@@ -444,6 +447,217 @@ TEST(BRepFilletAPI_MakeFilletTest, FilletAllEdges)
 
   BRepCheck_Analyzer anAnalyzer(aResult);
   EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+namespace
+{
+//==================================================================================================
+
+//! Add one edge per contour, taken from the edges that meet at the first vertex of theBox.
+void addContours(BRepFilletAPI_MakeFillet& theFillet, const TopoDS_Shape& theBox, const int theNb)
+{
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aVertexEdges;
+  TopExp::MapShapesAndAncestors(theBox, TopAbs_VERTEX, TopAbs_EDGE, aVertexEdges);
+  int aNbAdded = 0;
+  for (const TopoDS_Shape& anEdge : aVertexEdges.FindFromIndex(1))
+  {
+    if (aNbAdded < theNb)
+    {
+      theFillet.Add(1.0, TopoDS::Edge(anEdge));
+      ++aNbAdded;
+    }
+  }
+}
+
+//==================================================================================================
+
+//! Contour indices below, just above and far outside 1..NbContours().
+std::array<int, 5> outOfRangeIndices(const int theNbContours)
+{
+  return {-1,
+          0,
+          theNbContours + 1,
+          std::numeric_limits<int>::max(),
+          std::numeric_limits<int>::min()};
+}
+
+//==================================================================================================
+
+//! NbEdges and Edge raise for every index. Length and Radius raise below the range and answer -1
+//! above it.
+void expectValueAccessorsReject(BRepFilletAPI_MakeFillet& theFillet)
+{
+  for (const int anIndex : outOfRangeIndices(theFillet.NbContours()))
+  {
+    SCOPED_TRACE(anIndex);
+    EXPECT_THROW(theFillet.NbEdges(anIndex), Standard_OutOfRange);
+    EXPECT_THROW(theFillet.Edge(anIndex, 1), Standard_OutOfRange);
+    if (anIndex < 1)
+    {
+      EXPECT_THROW(theFillet.Length(anIndex), Standard_OutOfRange);
+      EXPECT_THROW(theFillet.Radius(anIndex), Standard_OutOfRange);
+    }
+    else
+    {
+      EXPECT_EQ(theFillet.Length(anIndex), -1.0);
+      EXPECT_EQ(theFillet.Radius(anIndex), -1.0);
+    }
+  }
+}
+
+//==================================================================================================
+
+void expectStripeStatusRejects(const BRepFilletAPI_MakeFillet& theFillet)
+{
+  for (const int anIndex : outOfRangeIndices(theFillet.NbContours()))
+  {
+    SCOPED_TRACE(anIndex);
+    EXPECT_THROW(theFillet.StripeStatus(anIndex), Standard_OutOfRange);
+  }
+}
+
+} // namespace
+
+// Contour accessors that read the spine through ChFi3d_Builder::Value raise for an index outside
+// 1..NbContours().
+TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_NothingAdded_ValueAccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  ASSERT_EQ(aFillet.NbContours(), 0);
+
+  expectValueAccessorsReject(aFillet);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_OneContour_ValueAccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  addContours(aFillet, aBox, 1);
+  ASSERT_EQ(aFillet.NbContours(), 1);
+
+  expectValueAccessorsReject(aFillet);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_TwoContours_ValueAccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  addContours(aFillet, aBox, 2);
+  ASSERT_EQ(aFillet.NbContours(), 2);
+
+  expectValueAccessorsReject(aFillet);
+}
+
+// Three edges meeting at a vertex give a corner stripe after Build. It has no spine and follows
+// the contours in the stripe list, so the index NbContours() + 1 reaches it.
+TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_AfterBuildWithCorner_ValueAccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  addContours(aFillet, aBox, 3);
+  ASSERT_EQ(aFillet.NbContours(), 3);
+  aFillet.Build();
+  ASSERT_TRUE(aFillet.IsDone());
+
+  expectValueAccessorsReject(aFillet);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, StripeStatus_NothingAdded_ContourIndexThrows)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  ASSERT_EQ(aFillet.NbContours(), 0);
+
+  expectStripeStatusRejects(aFillet);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, StripeStatus_OneContour_ContourIndexThrows)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  addContours(aFillet, aBox, 1);
+  ASSERT_EQ(aFillet.NbContours(), 1);
+
+  expectStripeStatusRejects(aFillet);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, StripeStatus_TwoContours_ContourIndexThrows)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  addContours(aFillet, aBox, 2);
+  ASSERT_EQ(aFillet.NbContours(), 2);
+
+  expectStripeStatusRejects(aFillet);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest, StripeStatus_AfterBuildWithCorner_ContourIndexThrows)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  addContours(aFillet, aBox, 3);
+  ASSERT_EQ(aFillet.NbContours(), 3);
+  aFillet.Build();
+  ASSERT_TRUE(aFillet.IsDone());
+
+  expectStripeStatusRejects(aFillet);
+}
+
+// A valid index answers as before, and Length and Radius still answer -1 above the range.
+TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_InRange_AnswersUnchanged)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeFillet aFillet(aBox);
+  addContours(aFillet, aBox, 2);
+  ASSERT_EQ(aFillet.NbContours(), 2);
+
+  for (int anIndex = 1; anIndex <= 2; ++anIndex)
+  {
+    SCOPED_TRACE(anIndex);
+    EXPECT_EQ(aFillet.NbEdges(anIndex), 1);
+    EXPECT_FALSE(aFillet.Edge(anIndex, 1).IsNull());
+    EXPECT_EQ(aFillet.StripeStatus(anIndex), ChFiDS_Ok);
+    EXPECT_NEAR(aFillet.Length(anIndex), 10.0, 1.0e-9);
+    EXPECT_NEAR(aFillet.Radius(anIndex), 1.0, 1.0e-12);
+  }
+  EXPECT_EQ(aFillet.Length(3), -1.0);
+  EXPECT_EQ(aFillet.Radius(3), -1.0);
+  EXPECT_EQ(aFillet.Length(std::numeric_limits<int>::max()), -1.0);
+  EXPECT_EQ(aFillet.Radius(std::numeric_limits<int>::max()), -1.0);
+
+  aFillet.Build();
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_EQ(aFillet.StripeStatus(1), ChFiDS_Ok);
+  EXPECT_EQ(aFillet.StripeStatus(2), ChFiDS_Ok);
 }
 
 TEST(BRepFilletAPI_MakeFilletTest, FilletMoreFaces)
