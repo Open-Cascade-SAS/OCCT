@@ -58,4 +58,6 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomLProp_CurAndInf2d_Test.cxx
   LProp_CurAndInf_Test.cxx
   GCPnts_TangentialDeflection_Test.cxx
+  Extrema_ExtCS_Test.cxx
+  Extrema_ExtSS_Test.cxx
 )
