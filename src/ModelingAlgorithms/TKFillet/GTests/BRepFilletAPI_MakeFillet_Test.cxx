@@ -484,8 +484,7 @@ std::array<int, 5> outOfRangeIndices(const int theNbContours)
 
 //==================================================================================================
 
-//! NbEdges and Edge raise for every index. Length and Radius raise below the range and answer -1
-//! above it.
+//! Every call raises, except Length and Radius above the range, which answer -1.
 void expectValueAccessorsReject(BRepFilletAPI_MakeFillet& theFillet)
 {
   for (const int anIndex : outOfRangeIndices(theFillet.NbContours()))
@@ -519,8 +518,7 @@ void expectStripeStatusRejects(const BRepFilletAPI_MakeFillet& theFillet)
 
 } // namespace
 
-// Contour accessors that read the spine through ChFi3d_Builder::Value raise for an index outside
-// 1..NbContours().
+// Accessors that read the spine through Value raise for an index outside 1..NbContours().
 TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_NothingAdded_ValueAccessorsThrow)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
@@ -559,8 +557,7 @@ TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_TwoContours_ValueAccessorsThrow)
   expectValueAccessorsReject(aFillet);
 }
 
-// Three edges meeting at a vertex give a corner stripe after Build. It has no spine and follows
-// the contours in the stripe list, so the index NbContours() + 1 reaches it.
+// After Build, three edges at a vertex add a corner stripe without a spine after the contours.
 TEST(BRepFilletAPI_MakeFilletTest, ContourIndex_AfterBuildWithCorner_ValueAccessorsThrow)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
