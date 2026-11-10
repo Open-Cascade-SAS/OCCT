@@ -294,3 +294,61 @@ TEST(BRepGPropTest, VolumePropertiesByPlane_OffsetPlane_MassAndCentre)
     EXPECT_NEAR(aGK.CentreOfMass().Z(), 1.5, 1.0e-8);
   }
 }
+
+namespace
+{
+void expectGPropsNear(const GProp_GProps& theActual,
+                      const GProp_GProps& theExpected,
+                      const double        theTolerance)
+{
+  EXPECT_NEAR(theActual.Mass(), theExpected.Mass(), theTolerance);
+  EXPECT_NEAR(theActual.CentreOfMass().X(), theExpected.CentreOfMass().X(), theTolerance);
+  EXPECT_NEAR(theActual.CentreOfMass().Y(), theExpected.CentreOfMass().Y(), theTolerance);
+  EXPECT_NEAR(theActual.CentreOfMass().Z(), theExpected.CentreOfMass().Z(), theTolerance);
+
+  const gp_Mat anActualInertia   = theActual.MatrixOfInertia();
+  const gp_Mat anExpectedInertia = theExpected.MatrixOfInertia();
+  for (int aRow = 1; aRow <= 3; ++aRow)
+  {
+    for (int aColumn = 1; aColumn <= 3; ++aColumn)
+    {
+      EXPECT_NEAR(anActualInertia.Value(aRow, aColumn),
+                  anExpectedInertia.Value(aRow, aColumn),
+                  theTolerance);
+    }
+  }
+}
+
+} // namespace
+
+TEST(BRepGPropTest, VinertByPlane_BoxVolume_KeepsMassAndCentre)
+{
+  const gp_Dir            aNormal(0.0, 0.0, 1.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 2.0), aNormal), 0.0, 3.0, 0.0, 4.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  const gp_Pln      aReferencePlane(gp_Pnt(0.0, 0.0, 0.0), aNormal);
+  const gp_Pnt      aLocation(0.0, 0.0, 0.0);
+
+  // The volume between the face and the reference plane is a 3 x 4 x 2 block.
+  GProp_GProps aBlock;
+  BRepGProp::VolumeProperties(BRepPrimAPI_MakeBox(3.0, 4.0, 2.0).Shape(), aBlock);
+
+  BRepGProp_Face   aFixedFace(aFace);
+  BRepGProp_Domain aFixedDomain(aFace);
+  BRepGProp_Vinert aFixed(aFixedFace, aFixedDomain, aReferencePlane, aLocation);
+  EXPECT_NEAR(aFixed.Mass(), 24.0, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().X(), 1.5, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().Y(), 2.0, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().Z(), 1.0, 1.0e-10);
+  expectGPropsNear(aFixed, aBlock, 1.0e-9);
+
+  BRepGProp_Face   anAdaptiveFace(aFace);
+  BRepGProp_Domain anAdaptiveDomain(aFace);
+  BRepGProp_Vinert anAdaptive(anAdaptiveFace, anAdaptiveDomain, aReferencePlane, aLocation, 1.0e-8);
+  EXPECT_NEAR(anAdaptive.Mass(), 24.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().X(), 1.5, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().Y(), 2.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().Z(), 1.0, 1.0e-10);
+  expectGPropsNear(anAdaptive, aBlock, 1.0e-9);
+}
