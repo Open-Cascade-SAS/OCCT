@@ -19,6 +19,9 @@
 #include <Interface_Check.hxx>
 #include <Interface_ParamType.hxx>
 #include <Interface_ReaderLib.hxx>
+#include <StepVisual_DraughtingModelAndTessellatedShapeRepresentation.hxx>
+#include <StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.hxx>
+
 #include "RWStepAP214_ReadWriteModule.pxx"
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -26,8 +29,6 @@
 #include <StepData_StepWriter.hxx>
 #include <StepData_WriterLib.hxx>
 #include <TCollection_AsciiString.hxx>
-
-IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule)
 
 #include <MoniTool_Macros.hxx>
 
@@ -1351,6 +1352,11 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 #include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMod.pxx"
 #include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthMod.pxx"
 #include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.pxx"
+#include "../RWStepDimTol/RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.pxx"
 #include "../RWStepRepr/RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp.pxx"
 #include "../RWStepRepr/RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.pxx"
 #include "../RWStepRepr/RWStepRepr_RWBooleanRepresentationItem.pxx"
@@ -1404,6 +1410,11 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMod.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.hxx>
+#include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx>
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_BooleanRepresentationItem.hxx>
@@ -1616,6 +1627,9 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule
 #include <StepRepr_RepresentationReference.hxx>
 
 #include <NCollection_IncAllocator.hxx>
+
+#include "../RWStepVisual/RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation.pxx"
+#include "../RWStepVisual/RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation.pxx"
 
 #include <string_view>
 #include <mutex>
@@ -4306,6 +4320,8 @@ static void initializeTypeshor(StringViewDataMap& theTypeshor)
 }
 } // namespace
 
+IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule, StepData_ReadWriteModule)
+
 RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule()
 {
   static std::mutex           THE_MUTEX;
@@ -4516,6 +4532,27 @@ int RWStepAP214_ReadWriteModule::CaseStep(
       {
         return 337;
       }
+      else if (((types(1).IsEqual(StepType(611)) || types(1).IsEqual(StepType(612))
+                 || types(1).IsEqual(StepType(613)) || types(1).IsEqual(StepType(614)))
+                && types(2).IsEqual(StepType(625)) && types(3).IsEqual(StepType(627))
+                && types(4).IsEqual(StepType(675)) && types(5).IsEqual(StepType(676))
+                && types(6).IsEqual(StepType(677)))
+               || (types(1).IsEqual(StepType(625)) && types(2).IsEqual(StepType(627))
+                   && types(3).IsEqual(StepType(675)) && types(4).IsEqual(StepType(676))
+                   && (types(5).IsEqual(StepType(616)) || types(5).IsEqual(StepType(617))
+                       || types(5).IsEqual(StepType(618)) || types(5).IsEqual(StepType(619))
+                       || types(5).IsEqual(StepType(622)) || types(5).IsEqual(StepType(623))
+                       || types(5).IsEqual(StepType(624)))
+                   && types(6).IsEqual(StepType(677))))
+      {
+        return 831;
+      }
+      else if (types(1).IsEqual(StepType(402)) && types(2).IsEqual(StepType(714))
+               && types(3).IsEqual(StepType(441)) && types(4).IsEqual(StepType(245))
+               && types(5).IsEqual(StepType(262)) && types(6).IsEqual(StepType(807)))
+      {
+        return 833;
+      }
     }
     else if (NbComp == 5)
     {
@@ -4565,6 +4602,32 @@ int RWStepAP214_ReadWriteModule::CaseStep(
       {
         return 802;
       }
+      else if (((types(1).IsEqual(StepType(609)) || types(1).IsEqual(StepType(615)))
+                && types(2).IsEqual(StepType(625)) && types(3).IsEqual(StepType(675))
+                && types(4).IsEqual(StepType(676)) && types(5).IsEqual(StepType(677)))
+               || (types(1).IsEqual(StepType(625)) && types(2).IsEqual(StepType(675))
+                   && types(3).IsEqual(StepType(676))
+                   && (types(4).IsEqual(StepType(616)) || types(4).IsEqual(StepType(619))
+                       || types(4).IsEqual(StepType(620)) || types(4).IsEqual(StepType(621))
+                       || types(4).IsEqual(StepType(622)))
+                   && types(5).IsEqual(StepType(677))))
+      {
+        return 829;
+      }
+      else if (((types(1).IsEqual(StepType(611)) || types(1).IsEqual(StepType(612))
+                 || types(1).IsEqual(StepType(613)) || types(1).IsEqual(StepType(614)))
+                && types(2).IsEqual(StepType(625)) && types(3).IsEqual(StepType(627))
+                && types(4).IsEqual(StepType(676)) && types(5).IsEqual(StepType(677)))
+               || (types(1).IsEqual(StepType(625)) && types(2).IsEqual(StepType(627))
+                   && types(3).IsEqual(StepType(676))
+                   && (types(4).IsEqual(StepType(616)) || types(4).IsEqual(StepType(617))
+                       || types(4).IsEqual(StepType(618)) || types(4).IsEqual(StepType(619))
+                       || types(4).IsEqual(StepType(622)) || types(4).IsEqual(StepType(623))
+                       || types(4).IsEqual(StepType(624)))
+                   && types(5).IsEqual(StepType(677))))
+      {
+        return 830;
+      }
     }
     else if (NbComp == 4)
     {
@@ -4610,18 +4673,16 @@ int RWStepAP214_ReadWriteModule::CaseStep(
       {
         return 695;
       }
-      else if (((types(1).IsEqual(StepType(609)) || types(1).IsEqual(StepType(611))
-                 || types(1).IsEqual(StepType(612)) || types(1).IsEqual(StepType(613))
-                 || types(1).IsEqual(StepType(614)) || types(1).IsEqual(StepType(615)))
+      else if (((types(1).IsEqual(StepType(611)) || types(1).IsEqual(StepType(612))
+                 || types(1).IsEqual(StepType(613)) || types(1).IsEqual(StepType(614)))
                 && types(2).IsEqual(StepType(625)) && types(3).IsEqual(StepType(627))
                 && types(4).IsEqual(StepType(677)))
                || (types(1).IsEqual(StepType(625)) && types(2).IsEqual(StepType(627))
-                   && types(4).IsEqual(StepType(677))
                    && (types(3).IsEqual(StepType(616)) || types(3).IsEqual(StepType(617))
                        || types(3).IsEqual(StepType(618)) || types(3).IsEqual(StepType(619))
-                       || types(3).IsEqual(StepType(620)) || types(3).IsEqual(StepType(621))
                        || types(3).IsEqual(StepType(622)) || types(3).IsEqual(StepType(623))
-                       || types(3).IsEqual(StepType(624)))))
+                       || types(3).IsEqual(StepType(624)))
+                   && types(4).IsEqual(StepType(677))))
       {
         return 697;
       }
@@ -4649,6 +4710,22 @@ int RWStepAP214_ReadWriteModule::CaseStep(
                && types(3).IsEqual(StepType(441)) && types(4).IsEqual(StepType(245)))
       {
         return 715;
+      }
+      else if (((types(1).IsEqual(StepType(609)) || types(1).IsEqual(StepType(615)))
+                && types(2).IsEqual(StepType(625)) && types(3).IsEqual(StepType(676))
+                && types(4).IsEqual(StepType(677)))
+               || (types(1).IsEqual(StepType(625)) && types(2).IsEqual(StepType(676))
+                   && (types(3).IsEqual(StepType(616)) || types(3).IsEqual(StepType(619))
+                       || types(3).IsEqual(StepType(620)) || types(3).IsEqual(StepType(621))
+                       || types(3).IsEqual(StepType(622)))
+                   && types(4).IsEqual(StepType(677))))
+      {
+        return 828;
+      }
+      else if (types(1).IsEqual(StepType(441)) && types(2).IsEqual(StepType(245))
+               && types(3).IsEqual(StepType(262)) && types(4).IsEqual(StepType(807)))
+      {
+        return 832;
       }
     }
     else if (NbComp == 3)
@@ -4820,6 +4897,16 @@ int RWStepAP214_ReadWriteModule::CaseStep(
       {
         return 699;
       }
+      else if (((types(1).IsEqual(StepType(609)) || types(1).IsEqual(StepType(615)))
+                && types(2).IsEqual(StepType(625)) && types(3).IsEqual(StepType(677)))
+               || (types(1).IsEqual(StepType(625))
+                   && (types(2).IsEqual(StepType(616)) || types(2).IsEqual(StepType(619))
+                       || types(2).IsEqual(StepType(620)) || types(2).IsEqual(StepType(621))
+                       || types(2).IsEqual(StepType(622)))
+                   && types(3).IsEqual(StepType(677))))
+      {
+        return 827;
+      }
     }
     return 0;
   }
@@ -4930,6 +5017,18 @@ bool RWStepAP214_ReadWriteModule::IsComplex(const int CN) const
     case 715:
       return true;
     case 719:
+      return true;
+    case 827:
+      return true;
+    case 828:
+      return true;
+    case 829:
+      return true;
+    case 830:
+      return true;
+    case 831:
+    case 832:
+    case 833:
       return true;
     default:
       return false;
@@ -6709,6 +6808,20 @@ bool RWStepAP214_ReadWriteModule::ComplexType(
       types.Append(TCollection_AsciiString(StepType(441)));
       types.Append(TCollection_AsciiString(StepType(245)));
       break;
+    case 832:
+      types.Append(TCollection_AsciiString(StepType(441)));
+      types.Append(TCollection_AsciiString(StepType(245)));
+      types.Append(TCollection_AsciiString(StepType(262)));
+      types.Append(TCollection_AsciiString(StepType(807)));
+      break;
+    case 833:
+      types.Append(TCollection_AsciiString(StepType(402)));
+      types.Append(TCollection_AsciiString(StepType(714)));
+      types.Append(TCollection_AsciiString(StepType(441)));
+      types.Append(TCollection_AsciiString(StepType(245)));
+      types.Append(TCollection_AsciiString(StepType(262)));
+      types.Append(TCollection_AsciiString(StepType(807)));
+      break;
     case 719:
       types.Append(TCollection_AsciiString(StepType(4)));
       types.Append(TCollection_AsciiString(StepType(7)));
@@ -6732,6 +6845,39 @@ bool RWStepAP214_ReadWriteModule::ComplexType(
       types.Append(TCollection_AsciiString(StepType(247)));
       types.Append(TCollection_AsciiString(StepType(709)));
       types.Append(TCollection_AsciiString(StepType(708)));
+      break;
+    case 827:
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(677)));
+      break;
+    case 828:
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(677)));
+      break;
+    case 829:
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(675)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(677)));
+      break;
+    case 830:
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(627)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(677)));
+      break;
+    case 831:
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(627)));
+      types.Append(TCollection_AsciiString(StepType(675)));
+      types.Append(TCollection_AsciiString(StepType(676)));
+      types.Append(TCollection_AsciiString(StepType(625)));
+      types.Append(TCollection_AsciiString(StepType(677)));
       break;
     default:
       return false;
@@ -10690,6 +10836,20 @@ void RWStepAP214_ReadWriteModule::ReadStep(const int                            
       tool.ReadStep(data, num, ach, anent);
     }
     break;
+    case 832: {
+      DeclareAndCast(StepVisual_DraughtingModelAndTessellatedShapeRepresentation, anEntity, ent);
+      RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.ReadStep(data, num, ach, anEntity);
+    }
+    break;
+    case 833: {
+      DeclareAndCast(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation,
+                     anEntity,
+                     ent);
+      RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.ReadStep(data, num, ach, anEntity);
+    }
+    break;
     case 715: {
       DeclareAndCast(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, anent, ent);
       RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel tool;
@@ -11354,6 +11514,40 @@ void RWStepAP214_ReadWriteModule::ReadStep(const int                            
       DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular, anent, ent);
       RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuseSpecular aTool;
       aTool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 827: {
+      DeclareAndCast(StepDimTol_GeoTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndUneqDisGeoTol tool;
+      tool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 828: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 829: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 830: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.ReadStep(data, num, ach, anent);
+    }
+    break;
+    case 831: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.ReadStep(data, num, ach, anent);
     }
     break;
     default:
@@ -15591,6 +15785,20 @@ void RWStepAP214_ReadWriteModule::WriteStep(const int                           
       tool.WriteStep(SW, anent);
     }
     break;
+    case 832: {
+      DeclareAndCast(StepVisual_DraughtingModelAndTessellatedShapeRepresentation, anEntity, ent);
+      RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.WriteStep(SW, anEntity);
+    }
+    break;
+    case 833: {
+      DeclareAndCast(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation,
+                     anEntity,
+                     ent);
+      RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation aTool;
+      aTool.WriteStep(SW, anEntity);
+    }
+    break;
     case 715: {
       DeclareAndCast(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, anent, ent);
       RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel tool;
@@ -16246,6 +16454,40 @@ void RWStepAP214_ReadWriteModule::WriteStep(const int                           
       DeclareAndCast(StepRepr_MechanicalDesignAndDraughtingRelationship, anent, ent);
       RWStepRepr_RWMechanicalDesignAndDraughtingRelationship aTool;
       aTool.WriteStep(SW, anent);
+    }
+    break;
+    case 827: {
+      DeclareAndCast(StepDimTol_GeoTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndUneqDisGeoTol tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+    case 828: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+    case 829: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol, anent, ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+    case 830: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+    case 831: {
+      DeclareAndCast(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol,
+                     anent,
+                     ent);
+      RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol tool;
+      tool.WriteStep(SW, anent);
     }
     break;
     default:

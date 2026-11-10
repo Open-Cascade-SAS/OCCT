@@ -8,7 +8,7 @@ pload MODELING XDE VISUALIZATION
 testreadstep [locate_data_file bug31853_WR16-30.step] result
 
 incmesh result 1 -a 6
-checktrinfo result -tri 142834 -nod 72496
+checktrinfo result -tri 143644 -nod 72901 -max_defl 0.034372295908420475
 
 vinit View1
 vdefaults -autoTriang 0

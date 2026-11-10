@@ -65,6 +65,15 @@ public:
                                          const GeomFill_Trihedron aMode,
                                          const bool               ForceApproxC1 = false);
 
+  //! Builds a pipe using an explicit surface approximation tolerance.
+  //! @param[in] theTolerance finite, positive surface approximation tolerance
+  //! in model units; invalid values raise Standard_ConstructionError.
+  Standard_EXPORT BRepOffsetAPI_MakePipe(const TopoDS_Wire&       Spine,
+                                         const TopoDS_Shape&      Profile,
+                                         const GeomFill_Trihedron aMode,
+                                         const bool               ForceApproxC1,
+                                         const double             theTolerance);
+
   Standard_EXPORT const BRepFill_Pipe& Pipe() const;
 
   //! Builds the resulting shape (redefined from MakeShape).

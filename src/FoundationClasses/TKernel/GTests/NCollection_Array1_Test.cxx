@@ -15,7 +15,9 @@
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+
 #include <algorithm>
+#include <limits>
 #include <random>
 #include <vector>
 
@@ -849,4 +851,16 @@ TEST(NCollection_Array1Test, SizeConstructor_MoveSemantics)
   EXPECT_EQ(3, anDst.At(2));
   EXPECT_EQ(0u, anSrc.Size());
   EXPECT_TRUE(anSrc.IsEmpty());
+}
+
+//==================================================================================================
+
+TEST(NCollection_ArrayRangeTest, InclusiveIntegerBounds)
+{
+  const int aMin = std::numeric_limits<int>::min();
+  const int aMax = std::numeric_limits<int>::max();
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(aMin, aMin + 2), size_t(3));
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(aMax - 2, aMax), size_t(3));
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(-2, 2), size_t(5));
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(5, 4), size_t(0));
 }

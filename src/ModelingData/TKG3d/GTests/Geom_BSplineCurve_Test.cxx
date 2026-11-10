@@ -11,16 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
-#include <cmath>
-
+#include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+
+#include <gtest/gtest.h>
+
+#include <cmath>
 
 class Geom_BSplineCurve_Test : public ::testing::Test
 {
@@ -47,6 +48,50 @@ protected:
 
   occ::handle<Geom_BSplineCurve> myOriginalCurve;
 };
+
+namespace
+{
+void evaluateWithCompressedKnots(const Geom_BSplineCurve& theCurve,
+                                 const double             theParameter,
+                                 gp_Pnt&                  thePoint,
+                                 gp_Vec&                  theD1,
+                                 gp_Vec&                  theD2,
+                                 gp_Vec&                  theD3)
+{
+  int    aSpanIndex = 0;
+  double aParameter = theParameter;
+  BSplCLib::LocateParameter(theCurve.Degree(),
+                            theCurve.Knots(),
+                            &theCurve.Multiplicities(),
+                            theParameter,
+                            theCurve.IsPeriodic(),
+                            aSpanIndex,
+                            aParameter);
+  if (aParameter < theCurve.Knots()(aSpanIndex))
+  {
+    --aSpanIndex;
+  }
+  BSplCLib::D3(aParameter,
+               aSpanIndex,
+               theCurve.Degree(),
+               theCurve.IsPeriodic(),
+               theCurve.Poles(),
+               theCurve.Weights(),
+               theCurve.Knots(),
+               &theCurve.Multiplicities(),
+               thePoint,
+               theD1,
+               theD2,
+               theD3);
+}
+
+void expectVectorNear(const gp_Vec& theActual, const gp_Vec& theExpected)
+{
+  EXPECT_NEAR(theActual.X(), theExpected.X(), 1.0e-12);
+  EXPECT_NEAR(theActual.Y(), theExpected.Y(), 1.0e-12);
+  EXPECT_NEAR(theActual.Z(), theExpected.Z(), 1.0e-12);
+}
+} // namespace
 
 TEST_F(Geom_BSplineCurve_Test, CopyConstructorBasicProperties)
 {
@@ -179,6 +224,80 @@ TEST_F(Geom_BSplineCurve_Test, Evaluation_D3)
   EXPECT_NEAR(aV3.X(), aV3b.X(), 1e-8);
   EXPECT_NEAR(aV3.Y(), aV3b.Y(), 1e-8);
   EXPECT_NEAR(aV3.Z(), aV3b.Z(), 1e-8);
+}
+
+TEST(Geom_BSplineCurve_EvaluationTest, FlatKnotsMatchCompressedKnots)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 10);
+  for (int anIndex = 1; anIndex <= aPoles.Upper(); ++anIndex)
+  {
+    const double aX = static_cast<double>(anIndex - 1);
+    aPoles(anIndex) = gp_Pnt(aX, std::sin(aX), 0.25 * aX * aX);
+  }
+
+  NCollection_Array1<double> aWeights(1, 10);
+  for (int anIndex = 1; anIndex <= aWeights.Upper(); ++anIndex)
+  {
+    aWeights(anIndex) = 1.0 + 0.1 * static_cast<double>(anIndex % 3);
+  }
+
+  NCollection_Array1<double> aKnots(1, 5);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.2;
+  aKnots(3) = 0.5;
+  aKnots(4) = 0.75;
+  aKnots(5) = 1.0;
+  NCollection_Array1<int> aMults(1, 5);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 2;
+  aMults(4) = 3;
+  aMults(5) = 4;
+  Geom_BSplineCurve aCurve(aPoles, aWeights, aKnots, aMults, 3);
+
+  const double aParameters[] = {0.0,
+                                0.1,
+                                std::nextafter(0.2, 0.0),
+                                0.2,
+                                std::nextafter(0.2, 1.0),
+                                std::nextafter(0.5, 0.0),
+                                0.5,
+                                std::nextafter(0.75, 0.0),
+                                0.75,
+                                0.9,
+                                1.0};
+  for (const double aParameter : aParameters)
+  {
+    gp_Pnt aRefPoint;
+    gp_Vec aRefD1, aRefD2, aRefD3;
+    evaluateWithCompressedKnots(aCurve, aParameter, aRefPoint, aRefD1, aRefD2, aRefD3);
+
+    gp_Pnt aPoint;
+    aCurve.D0(aParameter, aPoint);
+    EXPECT_TRUE(aPoint.IsEqual(aRefPoint, 1.0e-12));
+
+    gp_Vec aD1;
+    aCurve.D1(aParameter, aPoint, aD1);
+    EXPECT_TRUE(aPoint.IsEqual(aRefPoint, 1.0e-12));
+    expectVectorNear(aD1, aRefD1);
+
+    gp_Vec aD2;
+    aCurve.D2(aParameter, aPoint, aD1, aD2);
+    EXPECT_TRUE(aPoint.IsEqual(aRefPoint, 1.0e-12));
+    expectVectorNear(aD1, aRefD1);
+    expectVectorNear(aD2, aRefD2);
+
+    gp_Vec aD3;
+    aCurve.D3(aParameter, aPoint, aD1, aD2, aD3);
+    EXPECT_TRUE(aPoint.IsEqual(aRefPoint, 1.0e-12));
+    expectVectorNear(aD1, aRefD1);
+    expectVectorNear(aD2, aRefD2);
+    expectVectorNear(aD3, aRefD3);
+
+    expectVectorNear(aCurve.DN(aParameter, 1), aRefD1);
+    expectVectorNear(aCurve.DN(aParameter, 2), aRefD2);
+    expectVectorNear(aCurve.DN(aParameter, 3), aRefD3);
+  }
 }
 
 TEST_F(Geom_BSplineCurve_Test, Evaluation_DN)
@@ -343,6 +462,18 @@ TEST_F(Geom_BSplineCurve_Test, PeriodicCurve)
 
   occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
   EXPECT_TRUE(aCurve->IsPeriodic());
+
+  for (const double aParameter : {-0.1, 0.0, 0.2, 0.5, 1.0, 1.1})
+  {
+    gp_Pnt aRefPoint, aPoint;
+    gp_Vec aRefD1, aRefD2, aRefD3, aD1, aD2, aD3;
+    evaluateWithCompressedKnots(*aCurve, aParameter, aRefPoint, aRefD1, aRefD2, aRefD3);
+    aCurve->D3(aParameter, aPoint, aD1, aD2, aD3);
+    EXPECT_TRUE(aPoint.IsEqual(aRefPoint, 1.0e-12));
+    expectVectorNear(aD1, aRefD1);
+    expectVectorNear(aD2, aRefD2);
+    expectVectorNear(aD3, aRefD3);
+  }
 
   gp_Pnt aVal1 = aCurve->Value(0.5);
   aCurve->SetNotPeriodic();
@@ -733,4 +864,32 @@ TEST_F(Geom_BSplineCurve_Test, WeightsArray_Rational_ReturnsOwning)
   EXPECT_DOUBLE_EQ(aWeights(4), 1.0);
   // Verify that the reference is stable
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}
+
+//==================================================================================================
+
+TEST(Geom_BSplineCurveTest, IsG1TranslatedPeriodicIntervalsAndSeam)
+{
+  NCollection_Array1<gp_Pnt> aPoles(size_t{4});
+  aPoles.ChangeAt(0) = gp_Pnt(0, 0, 0);
+  aPoles.ChangeAt(1) = gp_Pnt(4, 0, 0);
+  aPoles.ChangeAt(2) = gp_Pnt(4, 4, 0);
+  aPoles.ChangeAt(3) = gp_Pnt(0, 4, 0);
+
+  NCollection_Array1<double> aKnots(size_t{5});
+  NCollection_Array1<int>    aMults(size_t{5});
+  aMults.Init(1);
+  for (size_t i = 0; i < aKnots.Size(); ++i)
+  {
+    aKnots.ChangeAt(i) = static_cast<double>(i);
+  }
+  const Geom_BSplineCurve aCurve(aPoles, aKnots, aMults, 1, true);
+  for (const double aShift : {-8., 0., 4., 12.})
+  {
+    EXPECT_TRUE(aCurve.IsG1(aShift + .25, aShift + .75, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift + .25, aShift + 1.75, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift + 3.75, aShift + 4.25, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift, aShift, Precision::Angular()));
+    EXPECT_FALSE(aCurve.IsG1(aShift + .25, aShift + 8.25, Precision::Angular()));
+  }
 }

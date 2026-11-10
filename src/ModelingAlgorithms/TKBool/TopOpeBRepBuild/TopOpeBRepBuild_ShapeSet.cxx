@@ -25,7 +25,6 @@
 
 Standard_EXPORT void debaddss() {}
 
-Standard_IMPORT TopOpeBRepBuild_Builder* LOCAL_PBUILDER_DEB;
 #endif
 
 //=================================================================================================

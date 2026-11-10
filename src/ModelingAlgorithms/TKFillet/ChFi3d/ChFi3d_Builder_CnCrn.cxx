@@ -66,6 +66,7 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dInt_Geom2dCurveTool.hxx>
 #include <GeomLProp_CLProps.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -114,6 +115,8 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <ChFi3d.hxx>
+
+#include <cmath>
 
 //=================================================================================================
 
@@ -1100,38 +1103,6 @@ static void ParametrePlate(const int                          n3d,
   }
 }
 
-//=================================================================================================
-
-static void SummarizeNormal(const TopoDS_Vertex& V1,
-                            const TopoDS_Face&   Fcur,
-                            const TopoDS_Edge&   Ecur,
-                            gp_Vec&              SumFaceNormalAtV1)
-{
-  gp_Pnt2d uv1, uv2;
-  BRep_Tool::UVPoints(Ecur, Fcur, uv1, uv2);
-  if (!V1.IsSame(TopExp::FirstVertex(Ecur)))
-  {
-    uv1 = uv2;
-  }
-
-  gp_Pnt P;
-  gp_Vec d1U, d1V;
-  BRep_Tool::Surface(Fcur)->D1(uv1.X(), uv1.Y(), P, d1U, d1V);
-  gp_Vec N = d1U.Crossed(d1V);
-  if (Fcur.Orientation() == TopAbs_REVERSED)
-  {
-    N.Reverse();
-  }
-
-  if (N.SquareMagnitude() <= Precision::PConfusion())
-  {
-    return;
-  }
-
-  SumFaceNormalAtV1 += N.Normalized();
-  SumFaceNormalAtV1.Normalize();
-}
-
 enum ChFi3d_SurfType
 {
   ChFiSURFACE,
@@ -1161,65 +1132,44 @@ static int SurfIndex(const NCollection_Array1<occ::handle<ChFiDS_Stripe>>& Strip
   }
 }
 
-//=======================================================================
-// function : PlateOrientation
-// purpose  : Define Plate orientation compared to <theRefDir> previewing
-//           that Plate surface can have a sharp angle with adjacent
-//           filet (bug occ266: 2 chamfs, OnSame and OnDiff) and
-//           can be even twisted (grid tests cfi900 B1)
-//=======================================================================
-
-static TopAbs_Orientation PlateOrientation(
-  const occ::handle<Geom_Surface>&                                   thePlateSurf,
-  const occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>>& thePCArr,
-  const gp_Vec&                                                      theRefDir)
+namespace
 {
-  gp_Vec   du, dv;
-  gp_Pnt   pp1, pp2, pp3;
-  gp_Pnt2d uv;
-  double   fpar, lpar;
-  double   SumScal1 = 0, SumScal2 = 0;
+// Return the orientation of the outer wire in plate parameters.
+TopAbs_Orientation plateWireOrientation(
+  const occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>>& thePCArr);
 
-  int                       i, nb = thePCArr->Upper();
-  occ::handle<Geom2d_Curve> aPC = thePCArr->Value(nb);
-  fpar                          = aPC->FirstParameter();
-  lpar                          = aPC->LastParameter();
-  aPC->D0((fpar + lpar) / 2., uv);
-  thePlateSurf->D0(uv.X(), uv.Y(), pp1);
-  aPC->D0(lpar, uv);
-  thePlateSurf->D0(uv.X(), uv.Y(), pp2);
+//==================================================================================================
 
-  for (i = 1; i <= nb; i++)
+TopAbs_Orientation plateWireOrientation(
+  const occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>>& thePCArr)
+{
+  // The pcurves form one closed boundary with a common orientation.
+  const gp_Pnt2d anOrigin = thePCArr->First()->EvalD0(thePCArr->First()->FirstParameter());
+  gp_XY          aPrevious(0.0, 0.0);
+  double         anArea = 0.0;
+  for (const auto& aCurve : thePCArr->Array1())
   {
-    aPC  = thePCArr->Value(i);
-    fpar = aPC->FirstParameter();
-    lpar = aPC->LastParameter();
-    aPC->D0(fpar, uv);
-    thePlateSurf->D1(uv.X(), uv.Y(), pp2, du, dv);
-    gp_Vec n1 = du ^ dv;
-    n1.Normalize();
-
-    aPC->D0((fpar + lpar) / 2., uv);
-    thePlateSurf->D0(uv.X(), uv.Y(), pp3);
-
-    gp_Vec vv1(pp2, pp1), vv2(pp2, pp3);
-    gp_Vec n2 = vv2 ^ vv1;
-    n2.Normalize();
-
-    SumScal1 += n1 * n2;
-    SumScal2 += n2 * theRefDir;
-
-    pp1 = pp3;
+    const Geom2dAdaptor_Curve anAdaptor(aCurve);
+    const int                 aNbSamples = 4 * Geom2dInt_Geom2dCurveTool::NbSamples(anAdaptor);
+    const double              aFirst     = aCurve->FirstParameter();
+    const double              aLast      = aCurve->LastParameter();
+    for (int j = 0; j < aNbSamples; ++j)
+    {
+      const double aParameter =
+        j + 1 == aNbSamples ? aLast : aFirst + (aLast - aFirst) * j / (aNbSamples - 1);
+      const gp_XY aCurrent = anAdaptor.EvalD0(aParameter).XY() - anOrigin.XY();
+      anArea += aPrevious.Crossed(aCurrent);
+      aPrevious = aCurrent;
+    }
   }
-  if (SumScal2 * SumScal1 > 0)
+  if (!std::isfinite(anArea) || anArea == 0.0)
   {
-    return TopAbs_FORWARD;
+    throw Standard_ConstructionError("ChFi3d: invalid plate boundary area");
   }
-  else
-  {
-    return TopAbs_REVERSED;
-  }
+  return anArea > 0.0 ? TopAbs_FORWARD : TopAbs_REVERSED;
 }
+
+} // namespace
 
 //=======================================================================
 // function : PerformMoreThreeCorner
@@ -1312,7 +1262,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
 //  int nface=ChFi3d_nbface(myVFMap(V1));
 #endif
   TopoDS_Face F1, F2;
-  gp_Vec      SumFaceNormalAtV1(0, 0, 0); // is used to define Plate orientation
 
   // it is determined if there is a sewing edge
   bool        couture = false;
@@ -1360,8 +1309,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
     ChFi3d_cherche_edge(V1, Evive, Fcur, Enext, VV);
     trouve = !Enext.IsNull();
   }
-  // find sum of all face normals at V1
-  SummarizeNormal(V1, Fcur, Ecur, SumFaceNormalAtV1);
 
   int nbcouture = 0;
   for (ii = 1; ii < nedge; ii++)
@@ -1523,8 +1470,6 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
       }
       Ecur = Enext;
       Fcur = Fnext;
-      // find sum of all face normales at V1
-      SummarizeNormal(V1, Fcur, Ecur, SumFaceNormalAtV1);
     }
   }
   // mise a jour du tableau regul
@@ -3560,39 +3505,12 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
       }
     }
 
-    // calculate orientation of Plate orplate corresponding to surfdata
-    // calculation corresponding to the first stripe
     Indices(nedge, 0, icplus, icmoins);
     isfirst = (sens.Value(0) == 1);
     const occ::handle<ChFiDS_SurfData>& Fd =
       CD.Value(0)->SetOfSurfData()->Value(i.Value(0, icmoins));
-    indice = Fd->Surf();
-    //    Handle (Geom_Surface) surfdata  = DStr.Surface(indice).Surface();
-    //     tpar= (CD.Value(0)->PCurve(isfirst)->FirstParameter()+
-    // 	 CD.Value(0)->PCurve(isfirst)->LastParameter())/2 ;
-    //     CD.Value(0)->PCurve(isfirst)->D0(tpar,uv);
-    //     surfdata->D1(uv.X(),uv.Y(),pp,du,dv);
-    //     tpar=(PSurf.Curves2d()->Value(1)->FirstParameter()+
-    // 	  PSurf.Curves2d()->Value(1)->LastParameter())/2;
-    //     (PSurf.Curves2d())->Value(1)->D0(tpar,uv);
-    //     Surf-> D1(uv.X(),uv.Y(),pp1,du1,dv1);
-    //     n1=du.Crossed(dv);
-    //     n2=du1.Crossed(dv1);
-    //     scal= n1.Dot(n2);
+    indice     = Fd->Surf();
     orsurfdata = Fd->Orientation();
-    //     if (scal>0) orplate=orsurfdata;
-    //     else  orplate=TopAbs::Reverse(orsurfdata);
-    orplate = PlateOrientation(Surf, PSurf.Curves2d(), SumFaceNormalAtV1);
-
-    //  creation of solidinterderence for Plate
-    occ::handle<TopOpeBRepDS_SolidSurfaceInterference> SSI =
-      new TopOpeBRepDS_SolidSurfaceInterference(TopOpeBRepDS_Transition(orplate),
-                                                TopOpeBRepDS_SOLID,
-                                                SolInd,
-                                                TopOpeBRepDS_SURFACE,
-                                                Isurf);
-    SolidInterfs.Append(SSI);
-
     // calculate orientation orien of pcurves of Plate
     // the curves from ic to icplus the pcurves of Plate
     // all have the same orientation
@@ -3632,14 +3550,18 @@ void ChFi3d_Builder::PerformMoreThreeCorner(const int Jndex, const int nconges)
       orpcurve = trafil1;
       orpcurve = TopAbs::Compose(orpcurve, CD.Value(0)->LastPCurveOrientation());
     }
-    if (orsurfdata == orplate)
-    {
-      orien = TopAbs::Reverse(orpcurve);
-    }
-    else
-    {
-      orien = orpcurve;
-    }
+    // Match the closed UV boundary to the first stripe through its shared edge.
+    orien   = plateWireOrientation(PSurf.Curves2d());
+    orplate = orien == orpcurve ? TopAbs::Reverse(orsurfdata) : orsurfdata;
+
+    //  creation of solidinterderence for Plate
+    occ::handle<TopOpeBRepDS_SolidSurfaceInterference> SSI =
+      new TopOpeBRepDS_SolidSurfaceInterference(TopOpeBRepDS_Transition(orplate),
+                                                TopOpeBRepDS_SOLID,
+                                                SolInd,
+                                                TopOpeBRepDS_SURFACE,
+                                                Isurf);
+    SolidInterfs.Append(SSI);
 
     if (!droit)
     {

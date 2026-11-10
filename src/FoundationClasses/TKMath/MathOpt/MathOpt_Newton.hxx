@@ -31,8 +31,51 @@ using namespace MathUtils;
 
 namespace Utils
 {
-inline bool RegularizeHessian(math_Matrix& theHessian, double theMinimumEigenvalue)
+//! Normalize the Newton system before regularization and elimination. Scaling both
+//! sides preserves the step and makes regularization independent of objective units.
+inline bool RegularizeNewtonSystem(math_Matrix& theHessian,
+                                   math_Vector& theRightHandSide,
+                                   double       theMinimumEigenvalue)
 {
+  double aScale = 0.0;
+  for (size_t i = 0; i < theHessian.RowSize(); ++i)
+  {
+    for (size_t j = 0; j < theHessian.ColSize(); ++j)
+    {
+      aScale = std::max(aScale, std::abs(theHessian.At(i, j)));
+    }
+  }
+  // A locally linear objective still needs a descent step.
+  if (aScale == 0.0)
+  {
+    for (size_t i = 0; i < theRightHandSide.Size(); ++i)
+    {
+      aScale = std::max(aScale, std::abs(theRightHandSide.At(i)));
+    }
+  }
+  if (aScale == 0.0)
+  {
+    return false;
+  }
+  for (size_t i = 0; i < theHessian.RowSize(); ++i)
+  {
+    theRightHandSide.ChangeAt(i) /= aScale;
+    for (size_t j = 0; j < theHessian.ColSize(); ++j)
+    {
+      theHessian.ChangeAt(i, j) /= aScale;
+    }
+  }
+  if (!IsFinite(theRightHandSide))
+  {
+    return false;
+  }
+  // The scalar eigenvalue is the only matrix entry; no eigensolver is needed.
+  if (theHessian.RowSize() == 1)
+  {
+    theHessian.ChangeAt(0, 0) = std::max(theHessian.At(0, 0), theMinimumEigenvalue);
+    return true;
+  }
+
   const MathUtils::EigenResult anEigen = MathLin::Jacobi(theHessian, false);
   if (!anEigen.IsDone())
   {
@@ -57,9 +100,12 @@ inline bool RegularizeHessian(math_Matrix& theHessian, double theMinimumEigenval
 } // namespace Utils
 
 //! Configuration for Newton minimization with Hessian.
+//! RelativeTolerance bounds gradient reduction relative to its initial norm.
+//! FTolerance accepts an absolute gradient only together with a step below XTolerance.
+//! An exactly zero (projected) starting gradient is accepted without a Hessian call.
 struct NewtonConfig : Config
 {
-  double Regularization = 1.0e-8; //!< Diagonal regularization for non-positive definite Hessian
+  double Regularization = 1.0e-8; //!< Minimum eigenvalue after normalizing the Newton system
   bool   UseLineSearch  = true;   //!< Whether to use line search (recommended)
 
   //! Default constructor.
@@ -80,7 +126,7 @@ struct NewtonConfig : Config
 //!
 //! Algorithm:
 //! 1. Compute gradient g and Hessian H at current point
-//! 2. If H is not positive definite, regularize: H = H + lambda*I
+//! 2. Normalize H and -g by a common scale, then shift H to enforce a minimum eigenvalue
 //! 3. Solve H * p = -g for search direction p
 //! 4. Perform line search along p
 //! 5. Update x = x + alpha * p
@@ -134,10 +180,18 @@ VectorResult Newton(Function&           theFunc,
     return aResult;
   }
 
-  // Check if already at minimum
-  double aGradNorm = Utils::Norm(aGrad);
+  const double anInitialGradNorm = Utils::Norm(aGrad);
+  double       aGradNorm         = anInitialGradNorm;
+  if (!std::isfinite(anInitialGradNorm))
+  {
+    aResult.Status   = Status::NumericalError;
+    aResult.Solution = aX;
+    aResult.Value    = aFx;
+    aResult.Gradient = aGrad;
+    return aResult;
+  }
 
-  if (aGradNorm < theConfig.FTolerance)
+  if (aGradNorm == 0.0)
   {
     aResult.Status   = Status::OK;
     aResult.Solution = aX;
@@ -174,7 +228,7 @@ VectorResult Newton(Function&           theFunc,
       aNegGrad.ChangeAt(i) = -aGrad.At(i);
     }
 
-    if (!Utils::RegularizeHessian(aHessian, theConfig.Regularization))
+    if (!Utils::RegularizeNewtonSystem(aHessian, aNegGrad, theConfig.Regularization))
     {
       aResult.Status = Status::NumericalError;
       return aResult;
@@ -283,8 +337,17 @@ VectorResult Newton(Function&           theFunc,
 
     // Check gradient convergence
     aGradNorm = Utils::Norm(aGradNew);
+    if (!std::isfinite(aGradNorm))
+    {
+      aResult.Status   = Status::NumericalError;
+      aResult.Solution = aXNew;
+      aResult.Value    = aFxNew;
+      aResult.Gradient = aGradNew;
+      return aResult;
+    }
 
-    if (aGradNorm < theConfig.FTolerance)
+    if (aGradNorm / anInitialGradNorm <= theConfig.RelativeTolerance
+        || (aMaxDiff < theConfig.XTolerance && aGradNorm <= theConfig.FTolerance))
     {
       aResult.Status   = Status::OK;
       aResult.Solution = aXNew;
@@ -526,7 +589,7 @@ VectorResult NewtonBounded(Function&           theFunc,
   }
 
   // Lambda to clamp a point to bounds
-  auto ClampToBounds = [&](math_Vector& theX) {
+  auto aClampToBounds = [&](math_Vector& theX) {
     for (size_t i = 0; i < aN; ++i)
     {
       if (theX.At(i) < theLowerBounds.At(i))
@@ -541,7 +604,7 @@ VectorResult NewtonBounded(Function&           theFunc,
   };
 
   // Lambda to project gradient (zero components at active bounds)
-  auto ProjectGradient = [&](const math_Vector& theX, math_Vector& theGrad) {
+  auto aProjectGradient = [&](const math_Vector& theX, math_Vector& theGrad) {
     for (size_t i = 0; i < aN; ++i)
     {
       const double aTol = MathUtils::THE_EPSILON * std::max(1.0, std::abs(theX.At(i)));
@@ -557,7 +620,7 @@ VectorResult NewtonBounded(Function&           theFunc,
     }
   };
 
-  auto ProjectDirection = [&](const math_Vector& theX, math_Vector& theDir) {
+  auto aProjectDirection = [&](const math_Vector& theX, math_Vector& theDir) {
     for (size_t i = 0; i < aN; ++i)
     {
       const double aTol = MathUtils::THE_EPSILON * std::max(1.0, std::abs(theX.At(i)));
@@ -570,7 +633,7 @@ VectorResult NewtonBounded(Function&           theFunc,
   };
 
   // Lambda to compute max step to boundary
-  auto ComputeAlphaMax = [&](const math_Vector& theX, const math_Vector& theDir) -> double {
+  auto aComputeAlphaMax = [&](const math_Vector& theX, const math_Vector& theDir) -> double {
     double aAlphaMax = 1.0;
     for (size_t i = 0; i < aN; ++i)
     {
@@ -596,7 +659,7 @@ VectorResult NewtonBounded(Function&           theFunc,
   {
     aX.ChangeAt(i) = theStartingPoint.At(i);
   }
-  ClampToBounds(aX);
+  aClampToBounds(aX);
 
   double       aFx          = 0.0;
   const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
@@ -614,12 +677,20 @@ VectorResult NewtonBounded(Function&           theFunc,
     aResult.Status = aGradientStatus;
     return aResult;
   }
-  ProjectGradient(aX, aGrad);
+  aProjectGradient(aX, aGrad);
 
-  // Check if already at minimum
-  double aGradNorm = Utils::Norm(aGrad);
+  const double anInitialGradNorm = Utils::Norm(aGrad);
+  double       aGradNorm         = anInitialGradNorm;
+  if (!std::isfinite(anInitialGradNorm))
+  {
+    aResult.Status   = Status::NumericalError;
+    aResult.Solution = aX;
+    aResult.Value    = aFx;
+    aResult.Gradient = aGrad;
+    return aResult;
+  }
 
-  if (aGradNorm < theConfig.FTolerance)
+  if (aGradNorm == 0.0)
   {
     aResult.Status   = Status::OK;
     aResult.Solution = aX;
@@ -656,7 +727,7 @@ VectorResult NewtonBounded(Function&           theFunc,
       aNegGrad.ChangeAt(i) = -aGrad.At(i);
     }
 
-    if (!Utils::RegularizeHessian(aHessian, theConfig.Regularization))
+    if (!Utils::RegularizeNewtonSystem(aHessian, aNegGrad, theConfig.Regularization))
     {
       aResult.Status = Status::NumericalError;
       return aResult;
@@ -672,7 +743,7 @@ VectorResult NewtonBounded(Function&           theFunc,
     }
 
     aDir = *aLinResult.Solution;
-    ProjectDirection(aX, aDir);
+    aProjectDirection(aX, aDir);
 
     // Check if direction is descent
     {
@@ -692,10 +763,10 @@ VectorResult NewtonBounded(Function&           theFunc,
     }
 
   perform_bounded_line_search:
-    ProjectDirection(aX, aDir);
+    aProjectDirection(aX, aDir);
     if (theConfig.UseLineSearch)
     {
-      double aAlphaMax = ComputeAlphaMax(aX, aDir);
+      double aAlphaMax = aComputeAlphaMax(aX, aDir);
 
       MathUtils::LineSearchResult aLineResult;
       if (aAlphaMax > 0.0)
@@ -712,7 +783,7 @@ VectorResult NewtonBounded(Function&           theFunc,
         {
           aDir.ChangeAt(i) = -aGrad.At(i);
         }
-        aAlphaMax = ComputeAlphaMax(aX, aDir);
+        aAlphaMax = aComputeAlphaMax(aX, aDir);
         if (aAlphaMax > 0.0)
         {
           aLineResult =
@@ -733,19 +804,10 @@ VectorResult NewtonBounded(Function&           theFunc,
       {
         aXNew.ChangeAt(i) = aX.At(i) + aLineResult.Alpha * aDir.At(i);
       }
-      ClampToBounds(aXNew);
+      aClampToBounds(aXNew);
 
-      double       aFxNew          = 0.0;
-      const Status aNewValueStatus = Utils::ValueStatus(theFunc, aXNew, aFxNew);
-      if (aNewValueStatus != Status::OK)
-      {
-        aResult.Status   = aNewValueStatus;
-        aResult.Solution = aX;
-        aResult.Value    = aFx;
-        aResult.Gradient = aGrad;
-        return aResult;
-      }
-      aFx = aFxNew;
+      // Backtrack evaluated this same clamped point through aBoundedFunc.
+      aFx = aLineResult.FNew;
     }
     else
     {
@@ -753,7 +815,7 @@ VectorResult NewtonBounded(Function&           theFunc,
       {
         aXNew.ChangeAt(i) = aX.At(i) + aDir.At(i);
       }
-      ClampToBounds(aXNew);
+      aClampToBounds(aXNew);
 
       double       aFxNew          = 0.0;
       const Status aNewValueStatus = Utils::ValueStatus(theFunc, aXNew, aFxNew);
@@ -784,12 +846,21 @@ VectorResult NewtonBounded(Function&           theFunc,
       aResult.Value    = aFx;
       return aResult;
     }
-    ProjectGradient(aXNew, aGradNew);
+    aProjectGradient(aXNew, aGradNew);
 
     // Check gradient convergence
     aGradNorm = Utils::Norm(aGradNew);
+    if (!std::isfinite(aGradNorm))
+    {
+      aResult.Status   = Status::NumericalError;
+      aResult.Solution = aXNew;
+      aResult.Value    = aFx;
+      aResult.Gradient = aGradNew;
+      return aResult;
+    }
 
-    if (aGradNorm < theConfig.FTolerance)
+    if (aGradNorm / anInitialGradNorm <= theConfig.RelativeTolerance
+        || (aMaxDiff < theConfig.XTolerance && aGradNorm <= theConfig.FTolerance))
     {
       aResult.Status   = Status::OK;
       aResult.Solution = aXNew;

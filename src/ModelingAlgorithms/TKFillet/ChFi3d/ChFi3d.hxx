@@ -42,11 +42,37 @@ public:
                                                                   const double       SinTol,
                                                                   const bool         CorrectPoint);
 
-  //! Returns true if theEdge between theFace1 and theFace2 is tangent
+  //! Returns max(0.001, 1.5 * edge tolerance) for construction continuity checks.
+  //! @param[in] theEdge non-null common edge
+  //! @return construction continuity tolerance in model units
+  Standard_EXPORT static double ConstructionContinuityTolerance(const TopoDS_Edge& theEdge);
+
+  //! Tests construction G1 or G2 continuity; stored continuity takes precedence for G1.
+  //! @param[in] theEdge non-null common edge
+  //! @param[in] theFace1 non-null first adjacent face
+  //! @param[in] theFace2 non-null second adjacent face
+  //! @param[in] theOrder continuity to test: GeomAbs_G1 or GeomAbs_G2
+  //! @return true if construction continuity is satisfied
   Standard_EXPORT static bool IsTangentFaces(const TopoDS_Edge&  theEdge,
                                              const TopoDS_Face&  theFace1,
                                              const TopoDS_Face&  theFace2,
-                                             const GeomAbs_Shape Order = GeomAbs_G1);
+                                             const GeomAbs_Shape theOrder = GeomAbs_G1);
+
+  //! Tests oriented G1 or G2 continuity by sampling along the edge.
+  //! Pcurves must have matching ranges and corresponding parameters.
+  //! The positional gap must not exceed twice the edge tolerance.
+  //! @param[in] theEdge common edge
+  //! @param[in] theFace1 first adjacent face
+  //! @param[in] theFace2 second adjacent face
+  //! @param[in] theOrder continuity to test: GeomAbs_G1 or GeomAbs_G2
+  //! @param[in] theAngularTolerance angular tolerance in radians, in [0, Pi/2)
+  //! @return true if the requested continuity is satisfied;
+  //! false for invalid input or undefined interior normals
+  Standard_EXPORT static bool IsTangentFaces(const TopoDS_Edge&  theEdge,
+                                             const TopoDS_Face&  theFace1,
+                                             const TopoDS_Face&  theFace2,
+                                             const GeomAbs_Shape theOrder,
+                                             const double        theAngularTolerance);
 
   //! Returns Reversed in Or1 and(or) Or2 if
   //! the concave edge defined by the interior of faces F1 and F2,

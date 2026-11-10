@@ -34,11 +34,6 @@
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
 
-#ifdef OCCT_DEBUG
-extern void FUN_REINIT();
-// extern int FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f);
-#endif
-
 // ----------------------------------------------------------------------
 // TopOpeBRepTool_faulty.cxx
 // ----------------------------------------------------------------------

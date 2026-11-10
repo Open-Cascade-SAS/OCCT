@@ -18,11 +18,22 @@
 #include <DE_ConfigurationNode.hxx>
 #include <DE_Provider.hxx>
 
+#include <iosfwd>
+
+class NCollection_Buffer;
 class TDocStd_Document;
 
-//! Utility class providing static methods for common validation operations
-//! used across DataExchange providers. Includes validation for configuration nodes,
-//! file paths, streams, and other common scenarios with optional verbose error reporting.
+//! Shared validation and stream utilities for DE providers.
+//!
+//! Checks configuration nodes, documents, file access and input/output stream lists.
+//! Validation methods return a status and can send diagnostics with the operation context.
+//!
+//! Named companion streams are resolved relative to the referring model or resource.
+//! Lookup uses the supplied stream list without filesystem fallback. Streams remain owned
+//! by the caller; a returned stream pointer is valid only while that stream is alive.
+//!
+//! Content buffers hold an initial part of the input for format detection. Complete stream
+//! buffers retain all input bytes independently of the source stream's lifetime.
 class DE_ValidationUtils
 {
 public:
@@ -56,7 +67,7 @@ public:
                                                      const TCollection_AsciiString& theContext,
                                                      const bool theIsVerbose = true);
 
-  //! Validates read stream list, warns if multiple streams
+  //! Validate the first input stream and warn about additional streams.
   //! @param[in] theStreams read stream list to validate
   //! @param[in] theContext context string for error messages
   //! @param[in] theIsVerbose if true, sends detailed error/warning messages
@@ -64,6 +75,39 @@ public:
   Standard_EXPORT static bool ValidateReadStreamList(const DE_Provider::ReadStreamList& theStreams,
                                                      const TCollection_AsciiString&     theContext,
                                                      const bool theIsVerbose = true);
+
+  //! Validate input streams and optional companion names.
+  //! Companion names must be relative and unique after reducing dot segments.
+  //! Only the first stream can have an empty name.
+  //! @param[in] theStreams input streams
+  //! @param[in] theContext context string for diagnostics
+  //! @param[in] theIsVerbose send error and warning messages
+  //! @param[in] theWithCompanions check all streams and their companion names
+  //! @return false for empty input, failed streams, invalid or duplicate companion names
+  Standard_EXPORT static bool ValidateReadStreamList(const DE_Provider::ReadStreamList& theStreams,
+                                                     const TCollection_AsciiString&     theContext,
+                                                     bool theIsVerbose,
+                                                     bool theWithCompanions);
+
+  //! Find a companion by relative name in a validated stream list.
+  //! Names are case-sensitive, use '/' separators, and stay within the transfer root.
+  //! @param[in] theStreams list validated with companion checks enabled
+  //! @param[in] theReferrer name of the referring model or material
+  //! @param[in] theReference relative companion name, URI-decoded when needed
+  //! @param[out] theName resolved transfer-root name; empty for an invalid reference
+  //! @return borrowed stream, or null if the reference cannot be resolved
+  Standard_EXPORT static std::istream* FindReadStream(const DE_Provider::ReadStreamList& theStreams,
+                                                      const TCollection_AsciiString& theReferrer,
+                                                      const TCollection_AsciiString& theReference,
+                                                      TCollection_AsciiString&       theName);
+
+  //! Copy a complete seekable stream into an owned buffer.
+  //! @param[in,out] theStream input read from the beginning; left at the end on success
+  //! @param[out] theBuffer resulting bytes; null on failure
+  //! @return true if the complete stream was read
+  //! @throw std::ios_base::failure according to the stream's exception settings
+  Standard_EXPORT static bool ReadStreamBuffer(std::istream&                    theStream,
+                                               occ::handle<NCollection_Buffer>& theBuffer);
 
   //! Validates write stream list, warns if multiple streams
   //! @param[in] theStreams write stream list to validate

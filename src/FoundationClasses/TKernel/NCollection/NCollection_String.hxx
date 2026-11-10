@@ -16,8 +16,12 @@
 #ifndef NCollection_String_HeaderFile
 #define NCollection_String_HeaderFile
 
-#include <NCollection_UtfString.hxx>
+#include <Standard_Macro.hxx>
 
-typedef NCollection_UtfString<char> NCollection_String;
+#include <TCollection_UtfString.hxx>
+
+//! Compatibility alias; use TCollection_UtfString<char> in new code.
+using NCollection_String Standard_DEPRECATED_STD("Use TCollection_UtfString<char> instead") =
+  TCollection_UtfString<char>;
 
 #endif // _NCollection_String_H__

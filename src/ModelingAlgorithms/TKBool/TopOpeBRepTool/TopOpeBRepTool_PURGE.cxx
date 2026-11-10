@@ -34,16 +34,6 @@
 #include <Standard_Failure.hxx>
 #include <TopOpeBRepTool_PURGE.hxx>
 
-#ifdef OCCT_DEBUG
-// Standard_EXPORT int STATIC_PURGE_iwi = 0;
-// Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> STATIC_PURGE_mapw,
-// STATIC_PURGE_mapv; Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape> STATIC_PURGE_mapeds,
-// STATIC_CORR_mapeds;
-
-Standard_EXPORT void debcorrUV() {};
-extern bool          TopOpeBRepTool_GettracePURGE();
-extern bool          TopOpeBRepTool_GettraceCORRISO();
-#endif
 // DEB
 
 #define SPLITEDGE (0)
@@ -314,11 +304,6 @@ bool TopOpeBRepTool::PurgeClosingEdges(
   // elsewhere : we have to get this information using geometric
   //             criteriums (TopOpeBRepTool_TOOL::IsonCLO)
 
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettracePURGE();
-  if (trc)
-    std::cout << "\n* PurgeClosingEdges:\n\n";
-#endif
   TopOpeBRepTool_CORRISO CORRISO(Fin);
   double                 tolF = BRep_Tool::Tolerance(Fin);
   double                 uperiod;
@@ -392,10 +377,6 @@ bool TopOpeBRepTool::PurgeClosingEdges(
       MshNOK.Add(FF);
     }
 
-#ifdef OCCT_DEBUG
-    if (trc && topurge)
-      std::cout << "found FAULTY edge = ed" << std::endl;
-#endif
   } // exw
   return true;
 }
@@ -501,10 +482,6 @@ TopTools_ShapeMapHasher>& mve,TopoDS_Edge& Ein,TopoDS_Face& Fsp)
   bool ok = (fEin && fe1 && fe2);
   if (!ok) return false;
 
-#ifdef OCCT_DEBUG
-  debcorrUV(); // call Draw_Call("av2d;dy fyf;fit;ppcu fyf")
-#endif
-
   double f,l,tol; occ::handle<Geom2d_Curve> PC = FUNTOOLC2D_CurveOnSurface(Ein,Fsp,f,l,tol);
   gp_Dir2d d2d; gp_Pnt2d O2d; bool isuiso = 0,isviso = 0;
   bool uviso = FUN_tool_IsUViso(PC,isuiso,isviso,d2d,O2d);
@@ -547,11 +524,6 @@ FUN_correctDegeneratedE : no 2d curve e2");
   }
   else {
     // redefinition des parametres de v1,v2 de Ein tels que des parametres de
-#ifdef OCCT_DEBUG
-    if (TopOpeBRepTool_GettraceCORRISO()) {
-      std::cout<<"FUN_correctDegeneratedE : !mmd NYI"<<std::endl;
-    }
-#endif
     ok = false;
   }
 
@@ -774,13 +746,6 @@ static bool FUN_connexX(const bool                              onU,
 bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
 // <Fref> is x-periodic
 {
-#ifdef OCCT_DEBUG
-  bool trc = TopOpeBRepTool_GettraceCORRISO();
-  if (trc)
-    std::cout << "\n####    CorrectONUVISO    ####\n\n";
-  debcorrUV();
-#endif
-
   double tolF = BRep_Tool::Tolerance(Fin);
 
   TopOpeBRepTool_CORRISO CORRISO(Fin);
@@ -907,14 +872,6 @@ bool TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_Face& Fsp)
   if (!tocorrect) {
     return true;
   }
-
-#ifdef OCCT_DEBUG
-  if (trc) {
-    std::cout<<"CorrectONUVISO ";
-    std::cout<<"iso faulty "<<tocorrectisoe<<" deg faulty "<<tocorrectdege<<std::endl;
-  }
-  debcorrUV();
-#endif
 
   if (tocorrectisoe) {
     for (NCollection_List<TopoDS_Shape>::Iterator itiso(lfyisoe);itiso.More();itiso.Next()) {

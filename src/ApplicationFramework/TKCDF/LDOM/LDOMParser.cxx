@@ -16,8 +16,6 @@
 // AGV 060302: Input from std::istream
 //             AGV 130302: Return error if there are data after the root element
 
-// #define LDOM_PARSER_TRACE
-
 #include <LDOMParser.hxx>
 #include <LDOM_MemManager.hxx>
 #include <LDOM_XmlReader.hxx>
@@ -25,12 +23,6 @@
 #include <LDOM_CharReference.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_FileSystem.hxx>
-
-#ifdef _MSC_VER
-  #include <io.h>
-#else
-  #include <unistd.h>
-#endif
 
 //=================================================================================================
 
@@ -44,70 +36,12 @@ LDOMParser::~LDOMParser()
 // purpose  : Take the next lexical element from XML stream
 //=======================================================================
 
-#ifdef LDOM_PARSER_TRACE
-static
-#else
-inline
-#endif
-  LDOM_XmlReader::RecordType
-  ReadRecord(LDOM_XmlReader&   aReader,
-             Standard_IStream& theIStream,
-             LDOM_OSStream&    aData,
-             bool&             theDocStart)
+inline LDOM_XmlReader::RecordType ReadRecord(LDOM_XmlReader&   aReader,
+                                             Standard_IStream& theIStream,
+                                             LDOM_OSStream&    aData,
+                                             bool&             theDocStart)
 {
-#ifdef LDOM_PARSER_TRACE
-  static aCounter = 0;
-  ++aCounter;
-#endif
-  const LDOM_XmlReader::RecordType aType = aReader.ReadRecord(theIStream, aData, theDocStart);
-#ifdef LDOM_PARSER_TRACE
-  static FILE*            ff = NULL;
-  TCollection_AsciiString aTraceFileName;
-  #ifdef _WIN32
-  aTraceFileName = TCollection_AsciiString(getenv("TEMP")) + "\\ldom.trace";
-  #else
-  aTraceFileName = "/tmp/ldom.trace";
-  #endif
-  ff = fopen(aTraceFileName.ToCString(), ff ? "at" : "wt");
-  const char* aDataType;
-  switch (aType)
-  {
-    case LDOM_XmlReader::XML_UNKNOWN:
-      aDataType = "XML_UNKNOWN      ";
-      break;
-    case LDOM_XmlReader::XML_HEADER:
-      aDataType = "XML_HEADER       ";
-      break;
-    case LDOM_XmlReader::XML_DOCTYPE:
-      aDataType = "XML_DOCTYPE      ";
-      break;
-    case LDOM_XmlReader::XML_COMMENT:
-      aDataType = "XML_COMMENT      ";
-      break;
-    case LDOM_XmlReader::XML_START_ELEMENT:
-      aDataType = "XML_START_ELEMENT";
-      break;
-    case LDOM_XmlReader::XML_END_ELEMENT:
-      aDataType = "XML_END_ELEMENT  ";
-      break;
-    case LDOM_XmlReader::XML_FULL_ELEMENT:
-      aDataType = "XML_FULL_ELEMENT ";
-      break;
-    case LDOM_XmlReader::XML_TEXT:
-      aDataType = "XML_TEXT         ";
-      break;
-    case LDOM_XmlReader::XML_CDATA:
-      aDataType = "XML_CDATA        ";
-      break;
-    case LDOM_XmlReader::XML_EOF:
-      aDataType = "XML_EOF          ";
-  }
-  char* aStr = aData.str();
-  fprintf(ff, "%5d %s: %s\n", aCounter, aDataType, aStr);
-  delete[] aStr;
-  fclose(ff);
-#endif
-  return aType;
+  return aReader.ReadRecord(theIStream, aData, theDocStart);
 }
 
 //=======================================================================

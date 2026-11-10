@@ -72,6 +72,10 @@ static DE_ConfigurationContext_KindOfLine WhatKindOfLine(const TCollection_Ascii
   TCollection_AsciiString              aLine(theLine);
   aLine.LeftAdjust();
   aLine.RightAdjust();
+  if (aLine.IsEmpty())
+  {
+    return DE_ConfigurationContext_KindOfLine_Empty;
+  }
   if (!aLine.EndsWith(':')
       && (!aLine.EndsWith(' ') || !aLine.EndsWith('\t') || !aLine.EndsWith('\n')))
   {
@@ -186,7 +190,7 @@ bool DE_ConfigurationContext::LoadFile(const TCollection_AsciiString& theFile)
   if (aFile.Failed())
   {
     Message::SendFail("Error: DE Context loading is stopped. Can't open the file");
-    return true;
+    return false;
   }
   TCollection_AsciiString aLine;
   while (GetLine(aFile, aLine))
@@ -393,7 +397,7 @@ bool DE_ConfigurationContext::load(const TCollection_AsciiString& theResourceLin
       myResource.Bind(aToken1, aToken2);
       break;
     case DE_ConfigurationContext_KindOfLine_Error:
-      break;
+      return false;
   }
   return true;
 }

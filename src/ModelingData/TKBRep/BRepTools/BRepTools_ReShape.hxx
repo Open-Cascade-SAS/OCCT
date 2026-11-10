@@ -150,8 +150,11 @@ public:
                                            const gp_Pnt&        theNewPos,
                                            const double         aTol);
 
-  //! Checks if shape has been recorded by reshaper as a value
-  //@param theShape is the given shape
+  //! Checks whether a shape was recorded as a replacement value.
+  //! Uses the same location identity as replacement lookup: locations are ignored
+  //! when ModeConsiderLocation() is true. Set that mode before recording replacements.
+  //! @param[in] theShape shape to query
+  //! @return true if the shape has been recorded as a replacement value
   Standard_EXPORT bool IsNewShape(const TopoDS_Shape& theShape) const;
 
   //! Returns the history of the substituted shapes.

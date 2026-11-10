@@ -166,6 +166,68 @@ class PrsDim_Dimension : public AIS_InteractiveObject
 {
   DEFINE_STANDARD_RTTIEXT(PrsDim_Dimension, AIS_InteractiveObject)
 protected:
+  //! Resolve the configured BRep font and plan the supplied 3D label.
+  //! @param[in] theText dimension label
+  //! @param[out] theFont initialized font, or null when initialization fails
+  //! @param[out] thePlan text plan, or empty when construction fails
+  Standard_EXPORT void prepareText(const TCollection_ExtendedString&          theText,
+                                   occ::handle<StdPrs_BRepFont>&              theFont,
+                                   std::optional<BRepFont_Builder::TextPlan>& thePlan) const;
+
+  //! Compatibility overload; forwards to the text-plan interface.
+  //! @param[out] theWidth model-space text width
+  //! @return formatted dimension value string
+  Standard_DEPRECATED("Use the overload with explicit text layout")
+  Standard_EXPORT TCollection_ExtendedString GetValueString(double& theWidth) const;
+
+  //! Compatibility overload; forwards to the text-plan interface.
+  //! @param[in] thePresentation presentation receiving graphical primitives
+  //! @param[in] theTextPos text anchor point
+  //! @param[in] theTextDir text baseline direction
+  //! @param[in] theText text label
+  //! @param[in] theLabelPosition text alignment flags
+  Standard_DEPRECATED("Use the overload with explicit text layout")
+  Standard_EXPORT void drawText(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                const gp_Pnt&                          theTextPos,
+                                const gp_Dir&                          theTextDir,
+                                const TCollection_ExtendedString&      theText,
+                                const int                              theLabelPosition);
+
+  //! Compatibility overload; forwards to the text-plan interface.
+  //! @param[in] thePresentation presentation receiving graphical primitives
+  //! @param[in] theExtensionSize extension line length
+  //! @param[in] theExtensionStart extension start point
+  //! @param[in] theExtensionDir extension direction
+  //! @param[in] theLabelString extension text label
+  //! @param[in] theLabelWidth model-space label width
+  //! @param[in] theMode presentation computation mode
+  //! @param[in] theLabelPosition text alignment flags
+  Standard_DEPRECATED("Use the overload with explicit text layout")
+  Standard_EXPORT void DrawExtension(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                     const double                           theExtensionSize,
+                                     const gp_Pnt&                          theExtensionStart,
+                                     const gp_Dir&                          theExtensionDir,
+                                     const TCollection_ExtendedString&      theLabelString,
+                                     const double                           theLabelWidth,
+                                     const int                              theMode,
+                                     const int                              theLabelPosition);
+
+  //! Compatibility overload; forwards to the text-plan interface.
+  //! @param[in] theFirstPoint first dimension attachment point
+  //! @param[in] theSecondPoint second dimension attachment point
+  //! @param[in] theIsOneSide true for one-sided dimensions
+  //! @param[in] theHorizontalTextPos horizontal text placement policy
+  //! @param[out] theLabelPosition text alignment flags
+  //! @param[out] theIsArrowsExternal true when arrows are placed outside
+  Standard_DEPRECATED("Use the overload with explicit text layout")
+  Standard_EXPORT void FitTextAlignmentForLinear(
+    const gp_Pnt&                                theFirstPoint,
+    const gp_Pnt&                                theSecondPoint,
+    const bool                                   theIsOneSide,
+    const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+    int&                                         theLabelPosition,
+    bool&                                        theIsArrowsExternal) const;
+
   //! Geometry type defines type of shapes on which the dimension is to be built.
   //! Some type of geometry allows automatic plane computing and
   //! can be built without user-defined plane

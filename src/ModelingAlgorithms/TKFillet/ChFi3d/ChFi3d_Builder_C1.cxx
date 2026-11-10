@@ -2053,7 +2053,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
   }
 #ifdef OCCT_DEBUG
   else
+  {
     std::cout << "erreur" << std::endl;
+  }
 #endif
   // eap, Apr 22 2002, occ 293
   //   Fi1.PCurveOnFace()->D0(Fi1.LastParameter(),p2d);

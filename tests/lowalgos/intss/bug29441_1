@@ -10,9 +10,9 @@ explode f
 bopcurves f_1 f_2 -2d
 
 if {[isdraw c2d1_1]} {
-  puts "check extremity of 1-st pcurve x ~ 1.012680192, |dx| ~ 0, |dy| >> |dx|"
+  puts "check extremity of 1-st pcurve x ~ 1.0126772430176307, |dx| ~ 0, |dy| >> |dx|"
   2dcvalue c2d1_1 1 x y dx dy
-  set ex [expr abs([dval (x-1.012680192)])]
+  set ex [expr abs([dval (x-1.0126772430176307)])]
   set edxdy [expr abs([dval dx/dy])]
   if {$ex > 1.e-8 || $edxdy > 1.e-10} {
     puts "Extremities of 1-st pcurve are wrong"
@@ -27,9 +27,9 @@ if {[isdraw c2d1_1]} {
 
 if { $OK > 0 } {
   if {[isdraw c2d1_2]} {
-    puts "check extremity of 2-nd pcurve x ~ 1.0117170137, |dx| ~ 0, |dy| >> |dx|"
+    puts "check extremity of 2-nd pcurve x ~ 1.0117168292410701, |dx| ~ 0, |dy| >> |dx|"
     2dcvalue c2d1_2 1 x y dx dy
-    set ex [expr abs([dval (x-1.0117170137)])]
+    set ex [expr abs([dval (x-1.0117168292410701)])]
     set edxdy [expr abs([dval dx/dy])]
     if {$ex > 1.e-8 || $edxdy > 1.e-10} {
       puts "Extremities of 2-nd pcurve are wrong"
@@ -45,4 +45,13 @@ if { $OK > 0 } {
 
 if { $OK < 1 } {
   puts "Error: bad pcurves"
+}
+
+mksurface endpointSurface f_1
+foreach i {1 2} {
+  2dcvalue c2d1_$i 1 u v
+  svalue endpointSurface [dval u] [dval v] sx sy sz
+  cvalue c_$i 1 cx cy cz
+  set endpointGap [expr {sqrt(pow([dval sx]-[dval cx],2) + pow([dval sy]-[dval cy],2) + pow([dval sz]-[dval cz],2))}]
+  checkreal "Endpoint deviation $i" $endpointGap 0 1.e-7 0
 }

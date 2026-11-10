@@ -17,6 +17,25 @@
 
 #include <gtest/gtest.h>
 
+#include <cstring>
+#include <type_traits>
+
+TEST(Standard_GUID_Test, ValueTypeLayout)
+{
+  static_assert(std::is_trivially_copyable_v<Standard_GUID>);
+  static_assert(std::is_trivially_copy_constructible_v<Standard_GUID>);
+  static_assert(std::is_trivially_copy_assignable_v<Standard_GUID>);
+  static_assert(std::is_standard_layout_v<Standard_GUID>);
+
+  EXPECT_EQ(sizeof(Standard_GUID), sizeof(Standard_UUID));
+  EXPECT_EQ(alignof(Standard_GUID), alignof(Standard_UUID));
+
+  const Standard_GUID aSource("01234567-89ab-cdef-0123-456789abcdef");
+  Standard_GUID       aCopy;
+  std::memcpy(&aCopy, &aSource, sizeof(aCopy));
+  EXPECT_EQ(aCopy, aSource);
+}
+
 TEST(Standard_GUID_Test, OCC669_ValidGUIDConstruction)
 {
   // Bug OCC669: Standard_GUID(HoleFeature) cause stack overwrite

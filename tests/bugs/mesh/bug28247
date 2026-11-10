@@ -19,7 +19,7 @@ incmesh result 0.59
 vdisplay result -redisplay
 vfit
 
-checktrinfo result -tri 1863 
+checktrinfo result -tri 1913 -defl 0.60882149120985918 -tol_abs_defl 1e-6
 checkview -screenshot -3d -path ${imagedir}/${test_image}-1.png
 
 tclean result
@@ -27,7 +27,7 @@ incmesh result 0.59 -a 11.45
 vdisplay result -redisplay
 vfit
 
-checktrinfo result -tri 6422
+checktrinfo result -tri 6602 -max_defl 0.56884984441654474
 checkview -screenshot -3d -path ${imagedir}/${test_image}-2.png
 
 tclean result
@@ -35,6 +35,6 @@ incmesh result 0.59 -a 11.45 -min 0.035
 vdisplay result -redisplay
 vfit
 
-checktrinfo result -tri 6427
+checktrinfo result -tri 6607 -max_defl 0.56884984441654474
 checkview -screenshot -3d -path ${imagedir}/${test_image}-3.png
 

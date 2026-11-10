@@ -1,0 +1,141 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// Internal FreeType bitmap conversion.
+#include <Image_PixMap.hxx>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_BITMAP_H
+
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <limits>
+
+namespace Font_FTFontBitmap
+{
+struct Font_FTBitmap
+{
+  ~Font_FTBitmap();
+
+  FT_Library Library;  //!< Library which owns the converted bitmap buffer.
+  FT_Bitmap  Bitmap{}; //!< Temporary grayscale bitmap released on destruction.
+};
+
+//==================================================================================================
+
+inline Font_FTBitmap::~Font_FTBitmap()
+{
+  FT_Bitmap_Done(Library, &Bitmap);
+}
+
+//==================================================================================================
+
+inline bool initGlyphBitmap(FT_Library       theLibrary,
+                            const FT_Bitmap& theBitmap,
+                            Image_PixMap&    theImage)
+{
+  // Borrow ordinary grayscale data; copy other layouts into top-down alpha rows.
+  theImage.Clear();
+  if (theBitmap.buffer == nullptr || theBitmap.width == 0 || theBitmap.rows == 0)
+  {
+    return false;
+  }
+
+  unsigned int aBitsPerPixel = 0;
+  switch (theBitmap.pixel_mode)
+  {
+    case FT_PIXEL_MODE_GRAY:
+      if (theBitmap.num_grays < 2 || theBitmap.num_grays > 256)
+      {
+        return false;
+      }
+      aBitsPerPixel = 8;
+      break;
+    case FT_PIXEL_MODE_MONO:
+      aBitsPerPixel = 1;
+      break;
+    case FT_PIXEL_MODE_GRAY2:
+      aBitsPerPixel = 2;
+      break;
+    case FT_PIXEL_MODE_GRAY4:
+      aBitsPerPixel = 4;
+      break;
+    default:
+      return false;
+  }
+
+  const size_t aWidth = theBitmap.width;
+  const size_t aRows  = theBitmap.rows;
+  const size_t aPitch = static_cast<size_t>(
+    theBitmap.pitch < 0 ? -static_cast<int64_t>(theBitmap.pitch) : theBitmap.pitch);
+  const size_t aPixelsPerByte = 8 / aBitsPerPixel;
+  const size_t aMinPitch      = aWidth / aPixelsPerByte + (aWidth % aPixelsPerByte != 0 ? 1 : 0);
+  if (aPitch < aMinPitch
+      || aPitch > static_cast<size_t>(std::numeric_limits<ptrdiff_t>::max()) / aRows
+      || aWidth > static_cast<size_t>(std::numeric_limits<ptrdiff_t>::max()) / aRows)
+  {
+    return false;
+  }
+
+  if (aBitsPerPixel == 8 && theBitmap.num_grays == 256 && theBitmap.pitch > 0 && aPitch == aWidth)
+  {
+    if (!theImage.InitWrapper(Image_Format_Alpha, theBitmap.buffer, aWidth, aRows, aPitch))
+    {
+      return false;
+    }
+    theImage.SetTopDown(true);
+    return true;
+  }
+
+  Font_FTBitmap    aConverted{theLibrary};
+  const FT_Bitmap* aBitmap = &theBitmap;
+  if (aBitsPerPixel != 8)
+  {
+    // FreeType conversion uses signed dimensions.
+    if (aWidth > static_cast<size_t>(std::numeric_limits<int>::max())
+        || aRows > static_cast<size_t>(std::numeric_limits<int>::max())
+        || FT_Bitmap_Convert(theLibrary, &theBitmap, &aConverted.Bitmap, 1) != 0)
+    {
+      return false;
+    }
+    aBitmap = &aConverted.Bitmap;
+  }
+  if (!theImage.InitTrash(Image_Format_Alpha, aWidth, aRows))
+  {
+    return false;
+  }
+  theImage.SetTopDown(true);
+  const unsigned int aMaxCoverage = aBitmap->num_grays - 1;
+  const size_t       aSourcePitch = static_cast<size_t>(
+    aBitmap->pitch < 0 ? -static_cast<int64_t>(aBitmap->pitch) : aBitmap->pitch);
+  for (size_t aRow = 0; aRow < aRows; ++aRow)
+  {
+    // Negative pitch stores the bottom row first in the bitmap buffer.
+    const size_t   aSourceRow = aBitmap->pitch > 0 ? aRow : aRows - 1 - aRow;
+    const uint8_t* aSource    = aBitmap->buffer + aSourceRow * aSourcePitch;
+    uint8_t*       aTarget    = theImage.ChangeRow(aRow);
+    if (aMaxCoverage == 255)
+    {
+      std::memcpy(aTarget, aSource, aWidth);
+      continue;
+    }
+    for (size_t aCol = 0; aCol < aWidth; ++aCol)
+    {
+      aTarget[aCol] =
+        static_cast<uint8_t>((aSource[aCol] * 255u + aMaxCoverage / 2) / aMaxCoverage);
+    }
+  }
+  return true;
+}
+} // namespace Font_FTFontBitmap

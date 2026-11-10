@@ -46,9 +46,7 @@
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
 // define parameter division number as 10*e^(-PI) = 0.43213918
-const double PAR_T = 0.43213918;
-
-static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mySDEdgeMap;
+constexpr double PAR_T = 0.43213918;
 
 static TopAbs_State ClassifyEdgeToFaceByOnePoint(const TopoDS_Edge& E, const TopoDS_Face& F);
 
@@ -58,7 +56,7 @@ static TopAbs_State ClassifyEdgeToFaceByOnePoint(const TopoDS_Edge& E, const Top
 // because new algo can not be used in LocOpe and Mechanical Features (for the moment)
 // that's why we use new algo only in BRepAlgoAPI_BooleanOperation
 // in all other cases old algo is called (see the methods GFillSolidSFS, GFillShellSFS, etc.);
-bool GLOBAL_USE_NEW_BUILDER = false;
+constexpr bool GLOBAL_USE_NEW_BUILDER = false;
 
 //=================================================================================================
 
@@ -367,10 +365,10 @@ void TopOpeBRepBuild_Builder1::GFillFaceNotSameDomSFS(const TopoDS_Shape&       
     myONElemMap.Clear();
   }
 
-  // LOFS : LOF faces located TB1 / LSclass = split faces of state TB1 of FF
+  // LOFS : LOF faces located in state TB1 of FF
   NCollection_List<TopoDS_Shape>& LOFS = ChangeSplit(FF, TB1);
   LOFS.Clear();
-  GKeepShapes(FF, myEmptyShapeList, TB1, LOF, LOFS);
+  GKeepShapes(FF, TB1, LOF, LOFS);
 
   GSplitFaceSFS(FOR, LSO2, Gin, SFS);
 } // GFillFaceSFS
@@ -606,7 +604,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomSFS(const TopoDS_Shape&          
   }
 
   LOFS.Clear();
-  GKeepShapes(FF, myEmptyShapeList, TB1, oriLOF, LOFS);
+  GKeepShapes(FF, TB1, oriLOF, LOFS);
 } // GFillFaceSFS
 
 //=================================================================================================

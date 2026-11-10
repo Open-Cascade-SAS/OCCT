@@ -14,6 +14,7 @@ restore [locate_data_file bug28054_FaceProj.brep] f1
 restore [locate_data_file bug28054_EdgeProj.brep] e1
 
 set ProjList [prj r e1 f1 0 0 1]
+dsetsignal 0
 
 if { [llength $ProjList] < 1 } {
   puts "Error: no projections are found"

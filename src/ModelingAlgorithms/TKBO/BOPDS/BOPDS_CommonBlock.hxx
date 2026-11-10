@@ -84,11 +84,6 @@ public:
   //! of the common block
   Standard_EXPORT const occ::handle<BOPDS_PaveBlock>& PaveBlock1() const;
 
-  //! Selector
-  //! Returns the pave block that belongs
-  //! to the edge with index <theIx>
-  Standard_EXPORT occ::handle<BOPDS_PaveBlock>& PaveBlockOnEdge(const int theIndex);
-
   //! Query
   //! Returns true if the common block contains
   //! a pave block that belongs

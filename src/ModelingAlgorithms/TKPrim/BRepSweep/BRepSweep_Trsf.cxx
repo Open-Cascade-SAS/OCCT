@@ -97,10 +97,10 @@ bool BRepSweep_Trsf::Process(const TopoDS_Shape& aGenS, const Sweep_NumShape& aD
 void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumShape& aDirS)
 {
   constexpr double tl = Precision::Confusion();
-  // angular etant un peu severe pour les contours sketches.
-  double        ta = 0.00175; // environ 0.1 degre
-  GeomAbs_Shape cont;
-  BRep_Builder  B = myBuilder.Builder();
+  // Preserve shallow profile corners for subsequent fillet/chamfer selection.
+  constexpr double ta = Precision::Angular();
+  GeomAbs_Shape    cont;
+  BRep_Builder     B = myBuilder.Builder();
   if (aGenS.ShapeType() == TopAbs_EDGE)
   {
     if (HasShape(aGenS, aDirS))

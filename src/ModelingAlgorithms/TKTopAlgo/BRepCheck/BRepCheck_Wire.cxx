@@ -1227,12 +1227,6 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
               BRepCheck::Add(aStatusList, BRepCheck_SelfIntersectingWire);
             }
             delete[] tabDom;
-#ifdef OCCT_DEBUG
-            static int numpoint = 0;
-            std::cout << "point p" << ++numpoint << " " << P3d.X() << " " << P3d.Y() << " "
-                      << P3d.Z() << std::endl;
-            std::cout.flush();
-#endif
             return (BRepCheck_SelfIntersectingWire);
           }
         }
@@ -1567,12 +1561,6 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
               {
                 BRepCheck::Add(aStatusList, BRepCheck_SelfIntersectingWire);
               }
-#ifdef OCCT_DEBUG
-              static int numpoint1 = 0;
-              std::cout << "point p" << ++numpoint1 << " " << P3d.X() << " " << P3d.Y() << " "
-                        << P3d.Z() << std::endl;
-              std::cout.flush();
-#endif
               delete[] tabDom;
               return (BRepCheck_SelfIntersectingWire);
             } //-- localok == False
@@ -1717,12 +1705,6 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
               {
                 BRepCheck::Add(aStatusList, BRepCheck_SelfIntersectingWire);
               }
-#ifdef OCCT_DEBUG
-              static int numpoint1 = 0;
-              std::cout << "point p" << ++numpoint1 << " " << P3d.X() << " " << P3d.Y() << " "
-                        << P3d.Z() << std::endl;
-              std::cout.flush();
-#endif
               delete[] tabDom;
               return (BRepCheck_SelfIntersectingWire);
             } //-- localok == False

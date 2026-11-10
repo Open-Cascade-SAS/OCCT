@@ -126,6 +126,8 @@ public:
   //! @param[in] theFormat   source encoding
   //! @param[in] theFromStr  text to convert
   //! @param[out] theToStr   destination string
+  //! Throws Standard_DomainError if conversion from the system locale fails.
+  //! In that case the destination string is unchanged.
   Standard_EXPORT static void ConvertFormatToUnicode(const Resource_FormatType   theFormat,
                                                      const char* const           theFromStr,
                                                      TCollection_ExtendedString& theToStr);

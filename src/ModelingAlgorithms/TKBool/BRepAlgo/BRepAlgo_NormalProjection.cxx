@@ -45,30 +45,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-#ifdef OCCT_DEBUG_CHRONO
-  #include <OSD_Timer.hxx>
-
-OSD_Chronometer chr_total, chr_init, chr_approx, chr_booltool;
-
-double                 t_total, t_init, t_approx, t_booltool;
-Standard_IMPORT double t_init_point, t_dicho_bound;
-Standard_IMPORT int    init_point_count, dicho_bound_count;
-
-void InitChron(OSD_Chronometer& ch)
-{
-  ch.Reset();
-  ch.Start();
-}
-
-void ResultChron(OSD_Chronometer& ch, double& time)
-{
-  double tch;
-  ch.Stop();
-  ch.Show(tch);
-  time = time + tch;
-}
-
-#endif
 //=================================================================================================
 
 BRepAlgo_NormalProjection::BRepAlgo_NormalProjection()
@@ -162,21 +138,6 @@ void BRepAlgo_NormalProjection::Compute3d(const bool With3d)
 
 void BRepAlgo_NormalProjection::Build()
 {
-#ifdef OCCT_DEBUG_CHRONO
-  int init_count = 0, approx_count = 0, booltool_count = 0;
-  t_total    = 0;
-  t_init     = 0;
-  t_approx   = 0;
-  t_booltool = 0;
-
-  t_init_point     = 0;
-  init_point_count = 0;
-
-  t_dicho_bound     = 0;
-  dicho_bound_count = 0;
-
-  InitChron(chr_total);
-#endif
   myIsDone = false;
 
   occ::handle<NCollection_HSequence<TopoDS_Shape>> Edges =
@@ -232,15 +193,8 @@ void BRepAlgo_NormalProjection::Build()
       TolU = hsur->UResolution(myTol3d) / 20;
       TolV = hsur->VResolution(myTol3d) / 20;
       // Projection
-#ifdef OCCT_DEBUG_CHRONO
-      InitChron(chr_init);
-#endif
       occ::handle<ProjLib_HCompProjectedCurve> HProjector =
         new ProjLib_HCompProjectedCurve(hsur, hcur, TolU, TolV, myMaxDist);
-#ifdef OCCT_DEBUG_CHRONO
-      ResultChron(chr_init, t_init);
-      init_count++;
-#endif
       //
       TopoDS_Shape prj;
       bool         Degenerated = false;
@@ -329,9 +283,6 @@ void BRepAlgo_NormalProjection::Build()
           }
           else
           {
-#ifdef OCCT_DEBUG_CHRONO
-            InitChron(chr_approx);
-#endif
             Approx_CurveOnSurface appr(HPCur, hsur, Udeb, Ufin, myTol3d);
             appr.Perform(myMaxSeg, myMaxDegree, myContinuity, Only3d, Only2d);
 
@@ -339,20 +290,6 @@ void BRepAlgo_NormalProjection::Build()
             {
               continue;
             }
-
-#ifdef OCCT_DEBUG_CHRONO
-            ResultChron(chr_approx, t_approx);
-            approx_count++;
-
-            std::cout << "Approximation.IsDone = " << appr.IsDone() << std::endl;
-            if (!Only2d)
-              std::cout << "MaxError3d = " << appr.MaxError3d() << std::endl << std::endl;
-            if (!Only3d)
-            {
-              std::cout << "MaxError2dU = " << appr.MaxError2dU() << std::endl;
-              std::cout << "MaxError2dV = " << appr.MaxError2dV() << std::endl << std::endl;
-            }
-#endif
 
             if (!Only3d)
             {
@@ -455,9 +392,6 @@ void BRepAlgo_NormalProjection::Build()
           {
             // Trimming edges by face bounds
             // if the solution is degenerated, use of BoolTool is avoided
-#ifdef OCCT_DEBUG_CHRONO
-            InitChron(chr_booltool);
-#endif
             if (!Degenerated)
             {
               // Perform Boolean COMMON operation to get parts of projected edge
@@ -519,10 +453,6 @@ void BRepAlgo_NormalProjection::Build()
                 myAncestorMap.Bind(prj, Edges->Value(i));
                 myCorresp.Bind(prj, Faces->Value(j));
               }
-#ifdef OCCT_DEBUG_CHRONO
-              ResultChron(chr_booltool, t_booltool);
-              booltool_count++;
-#endif
             }
           }
           else
@@ -547,40 +477,6 @@ void BRepAlgo_NormalProjection::Build()
   }
 
   myIsDone = true;
-
-#ifdef OCCT_DEBUG_CHRONO
-  ResultChron(chr_total, t_total);
-
-  std::cout << "Build - Total time  : " << t_total << " includes:" << std::endl;
-  std::cout << "- Projection           : " << t_init << std::endl;
-  std::cout << "  -- Initial point search : " << t_init_point << std::endl;
-  std::cout << "  -- DichoBound search : " << t_dicho_bound << std::endl;
-  std::cout << "- Approximation        : " << t_approx << std::endl;
-  std::cout << "- Boolean operation    : " << t_booltool << std::endl;
-  std::cout << "- Rest of time         : " << t_total - (t_init + t_approx + t_booltool)
-            << std::endl
-            << std::endl;
-  if (init_count != 0)
-    t_init /= init_count;
-  if (init_point_count != 0)
-    t_init_point /= init_point_count;
-  if (dicho_bound_count != 0)
-    t_dicho_bound /= dicho_bound_count;
-  if (approx_count != 0)
-    t_approx /= approx_count;
-  if (booltool_count != 0)
-    t_booltool /= booltool_count;
-
-  std::cout << "Unitary average time  : " << std::endl;
-  std::cout << "- Projection          : " << t_init << std::endl;
-  std::cout << "  -- Initial point search: " << t_init_point << std::endl;
-  std::cout << "  -- DichoBound search : " << t_dicho_bound << std::endl;
-  std::cout << "- Approximation       : " << t_approx << std::endl;
-  std::cout << "- Boolean operation   :" << t_booltool << std::endl;
-  std::cout << std::endl
-            << "Number of initial point computations is " << init_point_count << std::endl
-            << std::endl;
-#endif
 }
 
 //=================================================================================================

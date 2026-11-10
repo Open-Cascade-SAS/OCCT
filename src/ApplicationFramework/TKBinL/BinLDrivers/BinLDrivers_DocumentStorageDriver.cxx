@@ -78,6 +78,8 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
                                               Standard_OStream&                theOStream,
                                               const Message_ProgressRange&     theRange)
 {
+  SetIsError(false);
+  SetStoreStatus(PCDM_SS_OK);
   myMsgDriver = theDoc->Application()->MessageDriver();
   myMapUnsupported.Clear();
   mySizesToWrite.Clear();

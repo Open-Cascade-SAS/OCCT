@@ -1,4 +1,4 @@
-puts "TODO OCC31845 All: ERROR: null result"
+puts "TODO OCC31845 All: (ERROR: null result|Faulty shapes in variables faulty_1 to faulty_4)"
 
 puts "============================================"
 puts "OCC31845: BRepOffsetAPI_MakeThickSolid fails"
@@ -13,4 +13,6 @@ offsetperform result
 
 if {[llength [whatis result]] < 4} {
   puts "ERROR: null result"
+} else {
+  checkshape result
 }

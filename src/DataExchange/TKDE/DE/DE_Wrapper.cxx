@@ -76,7 +76,7 @@ DE_Wrapper::DE_Wrapper(const occ::handle<DE_Wrapper>& theWrapper)
       Bind(aVendorIter.Value());
     }
   }
-  theWrapper->myKeepUpdates = myKeepUpdates;
+  myKeepUpdates = theWrapper->myKeepUpdates;
 }
 
 //=================================================================================================
@@ -258,7 +258,10 @@ bool DE_Wrapper::Write(const TCollection_AsciiString& thePath,
 bool DE_Wrapper::Load(const TCollection_AsciiString& theResource, const bool theIsRecursive)
 {
   occ::handle<DE_ConfigurationContext> aResource = new DE_ConfigurationContext();
-  aResource->Load(theResource);
+  if (!aResource->Load(theResource))
+  {
+    return false;
+  }
   return Load(aResource, theIsRecursive);
 }
 
@@ -288,7 +291,10 @@ bool DE_Wrapper::Load(const occ::handle<DE_ConfigurationContext>& theResource,
            aVendorIter.More();
            aVendorIter.Next())
       {
-        aVendorIter.Value()->Load(theResource);
+        if (!aVendorIter.Value()->Load(theResource))
+        {
+          return false;
+        }
       }
     }
     sort(theResource);
@@ -360,8 +366,11 @@ TCollection_AsciiString DE_Wrapper::Save(
          aVendorIter.More();
          aVendorIter.Next())
     {
-      const TCollection_AsciiString& aVendorName = aVendorIter.Value()->GetVendor();
-      aResult += aVendorName + " ";
+      if (aVendorIter.Value()->IsEnabled())
+      {
+        const TCollection_AsciiString& aVendorName = aVendorIter.Value()->GetVendor();
+        aResult += aVendorName + " ";
+      }
     }
     aResult += "\n";
   }

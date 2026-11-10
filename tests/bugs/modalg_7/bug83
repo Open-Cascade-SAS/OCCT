@@ -25,16 +25,14 @@ chrono h2 reset; chrono h2 start
 bsection r2 sh pr
 chrono h2 stop counter "CPU section r2"
 
-regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono h1 show] full h1_Hours h1_Minutes h1_Seconds
-regexp {Elapsed time: +([-0-9.+eE]+) Hours +([-0-9.+eE]+) Minutes +([-0-9.+eE]+) Seconds} [dchrono h2 show] full h2_Hours h2_Minutes h2_Seconds
-
-set h1_Time [expr ${h1_Hours}*60.*60. + ${h1_Minutes}*60. + ${h1_Seconds} ]
-set h2_Time [expr ${h2_Hours}*60.*60. + ${h2_Minutes}*60. + ${h2_Seconds} ]
-
-if { ${h1_Time} > 0.1 } {
-   puts "Error: Section of simple BSpline surfaces_1 is performed too slow"
-}
-
-if { ${h2_Time} > 0.1 } {
-   puts "Error: Section of simple BSpline surfaces_2 is performed too slow"
+# CPU time excludes scheduling delays; rounding removes counter noise.
+foreach {index timer result} {1 h1 r1 2 h2 r2} {
+  dchrono $timer show
+  set cpuTime [format %.6f [expr {[dchrono $timer -userCPU] + [dchrono $timer -sysCPU]}]]
+  if {$cpuTime > 0.1} {
+    puts "Error: Section of simple BSpline surfaces_${index} is performed too slow"
+  }
+  checkshape $result
+  checknbshapes $result -vertex 4 -edge 4
+  checkprops $result -l 42.879
 }

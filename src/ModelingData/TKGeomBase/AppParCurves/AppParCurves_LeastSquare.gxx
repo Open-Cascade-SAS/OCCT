@@ -373,7 +373,7 @@ void AppParCurves_LeastSquare::Init(const MultiLine& SSP, const int FirstPoint, 
   }
 
   if (LastConstraint == AppParCurves_PassPoint || LastConstraint == AppParCurves_TangencyPoint
-      || FirstConstraint == AppParCurves_CurvaturePoint)
+      || LastConstraint == AppParCurves_CurvaturePoint)
   {
     i2 = 1;
     for (i = 1; i <= nbP; i++)

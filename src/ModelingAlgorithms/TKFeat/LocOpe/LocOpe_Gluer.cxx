@@ -345,7 +345,7 @@ const NCollection_List<TopoDS_Shape>& LocOpe_Gluer::DescendantFaces(const TopoDS
   {
     return myDescF(F);
   }
-  static NCollection_List<TopoDS_Shape> nullList;
+  static const NCollection_List<TopoDS_Shape> nullList;
   return nullList;
 }
 

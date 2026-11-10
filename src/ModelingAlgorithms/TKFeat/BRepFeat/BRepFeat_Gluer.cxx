@@ -57,6 +57,6 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Gluer::Modified(const TopoDS_Shap
       }
     }
   }
-  static NCollection_List<TopoDS_Shape> LIM;
+  static const NCollection_List<TopoDS_Shape> LIM;
   return LIM;
 }

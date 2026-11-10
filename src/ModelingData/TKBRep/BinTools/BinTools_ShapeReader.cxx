@@ -90,7 +90,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
   TopAbs_Orientation     aShapeOrientation = theStream.ShapeOrientation();
   const TopLoc_Location* aShapeLocation    = ReadLocation(theStream);
   double                 aTol;
-  static BRep_Builder    aBuilder;
+  BRep_Builder           aBuilder;
   try
   {
     OCC_CATCH_SIGNALS
@@ -104,7 +104,7 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
         aBuilder.MakeVertex(aV, aPnt, aTol);
         occ::handle<BRep_TVertex> aTV = occ::down_cast<BRep_TVertex>(aV.TShape());
         NCollection_List<occ::handle<BRep_PointRepresentation>>& aLpr = aTV->ChangePoints();
-        static TopLoc_Location                                   anEmptyLoc;
+        static const TopLoc_Location                             anEmptyLoc;
         while (theStream)
         {
           uint8_t aPrsType = theStream.ReadByte();
@@ -343,13 +343,13 @@ TopoDS_Shape BinTools_ShapeReader::ReadShape(BinTools_IStream& theStream)
 
 const TopLoc_Location* BinTools_ShapeReader::ReadLocation(BinTools_IStream& theStream)
 {
-  static const TopLoc_Location* anEmptyLoc = new TopLoc_Location;
+  static const TopLoc_Location anEmptyLoc;
 
   uint64_t                   aPosition = theStream.Position();
   const BinTools_ObjectType& aType     = theStream.ReadType();
   if (aType == BinTools_ObjectType_EmptyLocation || aType == BinTools_ObjectType_LocationEnd)
   {
-    return anEmptyLoc;
+    return &anEmptyLoc;
   }
   if (theStream.IsReference())
   {

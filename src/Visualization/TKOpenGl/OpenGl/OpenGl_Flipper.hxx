@@ -28,6 +28,9 @@ class gp_Ax2;
 class OpenGl_Flipper : public OpenGl_Element
 {
 public:
+  //! @return true; this element changes rendering state.
+  bool IsRenderState() const override { return true; }
+
   //! Construct rendering element to flip model-view matrix
   //! along the reference system to ensure up-Y, right-X orientation.
   //! @param[in] theReferenceSystem  the reference coordinate system.

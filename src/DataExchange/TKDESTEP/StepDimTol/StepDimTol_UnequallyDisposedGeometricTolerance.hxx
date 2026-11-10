@@ -38,16 +38,13 @@ public:
                             const occ::handle<TCollection_HAsciiString>& theDescription,
                             const occ::handle<Standard_Transient>&       theMagnitude,
                             const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
-                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theDisplacement);
+                            const occ::handle<Standard_Transient>&       theDisplacement);
 
-  //! Returns field Displacement
-  inline occ::handle<StepBasic_LengthMeasureWithUnit> Displacement() const
-  {
-    return myDisplacement;
-  }
+  //! Returns the referenced length-measure entity, including representation-item complexes.
+  inline occ::handle<Standard_Transient> Displacement() const { return myDisplacement; }
 
-  //! Set field Displacement
-  inline void SetDisplacement(const occ::handle<StepBasic_LengthMeasureWithUnit>& theDisplacement)
+  //! Set the referenced length-measure entity, preserving all complex constituents.
+  inline void SetDisplacement(const occ::handle<Standard_Transient>& theDisplacement)
   {
     myDisplacement = theDisplacement;
   }
@@ -56,6 +53,6 @@ public:
                           StepDimTol_GeometricTolerance)
 
 private:
-  occ::handle<StepBasic_LengthMeasureWithUnit> myDisplacement;
+  occ::handle<Standard_Transient> myDisplacement;
 };
 #endif // _StepDimTol_UnequallyDisposedGeometricTolerance_HeaderFile

@@ -20,6 +20,7 @@ set(OCCT_TKG2d_GTests_FILES
   Geom2d_TrimmedCurve_Test.cxx
   Geom2d_VectorWithMagnitude_Test.cxx
   Geom2dAdaptor_Curve_Test.cxx
+  Geom2dAdaptor_Test.cxx
   Geom2dAPI_InterCurveCurve_Test.cxx
   Geom2dEval_ArchimedeanSpiralCurve_Test.cxx
   Geom2dEval_AHTBezierCurve_Test.cxx

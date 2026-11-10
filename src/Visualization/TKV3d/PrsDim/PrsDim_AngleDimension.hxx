@@ -202,6 +202,35 @@ public:
   PrsDim_TypeOfAngleArrowVisibility GetArrowsVisibility() const { return myArrowsVisibility; }
 
 protected:
+  //! Compatibility overload; forwards to the text-plan interface.
+  //! @param[in] thePresentation presentation receiving graphical primitives
+  //! @param[in] theFirstAttach first arc attachment point
+  //! @param[in] theSecondAttach second arc attachment point
+  //! @param[in] theCenter arc center
+  //! @param[in] theText text label
+  //! @param[in] theTextWidth argument of the text-plan overload
+  //! @param[in] theMode presentation computation mode
+  //! @param[in] theLabelPosition text alignment flags
+  Standard_DEPRECATED("Use the overload with explicit text layout")
+  Standard_EXPORT void DrawArcWithText(const occ::handle<Prs3d_Presentation>& thePresentation,
+                                       const gp_Pnt&                          theFirstAttach,
+                                       const gp_Pnt&                          theSecondAttach,
+                                       const gp_Pnt&                          theCenter,
+                                       const TCollection_ExtendedString&      theText,
+                                       const double                           theTextWidth,
+                                       const int                              theMode,
+                                       const int                              theLabelPosition);
+
+  //! Compatibility overload; forwards to the text-plan interface.
+  //! @param[in] theHorizontalTextPos horizontal text placement policy
+  //! @param[out] theLabelPosition text alignment flags
+  //! @param[out] theIsArrowsExternal true when arrows are placed outside
+  Standard_DEPRECATED("Use the overload with explicit text layout")
+  Standard_EXPORT void FitTextAlignment(
+    const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+    int&                                         theLabelPosition,
+    bool&                                        theIsArrowsExternal) const;
+
   //! Initialization of fields that is common to all constructors.
   Standard_EXPORT void Init();
 

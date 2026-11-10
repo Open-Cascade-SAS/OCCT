@@ -13,8 +13,8 @@ set(OCCT_AdvApp2Var_FILES
   AdvApp2Var_Criterion.hxx
   AdvApp2Var_CriterionRepartition.hxx
   AdvApp2Var_CriterionType.hxx
+  AdvApp2Var_Data.cxx
   AdvApp2Var_Data.pxx
-  AdvApp2Var_Data_Main.pxx
   AdvApp2Var_Data_Mlgdrtl.pxx
   AdvApp2Var_Data_Mmcmcnp.pxx
   AdvApp2Var_Data_Mmjcobi.pxx

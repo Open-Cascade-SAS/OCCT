@@ -55,12 +55,11 @@ public:
 private:
   Standard_EXPORT void Find();
 
-  int                myIndex;
-  int                myMax;
-  void*              myDS;
-  bool               myFound;
-  TopOpeBRepDS_Point myEmpty;
-  bool               myFindKeep;
+  int   myIndex;
+  int   myMax;
+  void* myDS;
+  bool  myFound;
+  bool  myFindKeep;
 };
 
 #endif // _TopOpeBRepDS_PointExplorer_HeaderFile

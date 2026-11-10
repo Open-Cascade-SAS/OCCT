@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DE_ValidationUtils.hxx>
 #include <VrmlData_Appearance.hxx>
 #include <VrmlData_Box.hxx>
 #include <VrmlData_Cone.hxx>
@@ -40,6 +41,8 @@
 #include <Standard_Version.hxx>
 #include <VrmlData_WorldInfo.hxx>
 #include <VrmlData_Geometry.hxx>
+
+#include <cstring>
 
 #ifdef _MSC_VER
   #define _CRT_SECURE_NO_DEPRECATE
@@ -74,6 +77,49 @@ VrmlData_Scene::VrmlData_Scene(const occ::handle<NCollection_IncAllocator>& theA
   myWorldInfo->AddInfo(anInfo);
   myLstNodes.Append(myWorldInfo);
   myAllNodes.Append(myWorldInfo);
+}
+
+//==================================================================================================
+
+VrmlData_ErrorStatus VrmlData_Scene::ReadImage(
+  const NCollection_List<TCollection_AsciiString>& theURLs,
+  occ::handle<Image_Texture>&                      theImage) const
+{
+  theImage.Nullify();
+  if (myResourceStreams == nullptr || theURLs.IsEmpty())
+  {
+    return VrmlData_StatusOK;
+  }
+  const VrmlData_Scene* aRoot = this;
+  while (aRoot->myResourceParent != nullptr)
+  {
+    aRoot = aRoot->myResourceParent;
+  }
+  for (const TCollection_AsciiString& aURL : theURLs)
+  {
+    TCollection_AsciiString aName;
+    std::istream*           anInput =
+      DE_ValidationUtils::FindReadStream(*myResourceStreams, myResourceName, aURL, aName);
+    if (anInput == nullptr)
+    {
+      continue;
+    }
+    const occ::handle<Image_Texture>* anExisting = aRoot->myImages.Seek(aName);
+    if (anExisting != nullptr)
+    {
+      theImage = *anExisting;
+      return VrmlData_StatusOK;
+    }
+    occ::handle<NCollection_Buffer> aBytes;
+    if (!DE_ValidationUtils::ReadStreamBuffer(*anInput, aBytes) || aBytes->Size() == 0)
+    {
+      return VrmlData_CannotOpenFile;
+    }
+    theImage = new Image_Texture(aBytes, aName);
+    aRoot->myImages.Bind(aName, theImage);
+    return VrmlData_StatusOK;
+  }
+  return VrmlData_CannotOpenFile;
 }
 
 //=================================================================================================
@@ -204,13 +250,21 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
     return VrmlData_EndOfFile;
   }
   // Read a line.
-  theBuffer.Input.getline(theBuffer.Line, sizeof(theBuffer.Line));
+  theBuffer.Input.getline(theBuffer.Line.data(),
+                          static_cast<std::streamsize>(theBuffer.Line.size()));
 
   // Check the number of read symbols.
   // If maximum number is read, process the array of symbols separately
   // rolling back the array to the last comma or space symbol.
-  std::streamsize aNbChars = theBuffer.Input.gcount();
-  if (theBuffer.Input.rdstate() & std::ios::failbit && aNbChars == sizeof(theBuffer.Line) - 1)
+  std::streamsize       aNbChars   = theBuffer.Input.gcount();
+  const std::streamsize aDataCount = theBuffer.Input.good() ? aNbChars - 1 : aNbChars;
+  if (aDataCount > 0
+      && std::memchr(theBuffer.Line.data(), 0, static_cast<size_t>(aDataCount)) != nullptr)
+  {
+    return VrmlData_VrmlFormatError;
+  }
+  if (theBuffer.Input.rdstate() & std::ios::failbit
+      && aNbChars == static_cast<std::streamsize>(theBuffer.Line.size() - 1))
   {
     // Clear the error.
     // We will fix it here below.
@@ -250,7 +304,7 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
       aStatus = VrmlData_GeneralError;
     }
   }
-  theBuffer.LinePtr     = &theBuffer.Line[0];
+  theBuffer.LinePtr     = theBuffer.Line.data();
   theBuffer.IsProcessed = false;
   return aStatus;
 }
@@ -287,32 +341,36 @@ nonempty_line:
   // Try to detect comment
   if (!theBuffer.IsProcessed)
   {
-    bool  isQuoted(false);
-    int   anOffset(0);
-    char* ptr = theBuffer.LinePtr;
-    for (; *ptr != '\0'; ptr++)
+    bool        isQuoted  = false;
+    const char* aReadPtr  = theBuffer.LinePtr;
+    char*       aWritePtr = theBuffer.LinePtr;
+    while (*aReadPtr != '\0')
     {
-      if (anOffset)
-      {
-        *ptr = ptr[anOffset];
-      }
-      if (*ptr == '\n' || *ptr == '\r' || *ptr == '#')
+      const char aChar = *aReadPtr++;
+      if (aChar == '\n' || aChar == '\r' || aChar == '#')
       {
         if (!isQuoted)
         {
-          *ptr = '\0';
           break;
         }
       }
-      else if (*ptr == '\\' && isQuoted)
+      else if (aChar == '\\' && isQuoted)
       {
-        ptr[0] = ptr[++anOffset];
+        *aWritePtr++ = aChar;
+        if (*aReadPtr == '\0')
+        {
+          break;
+        }
+        *aWritePtr++ = *aReadPtr++;
+        continue;
       }
-      else if (*ptr == '\"')
+      else if (aChar == '\"')
       {
         isQuoted = !isQuoted;
       }
+      *aWritePtr++ = aChar;
     }
+    *aWritePtr            = '\0';
     theBuffer.IsProcessed = true;
   }
   return aStatus;
@@ -330,7 +388,8 @@ VrmlData_ErrorStatus VrmlData_Scene::readHeader(VrmlData_InBuffer& theBuffer)
   TCollection_AsciiString aHeader(theBuffer.LinePtr);
   // The max possible header size is 25 (with spaces)
   // 4 (max BOM size) + 11 (search string) + 9 (max size for encoding)
-  if (aHeader.Length() <= 25 && aHeader.Search("#VRML V2.0") != -1)
+  if (aHeader.Length() <= 25
+      && (aHeader.Search("#VRML V2.0") != -1 || aHeader.Search("#VRML V1.0") != -1))
   {
     aStat = readLine(theBuffer);
   }
@@ -351,7 +410,11 @@ VrmlData_Scene& VrmlData_Scene::operator<<(Standard_IStream& theInput)
   VrmlData_InBuffer           aBuffer(theInput);
   std::lock_guard<std::mutex> aLock(myMutex);
   // Read the VRML header
-  myStatus                                          = readHeader(aBuffer);
+  myStatus = readHeader(aBuffer);
+  if (myStatus != VrmlData_StatusOK)
+  {
+    return *this;
+  }
   const occ::handle<VrmlData_UnknownNode> aNullNode = new VrmlData_UnknownNode(*this);
   //   if (myStatus == StatusOK)
   //     myStatus = ReadLine (aBuffer);

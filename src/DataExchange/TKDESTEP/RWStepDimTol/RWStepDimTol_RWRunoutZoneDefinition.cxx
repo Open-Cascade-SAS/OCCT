@@ -13,8 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include "RWStepDimTol_RWRunoutZoneDefinition.pxx"
-
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -22,6 +20,8 @@
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
 #include <StepRepr_ShapeAspect.hxx>
+
+#include "RWStepDimTol_RWRunoutZoneDefinition.pxx"
 
 //=================================================================================================
 
@@ -96,6 +96,7 @@ void RWStepDimTol_RWRunoutZoneDefinition::WriteStep(
     SW.Send(ent->BoundariesValue(i));
   }
   SW.CloseSub();
+  SW.Send(ent->Orientation());
 }
 
 //=================================================================================================
@@ -108,6 +109,7 @@ void RWStepDimTol_RWRunoutZoneDefinition::Share(
   // Inherited fields from ToleranceZoneDefinition
 
   iter.AddItem(ent->Zone());
+  iter.AddItem(ent->Orientation());
 
   int i, nb = ent->NbBoundaries();
   for (i = 1; i <= nb; i++)

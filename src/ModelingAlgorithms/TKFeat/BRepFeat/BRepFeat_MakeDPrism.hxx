@@ -58,7 +58,8 @@ public:
   //! Sbase to serve as the basis for the draft prism. The
   //! draft will be defined by the angle Angle and Fuse offers a choice between:
   //! - removing matter with a Boolean cut using the setting 0
-  //! - adding matter with Boolean fusion using the setting 1.
+  //! - adding matter with Boolean fusion using the setting 1
+  //! - returning the separate feature using the setting 2.
   //! The sketch face Skface serves to determine the type of
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.
@@ -84,7 +85,8 @@ public:
   //! serve as the basis from the draft prism. The draft will be
   //! defined by the angle Angle and Fuse offers a choice between:
   //! -   removing matter with a Boolean cut using the setting 0
-  //! -   adding matter with Boolean fusion using the setting 1.
+  //! -   adding matter with Boolean fusion using the setting 1
+  //! -   returning the separate feature using the setting 2.
   //! The sketch face Skface serves to determine the type of
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.

@@ -44,13 +44,6 @@
 #include <NCollection_Sequence.hxx>
 
 #include <cstdio>
-// #define OCCT_DEBUG_ALGO
-#ifdef OCCT_DEBUG_ALGO
-bool         AffichLoop = true;
-int          NbLoops    = 0;
-int          NbWires    = 1;
-static char* name       = new char[100];
-#endif
 
 //=================================================================================================
 
@@ -197,14 +190,7 @@ static TopoDS_Vertex UpdateClosedEdge(const TopoDS_Edge& E, NCollection_Sequence
   }
   if (OnStart && OnEnd)
   {
-    if (!VB[0].IsSame(VB[1]))
-    {
-#ifdef OCCT_DEBUG_ALGO
-      if (AffichLoop)
-        std::cout << "Two different vertices on the closing vertex" << std::endl;
-#endif
-    }
-    else
+    if (VB[0].IsSame(VB[1]))
     {
       SV.Remove(1);
       if (!SV.IsEmpty())
@@ -344,15 +330,6 @@ static bool SelectEdge(const TopoDS_Face&              F,
 {
   NCollection_List<TopoDS_Shape>::Iterator itl;
   NE.Nullify();
-#ifdef OCCT_DEBUG_ALGO
-  if (AffichLoop)
-  {
-    if (LE.Extent() > 2)
-    {
-      std::cout << "vertex on more than 2 edges in a face." << std::endl;
-    }
-  }
-#endif
   for (itl.Initialize(LE); itl.More(); itl.Next())
   {
     if (itl.Value().IsEqual(CE))
@@ -584,21 +561,6 @@ void BRepAlgo_Loop::Perform()
   TopoDS_Vertex                            V1, V2;
   bool                                     YaCouture = false;
 
-#ifdef OCCT_DEBUG_ALGO
-  if (AffichLoop)
-  {
-    std::cout << "NewLoop" << std::endl;
-    NbLoops++;
-    for (itl.Initialize(myEdges); itl.More(); itl.Next())
-    {
-      const TopoDS_Edge& E = TopoDS::Edge(itl.Value());
-    }
-    for (itl.Initialize(myConstEdges); itl.More(); itl.Next())
-    {
-      const TopoDS_Edge& E = TopoDS::Edge(itl.Value());
-    }
-  }
-#endif
   //------------------------------------------------
   // Cut edges
   //------------------------------------------------
@@ -762,24 +724,8 @@ void BRepAlgo_Loop::Perform()
           NW.Closed(true);
           myNewWires.Append(NW);
         }
-#ifdef OCCT_DEBUG_ALGO
-        else
-        {
-          std::cout << "BRepAlgo_Loop: Open Wire" << std::endl;
-          if (AffichLoop)
-            std::cout << "OpenWire is : NW_" << NbLoops << "_" << NbWires << std::endl;
-        }
-#endif
       }
     }
-#ifdef OCCT_DEBUG_ALGO
-    else
-    {
-      std::cout << "BRepAlgo_Loop: Open Wire" << std::endl;
-      if (AffichLoop)
-        std::cout << "OpenWire is : NW_" << NbLoops << "_" << NbWires << std::endl;
-    }
-#endif
   }
 
   PurgeNewEdges(myCutEdges, UsedEdges);

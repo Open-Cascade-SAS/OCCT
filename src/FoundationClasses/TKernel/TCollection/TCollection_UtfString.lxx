@@ -1,0 +1,191 @@
+// Created on: 2013-01-28
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <TCollection_UtfStringTool.hxx>
+
+#include <cstring>
+
+//==================================================================================================
+
+template <typename Type>
+template <typename TypeFrom>
+bool TCollection_UtfString<Type>::FromUnicode(const TypeFrom* theString, size_t theCodeUnits)
+{
+  if (theString == nullptr && theCodeUnits != 0)
+  {
+    return false;
+  }
+  if (theCodeUnits == 0)
+  {
+    Clear();
+    return true;
+  }
+
+  TCollection_UtfIterator<TypeFrom> anIter(theString, theCodeUnits);
+  StorageType                       aResult;
+  size_t                            aLength       = 0;
+  size_t                            anOutputUnits = 0;
+  for (; anIter.More(); ++anIter)
+  {
+    if (!anIter.IsValid())
+    {
+      return false;
+    }
+    if constexpr (!std::is_same_v<Type, TypeFrom>)
+    {
+      const size_t aCount = anIter.template AdvanceBytesUtf<Type>() / sizeof(Type);
+      if (aCount > maxCodeUnits() - anOutputUnits)
+      {
+        throw Standard_RangeError("Converted Unicode string is too large");
+      }
+      anOutputUnits += aCount;
+    }
+    ++aLength;
+  }
+  if constexpr (std::is_same_v<Type, TypeFrom>)
+  {
+    // Validate before replacing storage, including when input aliases this string.
+    if (theCodeUnits > maxCodeUnits())
+    {
+      throw Standard_RangeError("Unicode string is too large");
+    }
+    aResult.Resize(theCodeUnits + 1);
+    std::copy_n(theString, theCodeUnits, aResult.Data());
+  }
+  else if (sizeof(TypeFrom) == 1 && aLength == theCodeUnits)
+  {
+    // Valid UTF-8 with one code unit per scalar is ASCII, including embedded nulls.
+    aResult.Resize(theCodeUnits + 1);
+    for (size_t anIndex = 0; anIndex < theCodeUnits; ++anIndex)
+    {
+      aResult[anIndex] = static_cast<Type>(theString[anIndex]);
+    }
+  }
+  else
+  {
+    aResult.Resize(anOutputUnits + 1);
+    Type*  aWrite     = aResult.Data();
+    size_t aRemaining = anOutputUnits;
+    anIter.Init(theString, theCodeUnits);
+    for (; anIter.More(); ++anIter)
+    {
+      Type* anEnd = anIter.GetUtf(aWrite, aRemaining);
+      aRemaining -= static_cast<size_t>(anEnd - aWrite);
+      aWrite = anEnd;
+    }
+  }
+  aResult.ChangeLast() = Type(0);
+  std::swap(myString, aResult);
+  myLength = aLength;
+  return true;
+}
+
+//==================================================================================================
+
+template <typename Type>
+char32_t TCollection_UtfString<Type>::GetChar(size_t theIndex) const
+{
+  if (theIndex >= myLength)
+  {
+    throw Standard_OutOfRange("Unicode scalar index");
+  }
+  TCollection_UtfIterator<Type> anIter = BoundedIterator();
+  while (anIter.IndexOffset() != theIndex)
+  {
+    ++anIter;
+  }
+  return *anIter;
+}
+
+//==================================================================================================
+
+template <typename Type>
+std::optional<typename TCollection_UtfString<Type>::ViewType> TCollection_UtfString<
+  Type>::GetCharView(size_t theIndex) const
+{
+  if (theIndex >= myLength)
+  {
+    return std::nullopt;
+  }
+  TCollection_UtfIterator<Type> anIter = BoundedIterator();
+  while (anIter.IndexOffset() != theIndex)
+  {
+    ++anIter;
+  }
+  return ViewType(anIter.BufferHere(), anIter.CodeUnits());
+}
+
+//==================================================================================================
+
+template <typename Type>
+TCollection_UtfString<Type> TCollection_UtfString<Type>::SubString(size_t theStart,
+                                                                   size_t theEnd) const
+{
+  if (theStart > theEnd || theEnd > myLength)
+  {
+    throw Standard_OutOfRange("Unicode substring range");
+  }
+  TCollection_UtfString aResult;
+  if (theStart == theEnd)
+  {
+    return aResult;
+  }
+  TCollection_UtfIterator<Type> anIter = BoundedIterator();
+  while (anIter.IndexOffset() < theStart)
+  {
+    ++anIter;
+  }
+  const Type* aFirst = anIter.BufferHere();
+  while (anIter.IndexOffset() < theEnd)
+  {
+    ++anIter;
+  }
+  const size_t aUnits = static_cast<size_t>(anIter.BufferHere() - aFirst);
+  aResult.myString.Resize(aUnits + 1);
+  std::copy_n(aFirst, aUnits, aResult.myString.Data());
+  aResult.myString.ChangeLast() = Type(0);
+  aResult.myLength              = theEnd - theStart;
+  return aResult;
+}
+
+//==================================================================================================
+
+template <typename Type>
+bool TCollection_UtfString<Type>::FromLocale(std::string_view theString)
+{
+  const std::optional<TCollection_UtfStringTool::WideString> aWide =
+    TCollection_UtfStringTool::FromLocale(theString);
+  return aWide && FromUnicode(aWide->Data(), aWide->Size());
+}
+
+//==================================================================================================
+
+template <typename Type>
+bool TCollection_UtfString<Type>::ToLocale(char* theBuffer, size_t theCapacity) const
+{
+  const TCollection_UtfString<wchar_t>                       aWide = ToUtfWide();
+  const std::optional<TCollection_UtfStringTool::ByteString> aBytes =
+    TCollection_UtfStringTool::ToLocale(aWide.View());
+  if (!aBytes || theBuffer == nullptr || aBytes->Size() >= theCapacity)
+  {
+    return false;
+  }
+  if (!aBytes->IsEmpty())
+  {
+    std::memcpy(theBuffer, aBytes->Data(), aBytes->Size());
+  }
+  theBuffer[aBytes->Size()] = '\0';
+  return true;
+}

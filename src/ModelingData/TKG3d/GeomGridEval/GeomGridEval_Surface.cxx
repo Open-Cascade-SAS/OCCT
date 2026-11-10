@@ -46,6 +46,37 @@ occ::handle<Geom_Surface> ExtractBasisSurface(const occ::handle<Geom_Surface>& t
   return aResult;
 }
 
+//==================================================================================================
+
+bool needsSurfaceAdaptor(const occ::handle<Geom_Surface>& theSurface)
+{
+  const occ::handle<Geom_Surface> aBasis = ExtractBasisSurface(theSurface);
+  if (const occ::handle<Geom_BSplineSurface> aSpline = occ::down_cast<Geom_BSplineSurface>(aBasis))
+  {
+    return theSurface != aBasis || aSpline->HasEvalRepresentation();
+  }
+  if (const occ::handle<Geom_BezierSurface> aBezier = occ::down_cast<Geom_BezierSurface>(aBasis))
+  {
+    return aBezier->HasEvalRepresentation();
+  }
+  if (const occ::handle<Geom_OffsetSurface> anOffset = occ::down_cast<Geom_OffsetSurface>(aBasis))
+  {
+    return anOffset->HasEvalRepresentation();
+  }
+  return false;
+}
+
+//==================================================================================================
+
+bool hasSurfaceBounds(const Adaptor3d_Surface&         theAdaptor,
+                      const occ::handle<Geom_Surface>& theSurface)
+{
+  double aUFirst, aULast, aVFirst, aVLast;
+  theSurface->Bounds(aUFirst, aULast, aVFirst, aVLast);
+  return theAdaptor.FirstUParameter() == aUFirst && theAdaptor.LastUParameter() == aULast
+         && theAdaptor.FirstVParameter() == aVFirst && theAdaptor.LastVParameter() == aVLast;
+}
+
 //! Creates Geom_Surface from adaptor's elementary surface type.
 //! @param theSurface the adaptor to extract geometry from
 //! @return Geom_Surface handle, or null if type is not elementary
@@ -142,8 +173,18 @@ void GeomGridEval_Surface::initialization(const Adaptor3d_Surface& theSurface)
   // to extract transformation and underlying geometry
   if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_TransformedSurface)))
   {
-    const auto&    aTransformed = static_cast<const GeomAdaptor_TransformedSurface&>(theSurface);
-    const gp_Trsf& aTrsf        = aTransformed.Trsf();
+    const auto& aTransformed = static_cast<const GeomAdaptor_TransformedSurface&>(theSurface);
+    const occ::handle<Geom_Surface>& aGeometry = aTransformed.GeomSurfaceOriginal();
+    if (!aGeometry.IsNull()
+        && (needsSurfaceAdaptor(aGeometry) || !hasSurfaceBounds(theSurface, aGeometry)
+            || aTransformed.AdaptorSurfaceOriginal().ToleranceU() != 0.0
+            || aTransformed.AdaptorSurfaceOriginal().ToleranceV() != 0.0))
+    {
+      mySurfaceType = theSurface.GetType();
+      myEvaluator.emplace<GeomGridEval_OtherSurface>(&theSurface);
+      return;
+    }
+    const gp_Trsf& aTrsf = aTransformed.Trsf();
 
     // Only store transformation if it's not identity
     if (aTrsf.Form() != gp_Identity)
@@ -240,6 +281,13 @@ void GeomGridEval_Surface::initialization(const Adaptor3d_Surface& theSurface)
 
     if (!aGeomSurf.IsNull())
     {
+      if (needsSurfaceAdaptor(aGeomSurf) || !hasSurfaceBounds(theSurface, aGeomSurf)
+          || aGeomAdaptor.ToleranceU() != 0.0 || aGeomAdaptor.ToleranceV() != 0.0)
+      {
+        mySurfaceType = theSurface.GetType();
+        myEvaluator.emplace<GeomGridEval_OtherSurface>(&theSurface);
+        return;
+      }
       initialization(aGeomSurf);
       return;
     }
@@ -271,6 +319,14 @@ void GeomGridEval_Surface::initialization(const occ::handle<Geom_Surface>& theSu
   {
     myEvaluator.emplace<std::monostate>();
     mySurfaceType = GeomAbs_OtherSurface;
+    return;
+  }
+
+  if (needsSurfaceAdaptor(theSurface))
+  {
+    myOwnedAdaptor = new GeomAdaptor_Surface(theSurface);
+    mySurfaceType  = myOwnedAdaptor->GetType();
+    myEvaluator.emplace<GeomGridEval_OtherSurface>(myOwnedAdaptor.get());
     return;
   }
 

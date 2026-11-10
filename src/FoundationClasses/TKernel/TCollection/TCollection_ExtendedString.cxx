@@ -14,14 +14,16 @@
 
 #include <TCollection_ExtendedString.hxx>
 
-#include <NCollection_UtfIterator.hxx>
+#include <TCollection_UtfIterator.hxx>
 #include <Standard.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <algorithm>
 #include <cstddef>
+#include <limits>
 
 namespace
 {
@@ -31,19 +33,27 @@ static char16_t THE_DEFAULT_EXT_CHAR_STRING[1] = {u'\0'};
 //! Guarantees at least +1 character space for null terminator, aligned to 4-byte boundary
 inline size_t calculatePaddedSize(const int theLength)
 {
-  return (((theLength + 1) * sizeof(char16_t)) + 3) & ~0x3;
+  return (((static_cast<size_t>(theLength) + 1) * sizeof(char16_t)) + 3) & ~static_cast<size_t>(3);
 }
 
 //! Returns the number of 16-bit code units in Unicode string
 template <typename T>
 static int nbSymbols(const T* theUtfString)
 {
-  int aNbCodeUnits = 0;
-  for (NCollection_UtfIterator<T> anIter(theUtfString); *anIter != 0; ++anIter)
+  size_t aNbCodeUnits = 0;
+  for (auto anIter =
+         TCollection_UtfIterator<T>(theUtfString,
+                                    TCollection_UtfIterator<T>::InputMode::NullTerminated);
+       anIter.More();
+       ++anIter)
   {
     aNbCodeUnits += anIter.AdvanceCodeUnitsUtf16();
+    if (aNbCodeUnits > static_cast<size_t>((std::numeric_limits<int>::max)()))
+    {
+      throw Standard_RangeError("UTF-16 string exceeds TCollection length range");
+    }
   }
-  return aNbCodeUnits;
+  return static_cast<int>(aNbCodeUnits);
 }
 
 //! Convert from wchar_t* to extended string.
@@ -58,10 +68,14 @@ inline char16_t* Standard_UNUSED fromWideString(const wchar_t* theUtfString, int
   }
   const size_t aRoundSize = calculatePaddedSize(theLength);
   char16_t*    aString    = static_cast<char16_t*>(Standard::AllocateOptimal(aRoundSize));
-  NCollection_UtfIterator<wchar_t> anIterRead(theUtfString);
-  for (char16_t* anIterWrite = aString; *anIterRead != 0; ++anIterRead)
+  auto         anIterRead =
+    TCollection_UtfIterator<wchar_t>(theUtfString,
+                                     TCollection_UtfIterator<wchar_t>::InputMode::NullTerminated);
+  for (char16_t* anIterWrite = aString; anIterRead.More(); ++anIterRead)
   {
-    anIterWrite = anIterRead.GetUtf(anIterWrite);
+    anIterWrite = anIterRead.GetUtf(anIterWrite,
+                                    static_cast<size_t>(theLength)
+                                      - static_cast<size_t>(anIterWrite - aString));
   }
   aString[theLength] = 0;
   return aString;
@@ -1157,22 +1171,30 @@ char16_t TCollection_ExtendedString::Value(const int theWhere) const
 
 bool TCollection_ExtendedString::ConvertToUnicode(const char* theString)
 {
-  NCollection_UtfIterator<char> anIterRead(theString);
-  char16_t*                     anIterWrite = myString;
-  if (*anIterRead == 0)
+  auto anIterRead =
+    TCollection_UtfIterator<char>(theString,
+                                  TCollection_UtfIterator<char>::InputMode::NullTerminated);
+  char16_t* anIterWrite = myString;
+  if (!anIterRead.More())
   {
     *anIterWrite = u'\0';
     return true;
   }
 
-  for (; *anIterRead != 0; ++anIterRead)
+  for (; anIterRead.More(); ++anIterRead)
   {
     if (!anIterRead.IsValid())
     {
       return false;
     }
 
-    anIterWrite = anIterRead.GetUtf(anIterWrite);
+    anIterWrite = anIterRead.GetUtf(anIterWrite,
+                                    static_cast<size_t>(myLength)
+                                      - static_cast<size_t>(anIterWrite - myString));
+    if (anIterWrite == nullptr)
+    {
+      return false;
+    }
   }
   return true;
 }
@@ -1181,29 +1203,37 @@ bool TCollection_ExtendedString::ConvertToUnicode(const char* theString)
 
 int TCollection_ExtendedString::LengthOfCString() const
 {
-  int aSizeBytes = 0;
-  for (NCollection_UtfIterator<char16_t> anIter(myString); *anIter != 0; ++anIter)
+  size_t aSizeBytes = 0;
+  for (TCollection_UtfIterator<char16_t> anIter(myString, static_cast<size_t>(myLength));
+       anIter.More();
+       ++anIter)
   {
     aSizeBytes += anIter.AdvanceBytesUtf8();
+    if (aSizeBytes > static_cast<size_t>((std::numeric_limits<int>::max)()))
+    {
+      throw Standard_RangeError("UTF-8 string exceeds TCollection length range");
+    }
   }
-  return aSizeBytes;
+  return static_cast<int>(aSizeBytes);
 }
 
 //=================================================================================================
 
 int TCollection_ExtendedString::ToUTF8CString(Standard_PCharacter& theCString) const
 {
-  NCollection_UtfIterator<char16_t> anIterRead(myString);
+  TCollection_UtfIterator<char16_t> anIterRead(myString, static_cast<size_t>(myLength));
   char*                             anIterWrite = theCString;
-  if (*anIterRead == 0)
+  const size_t                      aCapacity   = static_cast<size_t>(LengthOfCString());
+  if (!anIterRead.More())
   {
     *anIterWrite = '\0';
     return 0;
   }
 
-  for (; *anIterRead != 0; ++anIterRead)
+  for (; anIterRead.More(); ++anIterRead)
   {
-    anIterWrite = anIterRead.GetUtf(anIterWrite);
+    anIterWrite =
+      anIterRead.GetUtf(anIterWrite, aCapacity - static_cast<size_t>(anIterWrite - theCString));
   }
   *anIterWrite = '\0';
   return int(anIterWrite - theCString);

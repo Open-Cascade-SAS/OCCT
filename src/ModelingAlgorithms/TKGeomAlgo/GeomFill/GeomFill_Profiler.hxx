@@ -22,7 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Geom_Curve.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
@@ -80,12 +80,15 @@ public:
   Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>& Knots,
                                      NCollection_Array1<int>&    Mults) const;
 
+  //! Return a curve by its 1-based section index.
+  //! The handle reference stays valid across AddCurve(), but not Perform().
   const occ::handle<Geom_Curve>& Curve(const int Index) const;
 
 protected:
-  NCollection_Sequence<occ::handle<Geom_Curve>> mySequence;
-  bool                                          myIsDone;
-  bool                                          myIsPeriodic;
+  //! Section curves in insertion order.
+  NCollection_DynamicArray<occ::handle<Geom_Curve>> myCurves;
+  bool                                              myIsDone;
+  bool                                              myIsPeriodic;
 };
 
 #include <GeomFill_Profiler.lxx>

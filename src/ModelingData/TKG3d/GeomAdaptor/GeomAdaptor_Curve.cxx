@@ -299,7 +299,7 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
       myTypeCurve                                 = GeomAbs_OffsetCurve;
       occ::handle<Geom_OffsetCurve> anOffsetCurve = occ::down_cast<Geom_OffsetCurve>(C);
       OffsetData                    anOffsetData;
-      anOffsetData.BasisAdaptor = new GeomAdaptor_Curve(anOffsetCurve->BasisCurve());
+      anOffsetData.BasisAdaptor = new GeomAdaptor_Curve(anOffsetCurve->BasisCurve(), UFirst, ULast);
       anOffsetData.Offset       = anOffsetCurve->Offset();
       anOffsetData.Direction    = anOffsetCurve->Direction();
       anOffsetData.EvalRep      = anOffsetCurve->EvalRepresentation();
@@ -320,6 +320,10 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
     else if (auto* aBezierData = std::get_if<BezierData>(&myCurveData))
     {
       aBezierData->Cache.Nullify();
+    }
+    else if (OffsetData* anOffsetData = std::get_if<OffsetData>(&myCurveData))
+    {
+      anOffsetData->BasisAdaptor->Load(anOffsetData->BasisAdaptor->Curve(), UFirst, ULast);
     }
   }
 }

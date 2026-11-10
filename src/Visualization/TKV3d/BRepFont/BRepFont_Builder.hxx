@@ -15,7 +15,6 @@
 #define BRepFont_Builder_HeaderFile
 
 #include <BRepFont_PlanarRegion.hxx>
-#include <BRepGraph_NodeId.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Ax3.hxx>
@@ -25,9 +24,7 @@
 #include <memory>
 #include <optional>
 
-class BRepGraph;
-
-//! Builds glyph and text topology in TopoDS or caller-owned BRepGraph storage.
+//! Builds glyph and text topology in TopoDS.
 class BRepFont_Builder
 {
 public:
@@ -146,16 +143,6 @@ public:
     const BRepFont_PlanarRegion& theRegion,
     const GlyphOptions&          theOptions);
 
-  //! Add one glyph shape to an existing graph.
-  //! @param[in, out] theGraph graph receiving new topology
-  //! @param[in] theRegion regularized glyph region
-  //! @param[in] theOptions glyph construction options
-  //! @return root node of the added shape, or an invalid node on failure or for an empty region
-  [[nodiscard]] Standard_EXPORT static BRepGraph_NodeId AddGlyph(
-    BRepGraph&                   theGraph,
-    const BRepFont_PlanarRegion& theRegion,
-    const GlyphOptions&          theOptions);
-
   //! Build positioned text occurrences in a TopoDS compound.
   //! @param[in] thePlan text plan
   //! @return text compound, or a null shape on failure or for empty text
@@ -177,22 +164,6 @@ public:
     const TextPlan&                               thePlan,
     const NCollection_LinearVector<TopoDS_Shape>& theGlyphShapes,
     const TextOptions&                            theOptions);
-
-  //! Add positioned text occurrences to an existing graph.
-  //! @param[in, out] theGraph graph receiving glyph definitions and text occurrences
-  //! @param[in] thePlan text plan
-  //! @return root compound of the added text, or an invalid node on failure or for empty text
-  [[nodiscard]] Standard_EXPORT static BRepGraph_NodeId AddText(BRepGraph&      theGraph,
-                                                                const TextPlan& thePlan);
-
-  //! Add positioned text occurrences to an existing graph.
-  //! @param[in, out] theGraph graph receiving glyph definitions and text occurrences
-  //! @param[in] thePlan text plan
-  //! @param[in] theOptions text placement options
-  //! @return root compound of the added text, or an invalid node on failure or for empty text
-  [[nodiscard]] Standard_EXPORT static BRepGraph_NodeId AddText(BRepGraph&         theGraph,
-                                                                const TextPlan&    thePlan,
-                                                                const TextOptions& theOptions);
 
 private:
   BRepFont_Builder() = delete;

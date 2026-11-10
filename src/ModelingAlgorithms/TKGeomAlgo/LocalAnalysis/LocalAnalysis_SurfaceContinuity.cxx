@@ -24,6 +24,24 @@
 #include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <StdFail_NotDone.hxx>
 
+#include <algorithm>
+#include <cmath>
+
+namespace
+{
+//==================================================================================================
+
+// Derivative order needed by the supported local continuity criteria.
+int derivativeOrder(const GeomAbs_Shape theOrder)
+{
+  if (theOrder == GeomAbs_C0)
+  {
+    return 0;
+  }
+  return theOrder == GeomAbs_C1 || theOrder == GeomAbs_G1 ? 1 : 2;
+}
+} // namespace
+
 /*********************************************************************************/
 /*********************************************************************************/
 void LocalAnalysis_SurfaceContinuity::SurfC0(const GeomLProp_SLProps& Surf1,
@@ -222,48 +240,58 @@ void LocalAnalysis_SurfaceContinuity::SurfG1(GeomLProp_SLProps& Surf1, GeomLProp
 
 void LocalAnalysis_SurfaceContinuity::SurfG2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2)
 {
-  gp_Dir DMIN1, DMIN2, DMAX1, DMAX2;
-  double RMIN1, RMIN2, RMAX1, RMAX2;
-  double x1, x2, y1, y2, z1, z2;
-
-  if (Surf1.IsCurvatureDefined() && Surf2.IsCurvatureDefined())
-  {
-    Surf1.CurvatureDirections(DMIN1, DMAX1);
-    Surf2.CurvatureDirections(DMIN2, DMAX2);
-    DMIN1.Coord(x1, y1, z1);
-    DMAX1.Coord(x2, y2, z2);
-    gp_Dir MCD1((std::abs(x1) + std::abs(x2)) / 2,
-                (std::abs(y1) + std::abs(y2)) / 2,
-                (std::abs(z1) + std::abs(z2)) / 2);
-    DMIN2.Coord(x1, y1, z1);
-    DMAX2.Coord(x2, y2, z2);
-    gp_Dir MCD2((std::abs(x1) + std::abs(x2)) / 2,
-                (std::abs(y1) + std::abs(y2)) / 2,
-                (std::abs(z1) + std::abs(z2)) / 2);
-
-    myAlpha = MCD1.Angle(MCD2);
-    RMIN1   = Surf1.MinCurvature();
-    RMAX1   = Surf1.MaxCurvature();
-    RMIN2   = Surf2.MinCurvature();
-    RMAX2   = Surf2.MaxCurvature();
-    myETA1  = (RMIN1 + RMAX1) / 2;
-    myETA2  = (RMIN2 + RMAX2) / 2;
-    myETA   = (myETA1 + myETA2) / 2;
-    myZETA1 = (RMAX1 - RMIN1) / 2;
-    myZETA2 = (RMAX2 - RMIN2) / 2;
-    myZETA  = (myZETA1 + myZETA2) / 2;
-    double DETA, DZETA;
-    DETA  = (myETA1 - myETA2) / 2;
-    DZETA = (myZETA1 - myZETA2) / 2;
-    myGap = std::abs(DETA)
-            + sqrt(DZETA * DZETA * std::cos(myAlpha) * std::cos(myAlpha)
-                   + myZETA * myZETA * std::sin(myAlpha) * std::sin(myAlpha));
-  }
-  else
+  if (!Surf1.IsCurvatureDefined() || !Surf2.IsCurvatureDefined())
   {
     myIsDone      = false;
     myErrorStatus = LocalAnalysis_CurvatureNotDefined;
+    return;
   }
+
+  const gp_Dir& aNormal1   = Surf1.Normal();
+  const gp_Dir& aNormal2   = Surf2.Normal();
+  const double  aNormalDot = aNormal1.Dot(aNormal2);
+  const double  aSign      = aNormalDot < 0.0 ? -1.0 : 1.0;
+  const double  aMaxCurv1  = Surf1.MaxCurvature();
+  const double  aMinCurv1  = Surf1.MinCurvature();
+  const double  aMaxCurv2  = aSign * Surf2.MaxCurvature();
+  const double  aMinCurv2  = aSign * Surf2.MinCurvature();
+  myCurvatureScale         = std::max(std::max(std::abs(aMaxCurv1), std::abs(aMinCurv1)),
+                              std::max(std::abs(aMaxCurv2), std::abs(aMinCurv2)));
+
+  // An umbilic shape operator is a scalar multiple of the identity, so its
+  // principal directions and the tangent-plane rotation are immaterial.
+  if (aMaxCurv1 == aMinCurv1)
+  {
+    myGap = std::max(std::abs(aMaxCurv1 - aMaxCurv2), std::abs(aMaxCurv1 - aMinCurv2));
+    return;
+  }
+  if (aMaxCurv2 == aMinCurv2)
+  {
+    myGap = std::max(std::abs(aMaxCurv1 - aMaxCurv2), std::abs(aMinCurv1 - aMaxCurv2));
+    return;
+  }
+
+  gp_Dir aMax1, aMin1, aMax2, aMin2;
+  Surf1.CurvatureDirections(aMax1, aMin1);
+  Surf2.CurvatureDirections(aMax2, aMin2);
+
+  // Transport a tangent t from n2 to n1 by their shortest rotation:
+  // t' = t - (t.n1) / (1 + n1.n2) * (n1 + n2).
+  // Aligning the normal signs makes the denominator >= 1, including opposite
+  // parameterizations. No quaternion, matrix, or second transported axis is needed.
+  const gp_XYZ aNormalSum = aNormal1.XYZ() + aSign * aNormal2.XYZ();
+  const gp_XYZ aMax2Aligned =
+    aMax2.XYZ() - (aMax2.Dot(aNormal1) / (1.0 + std::abs(aNormalDot))) * aNormalSum;
+  const double aX = aMax1.XYZ().Dot(aMax2Aligned);
+  const double aY = aMin1.XYZ().Dot(aMax2Aligned);
+  // S2 = kMin2 * I + (kMax2 - kMin2) * t' * t'^T.
+  const double aDelta = aMaxCurv2 - aMinCurv2;
+  const double aD11   = aMaxCurv1 - aMinCurv2 - aDelta * aX * aX;
+  const double aD22   = aMinCurv1 - aMinCurv2 - aDelta * aY * aY;
+  const double aD12   = -aDelta * aX * aY;
+
+  // Spectral radius of the symmetric operator difference.
+  myGap = std::abs(0.5 * (aD11 + aD22)) + std::hypot(0.5 * (aD11 - aD22), aD12);
 }
 
 LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const double EpsNul,
@@ -283,30 +311,28 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const double Ep
       myLambda2U(0.0),
       myLambda1V(0.0),
       myLambda2V(0.0),
-      myETA1(0.0),
-      myETA2(0.0),
-      myETA(0.0),
-      myZETA1(0.0),
-      myZETA2(0.0),
-      myZETA(0.0),
-      myAlpha(0.0),
+      myCurvatureScale(0.0),
       myGap(0.0)
 {
-  myepsnul = EpsNul;
-  myepsC0  = EpsC0;
-  myepsC1  = EpsC1;
-  myepsC2  = EpsC2;
-  myepsG1  = EpsG1;
-  myperce  = Percent;
-  mymaxlen = Maxlen;
-  myIsDone = true;
+  myepsnul      = EpsNul;
+  myepsC0       = EpsC0;
+  myepsC1       = EpsC1;
+  myepsC2       = EpsC2;
+  myepsG1       = EpsG1;
+  myperce       = Percent;
+  mymaxlen      = Maxlen;
+  myIsDone      = false;
+  myTypeCont    = GeomAbs_C0;
+  myErrorStatus = LocalAnalysis_InvalidInput;
 }
 
 void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps&  Surf1,
                                                       GeomLProp_SLProps&  Surf2,
                                                       const GeomAbs_Shape Order)
 {
-  myTypeCont = Order;
+  myIsDone      = true;
+  myErrorStatus = LocalAnalysis_NoError;
+  myTypeCont    = Order;
   switch (Order)
   {
     case GeomAbs_C0: {
@@ -332,10 +358,15 @@ void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(GeomLProp_SLProps&  Surf1,
     case GeomAbs_G2: {
       SurfC0(Surf1, Surf2);
       SurfG1(Surf1, Surf2);
-      SurfG2(Surf1, Surf2);
+      if (myIsDone)
+      {
+        SurfG2(Surf1, Surf2);
+      }
     }
     break;
     default: {
+      myIsDone      = false;
+      myErrorStatus = LocalAnalysis_InvalidInput;
     }
   }
 }
@@ -357,78 +388,19 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(
   const double                     EpsG1,
   const double                     Percent,
   const double                     Maxlen)
-    : myContC0(0.0),
-      myContC1U(0.0),
-      myContC1V(0.0),
-      myContC2U(0.0),
-      myContC2V(0.0),
-      myContG1(0.0),
-      myLambda1U(0.0),
-      myLambda2U(0.0),
-      myLambda1V(0.0),
-      myLambda2V(0.0),
-      myETA1(0.0),
-      myETA2(0.0),
-      myETA(0.0),
-      myZETA1(0.0),
-      myZETA2(0.0),
-      myZETA(0.0),
-      myAlpha(0.0),
-      myGap(0.0)
+    : LocalAnalysis_SurfaceContinuity(EpsNul, EpsC0, EpsC1, EpsC2, EpsG1, Percent, Maxlen)
 {
-  myTypeCont = Ordre;
-  myepsnul   = EpsNul;
-  myepsC0    = EpsC0;
-  myepsC1    = EpsC1;
-  myepsC2    = EpsC2;
-  myepsG1    = EpsG1;
-  myperce    = Percent;
-  mymaxlen   = Maxlen;
-  myIsDone   = true;
-  switch (Ordre)
+  if (Surf1.IsNull() || Surf2.IsNull())
   {
-    case GeomAbs_C0: {
-      GeomLProp_SLProps Surfa1(Surf1, u1, v1, 0, myepsnul);
-      GeomLProp_SLProps Surfa2(Surf2, u2, v2, 0, myepsnul);
-      SurfC0(Surfa1, Surfa2);
-    }
-    break;
-    case GeomAbs_C1: {
-      GeomLProp_SLProps Surfa1(Surf1, u1, v1, 1, myepsnul);
-      GeomLProp_SLProps Surfa2(Surf2, u2, v2, 1, myepsnul);
-      SurfC0(Surfa1, Surfa2);
-      SurfC1(Surfa1, Surfa2);
-    }
-    break;
-    case GeomAbs_C2: {
-      GeomLProp_SLProps Surfa1(Surf1, u1, v1, 2, myepsnul);
-      GeomLProp_SLProps Surfa2(Surf2, u2, v2, 2, myepsnul);
-      SurfC0(Surfa1, Surfa2);
-      SurfC1(Surfa1, Surfa2);
-      SurfC2(Surfa1, Surfa2);
-    }
-    break;
-    case GeomAbs_G1: {
-      GeomLProp_SLProps Surfa1(Surf1, u1, v1, 1, myepsnul);
-      GeomLProp_SLProps Surfa2(Surf2, u2, v2, 1, myepsnul);
-      SurfC0(Surfa1, Surfa2);
-      SurfG1(Surfa1, Surfa2);
-    }
-    break;
-    case GeomAbs_G2: {
-      GeomLProp_SLProps Surfa1(Surf1, u1, v1, 2, myepsnul);
-      GeomLProp_SLProps Surfa2(Surf2, u2, v2, 2, myepsnul);
-      SurfC0(Surfa1, Surfa2);
-      SurfG1(Surfa1, Surfa2);
-      SurfG2(Surfa1, Surfa2);
-    }
-    break;
-    default: {
-    }
+    return;
   }
+  const int         aDerivativeOrder = derivativeOrder(Ordre);
+  GeomLProp_SLProps aProps1(Surf1, u1, v1, aDerivativeOrder, myepsnul);
+  GeomLProp_SLProps aProps2(Surf2, u2, v2, aDerivativeOrder, myepsnul);
+  ComputeAnalysis(aProps1, aProps2, Ordre);
 }
 
-/*********************************************************************************/
+//=================================================================================================
 
 LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(
   const occ::handle<Geom2d_Curve>& curv1,
@@ -444,98 +416,23 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(
   const double                     EpsG1,
   const double                     Percent,
   const double                     Maxlen)
-    : myContC0(0.0),
-      myContC1U(0.0),
-      myContC1V(0.0),
-      myContC2U(0.0),
-      myContC2V(0.0),
-      myContG1(0.0),
-      myLambda1U(0.0),
-      myLambda2U(0.0),
-      myLambda1V(0.0),
-      myLambda2V(0.0),
-      myETA1(0.0),
-      myETA2(0.0),
-      myETA(0.0),
-      myZETA1(0.0),
-      myZETA2(0.0),
-      myZETA(0.0),
-      myAlpha(0.0),
-      myGap(0.0)
+    : LocalAnalysis_SurfaceContinuity(EpsNul, EpsC0, EpsC1, EpsC2, EpsG1, Percent, Maxlen)
 {
-  double pard1, parf1, pard2, parf2, u1, v1, u2, v2;
-
-  myTypeCont = Ordre;
-  myepsnul   = EpsNul;
-  myepsC0    = EpsC0;
-  myepsC1    = EpsC1;
-  myepsC2    = EpsC2;
-  myepsG1    = EpsG1;
-  myperce    = Percent;
-  mymaxlen   = Maxlen;
-  myIsDone   = true;
-
-  pard1 = curv1->FirstParameter();
-  pard2 = curv2->FirstParameter();
-  parf1 = curv1->LastParameter();
-  parf2 = curv2->LastParameter();
-
-  if ((U > parf1) || (U < pard1) || (U > parf2) || (U < pard2))
+  if (curv1.IsNull() || curv2.IsNull() || Surf1.IsNull() || Surf2.IsNull()
+      || U < curv1->FirstParameter() || U > curv1->LastParameter() || U < curv2->FirstParameter()
+      || U > curv2->LastParameter())
   {
-    myIsDone = false;
+    return;
   }
-  else
-  {
-    gp_Pnt2d pt1 = curv1->Value(U);
-    gp_Pnt2d pt2 = curv2->Value(U);
-
-    pt1.Coord(u1, v1);
-    pt2.Coord(u2, v2);
-    switch (Ordre)
-    {
-      case GeomAbs_C0: {
-        GeomLProp_SLProps Surfa1(Surf1, u1, v1, 0, myepsnul);
-        GeomLProp_SLProps Surfa2(Surf2, u2, v2, 0, myepsnul);
-        SurfC0(Surfa1, Surfa2);
-      }
-      break;
-      case GeomAbs_C1: {
-        GeomLProp_SLProps Surfa1(Surf1, u1, v1, 1, myepsnul);
-        GeomLProp_SLProps Surfa2(Surf2, u2, v2, 1, myepsnul);
-        SurfC0(Surfa1, Surfa2);
-        SurfC1(Surfa1, Surfa2);
-      }
-      break;
-      case GeomAbs_C2: {
-        GeomLProp_SLProps Surfa1(Surf1, u1, v1, 2, myepsnul);
-        GeomLProp_SLProps Surfa2(Surf2, u2, v2, 2, myepsnul);
-        SurfC0(Surfa1, Surfa2);
-        SurfC1(Surfa1, Surfa2);
-        SurfC2(Surfa1, Surfa2);
-      }
-      break;
-      case GeomAbs_G1: {
-        GeomLProp_SLProps Surfa1(Surf1, u1, v1, 1, myepsnul);
-        GeomLProp_SLProps Surfa2(Surf2, u2, v2, 1, myepsnul);
-        SurfC0(Surfa1, Surfa2);
-        SurfG1(Surfa1, Surfa2);
-      }
-      break;
-      case GeomAbs_G2: {
-        GeomLProp_SLProps Surfa1(Surf1, u1, v1, 2, myepsnul);
-        GeomLProp_SLProps Surfa2(Surf2, u2, v2, 2, myepsnul);
-        SurfC0(Surfa1, Surfa2);
-        SurfG1(Surfa1, Surfa2);
-        SurfG2(Surfa1, Surfa2);
-      }
-      break;
-      default: {
-      }
-    }
-  }
+  const gp_Pnt2d    aUV1             = curv1->EvalD0(U);
+  const gp_Pnt2d    aUV2             = curv2->EvalD0(U);
+  const int         aDerivativeOrder = derivativeOrder(Ordre);
+  GeomLProp_SLProps aProps1(Surf1, aUV1.X(), aUV1.Y(), aDerivativeOrder, myepsnul);
+  GeomLProp_SLProps aProps2(Surf2, aUV2.X(), aUV2.Y(), aDerivativeOrder, myepsnul);
+  ComputeAnalysis(aProps1, aProps2, Ordre);
 }
 
-/*********************************************************************************/
+//=================================================================================================
 
 bool LocalAnalysis_SurfaceContinuity::IsC0() const
 {
@@ -617,63 +514,15 @@ bool LocalAnalysis_SurfaceContinuity::IsG1() const
 
 bool LocalAnalysis_SurfaceContinuity::IsG2() const
 {
-  double EPSNL;
-  int    itype;
-
   if (!myIsDone)
   {
     throw StdFail_NotDone();
   }
-  itype = 0;
-  EPSNL = 8 * myepsC0 / (mymaxlen * mymaxlen);
-  if (IsG1())
-  {
-    if ((std::abs(myETA) < EPSNL) && (std::abs(myZETA) < EPSNL))
-    {
-      return true;
-    }
-    if ((std::abs(myZETA1) < EPSNL) && (std::abs(myZETA2) < EPSNL))
-    {
-      itype = 1;
-    }
-    else if ((std::abs(myETA1) < EPSNL) && (std::abs(myETA2) < EPSNL))
-    {
-      itype = 1;
-    }
-    else if ((std::abs(std::abs(myZETA) - std::abs(myETA))) < EPSNL)
-    {
-      itype = 1;
-    }
-    else if ((myETA1 < myZETA1) && (myETA2 < myZETA2))
-    {
-      itype = 1;
-    }
-    else if ((myETA1 > myZETA1) && (myETA2 > myZETA2))
-    {
-      itype = 1;
-    }
-    if (itype == 1)
-    {
-
-      if ((myETA >= (2 * myZETA)) && (myGap <= (myperce * (myETA - myZETA))))
-      {
-        return true;
-      }
-      if ((myZETA >= myETA) && (myGap <= (myperce * myZETA)))
-      {
-        return true;
-      }
-      return (myZETA <= myETA) && (myETA <= (2 * myZETA)) && (myGap <= (myperce * myETA));
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
+  // Scale the relative tolerance by the largest absolute principal curvature
+  // of either surface. The positional tolerance supplies an absolute floor
+  // near flat regions: 8 * EpsC0 / Maxlen^2.
+  const double aNullCurvature = 8.0 * myepsC0 / (mymaxlen * mymaxlen);
+  return IsG1() && myGap <= std::max(aNullCurvature, myperce * myCurvatureScale);
 }
 
 /*********************************************************************************/

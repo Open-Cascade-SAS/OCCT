@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <utility>
 
 namespace MathSys
 {
@@ -121,11 +122,16 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
     }
   }
 
-  math_Vector aResidual(aM, 0.0);
-  math_Vector aTrialResidual(aM, 0.0);
-  math_Matrix aJacobian(aM, aN, 0.0);
-  bool        hasTakenStep      = false;
-  bool        isLastStepWithinX = false;
+  math_Vector                      aResidual(aM, 0.0);
+  math_Vector                      aTrialResidual(aM, 0.0);
+  math_Vector                      aTrial(aN, 0.0);
+  math_Vector                      aRightHandSide(aM);
+  math_Vector                      aGradient(aN);
+  math_Vector                      aSearchGradient(aN);
+  NCollection_LinearVector<size_t> aFreeVariables;
+  math_Matrix                      aJacobian(aM, aN, 0.0);
+  bool                             hasTakenStep      = false;
+  bool                             isLastStepWithinX = false;
   for (uint32_t anIter = 0; anIter < theMaxIter; ++anIter)
   {
     aResult.NbIterations = anIter;
@@ -157,8 +163,7 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
       return aResult;
     }
 
-    math_Vector aRightHandSide(aM, 0.0);
-    math_Vector aGradient(aN, 0.0);
+    aGradient.Init(0.0);
     for (size_t aRow = 0; aRow < aM; ++aRow)
     {
       aRightHandSide.ChangeAt(aRow) = -aResidual.At(aRow);
@@ -180,12 +185,13 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
       aResult.Status = aLinearStep.Status;
       break;
     }
-    math_Vector aDirection      = *aLinearStep.Solution;
-    math_Vector aSearchGradient = aGradient;
+    math_Vector aDirection = std::move(*aLinearStep.Solution);
+    aSearchGradient        = aGradient;
 
     if (hasBounds)
     {
-      NCollection_LinearVector<size_t> aFreeVariables;
+      aFreeVariables.Clear(false);
+      aFreeVariables.Reserve(aN);
       for (size_t aVariable = 0; aVariable < aN; ++aVariable)
       {
         const bool isBlocked =
@@ -285,11 +291,10 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
 
     const long double aMerit     = 0.5L * aResidualNorm * aResidualNorm;
     bool              isAccepted = false;
-    math_Vector       aTrial(aN, 0.0);
-    for (uint32_t aLineIter = 0; aLineIter < 24; ++aLineIter)
+    for (double anAlpha = 1.0; anAlpha > 0.0; anAlpha *= 0.5)
     {
-      const double anAlpha              = std::ldexp(1.0, -static_cast<int>(aLineIter));
-      double       aProjectedDerivative = 0.0;
+      double aProjectedDerivative = 0.0;
+      bool   hasMoved             = false;
       for (size_t anOffset = 0; anOffset < aN; ++anOffset)
       {
         aTrial.ChangeAt(anOffset) = aSolution.At(anOffset) + anAlpha * aDirection.At(anOffset);
@@ -300,8 +305,14 @@ SystemResult NewtonImpl(FuncSetType&       theFunc,
         }
         aProjectedDerivative +=
           aGradient.At(anOffset) * (aTrial.At(anOffset) - aSolution.At(anOffset));
+        hasMoved = hasMoved || aTrial.At(anOffset) != aSolution.At(anOffset);
       }
 
+      // Smaller steps cannot move a coordinate once rounding removes every change.
+      if (!hasMoved)
+      {
+        break;
+      }
       if (!(aProjectedDerivative < 0.0))
       {
         continue;

@@ -45,7 +45,10 @@ DE_ConfigurationNode::DE_ConfigurationNode(
 bool DE_ConfigurationNode::Load(const TCollection_AsciiString& theResourcePath)
 {
   occ::handle<DE_ConfigurationContext> aResource = new DE_ConfigurationContext();
-  aResource->LoadFile(theResourcePath);
+  if (!aResource->LoadFile(theResourcePath))
+  {
+    return false;
+  }
   return Load(aResource);
 }
 

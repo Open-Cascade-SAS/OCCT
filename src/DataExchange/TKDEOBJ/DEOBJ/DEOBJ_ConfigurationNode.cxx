@@ -210,7 +210,14 @@ bool DEOBJ_ConfigurationNode::IsExportSupported() const
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
+
+bool DEOBJ_ConfigurationNode::IsStreamSupported() const
+{
+  return true;
+}
+
+//==================================================================================================
 
 TCollection_AsciiString DEOBJ_ConfigurationNode::GetFormat() const
 {

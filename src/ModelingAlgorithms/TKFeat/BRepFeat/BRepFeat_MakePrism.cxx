@@ -847,10 +847,12 @@ void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until, const dou
   if (Until.IsNull())
   {
     Perform(Length);
+    return;
   }
   if (Length == 0)
   {
     Perform(Until);
+    return;
   }
   TopExp_Explorer exp(Until, TopAbs_FACE);
   if (!exp.More())

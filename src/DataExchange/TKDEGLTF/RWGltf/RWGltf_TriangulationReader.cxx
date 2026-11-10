@@ -565,7 +565,95 @@ bool RWGltf_TriangulationReader::readBuffer(
   return ReadStream(theSourceMesh, theDestMesh, theStream, theAccessor, theType);
 }
 
-//=================================================================================================
+//==================================================================================================
+
+template <typename TheIndexType>
+bool RWGltf_TriangulationReader::readIndices(
+  const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceMesh,
+  const occ::handle<Poly_Triangulation>&            theDestMesh,
+  std::istream&                                     theStream,
+  const RWGltf_GltfAccessor&                        theAccessor) const
+{
+  const TCollection_AsciiString& aName = theSourceMesh->Id();
+  const bool    isTriangles = theSourceMesh->PrimitiveMode() == RWGltf_GltfPrimitiveMode_Triangles;
+  const int64_t aCount      = isTriangles ? theAccessor.Count / 3 : theAccessor.Count;
+  if (aCount > std::numeric_limits<int>::max())
+  {
+    reportError(TCollection_AsciiString("Buffer '") + aName + "' defines too big array.");
+    return false;
+  }
+  const int  aNbElements = static_cast<int>(aCount);
+  const bool isAllocated =
+    isTriangles ? setNbTriangles(theDestMesh, aNbElements) : setNbEdges(theDestMesh, aNbElements);
+  if (!isAllocated)
+  {
+    return false;
+  }
+  const size_t aStride =
+    theAccessor.ByteStride != 0 ? theAccessor.ByteStride : sizeof(TheIndexType);
+  Standard_ReadBuffer aBuffer(theAccessor.Count * aStride, aStride);
+  Poly_Triangle       aTriangle;
+  int                 aLastIndex = 0;
+  for (int anElement = 0; anElement < aNbElements; ++anElement)
+  {
+    bool areIndicesValid = true;
+    for (int aComponent = 1; aComponent <= (isTriangles ? 3 : 1); ++aComponent)
+    {
+      const TheIndexType* anIndex = aBuffer.ReadChunk<TheIndexType>(theStream);
+      if (anIndex == nullptr)
+      {
+        reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
+        return false;
+      }
+      if (static_cast<uint32_t>(*anIndex) >= static_cast<uint32_t>(theDestMesh->NbNodes()))
+      {
+        areIndicesValid = false;
+        continue;
+      }
+      aTriangle.ChangeValue(aComponent) = THE_LOWER_NODE_INDEX + static_cast<int>(*anIndex);
+    }
+    int wasSet = 0;
+    if (areIndicesValid)
+    {
+      wasSet = isTriangles
+                 ? setTriangle(theDestMesh, THE_LOWER_TRI_INDEX + aLastIndex, aTriangle)
+                 : setEdge(theDestMesh, THE_LOWER_TRI_INDEX + aLastIndex, aTriangle.Value(1));
+    }
+    if (!wasSet)
+    {
+      reportError(TCollection_AsciiString("Buffer '") + aName + "' refers to invalid indices.");
+      if (!isTriangles)
+      {
+        return false;
+      }
+    }
+    if (wasSet > 0)
+    {
+      ++aLastIndex;
+    }
+  }
+  const int aNbDegenerate = aNbElements - aLastIndex;
+  if (aNbDegenerate == 0)
+  {
+    return true;
+  }
+  if (aNbDegenerate == aNbElements)
+  {
+    Message::SendWarning(TCollection_AsciiString("Buffer '") + aName
+                         + "' has been skipped (all elements are degenerative in)");
+    return false;
+  }
+  theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
+  if (myLoadingStatistic == nullptr && myToPrintDebugMessages)
+  {
+    Message::SendTrace(
+      TCollection_AsciiString() + aNbDegenerate
+      + " degenerate triangles have been skipped while reading glTF triangulation '" + aName + "'");
+  }
+  return setNbTriangles(theDestMesh, aLastIndex, true);
+}
+
+//==================================================================================================
 
 bool RWGltf_TriangulationReader::ReadStream(
   const occ::handle<RWGltf_GltfLatePrimitiveArray>& theSourceMesh,
@@ -592,237 +680,17 @@ bool RWGltf_TriangulationReader::ReadStream(
       {
         break;
       }
-
-      Poly_Triangle aVec3;
-      if (theAccessor.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
+      switch (theAccessor.ComponentType)
       {
-        if ((theAccessor.Count / 3) > std::numeric_limits<int>::max())
-        {
-          reportError(TCollection_AsciiString("Buffer '") + aName + "' defines too big array.");
-          return false;
-        }
-
-        const bool isTriangles = aPrimMode == RWGltf_GltfPrimitiveMode_Triangles;
-        const int  aCounter = isTriangles ? (int)(theAccessor.Count / 3) : (int)(theAccessor.Count);
-        if ((isTriangles && !setNbTriangles(theDestMesh, aCounter))
-            || !setNbEdges(theDestMesh, aCounter))
-        {
-          return false;
-        }
-        const size_t aStride =
-          theAccessor.ByteStride != 0 ? theAccessor.ByteStride : sizeof(uint16_t);
-        Standard_ReadBuffer aBuffer(theAccessor.Count * aStride, aStride);
-        int                 aLastIndex = 0;
-        for (int aTriIter = 0; aTriIter < aCounter; ++aTriIter)
-        {
-          int wasSet = false;
-          if (isTriangles)
-          {
-            for (int anIter = 1; anIter <= 3; ++anIter)
-            {
-              const uint16_t* anIndex = aBuffer.ReadChunk<uint16_t>(theStream);
-              if (anIndex == nullptr)
-              {
-                reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
-                return false;
-              }
-              aVec3.ChangeValue(anIter) = THE_LOWER_NODE_INDEX + *anIndex;
-            }
-            wasSet = setTriangle(theDestMesh, THE_LOWER_TRI_INDEX + aLastIndex, aVec3);
-          }
-          else
-          {
-            const uint16_t* anIndex = aBuffer.ReadChunk<uint16_t>(theStream);
-            if (anIndex == nullptr)
-            {
-              reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
-              return false;
-            }
-            wasSet = setEdge(theDestMesh,
-                             THE_LOWER_TRI_INDEX + aLastIndex,
-                             THE_LOWER_NODE_INDEX + *anIndex);
-          }
-
-          if (!wasSet)
-          {
-            reportError(TCollection_AsciiString("Buffer '") + aName
-                        + "' refers to invalid indices.");
-          }
-          if (wasSet > 0)
-          {
-            aLastIndex++;
-          }
-        }
-        const int aNbDegenerate = aCounter - aLastIndex;
-        if (aNbDegenerate > 0)
-        {
-          if (aNbDegenerate == aCounter)
-          {
-            Message::SendWarning(TCollection_AsciiString("Buffer '") + aName
-                                 + "' has been skipped (all elements are degenerative in)");
-            return false;
-          }
-          theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
-          if ((myLoadingStatistic == nullptr) && myToPrintDebugMessages)
-          {
-            Message::SendTrace(
-              TCollection_AsciiString() + aNbDegenerate
-              + " degenerate triangles have been skipped while reading glTF triangulation '" + aName
-              + "'");
-          }
-          if (!setNbTriangles(theDestMesh, aLastIndex, true))
-          {
-            return false;
-          }
-        }
+        case RWGltf_GltfAccessorCompType_UInt8:
+          return readIndices<uint8_t>(theSourceMesh, theDestMesh, theStream, theAccessor);
+        case RWGltf_GltfAccessorCompType_UInt16:
+          return readIndices<uint16_t>(theSourceMesh, theDestMesh, theStream, theAccessor);
+        case RWGltf_GltfAccessorCompType_UInt32:
+          return readIndices<uint32_t>(theSourceMesh, theDestMesh, theStream, theAccessor);
+        default:
+          break;
       }
-      else if (theAccessor.ComponentType == RWGltf_GltfAccessorCompType_UInt32)
-      {
-        if ((theAccessor.Count / 3) > std::numeric_limits<int>::max())
-        {
-          reportError(TCollection_AsciiString("Buffer '") + aName + "' defines too big array.");
-          return false;
-        }
-
-        const int aNbTris = (int)(theAccessor.Count / 3);
-        if (!setNbTriangles(theDestMesh, aNbTris))
-        {
-          return false;
-        }
-        const size_t aStride =
-          theAccessor.ByteStride != 0 ? theAccessor.ByteStride : sizeof(uint32_t);
-        Standard_ReadBuffer aBuffer(theAccessor.Count * aStride, aStride);
-        int                 aLastTriIndex = 0;
-        for (int aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
-        {
-          if (const uint32_t* anIndex0 = aBuffer.ReadChunk<uint32_t>(theStream))
-          {
-            aVec3.ChangeValue(1) = THE_LOWER_NODE_INDEX + *anIndex0;
-          }
-          if (const uint32_t* anIndex1 = aBuffer.ReadChunk<uint32_t>(theStream))
-          {
-            aVec3.ChangeValue(2) = THE_LOWER_NODE_INDEX + *anIndex1;
-          }
-          if (const uint32_t* anIndex2 = aBuffer.ReadChunk<uint32_t>(theStream))
-          {
-            aVec3.ChangeValue(3) = THE_LOWER_NODE_INDEX + *anIndex2;
-          }
-          else
-          {
-            reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
-            return false;
-          }
-
-          const int wasSet = setTriangle(theDestMesh, THE_LOWER_TRI_INDEX + aLastTriIndex, aVec3);
-          if (!wasSet)
-          {
-            reportError(TCollection_AsciiString("Buffer '") + aName
-                        + "' refers to invalid indices.");
-          }
-          if (wasSet > 0)
-          {
-            aLastTriIndex++;
-          }
-        }
-        const int aNbDegenerate = aNbTris - aLastTriIndex;
-        if (aNbDegenerate > 0)
-        {
-          if (aNbDegenerate == aNbTris)
-          {
-            Message::SendWarning(TCollection_AsciiString("Buffer '") + aName
-                                 + "' has been skipped (all elements are degenerative in)");
-            return false;
-          }
-          theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
-          if (myLoadingStatistic == nullptr && myToPrintDebugMessages)
-          {
-            Message::SendTrace(
-              TCollection_AsciiString() + aNbDegenerate
-              + " degenerate triangles have been skipped while reading glTF triangulation '" + aName
-              + "'");
-          }
-          if (!setNbTriangles(theDestMesh, aLastTriIndex, true))
-          {
-            return false;
-          }
-        }
-      }
-      else if (theAccessor.ComponentType == RWGltf_GltfAccessorCompType_UInt8)
-      {
-        if ((theAccessor.Count / 3) > std::numeric_limits<int>::max())
-        {
-          reportError(TCollection_AsciiString("Buffer '") + aName + "' defines too big array.");
-          return false;
-        }
-
-        const int aNbTris = (int)(theAccessor.Count / 3);
-        if (!setNbTriangles(theDestMesh, aNbTris))
-        {
-          return false;
-        }
-        const size_t aStride =
-          theAccessor.ByteStride != 0 ? theAccessor.ByteStride : sizeof(uint8_t);
-        Standard_ReadBuffer aBuffer(theAccessor.Count * aStride, aStride);
-        int                 aLastTriIndex = 0;
-        for (int aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
-        {
-          if (const uint8_t* anIndex0 = aBuffer.ReadChunk<uint8_t>(theStream))
-          {
-            aVec3.ChangeValue(1) = THE_LOWER_NODE_INDEX + (int)*anIndex0;
-          }
-          if (const uint8_t* anIndex1 = aBuffer.ReadChunk<uint8_t>(theStream))
-          {
-            aVec3.ChangeValue(2) = THE_LOWER_NODE_INDEX + (int)*anIndex1;
-          }
-          if (const uint8_t* anIndex2 = aBuffer.ReadChunk<uint8_t>(theStream))
-          {
-            aVec3.ChangeValue(3) = THE_LOWER_NODE_INDEX + (int)*anIndex2;
-          }
-          else
-          {
-            reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
-            return false;
-          }
-
-          const int wasSet = setTriangle(theDestMesh, THE_LOWER_TRI_INDEX + aLastTriIndex, aVec3);
-          if (!wasSet)
-          {
-            reportError(TCollection_AsciiString("Buffer '") + aName
-                        + "' refers to invalid indices.");
-          }
-          if (wasSet > 0)
-          {
-            aLastTriIndex++;
-          }
-        }
-        const int aNbDegenerate = aNbTris - aLastTriIndex;
-        if (aNbDegenerate > 0)
-        {
-          if (aNbDegenerate == aNbTris)
-          {
-            Message::SendWarning(TCollection_AsciiString("Buffer '") + aName
-                                 + "' has been skipped (all elements are degenerative in)");
-            return false;
-          }
-          theSourceMesh->ChangeDegeneratedTriNb() += aNbDegenerate;
-          if (myLoadingStatistic == nullptr && myToPrintDebugMessages)
-          {
-            Message::SendTrace(
-              TCollection_AsciiString() + aNbDegenerate
-              + " degenerate triangles have been skipped while reading glTF triangulation '" + aName
-              + "'");
-          }
-          if (!setNbTriangles(theDestMesh, aLastTriIndex, true))
-          {
-            return false;
-          }
-        }
-      }
-      else
-      {
-        break;
-      }
-
       break;
     }
     case RWGltf_GltfArrayType_Position: {

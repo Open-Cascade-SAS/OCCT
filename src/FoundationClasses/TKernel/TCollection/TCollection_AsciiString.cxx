@@ -14,12 +14,13 @@
 
 #include <TCollection_AsciiString.hxx>
 
-#include <NCollection_UtfIterator.hxx>
+#include <TCollection_UtfIterator.hxx>
 #include <Standard.hxx>
 #include <Standard_NegativeValue.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_NumericError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -27,6 +28,7 @@
 #include <cctype>
 #include <cstring>
 #include <functional>
+#include <limits>
 
 namespace
 {
@@ -37,7 +39,8 @@ static char THE_DEFAULT_CHAR_STRING[1] = {'\0'};
 //! boundary
 inline size_t calculatePaddedSize(const int theLength)
 {
-  return (theLength + 4) & ~0x3; // Always guarantees at least +1 byte, up to +4 bytes
+  return (static_cast<size_t>(theLength) + 4)
+         & ~static_cast<size_t>(3); // Includes the terminator and padding.
 }
 
 template <typename T>
@@ -48,16 +51,24 @@ int utf8Length(const T* theUtfString)
     return 0;
   }
 
-  int aLength = 0;
-  for (NCollection_UtfIterator<T> anIter(theUtfString); *anIter != 0; ++anIter)
+  size_t aLength = 0;
+  for (auto anIter =
+         TCollection_UtfIterator<T>(theUtfString,
+                                    TCollection_UtfIterator<T>::InputMode::NullTerminated);
+       anIter.More();
+       ++anIter)
   {
     aLength += anIter.AdvanceBytesUtf8();
+    if (aLength > static_cast<size_t>((std::numeric_limits<int>::max)()))
+    {
+      throw Standard_RangeError("UTF-8 string exceeds TCollection length range");
+    }
   }
-  return aLength;
+  return static_cast<int>(aLength);
 }
 
 template <typename T>
-void writeUtf8(char* theBuffer, const T* theUtfString)
+void writeUtf8(char* theBuffer, size_t theCapacity, const T* theUtfString)
 {
   if (theUtfString == nullptr)
   {
@@ -66,9 +77,14 @@ void writeUtf8(char* theBuffer, const T* theUtfString)
   }
 
   char* anIterWrite = theBuffer;
-  for (NCollection_UtfIterator<T> anIterRead(theUtfString); *anIterRead != 0; ++anIterRead)
+  for (auto anIterRead =
+         TCollection_UtfIterator<T>(theUtfString,
+                                    TCollection_UtfIterator<T>::InputMode::NullTerminated);
+       anIterRead.More();
+       ++anIterRead)
   {
-    anIterWrite = anIterRead.GetUtf(anIterWrite);
+    anIterWrite = anIterRead.GetUtf(anIterWrite,
+                                    theCapacity - 1 - static_cast<size_t>(anIterWrite - theBuffer));
   }
   *anIterWrite = '\0';
 }
@@ -262,7 +278,7 @@ TCollection_AsciiString::TCollection_AsciiString(const wchar_t* theStringUtf)
 {
   const int aLength = utf8Length(theStringUtf);
   allocate(aLength);
-  writeUtf8(myString, theStringUtf);
+  writeUtf8(myString, static_cast<size_t>(aLength) + 1, theStringUtf);
 }
 
 //=================================================================================================
@@ -295,6 +311,10 @@ void TCollection_AsciiString::AssignCat(const TCollection_ExtendedString& theOth
   }
 
   const int anOldLength = myLength;
+  if (anUtf8Length > (std::numeric_limits<int>::max)() - myLength)
+  {
+    throw Standard_RangeError("UTF-8 concatenation exceeds TCollection length range");
+  }
   reallocate(myLength + anUtf8Length);
   char* aWritePtr = myString + anOldLength;
   theOther.ToUTF8CString(aWritePtr);
@@ -310,9 +330,13 @@ void TCollection_AsciiString::AssignCat(const wchar_t* theStringUtf)
     return;
   }
 
+  if (anUtf8Length > (std::numeric_limits<int>::max)() - myLength)
+  {
+    throw Standard_RangeError("UTF-8 concatenation exceeds TCollection length range");
+  }
   const int anOldLength = myLength;
   reallocate(myLength + anUtf8Length);
-  writeUtf8(myString + anOldLength, theStringUtf);
+  writeUtf8(myString + anOldLength, static_cast<size_t>(anUtf8Length) + 1, theStringUtf);
 }
 
 //=================================================================================================
@@ -454,13 +478,17 @@ TCollection_AsciiString TCollection_AsciiString::Cat(const TCollection_ExtendedS
 
 TCollection_AsciiString TCollection_AsciiString::Cat(const wchar_t* theStringUtf) const
 {
-  const int               aUtf8Length = utf8Length(theStringUtf);
+  const int aUtf8Length = utf8Length(theStringUtf);
+  if (aUtf8Length > (std::numeric_limits<int>::max)() - myLength)
+  {
+    throw Standard_RangeError("UTF-8 concatenation exceeds TCollection length range");
+  }
   TCollection_AsciiString aResult(myLength + aUtf8Length, '\0');
   if (myLength > 0)
   {
     memcpy(aResult.myString, myString, myLength);
   }
-  writeUtf8(aResult.myString + myLength, theStringUtf);
+  writeUtf8(aResult.myString + myLength, static_cast<size_t>(aUtf8Length) + 1, theStringUtf);
   return aResult;
 }
 
@@ -1392,11 +1420,12 @@ void TCollection_AsciiString::UpperCase()
 
 int TCollection_AsciiString::UsefullLength() const
 {
-  // Use NCollection_UtfIterator to correctly handle multibyte UTF-8 characters.
+  // Use TCollection_UtfIterator to correctly handle multibyte UTF-8 characters.
   // Non-ASCII Unicode characters (code point > 0x7F) are always considered graphic.
   // The method trims trailing non-graphic ASCII characters (spaces, control chars).
   int aLastGraphicEnd = 0;
-  for (NCollection_UtfIterator<char> anIter(myString); *anIter != 0; ++anIter)
+  for (TCollection_UtfIterator<char> anIter(myString, static_cast<size_t>(myLength)); anIter.More();
+       ++anIter)
   {
     const char32_t aChar = *anIter;
     if (aChar > char32_t(0x7F) || std::isgraph(static_cast<int>(aChar)) != 0)

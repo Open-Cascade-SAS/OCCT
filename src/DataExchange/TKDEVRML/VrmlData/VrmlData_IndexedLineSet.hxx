@@ -94,16 +94,16 @@ public:
 
   /**
    * Query one polygon.
-   * @param iPolygon
+   * @param thePolygonIndex
    *   rank of the polygon [0 .. N-1]
-   * @param outIndice
+   * @param theIndices
    *   <tt>[out]</tt> array of vertex indice
    * @return
    *   number of vertice in the polygon - the dimension of outIndice array
    */
-  inline int Polygon(const int iPolygon, const int*& outIndice)
+  inline int Polygon(const size_t thePolygonIndex, const int*& theIndices)
   {
-    return *(outIndice = myArrPolygons[iPolygon])++;
+    return *(theIndices = myArrPolygons[thePolygonIndex])++;
   }
 
   /**

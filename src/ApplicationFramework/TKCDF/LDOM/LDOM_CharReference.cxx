@@ -17,6 +17,7 @@
 
 #include <Standard_CString.hxx>
 
+#include <array>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -34,6 +35,8 @@ constexpr int ENTI_AMP  = 1;
 constexpr int ENTI_LT   = 2;
 constexpr int ENTI_GT   = 3;
 constexpr int ENTI_QUOT = 4;
+
+inline int characterType(const unsigned int theCharacter);
 
 struct entityRef
 {
@@ -183,9 +186,10 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
       endSrc = ptrSrc;
       break;
     }
-    if (myTab[iSrc] != NORMAL_C)
+    const int aCode = characterType(iSrc);
+    if (aCode != NORMAL_C)
     {
-      if (isAttribute || myTab[iSrc] != ENTI_QUOT)
+      if (isAttribute || aCode != ENTI_QUOT)
       {
         aCount++;
       }
@@ -204,7 +208,7 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
     for (ptrSrc = theSrc; ptrSrc < endSrc; ptrSrc++)
     {
       const unsigned int iSrc  = (unsigned int)*(const unsigned char*)ptrSrc;
-      const int          aCode = myTab[iSrc];
+      const int          aCode = characterType(iSrc);
       if (aCode == NORMAL_C)
       { // normal (regular) character
         *ptrDest++ = *ptrSrc;
@@ -231,7 +235,9 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
   return aDest;
 }
 
-int LDOM_CharReference::myTab[256] = {
+namespace
+{
+constexpr std::array<int, 256> THE_CHARACTER_TYPES = {
   NORMAL_C,  // 000
   CHAR_REF,  // 001
   CHAR_REF,  // 002
@@ -559,3 +565,9 @@ int LDOM_CharReference::myTab[256] = {
   CHAR_REF  // 0ff
 #endif // LDOM_ALLOW_LATIN_1
 };
+
+inline int characterType(const unsigned int theCharacter)
+{
+  return THE_CHARACTER_TYPES[theCharacter];
+}
+} // namespace

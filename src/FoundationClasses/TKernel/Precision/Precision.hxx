@@ -352,6 +352,13 @@ public:
     return std::abs(R) >= (0.5 * Precision::Infinite());
   }
 
+  //! Returns True if R is neither NaN nor a value considered infinite by OCCT.
+  //!
+  //! Unlike the standard IEEE finite check, this follows the OCCT convention
+  //! that values approaching Precision::Infinite() represent unbounded domains
+  //! even when they are finite in the IEEE-754 sense.
+  static inline bool IsFinite(const double R) { return R == R && !Precision::IsInfinite(R); }
+
   //! Returns True if R may be considered as a positive
   //! infinite number. Currently R > 1e100
   static constexpr bool IsPositiveInfinite(const double R)

@@ -36,6 +36,7 @@ public:
   //! handled by reference.
   //! Creates a 2d curve from a HCurve2d. This
   //! cannot process the OtherCurves.
+  //! Periodic trim parameters retain the adaptor's parameter chart.
   Standard_EXPORT static occ::handle<Geom2d_Curve> MakeCurve(const Adaptor2d_Curve2d& HC);
 };
 

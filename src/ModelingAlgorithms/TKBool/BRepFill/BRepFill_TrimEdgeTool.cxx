@@ -29,12 +29,15 @@
 #include <gp_Pnt2d.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopExp.hxx>
 #include <BRepAdaptor_Curve.hxx>
+
+#include <utility>
 
 #ifdef OCCT_DEBUG
 #endif
@@ -300,6 +303,48 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge&            Edge1,
 
   EvalParameters(myBis, AC1, Params);
   EvalParameters(myBis, AC2, Points2);
+
+  if (Params.Length() != Points2.Length())
+  {
+    // An offset can meet the bisector outside its intersections with the other offset.
+    NCollection_LinearVector<std::pair<gp_Pnt, gp_Pnt>> aCommon;
+    NCollection_LinearVector<gp_Pnt> aCandidates2(static_cast<size_t>(Points2.Length()));
+    for (const gp_Pnt& aParameter : Points2)
+    {
+      aCandidates2.Append(aParameter);
+    }
+    for (const gp_Pnt& aParameter1 : Params)
+    {
+      const gp_Pnt2d aPoint1   = AC1.Value(aParameter1.Y());
+      const gp_Pnt2d aBisPoint = myBis.Value(aParameter1.X());
+      if (aPoint1.SquareDistance(aBisPoint) > Precision::SquareConfusion())
+      {
+        continue;
+      }
+      for (size_t aSecond = 0; aSecond < aCandidates2.Size(); ++aSecond)
+      {
+        const gp_Pnt&  aParameter2 = aCandidates2[aSecond];
+        const gp_Pnt2d aPoint2     = AC2.Value(aParameter2.Y());
+        if (aPoint1.SquareDistance(aPoint2) <= Precision::SquareConfusion()
+            && aPoint2.SquareDistance(aBisPoint) <= Precision::SquareConfusion())
+        {
+          aCommon.EmplaceAppend(aParameter1, aParameter2);
+          aCandidates2.Erase(aSecond);
+          break;
+        }
+      }
+    }
+    if (!aCommon.IsEmpty())
+    {
+      Params.Clear();
+      Points2.Clear();
+      for (const auto& [aParameter1, aParameter2] : aCommon)
+      {
+        Params.Append(aParameter1);
+        Points2.Append(aParameter2);
+      }
+    }
+  }
 
   int    SeanceDeRattrapage = 0;
   double TolInit            = 1.e-9;

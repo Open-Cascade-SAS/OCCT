@@ -88,8 +88,8 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
 
   if (!theIsPeriodic)
   {
-    // Fast path: params are sorted (ascending from buildKnotAwareParams),
-    // so just compare against the next knot boundary.
+    // Count parameters inside both boundaries of the current span.
+
     if (theTargetSpan + 1 > theFlatKnots.Upper())
     {
       return aCount;
@@ -97,7 +97,8 @@ inline int countSpanSize(const NCollection_Array1<double>& theParams,
     const double aNextKnot = theFlatKnots.Value(theTargetSpan + 1);
     for (int i = theStartIdx + 1; i < aNb; ++i)
     {
-      if (theParams.Value(aLower + i) >= aNextKnot)
+      if (theParams.Value(aLower + i) < theFlatKnots.Value(theTargetSpan)
+          || theParams.Value(aLower + i) >= aNextKnot)
       {
         break;
       }
@@ -175,11 +176,11 @@ NCollection_Array1<ResultT> evaluateGridCached(const CurveData&                 
     double       aAdjParam = aParam;
     int          aSpan     = 0;
 
-    // Precondition: theParams is sorted ascending (guaranteed by buildKnotAwareParams).
+    // Reuse a span only while the parameter remains inside both boundaries.
     // For non-periodic curves, skip locateSpan when the parameter is still within
     // the current span. This avoids BSplCLib::Hunt binary search for the common case.
     // locateSpan is called only on span transitions, preserving exact semantics.
-    if (!theData.IsPeriodic && aPrevSpan >= 0 && aParam < aSpanEnd)
+    if (!theData.IsPeriodic && aPrevSpan >= 0 && aParam >= aSpanStart && aParam < aSpanEnd)
     {
       aAdjParam = aParam;
       aSpan     = aPrevSpan;
@@ -380,7 +381,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineCurve::EvaluateGridDN(
   const int aLow      = theParams.Lower();
 
   // Derivatives beyond degree are zero
-  if (theN > aData.Degree)
+  if (theN > aData.Degree && aData.Weights == nullptr)
   {
     NCollection_Array1<gp_Vec> aResult(1, aNbParams);
     const gp_Vec               aZero(0.0, 0.0, 0.0);
@@ -409,8 +410,8 @@ NCollection_Array1<gp_Vec> GeomGridEval_BSplineCurve::EvaluateGridDN(
                  aData.IsPeriodic,
                  *aData.Poles,
                  aData.Weights,
-                 *aData.Knots,
-                 aData.Mults,
+                 *aData.FlatKnots,
+                 BSplCLib::NoMults(),
                  aDN);
     aResult.SetValue(i + 1, aDN);
   }

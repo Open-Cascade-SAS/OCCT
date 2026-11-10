@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DE_ValidationUtils.hxx>
 #include <VrmlData_Coordinate.hxx>
 #include <VrmlData_Geometry.hxx>
 #include <VrmlData_Group.hxx>
@@ -483,16 +484,47 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
         NCollection_List<TCollection_AsciiString>::Iterator anIter(lstURL);
         for (; anIter.More(); anIter.Next())
         {
-          std::ifstream                  aStream;
+          std::ifstream                  aFileInput;
+          std::istream*                  anInput   = &aFileInput;
           const TCollection_AsciiString& aFileName = anIter.Value();
-          if (!OK(aStatus, openFile(aStream, aFileName)))
+          TCollection_AsciiString        aName;
+          if (Scene().myResourceStreams != nullptr)
           {
-            break;
+            anInput = DE_ValidationUtils::FindReadStream(*Scene().myResourceStreams,
+                                                         Scene().myResourceName,
+                                                         aFileName,
+                                                         aName);
+            if (anInput == nullptr)
+            {
+              continue;
+            }
+            // Reject cyclic Inline references.
+            for (const VrmlData_Scene* aParent = &Scene(); aParent != nullptr;
+                 aParent                       = aParent->myResourceParent)
+            {
+              if (aParent->myResourceName == aName)
+              {
+                return VrmlData_VrmlFormatError;
+              }
+            }
+            anInput->clear();
+            anInput->seekg(0, std::ios::beg);
+            if (!anInput->good())
+            {
+              return VrmlData_CannotOpenFile;
+            }
+          }
+          else if (!OK(aStatus, openFile(aFileInput, aFileName)))
+          {
+            continue;
           }
           VrmlData_Scene aScene(Scene().Allocator());
-          aScene.myLinearScale = Scene().myLinearScale;
-          aScene.myVrmlDir     = Scene().myVrmlDir;
-          aScene << aStream;
+          aScene.myLinearScale     = Scene().myLinearScale;
+          aScene.myVrmlDir         = Scene().myVrmlDir;
+          aScene.myResourceStreams = Scene().myResourceStreams;
+          aScene.myResourceName    = aName;
+          aScene.myResourceParent  = &Scene();
+          aScene << *anInput;
           if (!OK(aStatus, aScene.Status()))
           {
             break;
@@ -506,6 +538,14 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
             }
           }
           VrmlData_Scene::Iterator anAllIter(aScene.myAllNodes);
+          TCollection_AsciiString  aNamePrefix(aFileName);
+          const int                aDot = aNamePrefix.Location(1, '.', 1, aNamePrefix.Length());
+          if (aDot != 0)
+          {
+            aNamePrefix.Trunc(aDot - 1);
+          }
+          aNamePrefix += '_';
+          const size_t aPrefixLength = aNamePrefix.Length();
           for (; anAllIter.More(); anAllIter.Next())
           {
             const occ::handle<VrmlData_Node>& aNode = anAllIter.Value();
@@ -517,29 +557,26 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
             aNode->myScene = &Scene();
             // The name of the imported node should be prefixed by the URL
             // because each name must remain unique in the global scene.
-            if (aNode->Name())
+            const char* aNodeName = aNode->Name();
+            if (aNodeName == nullptr || *aNodeName == '\0')
             {
-              if (*aNode->Name() != '\0')
-              {
-                TCollection_AsciiString buf;
-                buf += aFileName;
-                int aCharLocation = buf.Location(1, '.', 1, buf.Length());
-                if (aCharLocation != 0)
-                {
-                  buf.Remove(aCharLocation, buf.Length() - aCharLocation + 1);
-                }
-                buf += '_';
-                buf += aNode->Name();
-                const size_t len      = buf.Length();
-                char*        aNewName = static_cast<char*>(Scene().Allocator()->Allocate(len));
-                if (aNewName)
-                {
-                  aNode->myName = aNewName;
-                  memcpy(aNewName, buf.ToCString(), len);
-                }
-              }
+              continue;
+            }
+            const size_t aNodeLength = strlen(aNodeName);
+            char*        aNewName =
+              static_cast<char*>(Scene().Allocator()->Allocate(aPrefixLength + aNodeLength + 1));
+            if (aNewName)
+            {
+              memcpy(aNewName, aNamePrefix.ToCString(), aPrefixLength);
+              memcpy(aNewName + aPrefixLength, aNodeName, aNodeLength + 1);
+              aNode->myName = aNewName;
             }
           }
+          break;
+        }
+        if (!lstURL.IsEmpty() && !anIter.More())
+        {
+          aStatus = VrmlData_CannotOpenFile;
         }
       }
     }

@@ -11,6 +11,7 @@ set(OCCT_TKShHealing_GTests_FILES
   ShapeFix_Face_Test.cxx
   ShapeFix_FaceConnect_Test.cxx
   ShapeFix_Shape_Test.cxx
+  ShapeFix_Test.cxx
   ShapeUpgrade_FaceDivide_Test.cxx
   ShapeUpgrade_ShellSewing_Test.cxx
   ShapeUpgrade_UnifySameDomain_Test.cxx

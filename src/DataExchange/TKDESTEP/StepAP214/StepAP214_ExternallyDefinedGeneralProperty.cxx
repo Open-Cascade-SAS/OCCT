@@ -41,6 +41,7 @@ void StepAP214_ExternallyDefinedGeneralProperty::Init(
                                   aGeneralProperty_Name,
                                   hasGeneralProperty_Description,
                                   aGeneralProperty_Description);
+  theExternallyDefinedItem = new StepBasic_ExternallyDefinedItem();
   theExternallyDefinedItem->Init(aExternallyDefinedItem_ItemId, aExternallyDefinedItem_Source);
 }
 

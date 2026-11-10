@@ -388,8 +388,18 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v)
   return SVD_Decompose(a, w, v, rv1);
 }
 
+#if defined(_MSC_VER) && !defined(__clang__)
+  #pragma float_control(precise, on, push)
+  #pragma float_control(except, on)
+#endif
+
 int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& rv1)
 {
+
+  // Prevent divisions from moving across guards when FP traps are enabled.
+#if defined(__clang__)
+  #pragma STDC FENV_ACCESS ON
+#endif
 
   int    flag, i, its, j, jj, k, l = 0, nm = 0;
   double ar, aw, aik, aki, f, h, s, x, y, z;
@@ -670,12 +680,21 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
         g      = c * g;
         z      = PYTHAG(f, h);
         rv1(j) = z;
-        c      = f / z;
-        s      = h / z;
-        f      = x * c + g * s;
-        g      = g * c - x * s;
-        h      = y * s;
-        y      = y * c;
+        if (z != 0.0)
+        {
+          c = f / z;
+          s = h / z;
+        }
+        else
+        {
+          // A zero pair needs no Givens rotation.
+          c = 1.0;
+          s = 0.0;
+        }
+        f = x * c + g * s;
+        g = g * c - x * s;
+        h = y * s;
+        y = y * c;
         for (jj = 1; jj <= n; jj++)
         {
           x        = v(jj, j);
@@ -685,11 +704,10 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
         }
         z    = PYTHAG(f, h);
         w(j) = z;
-        if (z)
+        if (z != 0.0)
         {
-          z = 1.0 / z;
-          c = f * z;
-          s = h * z;
+          c = f / z;
+          s = h / z;
         }
         f = (c * g) + (s * y);
         x = (c * y) - (s * g);
@@ -708,6 +726,10 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
   }
   return math_Status_OK;
 }
+
+#if defined(_MSC_VER) && !defined(__clang__)
+  #pragma float_control(pop)
+#endif
 
 void SVD_Solve(const math_Matrix& u,
                const math_Vector& w,

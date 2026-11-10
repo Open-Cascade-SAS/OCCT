@@ -24,6 +24,9 @@
 class OpenGl_Aspects : public OpenGl_Element
 {
 public:
+  //! @return true; this element changes rendering state.
+  bool IsRenderState() const override { return true; }
+
   //! Empty constructor.
   Standard_EXPORT OpenGl_Aspects();
 

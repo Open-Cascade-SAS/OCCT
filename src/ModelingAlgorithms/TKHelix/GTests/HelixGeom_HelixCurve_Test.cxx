@@ -26,6 +26,8 @@
 #include <NCollection_Sequence.hxx>
 #include <Standard_ConstructionError.hxx>
 
+#include <cmath>
+
 class HelixGeomTest : public ::testing::Test
 {
 protected:
@@ -67,6 +69,80 @@ TEST_F(HelixGeomTest, HelixCurve_Derivatives)
   EXPECT_NEAR(aVN2.X(), aV2.X(), 1e-15);
   EXPECT_NEAR(aVN2.Y(), aV2.Y(), 1e-15);
   EXPECT_NEAR(aVN2.Z(), aV2.Z(), 1e-15);
+}
+
+// Test tapered helix derivatives against the analytical parameterization.
+TEST_F(HelixGeomTest, HelixCurve_TaperedDerivatives)
+{
+  const double aT     = 0.73;
+  const double aPitch = 4.6;
+  const double aR0    = 3.2;
+  const double aTaper = 0.23;
+  const double aC1    = aPitch / (2.0 * M_PI);
+  const double aDR    = aC1 * std::tan(aTaper);
+  const double aR     = aR0 + aDR * aT;
+  const double aCT    = std::cos(aT);
+  const double aST    = std::sin(aT);
+
+  for (const bool isClockwise : {true, false})
+  {
+    HelixGeom_HelixCurve aHelix;
+    aHelix.Load(0.0, 2.0 * M_PI, aPitch, aR0, aTaper, isClockwise);
+
+    gp_Pnt aP;
+    gp_Vec aD1, aD2;
+    aHelix.D2(aT, aP, aD1, aD2);
+
+    const double aDirection = isClockwise ? 1.0 : -1.0;
+    EXPECT_NEAR(aP.X(), aR * aCT, 1.e-14);
+    EXPECT_NEAR(aP.Y(), aDirection * aR * aST, 1.e-14);
+    EXPECT_NEAR(aD1.X(), aDR * aCT - aR * aST, 1.e-14);
+    EXPECT_NEAR(aD1.Y(), aDirection * (aDR * aST + aR * aCT), 1.e-14);
+    EXPECT_NEAR(aD2.X(), -aR * aCT - 2.0 * aDR * aST, 1.e-14);
+    EXPECT_NEAR(aD2.Y(), aDirection * (-aR * aST + 2.0 * aDR * aCT), 1.e-14);
+    EXPECT_NEAR(aD2.Z(), 0.0, 1.e-14);
+  }
+}
+
+// RStart is the radius at the first parameter, including for tapered helices.
+TEST_F(HelixGeomTest, HelixCurve_TaperedStartingRadius)
+{
+  const double aT1    = 0.7;
+  const double aT2    = 2.2;
+  const double aPitch = 4.6;
+  const double aR0    = 3.2;
+  const double aTaper = 0.23;
+  const double aDR    = aPitch / (2.0 * M_PI) * std::tan(aTaper);
+
+  HelixGeom_HelixCurve aHelix;
+  aHelix.Load(aT1, aT2, aPitch, aR0, aTaper, true);
+
+  const gp_Pnt aStart = aHelix.Value(aT1);
+  gp_Pnt       anEnd;
+  gp_Vec       aD1, aD2;
+  aHelix.D2(aT2, anEnd, aD1, aD2);
+  const double aR2 = aR0 + aDR * (aT2 - aT1);
+  EXPECT_NEAR(aStart.X(), aR0 * std::cos(aT1), 1.e-14);
+  EXPECT_NEAR(aStart.Y(), aR0 * std::sin(aT1), 1.e-14);
+  EXPECT_NEAR(anEnd.X(), aR2 * std::cos(aT2), 1.e-14);
+  EXPECT_NEAR(anEnd.Y(), aR2 * std::sin(aT2), 1.e-14);
+  EXPECT_NEAR(aD1.X(), aDR * std::cos(aT2) - aR2 * std::sin(aT2), 1.e-14);
+  EXPECT_NEAR(aD1.Y(), aDR * std::sin(aT2) + aR2 * std::cos(aT2), 1.e-14);
+  EXPECT_NEAR(aD2.X(), -aR2 * std::cos(aT2) - 2.0 * aDR * std::sin(aT2), 1.e-14);
+  EXPECT_NEAR(aD2.Y(), -aR2 * std::sin(aT2) + 2.0 * aDR * std::cos(aT2), 1.e-14);
+}
+
+// Loading a cylindrical helix must clear the taper state from a previous load.
+TEST_F(HelixGeomTest, HelixCurve_LoadClearsTaper)
+{
+  HelixGeom_HelixCurve aHelix;
+  aHelix.Load(0.0, 2.0 * M_PI, 4.0, 3.0, 0.2, true);
+  aHelix.Load(0.0, 2.0 * M_PI, 4.0, 3.0, 0.0, true);
+
+  const double aT = 1.1;
+  const gp_Pnt aP = aHelix.Value(aT);
+  EXPECT_NEAR(aP.X(), 3.0 * std::cos(aT), 1.e-14);
+  EXPECT_NEAR(aP.Y(), 3.0 * std::sin(aT), 1.e-14);
 }
 
 // Test HelixGeom_HelixCurve error conditions
@@ -296,4 +372,32 @@ TEST_F(HelixGeomTest, BuilderHelixCoil_ParameterSymmetry)
   EXPECT_DOUBLE_EQ(aRStart, aRStart_out);
   EXPECT_DOUBLE_EQ(aTaperAngle, aTaperAngle_out);
   EXPECT_EQ(aIsClockwise, aIsClockwise_out);
+}
+
+//==================================================================================================
+
+TEST(HelixGeom_HelixCurveTest, SmallTaperPreservesRadiusAndDerivatives)
+{
+  const double aFirst       = 0.7;
+  const double aLast        = aFirst + 5 * M_PI;
+  const double aPitch       = 4.6;
+  const double aStartRadius = 3.2;
+  for (const double aTaper : {-5.e-5, 0.0, 5.e-5})
+  {
+    SCOPED_TRACE(aTaper);
+    const double aRate   = aPitch / (2 * M_PI) * std::tan(aTaper);
+    const double aRadius = aStartRadius + aRate * (aLast - aFirst);
+    for (const bool isClockwise : {false, true})
+    {
+      SCOPED_TRACE(isClockwise);
+      HelixGeom_HelixCurve aHelix;
+      aHelix.Load(aFirst, aLast, aPitch, aStartRadius, aTaper, isClockwise);
+      const Geom_Curve::ResD2 aResult = aHelix.EvalD2(aLast);
+      const double            aSign   = isClockwise ? 1.0 : -1.0;
+      EXPECT_NEAR(aResult.Point.X(), aRadius * std::cos(aLast), 1.e-14);
+      EXPECT_NEAR(aResult.Point.Y(), aSign * aRadius * std::sin(aLast), 1.e-14);
+      EXPECT_NEAR(aResult.D1.X(), aRate * std::cos(aLast) - aRadius * std::sin(aLast), 1.e-14);
+      EXPECT_NEAR(aResult.D2.X(), -aRadius * std::cos(aLast) - 2 * aRate * std::sin(aLast), 1.e-14);
+    }
+  }
 }

@@ -15,7 +15,8 @@
 
 #include "igesread.pxx"
 
-#include <cstdlib>
+#include <Standard.hxx>
+
 #include <cstring>
 
 struct oneparam
@@ -84,11 +85,12 @@ static char* iges_newchar(const int theLength)
       aPageSize += static_cast<size_t>(theLength + 1) - THE_CHARACTER_PAGE_CAPACITY;
     }
 
-    CharacterPage* const aNewPage = static_cast<CharacterPage*>(std::malloc(aPageSize));
-    aNewPage->Next                = THE_CharacterPage;
-    THE_CharacterPage             = aNewPage;
-    aPageOffset                   = 0;
-    THE_CharacterPage->Used       = 0;
+    CharacterPage* const aNewPage =
+      static_cast<CharacterPage*>(Standard::AllocateOptimal(aPageSize));
+    aNewPage->Next          = THE_CharacterPage;
+    THE_CharacterPage       = aNewPage;
+    aPageOffset             = 0;
+    THE_CharacterPage->Used = 0;
   }
 
   THE_CurrentText            = THE_CharacterPage->Characters + aPageOffset;
@@ -109,21 +111,21 @@ dirpart* iges_get_curp(void)
 
 void iges_initfile()
 {
-  THE_CharacterPage       = static_cast<CharacterPage*>(std::malloc(sizeof(CharacterPage)));
+  THE_CharacterPage = static_cast<CharacterPage*>(Standard::AllocateOptimal(sizeof(CharacterPage)));
   THE_CharacterPage->Used = 0;
   THE_CharacterPage->Next = nullptr;
   THE_CurrentText         = nullptr;
 
-  THE_ParameterPage       = static_cast<ParameterPage*>(std::malloc(sizeof(ParameterPage)));
+  THE_ParameterPage = static_cast<ParameterPage*>(Standard::AllocateOptimal(sizeof(ParameterPage)));
   THE_ParameterPage->Used = 0;
   THE_ParameterPage->Next = nullptr;
 
-  THE_StartList          = static_cast<parlist*>(std::malloc(sizeof(parlist)));
+  THE_StartList          = static_cast<parlist*>(Standard::AllocateOptimal(sizeof(parlist)));
   THE_StartList->first   = nullptr;
   THE_StartList->last    = nullptr;
   THE_StartList->nbparam = 0;
 
-  THE_HeaderList          = static_cast<parlist*>(std::malloc(sizeof(parlist)));
+  THE_HeaderList          = static_cast<parlist*>(Standard::AllocateOptimal(sizeof(parlist)));
   THE_HeaderList->first   = nullptr;
   THE_HeaderList->last    = nullptr;
   THE_HeaderList->nbparam = 0;
@@ -134,7 +136,8 @@ void iges_initfile()
   THE_NumberOfParts      = 0;
   THE_NumberOfParameters = 0;
 
-  THE_FirstDirectoryPage       = static_cast<DirectoryPage*>(std::malloc(sizeof(DirectoryPage)));
+  THE_FirstDirectoryPage =
+    static_cast<DirectoryPage*>(Standard::AllocateOptimal(sizeof(DirectoryPage)));
   THE_FirstDirectoryPage->Next = nullptr;
   THE_FirstDirectoryPage->Used = 0;
   THE_CurrentDirectoryPage     = THE_FirstDirectoryPage;
@@ -159,9 +162,10 @@ void iges_newpart(const int theSectionNumber)
 {
   if (THE_CurrentDirectoryPage->Used >= static_cast<int>(THE_DIRECTORY_PAGE_CAPACITY))
   {
-    DirectoryPage* const aNewPage = static_cast<DirectoryPage*>(std::malloc(sizeof(DirectoryPage)));
-    aNewPage->Next                = nullptr;
-    aNewPage->Used                = 0;
+    DirectoryPage* const aNewPage =
+      static_cast<DirectoryPage*>(Standard::AllocateOptimal(sizeof(DirectoryPage)));
+    aNewPage->Next                 = nullptr;
+    aNewPage->Used                 = 0;
     THE_CurrentDirectoryPage->Next = aNewPage;
     THE_CurrentDirectoryPage       = aNewPage;
   }
@@ -252,10 +256,11 @@ void iges_newparam(const int theType, const int theLength, char* const theValue)
 
   if (THE_ParameterPage->Used > static_cast<int>(THE_PARAMETER_PAGE_CAPACITY))
   {
-    ParameterPage* const aNewPage = static_cast<ParameterPage*>(std::malloc(sizeof(ParameterPage)));
-    aNewPage->Next                = THE_ParameterPage;
-    aNewPage->Used                = 0;
-    THE_ParameterPage             = aNewPage;
+    ParameterPage* const aNewPage =
+      static_cast<ParameterPage*>(Standard::AllocateOptimal(sizeof(ParameterPage)));
+    aNewPage->Next    = THE_ParameterPage;
+    aNewPage->Used    = 0;
+    THE_ParameterPage = aNewPage;
   }
 
   THE_CurrentParameter = &THE_ParameterPage->Parameters[THE_ParameterPage->Used];
@@ -371,22 +376,13 @@ int iges_lirparam(int* theType, char** theValue)
 
 void iges_finfile(const int theMode)
 {
-  if (theMode == 0 || theMode == 2)
-  {
-    std::free(THE_StartList);
-    std::free(THE_HeaderList);
-    THE_StartList   = nullptr;
-    THE_HeaderList  = nullptr;
-    THE_CurrentList = nullptr;
-  }
-
   if (theMode == 0 || theMode == 1)
   {
     THE_CurrentDirectoryPage = THE_FirstDirectoryPage;
     while (THE_CurrentDirectoryPage != nullptr)
     {
       DirectoryPage* const aNextPage = THE_CurrentDirectoryPage->Next;
-      std::free(THE_CurrentDirectoryPage);
+      Standard::Free(THE_CurrentDirectoryPage);
       THE_CurrentDirectoryPage = aNextPage;
     }
     THE_FirstDirectoryPage = nullptr;
@@ -396,7 +392,7 @@ void iges_finfile(const int theMode)
     while (THE_ParameterPage != nullptr)
     {
       ParameterPage* const aNextPage = THE_ParameterPage->Next;
-      std::free(THE_ParameterPage);
+      Standard::Free(THE_ParameterPage);
       THE_ParameterPage = aNextPage;
     }
     THE_CurrentParameter = nullptr;
@@ -404,10 +400,16 @@ void iges_finfile(const int theMode)
 
   if (theMode == 0 || theMode == 2)
   {
+    Standard::Free(THE_StartList);
+    Standard::Free(THE_HeaderList);
+    THE_StartList   = nullptr;
+    THE_HeaderList  = nullptr;
+    THE_CurrentList = nullptr;
+
     while (THE_CharacterPage != nullptr)
     {
       CharacterPage* const aNextPage = THE_CharacterPage->Next;
-      std::free(THE_CharacterPage);
+      Standard::Free(THE_CharacterPage);
       THE_CharacterPage = aNextPage;
     }
     THE_CurrentText = nullptr;

@@ -11,22 +11,46 @@ set tol_abs_Tolerance_Reached 1.0e-7
 set tol_rel_Tolerance_Reached 0.1
 set GoodNbCurves 2
 
+proc check_pcurves_27896 {tolerance} {
+  global s1 s2
+  set maxGap 0.0
+  foreach curve {1 2} {
+    upvar #0 c_$curve curve3d
+    bounds curve3d first last
+    for {set sample 0} {$sample <= 100} {incr sample} {
+      set t [expr {[dval first] + ([dval last]-[dval first])*$sample/100.0}]
+      cvalue curve3d $t cx cy cz
+      foreach side {1 2} {
+        upvar #0 c2d${side}_$curve pcurve
+        2dcvalue pcurve $t u v
+        svalue s$side [dval u] [dval v] sx sy sz
+        set gap [expr {hypot(hypot([dval cx]-[dval sx],[dval cy]-[dval sy]),[dval cz]-[dval sz])}]
+        set maxGap [expr {max($maxGap,$gap)}]
+      }
+    }
+  }
+  checkreal "Curve/pcurve deviation" $maxGap 0.0 $tolerance 0.0
+}
+
 restore [locate_data_file bug25319_S1.brep] b1
 restore [locate_data_file bug25319_S2.brep] b2
 explode b1 f
 explode b2 f
+mksurface s1 b1_8
+mksurface s2 b2_17
 
 # GOOD result before the fix
 set log1 [bopcurves b1_8 b2_17 -2d -p +1.09444207768950010000 +29.00000000000000000000 +0.17740001678466785000 +2.79671571032639710000 -p +0.00000000000000000000 +26.87779254288926400000 +0.17767342824312710000 +2.80622040022304510000]
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log1} full Tolerance_Reached1 NbCurv1
+check_pcurves_27896 $Tolerance_Reached1
 
 # BAD result before the fix
 set log2 [bopcurves b1_8 b2_17 -2d -p +1.09444207768949960000 +29.00000000000000000000 +0.17740001678466785000 +2.79671571032639750000 -p +0.00000000000000000000 +26.87779254288926400000 +0.17767342824312710000 +2.80622040022304510000]
-
-regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log1} full Tolerance_Reached1 NbCurv1
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log2} full Tolerance_Reached2 NbCurv2
+check_pcurves_27896 $Tolerance_Reached2
 
 set expected_Tolerance_Reached1 2.2611960020325053e-007
-set expected_Tolerance_Reached2 5.0364838664362801e-006
+set expected_Tolerance_Reached2 3.3693454360408119e-007
 
 checkreal "Tolerance Reached" ${Tolerance_Reached1} ${expected_Tolerance_Reached1} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}
 checkreal "Tolerance Reached" ${Tolerance_Reached2} ${expected_Tolerance_Reached2} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}

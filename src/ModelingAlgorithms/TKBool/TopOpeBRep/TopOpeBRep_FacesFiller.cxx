@@ -25,7 +25,6 @@
 #include <TopOpeBRep.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
-#include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_PointClassifier.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
@@ -92,9 +91,8 @@ TopOpeBRep_FacesFiller::TopOpeBRep_FacesFiller()
     : myPShapeClassifier(nullptr)
 {
   myexF1 = myexF2 = 0;
-#ifdef OCCT_DEBUG
-  myHFFD = new TopOpeBRep_FFDumper(this);
-#endif
+  myCurrentLine   = nullptr;
+  myLastVPind     = 0;
 }
 
 //=================================================================================================
@@ -136,7 +134,6 @@ void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                         
   myFacesIntersector->InitLine();
   for (; myFacesIntersector->MoreLine(); myFacesIntersector->NextLine())
     myFacesIntersector->CurrentLine().SetTraceIndex(exF1, exF2);
-  myHFFD->Init(this);
 #endif
 
   bool samdom = myFacesIntersector->SameDomain();

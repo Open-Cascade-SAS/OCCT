@@ -13,6 +13,9 @@
 
 #include <Adaptor3d_TopolTool.hxx>
 
+#include <algorithm>
+#include <optional>
+
 #include <Adaptor2d_Line2d.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_HVertex.hxx>
@@ -1018,6 +1021,13 @@ gp_Pnt Adaptor3d_TopolTool::Pnt(const occ::handle<Adaptor3d_HVertex>&) const
 
 void Adaptor3d_TopolTool::SamplePnts(const double theDefl, const int theNUmin, const int theNVmin)
 {
+  if (myS->GetType() == GeomAbs_BSplineSurface)
+  {
+    BSplSamplePnts(theDefl, theNUmin, theNVmin);
+    return;
+  }
+  ComputeSamplePoints();
+
   double uinf, usup, vinf, vsup;
   uinf = myS->FirstUParameter();
   usup = myS->LastUParameter();
@@ -1063,52 +1073,6 @@ void Adaptor3d_TopolTool::SamplePnts(const double theDefl, const int theNUmin, c
     vsup = vinf + 2.e5;
   }
 
-  //   int nbsu,nbsv;
-  GeomAbs_SurfaceType typS = myS->GetType();
-  //   switch(typS) {
-  //   case GeomAbs_Plane:          { nbsv=2; nbsu=2; } break;
-  //   case GeomAbs_BezierSurface:  {
-  //     nbsv=myS->NbVPoles();
-  //     nbsu=myS->NbUPoles();
-  //     nbsu = std::max(nbsu, theNUmin);
-  //     nbsv = std::max(nbsv, theNVmin);
-  //     if(nbsu>8 || nbsv>8) {
-  //       const occ::handle<Geom_BezierSurface>& Bez = myS->Bezier();
-  //       int nbup = Bez->NbUPoles();
-  //       int nbvp = Bez->NbVPoles();
-  //       NCollection_Array2<gp_Pnt> array2(1,nbup,1,nbvp);
-  //       Bez->Poles(array2);
-  //       Analyse(array2,nbup,nbvp,myNbSamplesU,myNbSamplesV);
-  //     }
-  //   }
-  //     break;
-  //   case GeomAbs_BSplineSurface: {
-  if (typS == GeomAbs_BSplineSurface)
-  {
-    // Processing BSpline surface
-    BSplSamplePnts(theDefl, theNUmin, theNVmin);
-    return;
-  }
-  else
-  {
-    ComputeSamplePoints();
-  }
-  //   case GeomAbs_Cylinder:
-  //   case GeomAbs_Cone:
-  //   case GeomAbs_Sphere:
-  //   case GeomAbs_Torus:
-  //   case GeomAbs_SurfaceOfRevolution:
-  //   case GeomAbs_SurfaceOfExtrusion:    { nbsv = std::max(15,theNVmin); nbsu=Max(15,theNUmin); }
-  //   break; default:                            { nbsu = std::max(10,theNUmin);
-  //   nbsv=Max(10,theNVmin); } break;
-  //   }
-
-  //   if(nbsu<6) nbsu=6;
-  //   if(nbsv<6) nbsv=6;
-
-  //   myNbSamplesU = nbsu;
-  //   myNbSamplesV = nbsv;
-
   myUPars = new NCollection_HArray1<double>(1, myNbSamplesU);
   myVPars = new NCollection_HArray1<double>(1, myNbSamplesV);
   int    i;
@@ -1143,12 +1107,11 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
   vinf = myS->FirstVParameter();
   vsup = myS->LastVParameter();
 
-  int    i, k, j = 1;
-  double t1, t2, dt;
-  int    ui1 = aBS->FirstUKnotIndex();
-  int    ui2 = aBS->LastUKnotIndex();
-  int    vi1 = aBS->FirstVKnotIndex();
-  int    vi2 = aBS->LastVKnotIndex();
+  int i;
+  int ui1 = aBS->FirstUKnotIndex();
+  int ui2 = aBS->LastUKnotIndex();
+  int vi1 = aBS->FirstVKnotIndex();
+  int vi2 = aBS->LastVKnotIndex();
 
   for (i = ui1; i < ui2; ++i)
   {
@@ -1214,9 +1177,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
   }
   // modified by NIZHNY-EMV Mon Jun 10 14:19:05 2013
 
-  if (nbsu < theNUmin)
+  if (nbsu < std::max(theNUmin, myMinPnts))
   {
-    nbsu      = theNUmin;
+    nbsu      = std::max(theNUmin, myMinPnts);
     bUuniform = true;
   }
   else if (nbsu > aMaxPnts)
@@ -1224,9 +1187,9 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
     nbsu      = aMaxPnts;
     bUuniform = true;
   }
-  if (nbsv < theNVmin)
+  if (nbsv < std::max(theNVmin, myMinPnts))
   {
-    nbsv      = theNVmin;
+    nbsv      = std::max(theNVmin, myMinPnts);
     bVuniform = true;
   }
   else if (nbsv > aMaxPnts)
@@ -1240,408 +1203,171 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const double theDefl,
   NCollection_Array1<double> aVPars(1, nbsv);
   NCollection_Array1<bool>   aVFlg(1, nbsv);
 
-  // Filling of sample parameters
-  if (bUuniform)
+  for (const bool isU : {true, false})
   {
-    t1            = uinf;
-    t2            = usup;
-    dt            = (t2 - t1) / (nbsu - 1);
-    anUPars(1)    = t1;
-    anUFlg(1)     = false;
-    anUPars(nbsu) = t2;
-    anUFlg(nbsu)  = false;
-    for (i = 2, t1 += dt; i < nbsu; ++i, t1 += dt)
+    NCollection_Array1<double>& aParameters = isU ? anUPars : aVPars;
+    NCollection_Array1<bool>&   aFlags      = isU ? anUFlg : aVFlg;
+    const int                   aNbSamples  = aParameters.Length();
+    const double                aFirst      = isU ? uinf : vinf;
+    const double                aLast       = isU ? usup : vsup;
+    aFlags.Init(false);
+    if (isU ? bUuniform : bVuniform)
     {
-      anUPars(i) = t1;
-      anUFlg(i)  = false;
+      const double aStep        = (aLast - aFirst) / (aNbSamples - 1);
+      aParameters.ChangeFirst() = aFirst;
+      aParameters.ChangeLast()  = aLast;
+      double aParameter         = aFirst + aStep;
+      for (int anIndex = 2; anIndex < aNbSamples; ++anIndex, aParameter += aStep)
+      {
+        aParameters(anIndex) = aParameter;
+      }
     }
-  }
-  else
-  {
-    int nbi = aBS->UDegree();
-    k       = 0;
-    t1      = uinf;
-    for (i = ui1 + 1; i <= ui2; ++i)
+    else
     {
-      if (i == ui2)
+      const int aDegree    = isU ? aBS->UDegree() : aBS->VDegree();
+      const int aFirstKnot = isU ? ui1 : vi1, aLastKnot = isU ? ui2 : vi2;
+      double    aParameter = aFirst;
+      int       anIndex    = 1;
+      for (int aKnot = aFirstKnot + 1; aKnot <= aLastKnot; ++aKnot)
       {
-        t2 = usup;
-      }
-      else
-      {
-        t2 = aBS->UKnot(i);
-      }
-      dt = (t2 - t1) / nbi;
-      j  = 1;
-      do
-      {
-        ++k;
-        anUPars(k) = t1;
-        anUFlg(k)  = false;
-        t1 += dt;
-      } while (++j <= nbi);
-      t1 = t2;
-    }
-    ++k;
-    anUPars(k) = t1;
-  }
-
-  if (bVuniform)
-  {
-    t1           = vinf;
-    t2           = vsup;
-    dt           = (t2 - t1) / (nbsv - 1);
-    aVPars(1)    = t1;
-    aVFlg(1)     = false;
-    aVPars(nbsv) = t2;
-    aVFlg(nbsv)  = false;
-    for (i = 2, t1 += dt; i < nbsv; ++i, t1 += dt)
-    {
-      aVPars(i) = t1;
-      aVFlg(i)  = false;
-    }
-  }
-  else
-  {
-    int nbi = aBS->VDegree();
-    k       = 0;
-    t1      = vinf;
-    for (i = vi1 + 1; i <= vi2; ++i)
-    {
-      if (i == vi2)
-      {
-        t2 = vsup;
-      }
-      else
-      {
-        t2 = aBS->VKnot(i);
-      }
-      dt = (t2 - t1) / nbi;
-      j  = 1;
-      do
-      {
-        ++k;
-        aVPars(k) = t1;
-        aVFlg(k)  = false;
-        t1 += dt;
-      } while (++j <= nbi);
-      t1 = t2;
-    }
-    ++k;
-    aVPars(k) = t1;
-  }
-
-  // Analysis of deflection
-
-  double aDefl2 = std::max(theDefl * theDefl, 1.e-9);
-  double tol    = std::max(0.01 * aDefl2, 1.e-9);
-  int    l;
-
-  anUFlg(1)    = true;
-  anUFlg(nbsu) = true;
-  // myNbSamplesU = 2;
-  for (i = 1; i <= nbsv; ++i)
-  {
-    t1         = aVPars(i);
-    j          = 1;
-    bool bCont = true;
-    while (j < nbsu - 1 && bCont)
-    {
-
-      if (anUFlg(j + 1))
-      {
-        ++j;
-        continue;
-      }
-
-      t2        = anUPars(j);
-      gp_Pnt p1 = myS->Value(t2, t1);
-      for (k = j + 2; k <= nbsu; ++k)
-      {
-        t2        = anUPars(k);
-        gp_Pnt p2 = myS->Value(t2, t1);
-        // gce_MakeLin MkLin(p1, p2);
-        // const gp_Lin& lin = MkLin.Value();
-
-        if (p1.SquareDistance(p2) <= tol)
+        const double aNext =
+          aKnot == aLastKnot ? aLast : (isU ? aBS->UKnot(aKnot) : aBS->VKnot(aKnot));
+        const double aStep = (aNext - aParameter) / aDegree;
+        for (int aSample = 0; aSample < aDegree; ++aSample, aParameter += aStep)
         {
+          aParameters(anIndex++) = aParameter;
+        }
+        aParameter = aNext;
+      }
+      aParameters(anIndex) = aParameter;
+    }
+  }
+
+  const double                              aDeflection2     = std::max(theDefl * theDefl, 1.e-9);
+  const double                              aPointTolerance2 = std::max(0.01 * aDeflection2, 1.e-9);
+  NCollection_Array1<std::optional<gp_Pnt>> aSamples(1, std::max(nbsu, nbsv));
+
+  for (int aDirection = 0; aDirection < 2; ++aDirection)
+  {
+    const bool                        isU              = aDirection == 0;
+    const NCollection_Array1<double>& aParameters      = isU ? anUPars : aVPars;
+    const NCollection_Array1<double>& aFixedParameters = isU ? aVPars : anUPars;
+    NCollection_Array1<bool>&         aFlags           = isU ? anUFlg : aVFlg;
+    int&                              aNbSamples       = isU ? myNbSamplesU : myNbSamplesV;
+    const int                         aNbCandidates    = aParameters.Length();
+    aFlags.ChangeFirst()                               = true;
+    aFlags.ChangeLast()                                = true;
+
+    for (const double aFixedParameter : aFixedParameters)
+    {
+      int aFirst = 1;
+      while (aFirst < aNbCandidates - 1 && aFlags(aFirst + 1))
+      {
+        ++aFirst;
+      }
+      if (aFirst >= aNbCandidates - 1)
+      {
+        break;
+      }
+      // Reuse points within each isoparametric deflection check.
+      std::fill_n(aSamples.begin(), aNbCandidates, std::nullopt);
+      const auto aPointAt = [&](int theIndex) -> const gp_Pnt& {
+        std::optional<gp_Pnt>& aPoint = aSamples(theIndex);
+        if (!aPoint)
+        {
+          const double aParameter = aParameters(theIndex);
+          aPoint                  = isU ? myS->EvalD0(aParameter, aFixedParameter)
+                                        : myS->EvalD0(aFixedParameter, aParameter);
+        }
+        return *aPoint;
+      };
+      while (aFirst < aNbCandidates - 1)
+      {
+        if (aFlags(aFirst + 1))
+        {
+          ++aFirst;
           continue;
         }
-
-        gp_Lin lin(p1, gp_Dir(gp_Vec(p1, p2)));
-        bool   ok = true;
-        for (l = j + 1; l < k; ++l)
+        const gp_Pnt& aFirstPoint = aPointAt(aFirst);
+        int           aLast       = aFirst + 2;
+        for (; aLast <= aNbCandidates; ++aLast)
         {
-
-          if (anUFlg(l))
-          {
-            ok = false;
-            break;
-          }
-
-          gp_Pnt pp = myS->Value(anUPars(l), t1);
-          double d  = lin.SquareDistance(pp);
-
-          if (d <= aDefl2)
+          const gp_Pnt& aLastPoint = aPointAt(aLast);
+          if (aFirstPoint.SquareDistance(aLastPoint) <= aPointTolerance2)
           {
             continue;
           }
-
-          ok = false;
-          break;
-        }
-
-        if (!ok)
-        {
-          j         = k - 1;
-          anUFlg(j) = true;
-          //++myNbSamplesU;
-          break;
-        }
-
-        if (anUFlg(k))
-        {
-          j = k;
-          break;
-        }
-      }
-
-      if (k >= nbsu)
-      {
-        bCont = false;
-      }
-    }
-  }
-
-  myNbSamplesU = 0;
-  for (i = 1; i <= nbsu; i++)
-  {
-    if (anUFlg(i))
-    {
-      myNbSamplesU++;
-    }
-  }
-
-  if (myNbSamplesU < myMinPnts)
-  {
-    if (myNbSamplesU == 2)
-    {
-      //"uniform" distribution;
-      int nn            = nbsu / myMinPnts;
-      anUFlg(1 + nn)    = true;
-      anUFlg(nbsu - nn) = true;
-    }
-    else
-    { // myNbSamplesU == 3
-      // insert in bigger segment
-      i = 2;
-      while (!anUFlg(i++))
-      {
-        ;
-      }
-      if (i < nbsu / 2)
-      {
-        j = std::min(i + (nbsu - i) / 2, nbsu - 1);
-      }
-      else
-      {
-        j = std::max(i / 2, 2);
-      }
-    }
-    anUFlg(j)    = true;
-    myNbSamplesU = myMinPnts;
-  }
-
-  aVFlg(1)    = true;
-  aVFlg(nbsv) = true;
-  // myNbSamplesV = 2;
-  for (i = 1; i <= nbsu; ++i)
-  {
-    t1         = anUPars(i);
-    j          = 1;
-    bool bCont = true;
-    while (j < nbsv - 1 && bCont)
-    {
-
-      if (aVFlg(j + 1))
-      {
-        ++j;
-        continue;
-      }
-
-      t2        = aVPars(j);
-      gp_Pnt p1 = myS->Value(t1, t2);
-      for (k = j + 2; k <= nbsv; ++k)
-      {
-        t2        = aVPars(k);
-        gp_Pnt p2 = myS->Value(t1, t2);
-
-        if (p1.SquareDistance(p2) <= tol)
-        {
-          continue;
-        }
-        // gce_MakeLin MkLin(p1, p2);
-        // const gp_Lin& lin = MkLin.Value();
-        gp_Lin lin(p1, gp_Dir(gp_Vec(p1, p2)));
-        bool   ok = true;
-        for (l = j + 1; l < k; ++l)
-        {
-
-          if (aVFlg(l))
+          const gp_Lin aLine(aFirstPoint, gp_Dir(gp_Vec(aFirstPoint, aLastPoint)));
+          bool         isWithinDeflection = true;
+          for (int aMiddle = aFirst + 1; aMiddle < aLast; ++aMiddle)
           {
-            ok = false;
+            if (aFlags(aMiddle) || !(aLine.SquareDistance(aPointAt(aMiddle)) <= aDeflection2))
+            {
+              isWithinDeflection = false;
+              break;
+            }
+          }
+          if (!isWithinDeflection)
+          {
+            aFirst         = aLast - 1;
+            aFlags(aFirst) = true;
             break;
           }
-
-          gp_Pnt pp = myS->Value(t1, aVPars(l));
-          double d  = lin.SquareDistance(pp);
-
-          if (d <= aDefl2)
+          if (aFlags(aLast))
           {
-            continue;
+            aFirst = aLast;
+            break;
           }
-
-          ok = false;
-          break;
         }
-
-        if (!ok)
+        if (aLast >= aNbCandidates)
         {
-          j        = k - 1;
-          aVFlg(j) = true;
-          //++myNbSamplesV;
-          break;
-        }
-
-        if (aVFlg(k))
-        {
-          j = k;
           break;
         }
       }
-
-      if (k >= nbsv)
-      {
-        bCont = false;
-      }
     }
-  }
 
-  myNbSamplesV = 0;
-  for (i = 1; i <= nbsv; i++)
-  {
-    if (aVFlg(i))
+    aNbSamples = static_cast<int>(std::count(aFlags.cbegin(), aFlags.cend(), true));
+    if (aNbSamples < myMinPnts)
     {
-      myNbSamplesV++;
-    }
-  }
-
-  if (myNbSamplesV < myMinPnts)
-  {
-    if (myNbSamplesV == 2)
-    {
-      //"uniform" distribution;
-      int nn           = nbsv / myMinPnts;
-      aVFlg(1 + nn)    = true;
-      aVFlg(nbsv - nn) = true;
-      myNbSamplesV     = myMinPnts;
-    }
-    else
-    { // myNbSamplesU == 3
-      // insert in bigger segment
-      i = 2;
-      while (!aVFlg(i++))
+      if (aNbSamples == 2)
       {
-        ;
-      }
-      if (i < nbsv / 2)
-      {
-        j = std::min(i + (nbsv - i) / 2, nbsv - 1);
+        const int aStep               = aNbCandidates / myMinPnts;
+        aFlags(1 + aStep)             = true;
+        aFlags(aNbCandidates - aStep) = true;
       }
       else
       {
-        j = std::max(i / 2, 2);
+        // Split the larger of the two selected intervals.
+        int aMiddle = 2;
+        while (!aFlags(aMiddle))
+        {
+          ++aMiddle;
+        }
+        const int anInserted = aMiddle - 1 < aNbCandidates - aMiddle
+                                 ? aMiddle + (aNbCandidates - aMiddle) / 2
+                                 : 1 + (aMiddle - 1) / 2;
+        aFlags(anInserted)   = true;
       }
+      aNbSamples = myMinPnts;
     }
-    myNbSamplesV = myMinPnts;
-    aVFlg(j)     = true;
-  }
-  //
-  // modified by NIZNHY-PKV Fri Dec 16 10:05:01 2011f
-  //
-  bool bFlag;
-  //
-  // U
-  bFlag = (myNbSamplesU < theNUmin);
-  if (bFlag)
-  {
-    myNbSamplesU = nbsu;
-  }
-  //
-  myUPars = new NCollection_HArray1<double>(1, myNbSamplesU);
-  //
-  for (j = 0, i = 1; i <= nbsu; ++i)
-  {
-    if (bFlag)
-    {
-      myUPars->SetValue(i, anUPars(i));
-    }
-    else
-    {
-      if (anUFlg(i))
-      {
-        ++j;
-        myUPars->SetValue(j, anUPars(i));
-      }
-    }
-  }
-  //
-  // V
-  bFlag = (myNbSamplesV < theNVmin);
-  if (bFlag)
-  {
-    myNbSamplesV = nbsv;
-  }
-  //
-  myVPars = new NCollection_HArray1<double>(1, myNbSamplesV);
-  //
-  for (j = 0, i = 1; i <= nbsv; ++i)
-  {
-    if (bFlag)
-    {
-      myVPars->SetValue(i, aVPars(i));
-    }
-    else
-    {
-      if (aVFlg(i))
-      {
-        ++j;
-        myVPars->SetValue(j, aVPars(i));
-      }
-    }
-  }
-  //
-  /*
-  myUPars = new NCollection_HArray1<double>(1, myNbSamplesU);
-  myVPars = new NCollection_HArray1<double>(1, myNbSamplesV);
 
-  j = 0;
-  for(i = 1; i <= nbsu; ++i) {
-    if(anUFlg(i)) {
-      ++j;
-      myUPars->SetValue(j,anUPars(i));
+    const int  aMinSamples      = isU ? theNUmin : theNVmin;
+    const bool useAllCandidates = aNbSamples < aMinSamples;
+    if (useAllCandidates)
+    {
+      aNbSamples = aNbCandidates;
+    }
+    occ::handle<NCollection_HArray1<double>>& aResult = isU ? myUPars : myVPars;
+    aResult          = new NCollection_HArray1<double>(1, aNbSamples);
+    int aResultIndex = 1;
+    for (int aCandidate = 1; aCandidate <= aNbCandidates; ++aCandidate)
+    {
+      if (useAllCandidates || aFlags(aCandidate))
+      {
+        aResult->SetValue(aResultIndex++, aParameters(aCandidate));
+      }
     }
   }
-
-  j = 0;
-  for(i = 1; i <= nbsv; ++i) {
-    if(aVFlg(i)) {
-      ++j;
-      myVPars->SetValue(j,aVPars(i));
-    }
-  }
-  */
-  // modified by NIZNHY-PKV Mon Dec 26 12:25:35 2011t
 }
 
 //=================================================================================================

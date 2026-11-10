@@ -32,7 +32,6 @@
 #include <TopAbs_State.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepDS_DataStructure;
-class TopOpeBRep_FFDumper;
 class TopOpeBRep_FacesIntersector;
 class TopoDS_Shape;
 class TopOpeBRep_VPointInter;
@@ -229,8 +228,8 @@ public:
 
   //! Returns <True> if <L> shares a same geometric domain with
   //! at least one of the section edges of <ERL>.
-  Standard_EXPORT static bool LSameDomainERL(const TopOpeBRep_LineInter&           L,
-                                             const NCollection_List<TopoDS_Shape>& ERL);
+  Standard_EXPORT bool LSameDomainERL(const TopOpeBRep_LineInter&           L,
+                                      const NCollection_List<TopoDS_Shape>& ERL) const;
 
   //! Computes the transition <T> of the VPoint <iVP> on the edge
   //! of <SI12>. Returns <False> if the status is unknown.
@@ -299,7 +298,11 @@ private:
   bool                                     myLineIsonEdge;
   NCollection_List<TopoDS_Shape>           myERL;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                           myDataforDegenEd;
+    myDataforDegenEd;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                           myMapOfTreatedVertexListOfEdge;
+  TopOpeBRep_LineInter*                                    myCurrentLine;
+  int                                                      myLastVPind;
   bool                                                     myLastVPison0;
   int                                                      mykeptVPnbr;
   int                                                      myDSCIndex;
@@ -308,7 +311,6 @@ private:
   TopOpeBRepTool_ShapeClassifier*                          myPShapeClassifier;
   int                                                      myexF1;
   int                                                      myexF2;
-  occ::handle<TopOpeBRep_FFDumper>                         myHFFD;
 };
 
 #endif // _TopOpeBRep_FacesFiller_HeaderFile

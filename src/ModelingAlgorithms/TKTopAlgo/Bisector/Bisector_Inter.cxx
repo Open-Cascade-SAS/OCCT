@@ -35,6 +35,8 @@
 #include <IntRes2d_Transition.hxx>
 #include <math_BissecNewton.hxx>
 #include <Precision.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Vec2d.hxx>
 
 #ifdef OCCT_DEBUG
 #endif
@@ -56,19 +58,21 @@ Bisector_Inter::Bisector_Inter(const Bisector_Bisec&  C1,
   Perform(C1, D1, C2, D2, TolConf, Tol, ComunElement);
 }
 
-//=================================================================================================
-
-static occ::handle<Geom2d_Line> ConstructSegment(const gp_Pnt2d& PMin,
-                                                 const gp_Pnt2d& PMax,
-                                                 const double    UMin,
-                                                 //					    const double UMax)
-                                                 const double)
+namespace
 {
-  gp_Dir2d                 Dir(PMax.X() - PMin.X(), PMax.Y() - PMin.Y());
-  occ::handle<Geom2d_Line> L =
-    new Geom2d_Line(gp_Pnt2d(PMin.X() - UMin * Dir.X(), PMin.Y() - UMin * Dir.Y()), Dir);
-  return L;
+//==================================================================================================
+
+occ::handle<Geom2d_Line> ConstructSegment(const occ::handle<Bisector_Curve>& theBisector,
+                                          const double                       theFirst,
+                                          const double                       theLast)
+{
+  // The boundary can belong to the curved approximation; use the straight interval.
+  const double aMiddle          = 0.5 * (theFirst + theLast);
+  const auto [aPoint, aTangent] = theBisector->EvalD1(aMiddle);
+  const gp_Dir2d aDirection(aTangent);
+  return new Geom2d_Line(aPoint.Translated(-aMiddle * gp_Vec2d(aDirection)), aDirection);
 }
+} // namespace
 
 //=================================================================================================
 
@@ -129,22 +133,21 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
     {
       UMin = std::max(UMin, MinDomain);
       UMax = std::min(UMax, MaxDomain);
-      PMin = Bis1->Value(UMin);
-      PMax = Bis1->Value(UMax);
-      SD1[IB1].SetValues(PMin, UMin, D1.FirstTolerance(), PMax, UMax, D1.LastTolerance());
-
       if ((IB1 == 1 && Bis1->IsExtendAtStart())
           || (IB1 == Bis1->NbIntervals() && Bis1->IsExtendAtEnd()))
       {
         //--------------------------------------------------------
         // Part corresponding to an extension is a segment.
         //--------------------------------------------------------
-        SBis1[IB1] = ConstructSegment(PMin, PMax, UMin, UMax);
+        SBis1[IB1] = ConstructSegment(Bis1, UMin, UMax);
       }
       else
       {
         SBis1[IB1] = Bis1;
       }
+      PMin = SBis1[IB1]->EvalD0(UMin);
+      PMax = SBis1[IB1]->EvalD0(UMax);
+      SD1[IB1].SetValues(PMin, UMin, D1.FirstTolerance(), PMax, UMax, D1.LastTolerance());
       NB1++;
     }
   }
@@ -184,22 +187,21 @@ void Bisector_Inter::Perform(const Bisector_Bisec&  C1,
     {
       UMin = std::max(UMin, MinDomain);
       UMax = std::min(UMax, MaxDomain);
-      PMin = Bis2->Value(UMin);
-      PMax = Bis2->Value(UMax);
-      SD2[IB2].SetValues(PMin, UMin, D2.FirstTolerance(), PMax, UMax, D2.LastTolerance());
-
       if ((IB2 == 1 && Bis2->IsExtendAtStart())
           || (IB2 == Bis1->NbIntervals() && Bis2->IsExtendAtEnd()))
       {
         //--------------------------------------------------------
         // Part corresponding to an extension is a segment.
         //--------------------------------------------------------
-        SBis2[IB2] = ConstructSegment(PMin, PMax, UMin, UMax);
+        SBis2[IB2] = ConstructSegment(Bis2, UMin, UMax);
       }
       else
       {
         SBis2[IB2] = Bis2;
       }
+      PMin = SBis2[IB2]->EvalD0(UMin);
+      PMax = SBis2[IB2]->EvalD0(UMax);
+      SD2[IB2].SetValues(PMin, UMin, D2.FirstTolerance(), PMax, UMax, D2.LastTolerance());
       NB2++;
     }
   }

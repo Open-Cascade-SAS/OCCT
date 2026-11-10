@@ -31,7 +31,10 @@
 #include <IntAna2d_IntPoint.hxx>
 #include <NCollection_Array1.hxx>
 
-static int MaxSol = 20;
+namespace
+{
+constexpr int MaxSol = 20;
+} // namespace
 
 //=========================================================================
 //   Creation of a circle tangent to two circles and a point.           +

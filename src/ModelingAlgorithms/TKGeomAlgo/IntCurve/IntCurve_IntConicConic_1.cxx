@@ -33,9 +33,6 @@
 #include <Precision.hxx>
 #include <Extrema_ExtElC2d.hxx>
 
-bool Affichage      = false;
-bool AffichageGraph = true;
-
 // modified by NIZHNY-MKK  Tue Feb 15 10:53:34 2000.BEGIN
 //  #define TOLERANCE_ANGULAIRE 0.00000001
 #define TOLERANCE_ANGULAIRE                                                                        \

@@ -20,13 +20,13 @@
 
 namespace
 {
-static const char* TopAbs_Table_PrintShapeEnum[9] =
+static constexpr const char* TopAbs_Table_PrintShapeEnum[9] =
   {"COMPOUND", "COMPSOLID", "SOLID", "SHELL", "FACE", "WIRE", "EDGE", "VERTEX", "SHAPE"};
 
-static const char* TopAbs_Table_PrintOrientation[4] = {"FORWARD",
-                                                       "REVERSED",
-                                                       "INTERNAL",
-                                                       "EXTERNAL"};
+static constexpr const char* TopAbs_Table_PrintOrientation[4] = {"FORWARD",
+                                                                 "REVERSED",
+                                                                 "INTERNAL",
+                                                                 "EXTERNAL"};
 } // namespace
 
 //=================================================================================================

@@ -665,6 +665,10 @@ void ApproxInt_Approx::buildCurve(const occ::handle<TheWLine>& theline, void* co
     }
 
     UpdateTolReached();
+    if (!myData.myBezierApprox && !myComputeLine.IsToleranceReached())
+    {
+      return;
+    }
 
     int indice3d = 1, indice2d1 = 2, indice2d2 = 3;
     if (!myData.ApproxXYZ)

@@ -44,8 +44,6 @@ public:
   //! Returns the points of the segment <Index> in the Polygon.
   void Segment(const int theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const override;
 
-  Standard_EXPORT void Dump() const;
-
 protected:
   Standard_EXPORT IntPatch_Polygo(const double theError = 0.0);
 

@@ -19,6 +19,8 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Trsf.hxx>
 
+#include <cmath>
+
 //! An adaptor for curves with an applied transformation.
 //!
 //! This class wraps a GeomAdaptor_Curve (or an Adaptor3d_CurveOnSurface) and
@@ -54,17 +56,24 @@ public:
   //! Shallow copy of adaptor.
   Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
 
-  //! Loads the curve geometry.
-  //! @param theCurve underlying geometry
-  void Load(const occ::handle<Geom_Curve>& theCurve) { myCurve.Load(theCurve); }
+  //! Load 3D curve geometry and select 3D curve evaluation.
+  //! The current placement is retained. A previous curve-on-surface is released.
+  //! @param[in] theCurve shared underlying 3D geometry
+  void Load(const occ::handle<Geom_Curve>& theCurve)
+  {
+    myCurve.Load(theCurve);
+    myConSurf.Nullify();
+  }
 
-  //! Loads the curve geometry with parameter bounds.
-  //! @param theCurve underlying geometry
-  //! @param theFirst minimum parameter
-  //! @param theLast maximum parameter
+  //! Load bounded 3D geometry and select 3D curve evaluation.
+  //! The current placement is retained. A previous curve-on-surface is released.
+  //! @param[in] theCurve shared underlying 3D geometry
+  //! @param[in] theFirst minimum native parameter
+  //! @param[in] theLast maximum native parameter
   void Load(const occ::handle<Geom_Curve>& theCurve, const double theFirst, const double theLast)
   {
     myCurve.Load(theCurve, theFirst, theLast);
+    myConSurf.Nullify();
   }
 
   //! Sets the curve on surface adaptor.
@@ -157,9 +166,11 @@ public:
   //! DN evaluation. Applies transformation after evaluation.
   [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(const double theU, const int theN) const final;
 
+  //! Return the parameter resolution for a distance after transformation.
   double Resolution(const double theR3d) const override
   {
-    return myConSurf.IsNull() ? myCurve.Resolution(theR3d) : myConSurf->Resolution(theR3d);
+    const double aDistance = theR3d / std::abs(myTrsf.ScaleFactor());
+    return myConSurf.IsNull() ? myCurve.Resolution(aDistance) : myConSurf->Resolution(aDistance);
   }
 
   GeomAbs_CurveType GetType() const override

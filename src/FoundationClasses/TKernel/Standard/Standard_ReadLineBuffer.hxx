@@ -51,7 +51,7 @@ public:
   }
 
   //! Read next line from the stream.
-  //! @return pointer to the line or NULL on error / end of reading buffer
+  //! @return null-terminated line or NULL on error / end of reading buffer
   //!         (in case of NULL result theStream should be checked externally to identify the
   //!         presence of errors).
   //!          Empty lines will be returned also with zero length.
@@ -65,7 +65,7 @@ public:
   }
 
   //! Read next line from the stream.
-  //! @return pointer to the line or NULL on error / end of reading buffer
+  //! @return null-terminated line or NULL on error / end of reading buffer
   //!         (in case of NULL result theStream should be checked externally to identify the
   //!         presence of errors).
   //!          Empty lines will be returned also with zero length.
@@ -105,7 +105,8 @@ public:
           // end of the stream
           if (myUseReadBufferLastStr)
           {
-            theLineLength          = myReadBufferLastStr.Size();
+            theLineLength = myReadBufferLastStr.Size();
+            myReadBufferLastStr.Append('\0');
             aResultLine            = myReadBufferLastStr.Data();
             myUseReadBufferLastStr = false;
           }

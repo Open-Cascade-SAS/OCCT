@@ -169,6 +169,58 @@ private:
 
 } // anonymous namespace
 
+namespace
+{
+class MathGlobOptMin_ConstantFunction : public math_MultipleVarFunction
+{
+public:
+  int  NbVariables() const override;
+  bool Value(const math_Vector& theX, double& theValue) override;
+};
+
+//==================================================================================================
+
+int MathGlobOptMin_ConstantFunction::NbVariables() const
+{
+  return 1;
+}
+
+//==================================================================================================
+
+bool MathGlobOptMin_ConstantFunction::Value(const math_Vector&, double& theValue)
+{
+  theValue = 0.0;
+  return true;
+}
+} // namespace
+
+//==================================================================================================
+
+TEST(MathGlobOptMinTest, IndependentParameterAndValueTolerances)
+{
+  MathGlobOptMin_ConstantFunction aFunction;
+  math_Vector                     aLower(1, 1), anUpper(1, 1);
+  aLower(1)  = 0.0;
+  anUpper(1) = 1.0;
+  for (const double aParameterTolerance : {0.01, 2.0})
+  {
+    SCOPED_TRACE(aParameterTolerance);
+    math_GlobOptMin aSolver(&aFunction, aLower, anUpper);
+    aSolver.SetTol(0.001, aParameterTolerance, Precision::SquareConfusion());
+    aSolver.Perform();
+    ASSERT_TRUE(aSolver.isDone());
+    if (aParameterTolerance < 1.0)
+    {
+      EXPECT_GT(aSolver.NbExtrema(), 1);
+    }
+    else
+    {
+      EXPECT_EQ(aSolver.NbExtrema(), 1);
+    }
+    EXPECT_EQ(aSolver.GetF(), 0.0);
+  }
+}
+
 TEST(MathGlobOptMinTest, QuadraticFunctionOptimization)
 {
   // Test global optimization on simple quadratic function

@@ -441,7 +441,7 @@ bool OpenGl_Workspace::ShouldRender(const OpenGl_Element* theElement, const Open
   {
     if (!theElement->IsFillDrawMode())
     {
-      if (dynamic_cast<const OpenGl_Aspects*>(theElement) == nullptr)
+      if (!theElement->IsRenderState())
       {
         return false;
       }

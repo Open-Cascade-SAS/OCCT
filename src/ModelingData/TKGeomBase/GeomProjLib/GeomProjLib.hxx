@@ -140,6 +140,20 @@ public:
     const occ::handle<Geom_Plane>& Plane,
     const gp_Dir&                  Dir,
     const bool                     KeepParametrization);
+
+  //! Projects a curve onto a plane with a requested approximation accuracy.
+  //! @param[in] theCurve source curve
+  //! @param[in] thePlane projection plane
+  //! @param[in] theDirection projection direction, not parallel to the plane
+  //! @param[in] theKeepParametrization whether to preserve source parameters
+  //! @param[in] theTolerance positive approximation tolerance in model units
+  //! @return projected curve, or a null handle if projection is unsupported
+  Standard_EXPORT static occ::handle<Geom_Curve> ProjectOnPlane(
+    const occ::handle<Geom_Curve>& theCurve,
+    const occ::handle<Geom_Plane>& thePlane,
+    const gp_Dir&                  theDirection,
+    const bool                     theKeepParametrization,
+    const double                   theTolerance);
 };
 
 #endif // _GeomProjLib_HeaderFile

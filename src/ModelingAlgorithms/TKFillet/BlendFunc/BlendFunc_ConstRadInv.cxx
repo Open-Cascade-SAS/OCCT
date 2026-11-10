@@ -20,6 +20,8 @@
 #include <math_Matrix.hxx>
 #include <Precision.hxx>
 
+#include <Adaptor3d_CurveOnSurface.hxx>
+
 #define Eps 1.e-15
 
 BlendFunc_ConstRadInv::BlendFunc_ConstRadInv(const occ::handle<Adaptor3d_Surface>& S1,
@@ -83,7 +85,8 @@ int BlendFunc_ConstRadInv::NbEquations() const
 
 void BlendFunc_ConstRadInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
 {
-  Tolerance(1) = csurf->Resolution(Tol);
+  const occ::handle<Adaptor3d_Surface>& aSurface = first ? surf1 : surf2;
+  Tolerance(1) = Adaptor3d_CurveOnSurface::Resolution(*csurf, *aSurface, Tol);
   Tolerance(2) = curv->Resolution(Tol);
   if (first)
   {

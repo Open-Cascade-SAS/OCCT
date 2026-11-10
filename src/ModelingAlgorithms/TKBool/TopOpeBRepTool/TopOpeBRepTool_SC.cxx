@@ -22,29 +22,6 @@
 #include <TopOpeBRepTool_SC.hxx>
 
 // ----------------------------------------------------------------------
-static thread_local TopOpeBRepTool_ShapeClassifier* TopOpeBRepTool_PSC = nullptr;
-
-Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC()
-{
-  if (TopOpeBRepTool_PSC == nullptr)
-  {
-    TopOpeBRepTool_PSC = new TopOpeBRepTool_ShapeClassifier();
-  }
-  return *TopOpeBRepTool_PSC;
-}
-
-// ----------------------------------------------------------------------
-Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(const TopoDS_Shape& S)
-{
-  if (TopOpeBRepTool_PSC == nullptr)
-  {
-    TopOpeBRepTool_PSC = new TopOpeBRepTool_ShapeClassifier();
-  }
-  TopOpeBRepTool_PSC->SetReference(S);
-  return *TopOpeBRepTool_PSC;
-}
-
-// ----------------------------------------------------------------------
 Standard_EXPORT TopAbs_State FSC_StatePonFace(const gp_Pnt&                   P,
                                               const TopoDS_Shape&             F,
                                               TopOpeBRepTool_ShapeClassifier& PSC)

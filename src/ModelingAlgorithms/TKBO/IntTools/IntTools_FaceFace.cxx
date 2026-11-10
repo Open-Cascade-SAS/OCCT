@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <IntTools_FaceFace.hxx>
+#include <algorithm>
 
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>

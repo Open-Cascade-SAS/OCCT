@@ -18,6 +18,7 @@
 //                   of the line and the parameteriation is kept
 #include <ProjLib_ProjectOnPlane.hxx>
 #include <Approx_FitAndDivide.hxx>
+#include <NCollection_Array1.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -297,11 +298,10 @@ private:
 static void PerformApprox(const occ::handle<Adaptor3d_Curve>& C,
                           const gp_Ax3&                       Pl,
                           const gp_Dir&                       D,
+                          const double                        theTolerance,
                           occ::handle<Geom_BSplineCurve>&     BSplineCurvePtr)
 
 {
-  ProjLib_OnPlane F(C, Pl, D);
-
   int Deg1, Deg2;
   Deg1 = 8;
   Deg2 = 8;
@@ -317,16 +317,24 @@ static void PerformApprox(const occ::handle<Adaptor3d_Curve>& C,
     Deg2    = 14;
     aNbSegm = 1000;
   }
-  Approx_FitAndDivide Fit(Deg1,
-                          Deg2,
-                          Precision::Approximation(),
-                          Precision::PApproximation(),
-                          true);
+  Approx_FitAndDivide Fit(Deg1, Deg2, theTolerance, Precision::PApproximation(), true);
   Fit.SetMaxSegments(aNbSegm);
-  Fit.Perform(F);
-  if (!Fit.IsAllApproximated())
+  Fit.SetHangChecking(false);
+  const int                  aNbIntervals = C->NbIntervals(GeomAbs_C1);
+  NCollection_Array1<double> anIntervals(1, aNbIntervals + 1);
+  C->Intervals(anIntervals, GeomAbs_C1);
+  // Approximate each smooth interval with its own endpoint derivatives.
+  // Perform() appends the fitted segments to the existing result.
+  for (int anInterval = 1; anInterval <= aNbIntervals; ++anInterval)
   {
-    return;
+    const occ::handle<Adaptor3d_Curve> aPart =
+      C->Trim(anIntervals(anInterval), anIntervals(anInterval + 1), Precision::PConfusion());
+    const ProjLib_OnPlane aFunction(aPart, Pl, D);
+    Fit.Perform(aFunction);
+    if (!Fit.IsAllApproximated())
+    {
+      return;
+    }
   }
   int i;
   int NbCurves = Fit.NbMultiCurves();
@@ -774,7 +782,7 @@ void ProjLib_ProjectOnPlane::Load(const occ::handle<Adaptor3d_Curve>& C,
       if (myIsApprox)
       {
         myType = GeomAbs_BSplineCurve;
-        PerformApprox(myCurve, myPlane, myDirection, ApproxCurve);
+        PerformApprox(myCurve, myPlane, myDirection, myTolerance, ApproxCurve);
         //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
         GeomAdaptor_Curve aGACurve(ApproxCurve);
         myResult = new GeomAdaptor_Curve(aGACurve);
@@ -957,7 +965,7 @@ void ProjLib_ProjectOnPlane::Load(const occ::handle<Adaptor3d_Curve>& C,
       myKeepParam = true;
       myIsApprox  = true;
       myType      = GeomAbs_BSplineCurve;
-      PerformApprox(myCurve, myPlane, myDirection, ApproxCurve);
+      PerformApprox(myCurve, myPlane, myDirection, myTolerance, ApproxCurve);
       //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
       GeomAdaptor_Curve aGACurve(ApproxCurve);
       myResult = new GeomAdaptor_Curve(aGACurve);
@@ -1554,11 +1562,11 @@ void ProjLib_ProjectOnPlane::BuildByApprox(const double theLimitParameter)
     double                       f = std::max(-theLimitParameter, myCurve->FirstParameter());
     double                       l = std::min(theLimitParameter, myCurve->LastParameter());
     occ::handle<Adaptor3d_Curve> aTrimCurve = myCurve->Trim(f, l, Precision::Confusion());
-    PerformApprox(aTrimCurve, myPlane, myDirection, anApproxCurve);
+    PerformApprox(aTrimCurve, myPlane, myDirection, myTolerance, anApproxCurve);
   }
   else
   {
-    PerformApprox(myCurve, myPlane, myDirection, anApproxCurve);
+    PerformApprox(myCurve, myPlane, myDirection, myTolerance, anApproxCurve);
   }
   myFirstPar = anApproxCurve->FirstParameter();
   myLastPar  = anApproxCurve->LastParameter();

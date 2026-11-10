@@ -15,6 +15,7 @@
 #include <RWObj_Reader.hxx>
 
 #include <RWObj_MtlReader.hxx>
+#include <DE_ValidationUtils.hxx>
 
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_Delaun.hxx>
@@ -31,6 +32,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <string_view>
 
 #if defined(_WIN32)
   #define ftell64(a) _ftelli64(a)
@@ -46,6 +48,30 @@ namespace
 {
 // The length of buffer to read (in bytes)
 static const size_t THE_BUFFER_SIZE = 4 * 1024;
+
+//! Parsed OBJ command and its possibly empty arguments.
+struct ObjCommand
+{
+  std::string_view Name;
+  std::string_view Arguments;
+};
+
+//! Split an OBJ line into a command name and its arguments.
+static ObjCommand splitCommand(const std::string_view theLine)
+{
+  const size_t aNameEnd = theLine.find_first_of(" \t");
+  if (aNameEnd == std::string_view::npos)
+  {
+    return {theLine, {}};
+  }
+
+  size_t anArgumentOffset = aNameEnd;
+  while (anArgumentOffset < theLine.size() && RWObj_Tools::isSpaceChar(theLine[anArgumentOffset]))
+  {
+    ++anArgumentOffset;
+  }
+  return {theLine.substr(0, aNameEnd), theLine.substr(anArgumentOffset)};
+}
 
 //! Return TRUE if given polygon has clockwise node order.
 static bool isClockwisePolygon(const occ::handle<BRepMesh_DataStructureOfDelaun>& theMesh,
@@ -123,6 +149,11 @@ bool RWObj_Reader::read(std::istream&                  theStream,
 
   Standard_ReadLineBuffer aBuffer(THE_BUFFER_SIZE);
   aBuffer.SetMultilineMode(true);
+  RWObj_MtlReader aMatReader(myMaterials);
+  if (myResourceStreams != nullptr)
+  {
+    aMatReader.SetResourceStreams(*myResourceStreams);
+  }
 
   const int             aNbMiBTotal  = int(aFileLen / (1024 * 1024));
   int                   aNbMiBPassed = 0;
@@ -157,6 +188,11 @@ bool RWObj_Reader::read(std::istream&                  theStream,
       aTimer.Start();
     }
 
+    while (*aLine == ' ' || *aLine == '\t')
+    {
+      ++aLine;
+      --aLineLen;
+    }
     if (*aLine == '#')
     {
       if (isStart)
@@ -181,61 +217,69 @@ bool RWObj_Reader::read(std::istream&                  theStream,
       continue;
     }
     isStart = false;
+    const std::string_view aLineView(aLine, aLineLen);
+    const ObjCommand       aCommand = splitCommand(aLineView);
 
     if (theToProbe)
     {
-      if (::strncmp(aLine, "mtllib", 6) == 0)
+      if (aCommand.Name == "mtllib")
       {
-        readMaterialLib(IsSpace(aLine[6]) ? aLine + 7 : "");
+        if (!readMaterialLib(aCommand.Arguments, theFile, aMatReader))
+        {
+          return false;
+        }
       }
-      else if (aLine[0] == 'v' && RWObj_Tools::isSpaceChar(aLine[1]))
+      else if (aCommand.Name == "v" && !aCommand.Arguments.empty())
       {
         ++myNbProbeNodes;
       }
-      else if (aLine[0] == 'f' && RWObj_Tools::isSpaceChar(aLine[1]))
+      else if (aCommand.Name == "f" && !aCommand.Arguments.empty())
       {
         ++myNbProbeElems;
       }
       continue;
     }
 
-    if (aLine[0] == 'v' && RWObj_Tools::isSpaceChar(aLine[1]))
+    if (aCommand.Name == "v" && !aCommand.Arguments.empty())
     {
       ++myNbProbeNodes;
-      pushVertex(aLine + 2);
+      pushVertex(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'v' && aLine[1] == 'n' && RWObj_Tools::isSpaceChar(aLine[2]))
+    else if (aCommand.Name == "vn" && !aCommand.Arguments.empty())
     {
-      pushNormal(aLine + 3);
+      pushNormal(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'v' && aLine[1] == 't' && RWObj_Tools::isSpaceChar(aLine[2]))
+    else if (aCommand.Name == "vt" && !aCommand.Arguments.empty())
     {
-      pushTexel(aLine + 3);
+      pushTexel(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'f' && RWObj_Tools::isSpaceChar(aLine[1]))
+    else if (aCommand.Name == "f" && !aCommand.Arguments.empty())
     {
       ++myNbProbeElems;
-      pushIndices(aLine + 2);
+      pushIndices(aCommand.Arguments.data());
     }
-    else if (aLine[0] == 'g' && IsSpace(aLine[1]))
+    else if (aCommand.Name == "g")
     {
-      pushGroup(aLine + 2);
+      pushGroup(aCommand.Arguments);
     }
-    else if (aLine[0] == 's' && IsSpace(aLine[1]))
+    else if (aCommand.Name == "s")
     {
-      pushSmoothGroup(aLine + 2);
+      pushSmoothGroup(aCommand.Arguments);
     }
-    else if (aLine[0] == 'o' && IsSpace(aLine[1]))
+    else if (aCommand.Name == "o")
     {
-      pushObject(aLine + 2);
+      pushObject(aCommand.Arguments);
     }
-    else if (::strncmp(aLine, "mtllib", 6) == 0)
+    else if (aCommand.Name == "mtllib")
     {
-      readMaterialLib(IsSpace(aLine[6]) ? aLine + 7 : "");
+      if (!readMaterialLib(aCommand.Arguments, theFile, aMatReader))
+      {
+        return false;
+      }
     }
-    else if (::strncmp(aLine, "usemtl", 6) == 0)
+    else if (aCommand.Name == "usemtl")
     {
-      pushMaterial(IsSpace(aLine[6]) ? aLine + 7 : "");
+      pushMaterial(aCommand.Arguments);
     }
 
     if (!checkMemory())
@@ -612,7 +656,7 @@ int RWObj_Reader::triangulatePolygon(const NCollection_Array1<int>& theIndices)
 
 //=================================================================================================
 
-void RWObj_Reader::pushObject(const char* theObjectName)
+void RWObj_Reader::pushObject(const std::string_view theObjectName)
 {
   TCollection_AsciiString aNewObject;
   if (!RWObj_Tools::ReadName(theObjectName, aNewObject))
@@ -628,7 +672,7 @@ void RWObj_Reader::pushObject(const char* theObjectName)
 
 //=================================================================================================
 
-void RWObj_Reader::pushGroup(const char* theGroupName)
+void RWObj_Reader::pushGroup(const std::string_view theGroupName)
 {
   TCollection_AsciiString aNewGroup;
   if (!RWObj_Tools::ReadName(theGroupName, aNewGroup))
@@ -644,7 +688,7 @@ void RWObj_Reader::pushGroup(const char* theGroupName)
 
 //=================================================================================================
 
-void RWObj_Reader::pushSmoothGroup(const char* theSmoothGroupIndex)
+void RWObj_Reader::pushSmoothGroup(const std::string_view theSmoothGroupIndex)
 {
   TCollection_AsciiString aNewSmoothGroup;
   RWObj_Tools::ReadName(theSmoothGroupIndex, aNewSmoothGroup);
@@ -669,7 +713,7 @@ void RWObj_Reader::pushSmoothGroup(const char* theSmoothGroupIndex)
 
 //=================================================================================================
 
-void RWObj_Reader::pushMaterial(const char* theMaterialName)
+void RWObj_Reader::pushMaterial(const std::string_view theMaterialName)
 {
   TCollection_AsciiString aNewMat;
   if (!RWObj_Tools::ReadName(theMaterialName, aNewMat))
@@ -697,28 +741,67 @@ void RWObj_Reader::pushMaterial(const char* theMaterialName)
 
 //=================================================================================================
 
-void RWObj_Reader::readMaterialLib(const char* theFileName)
+bool RWObj_Reader::readMaterialLib(const std::string_view         theFileName,
+                                   const TCollection_AsciiString& theReferrer,
+                                   RWObj_MtlReader&               theReader)
 {
   TCollection_AsciiString aMatPath;
   if (!RWObj_Tools::ReadName(theFileName, aMatPath))
   {
     Message::SendWarning(TCollection_AsciiString("Warning: invalid OBJ syntax at line ")
                          + myNbLines);
-    return;
+    return myResourceStreams == nullptr;
   }
 
-  RWObj_MtlReader aMatReader(myMaterials);
-  if (aMatReader.Read(myFolder, aMatPath))
+  if (myResourceStreams != nullptr)
+  {
+    TCollection_AsciiString aName;
+    std::istream*           aStream =
+      DE_ValidationUtils::FindReadStream(*myResourceStreams, theReferrer, aMatPath, aName);
+    if (aStream == nullptr)
+    {
+      Message::SendFail() << "Missing OBJ material stream '" << aMatPath << "' in " << theReferrer;
+      return false;
+    }
+    if (!theReader.Read(*aStream, aName))
+    {
+      return false;
+    }
+    myExternalFiles.Add(aName);
+    return true;
+  }
+  if (theReader.Read(myFolder, aMatPath))
   {
     myExternalFiles.Add(myFolder + aMatPath);
   }
+  return true;
 }
 
-//=================================================================================================
+//==================================================================================================
+
+bool RWObj_Reader::SetMemoryLimitMiB(int theLimitMiB)
+{
+  constexpr size_t aMiB = 1024 * 1024;
+  if (theLimitMiB < -1
+      || (theLimitMiB >= 0 && size_t(theLimitMiB) > std::numeric_limits<size_t>::max() / aMiB))
+  {
+    Message::SendFail("Error: OBJ reader memory limit cannot be represented in bytes");
+    return false;
+  }
+  myMemLimitBytes =
+    theLimitMiB == -1 ? std::numeric_limits<size_t>::max() : size_t(theLimitMiB) * aMiB;
+  return true;
+}
+
+//==================================================================================================
 
 bool RWObj_Reader::checkMemory()
 {
-  if (myMemEstim < myMemLimitBytes || myToAbort)
+  if (myToAbort)
+  {
+    return false;
+  }
+  if (myMemEstim < myMemLimitBytes)
   {
     return true;
   }

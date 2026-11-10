@@ -235,7 +235,14 @@ void BRepLib_ValidateEdge::processExact()
 {
   GeomLib_CheckCurveOnSurface aCheckCurveOnSurface(myReferenceCurve);
   aCheckCurveOnSurface.SetParallel(myIsMultiThread);
-  aCheckCurveOnSurface.Perform(myOtherCurve);
+  if (myExitIfToleranceExceeded)
+  {
+    aCheckCurveOnSurface.Perform(myOtherCurve, myToleranceForChecking);
+  }
+  else
+  {
+    aCheckCurveOnSurface.Perform(myOtherCurve);
+  }
   myIsDone = aCheckCurveOnSurface.IsDone();
   if (myIsDone)
   {

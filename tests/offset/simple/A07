@@ -5,4 +5,4 @@ set OffsetValue 20.0
 
 # Reference data.
 set ExpectedMass 2.65579e+007
-set ExpectedMaxTol 24.55
+set ExpectedMaxTol 1.3508992392006713

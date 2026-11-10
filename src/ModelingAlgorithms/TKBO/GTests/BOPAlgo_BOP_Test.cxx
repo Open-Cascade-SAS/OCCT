@@ -14,6 +14,7 @@
 #include "BOPTest_Utilities.pxx"
 
 #include <BOPAlgo_ArgumentAnalyzer.hxx>
+#include <BOPAlgo_BuilderSolid.hxx>
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPAlgo_CheckStatus.hxx>
 #include <BOPDS_DS.hxx>
@@ -29,6 +30,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 
 //=================================================================================================
 // Direct BOP Operations Tests (equivalent to bcut, bfuse, bcommon, btuc commands)
@@ -496,4 +498,56 @@ TEST_F(BOPAlgo_DegenerateToolTest, Common_SolidAndHalfspace_Unaffected)
   const TopoDS_Shape aRes = PerformDirectBOP(aBox, aHalfSpace, BOPAlgo_COMMON);
   ASSERT_FALSE(aRes.IsNull());
   EXPECT_GT(BOPTest_Utilities::GetVolume(aRes), 1.0);
+}
+
+// Multiple holes must be assigned to the nearest enclosing growth shell,
+// independently of input order. This also exercises reuse of each solid's bounds.
+TEST(BOPAlgo_BuilderSolidTest, NestedSolidsWithMultipleHoles)
+{
+  const TopoDS_Shape aShellSolids[] = {
+    BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 20.0, 20.0, 20.0),
+    BOPTest_Utilities::CreateBox(gp_Pnt(2, 2, 2), 16.0, 16.0, 16.0).Reversed(),
+    BOPTest_Utilities::CreateBox(gp_Pnt(6, 6, 6), 8.0, 8.0, 8.0),
+    BOPTest_Utilities::CreateBox(gp_Pnt(7, 7, 7), 2.0, 2.0, 2.0).Reversed(),
+    BOPTest_Utilities::CreateBox(gp_Pnt(11, 11, 11), 2.0, 2.0, 2.0).Reversed()};
+
+  for (int anOrder = 0; anOrder < 2; ++anOrder)
+  {
+    NCollection_List<TopoDS_Shape> aFaces;
+    for (int i = 0; i < 5; ++i)
+    {
+      const TopoDS_Shape& aSolid = aShellSolids[anOrder == 0 ? i : 4 - i];
+      for (TopExp_Explorer anExp(aSolid, TopAbs_FACE); anExp.More(); anExp.Next())
+      {
+        aFaces.Append(anExp.Current());
+      }
+    }
+    BOPAlgo_BuilderSolid aBuilder;
+    aBuilder.SetShapes(aFaces);
+    aBuilder.Perform();
+    ASSERT_FALSE(aBuilder.HasErrors());
+    ASSERT_EQ(aBuilder.Areas().Extent(), 2);
+
+    bool hasOuter = false;
+    bool hasInner = false;
+    for (NCollection_List<TopoDS_Shape>::Iterator anIt(aBuilder.Areas()); anIt.More(); anIt.Next())
+    {
+      EXPECT_TRUE(BRepCheck_Analyzer(anIt.Value()).IsValid());
+      const double aVolume = BOPTest_Utilities::GetVolume(anIt.Value());
+      if (aVolume > 1000.0)
+      {
+        EXPECT_NEAR(aVolume, 3904.0, 1.e-7);
+        EXPECT_EQ(CountUniqueBOPSubShapes(anIt.Value(), TopAbs_SHELL), 2);
+        hasOuter = true;
+      }
+      else
+      {
+        EXPECT_NEAR(aVolume, 496.0, 1.e-7);
+        EXPECT_EQ(CountUniqueBOPSubShapes(anIt.Value(), TopAbs_SHELL), 3);
+        hasInner = true;
+      }
+    }
+    EXPECT_TRUE(hasOuter);
+    EXPECT_TRUE(hasInner);
+  }
 }

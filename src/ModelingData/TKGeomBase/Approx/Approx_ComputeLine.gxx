@@ -1108,8 +1108,10 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
           else
           {
             myIsClear = true;
+            // Limit nested point insertion independently for each subrange.
             ++myMultiLineNb;
             Perform(anOtherLine1);
+            --myMultiLineNb;
             myfirstpt = mylastpt;
             mylastpt  = Thelastpt;
           }

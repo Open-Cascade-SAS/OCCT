@@ -20,6 +20,8 @@
 #include <math_FunctionSetRoot.hxx>
 #include <Precision.hxx>
 
+#include <utility>
+
 #define Debug(expr) std::cout << " expr :" << expr;
 #define MySurf1 MyIntersectionOn2S.Function().AuxillarSurface1()
 #define MySurf2 MyIntersectionOn2S.Function().AuxillarSurface2()
@@ -61,6 +63,7 @@ bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
     if ((MyParOnS1.X() == u1) && (MyParOnS1.Y() == v1) && (MyParOnS2.X() == u2)
         && (MyParOnS2.Y() == v2))
     {
+      cachedResult(u1, v1, u2, v2, P, Tg, Tguv1, Tguv2);
       return (MyIsTangent);
     }
     else if (MyHasBeenComputedbis == false)
@@ -73,6 +76,9 @@ bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
       MyParOnS2bis         = MyParOnS2;
       MyIsTangentbis       = MyIsTangent;
       MyHasBeenComputedbis = MyHasBeenComputed;
+
+      myResultParameters1bis = myResultParameters1;
+      myResultParameters2bis = myResultParameters2;
     }
   }
   if (MyHasBeenComputedbis)
@@ -81,30 +87,17 @@ bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
         && (MyParOnS2bis.Y() == v2))
     {
 
-      gp_Vec   TV(MyTg);
-      gp_Vec2d TV1(MyTguv1);
-      gp_Vec2d TV2(MyTguv2);
-      gp_Pnt   TP(MyPnt);
-      gp_Pnt2d TP1(MyParOnS1);
-      gp_Pnt2d TP2(MyParOnS2);
-      bool     TB = MyIsTangent;
+      std::swap(MyTg, MyTgbis);
+      std::swap(MyTguv1, MyTguv1bis);
+      std::swap(MyTguv2, MyTguv2bis);
+      std::swap(MyPnt, MyPntbis);
+      std::swap(MyParOnS1, MyParOnS1bis);
+      std::swap(MyParOnS2, MyParOnS2bis);
+      std::swap(MyIsTangent, MyIsTangentbis);
+      std::swap(myResultParameters1, myResultParameters1bis);
+      std::swap(myResultParameters2, myResultParameters2bis);
 
-      MyTg        = MyTgbis;
-      MyTguv1     = MyTguv1bis;
-      MyTguv2     = MyTguv2bis;
-      MyPnt       = MyPntbis;
-      MyParOnS1   = MyParOnS1bis;
-      MyParOnS2   = MyParOnS2bis;
-      MyIsTangent = MyIsTangentbis;
-
-      MyTgbis        = TV;
-      MyTguv1bis     = TV1;
-      MyTguv2bis     = TV2;
-      MyPntbis       = TP;
-      MyParOnS1bis   = TP1;
-      MyParOnS2bis   = TP2;
-      MyIsTangentbis = TB;
-
+      cachedResult(u1, v1, u2, v2, P, Tg, Tguv1, Tguv2);
       return (MyIsTangent);
     }
   }
@@ -223,8 +216,31 @@ bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
 
   Tguv2.SetCoord(DeltaU, DeltaV);
   MyTguv2 = Tguv2;
+  myResultParameters1.SetCoord(u1, v1);
+  myResultParameters2.SetCoord(u2, v2);
 
   return (true);
+}
+
+//==================================================================================================
+
+void ApproxInt_PrmPrmSvSurfaces::cachedResult(double&   theU1,
+                                              double&   theV1,
+                                              double&   theU2,
+                                              double&   theV2,
+                                              gp_Pnt&   thePoint,
+                                              gp_Vec&   theTangent,
+                                              gp_Vec2d& theTangent1,
+                                              gp_Vec2d& theTangent2) const
+{
+  theU1       = myResultParameters1.X();
+  theV1       = myResultParameters1.Y();
+  theU2       = myResultParameters2.X();
+  theV2       = myResultParameters2.Y();
+  thePoint    = MyPnt;
+  theTangent  = MyTg;
+  theTangent1 = MyTguv1;
+  theTangent2 = MyTguv2;
 }
 
 //=================================================================================================

@@ -2,6 +2,7 @@ puts "============"
 puts "OCC6768"
 puts "============"
 puts ""
+puts "TODO OCC6768 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 #######################################################
 # Problems making offset wires
 #######################################################
@@ -29,13 +30,16 @@ if { ${s} eq "co_1" } {
   checknbshapes r${s}_1 -vertex  80
 } elseif { ${s} eq "co_3" } {
   checkprops r${s}_1 -l 550.648
-  checknbshapes r${s}_1 -vertex 111
+  checknbshapes r${s}_1 -vertex 112
 } else {
   checkprops r${s}_1 -l 545.219
-  checknbshapes r${s}_1 -vertex 290
+  checknbshapes r${s}_1 -vertex 292
 } 
 
 }
+
+mkplane offset_face rco_3_1
+checkshape offset_face -exact
 
 smallview
 fit

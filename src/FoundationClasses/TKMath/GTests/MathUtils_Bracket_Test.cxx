@@ -362,3 +362,31 @@ TEST(MathUtils_PolyTest, DuplicatePolicyIsScaleRelativeAndRejectsNonFiniteRoots)
   double aBadFirstRoot[] = {std::numeric_limits<double>::quiet_NaN(), 1.0};
   EXPECT_EQ(MathUtils::RemoveDuplicateRoots(aBadFirstRoot, 2), 0u);
 }
+
+TEST(MathUtils_DomainTest, InterpolationPreservesEndpointsAndBounds)
+{
+  const double aLimit = std::numeric_limits<double>::max();
+  for (const MathUtils::Domain1D& aDomain : {MathUtils::Domain1D(-1.0, 0.1),
+                                             MathUtils::Domain1D(-0.1, -0.01),
+                                             MathUtils::Domain1D(1.0, std::nextafter(1.0, 2.0)),
+                                             MathUtils::Domain1D(-aLimit, aLimit),
+                                             MathUtils::Domain1D(aLimit, aLimit),
+                                             MathUtils::Domain1D(0.0, 0.0)})
+  {
+    SCOPED_TRACE(aDomain.Min);
+    SCOPED_TRACE(aDomain.Max);
+    EXPECT_EQ(aDomain.Lerp(0.0), aDomain.Min);
+    EXPECT_EQ(aDomain.Lerp(1.0), aDomain.Max);
+    double        aPrevious = aDomain.Min;
+    constexpr int aNbSteps  = 1024;
+    for (int anIndex = 0; anIndex <= aNbSteps; ++anIndex)
+    {
+      const double aValue = aDomain.Lerp(double(anIndex) / aNbSteps);
+      ASSERT_TRUE(std::isfinite(aValue));
+      EXPECT_GE(aValue, aPrevious);
+      EXPECT_GE(aValue, aDomain.Min);
+      EXPECT_LE(aValue, aDomain.Max);
+      aPrevious = aValue;
+    }
+  }
+}

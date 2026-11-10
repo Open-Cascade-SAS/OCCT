@@ -166,13 +166,13 @@ public:
   void ClearRecorder(const int theMode);
 
   //! Returns a value of fields of current argument
-  bool GetArgDescription(Interface_ParamType* theType, char** theValue);
+  bool GetArgDescription(Interface_ParamType* theType, const char** theValue);
 
   //! Returns a value of all file counters
   void GetFileNbR(int* theNbHead, int* theNbRec, int* theNbPage);
 
   //! Returns a value of fields of current record
-  bool GetRecordDescription(char** theIdent, char** theType, int* theNbArg);
+  bool GetRecordDescription(const char** theIdent, const char** theType, int* theNbArg);
 
   //! Initializes the record type with myResText
   void RecordTypeText();
@@ -216,10 +216,10 @@ public:
 
 private:
   //! Prepare text to analyze
-  char* RecordNewText(char* theText);
+  const char* RecordNewText(const char* theText);
 
   //! Get current text value
-  void GetResultText(char** theText);
+  void GetResultText(const char** theText);
 
   //! Add a record to the current records page
   void AddNewRecord(Record* theNewRecord);
@@ -242,10 +242,10 @@ private:
   int                      myNumSub;     //!< Number of current sublist
                                          // clang-format off
   bool myErrorArg;   //!< Control of error argument (true - error argument was created)
-  char* myResText;               //!< Text value written by Flex and passed to Bison to create record
+  const char* myResText;         //!< Text value written by Flex and passed to Bison to create record
                                          // clang-format on
-  char*               myCurrType;        //!< Type of last record read
-  char*               mySubArg;          //!< Ident last record (possible sub-list)
+  const char*         myCurrType;        //!< Type of last record read
+  const char*         mySubArg;          //!< Ident last record (possible sub-list)
   Interface_ParamType myTypeArg;         //!< Type of last argument read
   Argument*           myCurrArg;         //!< Current node of the arguments list
   Record*             myFirstRec;        //!< First node of the records list

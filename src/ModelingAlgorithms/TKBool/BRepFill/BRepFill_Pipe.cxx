@@ -25,6 +25,8 @@
 #include <BRepFill_SectionPlacement.hxx>
 #include <BRepFill_ShapeLaw.hxx>
 #include <BRepFill_Sweep.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <cmath>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepTools_Substitution.hxx>
@@ -152,6 +154,7 @@ BRepFill_Pipe::BRepFill_Pipe()
   myContinuity    = GeomAbs_C2;
   myMode          = GeomFill_IsCorrectedFrenet;
   myForceApproxC1 = false;
+  myTolerance     = 1.0e-4;
 
   myCurIndexOfSectionEdge = 1;
 }
@@ -163,10 +166,27 @@ BRepFill_Pipe::BRepFill_Pipe(const TopoDS_Wire&       Spine,
                              const GeomFill_Trihedron aMode,
                              const bool               ForceApproxC1,
                              const bool               KPart)
+    : BRepFill_Pipe(Spine, Profile, aMode, ForceApproxC1, KPart, 1.0e-4)
+{
+}
+
+//=================================================================================================
+
+BRepFill_Pipe::BRepFill_Pipe(const TopoDS_Wire&       Spine,
+                             const TopoDS_Shape&      Profile,
+                             const GeomFill_Trihedron aMode,
+                             const bool               ForceApproxC1,
+                             const bool               KPart,
+                             const double             theTolerance)
 
 {
-  myDegmax = 11;
-  mySegmax = 100;
+  if (!std::isfinite(theTolerance) || theTolerance <= 0.0)
+  {
+    throw Standard_ConstructionError("Pipe surface tolerance must be finite and positive");
+  }
+  myTolerance = theTolerance;
+  myDegmax    = 11;
+  mySegmax    = 100;
 
   myMode = GeomFill_IsCorrectedFrenet;
   if (aMode == GeomFill_IsFrenet || aMode == GeomFill_IsCorrectedFrenet
@@ -509,6 +529,7 @@ TopoDS_Wire BRepFill_Pipe::PipeLine(const gp_Pnt& Point)
 
   // Sweeping
   BRepFill_Sweep MkSw(Section, myLoc, true);
+  MkSw.SetTolerance(myTolerance);
   MkSw.SetForceApproxC1(myForceApproxC1);
   MkSw.Build(myReversedEdges,
              myTapes,
@@ -675,6 +696,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
     {
       occ::handle<BRepFill_ShapeLaw> Section = new (BRepFill_ShapeLaw)(TopoDS::Vertex(TheS));
       BRepFill_Sweep                 MkSw(Section, myLoc, true);
+      MkSw.SetTolerance(myTolerance);
       MkSw.SetForceApproxC1(myForceApproxC1);
       MkSw.Build(myReversedEdges,
                  myTapes,
@@ -706,6 +728,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       occ::handle<BRepFill_ShapeLaw> Section = new (BRepFill_ShapeLaw)(TopoDS::Wire(TheS));
       BRepFill_Sweep                 MkSw(Section, myLoc, true);
       MkSw.SetBounds(TopoDS::Wire(TheFirst), TopoDS::Wire(TheLast));
+      MkSw.SetTolerance(myTolerance);
       MkSw.SetForceApproxC1(myForceApproxC1);
       MkSw.Build(myReversedEdges,
                  myTapes,

@@ -12,6 +12,10 @@
 // commercial license or contractual agreement.
 
 #include <BRepAdaptor_Surface.hxx>
+#include <BVH_Distance.hxx>
+#include <BVH_Triangulation.hxx>
+#include <BVH_Tools.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -460,4 +464,124 @@ TEST(BRepMesh_IncrementalMeshTest, OCC31461_AllowQualityDecreaseRebuildsMesh)
   const MeshCounts aAfterCleanMesh = countMeshElements(aSphere);
   EXPECT_EQ(aAfterCleanMesh.NbNodes, aCoarseMesh.NbNodes);
   EXPECT_EQ(aAfterCleanMesh.NbTriangles, aCoarseMesh.NbTriangles);
+}
+
+namespace
+{
+class TriangulationDistance
+    : public BVH_Distance<double, 3, BVH_Vec3d, BVH_Triangulation<double, 3>>
+{
+  bool RejectNode(const BVH_Vec3d& theMin,
+                  const BVH_Vec3d& theMax,
+                  double&          theDistance) const override;
+
+  bool Accept(int theIndex, const double&) override;
+};
+
+bool TriangulationDistance::RejectNode(const BVH_Vec3d& theMin,
+                                       const BVH_Vec3d& theMax,
+                                       double&          theDistance) const
+{
+  theDistance = BVH_Tools<double, 3>::PointBoxSquareDistance(myObject, theMin, theMax);
+  return RejectMetric(theDistance);
+}
+
+bool TriangulationDistance::Accept(int theIndex, const double&)
+{
+  const BVH_Vec4i& aTriangle = BVH::Array<int, 4>::Value(myBVHSet->Elements, theIndex);
+  const double     aDistance = BVH_Tools<double, 3>::PointTriangleSquareDistance(
+    myObject,
+    BVH::Array<double, 3>::Value(myBVHSet->Vertices, aTriangle.x()),
+    BVH::Array<double, 3>::Value(myBVHSet->Vertices, aTriangle.y()),
+    BVH::Array<double, 3>::Value(myBVHSet->Vertices, aTriangle.z()));
+  if (aDistance < myDistance)
+  {
+    myDistance = aDistance;
+    return true;
+  }
+  return false;
+}
+} // namespace
+
+TEST(BRepMesh_IncrementalMeshTest, LocalizedSplinePeaksRespectDeflection)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 8, 1, 8);
+  for (int aU = 1; aU <= 8; ++aU)
+  {
+    for (int aV = 1; aV <= 8; ++aV)
+    {
+      aPoles(aU, aV) =
+        gp_Pnt(10.0 * (aU - 1), 10.0 * (aV - 1), (aU == aV && (aU == 2 || aU == 7)) ? 999.0 : 0.0);
+    }
+  }
+  NCollection_Array1<double> aKnots(1, 5);
+  NCollection_Array1<int>    aMults(1, 5);
+  for (size_t anIndex = 0; anIndex < 5; ++anIndex)
+  {
+    aKnots.ChangeAt(anIndex) = static_cast<double>(anIndex);
+    aMults.ChangeAt(anIndex) = anIndex == 0 || anIndex == 4 ? 5 : 1;
+  }
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 4, 4);
+  for (IMeshTools_MeshAlgoType anAlgorithm :
+       {IMeshTools_MeshAlgoType_Watson, IMeshTools_MeshAlgoType_Delabella})
+  {
+    SCOPED_TRACE(static_cast<int>(anAlgorithm));
+    const TopoDS_Face     aFace = BRepBuilderAPI_MakeFace(aSurface, Precision::Confusion());
+    IMeshTools_Parameters aParameters;
+    aParameters.MeshAlgo   = anAlgorithm;
+    aParameters.Deflection = 0.01;
+    aParameters.Angle      = 0.5;
+    BRepMesh_IncrementalMesh aMesher(aFace, aParameters);
+    ASSERT_TRUE(aMesher.IsDone());
+    ASSERT_EQ(aMesher.GetStatusFlags(), 0);
+    TopLoc_Location                       aLocation;
+    const occ::handle<Poly_Triangulation> aTriangulation =
+      BRep_Tool::Triangulation(aFace, aLocation);
+    ASSERT_FALSE(aTriangulation.IsNull());
+    ASSERT_TRUE(aTriangulation->HasUVNodes());
+    BVH_Triangulation<double, 3> aMesh;
+    for (int anIndex = 1; anIndex <= aTriangulation->NbNodes(); ++anIndex)
+    {
+      const gp_Pnt aPoint = aTriangulation->Node(anIndex).Transformed(aLocation.Transformation());
+      BVH::Array<double, 3>::Append(aMesh.Vertices, BVH_Vec3d(aPoint.X(), aPoint.Y(), aPoint.Z()));
+    }
+    for (int anIndex = 1; anIndex <= aTriangulation->NbTriangles(); ++anIndex)
+    {
+      int aNodes[3];
+      aTriangulation->Triangle(anIndex).Get(aNodes[0], aNodes[1], aNodes[2]);
+      BVH::Array<int, 4>::Append(aMesh.Elements,
+                                 BVH_Vec4i(aNodes[0] - 1, aNodes[1] - 1, aNodes[2] - 1, 0));
+    }
+    aMesh.MarkDirty();
+    aMesh.BVH();
+    double aMaxDistance = 0.0;
+    for (int anIndex = 1; anIndex <= aTriangulation->NbTriangles(); ++anIndex)
+    {
+      int aNodes[3];
+      aTriangulation->Triangle(anIndex).Get(aNodes[0], aNodes[1], aNodes[2]);
+      const gp_XY aUV[3] = {aTriangulation->UVNode(aNodes[0]).XY(),
+                            aTriangulation->UVNode(aNodes[1]).XY(),
+                            aTriangulation->UVNode(aNodes[2]).XY()};
+      // Include edge midpoints and interior samples independent of refinement nodes.
+      constexpr int aSubdivisions = 8;
+      for (int aRow = 0; aRow <= aSubdivisions; ++aRow)
+      {
+        for (int aColumn = 0; aColumn <= aSubdivisions - aRow; ++aColumn)
+        {
+          const gp_XY aParameter =
+            (aRow * aUV[0] + aColumn * aUV[1] + (aSubdivisions - aRow - aColumn) * aUV[2])
+            / static_cast<double>(aSubdivisions);
+          const gp_Pnt          aPoint = aSurface->EvalD0(aParameter.X(), aParameter.Y());
+          TriangulationDistance aDistance;
+          aDistance.SetBVHSet(&aMesh);
+          aDistance.SetObject(BVH_Vec3d(aPoint.X(), aPoint.Y(), aPoint.Z()));
+          const double aSquaredDistance = aDistance.ComputeDistance();
+          ASSERT_TRUE(aDistance.IsDone());
+          aMaxDistance = std::max(aMaxDistance, std::sqrt(aSquaredDistance));
+        }
+      }
+    }
+    EXPECT_LE(aMaxDistance, aParameters.Deflection);
+  }
 }

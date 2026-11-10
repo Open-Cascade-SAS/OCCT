@@ -116,3 +116,32 @@ TEST(gp_TorusTest, OCC26746_CoefficientsCorrect)
     aUPar = (aUind == aNbPtsMax) ? 2.0 * M_PI : aUPar + aStep;
   }
 }
+
+TEST(gp_TorusTest, CoefficientsQuarticPartIsRotationInvariant)
+{
+  const gp_Ax3               anAxes(gp_Pnt(55.52514413, 2.070076585, 73.83409062),
+                      gp_Dir(0.37231784651136368, 0.58886674834874120, 0.71736697293527607),
+                      gp_Dir(0.80682335496555135, 0.17666016102759910, -0.56376170618524390));
+  NCollection_Array1<double> aCoefficients(5, 40);
+  aCoefficients.Init(123.0);
+  gp_Torus(anAxes, 87.08479625, 23.14682176).Coefficients(aCoefficients);
+  // The highest-degree part is (x^2 + y^2 + z^2)^2 for every rigid placement.
+  for (size_t anIndex = 0; anIndex < 15; ++anIndex)
+  {
+    const double anExpected = anIndex < 3 ? 1.0 : (anIndex >= 9 && anIndex <= 11 ? 2.0 : 0.0);
+    EXPECT_EQ(aCoefficients.At(anIndex), anExpected);
+  }
+  EXPECT_EQ(aCoefficients.At(35), 123.0);
+}
+
+TEST(gp_TorusTest, CoefficientsNearlyEqualRadii)
+{
+  const double               aMajorRadius = 1.0;
+  const double               aMinorRadius = 1.0 - std::ldexp(1.0, -26);
+  NCollection_Array1<double> aCoefficients(1, 35);
+  gp_Torus(gp_Ax3(), aMajorRadius, aMinorRadius).Coefficients(aCoefficients);
+  const long double aDifference = (static_cast<long double>(aMajorRadius) - aMinorRadius)
+                                  * (static_cast<long double>(aMajorRadius) + aMinorRadius);
+  const double anExpected = static_cast<double>(aDifference * aDifference);
+  EXPECT_DOUBLE_EQ(aCoefficients.At(34), anExpected);
+}

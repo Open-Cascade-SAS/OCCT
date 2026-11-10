@@ -157,74 +157,31 @@ public:
                                      const occ::handle<Geom_Surface>& surface,
                                      const TopLoc_Location&           location);
 
-  //! Tries to make edge SameParameter and sets corresponding
-  //! tolerance and SameParameter flag.
-  //! First, it makes edge same range if SameRange flag is not set.
-  //!
-  //! If flag SameParameter is set, this method calls the
-  //! function ShapeAnalysis_Edge::CheckSameParameter() that
-  //! calculates the maximal deviation of pcurves of the edge from
-  //! its 3d curve. If deviation > tolerance, the tolerance of edge
-  //! is increased to a value of deviation. If deviation < tolerance
-  //! nothing happens.
-  //!
-  //! If flag SameParameter is not set, this method chooses the best
-  //! variant (one that has minimal tolerance), either
-  //! a. only after computing deviation (as above) or
-  //! b. after calling standard procedure BRepLib::SameParameter
-  //! and computing deviation (as above). If <tolerance> > 0, it is
-  //! used as parameter for BRepLib::SameParameter, otherwise,
-  //! tolerance of the edge is used.
-  //!
-  //! Use    : Is to be called after all pcurves and 3d curve of the edge are
-  //! correctly computed
-  //! Remark : SameParameter flag is always set to True after this method
-  //! Returns: True, if something done, else False
-  //! Status : OK    - edge was initially SameParameter, nothing is done
-  //! FAIL1 - computation of deviation of pcurves from 3d curve has failed
-  //! FAIL2 - BRepLib::SameParameter() has failed
-  //! DONE1 - tolerance of the edge was increased
-  //! DONE2 - flag SameParameter was set to True (only if
-  //! BRepLib::SameParameter() did not set it)
-  //! DONE3 - edge was modified by BRepLib::SameParameter() to SameParameter
-  //! DONE4 - not used anymore
-  //! DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
-  //! (only for edges with not set SameParameter)
+  //! Tries to make the edge SameRange and SameParameter, updating edge and vertex tolerances.
+  //! Requires a 3D curve and pcurves. For a non-SameParameter edge, keeps the lower-tolerance
+  //! result from deviation checking or BRepLib::SameParameter().
+  //! With a context, preserves input topology and records replacements. Apply Context() for the
+  //! result. Existing context results can change in place. Without a context, modifies the input.
+  //! @param[in] edge edge to process
+  //! @param[in] tolerance positive precision for BRepLib::SameParameter(), or the edge tolerance
+  //! @return true if a DONE status is set
+  //! Status codes:
+  //! - OK: no change
+  //! - FAIL1: curve/pcurve deviation calculation failed
+  //! - FAIL2: BRepLib::SameParameter() failed
+  //! - DONE1: edge tolerance increased
+  //! - DONE2: SameParameter set after BRepLib did not set it
+  //! - DONE3: BRepLib produced a SameParameter candidate
+  //! - DONE4: unused
+  //! - DONE5: the BRepLib candidate was chosen
   Standard_EXPORT bool FixSameParameter(const TopoDS_Edge& edge, const double tolerance = 0.0);
 
-  //! Tries to make edge SameParameter and sets corresponding
-  //! tolerance and SameParameter flag.
-  //! First, it makes edge same range if SameRange flag is not set.
-  //!
-  //! If flag SameParameter is set, this method calls the
-  //! function ShapeAnalysis_Edge::CheckSameParameter() that
-  //! calculates the maximal deviation of pcurves of the edge from
-  //! its 3d curve. If deviation > tolerance, the tolerance of edge
-  //! is increased to a value of deviation. If deviation < tolerance
-  //! nothing happens.
-  //!
-  //! If flag SameParameter is not set, this method chooses the best
-  //! variant (one that has minimal tolerance), either
-  //! a. only after computing deviation (as above) or
-  //! b. after calling standard procedure BRepLib::SameParameter
-  //! and computing deviation (as above). If <tolerance> > 0, it is
-  //! used as parameter for BRepLib::SameParameter, otherwise,
-  //! tolerance of the edge is used.
-  //!
-  //! Use    : Is to be called after all pcurves and 3d curve of the edge are
-  //! correctly computed
-  //! Remark : SameParameter flag is always set to True after this method
-  //! Returns: True, if something done, else False
-  //! Status : OK    - edge was initially SameParameter, nothing is done
-  //! FAIL1 - computation of deviation of pcurves from 3d curve has failed
-  //! FAIL2 - BRepLib::SameParameter() has failed
-  //! DONE1 - tolerance of the edge was increased
-  //! DONE2 - flag SameParameter was set to True (only if
-  //! BRepLib::SameParameter() did not set it)
-  //! DONE3 - edge was modified by BRepLib::SameParameter() to SameParameter
-  //! DONE4 - not used anymore
-  //! DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
-  //! (only for edges with not set SameParameter)
+  //! Checks pcurves on face when the edge is already SameParameter; otherwise checks all pcurves.
+  //! Uses the context rules and status codes of the overload above.
+  //! @param[in] edge edge to process
+  //! @param[in] face face to check; a null face selects all pcurves
+  //! @param[in] tolerance positive precision for BRepLib::SameParameter(), or the edge tolerance
+  //! @return true if a DONE status is set
   Standard_EXPORT bool FixSameParameter(const TopoDS_Edge& edge,
                                         const TopoDS_Face& face,
                                         const double       tolerance = 0.0);

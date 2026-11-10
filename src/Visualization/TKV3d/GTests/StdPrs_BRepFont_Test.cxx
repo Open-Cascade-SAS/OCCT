@@ -12,6 +12,15 @@
 // commercial license or contractual agreement.
 
 #include <StdPrs_BRepFont.hxx>
+#include <Prs3d_DimensionAspect.hxx>
+#include <PrsDim_AngleDimension.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
+#include <Font_TextFormatter.hxx>
+#include <Font_FTFont.hxx>
+#include <Font_FontMgr.hxx>
+#include <Font_BRepTextBuilder.hxx>
+#include <Font_BRepFont.hxx>
 
 #include <BRepCheck_Analyzer.hxx>
 #include <NCollection_LinearVector.hxx>
@@ -488,3 +497,249 @@ TEST(StdPrs_BRepFontTest, ConcurrentTextRenderingRemainsUsable)
   }
   EXPECT_TRUE(isValid.load(std::memory_order_relaxed));
 }
+
+namespace
+{
+class FontTest_Dimension : public PrsDim_AngleDimension
+{
+public:
+  using PrsDim_AngleDimension::DrawArcWithText;
+  using PrsDim_AngleDimension::FitTextAlignment;
+  using PrsDim_AngleDimension::PrsDim_AngleDimension;
+  using PrsDim_Dimension::DrawExtension;
+  using PrsDim_Dimension::drawText;
+  using PrsDim_Dimension::FitTextAlignmentForLinear;
+  using PrsDim_Dimension::GetValueString;
+};
+} // namespace
+
+Standard_DISABLE_DEPRECATION_WARNINGS
+
+  TEST(StdPrs_BRepFontTest, CompatibilityNamesAndCompositeMode)
+{
+  const occ::handle<Font_BRepFont> aFont = createFont();
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+  {
+    std::lock_guard<std::mutex> aLock(aFont->Mutex());
+    EXPECT_TRUE(aFont->FTFont()->IsValid());
+  }
+  const TopoDS_Shape aDefault = aFont->RenderGlyph(U'B');
+  aFont->SetCompositeCurveMode(true);
+  const TopoDS_Shape aComposite = aFont->RenderGlyph(U'B');
+  ASSERT_FALSE(aComposite.IsNull());
+  EXPECT_LT(countSubShapes(aComposite, TopAbs_EDGE), countSubShapes(aDefault, TopAbs_EDGE));
+  EXPECT_EQ(countSubShapes(aDefault, TopAbs_EDGE),
+            countSubShapes(aFont->RenderGlyph(U'B', StdPrs_BRepFont::GlyphOptions{}), TopAbs_EDGE));
+
+  Font_BRepTextBuilder aBuilder;
+  const gp_Ax3         aPen(gp_Pnt(4.0, 5.0, 6.0), gp_Dir(0.0, 1.0, 0.0));
+  const TopoDS_Shape   aText = aBuilder.Perform(*aFont, "BB", aPen);
+  ASSERT_FALSE(aText.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aText).IsValid());
+  EXPECT_EQ(2 * countSubShapes(aComposite, TopAbs_EDGE), countSubShapes(aText, TopAbs_EDGE));
+  aFont->SetCompositeCurveMode(false);
+  EXPECT_EQ(countSubShapes(aDefault, TopAbs_EDGE),
+            countSubShapes(aFont->RenderGlyph(U'B'), TopAbs_EDGE));
+}
+
+TEST(StdPrs_BRepFontTest, CompatibilityBuilderPreservesFormattedLayout)
+{
+  const occ::handle<StdPrs_BRepFont> aFont = createFont();
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+  const occ::handle<Font_TextFormatter> aFormatter = new Font_TextFormatter();
+  aFormatter->SetupAlignment(Graphic3d_HTA_CENTER, Graphic3d_VTA_CENTER);
+  aFormatter->Append("AB\nBA", *aFont->FTFont());
+  aFormatter->Format();
+  StdPrs_BRepTextBuilder aBuilder;
+  const gp_Ax3           aPen(gp_Pnt(4.0, 5.0, 6.0), gp_Dir(0.0, 1.0, 0.0));
+  const TopoDS_Shape     aFormatted = aBuilder.Perform(*aFont, aFormatter, aPen);
+  const TopoDS_Shape     aDirect =
+    aBuilder.Perform(*aFont, "AB\nBA", aPen, Graphic3d_HTA_CENTER, Graphic3d_VTA_CENTER);
+  ASSERT_FALSE(aFormatted.IsNull());
+  ASSERT_FALSE(aDirect.IsNull());
+  Bnd_Box aFormattedBox;
+  Bnd_Box aDirectBox;
+  BRepBndLib::Add(aFormatted, aFormattedBox);
+  BRepBndLib::Add(aDirect, aDirectBox);
+  const Bnd_Box::Limits aFormattedLimits = aFormattedBox.Get();
+  const Bnd_Box::Limits aDirectLimits    = aDirectBox.Get();
+  EXPECT_DOUBLE_EQ(aFormattedLimits.Xmin, aDirectLimits.Xmin);
+  EXPECT_DOUBLE_EQ(aFormattedLimits.Xmax, aDirectLimits.Xmax);
+  EXPECT_DOUBLE_EQ(aFormattedLimits.Ymin, aDirectLimits.Ymin);
+  EXPECT_DOUBLE_EQ(aFormattedLimits.Ymax, aDirectLimits.Ymax);
+  EXPECT_DOUBLE_EQ(aFormattedLimits.Zmin, aDirectLimits.Zmin);
+  EXPECT_DOUBLE_EQ(aFormattedLimits.Zmax, aDirectLimits.Zmax);
+  EXPECT_TRUE(aBuilder.Perform(*aFont, occ::handle<Font_TextFormatter>()).IsNull());
+}
+
+TEST(StdPrs_BRepFontTest, CompatibilityBackendMutationIsolatesCacheAndPreservesPlans)
+{
+  StdPrs_BRepFontCache               aCache;
+  const occ::handle<StdPrs_BRepFont> aFont = aCache.FindFont("", Font_FontAspect_Regular, 12.0);
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+  const occ::handle<Font_FTFont>                  aBackend  = aFont->FTFont();
+  const std::optional<BRepFont_Builder::TextPlan> anOldPlan = aFont->PlanText("AB");
+  ASSERT_TRUE(anOldPlan.has_value());
+  ASSERT_TRUE(aBackend->SetWidthScaling(1.5f));
+  const std::optional<BRepFont_Builder::TextPlan> aNewPlan = aFont->PlanText("AB");
+  ASSERT_TRUE(aNewPlan.has_value());
+  EXPECT_GT(aNewPlan->Width(), anOldPlan->Width());
+  EXPECT_FALSE(aFont->RenderText(*anOldPlan).IsNull());
+  const occ::handle<StdPrs_BRepFont> aCached = aCache.FindFont("", Font_FontAspect_Regular, 12.0);
+  ASSERT_FALSE(aCached.IsNull());
+  const std::optional<BRepFont_Builder::TextPlan> aCachedPlan = aCached->PlanText("AB");
+  ASSERT_TRUE(aCachedPlan.has_value());
+  EXPECT_DOUBLE_EQ(anOldPlan->Width(), aCachedPlan->Width());
+}
+
+TEST(StdPrs_BRepFontTest, DimensionSubclassCompatibilityOverloads)
+{
+  FontTest_Dimension aDimension(gp_Pnt(10.0, 0.0, 0.0), gp_Pnt(), gp_Pnt(0.0, 10.0, 0.0));
+  const occ::handle<Prs3d_DimensionAspect> anAspect = new Prs3d_DimensionAspect();
+  anAspect->MakeText3d(true);
+  aDimension.SetDimensionAspect(anAspect);
+  aDimension.SetCustomValue(TCollection_ExtendedString("AB"));
+  double                                    aLegacyWidth = 0.0;
+  double                                    aWidth       = 0.0;
+  occ::handle<StdPrs_BRepFont>              aFont;
+  std::optional<BRepFont_Builder::TextPlan> aPlan;
+  const TCollection_ExtendedString          aLegacyText = aDimension.GetValueString(aLegacyWidth);
+  const TCollection_ExtendedString          aText = aDimension.GetValueString(aWidth, aFont, aPlan);
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+  EXPECT_EQ(aLegacyText, aText);
+  EXPECT_DOUBLE_EQ(aLegacyWidth, aWidth);
+  const double aWidthWithMargins       = aWidth + 0.2 * anAspect->TextAspect()->Height();
+  int          aLegacyPosition         = 0;
+  int          aPosition               = 0;
+  bool         areLegacyArrowsExternal = false;
+  bool         areArrowsExternal       = false;
+  aDimension.FitTextAlignment(Prs3d_DTHP_Fit, aLegacyPosition, areLegacyArrowsExternal);
+  aDimension.FitTextAlignment(Prs3d_DTHP_Fit, aWidthWithMargins, aPosition, areArrowsExternal);
+  EXPECT_EQ(aLegacyPosition, aPosition);
+  EXPECT_EQ(areLegacyArrowsExternal, areArrowsExternal);
+  aLegacyPosition = aPosition = 0;
+  aDimension.FitTextAlignmentForLinear(gp_Pnt(),
+                                       gp_Pnt(10.0, 0.0, 0.0),
+                                       false,
+                                       Prs3d_DTHP_Fit,
+                                       aLegacyPosition,
+                                       areLegacyArrowsExternal);
+  aDimension.FitTextAlignmentForLinear(gp_Pnt(),
+                                       gp_Pnt(10.0, 0.0, 0.0),
+                                       false,
+                                       Prs3d_DTHP_Fit,
+                                       aWidthWithMargins,
+                                       aPosition,
+                                       areArrowsExternal);
+  EXPECT_EQ(aLegacyPosition, aPosition);
+  EXPECT_EQ(areLegacyArrowsExternal, areArrowsExternal);
+
+  // Check the old drawing signatures and exported symbols without a graphics context.
+  using DrawText      = void (PrsDim_Dimension::*)(const occ::handle<Prs3d_Presentation>&,
+                                              const gp_Pnt&,
+                                              const gp_Dir&,
+                                              const TCollection_ExtendedString&,
+                                              int);
+  using DrawExtension = void (PrsDim_Dimension::*)(const occ::handle<Prs3d_Presentation>&,
+                                                   double,
+                                                   const gp_Pnt&,
+                                                   const gp_Dir&,
+                                                   const TCollection_ExtendedString&,
+                                                   double,
+                                                   int,
+                                                   int);
+  using DrawArc       = void (PrsDim_AngleDimension::*)(const occ::handle<Prs3d_Presentation>&,
+                                                  const gp_Pnt&,
+                                                  const gp_Pnt&,
+                                                  const gp_Pnt&,
+                                                  const TCollection_ExtendedString&,
+                                                  double,
+                                                  int,
+                                                  int);
+  EXPECT_NE(nullptr, static_cast<DrawText>(&FontTest_Dimension::drawText));
+  EXPECT_NE(nullptr, static_cast<DrawExtension>(&FontTest_Dimension::DrawExtension));
+  EXPECT_NE(nullptr, static_cast<DrawArc>(&FontTest_Dimension::DrawArcWithText));
+}
+
+Standard_ENABLE_DEPRECATION_WARNINGS
+
+  TEST(StdPrs_BRepFontTest, CachedWrappersKeepIndependentCurrentCharacters)
+{
+  StdPrs_BRepFontCache               aCache;
+  const occ::handle<StdPrs_BRepFont> aFirst =
+    aCache.FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0);
+  const occ::handle<StdPrs_BRepFont> aSecond =
+    aCache.FindFont("OCCT-Embedded-Fallback-Request-4A72C3", Font_FontAspect_Regular, 12.0);
+  if (aFirst.IsNull() || aSecond.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+  const double anExpectedA = aFirst->AdvanceX(U'A', U'V');
+  const double anExpectedB = aSecond->AdvanceX(U'W', U'V');
+  ASSERT_NE(anExpectedA, anExpectedB);
+  ASSERT_FALSE(aFirst->RenderGlyph(U'A').IsNull());
+  ASSERT_FALSE(aSecond->RenderGlyph(U'W').IsNull());
+  EXPECT_DOUBLE_EQ(anExpectedA, aFirst->AdvanceX(U'V'));
+  EXPECT_DOUBLE_EQ(anExpectedB, aSecond->AdvanceX(U'V'));
+  EXPECT_FALSE(aSecond->RenderText("BA").IsNull());
+  EXPECT_DOUBLE_EQ(anExpectedA, aFirst->AdvanceX(U'V'));
+}
+
+TEST(StdPrs_BRepFontTest, RenderGlyphPreservesCurrentCharacterAdvance)
+{
+  const occ::handle<StdPrs_BRepFont> aFont = createFont();
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType and usable fonts are unavailable";
+  }
+  const double anExpected = aFont->AdvanceX(U'A', U'V');
+  ASSERT_GT(anExpected, 0.0);
+  ASSERT_FALSE(aFont->RenderGlyph(U'A').IsNull());
+  EXPECT_DOUBLE_EQ(anExpected, aFont->AdvanceX(U'V'));
+  // Repeat after loading another character to cover a cached outline.
+  aFont->AdvanceX(U'B', U'V');
+  ASSERT_FALSE(aFont->RenderGlyph(U'A').IsNull());
+  EXPECT_DOUBLE_EQ(anExpected, aFont->AdvanceX(U'V'));
+}
+
+Standard_DISABLE_DEPRECATION_WARNINGS TEST(StdPrs_BRepFontTest,
+                                           BackendReinitializationRefreshesMetricsAndPreservesPlans)
+{
+  const occ::handle<StdPrs_BRepFont> aFont = createFont();
+  if (aFont.IsNull())
+  {
+    GTEST_SKIP() << "FreeType is unavailable";
+  }
+  const occ::handle<Font_FTFont>                  aBackend  = aFont->FTFont();
+  const std::optional<BRepFont_Builder::TextPlan> anOldPlan = aFont->PlanText("AB");
+  ASSERT_TRUE(anOldPlan.has_value());
+  ASSERT_TRUE(aBackend->Init(Font_FontMgr::EmbedFallbackFont(), "Embedded Latin", {24, 144}));
+  EXPECT_DOUBLE_EQ(aFont->Size() / 48.0, aFont->Scale());
+  EXPECT_DOUBLE_EQ(aFont->Scale() * aBackend->Ascender(), aFont->Ascender());
+  EXPECT_DOUBLE_EQ(aFont->Scale() * aBackend->Descender(), aFont->Descender());
+  EXPECT_DOUBLE_EQ(aFont->Scale() * aBackend->LineSpacing(), aFont->LineSpacing());
+  EXPECT_DOUBLE_EQ(aFont->Scale() * aBackend->PointSize(), aFont->PointSize());
+  ASSERT_TRUE(aFont->PlanText("AB").has_value());
+  const TopoDS_Shape anOldText = aFont->RenderText(*anOldPlan);
+  ASSERT_FALSE(anOldText.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(anOldText).IsValid());
+  aBackend->Release();
+  EXPECT_FALSE(aFont->IsValid());
+  EXPECT_DOUBLE_EQ(0.0, aFont->Ascender());
+  EXPECT_FALSE(aFont->PlanText("AB").has_value());
+  EXPECT_FALSE(aFont->RenderText(*anOldPlan).IsNull());
+}
+
+Standard_ENABLE_DEPRECATION_WARNINGS

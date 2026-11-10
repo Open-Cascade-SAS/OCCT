@@ -185,12 +185,11 @@ public:
         aTolU = theTol / aRadius;
       }
 
-      const double aLiftTolerance = Precision::Angular();
-      aUs1 += std::ceil((theUMin - aUs1 - aLiftTolerance) / (2.0 * M_PI)) * (2.0 * M_PI);
-      aUs2 += std::ceil((theUMin - aUs2 - aLiftTolerance) / (2.0 * M_PI)) * (2.0 * M_PI);
-      if (std::abs(aUs1 - theUMin) <= aLiftTolerance)
+      aUs1 += std::ceil((theUMin - aUs1 - Precision::Angular()) / (2.0 * M_PI)) * (2.0 * M_PI);
+      aUs2 += std::ceil((theUMin - aUs2 - Precision::Angular()) / (2.0 * M_PI)) * (2.0 * M_PI);
+      if (std::abs(aUs1 - theUMin) <= Precision::Angular())
         aUs1 = theUMin;
-      if (std::abs(aUs2 - theUMin) <= aLiftTolerance)
+      if (std::abs(aUs2 - theUMin) <= Precision::Angular())
         aUs2 = theUMin;
     }
 

@@ -15,10 +15,10 @@
 
 #include <BRep_Tool.hxx>
 #include <NCollection_LinearVector.hxx>
-#include <Geom_BSplineCurve.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <GCPnts_TangentialDeflection.hxx>
+#include <Standard_DomainError.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <ShapeConstruct_Curve.hxx>
 #include <STEPCAFControl_GDTProperty.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepGeom_CartesianPoint.hxx>
@@ -35,10 +35,13 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
+
+#include <cmath>
 
 namespace
 {
@@ -50,14 +53,15 @@ namespace
 //=======================================================================
 occ::handle<StepVisual_CoordinatesList> GenerateCoordinateList(
   const occ::handle<Poly_Triangulation>& theTriangulation,
-  const gp_Trsf&                         theTransformation)
+  const gp_Trsf&                         theTransformation,
+  const double                           theLengthFactor)
 {
   occ::handle<NCollection_HArray1<gp_XYZ>> thePoints =
     new NCollection_HArray1<gp_XYZ>(1, theTriangulation->NbNodes());
   for (int aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
   {
     const gp_Pnt aCurrentNode = theTriangulation->Node(aNodeIndex).Transformed(theTransformation);
-    thePoints->SetValue(aNodeIndex, aCurrentNode.XYZ());
+    thePoints->SetValue(aNodeIndex, aCurrentNode.XYZ() / theLengthFactor);
   }
   occ::handle<StepVisual_CoordinatesList> aCoordinatesList = new StepVisual_CoordinatesList;
   aCoordinatesList->Init(new TCollection_HAsciiString(), thePoints);
@@ -183,7 +187,8 @@ occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> GenerateTriang
 //           Returns nullptr if face has no triangulation.
 //=======================================================================
 occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulatedSurfaceSet(
-  const TopoDS_Face& theFace)
+  const TopoDS_Face& theFace,
+  const double       theLengthFactor)
 {
   TopLoc_Location                       aFaceLoc;
   const occ::handle<Poly_Triangulation> aTriangulation =
@@ -196,7 +201,7 @@ occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulate
 
   // coordinates
   occ::handle<StepVisual_CoordinatesList> aCoordinatesList =
-    GenerateCoordinateList(aTriangulation, aFaceTransform);
+    GenerateCoordinateList(aTriangulation, aFaceTransform, theLengthFactor);
   // pnmax
   int aPnmax = aTriangulation->NbNodes();
   // normals
@@ -237,7 +242,10 @@ occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> GenerateComplexTriangulate
 //           If no valid curves were found, return nullptr.
 //=======================================================================
 occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
-  const TopoDS_Shape& theShape)
+  const TopoDS_Shape& theShape,
+  const double        theLengthFactor,
+  const double        theDeflection,
+  const double        theAngularDeflection)
 {
   NCollection_Handle<NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>>
     aLineStrips = new NCollection_DynamicArray<occ::handle<NCollection_HSequence<int>>>;
@@ -248,34 +256,31 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
   NCollection_DynamicArray<gp_XYZ> aTmpPointsContainer;
   for (TopExp_Explorer aCurveIt(theShape, TopAbs_EDGE); aCurveIt.More(); aCurveIt.Next())
   {
-    // Find out type of edge curve
-    double                        aFirstParam = 0, aLastParam = 0;
-    const occ::handle<Geom_Curve> anEdgeCurve =
-      BRep_Tool::Curve(TopoDS::Edge(aCurveIt.Current()), aFirstParam, aLastParam);
-    if (anEdgeCurve.IsNull())
+    const TopoDS_Edge& anEdge = TopoDS::Edge(aCurveIt.Current());
+    double             aFirst = 0.0, aLast = 0.0;
+    TopLoc_Location    aCurveLocation;
+    if (BRep_Tool::Degenerated(anEdge)
+        || BRep_Tool::Curve(anEdge, aCurveLocation, aFirst, aLast).IsNull())
     {
       continue;
     }
-    occ::handle<NCollection_HSequence<int>> aCurrentCurve = new NCollection_HSequence<int>;
-    if (anEdgeCurve->IsKind(STANDARD_TYPE(Geom_Line))) // Line
+    // Control points are not points on a spline. Sample the trimmed, located
+    // edge itself so exported glyphs and symbols retain their actual outlines.
+    const BRepAdaptor_Curve           aCurve(anEdge);
+    const GCPnts_TangentialDeflection aSamples(aCurve,
+                                               aFirst,
+                                               aLast,
+                                               theAngularDeflection,
+                                               theDeflection);
+    if (aSamples.NbPoints() < 2)
     {
-      for (TopExp_Explorer aVertIt(aCurveIt.Current(), TopAbs_VERTEX); aVertIt.More();
-           aVertIt.Next())
-      {
-        aTmpPointsContainer.Append(BRep_Tool::Pnt(TopoDS::Vertex(aVertIt.Current())).XYZ());
-        aCurrentCurve->Append(aTmpPointsContainer.Length());
-      }
+      continue;
     }
-    else // BSpline
+    occ::handle<NCollection_HSequence<int>> aCurrentCurve = new NCollection_HSequence<int>();
+    for (int anIndex = 1; anIndex <= aSamples.NbPoints(); ++anIndex)
     {
-      ShapeConstruct_Curve           aSCC;
-      occ::handle<Geom_BSplineCurve> aBSCurve =
-        aSCC.ConvertToBSpline(anEdgeCurve, aFirstParam, aLastParam, Precision::Confusion());
-      for (int aPoleIndex = 1; aPoleIndex <= aBSCurve->NbPoles(); ++aPoleIndex)
-      {
-        aTmpPointsContainer.Append(aBSCurve->Pole(aPoleIndex).XYZ());
-        aCurrentCurve->Append(aTmpPointsContainer.Length());
-      }
+      aTmpPointsContainer.Append(aSamples.Value(anIndex).XYZ());
+      aCurrentCurve->Append(aTmpPointsContainer.Length());
     }
     aLineStrips->Append(aCurrentCurve);
   }
@@ -289,7 +294,7 @@ occ::handle<StepVisual_TessellatedCurveSet> GenerateTessellatedCurveSet(
     new NCollection_HArray1<gp_XYZ>(1, aTmpPointsContainer.Length());
   for (int aPointIndex = 1; aPointIndex <= aPoints->Length(); ++aPointIndex)
   {
-    aPoints->SetValue(aPointIndex, aTmpPointsContainer.Value(aPointIndex - 1));
+    aPoints->SetValue(aPointIndex, aTmpPointsContainer.Value(aPointIndex - 1) / theLengthFactor);
   }
   // STEP entities
   occ::handle<StepVisual_CoordinatesList> aCoordinates = new StepVisual_CoordinatesList();
@@ -1533,32 +1538,47 @@ occ::handle<TCollection_HAsciiString> STEPCAFControl_GDTProperty::GetTolValueTyp
 //=================================================================================================
 
 occ::handle<StepVisual_TessellatedGeometricSet> STEPCAFControl_GDTProperty::GetTessellation(
-  const TopoDS_Shape& theShape)
+  const TopoDS_Shape& theShape,
+  const double        theLengthFactor,
+  const double        theDeflection,
+  const double        theAngularDeflection)
 {
-  // Build complex_triangulated_surface_set.
-  NCollection_LinearVector<occ::handle<StepVisual_ComplexTriangulatedSurfaceSet>> aCTSSs;
+  if (!(theLengthFactor > 0.0) || !(theDeflection > 0.0) || !(theAngularDeflection > 0.0)
+      || !std::isfinite(theLengthFactor) || !std::isfinite(theDeflection)
+      || !std::isfinite(theAngularDeflection))
+  {
+    throw Standard_DomainError("PMI tessellation requires positive units and deflections");
+  }
+  NCollection_LinearVector<occ::handle<StepVisual_TessellatedItem>> anItems;
+  const occ::handle<StepVisual_TessellatedCurveSet>                 aCurves =
+    GenerateTessellatedCurveSet(theShape, theLengthFactor, theDeflection, theAngularDeflection);
+  if (!aCurves.IsNull())
+  {
+    anItems.Append(aCurves);
+  }
   for (TopExp_Explorer aFaceIt(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
   {
-    const TopoDS_Face aFace = TopoDS::Face(aFaceIt.Current());
-    aCTSSs.Append(GenerateComplexTriangulatedSurfaceSet(aFace));
+    const occ::handle<StepVisual_ComplexTriangulatedSurfaceSet> aTriangles =
+      GenerateComplexTriangulatedSurfaceSet(TopoDS::Face(aFaceIt.Current()), theLengthFactor);
+    if (!aTriangles.IsNull())
+    {
+      anItems.Append(aTriangles);
+    }
   }
-
-  // Build tesselated_curve_set.
-  occ::handle<StepVisual_TessellatedCurveSet> aTCS = GenerateTessellatedCurveSet(theShape);
-
-  // Fill the container of tessellated items.
-  NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> aTesselatedItems =
-    new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1,
-                                                                    static_cast<int>(aCTSSs.Size())
-                                                                      + 1);
-  aTesselatedItems->SetValue(1, aTCS);
-  for (size_t aCTSSIndex = 0; aCTSSIndex < aCTSSs.Size(); ++aCTSSIndex)
+  if (anItems.IsEmpty())
   {
-    aTesselatedItems->SetValue(static_cast<int>(aCTSSIndex) + 2, aCTSSs[aCTSSIndex]);
+    return nullptr;
   }
-
-  // Build tessellated_geometric_set.
-  occ::handle<StepVisual_TessellatedGeometricSet> aTGS = new StepVisual_TessellatedGeometricSet();
-  aTGS->Init(new TCollection_HAsciiString(), aTesselatedItems);
-  return aTGS;
+  NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>>
+    aTessellatedItems = new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(
+      1,
+      static_cast<int>(anItems.Size()));
+  for (size_t anIndex = 0; anIndex < anItems.Size(); ++anIndex)
+  {
+    aTessellatedItems->SetValue(static_cast<int>(anIndex) + 1, anItems[anIndex]);
+  }
+  const occ::handle<StepVisual_TessellatedGeometricSet> aSet =
+    new StepVisual_TessellatedGeometricSet();
+  aSet->Init(new TCollection_HAsciiString(), aTessellatedItems);
+  return aSet;
 }

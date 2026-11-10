@@ -19,6 +19,7 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -70,8 +71,10 @@ void InitUniform(const CurveType&            theCurve,
       const gp_Pnt  Pm = CurveTool::Value(theCurve, u);
       const gp_Pnt& P1 = thePnts.Value(i);
       const gp_Pnt& P2 = thePnts.Value(i + 1);
-      const gp_Lin  L(P1, gp_Dir(gp_Vec(P1, P2)));
-      const double  t = L.Distance(Pm);
+      const gp_Vec  aChord(P1, P2);
+      const double  t = aChord.Magnitude() <= gp::Resolution()
+                          ? P1.Distance(Pm)
+                          : gp_Lin(P1, gp_Dir(aChord)).Distance(Pm);
       if (t > theDeflection)
       {
         theDeflection = t;
@@ -128,8 +131,10 @@ void InitWithParams(const CurveType&                          theCurve,
       const gp_Pnt  Pm = CurveTool::Value(theCurve, u);
       const gp_Pnt& P1 = thePnts.Value(i);
       const gp_Pnt& P2 = thePnts.Value(i + 1);
-      const gp_Lin  L(P1, gp_Dir(gp_Vec(P1, P2)));
-      const double  t = L.Distance(Pm);
+      const gp_Vec  aChord(P1, P2);
+      const double  t = aChord.Magnitude() <= gp::Resolution()
+                          ? P1.Distance(Pm)
+                          : gp_Lin(P1, gp_Dir(aChord)).Distance(Pm);
       if (t > theDeflection)
       {
         theDeflection = t;

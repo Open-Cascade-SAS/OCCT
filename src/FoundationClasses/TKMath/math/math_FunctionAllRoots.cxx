@@ -23,7 +23,8 @@
 #include <math_FunctionRoots.hxx>
 #include <math_FunctionSample.hxx>
 #include <math_FunctionWithDerivative.hxx>
-#include <Standard_NumericError.hxx>
+
+#include <cmath>
 
 math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
                                              const math_FunctionSample&   S,
@@ -42,7 +43,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
   int    Nbp, i;
 
   Nbp = S.NbPoints();
-  F.Value(S.GetParameter(1), val);
+  if (!F.Value(S.GetParameter(1), val) || !std::isfinite(val))
+  {
+    return;
+  }
   PNul = std::abs(val) <= EpsNul;
   if (!PNul)
   {
@@ -58,7 +62,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
   while (!fini)
   {
 
-    F.Value(S.GetParameter(i), val);
+    if (!F.Value(S.GetParameter(i), val) || !std::isfinite(val))
+    {
+      return;
+    }
     Nul = std::abs(val) <= EpsNul;
     if (!Nul)
     {
@@ -79,9 +86,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
       }
       math_FunctionRoots
         Res1(F, S.GetParameter(i - 1), S.GetParameter(i), 10, EpsX, EpsF, 0.0, cst);
-      Standard_NumericError_Raise_if((!Res1.IsDone()) || (Res1.IsAllNull())
-                                       || (Res1.NbSolutions() == 0),
-                                     " ");
+      if ((!Res1.IsDone()) || (Res1.IsAllNull()) || (Res1.NbSolutions() == 0))
+      {
+        return;
+      }
 
       FinNul = Res1.Value(1);
       Indf   = Res1.StateNumber(1);
@@ -89,7 +97,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
       cst = -cst;
       math_FunctionRoots
         Res2(F, S.GetParameter(i - 1), S.GetParameter(i), 10, EpsX, EpsF, 0.0, cst);
-      Standard_NumericError_Raise_if((!Res2.IsDone()) || (Res2.IsAllNull()), " ");
+      if ((!Res2.IsDone()) || (Res2.IsAllNull()))
+      {
+        return;
+      }
 
       //-- || (Res2.NbSolutions()!=0), " ");  lbr le 13 mai 87 (!=0 -> ==0)
       if (Res2.NbSolutions() != 0)
@@ -109,7 +120,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
       if (i == 2)
       {
         DebNul = S.GetParameter(1);
-        F.Value(DebNul, valbid);
+        if (!F.Value(DebNul, valbid) || !std::isfinite(valbid))
+        {
+          return;
+        }
         Indd = F.GetStateNumber();
         Nuld = true;
       }
@@ -125,16 +139,20 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
         }
         math_FunctionRoots
           Res1(F, S.GetParameter(i - 2), S.GetParameter(i - 1), 10, EpsX, EpsF, 0.0, cst);
-        Standard_NumericError_Raise_if((!Res1.IsDone()) || (Res1.IsAllNull())
-                                         || (Res1.NbSolutions() == 0),
-                                       " ");
+        if ((!Res1.IsDone()) || (Res1.IsAllNull()) || (Res1.NbSolutions() == 0))
+        {
+          return;
+        }
         DebNul = Res1.Value(Res1.NbSolutions());
         Indd   = Res1.StateNumber(Res1.NbSolutions());
 
         cst = -cst;
         math_FunctionRoots
           Res3(F, S.GetParameter(i - 2), S.GetParameter(i - 1), 10, EpsX, EpsF, 0.0, cst);
-        Standard_NumericError_Raise_if((!Res3.IsDone()) || (Res3.IsAllNull()), " ");
+        if ((!Res3.IsDone()) || (Res3.IsAllNull()))
+        {
+          return;
+        }
 
         if (Res3.NbSolutions() != 0)
         {
@@ -156,7 +174,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
     pdeb.Append(DebNul);
     ideb.Append(Indd);
     FinNul = S.GetParameter(Nbp);
-    F.Value(FinNul, valbid);
+    if (!F.Value(FinNul, valbid) || !std::isfinite(valbid))
+    {
+      return;
+    }
     Indf = F.GetStateNumber();
     pfin.Append(FinNul);
     ifin.Append(Indf);
@@ -167,7 +188,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
   { // Pas d intervalle nul
 
     math_FunctionRoots Res(F, S.GetParameter(1), S.GetParameter(Nbp), Nbp, EpsX, EpsF, 0.0);
-    Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
+    if ((!Res.IsDone()) || (Res.IsAllNull()))
+    {
+      return;
+    }
 
     for (int j = 1; j <= Res.NbSolutions(); j++)
     {
@@ -188,7 +212,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
         * Nbp);
       math_FunctionRoots
         Res(F, S.GetParameter(1), pdeb.Value(1), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
-      Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
+      if ((!Res.IsDone()) || (Res.IsAllNull()))
+      {
+        return;
+      }
 
       for (int j = 1; j <= Res.NbSolutions(); j++)
       {
@@ -203,7 +230,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
         * Nbp);
       math_FunctionRoots
         Res(F, pfin.Value(k - 1), pdeb.Value(k), std::max(Nbrpt, NbpMin), EpsX, EpsF, 0.0);
-      Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
+      if ((!Res.IsDone()) || (Res.IsAllNull()))
+      {
+        return;
+      }
 
       for (int j = 1; j <= Res.NbSolutions(); j++)
       {
@@ -225,7 +255,10 @@ math_FunctionAllRoots::math_FunctionAllRoots(math_FunctionWithDerivative& F,
                              EpsX,
                              EpsF,
                              0.0);
-      Standard_NumericError_Raise_if((!Res.IsDone()) || (Res.IsAllNull()), " ");
+      if ((!Res.IsDone()) || (Res.IsAllNull()))
+      {
+        return;
+      }
 
       for (int j = 1; j <= Res.NbSolutions(); j++)
       {

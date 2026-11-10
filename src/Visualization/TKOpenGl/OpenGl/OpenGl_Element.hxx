@@ -54,6 +54,9 @@ public:
   }
 
 public:
+  //! @return true for state commands needed during transparent rendering.
+  virtual bool IsRenderState() const { return false; }
+
   //! Return TRUE if primitive type generates shaded triangulation (to be used in filters).
   virtual bool IsFillDrawMode() const { return false; }
 

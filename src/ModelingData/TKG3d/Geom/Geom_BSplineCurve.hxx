@@ -473,12 +473,14 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT bool IsCN(const int N) const final;
 
-  //! Check if curve has at least G1 continuity in interval [theTf, theTl]
-  //! Returns true if IsCN(1)
-  //! or
-  //! angle between "left" and "right" first derivatives at
-  //! knots with C0 continuity is less then theAngTol
-  //! only knots in interval [theTf, theTl] is checked
+  //! Check G1 continuity at the knots in a closed native parameter interval.
+  //! Periodic intervals may be translated by any period or cover several periods.
+  //! At the periodic seam, the first and last span derivatives are compared.
+  //! @param[in] theTf finite interval start
+  //! @param[in] theTl finite interval end, not less than theTf
+  //! @param[in] theAngTol nonnegative allowed tangent angle in radians
+  //! @return true for a C1 curve or when all checked one-sided tangents are
+  //! nonzero and their angles do not exceed theAngTol; false otherwise
   Standard_EXPORT bool IsG1(const double theTf, const double theTl, const double theAngTol) const;
 
   //! Returns true if the distance between the first point and the

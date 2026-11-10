@@ -30,7 +30,6 @@
 #include <NCollection_Shared.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2dAdaptor.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
@@ -41,10 +40,10 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomProjLib.hxx>
+#include <gp_Pln.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
-#include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Array1.hxx>
@@ -55,6 +54,8 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+
+#include <algorithm>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Edge, BRepCheck_Result)
 
@@ -327,8 +328,11 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
           return;
         }
         //  Modified by skv - Tue Apr 27 11:48:14 2004 End
-        double First = myHCurve->FirstParameter();
-        double Last  = myHCurve->LastParameter();
+        // Parallel face contexts need separate evaluation caches.
+        const occ::handle<Adaptor3d_Curve> aReferenceCurve =
+          myIsParallel ? myHCurve->ShallowCopy() : myHCurve;
+        double First = aReferenceCurve->FirstParameter();
+        double Last  = aReferenceCurve->LastParameter();
 
         occ::handle<BRep_TFace>&         TF    = *((occ::handle<BRep_TFace>*)&S.TShape());
         const TopLoc_Location&           Floc  = S.Location();
@@ -408,7 +412,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
               occ::handle<Geom2dAdaptor_Curve>      GHPC = new Geom2dAdaptor_Curve(PC, f, l);
               occ::handle<Adaptor3d_CurveOnSurface> ACS  = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
 
-              BRepLib_ValidateEdge aValidateEdge(myHCurve, ACS, SameParameter);
+              BRepLib_ValidateEdge aValidateEdge(aReferenceCurve, ACS, SameParameter);
               aValidateEdge.SetExitIfToleranceExceeded(Tol);
               aValidateEdge.SetExactMethod(myIsExactMethod);
               aValidateEdge.SetParallel(toRunParallel);
@@ -435,7 +439,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
                 GHPC->Load(cr->PCurve2(), f, l); // same bounds
                 ACS->Load(GHPC, GAHS);           // sans doute inutile
 
-                BRepLib_ValidateEdge aValidateEdgeOnClosedSurf(myHCurve, ACS, SameParameter);
+                BRepLib_ValidateEdge aValidateEdgeOnClosedSurf(aReferenceCurve, ACS, SameParameter);
                 aValidateEdgeOnClosedSurf.SetExitIfToleranceExceeded(Tol);
                 aValidateEdgeOnClosedSurf.SetExactMethod(myIsExactMethod);
                 aValidateEdgeOnClosedSurf.SetParallel(toRunParallel);
@@ -484,24 +488,45 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
               // on projette Cref sur ce plan
               occ::handle<GeomAdaptor_Surface> GAHS = new GeomAdaptor_Surface(P);
 
+              if (aReferenceCurve->GetType() == GeomAbs_Line)
+              {
+                // Without a stored pcurve, check plane membership. The maximum absolute
+                // signed distance on a line is attained at an endpoint.
+                const gp_Pln aPlane = P->Pln();
+                const double aTolerance =
+                  Tol
+                  + std::max(BRepCheck::PrecCurve(*aReferenceCurve), BRepCheck::PrecSurface(GAHS));
+                if (!(aPlane.Distance(aReferenceCurve->EvalD0(First)) < aTolerance
+                      && aPlane.Distance(aReferenceCurve->EvalD0(Last)) < aTolerance))
+                {
+                  BRepCheck::Add(lst, BRepCheck_InvalidCurveOnSurface);
+                }
+                break;
+              }
+
               // Dub - Normalement myHCurve est une GeomAdaptor_Curve
-              occ::handle<GeomAdaptor_Curve> Gac = occ::down_cast<GeomAdaptor_Curve>(myHCurve);
-              occ::handle<Geom_Curve>        C3d = Gac->Curve();
-              occ::handle<Geom_Curve>        ProjOnPlane =
-                GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(C3d, First, Last),
+              occ::handle<GeomAdaptor_Curve> Gac =
+                occ::down_cast<GeomAdaptor_Curve>(aReferenceCurve);
+              const occ::handle<Geom_Curve> aProjected =
+                GeomProjLib::ProjectOnPlane(new Geom_TrimmedCurve(Gac->Curve(), First, Last),
                                             P,
                                             P->Position().Direction(),
-                                            true);
-              occ::handle<GeomAdaptor_Curve> aHCurve = new GeomAdaptor_Curve(ProjOnPlane);
-
-              ProjLib_ProjectedCurve           proj(GAHS, aHCurve);
-              occ::handle<Geom2d_Curve>        PC = Geom2dAdaptor::MakeCurve(proj);
+                                            true,
+                                            std::min(Precision::Approximation(), 0.5 * Tol));
+              occ::handle<Geom2d_Curve> PC = GeomProjLib::Curve2d(aProjected, First, Last, P);
+              if (PC.IsNull())
+              {
+                BRepCheck::Add(lst, BRepCheck_InvalidCurveOnSurface);
+                break;
+              }
               occ::handle<Geom2dAdaptor_Curve> GHPC =
-                new Geom2dAdaptor_Curve(PC, myHCurve->FirstParameter(), myHCurve->LastParameter());
+                new Geom2dAdaptor_Curve(PC,
+                                        aReferenceCurve->FirstParameter(),
+                                        aReferenceCurve->LastParameter());
 
               occ::handle<Adaptor3d_CurveOnSurface> ACS = new Adaptor3d_CurveOnSurface(GHPC, GAHS);
 
-              BRepLib_ValidateEdge aValidateEdgeProj(myHCurve, ACS, SameParameter);
+              BRepLib_ValidateEdge aValidateEdgeProj(aReferenceCurve, ACS, SameParameter);
               aValidateEdgeProj.SetExitIfToleranceExceeded(Tol);
               aValidateEdgeProj.SetExactMethod(myIsExactMethod);
               aValidateEdgeProj.SetParallel(toRunParallel);

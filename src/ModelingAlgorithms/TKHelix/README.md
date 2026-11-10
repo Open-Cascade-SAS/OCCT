@@ -55,8 +55,9 @@ z(t) = pitch * t / (2π)
 ```
 
 Where:
-- `r(t) = r_start + taper_factor * t` (radius as function of parameter)
+- `r(t) = r_start + taper_factor * (t - t1)` (radius as function of parameter)
 - `t` is the angular parameter in radians
+- `t1` is the first parameter, where the radius equals `r_start`
 - `pitch` is the vertical distance per full turn (2π radians)
 - `direction_factor` is 1 for clockwise, -1 for counter-clockwise
 

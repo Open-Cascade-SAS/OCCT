@@ -70,6 +70,9 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
+#include <TopOpeBRepDS_Point.hxx>
+
+#include <algorithm>
 
 namespace
 {
@@ -115,6 +118,13 @@ static void ChFi3d_CoupeParPlan(const ChFiDS_CommonPoint&         compoint1,
                                 double&                           Parfin,
                                 bool&                             plane)
 {
+  // A collapsed section does not define a stable cutting plane.
+  // Its boundary is built from the two surface parameters.
+  if (compoint1.Point().IsEqual(compoint2.Point(), tol3d))
+  {
+    plane = false;
+    return;
+  }
   plane = true;
   if (compoint1.IsOnArc() && compoint2.IsOnArc())
   {
@@ -1835,6 +1845,33 @@ static bool IsFree(const TopoDS_Shape& E, const ChFiDS_Map& EFMap)
   return true;
 }
 
+namespace
+{
+
+//==================================================================================================
+
+// Shares a generated point at a collapsed section, retaining source vertex identities.
+static int sectionEndPointIndex(const ChFiDS_CommonPoint&   theFirst,
+                                const ChFiDS_CommonPoint&   theSecond,
+                                const int                   theFirstIndex,
+                                TopOpeBRepDS_DataStructure& theDS,
+                                const double                theTolerance)
+{
+  if (!theFirst.IsVertex() && !theSecond.IsVertex()
+      && theFirst.Point().IsEqual(theSecond.Point(), theTolerance))
+  {
+    TopOpeBRepDS_Point& aPoint = theDS.ChangePoint(theFirstIndex);
+    aPoint.Tolerance(std::max(aPoint.Tolerance(),
+                              aPoint.Point().Distance(theSecond.Point()) + theSecond.Tolerance()));
+    return theFirstIndex;
+  }
+  return ChFi3d_IndexPointInDS(theSecond, theDS);
+}
+
+} // namespace
+
+//==================================================================================================
+
 static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
                                    TopOpeBRepDS_DataStructure& DStr,
                                    const ChFiDS_Map&           EFMap,
@@ -1871,7 +1908,8 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       Stripe->ChangeFirstCurve(DStr.AddCurve(Crv));
       Stripe->ChangeFirstParameters(Pardeb, Parfin);
       Stripe->ChangeIndexFirstPointOnS1(ChFi3d_IndexPointInDS(SDF->VertexFirstOnS1(), DStr));
-      Stripe->ChangeIndexFirstPointOnS2(ChFi3d_IndexPointInDS(SDF->VertexFirstOnS2(), DStr));
+      Stripe->ChangeIndexFirstPointOnS2(
+        sectionEndPointIndex(CV1, CV2, Stripe->IndexFirstPointOnS1(), DStr, tol3d));
       int ICurv = Stripe->FirstCurve();
       Stripe->ChangeLastParameters(Pardeb, Parfin);
       Stripe->ChangeLastCurve(ICurv);
@@ -1988,7 +2026,8 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       Stripe->ChangeFirstCurve(DStr.AddCurve(Crv));
       Stripe->ChangeFirstParameters(Pardeb, Parfin);
       Stripe->ChangeIndexFirstPointOnS1(ChFi3d_IndexPointInDS(SDdeb->VertexFirstOnS1(), DStr));
-      Stripe->ChangeIndexFirstPointOnS2(ChFi3d_IndexPointInDS(SDdeb->VertexFirstOnS2(), DStr));
+      Stripe->ChangeIndexFirstPointOnS2(
+        sectionEndPointIndex(cpdeb1, cpdeb2, Stripe->IndexFirstPointOnS1(), DStr, tol3d));
       if (cpdeb1.IsOnArc())
       {
         ChFi3d_EnlargeBox(cpdeb1.Arc(), EFMap(cpdeb1.Arc()), cpdeb1.ParameterOnArc(), b1);
@@ -2079,7 +2118,8 @@ static void ChFi3d_MakeExtremities(occ::handle<ChFiDS_Stripe>& Stripe,
       Stripe->ChangeLastCurve(DStr.AddCurve(Crv));
       Stripe->ChangeLastParameters(Pardeb, Parfin);
       Stripe->ChangeIndexLastPointOnS1(ChFi3d_IndexPointInDS(SDfin->VertexLastOnS1(), DStr));
-      Stripe->ChangeIndexLastPointOnS2(ChFi3d_IndexPointInDS(SDfin->VertexLastOnS2(), DStr));
+      Stripe->ChangeIndexLastPointOnS2(
+        sectionEndPointIndex(cpfin1, cpfin2, Stripe->IndexLastPointOnS1(), DStr, tol3d));
       if (cpfin1.IsOnArc())
       {
         ChFi3d_EnlargeBox(cpfin1.Arc(), EFMap(cpfin1.Arc()), cpfin1.ParameterOnArc(), b1);

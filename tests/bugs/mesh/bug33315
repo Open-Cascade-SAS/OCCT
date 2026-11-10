@@ -6,7 +6,7 @@ puts ""
 restore [locate_data_file bug33315.brep] result
 
 incmesh result 3.5 -a 20
-checktrinfo result -tri 1516 -nod 1118
+checktrinfo result -tri 1514 -nod 1117
 
 vinit
 vsetdispmode 1

@@ -16,42 +16,105 @@
 
 #include <Bisector_FunctionH.hxx>
 #include <Geom2d_Curve.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <gp.hxx>
 
-//=================================================================================================
+#include <algorithm>
+#include <cmath>
+
+namespace
+{
+//==================================================================================================
+
+gp_Vec2d bisectorNormal(const gp_Vec2d& theGuide, const gp_Vec2d& theTangent)
+{
+  const double aCos = std::clamp(theGuide.Dot(theTangent), -1.0, 1.0);
+  const double aSin = theGuide.Crossed(theTangent);
+  double       aHalfSin, aHalfCos;
+  if (aCos >= 0.0)
+  {
+    aHalfCos = std::sqrt(0.5 * (1.0 + aCos));
+    aHalfSin = 0.5 * aSin / aHalfCos;
+  }
+  else
+  {
+    aHalfSin = std::copysign(std::sqrt(0.5 * (1.0 - aCos)), aSin);
+    aHalfCos = 0.5 * aSin / aHalfSin;
+  }
+  const gp_Vec2d aNormal(-theGuide.Y(), theGuide.X());
+  return aHalfSin * theGuide - aHalfCos * aNormal;
+}
+} // namespace
+
+//==================================================================================================
 
 Bisector_FunctionH::Bisector_FunctionH(const occ::handle<Geom2d_Curve>& C2,
                                        const gp_Pnt2d&                  P1,
                                        const gp_Vec2d&                  T1)
-    : p1(P1),
-      t1(T1)
+    : Bisector_FunctionH(C2, P1, T1, 0.5 * (C2->FirstParameter() + C2->LastParameter()))
 {
-  t1.Normalize();
-  curve2 = C2;
 }
 
-//=============================================================================
-// function : Value
-// purpose :
-//                F = P1P2.(||T2||T1 + T2)
-//=============================================================================
+//==================================================================================================
+
+Bisector_FunctionH::Bisector_FunctionH(const occ::handle<Geom2d_Curve>& theCurve,
+                                       const gp_Pnt2d&                  thePoint,
+                                       const gp_Vec2d&                  theTangent,
+                                       const double                     theReferenceParameter)
+    : curve2(theCurve),
+      p1(thePoint),
+      t1(theTangent)
+{
+  t1.Normalize();
+  const gp_Vec2d aTangent = curve2->EvalD1(theReferenceParameter).D1;
+  const double   aSpeed   = aTangent.Magnitude();
+  if (aSpeed > gp::Resolution())
+  {
+    myReference = bisectorNormal(t1, aTangent / aSpeed);
+  }
+}
+
+//==================================================================================================
+
+Bisector_FunctionH::Bisector_FunctionH(const Geom2dAdaptor_Curve& theCurve,
+                                       const gp_Pnt2d&            thePoint,
+                                       const gp_Vec2d&            theTangent,
+                                       const double               theReferenceParameter)
+    : curve2(theCurve.Curve()),
+      p1(thePoint),
+      t1(theTangent),
+      myAdaptor(&theCurve)
+{
+  t1.Normalize();
+  const gp_Vec2d aTangent = theCurve.EvalD1(theReferenceParameter).D1;
+  const double   aSpeed   = aTangent.Magnitude();
+  if (aSpeed > gp::Resolution())
+  {
+    myReference = bisectorNormal(t1, aTangent / aSpeed);
+  }
+}
+
+//==================================================================================================
+
 bool Bisector_FunctionH::Value(const double X, double& F)
 {
-  gp_Pnt2d P2; // point sur C2.
-  gp_Vec2d T2; // tangente a C2 en V.
-  curve2->D1(X, P2, T2);
-
-  double NormT2 = T2.Magnitude();
-  double Ax     = NormT2 * t1.X() - T2.X();
-  double Ay     = NormT2 * t1.Y() - T2.Y();
-
-  F = (p1.X() - P2.X()) * Ax + (p1.Y() - P2.Y()) * Ay;
-
+  const auto [aPoint, aTangent] = myAdaptor != nullptr ? myAdaptor->EvalD1(X) : curve2->EvalD1(X);
+  const double aSpeed           = aTangent.Magnitude();
+  if (aSpeed <= gp::Resolution() || myReference.SquareMagnitude() == 0.0)
+  {
+    return false;
+  }
+  gp_Vec2d aNormal = bisectorNormal(t1, aTangent / aSpeed);
+  // Keep the same normal orientation across antiparallel source tangents.
+  if (aNormal.Dot(myReference) < 0.0)
+  {
+    aNormal.Reverse();
+  }
+  F = gp_Vec2d(aPoint, p1).Dot(aNormal);
   return true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool Bisector_FunctionH::Derivative(const double X, double& D)
 {
@@ -59,27 +122,27 @@ bool Bisector_FunctionH::Derivative(const double X, double& D)
   return Values(X, F, D);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool Bisector_FunctionH::Values(const double X, double& F, double& D)
 {
-  gp_Pnt2d P2;  // point sur C2.
-  gp_Vec2d T2;  // tangente a C2 en V.
-  gp_Vec2d T2v; // derivee seconde a C2 en V.
-
-  curve2->D2(X, P2, T2, T2v);
-
-  double NormT2 = T2.Magnitude();
-  double Ax     = NormT2 * t1.X() - T2.X();
-  double Ay     = NormT2 * t1.Y() - T2.Y();
-
-  F = (p1.X() - P2.X()) * Ax + (p1.Y() - P2.Y()) * Ay;
-
-  double Scal = T2.Dot(T2v) / NormT2;
-  double dAx  = Scal * t1.X() - T2v.X();
-  double dAy  = Scal * t1.Y() - T2v.Y();
-
-  D = -T2.X() * Ax - T2.Y() * Ay + (p1.X() - P2.X()) * dAx + (p1.Y() - P2.Y()) * dAy;
-
+  const auto [aPoint, aTangent, aD2] =
+    myAdaptor != nullptr ? myAdaptor->EvalD2(X) : curve2->EvalD2(X);
+  const double aSpeed = aTangent.Magnitude();
+  if (aSpeed <= gp::Resolution() || myReference.SquareMagnitude() == 0.0)
+  {
+    return false;
+  }
+  gp_Vec2d aNormal = bisectorNormal(t1, aTangent / aSpeed);
+  if (aNormal.Dot(myReference) < 0.0)
+  {
+    aNormal.Reverse();
+  }
+  // The tangent-bisector normal rotates at half the source tangent's rate.
+  const double   aRotation = 0.5 * aTangent.Crossed(aD2) / (aSpeed * aSpeed);
+  const gp_Vec2d aDerivative(-aRotation * aNormal.Y(), aRotation * aNormal.X());
+  const gp_Vec2d aChord(aPoint, p1);
+  F = aChord.Dot(aNormal);
+  D = -aTangent.Dot(aNormal) + aChord.Dot(aDerivative);
   return true;
 }

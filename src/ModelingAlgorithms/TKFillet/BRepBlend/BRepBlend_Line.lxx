@@ -13,27 +13,34 @@
 // commercial license or contractual agreement.
 
 #include <Blend_Point.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_OutOfRange.hxx>
+#include <memory>
 
 inline void BRepBlend_Line::Append(const Blend_Point& P)
 {
-  seqpt.Append(P);
+  myPoints.Append(std::make_unique<Blend_Point>(P));
 }
 
 inline void BRepBlend_Line::Prepend(const Blend_Point& P)
 {
-  seqpt.Prepend(P);
+  InsertBefore(1, P);
 }
 
 inline void BRepBlend_Line::InsertBefore(const int Index, const Blend_Point& P)
 {
-  seqpt.InsertBefore(Index, P);
+  Standard_OutOfRange_Raise_if(Index < 1 || static_cast<size_t>(Index) > myPoints.Size() + 1,
+                               "BRepBlend_Line::InsertBefore");
+  myPoints.InsertBefore(static_cast<size_t>(Index) - 1, std::make_unique<Blend_Point>(P));
 }
 
 inline void BRepBlend_Line::Remove(const int FromIndex, const int ToIndex)
 {
-  seqpt.Remove(FromIndex, ToIndex);
+  Standard_OutOfRange_Raise_if(FromIndex < 1 || FromIndex > ToIndex
+                                 || static_cast<size_t>(ToIndex) > myPoints.Size(),
+                               "BRepBlend_Line::Remove");
+  myPoints.Erase(static_cast<size_t>(FromIndex) - 1, static_cast<size_t>(ToIndex));
 }
 
 inline void BRepBlend_Line::SetStartPoints(const BRepBlend_Extremity& StartPtOnS1,
@@ -54,12 +61,14 @@ inline void BRepBlend_Line::SetEndPoints(const BRepBlend_Extremity& EndPtOnS1,
 
 inline int BRepBlend_Line::NbPoints() const
 {
-  return seqpt.Length();
+  return static_cast<int>(myPoints.Size());
 }
 
 inline const Blend_Point& BRepBlend_Line::Point(const int Index) const
 {
-  return seqpt(Index);
+  Standard_OutOfRange_Raise_if(Index < 1 || static_cast<size_t>(Index) > myPoints.Size(),
+                               "BRepBlend_Line::Point");
+  return *myPoints.Value(static_cast<size_t>(Index) - 1);
 }
 
 inline IntSurf_TypeTrans BRepBlend_Line::TransitionOnS1() const

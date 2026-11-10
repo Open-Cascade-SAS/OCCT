@@ -80,6 +80,21 @@ public:
                                        gp_Vec2d&    Tg) override;
 
 private:
+  //! Copies the active cached point, parameters and tangents.
+  void cachedResult(double&   theU1,
+                    double&   theV1,
+                    double&   theU2,
+                    double&   theV2,
+                    gp_Pnt&   thePoint,
+                    gp_Vec&   theTangent,
+                    gp_Vec2d& theTangent1,
+                    gp_Vec2d& theTangent2) const;
+
+  gp_Pnt2d myResultParameters1;    //!< Computed parameters on the first surface.
+  gp_Pnt2d myResultParameters2;    //!< Computed parameters on the second surface.
+  gp_Pnt2d myResultParameters1bis; //!< Previous computed parameters on the first surface.
+  gp_Pnt2d myResultParameters2bis; //!< Previous computed parameters on the second surface.
+
   gp_Pnt2d                                        MyParOnS1;
   gp_Pnt2d                                        MyParOnS2;
   gp_Pnt                                          MyPnt;

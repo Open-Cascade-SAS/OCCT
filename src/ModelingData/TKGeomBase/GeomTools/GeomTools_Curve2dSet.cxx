@@ -36,12 +36,13 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Macro.hxx>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 
 #define LINE 1
 #define CIRCLE 2
@@ -814,7 +815,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Tri
   GeomTools::GetReal(IS, p1);
   GeomTools::GetReal(IS, p2);
   occ::handle<Geom2d_Curve> BC = GeomTools_Curve2dSet::ReadCurve2d(IS);
-  C                            = new Geom2d_TrimmedCurve(BC, p1, p2);
+  C                            = new Geom2d_TrimmedCurve(BC, p1, p2, true, false);
   return IS;
 }
 

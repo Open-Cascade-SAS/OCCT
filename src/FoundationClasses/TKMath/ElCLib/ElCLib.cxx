@@ -44,8 +44,34 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_NumericError.hxx>
 
+#include <cmath>
+
 namespace
 {
+//==================================================================================================
+
+double parabolaAxisValue(const double theParameter, const double theFocal)
+{
+  // Focal degeneracy is handled by the caller. Combine binary exponents before
+  // restoring the physical coefficient u^2/(4*f).
+  int          aParameterExponent = 0, aFocalExponent = 0;
+  const double aParameter = std::frexp(theParameter, &aParameterExponent);
+  const double aFocal     = std::frexp(theFocal, &aFocalExponent);
+  return std::scalbn((aParameter * aParameter) / aFocal,
+                     2 * aParameterExponent - aFocalExponent - 2);
+}
+
+//==================================================================================================
+
+double parabolaAxisDerivative(const double theParameter, const double theFocal)
+{
+  // Neither 2*f nor u/f has to fit before the final coefficient u/(2*f).
+  int          aParameterExponent = 0, aFocalExponent = 0;
+  const double aParameter = std::frexp(theParameter, &aParameterExponent);
+  const double aFocal     = std::frexp(theFocal, &aFocalExponent);
+  return std::scalbn(aParameter / aFocal, aParameterExponent - aFocalExponent - 1);
+}
+
 static constexpr double PIPI = M_PI + M_PI;
 // Threshold for angle normalization to avoid discontinuity near zero
 static constexpr double NEGATIVE_RESOLUTION = -Precision::Computational();
@@ -218,7 +244,7 @@ gp_Pnt ElCLib::ParabolaValue(const double U, const gp_Ax2& Pos, const double Foc
   const gp_XYZ& XDir = Pos.XDirection().XYZ();
   const gp_XYZ& YDir = Pos.YDirection().XYZ();
   const gp_XYZ& PLoc = Pos.Location().XYZ();
-  const double  A1   = U * U / (4.0 * Focal);
+  const double  A1   = parabolaAxisValue(U, Focal);
   return gp_Pnt(A1 * XDir.X() + U * YDir.X() + PLoc.X(),
                 A1 * XDir.Y() + U * YDir.Y() + PLoc.Y(),
                 A1 * XDir.Z() + U * YDir.Z() + PLoc.Z());
@@ -315,9 +341,9 @@ void ElCLib::ParabolaD1(const double  U,
   {
     gp_XYZ        Coord0;
     const gp_XYZ& Coord2(Pos.YDirection().XYZ());
-    Coord0.SetLinearForm(U / (2.0 * Focal), Coord1, Coord2);
+    Coord0.SetLinearForm(parabolaAxisDerivative(U, Focal), Coord1, Coord2);
     V1.SetXYZ(Coord0);
-    Coord0.SetLinearForm((U * U) / (4.0 * Focal), Coord1, U, Coord2, Pos.Location().XYZ());
+    Coord0.SetLinearForm(parabolaAxisValue(U, Focal), Coord1, U, Coord2, Pos.Location().XYZ());
     P.SetXYZ(Coord0);
   }
 }
@@ -421,11 +447,11 @@ void ElCLib::ParabolaD2(const double  U,
   {
     gp_XYZ        Coord0;
     const gp_XYZ& Coord2(Pos.YDirection().XYZ());
-    Coord0.SetLinearForm((U * U) / (4.0 * Focal), Coord1, U, Coord2, Pos.Location().XYZ());
+    Coord0.SetLinearForm(parabolaAxisValue(U, Focal), Coord1, U, Coord2, Pos.Location().XYZ());
     P.SetXYZ(Coord0);
-    Coord0.SetLinearForm(U / (2.0 * Focal), Coord1, Coord2);
+    Coord0.SetLinearForm(parabolaAxisDerivative(U, Focal), Coord1, Coord2);
     V1.SetXYZ(Coord0);
-    Coord1.Multiply(1.0 / (2.0 * Focal));
+    Coord1.Multiply(0.5 / Focal);
     V2.SetXYZ(Coord1);
   }
 }
@@ -583,7 +609,7 @@ gp_Pnt2d ElCLib::ParabolaValue(const double U, const gp_Ax22d& Pos, const double
   const gp_XY& XDir = Pos.XDirection().XY();
   const gp_XY& YDir = Pos.YDirection().XY();
   const gp_XY& PLoc = Pos.Location().XY();
-  const double A1   = U * U / (4.0 * Focal);
+  const double A1   = parabolaAxisValue(U, Focal);
   return gp_Pnt2d(A1 * XDir.X() + U * YDir.X() + PLoc.X(), A1 * XDir.Y() + U * YDir.Y() + PLoc.Y());
 }
 
@@ -682,9 +708,9 @@ void ElCLib::ParabolaD1(const double    U,
   else
   {
     const gp_XY& Ydir(Pos.YDirection().XY());
-    Vxy.SetLinearForm(U / (2.0 * Focal), Xdir, Ydir);
+    Vxy.SetLinearForm(parabolaAxisDerivative(U, Focal), Xdir, Ydir);
     V1.SetXY(Vxy);
-    Vxy.SetLinearForm((U * U) / (4.0 * Focal), Xdir, U, Ydir, Pos.Location().XY());
+    Vxy.SetLinearForm(parabolaAxisValue(U, Focal), Xdir, U, Ydir, Pos.Location().XY());
   }
   P.SetXY(Vxy);
 }
@@ -794,11 +820,11 @@ void ElCLib::ParabolaD2(const double    U,
   else
   {
     const gp_XY& Ydir(Pos.YDirection().XY());
-    Vxy = Xdir.Multiplied(1.0 / (2.0 * Focal));
+    Vxy = Xdir.Multiplied(0.5 / Focal);
     V2.SetXY(Vxy);
-    Vxy.SetLinearForm(U, Vxy, Ydir);
+    Vxy.SetLinearForm(parabolaAxisDerivative(U, Focal), Xdir, Ydir);
     V1.SetXY(Vxy);
-    Vxy.SetLinearForm(U * U / (4.0 * Focal), Xdir, U, Ydir);
+    Vxy.SetLinearForm(parabolaAxisValue(U, Focal), Xdir, U, Ydir);
     Vxy.Add(Pos.Location().XY());
   }
   P.SetXY(Vxy);
@@ -1031,7 +1057,7 @@ gp_Vec ElCLib::ParabolaDN(const double U, const gp_Ax2& Pos, const double Focal,
     {
       return gp_Vec(Coord1);
     }
-    Coord1.SetLinearForm(U / (2.0 * Focal), Coord1, Pos.YDirection().XYZ());
+    Coord1.SetLinearForm(parabolaAxisDerivative(U, Focal), Coord1, Pos.YDirection().XYZ());
     return gp_Vec(Coord1);
   }
 
@@ -1040,7 +1066,7 @@ gp_Vec ElCLib::ParabolaDN(const double U, const gp_Ax2& Pos, const double Focal,
     return gp_Vec(0.0, 0.0, 0.0);
   }
 
-  Coord1.Multiply(1.0 / (2.0 * Focal));
+  Coord1.Multiply(0.5 / Focal);
   return gp_Vec(Coord1);
 }
 
@@ -1174,7 +1200,7 @@ gp_Vec2d ElCLib::ParabolaDN(const double U, const gp_Ax22d& Pos, const double Fo
     }
 
     gp_XY Ydir(Pos.YDirection().XY());
-    Xdir.SetLinearForm(U / (2.0 * Focal), Xdir, Ydir);
+    Xdir.SetLinearForm(parabolaAxisDerivative(U, Focal), Xdir, Ydir);
     return gp_Vec2d(Xdir);
   }
 
@@ -1183,7 +1209,7 @@ gp_Vec2d ElCLib::ParabolaDN(const double U, const gp_Ax22d& Pos, const double Fo
     return gp_Vec2d(0.0, 0.0);
   }
 
-  Xdir.Multiply(1.0 / (2.0 * Focal));
+  Xdir.Multiply(0.5 / Focal);
   return gp_Vec2d(Xdir);
 }
 

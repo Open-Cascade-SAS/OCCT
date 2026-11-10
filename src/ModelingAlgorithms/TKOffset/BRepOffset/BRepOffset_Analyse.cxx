@@ -125,7 +125,7 @@ static void EdgeAnalyse(const TopoDS_Edge&                     E,
 
     if (!isMixedConcavity)
     {
-      if (ChFi3d::IsTangentFaces(E, F1, F2)) // weak condition
+      if (ChFi3d::IsTangentFaces(E, F1, F2))
       {
         ConnectType = ChFiDS_Tangential;
       }
@@ -160,7 +160,7 @@ bool CheckMixedContinuity(const TopoDS_Edge& theEdge,
     return aMixedCont;
   }
   // But we cannot trust result, if it is C0, because this value is set by default.
-  double TolC0 = std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
+  const double aTolC0 = ChFi3d::ConstructionContinuityTolerance(theEdge);
 
   double aFirst;
   double aLast;
@@ -241,7 +241,7 @@ bool CheckMixedContinuity(const TopoDS_Edge& theEdge,
                                           aSurf2,
                                           GeomAbs_G1,
                                           0.001,
-                                          TolC0,
+                                          aTolC0,
                                           theAngTol,
                                           theAngTol,
                                           theAngTol);
@@ -830,9 +830,8 @@ const TopoDS_Edge& BRepOffset_Analyse::EdgeReplacement(const TopoDS_Face& theF,
 
 TopoDS_Shape BRepOffset_Analyse::Generated(const TopoDS_Shape& theS) const
 {
-  static TopoDS_Shape aNullShape;
   const TopoDS_Shape* pGenS = myGenerated.Seek(theS);
-  return pGenS ? *pGenS : aNullShape;
+  return pGenS ? *pGenS : TopoDS_Shape();
 }
 
 //=================================================================================================

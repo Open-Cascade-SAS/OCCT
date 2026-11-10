@@ -13,7 +13,9 @@
 // commercial license or contractual agreement.
 
 #include <RWObj_MtlReader.hxx>
-
+#include <DE_ValidationUtils.hxx>
+#include <Image_Texture.hxx>
+#include <Standard_ReadLineBuffer.hxx>
 #include <RWObj_Tools.hxx>
 
 #include <Message.hxx>
@@ -21,6 +23,9 @@
 #include <OSD_File.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_Path.hxx>
+
+#include <fstream>
+#include <utility>
 
 namespace
 {
@@ -80,21 +85,14 @@ static bool findRelativePath(const TCollection_AsciiString& theAbsolutePath,
 
 RWObj_MtlReader::RWObj_MtlReader(
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>& theMaterials)
-    : myFile(nullptr),
-      myMaterials(&theMaterials),
+    : myMaterials(&theMaterials),
       myNbLines(0)
 {
 }
 
 //=================================================================================================
 
-RWObj_MtlReader::~RWObj_MtlReader()
-{
-  if (myFile != nullptr)
-  {
-    ::fclose(myFile);
-  }
-}
+RWObj_MtlReader::~RWObj_MtlReader() = default;
 
 //=================================================================================================
 
@@ -102,21 +100,45 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
                            const TCollection_AsciiString& theFile)
 {
   myPath = theFolder + theFile;
-  myFile = OSD_OpenFile(myPath.ToCString(), "rb");
-  if (myFile == nullptr)
+  std::ifstream aStream;
+  OSD_OpenStream(aStream, myPath, std::ios::in | std::ios::binary);
+  if (!aStream)
   {
     Message::Send(TCollection_AsciiString("OBJ material file '") + myPath + "' is not found!",
                   Message_Warning);
     return false;
   }
 
-  char                    aLine[256] = {};
+  const size_t aMaterialCount = myMaterials->Size();
+  return Read(aStream, myPath) && myMaterials->Size() != aMaterialCount;
+}
+
+//==================================================================================================
+
+bool RWObj_MtlReader::Read(std::istream& theStream, const TCollection_AsciiString& theName)
+{
+  myPath    = theName;
+  myNbLines = 0;
+  theStream.clear();
+  theStream.seekg(0, std::ios::beg);
+  if (!theStream)
+  {
+    return false;
+  }
+  TCollection_AsciiString aFolder, aFileName;
+  OSD_Path::FolderAndFileFromPath(myPath, aFolder, aFileName);
+  Standard_ReadLineBuffer aBuffer(4096);
   TCollection_AsciiString aMatName;
   RWObj_Material          aMat;
-  const int               aNbMatOld = myMaterials->Extent();
   bool                    hasAspect = false;
-  for (; ::feof(myFile) == 0 && ::fgets(aLine, 255, myFile) != nullptr;)
+  for (;;)
   {
+    size_t      aLineLength = 0;
+    const char* aLine       = aBuffer.ReadLine(theStream, aLineLength);
+    if (aLine == nullptr)
+    {
+      break;
+    }
     ++myNbLines;
 
     const char* aPos = aLine;
@@ -146,12 +168,11 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
           // reset incomplete material definition
           aMat = RWObj_Material();
         }
-        myMaterials->Bind(aMatName, aMat);
+        myMaterials->Bind(aMatName, std::move(aMat));
         hasAspect = false;
       }
 
-      aMatName = TCollection_AsciiString(aPos);
-      aMat     = RWObj_Material();
+      aMat = RWObj_Material();
       if (!RWObj_Tools::ReadName(aPos, aMatName))
       {
         Message::SendWarning(TCollection_AsciiString("Empty OBJ material at line ") + myNbLines
@@ -237,29 +258,41 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
     else if (::memcmp(aPos, "map_Kd", 6) == 0 && IsSpace(aPos[6]))
     {
       aPos += 7;
-      if (RWObj_Tools::ReadName(aPos, aMat.DiffuseTexture))
+      if (!RWObj_Tools::ReadName(aPos, aMat.DiffuseTexture))
       {
-        processTexturePath(aMat.DiffuseTexture, theFolder);
-        hasAspect = true;
+        continue;
       }
+      if (!processTexturePath(aMat.DiffuseTexture, aFolder, &aMat.DiffuseTextureSource))
+      {
+        return false;
+      }
+      hasAspect = true;
     }
     else if (::memcmp(aPos, "map_Ks", 6) == 0 && IsSpace(aPos[6]))
     {
       aPos += 7;
-      if (RWObj_Tools::ReadName(aPos, aMat.SpecularTexture))
+      if (!RWObj_Tools::ReadName(aPos, aMat.SpecularTexture))
       {
-        processTexturePath(aMat.SpecularTexture, theFolder);
-        hasAspect = true;
+        continue;
       }
+      if (!processTexturePath(aMat.SpecularTexture, aFolder))
+      {
+        return false;
+      }
+      hasAspect = true;
     }
     else if (::memcmp(aPos, "map_Bump", 8) == 0 && IsSpace(aPos[8]))
     {
       aPos += 9;
-      if (RWObj_Tools::ReadName(aPos, aMat.BumpTexture))
+      if (!RWObj_Tools::ReadName(aPos, aMat.BumpTexture))
       {
-        processTexturePath(aMat.BumpTexture, theFolder);
-        hasAspect = true;
+        continue;
       }
+      if (!processTexturePath(aMat.BumpTexture, aFolder))
+      {
+        return false;
+      }
+      hasAspect = true;
     }
     /*else if (::memcmp (aPos, "illum", 5) == 0)
     {
@@ -285,17 +318,45 @@ bool RWObj_MtlReader::Read(const TCollection_AsciiString& theFolder,
       // reset incomplete material definition
       aMat = RWObj_Material();
     }
-    myMaterials->Bind(aMatName, aMat);
+    myMaterials->Bind(aMatName, std::move(aMat));
   }
 
-  return myMaterials->Extent() != aNbMatOld;
+  return !theStream.bad();
 }
 
 //=================================================================================================
 
-void RWObj_MtlReader::processTexturePath(TCollection_AsciiString&       theTexturePath,
-                                         const TCollection_AsciiString& theFolder)
+bool RWObj_MtlReader::processTexturePath(TCollection_AsciiString&       theTexturePath,
+                                         const TCollection_AsciiString& theFolder,
+                                         occ::handle<Image_Texture>*    theSource)
 {
+  if (myResourceStreams != nullptr)
+  {
+    TCollection_AsciiString aName;
+    std::istream*           aStream =
+      DE_ValidationUtils::FindReadStream(*myResourceStreams, myPath, theTexturePath, aName);
+    if (aStream == nullptr)
+    {
+      Message::SendFail() << "Missing OBJ texture stream '" << theTexturePath << "' in " << myPath;
+      return false;
+    }
+    if (theSource != nullptr)
+    {
+      occ::handle<Image_Texture>& aTexture = myTextures.TryEmplaced(aName);
+      if (aTexture.IsNull())
+      {
+        occ::handle<NCollection_Buffer> aBuffer;
+        if (!DE_ValidationUtils::ReadStreamBuffer(*aStream, aBuffer))
+        {
+          return false;
+        }
+        aTexture = new Image_Texture(aBuffer, aName);
+      }
+      *theSource = aTexture;
+    }
+    theTexturePath = aName;
+    return true;
+  }
   if (OSD_Path::IsAbsolutePath(theTexturePath.ToCString()))
   {
     Message::SendWarning(
@@ -316,6 +377,7 @@ void RWObj_MtlReader::processTexturePath(TCollection_AsciiString&       theTextu
   {
     theTexturePath = theFolder + theTexturePath;
   }
+  return true;
 }
 
 //=================================================================================================

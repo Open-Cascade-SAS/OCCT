@@ -16,33 +16,44 @@
 
 #include <Geom_BSplineCurve.hxx>
 #include <GeomFill_SectionGenerator.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NullObject.hxx>
+#include <cmath>
 
-//=================================================================================================
+//==================================================================================================
 
-GeomFill_SectionGenerator::GeomFill_SectionGenerator()
-{
-  if (mySequence.Length() > 1)
-  {
-    occ::handle<NCollection_HArray1<double>> HPar =
-      new (NCollection_HArray1<double>)(1, mySequence.Length());
-    for (int i = 1; i <= mySequence.Length(); i++)
-    {
-      HPar->ChangeValue(i) = i - 1;
-    }
-    SetParam(HPar);
-  }
-}
+GeomFill_SectionGenerator::GeomFill_SectionGenerator() = default;
 
-//=================================================================================================
+//==================================================================================================
 
 void GeomFill_SectionGenerator::SetParam(const occ::handle<NCollection_HArray1<double>>& Params)
 {
-  int ii, L = Params->Upper() - Params->Lower() + 1;
-  myParams = Params;
-  for (ii = 1; ii <= L; ii++)
+  if (Params.IsNull())
   {
-    myParams->SetValue(ii, Params->Value(Params->Lower() + ii - 1));
+    throw Standard_NullObject("GeomFill_SectionGenerator: null parameters");
   }
+  if (Params->IsEmpty())
+  {
+    throw Standard_ConstructionError("GeomFill_SectionGenerator: empty parameters");
+  }
+  for (int anIndex = Params->Lower(); anIndex <= Params->Upper(); ++anIndex)
+  {
+    if (!std::isfinite(Params->Value(anIndex))
+        || (anIndex > Params->Lower() && Params->Value(anIndex) <= Params->Value(anIndex - 1)))
+    {
+      throw Standard_ConstructionError("GeomFill_SectionGenerator: invalid parameter sequence");
+    }
+  }
+  // Keep section indices one-based without modifying or retaining the caller's array.
+  occ::handle<NCollection_HArray1<double>> aParams =
+    new NCollection_HArray1<double>(1, Params->Length());
+  for (int anIndex = 1; anIndex <= Params->Length(); ++anIndex)
+  {
+    aParams->SetValue(anIndex, Params->Value(Params->Lower() + anIndex - 1));
+  }
+  // Publish only after validation and copying succeed: a rejected replacement
+  // leaves the previously accepted section parameterization intact.
+  myParams = aParams;
 }
 
 //=================================================================================================
@@ -52,7 +63,7 @@ void GeomFill_SectionGenerator::GetShape(int& NbPoles,
                                          int& Degree,
                                          int& NbPoles2d) const
 {
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(myCurves.First());
   NbPoles                          = C->NbPoles();
   NbKnots                          = C->NbKnots();
   Degree                           = C->Degree();
@@ -63,14 +74,14 @@ void GeomFill_SectionGenerator::GetShape(int& NbPoles,
 
 void GeomFill_SectionGenerator::Knots(NCollection_Array1<double>& TKnots) const
 {
-  TKnots = (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Knots();
+  TKnots = (occ::down_cast<Geom_BSplineCurve>(myCurves.First()))->Knots();
 }
 
 //=================================================================================================
 
 void GeomFill_SectionGenerator::Mults(NCollection_Array1<int>& TMults) const
 {
-  TMults = (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Multiplicities();
+  TMults = (occ::down_cast<Geom_BSplineCurve>(myCurves.First()))->Multiplicities();
 }
 
 //=================================================================================================
@@ -95,7 +106,7 @@ void GeomFill_SectionGenerator::Section(const int                   P,
                                         NCollection_Array1<gp_Pnt2d>&, // Poles2d,
                                         NCollection_Array1<double>& Weigths) const
 {
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(P));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(Curve(P));
 
   Poles   = C->Poles();
   Weigths = C->WeightsArray();

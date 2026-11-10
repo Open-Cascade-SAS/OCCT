@@ -2,6 +2,10 @@
 set(OCCT_RWStepVisual_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWStepVisual_FILES
+  RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation.cxx
+  RWStepVisual_RWDraughtingModelAndTessellatedShapeRepresentation.pxx
+  RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation.cxx
+  RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation.pxx
   RWStepVisual_RWAnnotationCurveOccurrence.cxx
   RWStepVisual_RWAnnotationCurveOccurrence.pxx
   RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem.cxx

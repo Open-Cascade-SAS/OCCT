@@ -25,7 +25,7 @@ enum OpenGl_RenderFilter
     0x001, //!< render only opaque elements and any non-filling elements   (conflicts with
            //!< OpenGl_RenderFilter_TransparentOnly)
   OpenGl_RenderFilter_TransparentOnly =
-    0x002, //!< render only semitransparent elements and OpenGl_AspectFace (conflicts with
+    0x002, //!< render only semitransparent geometry and render state commands (conflicts with
            //!< OpenGl_RenderFilter_OpaqueOnly)
 
   OpenGl_RenderFilter_NonRaytraceableOnly = 0x004, //!< render only non-raytraceable elements

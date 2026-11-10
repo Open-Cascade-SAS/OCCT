@@ -19,6 +19,7 @@
 #include <Extrema_FuncPSNorm.hxx>
 #include <Extrema_FuncPSDist.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <ElCLib.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
@@ -142,6 +143,16 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
   aBoundInf(2) = mySurf.FirstVParameter();
   aBoundSup(1) = mySurf.LastUParameter();
   aBoundSup(2) = mySurf.LastVParameter();
+
+  // A closed seam connects the two ends of the parameter interval.
+  if (mySurf.IsUClosed() && (aStart(1) < aBoundInf(1) || aStart(1) > aBoundSup(1)))
+  {
+    aStart(1) = ElCLib::InPeriod(aStart(1), aBoundInf(1), aBoundSup(1));
+  }
+  if (mySurf.IsVClosed() && (aStart(2) < aBoundInf(2) || aStart(2) > aBoundSup(2)))
+  {
+    aStart(2) = ElCLib::InPeriod(aStart(2), aBoundInf(2), aBoundSup(2));
+  }
 
   if (isDistanceCriteria)
   {

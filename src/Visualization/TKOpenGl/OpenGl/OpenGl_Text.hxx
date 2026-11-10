@@ -89,7 +89,7 @@ public: //! @name methods for compatibility with layers
 
   //! Compute text width
   Standard_EXPORT static void StringSize(const occ::handle<OpenGl_Context>& theCtx,
-                                         const NCollection_String&          theText,
+                                         const TCollection_UtfString<char>& theText,
                                          const OpenGl_Aspects&              theTextAspect,
                                          const float                        theHeight,
                                          const unsigned int                 theResolution,
@@ -111,6 +111,7 @@ public: //! @name methods for compatibility with layers
   //! @name obsolete methods
 public:
   //! Setup new string and position
+  //! Throws Standard_DomainError for malformed UTF-8 before changing text parameters.
   Standard_DEPRECATED(
     "Deprecated method Init() with obsolete arguments, use Init() and Text() instead of it")
   Standard_EXPORT void Init(const occ::handle<OpenGl_Context>& theCtx,

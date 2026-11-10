@@ -18,6 +18,7 @@
 #include <GeomInt_IntSS.hxx>
 
 #include <Adaptor3d_TopolTool.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Approx_CurveOnSurface.hxx>
 #include <ElSLib.hxx>
 #include <Extrema_ExtPS.hxx>
@@ -49,6 +50,55 @@
 #include <IntSurf_Quadric.hxx>
 #include <Precision.hxx>
 #include <ApproxInt_KnotTools.hxx>
+
+namespace
+{
+//==================================================================================================
+
+occ::handle<Geom_BSplineCurve> buildSurfaceCurve(const occ::handle<Adaptor2d_Curve2d>&   theCurve,
+                                                 const occ::handle<GeomAdaptor_Surface>& theSurface,
+                                                 const double                            theFirst,
+                                                 const double                            theLast,
+                                                 const double theTolerance,
+                                                 double&      theError)
+{
+  // Use the same approximation limits for walking and restriction lines.
+  Approx_CurveOnSurface anApproximation(theCurve, theSurface, theFirst, theLast, theTolerance);
+  anApproximation.Perform(1000, 8, GeomAbs_C1, true, false);
+  if (!anApproximation.HasResult())
+  {
+    return occ::handle<Geom_BSplineCurve>();
+  }
+  theError = anApproximation.MaxError3d();
+  return anApproximation.Curve3d();
+}
+
+//==================================================================================================
+
+// Close coincident end poles; reject a coincident linear curve.
+bool closeCurve(const occ::handle<Geom_BSplineCurve>& theCurve)
+{
+  const gp_Pnt aFirst       = theCurve->StartPoint();
+  const gp_Pnt aLast        = theCurve->EndPoint();
+  const double aSquareScale = std::max(aFirst.XYZ().SquareModulus(), aLast.XYZ().SquareModulus());
+  if (aFirst.SquareDistance(aLast) < 2.0 * Epsilon(aSquareScale))
+  {
+    if (theCurve->Degree() == 1 && theCurve->NbPoles() == 2)
+    {
+      return false;
+    }
+
+    if (!theCurve->IsClosed() && !theCurve->IsPeriodic())
+    {
+      const gp_Pnt aMiddle((theCurve->Pole(1).XYZ() + theCurve->Pole(theCurve->NbPoles()).XYZ())
+                           / 2.0);
+      theCurve->SetPole(1, aMiddle);
+      theCurve->SetPole(theCurve->NbPoles(), aMiddle);
+    }
+  }
+  return true;
+}
+} // namespace
 
 //=================================================================================================
 
@@ -664,7 +714,6 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
         //
         tol2d  = myTolApprox;
         aTolSS = 2.e-7;
-        theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, myHS1 != myHS2);
         //
         bIsDecomposited =
           GeomInt_LineTool::DecompositionOfWLine(WL, myHS1, myHS2, aTolSS, myLConstruct, aSeqOfL);
@@ -674,6 +723,35 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
         //
         nbiter = (bIsDecomposited) ? aNbSeqOfL : aNbParts;
         //
+        bool                      anApprox  = myApprox;
+        bool                      anApprox1 = myApprox1;
+        bool                      anApprox2 = myApprox2;
+        const GeomAbs_SurfaceType typs1     = myHS1->GetType();
+        const GeomAbs_SurfaceType typs2     = myHS2->GetType();
+
+        occ::handle<GeomAdaptor_Surface> aCurveSurface;
+        if (typs1 == GeomAbs_Plane)
+        {
+          anApprox  = false;
+          anApprox1 = true;
+        }
+        else if (typs2 == GeomAbs_Plane)
+        {
+          anApprox  = false;
+          anApprox2 = true;
+        }
+        else if (!myApprox1 && !myApprox2
+                 && (typs1 == GeomAbs_Cylinder || typs2 == GeomAbs_Cylinder))
+        {
+          // Keep 3D error control for the distance to the other surface.
+          aCurveSurface = typs1 == GeomAbs_Cylinder ? myHS1 : myHS2;
+          anApprox1     = aCurveSurface == myHS1;
+          anApprox2     = aCurveSurface == myHS2;
+          tol2d         = std::min(myTolApprox,
+                           std::min(aCurveSurface->UResolution(myTolApprox),
+                                    aCurveSurface->VResolution(myTolApprox)));
+        }
+
         for (i = 1; i <= nbiter; i++)
         {
           if (bIsDecomposited)
@@ -689,58 +767,39 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
             ilprm = (int)lprm;
           }
 
-          bool                anApprox  = myApprox;
-          bool                anApprox1 = myApprox1;
-          bool                anApprox2 = myApprox2;
-          GeomAbs_SurfaceType typs1, typs2;
-          typs1 = myHS1->GetType();
-          typs2 = myHS2->GetType();
-
-          if (typs1 == GeomAbs_Plane)
-          {
-            anApprox  = false;
-            anApprox1 = true;
-          }
-          else if (typs2 == GeomAbs_Plane)
-          {
-            anApprox  = false;
-            anApprox2 = true;
-          }
-
           Approx_ParametrizationType aParType =
             ApproxInt_KnotTools::DefineParType(WL, ifprm, ilprm, anApprox, anApprox1, anApprox2);
 
           theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, myHS1 != myHS2, aParType);
 
-          //-- lbr :
-          //-- Si une des surfaces est un plan , on approxime en 2d
-          //-- sur cette surface et on remonte les points 2d en 3d.
-          //
-          if (typs1 == GeomAbs_Plane)
-          {
-            theapp3d.Perform(myHS1, myHS2, WL, false, true, myApprox2, ifprm, ilprm);
-          }
-          else if (typs2 == GeomAbs_Plane)
-          {
-            theapp3d.Perform(myHS1, myHS2, WL, false, myApprox1, true, ifprm, ilprm);
-          }
-          else
-          {
-            //
-            if (myHS1 != myHS2)
-            {
-              if ((typs1 == GeomAbs_BezierSurface || typs1 == GeomAbs_BSplineSurface)
-                  && (typs2 == GeomAbs_BezierSurface || typs2 == GeomAbs_BSplineSurface))
-              {
+          theapp3d.Perform(myHS1, myHS2, WL, anApprox, anApprox1, anApprox2, ifprm, ilprm);
 
-                theapp3d.SetParameters(myTolApprox, tol2d, 4, 8, 0, 30, true, aParType);
-              }
-            }
-            //
-            theapp3d.Perform(myHS1, myHS2, WL, true, myApprox1, myApprox2, ifprm, ilprm);
+          occ::handle<Geom_BSplineCurve> aSurfaceCurve;
+          double                         aSurfaceError = 0.0;
+          bool                           aIsDone       = theapp3d.IsDone();
+          if (aIsDone && !aCurveSurface.IsNull())
+          {
+            // WLApprox joins the fitted segments into one multi-curve.
+            const AppParCurves_MultiBSpCurve& aMultiCurve = theapp3d.Value(1);
+            NCollection_Array1<gp_Pnt2d>      aPoles(1, aMultiCurve.NbPoles());
+            aMultiCurve.Curve(2, aPoles);
+            const occ::handle<Geom2d_BSplineCurve> aPCurve =
+              new Geom2d_BSplineCurve(aPoles,
+                                      aMultiCurve.Knots(),
+                                      aMultiCurve.Multiplicities(),
+                                      aMultiCurve.Degree());
+            aSurfaceCurve = buildSurfaceCurve(new Geom2dAdaptor_Curve(aPCurve),
+                                              aCurveSurface,
+                                              aPCurve->FirstParameter(),
+                                              aPCurve->LastParameter(),
+                                              myTolApprox,
+                                              aSurfaceError);
+            aIsDone       = !aSurfaceCurve.IsNull();
+            // Convert the UV fitting error to the 3D scale used to set tol2d.
+            aSurfaceError += theapp3d.TolReached2d() * (myTolApprox / tol2d);
           }
 
-          if (!theapp3d.IsDone())
+          if (!aIsDone)
           {
             //
             occ::handle<Geom2d_BSplineCurve> aH1, aH2;
@@ -762,6 +821,7 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
 
           else
           {
+            myTolReached3d = std::max(myTolReached3d, aSurfaceError);
             if (myApprox1 || myApprox2 || (typs1 == GeomAbs_Plane || typs2 == GeomAbs_Plane))
             {
               if (theapp3d.TolReached2d() > myTolReached2d || myTolReached2d == 0.)
@@ -783,6 +843,17 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
             aNbMultiCurves = theapp3d.NbMultiCurves();
             for (j = 1; j <= aNbMultiCurves; j++)
             {
+              if (!aCurveSurface.IsNull())
+              {
+                if (!closeCurve(aSurfaceCurve))
+                {
+                  continue;
+                }
+                sline.Append(aSurfaceCurve);
+                slineS1.Append(H1);
+                slineS2.Append(H1);
+                continue;
+              }
               if (typs1 == GeomAbs_Plane)
               {
                 const AppParCurves_MultiBSpCurve& mbspc = theapp3d.Value(j);
@@ -931,28 +1002,11 @@ void GeomInt_IntSS::MakeCurve(const int                               Index,
                                                                           mbspc.Knots(),
                                                                           mbspc.Multiplicities(),
                                                                           mbspc.Degree());
-                GeomLib_CheckBSplineCurve      Check(BS, myTolCheck, myTolAngCheck);
-                Check.FixTangent(true, true);
-                //
-                // Check IsClosed()
-                double aDist = std::max(BS->StartPoint().XYZ().SquareModulus(),
-                                        BS->EndPoint().XYZ().SquareModulus());
-                double eps   = Epsilon(aDist);
-                if (BS->StartPoint().SquareDistance(BS->EndPoint()) < 2. * eps)
+                GeomLib_CheckBSplineCurve      aCheck(BS, myTolCheck, myTolAngCheck);
+                aCheck.FixTangent(true, true);
+                if (!closeCurve(BS))
                 {
-                  // Avoid creating B-splines containing two coincident poles only
-                  if (mbspc.Degree() == 1 && nbpoles == 2)
-                  {
-                    continue;
-                  }
-
-                  if (!BS->IsClosed() && !BS->IsPeriodic())
-                  {
-                    // force Closed()
-                    gp_Pnt aPm((BS->Pole(1).XYZ() + BS->Pole(BS->NbPoles()).XYZ()) / 2.);
-                    BS->SetPole(1, aPm);
-                    BS->SetPole(BS->NbPoles(), aPm);
-                  }
+                  continue;
                 }
                 sline.Append(BS);
 
@@ -1142,18 +1196,13 @@ void GeomInt_IntSS::TreatRLine(const occ::handle<IntPatch_RLine>&      theRL,
   //
   // To provide sameparameter it is necessary to get 3d curve as
   // approximation of curve on surface.
-  int                   aMaxDeg = 8;
-  int                   aMaxSeg = 1000;
-  Approx_CurveOnSurface anApp(anAHC2d, aGAHS, tf, tl, Precision::Confusion());
-  anApp.Perform(aMaxSeg, aMaxDeg, GeomAbs_C1, true, false);
-  if (!anApp.HasResult())
+  theC3d = buildSurfaceCurve(anAHC2d, aGAHS, tf, tl, Precision::Confusion(), theTolReached);
+  if (theC3d.IsNull())
   {
     return;
   }
 
-  theC3d        = anApp.Curve3d();
-  theTolReached = anApp.MaxError3d();
-  double aTol   = Precision::Confusion();
+  double aTol = Precision::Confusion();
   if (theRL->IsArcOnS1())
   {
     occ::handle<Geom_Surface> aS = GeomAdaptor::MakeSurface(*theHS2);

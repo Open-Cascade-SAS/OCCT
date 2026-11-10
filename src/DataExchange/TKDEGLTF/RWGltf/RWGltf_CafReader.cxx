@@ -14,7 +14,6 @@
 
 #include <RWGltf_CafReader.hxx>
 
-#include "RWGltf_GltfJsonParser.hxx"
 #include <RWGltf_TriangulationReader.hxx>
 
 #include <BRep_Builder.hxx>
@@ -32,6 +31,13 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+
+#include "RWGltf_GltfJsonParser.hxx"
+
+#include <algorithm>
+#include <atomic>
+#include <mutex>
+#include <optional>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_CafReader, RWMesh_CafReader)
 
@@ -57,12 +63,17 @@ public:
     TopoDS_Face&                               aFace = myFaceList->ChangeValue(theFaceIndex);
     occ::handle<RWGltf_GltfLatePrimitiveArray> aLateData =
       occ::down_cast<RWGltf_GltfLatePrimitiveArray>(BRep_Tool::Triangulation(aFace, aDummyLoc));
-    occ::handle<Poly_Triangulation> aPolyData = loadData(aLateData, theThreadIndex);
-    if (!aPolyData.IsNull())
+    const std::optional<occ::handle<Poly_Triangulation>> aPolyData =
+      loadData(aLateData, theThreadIndex);
+    if (!aPolyData.has_value())
+    {
+      myHasFailed.store(true, std::memory_order_relaxed);
+    }
+    else if (!aPolyData->IsNull())
     {
       BRep_Builder aBuilder;
       // clang-format off
-      aBuilder.UpdateFace (aFace, aPolyData); // replace all "proxy"-triangulations of face by loaded active one.
+      aBuilder.UpdateFace (aFace, *aPolyData); // replace all "proxy"-triangulations of face by loaded active one.
       // clang-format on
     }
     if (myThreadPool.HasThreads())
@@ -76,9 +87,12 @@ public:
     }
   }
 
+  // Check the result of parallel primitive loading.
+  bool HasFailed() const;
+
 protected:
-  //! Load primitive array.
-  virtual occ::handle<Poly_Triangulation> loadData(
+  // Return nullopt on failure; a null handle means deferred data was retained.
+  virtual std::optional<occ::handle<Poly_Triangulation>> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
     int                                               theThreadIndex) const = 0;
 
@@ -87,7 +101,15 @@ protected:
   mutable std::mutex                     myMutex;
   mutable Message_ProgressScope          myProgress;
   const OSD_ThreadPool::Launcher&        myThreadPool;
+  mutable std::atomic<bool>              myHasFailed{false}; //!< A primitive could not be loaded.
 };
+
+//==================================================================================================
+
+bool RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor::HasFailed() const
+{
+  return myHasFailed.load(std::memory_order_relaxed);
+}
 
 //! Functor for parallel execution of all glTF data loading.
 class RWGltf_CafReader::CafReader_GltfFullDataLoadingFunctor
@@ -113,27 +135,36 @@ public:
 
 protected:
   //! Load primitive array.
-  occ::handle<Poly_Triangulation> loadData(
+  std::optional<occ::handle<Poly_Triangulation>> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
     int                                               theThreadIndex) const override
   {
-    GltfReaderTLS& aTlsData = myTlsData.ChangeValue(theThreadIndex);
-    if (aTlsData.FileSystem.IsNull())
-    {
-      aTlsData.FileSystem = new OSD_CachedFileSystem();
-    }
     // Load stream data if exists
     if (occ::handle<Poly_Triangulation> aStreamLoadedData = theLateData->LoadStreamData())
     {
       return aStreamLoadedData;
     }
+    if (myCafReader->myResourceStreams != nullptr)
+    {
+      return std::nullopt;
+    }
     // Load file data
+    GltfReaderTLS& aTlsData = myTlsData.ChangeValue(theThreadIndex);
+    if (aTlsData.FileSystem.IsNull())
+    {
+      aTlsData.FileSystem = new OSD_CachedFileSystem();
+    }
     if (myCafReader->ToKeepLateData())
     {
-      theLateData->LoadDeferredData(aTlsData.FileSystem);
+      if (!theLateData->LoadDeferredData(aTlsData.FileSystem))
+      {
+        return std::nullopt;
+      }
       return occ::handle<Poly_Triangulation>();
     }
-    return theLateData->DetachedLoadDeferredData(aTlsData.FileSystem);
+    const occ::handle<Poly_Triangulation> aData =
+      theLateData->DetachedLoadDeferredData(aTlsData.FileSystem);
+    return aData.IsNull() ? std::nullopt : std::make_optional(aData);
   }
 
 private:
@@ -157,12 +188,21 @@ public:
 
 protected:
   //! Load primitive array.
-  occ::handle<Poly_Triangulation> loadData(
+  std::optional<occ::handle<Poly_Triangulation>> loadData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theLateData,
     int                                               theThreadIndex) const override
   {
     (void)theThreadIndex;
-    return theLateData->LoadStreamData();
+    const bool hasStreamData = std::all_of(
+      theLateData->Data().cbegin(),
+      theLateData->Data().cend(),
+      [](const RWGltf_GltfPrimArrayData& theData) { return !theData.StreamData.IsNull(); });
+    if (!hasStreamData)
+    {
+      return occ::handle<Poly_Triangulation>();
+    }
+    const occ::handle<Poly_Triangulation> aData = theLateData->LoadStreamData();
+    return aData.IsNull() ? std::nullopt : std::make_optional(aData);
   }
 };
 
@@ -301,8 +341,11 @@ bool RWGltf_CafReader::performMesh(std::istream&                  theStream,
   aDoc.SetMeshNameAsFallback(myUseMeshNameAsFallback);
   if (myIsStreamInput)
   {
-    std::shared_ptr<std::istream> aSharedStream(&theStream, [](std::istream*) {});
-    aDoc.SetStream(aSharedStream);
+    aDoc.SetStream(theStream);
+    if (myResourceStreams != nullptr)
+    {
+      aDoc.SetResourceStreams(*myResourceStreams);
+    }
   }
   if (!theToProbe)
   {
@@ -391,7 +434,7 @@ bool RWGltf_CafReader::readLateData(NCollection_DynamicArray<TopoDS_Face>& theFa
     CafReader_GltfStreamDataLoadingFunctor aFunctor(theFaces, theProgress, aLauncher);
     aLauncher.Perform(theFaces.Lower(), theFaces.Upper() + 1, aFunctor);
 
-    return true;
+    return !aFunctor.HasFailed();
   }
 
   aReader->StartStatistic();
@@ -407,7 +450,7 @@ bool RWGltf_CafReader::readLateData(NCollection_DynamicArray<TopoDS_Face>& theFa
   aReader->PrintStatistic();
   aReader->StopStatistic();
 
-  return true;
+  return !aFunctor.HasFailed();
 }
 
 //=================================================================================================

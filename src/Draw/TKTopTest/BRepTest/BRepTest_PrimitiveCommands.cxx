@@ -19,7 +19,6 @@
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf.hxx>
-#include <BRepBuilderAPI.hxx>
 #include <BRepPreviewAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>

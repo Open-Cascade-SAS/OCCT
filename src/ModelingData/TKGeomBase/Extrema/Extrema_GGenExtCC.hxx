@@ -620,7 +620,7 @@ void Extrema_GGenExtCC<TheCurve1,
   double aDiscTol  = 1.0e-2;
   double aValueTol = 1.0e-2;
   double aSameTol  = myCurveMinTol / (aDiscTol);
-  aFinder.SetTol(aDiscTol, aSameTol);
+  aFinder.SetTol(aDiscTol, aSameTol, myCurveMinTol * myCurveMinTol);
   aFinder.SetFunctionalMinimalValue(0.0);
 
   const double aCellSize = std::max(std::max(anIntervals1->Last() - anIntervals1->First(),
@@ -648,7 +648,7 @@ void Extrema_GGenExtCC<TheCurve1,
       aFinder.SetLocalParams(aFirstBorderInterval, aSecondBorderInterval);
       aFinder.Perform(GetSingleSolutionFlag());
 
-      aCurrF = aFinder.GetF();
+      aCurrF = std::sqrt(aFinder.GetF());
       if (aCurrF >= aF + aSameTol * aValueTol)
       {
         continue;
@@ -725,6 +725,7 @@ void Extrema_GGenExtCC<TheCurve1,
     aVec(2) = (aCurrent.Y() + aNext.Y()) * 0.5;
 
     aFunc.Value(aVec, aVal);
+    aVal = std::sqrt(aVal);
     if (std::abs(aVal - aF) < Precision::Confusion())
     {
       if (bSaveSolution)

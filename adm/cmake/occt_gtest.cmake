@@ -84,6 +84,12 @@ function(OCCT_INIT_GTEST)
     endif()
   endforeach()
 
+  # Font bitmap tests call FreeType conversion functions directly.
+  if (USE_FREETYPE AND TARGET TKService)
+    PROCESS_CSF_LIBRARIES("${CSF_FREETYPE}" OCCT_GTEST_FREETYPE_LIBRARIES ${TEST_PROJECT_NAME})
+    target_link_libraries(${TEST_PROJECT_NAME} PRIVATE ${OCCT_GTEST_FREETYPE_LIBRARIES})
+  endif()
+
   if (INSTALL_GTEST)
     # Install the test executable
     install (TARGETS ${TEST_PROJECT_NAME}

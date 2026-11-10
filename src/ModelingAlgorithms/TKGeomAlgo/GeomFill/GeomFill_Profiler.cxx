@@ -17,6 +17,7 @@
 #include <BSplCLib.hxx>
 #include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
@@ -24,18 +25,25 @@
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=================================================================================================
+#include <utility>
+#include <algorithm>
 
-static void UnifyByInsertingAllKnots(NCollection_Sequence<occ::handle<Geom_Curve>>& theCurves,
-                                     const double                                   PTol)
+namespace
+{
+// Keep section blocks small for profiles with only two curves.
+constexpr size_t THE_CURVE_BLOCK_SIZE = 16;
+
+//==================================================================================================
+
+void UnifyByInsertingAllKnots(const NCollection_DynamicArray<occ::handle<Geom_Curve>>& theCurves,
+                              const double                                             PTol)
 {
   // inserting in the first curve the knot-vector of all the others.
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(theCurves(1));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(theCurves.First());
 
-  int i;
-  for (i = 2; i <= theCurves.Length(); i++)
+  for (size_t aCurveIndex = 1; aCurveIndex < theCurves.Size(); ++aCurveIndex)
   {
-    occ::handle<Geom_BSplineCurve>    Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
+    occ::handle<Geom_BSplineCurve> Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(aCurveIndex));
     const NCollection_Array1<double>& Ki = Ci->Knots();
     const NCollection_Array1<int>&    Mi = Ci->Multiplicities();
 
@@ -44,42 +52,71 @@ static void UnifyByInsertingAllKnots(NCollection_Sequence<occ::handle<Geom_Curve
 
   const NCollection_Array1<double>& NewKnots = C->Knots();
   const NCollection_Array1<int>&    NewMults = C->Multiplicities();
-  for (i = 2; i <= theCurves.Length(); i++)
+  for (size_t aCurveIndex = 1; aCurveIndex < theCurves.Size(); ++aCurveIndex)
   {
-    occ::handle<Geom_BSplineCurve> Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
+    occ::handle<Geom_BSplineCurve> Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(aCurveIndex));
     Ci->InsertKnots(NewKnots, NewMults, PTol, false);
   }
 
-  // essai : tentative mise des poids sur chaque section a une moyenne 1
-  for (i = 1; i <= theCurves.Length(); i++)
+  // Normalize the weights of each rational section to mean one.
+  for (const occ::handle<Geom_Curve>& aSection : theCurves)
   {
-    occ::handle<Geom_BSplineCurve> Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
-    if (Ci->IsRational())
+    const occ::handle<Geom_BSplineCurve> aCurve = occ::down_cast<Geom_BSplineCurve>(aSection);
+    if (aCurve->IsRational())
     {
-      int    np    = Ci->NbPoles();
-      double sigma = 0.;
-      int    j;
-      for (j = 1; j <= np; j++)
+      const int aNbPoles      = aCurve->NbPoles();
+      double    aMaxWeight    = aCurve->Weight(1);
+      double    aMinWeight    = aMaxWeight;
+      int       aMaxPoleIndex = 1;
+      int       aMinPoleIndex = 1;
+      double    aScaledSum    = 0.;
       {
-        sigma += Ci->Weight(j);
+        const NCollection_Array1<double>& aWeights = aCurve->WeightsArray();
+        for (int aPoleIndex = 1; aPoleIndex <= aNbPoles; ++aPoleIndex)
+        {
+          const double aWeight = aWeights.At(static_cast<size_t>(aPoleIndex - 1));
+          if (aWeight > aMaxWeight)
+          {
+            aMaxWeight    = aWeight;
+            aMaxPoleIndex = aPoleIndex;
+          }
+          if (aWeight < aMinWeight)
+          {
+            aMinWeight    = aWeight;
+            aMinPoleIndex = aPoleIndex;
+          }
+        }
+        // Scale before summation so a finite mean does not require a finite sum.
+        for (const double aWeight : aWeights)
+        {
+          aScaledSum += aWeight / aMaxWeight;
+        }
       }
-      sigma /= np;
-      for (j = 1; j <= np; j++)
+      const double aMean = aMaxWeight * (aScaledSum / aNbPoles);
+      if (aMean == 1.)
       {
-        Ci->SetWeight(j, Ci->Weight(j) / sigma);
+        continue;
       }
+      // Keep an extreme weight until last so intermediate weights cannot become uniform.
+      // SetWeight replaces a non-rational curve's weights by unit weights.
+      const int aLastPoleIndex = aMean > 1. ? aMaxPoleIndex : aMinPoleIndex;
+      for (int aPoleIndex = 1; aPoleIndex <= aNbPoles; ++aPoleIndex)
+      {
+        if (aPoleIndex != aLastPoleIndex)
+        {
+          aCurve->SetWeight(aPoleIndex, aCurve->Weight(aPoleIndex) / aMean);
+        }
+      }
+      aCurve->SetWeight(aLastPoleIndex, aCurve->Weight(aLastPoleIndex) / aMean);
     }
   }
-  // fin de l essai
 }
 
-//=================================================================================================
+//==================================================================================================
 
-static void UnifyBySettingMiddleKnots(NCollection_Sequence<occ::handle<Geom_Curve>>& theCurves)
+void UnifyBySettingMiddleKnots(const NCollection_DynamicArray<occ::handle<Geom_Curve>>& theCurves)
 {
-  int i, j;
-
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(theCurves(1));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(theCurves.First());
 
   int    NbKnots = C->NbKnots();
   double ULast   = C->Knot(C->LastUKnotIndex());
@@ -89,28 +126,31 @@ static void UnifyBySettingMiddleKnots(NCollection_Sequence<occ::handle<Geom_Curv
   NCollection_Array1<double> NewKnots(1, NbKnots);
   NewKnots(1)       = UFirst;
   NewKnots(NbKnots) = ULast;
-  for (j = 2; j < NbKnots; j++)
+  for (int aKnotIndex = 2; aKnotIndex < NbKnots; aKnotIndex++)
   {
     double aMidKnot = 0.;
-    for (i = 1; i <= theCurves.Length(); i++)
+    for (const occ::handle<Geom_Curve>& aSection : theCurves)
     {
-      occ::handle<Geom_BSplineCurve> Ctemp = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
-      aMidKnot += Ctemp->Knot(j);
+      occ::handle<Geom_BSplineCurve> Ctemp = occ::down_cast<Geom_BSplineCurve>(aSection);
+      aMidKnot += Ctemp->Knot(aKnotIndex);
     }
-    aMidKnot /= theCurves.Length();
-    NewKnots(j) = aMidKnot;
+    aMidKnot /= static_cast<double>(theCurves.Size());
+    NewKnots(aKnotIndex) = aMidKnot;
   }
 
-  for (i = 1; i <= theCurves.Length(); i++)
+  for (const occ::handle<Geom_Curve>& aSection : theCurves)
   {
-    occ::handle<Geom_BSplineCurve> Cres = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
+    occ::handle<Geom_BSplineCurve> Cres = occ::down_cast<Geom_BSplineCurve>(aSection);
     Cres->SetKnots(NewKnots);
   }
 }
 
+} // namespace
+
 //=================================================================================================
 
 GeomFill_Profiler::GeomFill_Profiler()
+    : myCurves(THE_CURVE_BLOCK_SIZE)
 {
   myIsDone     = false;
   myIsPeriodic = true;
@@ -153,7 +193,7 @@ void GeomFill_Profiler::AddCurve(const occ::handle<Geom_Curve>& Curve)
   */
   ///////////////////////////////////////////////
 
-  mySequence.Append(C);
+  myCurves.Append(C);
 
   if (myIsPeriodic && !C->IsPeriodic())
   {
@@ -165,20 +205,18 @@ void GeomFill_Profiler::AddCurve(const occ::handle<Geom_Curve>& Curve)
 
 void GeomFill_Profiler::Perform(const double PTol)
 {
-  int i;
   //  int myDegree = 0, myNbPoles = 0;
   int                            myDegree = 0;
   occ::handle<Geom_BSplineCurve> C;
   double                         U1, U2, UFirst = 0, ULast = 0;
   double                         EcartMax = 0.;
 
-  for (i = 1; i <= mySequence.Length(); i++)
+  for (const occ::handle<Geom_Curve>& aSection : myCurves)
   {
-    C = occ::down_cast<Geom_BSplineCurve>(mySequence(i));
+    C = occ::down_cast<Geom_BSplineCurve>(aSection);
 
-    // si non periodique, il faut deperiodiser toutes les courbes
-    // on les segmente ensuite pour assurer K(1) et K(n) de multiplicite
-    // degre + 1
+    // If the profile is not periodic, convert periodic curves to non-periodic form.
+    // Segment them to give the end knots multiplicity degree + 1.
 
     U2 = C->Knot(C->LastUKnotIndex());
     U1 = C->Knot(C->FirstUKnotIndex());
@@ -192,7 +230,7 @@ void GeomFill_Profiler::Perform(const double PTol)
     // evaluate the max degree
     myDegree = std::max(myDegree, C->Degree());
 
-    // Calcul de Max ( Ufin - Udeb) sur l ensemble des courbes.
+    // Select the largest parameter span among all curves.
     if ((U2 - U1) > EcartMax)
     {
       EcartMax = U2 - U1;
@@ -203,30 +241,34 @@ void GeomFill_Profiler::Perform(const double PTol)
 
   // increase the degree of the curves to my degree
   // reparametrize them in the range U1, U2.
-  for (i = 1; i <= mySequence.Length(); i++)
+  NCollection_Array1<double> aKnots;
+  for (const occ::handle<Geom_Curve>& aSection : myCurves)
   {
-    C = occ::down_cast<Geom_BSplineCurve>(mySequence(i));
+    C = occ::down_cast<Geom_BSplineCurve>(aSection);
 
     C->IncreaseDegree(myDegree);
 
-    NCollection_Array1<double> Knots(C->Knots());
-    BSplCLib::Reparametrize(UFirst, ULast, Knots);
-    C->SetKnots(Knots);
+    const NCollection_Array1<double>& aSourceKnots = C->Knots();
+    aKnots.Resize(aSourceKnots.Lower(), aSourceKnots.Upper(), false);
+    aKnots.CopyValues(aSourceKnots);
+    BSplCLib::Reparametrize(UFirst, ULast, aKnots);
+    C->SetKnots(aKnots);
   }
 
-  NCollection_Sequence<occ::handle<Geom_Curve>> theCurves;
-  for (i = 1; i <= mySequence.Length(); i++)
+  NCollection_DynamicArray<occ::handle<Geom_Curve>> aCurves(THE_CURVE_BLOCK_SIZE,
+                                                            myCurves.Allocator());
+  for (const occ::handle<Geom_Curve>& aSection : myCurves)
   {
-    theCurves.Append(occ::down_cast<Geom_Curve>(mySequence(i)->Copy()));
+    aCurves.Append(occ::down_cast<Geom_Curve>(aSection->Copy()));
   }
 
-  UnifyByInsertingAllKnots(theCurves, PTol);
+  UnifyByInsertingAllKnots(aCurves, PTol);
 
   bool Unified    = true;
-  int  theNbKnots = (occ::down_cast<Geom_BSplineCurve>(theCurves(1)))->NbKnots();
-  for (i = 2; i <= theCurves.Length(); i++)
+  int  theNbKnots = (occ::down_cast<Geom_BSplineCurve>(aCurves.First()))->NbKnots();
+  for (size_t aCurveIndex = 1; aCurveIndex < aCurves.Size(); ++aCurveIndex)
   {
-    if ((occ::down_cast<Geom_BSplineCurve>(theCurves(i)))->NbKnots() != theNbKnots)
+    if ((occ::down_cast<Geom_BSplineCurve>(aCurves(aCurveIndex)))->NbKnots() != theNbKnots)
     {
       Unified = false;
       break;
@@ -235,11 +277,11 @@ void GeomFill_Profiler::Perform(const double PTol)
 
   if (Unified)
   {
-    mySequence = theCurves;
+    myCurves = std::move(aCurves);
   }
   else
   {
-    UnifyBySettingMiddleKnots(mySequence);
+    UnifyBySettingMiddleKnots(myCurves);
   }
 
   myIsDone = true;
@@ -254,7 +296,7 @@ int GeomFill_Profiler::Degree() const
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
   }
 
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(myCurves.First());
   return C->Degree();
 }
 
@@ -267,7 +309,7 @@ int GeomFill_Profiler::NbPoles() const
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
   }
 
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(myCurves.First());
   return C->NbPoles();
 }
 
@@ -281,10 +323,11 @@ void GeomFill_Profiler::Poles(const int Index, NCollection_Array1<gp_Pnt>& Poles
   }
 
   Standard_DomainError_Raise_if(Poles.Length() != NbPoles(), "GeomFill_Profiler::Poles");
-  Standard_DomainError_Raise_if(Index < 1 || Index > mySequence.Length(),
+  Standard_DomainError_Raise_if(Index < 1 || static_cast<size_t>(Index) > myCurves.Size(),
                                 "GeomFill_Profiler::Poles");
 
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(Index));
+  occ::handle<Geom_BSplineCurve> C =
+    occ::down_cast<Geom_BSplineCurve>(myCurves.Value(static_cast<size_t>(Index) - 1));
 
   Poles = C->Poles();
 }
@@ -299,10 +342,11 @@ void GeomFill_Profiler::Weights(const int Index, NCollection_Array1<double>& Wei
   }
 
   Standard_DomainError_Raise_if(Weights.Length() != NbPoles(), "GeomFill_Profiler::Weights");
-  Standard_DomainError_Raise_if(Index < 1 || Index > mySequence.Length(),
+  Standard_DomainError_Raise_if(Index < 1 || static_cast<size_t>(Index) > myCurves.Size(),
                                 "GeomFill_Profiler::Weights");
 
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(Index));
+  occ::handle<Geom_BSplineCurve> C =
+    occ::down_cast<Geom_BSplineCurve>(myCurves.Value(static_cast<size_t>(Index) - 1));
 
   Weights = C->WeightsArray();
 }
@@ -316,7 +360,7 @@ int GeomFill_Profiler::NbKnots() const
     throw StdFail_NotDone("GeomFill_Profiler::Degree");
   }
 
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(myCurves.First());
 
   return C->NbKnots();
 }
@@ -337,7 +381,7 @@ void GeomFill_Profiler::KnotsAndMults(NCollection_Array1<double>& Knots,
   Standard_DomainError_Raise_if(Knots.Length() != n || Mults.Length() != n,
                                 "GeomFill_Profiler::KnotsAndMults");
 
-  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
+  occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(myCurves.First());
 
   Knots = C->Knots();
   Mults = C->Multiplicities();

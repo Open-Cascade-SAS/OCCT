@@ -14,6 +14,7 @@
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 
 #include <Approx_CurveOnSurface.hxx>
+#include <Bnd_Range.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
@@ -41,14 +42,23 @@
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <GeomProjLib.hxx>
+#include <GeomLib.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Vec.hxx>
 #include <IntCurve_IntConicConic.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
+#include <MathRoot_Brent.hxx>
+#include <MathOpt_Brent.hxx>
+#include <MathUtils_FunctorScalar.hxx>
+#include <MathUtils_Config.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Surface.hxx>
@@ -56,12 +66,17 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
 #include <algorithm>
+#include <array>
+#include <cmath>
+#include <limits>
+#include <optional>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeConstruct_ProjectCurveOnSurface, Standard_Transient)
 
@@ -416,22 +431,12 @@ bool fixPeriodicityTroubles(gp_Pnt2d*    thePnt,
 
 //=================================================================================================
 
-//! Checks if B-spline curve has uneven parameterization requiring special handling.
-//! Computes the ratio of maximum to minimum parameterization speed across knot intervals.
-//! If this ratio exceeds a threshold, the curve should be projected using ProjLib instead
-//! of the standard approximation approach.
-//! @param[in] theCurve the curve to check (may be trimmed)
-//! @param[in] theFirst the first parameter of the working range
-//! @param[in] theLast the last parameter of the working range
-//! @param[out] theBSpline the extracted B-spline curve (if any)
-//! @return true if the curve has uneven parameterization requiring ProjLib
-bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
-                           const double                    theFirst,
-                           const double                    theLast,
-                           occ::handle<Geom_BSplineCurve>& theBSpline)
+bool hasUnevenParameterization(const occ::handle<Geom_Curve>& theCurve,
+                               double                         theFirst,
+                               double                         theLast)
 {
-  theBSpline = extractBSplineCurve(theCurve);
-  if (theBSpline.IsNull())
+  const occ::handle<Geom_BSplineCurve> aBSpline = extractBSplineCurve(theCurve);
+  if (aBSpline.IsNull())
   {
     return false;
   }
@@ -441,24 +446,22 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
   double aFirstParam = theFirst;
   double aLastParam  = theLast;
 
-  // Find first knot index
   int anIdx = 1;
-  for (; anIdx <= theBSpline->NbKnots() && aFirstParam < theLast; anIdx++)
+  for (; anIdx <= aBSpline->NbKnots() && aFirstParam < theLast; anIdx++)
   {
-    if (theBSpline->Knot(anIdx) > theFirst)
+    if (aBSpline->Knot(anIdx) > theFirst)
     {
       break;
     }
   }
 
-  GeomAdaptor_Curve            aC3DAdaptor(theCurve);
-  double                       aMinParSpeed = Precision::Infinite();
-  NCollection_Sequence<double> aKnotCoeffs;
+  GeomAdaptor_Curve aC3DAdaptor(theCurve);
+  double            aMinParSpeed = Precision::Infinite();
+  Bnd_Range         aSpeedRange;
 
-  for (; anIdx <= theBSpline->NbKnots() && aFirstParam < theLast; anIdx++)
+  for (; anIdx <= aBSpline->NbKnots() && aFirstParam < theLast; anIdx++)
   {
-    // Fill current knot interval
-    aLastParam     = std::min(theLast, theBSpline->Knot(anIdx));
+    aLastParam     = std::min(theLast, aBSpline->Knot(anIdx));
     int aNbIntPnts = THE_NCONTROL;
 
     // Adapt number of inner points according to the length of the interval
@@ -467,7 +470,7 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
     {
       const double aLenThres = 1.e-2;
       const double aLenRatio =
-        (aLastParam - aFirstParam) / (theBSpline->Knot(anIdx) - theBSpline->Knot(anIdx - 1));
+        (aLastParam - aFirstParam) / (aBSpline->Knot(anIdx) - aBSpline->Knot(anIdx - 1));
       if (aLenRatio < aLenThres)
       {
         aNbIntPnts = int(aLenRatio / aLenThres * aNbIntPnts);
@@ -481,7 +484,6 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
     double aStep = (aLastParam - aFirstParam) / (aNbIntPnts - 1);
     gp_Pnt p3d1, p3d2;
 
-    // Start filling from first point
     aC3DAdaptor.D0(aFirstParam, p3d1);
 
     double aLength3d = 0.0;
@@ -500,17 +502,13 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
     const double aCoeff = aLength3d / (aLastParam - aFirstParam);
     if (std::abs(aCoeff) > gp::Resolution())
     {
-      aKnotCoeffs.Append(aCoeff);
+      aSpeedRange.Add(aCoeff);
     }
     aFirstParam = aLastParam;
   }
 
-  double anEvenlyCoeff = 0;
-  if (aKnotCoeffs.Size() > 0)
-  {
-    anEvenlyCoeff = *std::max_element(aKnotCoeffs.begin(), aKnotCoeffs.end())
-                    / *std::min_element(aKnotCoeffs.begin(), aKnotCoeffs.end());
-  }
+  const std::optional<Bnd_Range::Bounds> aSpeeds = aSpeedRange.Get();
+  const double anEvenlyCoeff                     = aSpeeds ? aSpeeds->Max / aSpeeds->Min : 0.0;
 
   const double aMaxQuotientCoeff = 1500.0;
   return (anEvenlyCoeff > aMaxQuotientCoeff && aMinParSpeed > Precision::Confusion());
@@ -518,71 +516,171 @@ bool isBSplineCurveInvalid(const occ::handle<Geom_Curve>&  theCurve,
 
 //=================================================================================================
 
+// Find curve parameters where the projection crosses C0 surface joins.
+bool surfaceBreaks(const GeomAdaptor_Curve&            theCurve,
+                   ShapeAnalysis_Surface&              theAnalysis,
+                   const NCollection_Array1<gp_Pnt2d>& thePoints,
+                   const NCollection_Array1<double>&   theParameters,
+                   double                              thePrecision,
+                   NCollection_LinearVector<double>&   theBreaks)
+{
+  const GeomAdaptor_Surface& aSurface = *theAnalysis.Adaptor3d();
+  for (const bool isU : {false, true})
+  {
+    const int aNbIntervals =
+      isU ? aSurface.NbUIntervals(GeomAbs_C1) : aSurface.NbVIntervals(GeomAbs_C1);
+    if (aNbIntervals == 1)
+    {
+      continue;
+    }
+    NCollection_Array1<double> anIntervals(1, aNbIntervals + 1);
+    if (isU)
+    {
+      aSurface.UIntervals(anIntervals, GeomAbs_C1);
+    }
+    else
+    {
+      aSurface.VIntervals(anIntervals, GeomAbs_C1);
+    }
+    const int    aCoordinate = isU ? 1 : 2;
+    const double aTolerance =
+      isU ? aSurface.UResolution(thePrecision) : aSurface.VResolution(thePrecision);
+    MathUtils::Config aConfig;
+    // Continuity joins require parametric accuracy.
+    aConfig.XTolerance = std::min(Precision::PConfusion(), theCurve.Resolution(thePrecision));
+    aConfig.FTolerance = 0.0;
+    for (size_t aKnotIndex = 1; aKnotIndex + 1 < anIntervals.Size(); ++aKnotIndex)
+    {
+      const double aKnot = anIntervals.At(aKnotIndex);
+      for (size_t anIndex = 0; anIndex + 1 < theParameters.Size(); ++anIndex)
+      {
+        const gp_Pnt2d& aP1 = thePoints.At(anIndex);
+        const gp_Pnt2d& aP2 = thePoints.At(anIndex + 1);
+        const double    aC1 = aP1.Coord(aCoordinate), aC2 = aP2.Coord(aCoordinate);
+        const bool      isFirstOnJoin = std::abs(aC1 - aKnot) <= aTolerance;
+        const bool      isLastOnJoin  = std::abs(aC2 - aKnot) <= aTolerance;
+        if (isFirstOnJoin && isLastOnJoin)
+        {
+          continue;
+        }
+        if (isFirstOnJoin || isLastOnJoin)
+        {
+          theBreaks.Append(theParameters.At(anIndex + size_t(isLastOnJoin)));
+        }
+        else if ((aC1 < aKnot && aKnot < aC2) || (aC2 < aKnot && aKnot < aC1))
+        {
+          const double                  aFirst = theParameters.At(anIndex);
+          const double                  aLast  = theParameters.At(anIndex + 1);
+          const occ::handle<Geom_Curve> aJoin =
+            isU ? theAnalysis.UIso(aKnot) : theAnalysis.VIso(aKnot);
+          if (aJoin.IsNull())
+          {
+            return false;
+          }
+          const GeomAdaptor_Curve   aJoinAdaptor(aJoin);
+          const ShapeAnalysis_Curve aJoinAnalysis;
+          const int                 anOtherCoordinate = isU ? 2 : 1;
+          const double              aJoinTolerance =
+            std::min(Precision::PConfusion(), aJoinAdaptor.Resolution(thePrecision));
+          // Follow the projection along the continuity join.
+          auto aFunction = MathUtils::MakeScalar([&](double theParameter, double& theValue) {
+            const double   aFraction = (theParameter - aFirst) / (aLast - aFirst);
+            const gp_Pnt2d aGuess((1.0 - aFraction) * aP1.X() + aFraction * aP2.X(),
+                                  (1.0 - aFraction) * aP1.Y() + aFraction * aP2.Y());
+            const gp_Pnt   aPoint = theCurve.EvalD0(theParameter);
+            gp_Pnt         aProjected;
+            double         aParameterOnJoin;
+            const double   aGap = aJoinAnalysis.NextProject(aGuess.Coord(anOtherCoordinate),
+                                                          aJoinAdaptor,
+                                                          aPoint,
+                                                          aJoinTolerance,
+                                                          aProjected,
+                                                          aParameterOnJoin);
+            if (!Precision::IsFinite(aGap))
+            {
+              return false;
+            }
+            gp_Pnt2d aUV =
+              isU ? gp_Pnt2d(aKnot, aParameterOnJoin) : gp_Pnt2d(aParameterOnJoin, aKnot);
+            adjustSecondToFirstPoint(aGuess, aUV, theAnalysis.Surface());
+            // The other coordinate may be constrained by a surface boundary.
+            const auto    aD1              = aSurface.EvalD1(aUV.X(), aUV.Y());
+            const gp_Vec& aTangent         = isU ? aD1.D1U : aD1.D1V;
+            const double  aSquareMagnitude = aTangent.SquareMagnitude();
+            if (aSquareMagnitude == 0.0)
+            {
+              return false;
+            }
+            theValue = gp_Vec(aD1.Point, aPoint).Dot(aTangent) / aSquareMagnitude;
+            return Precision::IsFinite(theValue);
+          });
+          const MathUtils::ScalarResult aRoot = MathRoot::Brent(aFunction, aFirst, aLast, aConfig);
+          if (!aRoot.IsDone())
+          {
+            return false;
+          }
+          theBreaks.Append(*aRoot.Root);
+        }
+      }
+    }
+  }
+  if (!theBreaks.IsEmpty())
+  {
+    std::sort(theBreaks.begin(), theBreaks.end());
+    theBreaks.Resize(size_t(std::unique(theBreaks.begin(), theBreaks.end()) - theBreaks.begin()));
+  }
+  return true;
+}
+
+//==================================================================================================
+
 //! Generates discretization points for a curve.
-//! Uses uniform distribution for general curves, and adjusts the number of points
-//! for B-splines based on their knot structure to ensure adequate sampling.
+//! Includes continuity boundaries and samples each interval in parameter order.
 //! @param[in] theCurve the curve to discretize
-//! @param[in] theFirst the first parameter
-//! @param[in] theLast the last parameter
+//! @param[in] theBreaks mandatory interpolation boundaries
 //! @param[in] theNbControlPoints the minimum number of points
 //! @param[out] thePoints the generated 3D points (resized as needed)
 //! @param[out] theParams the corresponding parameters (resized as needed)
 //! @return the actual number of generated points
-int generateCurvePoints(const occ::handle<Geom_Curve>&                     theCurve,
-                        const double                                       theFirst,
-                        const double                                       theLast,
+int generateCurvePoints(const GeomAdaptor_Curve&                           theCurve,
+                        const NCollection_Array1<double>&                  theBreaks,
                         const int                                          theNbControlPoints,
                         ShapeConstruct_ProjectCurveOnSurface::ArrayOfPnt&  thePoints,
                         ShapeConstruct_ProjectCurveOnSurface::ArrayOfReal& theParams)
 {
-  occ::handle<Geom_BSplineCurve> aBSpline = extractBSplineCurve(theCurve);
-  int                            aNbPini  = theNbControlPoints;
-
-  if (!aBSpline.IsNull())
+  const occ::handle<Geom_BSplineCurve> aBSpline = extractBSplineCurve(theCurve.Curve());
+  NCollection_Array1<double>           aCurveIntervals(1, theCurve.NbIntervals(GeomAbs_CN) + 1);
+  theCurve.Intervals(aCurveIntervals, GeomAbs_CN);
+  NCollection_LinearVector<double> anIntervalValues;
+  GeomLib::FuseIntervals(aCurveIntervals, theBreaks, anIntervalValues, 0.0, true);
+  const NCollection_Array1<double> anIntervals  = anIntervalValues.ToArray1();
+  const int                        aNbIntervals = anIntervals.Length() - 1;
+  const int aNbSubdivisions = std::max(aBSpline.IsNull() ? 1 : aBSpline->Degree() + 1,
+                                       1 + (theNbControlPoints - 2) / aNbIntervals);
+  if (aNbIntervals > (std::numeric_limits<int>::max() - 1) / aNbSubdivisions)
   {
-    int aUsedKnots = 0;
-    for (int i = 1; i < aBSpline->NbKnots(); i++)
+    throw Standard_OutOfRange("ShapeConstruct_ProjectCurveOnSurface: too many samples");
+  }
+  const int aNbPoints = aNbIntervals * aNbSubdivisions + 1;
+  thePoints.Resize(1, aNbPoints, false);
+  theParams.Resize(1, aNbPoints, false);
+
+  // Include knot boundaries before interpolating the projected points.
+  size_t anIndex = 0;
+  for (size_t anInterval = 0; anInterval < static_cast<size_t>(aNbIntervals); ++anInterval)
+  {
+    const double aFirst  = anIntervals.At(anInterval);
+    const double aLength = anIntervals.At(anInterval + 1) - aFirst;
+    for (int aSample = 0; aSample < aNbSubdivisions; ++aSample)
     {
-      if (aBSpline->Knot(i + 1) > theFirst && aBSpline->Knot(i) < theLast)
-      {
-        aUsedKnots++;
-      }
-    }
-    int aMinPnt = aUsedKnots * (aBSpline->Degree() + 1);
-    while (aNbPini < aMinPnt)
-    {
-      aNbPini += THE_NCONTROL - 1;
+      const double aParameter = aFirst + aLength * (static_cast<double>(aSample) / aNbSubdivisions);
+      theParams.ChangeAt(anIndex)   = aParameter;
+      thePoints.ChangeAt(anIndex++) = theCurve.EvalD0(aParameter);
     }
   }
-
-  thePoints.Resize(1, aNbPini, false);
-  theParams.Resize(1, aNbPini, false);
-
-  const double aDeltaParam = (theLast - theFirst) / (aNbPini - 1);
-
-  for (int i = 1; i <= aNbPini; ++i)
-  {
-    double aParam;
-    if (i == 1)
-    {
-      aParam = theFirst;
-    }
-    else if (i == aNbPini)
-    {
-      aParam = theLast;
-    }
-    else
-    {
-      aParam = theFirst + (i - 1) * aDeltaParam;
-    }
-
-    gp_Pnt aPoint;
-    theCurve->D0(aParam, aPoint);
-    thePoints.SetValue(i, aPoint);
-    theParams.SetValue(i, aParam);
-  }
-
-  return aNbPini;
+  theParams.ChangeAt(anIndex) = theCurve.LastParameter();
+  thePoints.ChangeAt(anIndex) = theCurve.EvalD0(theCurve.LastParameter());
+  return aNbPoints;
 }
 
 //=================================================================================================
@@ -736,8 +834,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::Perform(const occ::handle<Geom_Curve>
   }
 
   // Handle problematic B-spline curves with uneven parameterization
-  occ::handle<Geom_BSplineCurve> aBSpline;
-  if (isBSplineCurveInvalid(theC3D, theFirst, theLast, aBSpline))
+  if (hasUnevenParameterization(theC3D, theFirst, theLast))
   {
     // Use ProjLib for curves with highly uneven parameterization speed
     if (PerformByProjLib(theC3D, theFirst, theLast, theC2D))
@@ -746,10 +843,16 @@ bool ShapeConstruct_ProjectCurveOnSurface::Perform(const occ::handle<Geom_Curve>
     }
   }
 
+  const occ::handle<GeomAdaptor_Curve> aCurve = new GeomAdaptor_Curve(theC3D, theFirst, theLast);
+  NCollection_LinearVector<double>     aBreakValues;
+  NCollection_LinearVector<double>     aMergedBreaks;
+  ArrayOfReal                          anIntervals(1, aCurve->NbIntervals(GeomAbs_C1) + 1);
+  aCurve->Intervals(anIntervals, GeomAbs_C1);
+
   // Generate curve points
   ArrayOfPnt  aPoints;
   ArrayOfReal aParams;
-  const int aNbPnt = generateCurvePoints(theC3D, theFirst, theLast, THE_NCONTROL, aPoints, aParams);
+  int         aNbPnt = generateCurvePoints(*aCurve, anIntervals, THE_NCONTROL, aPoints, aParams);
 
   // Approximate pcurve
   ArrayOfPnt2d aPoints2d(1, aNbPnt);
@@ -760,15 +863,110 @@ bool ShapeConstruct_ProjectCurveOnSurface::Perform(const occ::handle<Geom_Curve>
 
   approxPCurve(aNbPnt, theC3D, theTolFirst, theTolLast, aPoints, aParams, aPoints2d, theC2D);
 
-  const int aNbPini = aPoints.Length();
   if (!theC2D.IsNull())
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
     return true;
   }
 
-  // Interpolate the result
-  theC2D = interpolatePCurve(aNbPini, aPoints2d, aParams);
+  const occ::handle<GeomAdaptor_Surface>& aSurface = mySurf->Adaptor3d();
+  if (aSurface->UContinuity() == GeomAbs_C0 || aSurface->VContinuity() == GeomAbs_C0)
+  {
+    if (!surfaceBreaks(*aCurve, *mySurf, aPoints2d, aParams, myPreci, aBreakValues))
+    {
+      myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
+      return false;
+    }
+    if (!aBreakValues.IsEmpty())
+    {
+      GeomLib::FuseIntervals(anIntervals, aBreakValues.ToArray1(), aMergedBreaks, 0.0, true);
+      if (aMergedBreaks.Size() > anIntervals.Size())
+      {
+        anIntervals = aMergedBreaks.ToArray1();
+        aNbPnt      = generateCurvePoints(*aCurve, anIntervals, THE_NCONTROL, aPoints, aParams);
+        aPoints2d.Resize(1, aNbPnt, false);
+        aPoints2d.Init(gp_Pnt2d(0.0, 0.0));
+        approxPCurve(aNbPnt, theC3D, theTolFirst, theTolLast, aPoints, aParams, aPoints2d, theC2D);
+        if (!theC2D.IsNull())
+        {
+          myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+          return true;
+        }
+      }
+    }
+  }
+
+  const int aNbPini      = aPoints.Length();
+  const int aNbIntervals = anIntervals.Length() - 1;
+  if (aNbIntervals == 1)
+  {
+    theC2D = interpolatePCurve(aNbPini, aPoints2d, aParams);
+  }
+  else
+  {
+    // Preserve parameter ranges at continuity boundaries.
+    NCollection_LinearVector<occ::handle<Geom2d_BSplineCurve>> aPieces(aNbIntervals);
+    size_t                                                     aFirstIndex = 0;
+    int                                                        aDegree     = 1;
+    for (size_t anInterval = 0; anInterval < static_cast<size_t>(aNbIntervals); ++anInterval)
+    {
+      size_t aLastIndex = aFirstIndex + 1;
+      while (aParams.At(aLastIndex) < anIntervals.At(anInterval + 1))
+      {
+        ++aLastIndex;
+      }
+      const int          aNbPoints = static_cast<int>(aLastIndex - aFirstIndex + 1);
+      const ArrayOfPnt2d aPiecePoints(aPoints2d.At(aFirstIndex), 1, aNbPoints);
+      const ArrayOfReal  aPieceParams(aParams.At(aFirstIndex), 1, aNbPoints);
+      const occ::handle<Geom2d_BSplineCurve> aPiece = occ::down_cast<Geom2d_BSplineCurve>(
+        interpolatePCurve(aNbPoints, aPiecePoints, aPieceParams));
+      if (aPiece.IsNull())
+      {
+        myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
+        return false;
+      }
+      aDegree = std::max(aDegree, aPiece->Degree());
+      aPieces.Append(aPiece);
+      aFirstIndex = aLastIndex;
+    }
+
+    size_t aNbPoles = 1;
+    size_t aNbKnots = 1;
+    for (const occ::handle<Geom2d_BSplineCurve>& aPiece : aPieces)
+    {
+      aPiece->IncreaseDegree(aDegree);
+      aNbPoles += static_cast<size_t>(aPiece->NbPoles() - 1);
+      aNbKnots += static_cast<size_t>(aPiece->NbKnots() - 1);
+    }
+    if (aNbPoles > static_cast<size_t>(std::numeric_limits<int>::max())
+        || aNbKnots > static_cast<size_t>(std::numeric_limits<int>::max()))
+    {
+      throw Standard_OutOfRange("ShapeConstruct_ProjectCurveOnSurface: too many poles");
+    }
+    NCollection_Array1<gp_Pnt2d> aPoles(1, static_cast<int>(aNbPoles));
+    ArrayOfReal                  aKnots(1, static_cast<int>(aNbKnots));
+    NCollection_Array1<int>      aMults(1, static_cast<int>(aNbKnots));
+    size_t                       aPoleIndex = 0;
+    size_t                       aKnotIndex = 0;
+    for (const occ::handle<Geom2d_BSplineCurve>& aPiece : aPieces)
+    {
+      const bool isFirst = aPoleIndex == 0;
+      for (int i = isFirst ? 1 : 2; i <= aPiece->NbPoles(); ++i)
+      {
+        aPoles.ChangeAt(aPoleIndex++) = aPiece->Pole(i);
+      }
+      if (!isFirst)
+      {
+        aMults.ChangeAt(aKnotIndex - 1) = aDegree;
+      }
+      for (int i = isFirst ? 1 : 2; i <= aPiece->NbKnots(); ++i)
+      {
+        aKnots.ChangeAt(aKnotIndex)   = aPiece->Knot(i);
+        aMults.ChangeAt(aKnotIndex++) = aPiece->Multiplicity(i);
+      }
+    }
+    theC2D = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, aDegree);
+  }
 
   myStatus |= ShapeExtend::EncodeStatus(theC2D.IsNull() ? ShapeExtend_FAIL1 : ShapeExtend_DONE2);
   return Status(ShapeExtend_DONE);
@@ -1032,7 +1230,7 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
   const gp_Vec2d            aVec0(aP2d[0], aP2d[3]);
   const gp_Vec2d            aVec          = aVec0 / dPar;
   occ::handle<Geom_Surface> aSurf         = mySurf->Surface();
-  bool                      isNormalCheck = aSurf->IsCNu(1) && aSurf->IsCNv(1);
+  const bool                isNormalCheck = aSurf->IsCNu(1) && aSurf->IsCNv(1);
 
   if (isNormalCheck)
   {
@@ -1045,8 +1243,8 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::getLine(
       aNormalVec = aDu ^ aDv;
       if (aNormalVec.SquareMagnitude() < Precision::SquareConfusion())
       {
-        isNormalCheck = false;
-        break;
+        // A singular normal requires the general projection.
+        return nullptr;
       }
       const gp_Lin aNormalLine(aCurP, gp_Dir(aNormalVec));
       const double aDist = aNormalLine.Distance(thePoints(i));
@@ -1117,6 +1315,61 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
   bool isFromCacheLine = false;
 
   theC2D = getLine(thePoints, theParams, thePoints2d, myPreci, isRecompute, isFromCacheLine);
+  if (!theC2D.IsNull())
+  {
+    // A projection may have a normal offset from the source curve.
+    // Refine tangential error maxima between the sampled parameters.
+    GeomAdaptor_Curve          aCurve(theC3D, theParams.First(), theParams.Last());
+    const GeomAdaptor_Surface& aSurface         = *mySurf->Adaptor3d();
+    const double               aSquareTolerance = myPreci * myPreci;
+    auto aDistance = [&](double theParameter, const gp_Pnt& thePoint, double& theValue) {
+      const gp_Pnt2d aUV            = theC2D->EvalD0(theParameter);
+      const auto [aPoint, aDU, aDV] = aSurface.EvalD1(aUV.X(), aUV.Y());
+      const gp_Vec aNormal          = aDU.Crossed(aDV);
+      if (aNormal.SquareMagnitude() < Precision::SquareConfusion())
+      {
+        return false;
+      }
+      theValue = -gp_Lin(aPoint, gp_Dir(aNormal)).SquareDistance(thePoint);
+      return std::isfinite(theValue);
+    };
+    bool                  isStraight = true;
+    std::array<double, 2> aPreviousValues{};
+    for (size_t anIndex = 0; anIndex < theParams.Size(); ++anIndex)
+    {
+      double aValue;
+      if (!aDistance(theParams.At(anIndex), thePoints.At(anIndex), aValue)
+          || aValue < -aSquareTolerance)
+      {
+        isStraight = false;
+        break;
+      }
+      if (anIndex >= 2 && aPreviousValues[1] <= aPreviousValues[0] && aPreviousValues[1] <= aValue
+          && (aPreviousValues[1] < aPreviousValues[0] || aPreviousValues[1] < aValue))
+      {
+        const double aFirst    = theParams.At(anIndex - 2);
+        const double aSpan     = theParams.At(anIndex) - aFirst;
+        auto         aFunction = MathUtils::MakeScalar([&](double theParameter, double& theValue) {
+          const double aParameter = aFirst + aSpan * theParameter;
+          return aDistance(aParameter, aCurve.EvalD0(aParameter), theValue);
+        });
+        MathUtils::Config aConfig;
+        aConfig.XTolerance                     = Precision::PConfusion() / std::max(1.0, aSpan);
+        const MathUtils::ScalarResult aMinimum = MathOpt::Brent(aFunction, 0.0, 1.0, aConfig);
+        if (!aMinimum.IsDone() || *aMinimum.Value < -aSquareTolerance)
+        {
+          isStraight = false;
+          break;
+        }
+      }
+      aPreviousValues[0] = aPreviousValues[1];
+      aPreviousValues[1] = aValue;
+    }
+    if (!isStraight)
+    {
+      theC2D.Nullify();
+    }
+  }
   if (!theC2D.IsNull())
   {
     // Fill cache
@@ -1504,7 +1757,8 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
   if (mySurf->IsUClosed(myPreci) || needResolveUJump)
   {
     double prevX, firstX = thePoints2d(1).X();
-    if (!isFromCache)
+    // A period shift preserves the projection only when the boundaries coincide.
+    if (!isFromCache && mySurf->IsUClosed(myPreci))
     {
       while (firstX < uf)
       {
@@ -1569,7 +1823,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       }
     }
 
-    if (!isFromCache)
+    if (!isFromCache && mySurf->IsUClosed(myPreci))
     {
       double midX   = 0.5 * (minX + maxX);
       double shiftX = 0.;
@@ -1596,7 +1850,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       || mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
     double prevY, firstY = thePoints2d(1).Y();
-    if (!isFromCache)
+    if (!isFromCache && mySurf->IsVClosed(myPreci))
     {
       while (firstY < vf)
       {
@@ -1661,7 +1915,7 @@ bool ShapeConstruct_ProjectCurveOnSurface::approxPCurve(const int               
       }
     }
 
-    if (!isFromCache)
+    if (!isFromCache && mySurf->IsVClosed(myPreci))
     {
       double midY   = 0.5 * (minY + maxY);
       double shiftY = 0.;

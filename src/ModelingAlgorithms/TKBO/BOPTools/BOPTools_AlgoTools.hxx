@@ -206,6 +206,14 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! theContext- cached geometrical tools
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(
+    const TopoDS_Face&                                            theFace,
+    const TopoDS_Solid&                                           theSolid,
+    const double                                                  theTol,
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBounds,
+    const occ::handle<IntTools_Context>&                          theContext);
+
+  //! Classifies a face using indexed boundary edges.
+  Standard_EXPORT static TopAbs_State ComputeState(
     const TopoDS_Face&                                                   theFace,
     const TopoDS_Solid&                                                  theSolid,
     const double                                                         theTol,

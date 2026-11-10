@@ -44,7 +44,7 @@ private:
   int        myIndex = 0;
 };
 
-//! Mock iterator with Current() accessor (like BRepGraph_Iterator).
+//! Mock iterator with Current() accessor.
 class MockCurrentIterator
 {
 public:
@@ -66,7 +66,7 @@ private:
   int        myIndex = 0;
 };
 
-//! Mock iterator with CurrentId() accessor (like BRepGraph_RefsIterator).
+//! Mock iterator with CurrentId() accessor.
 //! Returns by value, not by reference.
 class MockCurrentIdIterator
 {
@@ -114,7 +114,7 @@ private:
   int        myIndex = 0;
 };
 
-//! Mock iterator with both Current() and CurrentId() (like BRepGraph_DefsIterator).
+//! Mock iterator with both Current() and CurrentId().
 //! SFINAE should pick Current() due to higher priority.
 class MockBothCurrentAndId
 {
@@ -139,7 +139,7 @@ private:
   int        myIndex = 0;
 };
 
-//! Non-copyable mock iterator (like BRepGraph_ChildExplorer).
+//! Non-copyable mock iterator.
 class MockNonCopyableIterator
 {
 public:
@@ -166,7 +166,7 @@ private:
   int        myIndex = 0;
 };
 
-//! Mock iterator with begin()/end() integrated directly (like modified BRepGraph classes).
+//! Mock iterator with begin()/end() integrated directly.
 class MockWithBeginEnd
 {
 public:

@@ -44,9 +44,7 @@ typedef gp_Vec            Vec;
 
 occ::handle<Geom_Geometry> Geom_TrimmedCurve::Copy() const
 {
-
-  occ::handle<Geom_TrimmedCurve> Tc = new TrimmedCurve(basisCurve, uTrim1, uTrim2);
-  return Tc;
+  return new Geom_TrimmedCurve(basisCurve, uTrim1, uTrim2, true, false);
 }
 
 //=================================================================================================

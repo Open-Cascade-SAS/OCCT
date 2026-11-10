@@ -16,6 +16,7 @@
 #ifndef _STEPCAFControl_Reader_HeaderFile
 #define _STEPCAFControl_Reader_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <STEPControl_Reader.hxx>
 #include <NCollection_LinearVector.hxx>
 #include <StepData_Factors.hxx>
@@ -85,6 +86,11 @@ public:
   //! Clears the session if it was not yet set for STEP
   Standard_EXPORT void Init(const occ::handle<XSControl_WorkSession>& WS,
                             const bool                                scratch = true);
+
+  //! Set external-part streams instead of files and clear cached transfer data.
+  //! References are relative to the referring model.
+  //! @param[in] theStreams caller-owned list; must remain valid during Transfer()
+  Standard_EXPORT void SetResourceStreams(const DE_Provider::ReadStreamList& theStreams);
 
   //! Loads a file and returns the read status
   //! Provided for use like single-file reader.
@@ -163,6 +169,7 @@ public:
                         ExternFiles() const;
 
   //! Returns data on external file by its name
+  //! With named streams, use the resolved transfer-root name.
   //! Returns False if no external file with given name is read
   Standard_EXPORT bool ExternFile(const char* const                       name,
                                   occ::handle<STEPCAFControl_ExternFile>& ef) const;
@@ -524,7 +531,17 @@ private:
                       NCollection_List<occ::handle<Transfer_Binder>>& theBinders) const;
 
 private:
-  STEPControl_Reader                                                                   myReader;
+  //! Read an external model from a file or a borrowed named stream.
+  occ::handle<STEPCAFControl_ExternFile> readExternFile(
+    const char*                          theFile,
+    const char*                          theFullName,
+    std::istream*                        theStream,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress);
+
+  STEPControl_Reader                 myReader;
+  const DE_Provider::ReadStreamList* myResourceStreams =
+    nullptr; //!< Borrowed named external parts.
   NCollection_DataMap<TCollection_AsciiString, occ::handle<STEPCAFControl_ExternFile>> myFiles;
   NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>                myMap;
   bool                                                                                 myColorMode;

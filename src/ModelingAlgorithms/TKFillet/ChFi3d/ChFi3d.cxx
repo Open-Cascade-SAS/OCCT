@@ -24,12 +24,145 @@
 #include <Precision.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 #include <BRepTools.hxx>
 #include <IntTools_Tools.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <LocalAnalysis_SurfaceContinuity.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2d_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <Geom_Surface.hxx>
+#include <NCollection_LinearVector.hxx>
+
+#include <algorithm>
+#include <cmath>
+
+namespace
+{
+// Pcurves and parameter ranges of the common edge.
+struct FacePCurves
+{
+  occ::handle<Geom2d_Curve> Curve1;       //!< Pcurve on the first face.
+  occ::handle<Geom2d_Curve> Curve2;       //!< Pcurve on the second face.
+  double                    First1 = 0.0; //!< First parameter on the first face.
+  double                    Last1  = 0.0; //!< Last parameter on the first face.
+  double                    First2 = 0.0; //!< First parameter on the second face.
+  double                    Last2  = 0.0; //!< Last parameter on the second face.
+};
+
+//==================================================================================================
+
+// Select opposite pcurves for seams, using the first face occurrence for shared seams.
+bool getFacePCurves(const TopoDS_Edge& theEdge,
+                    const TopoDS_Face& theFace1,
+                    const TopoDS_Face& theFace2,
+                    FacePCurves&       theCurves)
+{
+  TopoDS_Edge anEdge1 = theEdge, anEdge2 = theEdge;
+  TopoDS_Face aFace1 = theFace1, aFace2 = theFace2;
+  if (theFace1.IsSame(theFace2))
+  {
+    anEdge2.Reverse();
+  }
+  else if (BRep_Tool::IsClosed(theEdge, theFace1) && BRep_Tool::IsClosed(theEdge, theFace2))
+  {
+    aFace1.Orientation(TopAbs_FORWARD);
+    aFace2.Orientation(TopAbs_FORWARD);
+    anEdge1.Nullify();
+    for (TopExp_Explorer anEdges(aFace1, TopAbs_EDGE); anEdges.More(); anEdges.Next())
+    {
+      if (anEdges.Current().IsSame(theEdge))
+      {
+        anEdge1 = TopoDS::Edge(anEdges.Current());
+        break;
+      }
+    }
+    if (anEdge1.IsNull())
+    {
+      return false;
+    }
+    anEdge2 = anEdge1;
+    anEdge2.Reverse();
+  }
+  theCurves.Curve1 = BRep_Tool::CurveOnSurface(anEdge1, aFace1, theCurves.First1, theCurves.Last1);
+  theCurves.Curve2 = BRep_Tool::CurveOnSurface(anEdge2, aFace2, theCurves.First2, theCurves.Last2);
+  return !theCurves.Curve1.IsNull() && !theCurves.Curve2.IsNull();
+}
+
+//==================================================================================================
+
+// Append internal continuity breaks of a pcurve and its supporting surface.
+void appendContinuityIntervals(const occ::handle<Geom2d_Curve>&  thePCurve,
+                               const occ::handle<Geom_Surface>&  theSurface,
+                               const double                      theFirst,
+                               const double                      theLast,
+                               NCollection_LinearVector<double>& theParameters)
+{
+  if (thePCurve->Continuity() == GeomAbs_CN && theSurface->Continuity() == GeomAbs_CN)
+  {
+    return;
+  }
+  Adaptor3d_CurveOnSurface   aCurve(new Geom2dAdaptor_Curve(thePCurve, theFirst, theLast),
+                                  new GeomAdaptor_Surface(theSurface));
+  NCollection_Array1<double> anIntervals(1, aCurve.NbIntervals(GeomAbs_CN) + 1);
+  aCurve.Intervals(anIntervals, GeomAbs_CN);
+  for (double aParameter : anIntervals)
+  {
+    if (aParameter > theFirst && aParameter < theLast)
+    {
+      theParameters.Append(aParameter);
+    }
+  }
+}
+
+//==================================================================================================
+
+// Reuse a common rigid placement; otherwise evaluate both surfaces in global coordinates.
+bool getFaceSurfaces(const TopoDS_Face&         theFace1,
+                     const TopoDS_Face&         theFace2,
+                     occ::handle<Geom_Surface>& theSurface1,
+                     occ::handle<Geom_Surface>& theSurface2)
+{
+  TopLoc_Location aLocation1, aLocation2;
+  theSurface1 = BRep_Tool::Surface(theFace1, aLocation1);
+  theSurface2 = BRep_Tool::Surface(theFace2, aLocation2);
+  if (theSurface1.IsNull() || theSurface2.IsNull())
+  {
+    return false;
+  }
+
+  // A common rigid frame preserves distances, angles and curvature.
+  if (aLocation1 != aLocation2 || std::abs(aLocation1.Transformation().ScaleFactor()) != 1.0)
+  {
+    if (!aLocation1.IsIdentity())
+    {
+      theSurface1 =
+        occ::down_cast<Geom_Surface>(theSurface1->Transformed(aLocation1.Transformation()));
+    }
+    if (!aLocation2.IsIdentity())
+    {
+      theSurface2 =
+        occ::down_cast<Geom_Surface>(theSurface2->Transformed(aLocation2.Transformation()));
+    }
+  }
+
+  return true;
+}
+
+//==================================================================================================
+
+// Choose the sample count from surface complexity.
+int surfaceSampleCount(const TopoDS_Face& theFace)
+{
+  BRepTopAdaptor_TopolTool aTool(new BRepAdaptor_Surface(theFace));
+  return aTool.NbSamples();
+}
+} // namespace
 
 static void Correct2dPoint(const TopoDS_Face& theF, gp_Pnt2d& theP2d);
 
@@ -155,7 +288,14 @@ ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge& E,
   }
 }
 
-//=================================================================================================
+//==================================================================================================
+
+double ChFi3d::ConstructionContinuityTolerance(const TopoDS_Edge& theEdge)
+{
+  return std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
+}
+
+//==================================================================================================
 
 bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
                             const TopoDS_Face&  theFace1,
@@ -167,93 +307,48 @@ bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
     return true;
   }
 
-  double TolC0 = std::max(0.001, 1.5 * BRep_Tool::Tolerance(theEdge));
+  const double aTolC0 = ConstructionContinuityTolerance(theEdge);
 
-  double aFirst;
-  double aLast;
-
-  occ::handle<Geom2d_Curve> aC2d1, aC2d2;
-
-  if (!theFace1.IsSame(theFace2) && BRep_Tool::IsClosed(theEdge, theFace1)
-      && BRep_Tool::IsClosed(theEdge, theFace2))
+  FacePCurves aCurves;
+  if (!getFacePCurves(theEdge, theFace1, theFace2, aCurves))
   {
-    // Find the edge in the face 1: this edge will have correct orientation
-    TopoDS_Edge anEdgeInFace1;
-    TopoDS_Face aFace1 = theFace1;
-    aFace1.Orientation(TopAbs_FORWARD);
-    TopExp_Explorer anExplo(aFace1, TopAbs_EDGE);
-    for (; anExplo.More(); anExplo.Next())
-    {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(anExplo.Current());
-      if (anEdge.IsSame(theEdge))
-      {
-        anEdgeInFace1 = anEdge;
-        break;
-      }
-    }
-    if (anEdgeInFace1.IsNull())
-    {
-      return false;
-    }
-
-    aC2d1              = BRep_Tool::CurveOnSurface(anEdgeInFace1, aFace1, aFirst, aLast);
-    TopoDS_Face aFace2 = theFace2;
-    aFace2.Orientation(TopAbs_FORWARD);
-    anEdgeInFace1.Reverse();
-    aC2d2 = BRep_Tool::CurveOnSurface(anEdgeInFace1, aFace2, aFirst, aLast);
+    return false;
   }
-  else
-  {
-    // Obtaining of pcurves of edge on two faces.
-    aC2d1 = BRep_Tool::CurveOnSurface(theEdge, theFace1, aFirst, aLast);
-    // For the case of seam edge
-    TopoDS_Edge EE = theEdge;
-    if (theFace1.IsSame(theFace2))
-    {
-      EE.Reverse();
-    }
-    aC2d2 = BRep_Tool::CurveOnSurface(EE, theFace2, aFirst, aLast);
-  }
+  const double aFirst = aCurves.First2;
+  const double aLast  = aCurves.Last2;
 
-  if (aC2d1.IsNull() || aC2d2.IsNull())
+  occ::handle<Geom_Surface> aSurf1, aSurf2;
+  if (!getFaceSurfaces(theFace1, theFace2, aSurf1, aSurf2))
   {
     return false;
   }
 
-  // Obtaining of two surfaces from adjacent faces.
-  occ::handle<Geom_Surface> aSurf1 = BRep_Tool::Surface(theFace1);
-  occ::handle<Geom_Surface> aSurf2 = BRep_Tool::Surface(theFace2);
+  const int aNbSamples1 = surfaceSampleCount(theFace1);
+  const int aNbSamples2 = theFace1.IsSame(theFace2) ? aNbSamples1 : surfaceSampleCount(theFace2);
+  const int aNbSamples  = std::max(aNbSamples1, aNbSamples2);
 
-  if (aSurf1.IsNull() || aSurf2.IsNull())
+  const double aDelta     = (aLast - aFirst) / (aNbSamples - 1);
+  double       aPar       = aFirst;
+  int          aNbNotDone = 0;
+
+  for (int aSample = 1; aSample <= aNbSamples; ++aSample, aPar += aDelta)
   {
-    return false;
-  }
-
-  // Computation of the number of samples on the edge.
-  BRepAdaptor_Surface                   aBAS1(theFace1);
-  BRepAdaptor_Surface                   aBAS2(theFace2);
-  occ::handle<BRepAdaptor_Surface>      aBAHS1      = new BRepAdaptor_Surface(aBAS1);
-  occ::handle<BRepAdaptor_Surface>      aBAHS2      = new BRepAdaptor_Surface(aBAS2);
-  occ::handle<BRepTopAdaptor_TopolTool> aTool1      = new BRepTopAdaptor_TopolTool(aBAHS1);
-  occ::handle<BRepTopAdaptor_TopolTool> aTool2      = new BRepTopAdaptor_TopolTool(aBAHS2);
-  int                                   aNbSamples1 = aTool1->NbSamples();
-  int                                   aNbSamples2 = aTool2->NbSamples();
-  int                                   aNbSamples  = std::max(aNbSamples1, aNbSamples2);
-
-  // Computation of the continuity.
-  double aPar;
-  double aDelta = (aLast - aFirst) / (aNbSamples - 1);
-  int    i, nbNotDone = 0;
-
-  for (i = 1, aPar = aFirst; i <= aNbSamples; i++, aPar += aDelta)
-  {
-    if (i == aNbSamples)
+    if (aSample == aNbSamples)
     {
       aPar = aLast;
     }
 
-    LocalAnalysis_SurfaceContinuity
-      aCont(aC2d1, aC2d2, aPar, aSurf1, aSurf2, theOrder, 0.001, TolC0, 0.1, 0.1, 0.1);
+    LocalAnalysis_SurfaceContinuity aCont(aCurves.Curve1,
+                                          aCurves.Curve2,
+                                          aPar,
+                                          aSurf1,
+                                          aSurf2,
+                                          theOrder,
+                                          0.001,
+                                          aTolC0,
+                                          0.1,
+                                          0.1,
+                                          0.1);
     if (!aCont.IsDone())
     {
       if (theOrder == GeomAbs_C2 && aCont.StatusError() == LocalAnalysis_NullSecondDerivative)
@@ -261,37 +356,166 @@ bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
         continue;
       }
 
-      nbNotDone++;
+      aNbNotDone++;
       continue;
     }
 
-    if (theOrder == GeomAbs_G1)
-    {
-      if (!aCont.IsG1())
-      {
-        return false;
-      }
-    }
-    else if (!aCont.IsG2())
+    if (!(theOrder == GeomAbs_G1 ? aCont.IsG1() : aCont.IsG2()))
     {
       return false;
     }
   }
 
-  if (nbNotDone == aNbSamples)
+  if (aNbNotDone == aNbSamples)
   {
     return false;
   }
 
-  // Compare normals of tangent faces in the middle point
-  double   MidPar = (aFirst + aLast) / 2.;
-  gp_Pnt2d uv1    = aC2d1->Value(MidPar);
-  gp_Pnt2d uv2    = aC2d2->Value(MidPar);
-  gp_Dir   normal1, normal2;
-  TopOpeBRepTool_TOOL::Nt(uv1, theFace1, normal1);
-  TopOpeBRepTool_TOOL::Nt(uv2, theFace2, normal2);
-  double dot = normal1.Dot(normal2);
-  return dot >= 0.;
+  const double   aMiddle = (aFirst + aLast) / 2.0;
+  const gp_Pnt2d aUV1    = aCurves.Curve1->EvalD0(aMiddle);
+  const gp_Pnt2d aUV2    = aCurves.Curve2->EvalD0(aMiddle);
+  gp_Dir         aNormal1, aNormal2;
+  TopOpeBRepTool_TOOL::Nt(aUV1, theFace1, aNormal1);
+  TopOpeBRepTool_TOOL::Nt(aUV2, theFace2, aNormal2);
+  return aNormal1.Dot(aNormal2) >= 0.0;
+}
+
+//==================================================================================================
+
+bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
+                            const TopoDS_Face&  theFace1,
+                            const TopoDS_Face&  theFace2,
+                            const GeomAbs_Shape theOrder,
+                            const double        theAngularTolerance)
+{
+  if (!std::isfinite(theAngularTolerance) || theAngularTolerance < 0.0
+      || theAngularTolerance >= M_PI / 2.0 || theEdge.IsNull() || theFace1.IsNull()
+      || theFace2.IsNull() || (theOrder != GeomAbs_G1 && theOrder != GeomAbs_G2)
+      || (theFace1.IsSame(theFace2) && !BRep_Tool::IsClosed(theEdge, theFace1)))
+  {
+    return false;
+  }
+
+  // Each surface representation can deviate from the common edge within its tolerance.
+  const double aTolC0 = 2.0 * BRep_Tool::Tolerance(theEdge);
+  FacePCurves  aCurves;
+  if (!getFacePCurves(theEdge, theFace1, theFace2, aCurves))
+  {
+    return false;
+  }
+
+  // Both representations must cover the same parameter range.
+  if (std::abs(aCurves.First1 - aCurves.First2) > Precision::PConfusion()
+      || std::abs(aCurves.Last1 - aCurves.Last2) > Precision::PConfusion())
+  {
+    return false;
+  }
+  const double aFirst = std::max(aCurves.First1, aCurves.First2);
+  const double aLast  = std::min(aCurves.Last1, aCurves.Last2);
+  if (aFirst >= aLast)
+  {
+    return false;
+  }
+
+  occ::handle<Geom_Surface> aSurf1, aSurf2;
+  if (!getFaceSurfaces(theFace1, theFace2, aSurf1, aSurf2))
+  {
+    return false;
+  }
+
+  // Start with D1; curvature evaluation requests D2 only for G2.
+  GeomLProp_SLProps               aProps1(aSurf1, 1, Precision::Confusion());
+  GeomLProp_SLProps               aProps2(aSurf2, 1, Precision::Confusion());
+  LocalAnalysis_SurfaceContinuity aContinuity(Precision::Confusion(),
+                                              aTolC0,
+                                              Precision::Angular(),
+                                              Precision::Angular(),
+                                              theAngularTolerance);
+  const double                    aSquareTolC0    = aTolC0 * aTolC0;
+  const double                    aSinTolG1       = std::sin(theAngularTolerance);
+  const double                    aSquareSinTolG1 = aSinTolG1 * aSinTolG1;
+  const double                    anOrientation =
+    (theFace1.Orientation() == TopAbs_REVERSED) == (theFace2.Orientation() == TopAbs_REVERSED)
+                         ? 1.0
+                         : -1.0;
+  const auto isTangent = [&](const double theParameter) {
+    const bool     isEndPoint = theParameter == aFirst || theParameter == aLast;
+    const gp_Pnt2d aUV1       = aCurves.Curve1->EvalD0(theParameter);
+    const gp_Pnt2d aUV2       = aCurves.Curve2->EvalD0(theParameter);
+    aProps1.SetParameters(aUV1.X(), aUV1.Y());
+    aProps2.SetParameters(aUV2.X(), aUV2.Y());
+    // Positional continuity remains mandatory even at a singular endpoint.
+    if (!(aProps1.Value().SquareDistance(aProps2.Value()) <= aSquareTolC0))
+    {
+      return false;
+    }
+    if (!aProps1.IsNormalDefined() || !aProps2.IsNormalDefined())
+    {
+      return isEndPoint;
+    }
+    // Cross products resolve tiny angles where cosine rounds to 1.
+    // The dot product distinguishes aligned from opposed oriented normals.
+    const gp_XYZ& aNormal1 = aProps1.Normal().XYZ();
+    const gp_XYZ& aNormal2 = aProps2.Normal().XYZ();
+    if (!(anOrientation * aNormal1.Dot(aNormal2) > 0.0)
+        || !(aNormal1.Crossed(aNormal2).SquareModulus() <= aSquareSinTolG1))
+    {
+      return false;
+    }
+    if (theOrder == GeomAbs_G1)
+    {
+      return true;
+    }
+    aContinuity.ComputeAnalysis(aProps1, aProps2, GeomAbs_G2);
+    return aContinuity.IsDone()
+             ? aContinuity.IsG2()
+             : isEndPoint && aContinuity.StatusError() == LocalAnalysis_CurvatureNotDefined;
+  };
+
+  // Reject the common non-tangent case before building interval and sampling
+  // tools. This point is skipped when encountered again in the sample grid.
+  const double aMiddle = 0.5 * aFirst + 0.5 * aLast;
+  if (aMiddle == aFirst || aMiddle == aLast || !isTangent(aMiddle))
+  {
+    return false;
+  }
+
+  // Split at internal continuity breaks; sampling is not a certified bound.
+  NCollection_LinearVector<double> aParameters;
+  appendContinuityIntervals(aCurves.Curve1, aSurf1, aFirst, aLast, aParameters);
+  appendContinuityIntervals(aCurves.Curve2, aSurf2, aFirst, aLast, aParameters);
+  if (aParameters.Size() > 1)
+  {
+    std::sort(aParameters.begin(), aParameters.end());
+  }
+
+  int aNbSamples = surfaceSampleCount(theFace1);
+  if (!theFace1.IsSame(theFace2))
+  {
+    aNbSamples = std::max(aNbSamples, surfaceSampleCount(theFace2));
+  }
+  // Preserve the sampling density, with a midpoint in every interval.
+  aNbSamples = std::max(3, aNbSamples) | 1;
+  for (size_t anIndex = 0; anIndex <= aParameters.Size(); ++anIndex)
+  {
+    const double aStart = anIndex == 0 ? aFirst : aParameters[anIndex - 1];
+    const double anEnd  = anIndex == aParameters.Size() ? aLast : aParameters[anIndex];
+    if (aStart == anEnd)
+    {
+      continue;
+    }
+    // A shared interval boundary has already been evaluated by its predecessor.
+    for (int aSample = anIndex == 0 ? 0 : 1; aSample < aNbSamples; ++aSample)
+    {
+      const double aRatio     = double(aSample) / double(aNbSamples - 1);
+      const double aParameter = (1.0 - aRatio) * aStart + aRatio * anEnd;
+      if (aParameter != aMiddle && !isTangent(aParameter))
+      {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 //=======================================================================

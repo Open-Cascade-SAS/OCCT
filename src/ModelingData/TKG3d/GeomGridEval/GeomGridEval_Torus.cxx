@@ -68,7 +68,7 @@ gp_Pnt GeomGridEval_Torus::computeD0(const Data& theData, const UContext& theUCt
   const double sinV = std::sin(theV);
 
   // K = MajorRadius + MinorRadius * cos(v)
-  const double K = theData.MajorRadius + theData.MinorRadius * cosV;
+  const double K = std::fma(theData.MinorRadius, cosV, theData.MajorRadius);
 
   // P = Center + K * DirU + MinorRadius * sinV * ZDir
   return gp_Pnt(theData.CX + K * theUCtx.dirUX + theData.MinorRadius * sinV * theData.ZX,
@@ -85,7 +85,7 @@ GeomGridEval::SurfD1 GeomGridEval_Torus::computeD1(const Data&     theData,
   const double cosV = std::cos(theV);
   const double sinV = std::sin(theV);
 
-  const double K = theData.MajorRadius + theData.MinorRadius * cosV;
+  const double K = std::fma(theData.MinorRadius, cosV, theData.MajorRadius);
 
   // D1U = K * DerivDirU
   const double dU1 = K * theUCtx.dDirUX;
@@ -116,7 +116,7 @@ GeomGridEval::SurfD2 GeomGridEval_Torus::computeD2(const Data&     theData,
   const double cosV = std::cos(theV);
   const double sinV = std::sin(theV);
 
-  const double K = theData.MajorRadius + theData.MinorRadius * cosV;
+  const double K = std::fma(theData.MinorRadius, cosV, theData.MajorRadius);
 
   // D1U = K * DerivDirU
   const double dU1 = K * theUCtx.dDirUX;
@@ -173,7 +173,7 @@ GeomGridEval::SurfD3 GeomGridEval_Torus::computeD3(const Data&     theData,
   const double R2 = theData.MinorRadius * sinV;
 
   // K = R + r * cosV
-  const double K = theData.MajorRadius + R1;
+  const double K = std::fma(theData.MinorRadius, cosV, theData.MajorRadius);
 
   // A3 = R2 * cosU, A4 = R2 * sinU (for Som3)
   const double A3 = R2 * theUCtx.cosU;
@@ -356,7 +356,7 @@ gp_Vec GeomGridEval_Torus::computeDN(const Data&     theData,
   if (theNV == 0)
   {
     // Pure U derivative: K(v) * d^nu(DirU)/du^nu
-    const double K = theData.MajorRadius + theData.MinorRadius * cosV;
+    const double K = std::fma(theData.MinorRadius, cosV, theData.MajorRadius);
     resX           = K * dirDnX;
     resY           = K * dirDnY;
     resZ           = K * dirDnZ;

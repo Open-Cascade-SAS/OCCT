@@ -17,11 +17,14 @@ mkcurve c2 e2
 # Run extrema
 set info [extrema c1 c2]
 
-# Amount Check
-if { [llength $info] != 2 } {
-   puts "Error: Invalid extrema number in extrema output"
+# Both extrema are intersections. DRAW reports a point instead of a segment
+# when the computed separation is below 1e-16; both forms represent distance zero.
+set extrema [regexp -all -inline {ext_[0-9]+|Extrema [0-9]+ is point} $info]
+if {[llength $extrema] != 2} {
+  puts "Error: Invalid extrema number in extrema output"
 }
-
-# Check result
-checklength ext_1 -l 2.2204460492503131e-16 -eps 0.01
-checklength ext_2 -l 9.693032344962995e-16  -eps 0.01
+foreach extremum $extrema {
+  if {[string match "ext_*" $extremum]} {
+    checkreal "extrema distance" [lindex [length $extremum] end] 0.0 1.e-10 0.0
+  }
+}

@@ -21,6 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
+#include <StepDimTol_GeometricToleranceModifier.hxx>
 
 class StepData_StepReaderData;
 class Interface_Check;
@@ -48,6 +49,14 @@ public:
   Standard_HIDDEN void WriteStep(
     StepData_StepWriter&                                           SW,
     const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent) const;
+
+  //! Decode a schema modifier enumeration; leaves the output unchanged on failure.
+  Standard_HIDDEN static bool GetModifier(const char*                            theName,
+                                          StepDimTol_GeometricToleranceModifier& theModifier);
+
+  //! Return a schema modifier enumeration, or null for an unsupported value.
+  Standard_HIDDEN static const char* GetModifierName(
+    StepDimTol_GeometricToleranceModifier theModifier);
 
   //! Fills data for graph (shared items)
   Standard_HIDDEN void Share(const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent,

@@ -4,14 +4,14 @@ puts "========"
 puts ""
 
 # Different result between Debian 7 and Debian 8 and between MSVC 2010 and 2017.
-puts "TODO ?OCC30012 Linux: Error: 10 curves are expected but 9 ones are found."
-puts "TODO ?OCC30012 Linux: Error: 10 curves are expected but 8 ones are found."
-puts "TODO ?OCC29910 Windows: Error: 10 curves are expected but 11 ones are found."
+puts "TODO ?OCC30012 Linux: Error: 12 curves are expected but 9 ones are found."
+puts "TODO ?OCC30012 Linux: Error: 12 curves are expected but 8 ones are found."
+puts "TODO ?OCC29910 Windows: Error: 12 curves are expected but 11 ones are found."
 puts "TODO ?OCC29910 Windows: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 15"
 puts "TODO ?OCC29910 Linux: Error :  is WRONG because number of EDGE entities in shape \"rs\" is 8"
 puts "TODO ?OCC29910 Windows: Error: 0 vertices are expected but 2 are found"
 
-set GoodNbCurves 10
+set GoodNbCurves 12
 
 foreach a [directory res*] {unset $a}
 
@@ -79,7 +79,7 @@ if { [catch {intersect res s1 s2 } catch_result] } {
     bfillds
     bbuild rs
 
-    checknbshapes rs -edge 14
+    checknbshapes rs -edge 12
     checksection rs -r 0
   }
 }

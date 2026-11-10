@@ -304,6 +304,10 @@ bool BRepBlend_AppFuncRoot::SearchPoint(Blend_AppFunction& Func,
   bool Trouve;
   int  dim = Func.NbVariables();
   // (1) Find a point of init
+  if (myLine->NbPoints() == 0)
+  {
+    return false;
+  }
   int    I1 = 1, I2 = myLine->NbPoints(), Index;
   double t1, t2;
 

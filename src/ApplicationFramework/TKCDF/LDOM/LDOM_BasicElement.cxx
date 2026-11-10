@@ -20,6 +20,8 @@
 #include <LDOM_BasicText.hxx>
 #include <LDOM_MemManager.hxx>
 #include <LDOM_NodeList.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NullObject.hxx>
 
 //=======================================================================
 // function : Create
@@ -30,12 +32,19 @@ LDOM_BasicElement& LDOM_BasicElement::Create(const char*                        
                                              const int                           aLen,
                                              const occ::handle<LDOM_MemManager>& aDoc)
 {
+  if (aDoc.IsNull())
+  {
+    throw Standard_NullObject("LDOM_BasicElement::Create: null memory manager");
+  }
   if (aName == nullptr)
   {
-    static LDOM_BasicElement aVoidElement;
-    aVoidElement = LDOM_BasicElement();
-    return aVoidElement;
+    throw Standard_NullObject("LDOM_BasicElement::Create: null element name");
   }
+  if (aLen <= 0 || aName[0] == '\0')
+  {
+    throw Standard_ConstructionError("LDOM_BasicElement::Create: empty element name");
+  }
+
   void*              aMem     = aDoc->Allocate(sizeof(LDOM_BasicElement));
   LDOM_BasicElement* aNewElem = new (aMem) LDOM_BasicElement;
 

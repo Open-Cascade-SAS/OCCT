@@ -8,11 +8,13 @@ puts ""
 
 restore [locate_data_file OCC399.brep] result
 
+# The stored edge tolerance (2.5999998887993198e-7) is smaller than
+# the curve-on-surface deviation (2.6000002712802474e-7).
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_2"
 set che [checkshape result]
-if { [regexp {Faulty} $che ] == 1 } {
-    puts "Faulty OCC399: Command checkshape works wrongly: Source shape is invalid but this shape must be OK"
-} else {
-    puts "OCC399 OK : Source shape is valid. Command checkshape works properly."
+if {![regexp {BRepCheck_InvalidCurveOnSurface} $che] ||
+    ![regexp {BRepCheck_InvalidSameParameterFlag} $che]} {
+  puts "Error: The undersized curve-on-surface tolerance was not detected"
 }
 
 checkprops result -s 4558.53 

@@ -17,6 +17,8 @@
 
 #include <HLRBRep_Surface.hxx>
 
+#include <algorithm>
+
 //=================================================================================================
 
 int HLRBRep_SurfaceTool::NbSamplesU(const HLRBRep_Surface* theSurf)
@@ -118,11 +120,7 @@ int HLRBRep_SurfaceTool::NbSamplesU(const HLRBRep_Surface* theSurf,
   {
     const double uf = FirstUParameter(theSurf);
     const double ul = LastUParameter(theSurf);
-    n *= (int)((theU2 - theU1) / (uf - ul));
-    if (n > nbs)
-    {
-      n = nbs;
-    }
+    n               = static_cast<int>(nbs * std::min(1.0, (theU2 - theU1) / (ul - uf)));
     if (n < 5)
     {
       n = 5;
@@ -143,11 +141,7 @@ int HLRBRep_SurfaceTool::NbSamplesV(const HLRBRep_Surface* theSurf,
   {
     const double vf = FirstVParameter(theSurf);
     const double vl = LastVParameter(theSurf);
-    n *= (int)((theV2 - theV1) / (vf - vl));
-    if (n > nbs)
-    {
-      n = nbs;
-    }
+    n               = static_cast<int>(nbs * std::min(1.0, (theV2 - theV1) / (vl - vf)));
     if (n < 5)
     {
       n = 5;

@@ -38,7 +38,7 @@ void GeomFill_Generator::Perform(const double PTol)
 
   int  i, j;
   int  NbUPoles    = NbPoles();
-  int  NbVPoles    = mySequence.Length();
+  int  NbVPoles    = static_cast<int>(myCurves.Size());
   int  NbUKnots    = NbKnots();
   int  NbVKnots    = NbVPoles;
   bool isUPeriodic = IsPeriodic();
@@ -58,7 +58,7 @@ void GeomFill_Generator::Perform(const double PTol)
 
   for (j = 1; j <= NbVPoles; j++)
   {
-    occ::handle<Geom_BSplineCurve>    Cj       = occ::down_cast<Geom_BSplineCurve>(mySequence(j));
+    occ::handle<Geom_BSplineCurve>    Cj       = occ::down_cast<Geom_BSplineCurve>(Curve(j));
     const NCollection_Array1<gp_Pnt>& aPoles   = Cj->Poles();
     const NCollection_Array1<double>& aWeights = Cj->WeightsArray();
     VKnots(j)                                  = (double)(j - 1);

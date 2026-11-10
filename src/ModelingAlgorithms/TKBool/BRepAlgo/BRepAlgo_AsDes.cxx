@@ -86,7 +86,7 @@ const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Ascendant(const TopoDS_Sha
   {
     return up(S);
   }
-  static NCollection_List<TopoDS_Shape> empty;
+  static const NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
 
@@ -98,7 +98,7 @@ const NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::Descendant(const TopoDS_Sh
   {
     return down(S);
   }
-  static NCollection_List<TopoDS_Shape> empty;
+  static const NCollection_List<TopoDS_Shape> empty;
   return empty;
 }
 
@@ -110,8 +110,8 @@ NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::ChangeDescendant(const TopoDS_Sh
   {
     return down.ChangeFind(S);
   }
-  static NCollection_List<TopoDS_Shape> empty;
-  return empty;
+  down.Bind(S, NCollection_List<TopoDS_Shape>());
+  return down.ChangeFind(S);
 }
 
 //=================================================================================================

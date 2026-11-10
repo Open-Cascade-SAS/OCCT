@@ -13,9 +13,43 @@
 
 #include <StepShape_OrientedEdge.hxx>
 #include <StepShape_Vertex.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+#include <NCollection_FlatMap.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedEdge, StepShape_Edge)
+
+namespace
+{
+//! Resolve an oriented-edge endpoint iteratively and reject cyclic edge references.
+occ::handle<StepShape_Vertex> resolveVertex(const occ::handle<StepShape_Edge>& theEdgeElement,
+                                            const bool                         theToStart)
+{
+  NCollection_FlatMap<occ::handle<StepShape_Edge>> aVisitedEdges;
+  occ::handle<StepShape_Edge>                      anEdge  = theEdgeElement;
+  bool                                             isStart = theToStart;
+  while (!anEdge.IsNull())
+  {
+    const occ::handle<StepShape_OrientedEdge> anOrientedEdge =
+      occ::down_cast<StepShape_OrientedEdge>(anEdge);
+    if (anOrientedEdge.IsNull())
+    {
+      return isStart ? anEdge->EdgeStart() : anEdge->EdgeEnd();
+    }
+    if (!aVisitedEdges.Add(anEdge))
+    {
+      return nullptr;
+    }
+    if (!anOrientedEdge->Orientation())
+    {
+      isStart = !isStart;
+    }
+    anEdge = anOrientedEdge->EdgeElement();
+  }
+  return nullptr;
+}
+} // namespace
 
 StepShape_OrientedEdge::StepShape_OrientedEdge() = default;
 
@@ -56,50 +90,22 @@ bool StepShape_OrientedEdge::Orientation() const
 
 void StepShape_OrientedEdge::SetEdgeStart(const occ::handle<StepShape_Vertex>& /*aEdgeStart*/)
 {
-  // WARNING : the field is redefined.
-  // field set up forbidden.
-  std::cout << "Field is redefined, SetUp Forbidden" << '\n';
+  throw Standard_NotImplemented(
+    "StepShape_OrientedEdge::SetEdgeStart: redefined field cannot be set");
 }
 
 occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeStart() const
 {
-  // WARNING : the field is redefined.
-  // method body is not yet automatically wrote
-  if (edgeElement.IsNull())
-  {
-    return nullptr;
-  }
-  if (Orientation())
-  {
-    return edgeElement->EdgeStart();
-  }
-  else
-  {
-    return edgeElement->EdgeEnd();
-  }
+  return resolveVertex(edgeElement, Orientation());
 }
 
 void StepShape_OrientedEdge::SetEdgeEnd(const occ::handle<StepShape_Vertex>& /*aEdgeEnd*/)
 {
-  // WARNING : the field is redefined.
-  // field set up forbidden.
-  std::cout << "Field is redefined, SetUp Forbidden" << '\n';
+  throw Standard_NotImplemented(
+    "StepShape_OrientedEdge::SetEdgeEnd: redefined field cannot be set");
 }
 
 occ::handle<StepShape_Vertex> StepShape_OrientedEdge::EdgeEnd() const
 {
-  // WARNING : the field is redefined.
-  // method body is not yet automatically wrote
-  if (edgeElement.IsNull())
-  {
-    return nullptr;
-  }
-  if (Orientation())
-  {
-    return edgeElement->EdgeEnd();
-  }
-  else
-  {
-    return edgeElement->EdgeStart();
-  }
+  return resolveVertex(edgeElement, !Orientation());
 }

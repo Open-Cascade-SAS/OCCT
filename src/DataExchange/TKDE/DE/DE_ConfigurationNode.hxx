@@ -61,6 +61,7 @@ public:
     const occ::handle<DE_ConfigurationNode>& theConfigurationNode);
 
   //! Updates values according the resource file
+  //! File opening or parsing failures leave the node unchanged.
   //! @param[in] theResourcePath file path to resource
   //! @return True if Load was successful
   Standard_EXPORT virtual bool Load(const TCollection_AsciiString& theResourcePath = "");

@@ -20,7 +20,89 @@
 #include <Law_Linear.hxx>
 #include <Standard_Type.hxx>
 
+#include <algorithm>
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(Law_Linear, Law_Function)
+
+namespace
+{
+//==================================================================================================
+
+double scaledDifference(const double theLeft, const double theRight, int& theExponent)
+{
+  std::frexp(std::max(std::abs(theLeft), std::abs(theRight)), &theExponent);
+  return std::scalbn(theLeft, -theExponent) - std::scalbn(theRight, -theExponent);
+}
+
+//==================================================================================================
+
+double linearValue(const double theParameter,
+                   const double theFirst,
+                   const double theLast,
+                   const double theFirstValue,
+                   const double theLastValue)
+{
+  if (theFirst == theLast)
+  {
+    return ((theParameter - theFirst) * theLastValue + (theLast - theParameter) * theFirstValue)
+           / (theLast - theFirst);
+  }
+  if (theParameter == theFirst || theFirstValue == theLastValue)
+  {
+    return theFirstValue;
+  }
+  if (theParameter == theLast)
+  {
+    return theLastValue;
+  }
+  const double aMiddle           = theFirst * 0.5 + theLast * 0.5;
+  const bool   isNearFirst       = (theFirst < theLast) == (theParameter <= aMiddle);
+  const double aNearParameter    = isNearFirst ? theFirst : theLast;
+  const double aFarParameter     = isNearFirst ? theLast : theFirst;
+  const double aNearValue        = isNearFirst ? theFirstValue : theLastValue;
+  const double aFarValue         = isNearFirst ? theLastValue : theFirstValue;
+  const double aNativeWidth      = aFarParameter - aNearParameter;
+  const double aNativeDifference = aFarValue - aNearValue;
+  const double aFraction         = (theParameter - aNearParameter) / aNativeWidth;
+  if (std::isfinite(aNativeWidth) && std::isfinite(aNativeDifference) && std::isnormal(aFraction))
+  {
+    return std::fma(aFraction, aNativeDifference, aNearValue);
+  }
+  // Separate binary scales retain precision for subnormal fractions and avoid overflowing the
+  // width.
+  int          aWidthExponent, aDistanceExponent, aValueExponent;
+  const double aWidth      = scaledDifference(aFarParameter, aNearParameter, aWidthExponent);
+  const double aDistance   = scaledDifference(theParameter, aNearParameter, aDistanceExponent);
+  const double aDifference = scaledDifference(aFarValue, aNearValue, aValueExponent);
+  return aNearValue
+         + std::scalbn((aDistance / aWidth) * aDifference,
+                       aDistanceExponent + aValueExponent - aWidthExponent);
+}
+
+//==================================================================================================
+
+double linearDerivative(const double theFirst,
+                        const double theLast,
+                        const double theFirstValue,
+                        const double theLastValue)
+{
+  if (theFirstValue == theLastValue && theFirst != theLast)
+  {
+    return 0;
+  }
+  const double aNativeWidth      = theLast - theFirst;
+  const double aNativeDifference = theLastValue - theFirstValue;
+  if (std::isfinite(aNativeWidth) && std::isfinite(aNativeDifference))
+  {
+    return aNativeDifference / aNativeWidth;
+  }
+  int          aParameterExponent, aValueExponent;
+  const double aNumerator   = scaledDifference(theLastValue, theFirstValue, aValueExponent);
+  const double aDenominator = scaledDifference(theLast, theFirst, aParameterExponent);
+  return std::scalbn(aNumerator / aDenominator, aValueExponent - aParameterExponent);
+}
+} // namespace
 
 Law_Linear::Law_Linear()
     : valdeb(0.0),
@@ -65,19 +147,19 @@ void Law_Linear::Intervals(NCollection_Array1<double>& T,
 
 double Law_Linear::Value(const double X)
 {
-  return ((X - pdeb) * valfin + (pfin - X) * valdeb) / (pfin - pdeb);
+  return linearValue(X, pdeb, pfin, valdeb, valfin);
 }
 
 void Law_Linear::D1(const double X, double& F, double& D)
 {
-  F = ((X - pdeb) * valfin + (pfin - X) * valdeb) / (pfin - pdeb);
-  D = (valfin - valdeb) / (pfin - pdeb);
+  F = linearValue(X, pdeb, pfin, valdeb, valfin);
+  D = linearDerivative(pdeb, pfin, valdeb, valfin);
 }
 
 void Law_Linear::D2(const double X, double& F, double& D, double& D2)
 {
-  F  = ((X - pdeb) * valfin + (pfin - X) * valdeb) / (pfin - pdeb);
-  D  = (valfin - valdeb) / (pfin - pdeb);
+  F  = linearValue(X, pdeb, pfin, valdeb, valfin);
+  D  = linearDerivative(pdeb, pfin, valdeb, valfin);
   D2 = 0;
 }
 
@@ -90,8 +172,8 @@ occ::handle<Law_Function> Law_Linear::Trim(const double PFirst,
 {
   occ::handle<Law_Linear> l = new (Law_Linear)();
   double                  Vdeb, Vfin;
-  Vdeb = ((PFirst - pdeb) * valfin + (pfin - PFirst) * valdeb) / (pfin - pdeb);
-  Vfin = ((PLast - pdeb) * valfin + (pfin - PLast) * valdeb) / (pfin - pdeb);
+  Vdeb = linearValue(PFirst, pdeb, pfin, valdeb, valfin);
+  Vfin = linearValue(PLast, pdeb, pfin, valdeb, valfin);
   l->Set(PFirst, Vdeb, PLast, Vfin);
 
   return l;

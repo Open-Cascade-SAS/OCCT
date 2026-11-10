@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <BSplCLib.hxx>
+#include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <GeomEval_RepCurveDesc.hxx>
 #include <GeomEval_RepUtils.pxx>
@@ -68,19 +69,26 @@ bool Geom_BSplineCurve::IsG1(const double theTf, const double theTl, const doubl
     return true;
   }
 
-  int start = FirstUKnotIndex() + 1, finish = LastUKnotIndex() - 1;
-  int aDeg = Degree();
+  const double aFirstParam = FirstParameter(), aLastParam = LastParameter();
+  const bool   aPeriodic = IsPeriodic();
+  const bool   aWholePeriod =
+    aPeriodic
+    && static_cast<long double>(theTl) - static_cast<long double>(theTf)
+         >= static_cast<long double>(aLastParam) - static_cast<long double>(aFirstParam);
+  const double aFirst   = aPeriodic ? ElCLib::InPeriod(theTf, aFirstParam, aLastParam) : theTf;
+  const double aLast    = aPeriodic ? ElCLib::InPeriod(theTl, aFirstParam, aLastParam) : theTl;
+  const bool   aWrapped = aPeriodic && aFirst > aLast;
+  int          start = FirstUKnotIndex() + 1, finish = LastUKnotIndex() - 1;
+  int          aDeg = Degree();
   for (int aNKnot = start; aNKnot <= finish; aNKnot++)
   {
     const double aTpar = Knot(aNKnot);
 
-    if (aTpar < theTf)
+    // A translated periodic interval covers one arc or both sides of the seam.
+    if (!aWholePeriod
+        && (aWrapped ? (aTpar < aFirst && aTpar > aLast) : (aTpar < aFirst || aTpar > aLast)))
     {
       continue;
-    }
-    if (aTpar > theTl)
-    {
-      break;
     }
 
     int mult = Multiplicity(aNKnot);
@@ -105,28 +113,18 @@ bool Geom_BSplineCurve::IsG1(const double theTf, const double theTl, const doubl
     }
   }
 
-  if (!IsPeriodic())
+  if (!aPeriodic
+      || (!aWholePeriod && !aWrapped && aFirst != aFirstParam && aLast != aFirstParam
+          && aFirst != aLastParam && aLast != aLastParam))
   {
     return true;
   }
 
-  const double aFirstParam = FirstParameter(), aLastParam = LastParameter();
-
-  if (((aFirstParam - theTf) * (theTl - aFirstParam) < 0.0)
-      && ((aLastParam - theTf) * (theTl - aLastParam) < 0.0))
-  {
-    // Range [theTf, theTl] does not intersect curve boundaries
-    return true;
-  }
-
-  // Curve is closed or periodic and range [theTf, theTl]
-  // intersect curve boundary. Therefore, it is necessary to
-  // check if curve is smooth in its first and last point.
-
+  // Compare the actual one-sided derivatives at the periodic seam.
   gp_Pnt aP;
   gp_Vec aV1, aV2;
-  Geom_Curve::D1(Knot(FirstUKnotIndex()), aP, aV1);
-  Geom_Curve::D1(Knot(LastUKnotIndex()), aP, aV2);
+  LocalD1(aFirstParam, FirstUKnotIndex(), FirstUKnotIndex() + 1, aP, aV1);
+  LocalD1(aLastParam, LastUKnotIndex() - 1, LastUKnotIndex(), aP, aV2);
 
   if ((aV1.SquareMagnitude() <= gp::Resolution()) || aV2.SquareMagnitude() <= gp::Resolution())
   {
@@ -183,13 +181,22 @@ gp_Pnt Geom_BSplineCurve::EvalD0(const double U) const
   int    aSpanIndex = 0;
   double aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
-  BSplCLib::D0(aNewU, aSpanIndex, myDeg, myPeriodic, myPoles, Weights(), myKnots, &myMults, P);
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
+  BSplCLib::D0(aNewU,
+               aSpanIndex,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myFlatKnots,
+               BSplCLib::NoMults(),
+               P);
   return P;
 }
 
@@ -207,20 +214,21 @@ Geom_Curve::ResD1 Geom_BSplineCurve::EvalD1(const double U) const
   int               aSpanIndex = 0;
   double            aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
   BSplCLib::D1(aNewU,
                aSpanIndex,
                myDeg,
                myPeriodic,
                myPoles,
                Weights(),
-               myKnots,
-               &myMults,
+               myFlatKnots,
+               BSplCLib::NoMults(),
                aResult.Point,
                aResult.D1);
   return aResult;
@@ -240,20 +248,21 @@ Geom_Curve::ResD2 Geom_BSplineCurve::EvalD2(const double U) const
   int               aSpanIndex = 0;
   double            aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
   BSplCLib::D2(aNewU,
                aSpanIndex,
                myDeg,
                myPeriodic,
                myPoles,
                Weights(),
-               myKnots,
-               &myMults,
+               myFlatKnots,
+               BSplCLib::NoMults(),
                aResult.Point,
                aResult.D1,
                aResult.D2);
@@ -274,20 +283,21 @@ Geom_Curve::ResD3 Geom_BSplineCurve::EvalD3(const double U) const
   int               aSpanIndex = 0;
   double            aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
-  if (aNewU < myKnots(aSpanIndex))
-  {
-    aSpanIndex--;
-  }
-
+  BSplCLib::LocateParameter(myDeg,
+                            myFlatKnots,
+                            BSplCLib::NoMults(),
+                            U,
+                            myPeriodic,
+                            aSpanIndex,
+                            aNewU);
   BSplCLib::D3(aNewU,
                aSpanIndex,
                myDeg,
                myPeriodic,
                myPoles,
                Weights(),
-               myKnots,
-               &myMults,
+               myFlatKnots,
+               BSplCLib::NoMults(),
                aResult.Point,
                aResult.D1,
                aResult.D2,

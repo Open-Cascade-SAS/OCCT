@@ -63,8 +63,6 @@ public:
   {
     return thePolygon.EndOfSeg(Index);
   }
-
-  Standard_EXPORT static void Dump(const IntCurveSurface_ThePolygonOfHInter& thePolygon);
 };
 
 #endif // _IntCurveSurface_ThePolygonToolOfHInter_HeaderFile

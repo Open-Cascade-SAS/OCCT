@@ -17,6 +17,7 @@
 #include <gp_Trsf.hxx>
 #include <HelixGeom_BuilderHelix.hxx>
 #include <HelixGeom_BuilderHelixCoil.hxx>
+#include <HelixGeom_HelixCurve.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=================================================================================================
@@ -62,6 +63,9 @@ void HelixGeom_BuilderHelix::Perform()
   aBHC.SetTolerance(myTolerance);
   aBHC.SetApproxParameters(myCont, myMaxDegree, myMaxSeg);
 
+  HelixGeom_HelixCurve aHelix;
+  aHelix.Load(myT1, myT2, myPitch, myRStart, myTaperAngle, myIsClockWise);
+
   // Determine number of full turns for segmentation
   dT = myT2 - myT1;
   aN = (int)(dT / aTwoPI);
@@ -83,13 +87,9 @@ void HelixGeom_BuilderHelix::Perform()
   else
   {
     // Case: helix spans multiple full turns - process in segments
-    bool   bIsCylindrical;
-    double aTolAngle;
-
-    aTolAngle      = 1.e-4;
-    bIsCylindrical = fabs(myTaperAngle) < aTolAngle;
-    aT1x           = myT1;
-    aT2x           = myT1 + aTwoPI;
+    const bool bIsCylindrical = myTaperAngle == 0.0;
+    aT1x                      = myT1;
+    aT2x                      = myT1 + aTwoPI;
     for (i = 1; i <= aN; ++i)
     {
       if (i > 1 && bIsCylindrical)
@@ -110,7 +110,8 @@ void HelixGeom_BuilderHelix::Perform()
         continue;
       }
 
-      aBHC.SetCurveParameters(aT1x, aT2x, myPitch, myRStart, myTaperAngle, myIsClockWise);
+      aBHC
+        .SetCurveParameters(aT1x, aT2x, myPitch, aHelix.Radius(aT1x), myTaperAngle, myIsClockWise);
       // Perform approximation for this segment
       aBHC.Perform();
       iErr = aBHC.ErrorStatus();
@@ -133,11 +134,11 @@ void HelixGeom_BuilderHelix::Perform()
       aT2x = aT1x + aTwoPI;
     } // for (i=1; i<=aN; ++i) {
     // Handle remaining partial turn if any
-    aT2x       = myT2;
-    double eps = 1.e-7 * aTwoPI;
-    if (fabs(aT2x - aT1x) > eps)
+    aT2x = myT2;
+    if (aT2x > aT1x)
     {
-      aBHC.SetCurveParameters(aT1x, aT2x, myPitch, myRStart, myTaperAngle, myIsClockWise);
+      aBHC
+        .SetCurveParameters(aT1x, aT2x, myPitch, aHelix.Radius(aT1x), myTaperAngle, myIsClockWise);
       aBHC.Perform();
       iErr = aBHC.ErrorStatus();
       if (iErr)

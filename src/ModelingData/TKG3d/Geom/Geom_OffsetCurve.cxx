@@ -209,7 +209,7 @@ void Geom_OffsetCurve::SetBasisCurve(const occ::handle<Geom_Curve>& C, const boo
   //
   if (isTrimmed)
   {
-    basisCurve = new Geom_TrimmedCurve(aCheckingCurve, aUf, aUl);
+    basisCurve = new Geom_TrimmedCurve(aCheckingCurve, aUf, aUl, true, false);
   }
   else
   {

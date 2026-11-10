@@ -64,6 +64,10 @@ public:
   //! @return true if export is supported
   Standard_EXPORT bool IsExportSupported() const override;
 
+  //! Return true for OBJ input streams; stream writing is unsupported.
+  //! @return true
+  Standard_EXPORT bool IsStreamSupported() const override;
+
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
   Standard_EXPORT TCollection_AsciiString GetFormat() const override;

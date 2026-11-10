@@ -56,7 +56,7 @@ public:
   //! @param theUpperBorder - upper corner of the search box.
   //! @param theC - Lipschitz constant.
   //! @param theDiscretizationTol - parameter space discretization tolerance.
-  //! @param theSameTol - functional value space indifference tolerance.
+  //! @param theSameTol - relative parameter tolerance for merging solutions.
   Standard_EXPORT math_GlobOptMin(math_MultipleVarFunction* theFunc,
                                   const math_Vector&        theLowerBorder,
                                   const math_Vector&        theUpperBorder,
@@ -69,7 +69,7 @@ public:
   //! @param theUpperBorder - upper corner of the search box.
   //! @param theC - Lipschitz constant.
   //! @param theDiscretizationTol - parameter space discretization tolerance.
-  //! @param theSameTol - functional value space indifference tolerance.
+  //! @param theSameTol - relative parameter tolerance for merging solutions.
   Standard_EXPORT void SetGlobalParams(math_MultipleVarFunction* theFunc,
                                        const math_Vector&        theLowerBorder,
                                        const math_Vector&        theUpperBorder,
@@ -83,13 +83,20 @@ public:
   Standard_EXPORT void SetLocalParams(const math_Vector& theLocalA, const math_Vector& theLocalB);
 
   //! Method to set tolerances.
+  //! Function values use 0.01 * theSameTol as absolute tolerance.
   //! @param theDiscretizationTol - parameter space discretization tolerance.
-  //! @param theSameTol - functional value space indifference tolerance.
+  //! @param theSameTol - relative parameter tolerance for merging solutions.
   Standard_EXPORT void SetTol(const double theDiscretizationTol, const double theSameTol);
+
+  //! Sets independent parameter and function-value tolerances.
+  //! @param[in] theDiscretizationTol relative parameter discretization tolerance
+  //! @param[in] theSameTol relative parameter tolerance for merging solutions
+  //! @param[in] theValueTol absolute tolerance in function-value units
+  Standard_EXPORT void SetTol(double theDiscretizationTol, double theSameTol, double theValueTol);
 
   //! Method to get tolerances.
   //! @param theDiscretizationTol - parameter space discretization tolerance.
-  //! @param theSameTol - functional value space indifference tolerance.
+  //! @param theSameTol - relative parameter tolerance for merging solutions.
   Standard_EXPORT void GetTol(double& theDiscretizationTol, double& theSameTol);
 
   //! @param isFindSingleSolution - defines whether to find single solution or all solutions.
@@ -224,19 +231,18 @@ private:
   // Input.
   math_MultipleVarFunction* myFunc;
   int                       myN;
-  math_Vector               myA;       // Left border on current C2 interval.
-  math_Vector               myB;       // Right border on current C2 interval.
-  math_Vector               myGlobA;   // Global left border.
-  math_Vector               myGlobB;   // Global right border.
-  double                    myTol;     // Discretization tolerance, default 1.0e-2.
-  double                    mySameTol; // points with ||p1 - p2|| < mySameTol is equal,
-                                       // function values |val1 - val2| * 0.01 < mySameTol is equal,
-                                       // default value is 1.0e-7.
-  double myC;                          // Lipchitz constant, default 9
-  double myInitC;                      // Lipchitz constant initial value.
-  bool   myIsFindSingleSolution;       // Default value is false.
-  double myFunctionalMinimalValue;     // Default value is -Precision::Infinite
-  bool   myIsConstLocked;              // Is constant locked for modifications.
+  math_Vector               myA;        // Left border on current C2 interval.
+  math_Vector               myB;        // Right border on current C2 interval.
+  math_Vector               myGlobA;    // Global left border.
+  math_Vector               myGlobB;    // Global right border.
+  double                    myTol;      // Discretization tolerance, default 1.0e-2.
+  double                    mySameTol;  // Relative parameter tolerance for merging solutions.
+  double                    myValueTol; // Absolute function-value tolerance.
+  double                    myC;        // Lipchitz constant, default 9
+  double                    myInitC;    // Lipchitz constant initial value.
+  bool                      myIsFindSingleSolution;   // Default value is false.
+  double                    myFunctionalMinimalValue; // Default value is -Precision::Infinite
+  bool                      myIsConstLocked;          // Is constant locked for modifications.
 
   // Output.
   bool                         myDone;

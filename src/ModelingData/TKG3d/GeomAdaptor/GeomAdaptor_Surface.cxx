@@ -23,13 +23,10 @@
 
 #include <GeomAdaptor_Surface.hxx>
 
-#include "../Geom/Geom_ExtrusionUtils.pxx"
-#include "../Geom/Geom_OffsetSurfaceUtils.pxx"
-#include "../Geom/Geom_RevolutionUtils.pxx"
-
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <BSplCLib.hxx>
+#include <BSplSLib.hxx>
 #include <ElSLib.hxx>
 #include <BSplSLib_Cache.hxx>
 #include <CSLib.hxx>
@@ -69,7 +66,9 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 
-static const double PosTol = Precision::PConfusion() * 0.5;
+#include "../Geom/Geom_ExtrusionUtils.pxx"
+#include "../Geom/Geom_OffsetSurfaceUtils.pxx"
+#include "../Geom/Geom_RevolutionUtils.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
 
@@ -2241,110 +2240,40 @@ double GeomAdaptor_Surface::OffsetValue() const
 //	      parameters for LocalDi
 //=======================================================================
 
-bool GeomAdaptor_Surface::IfUVBound(const double U,
-                                    const double V,
-                                    int&         IOutDeb,
-                                    int&         IOutFin,
-                                    int&         IOutVDeb,
-                                    int&         IOutVFin,
-                                    const int    USide,
-                                    const int    VSide) const
+bool GeomAdaptor_Surface::IfUVBound(double&   theU,
+                                    double&   theV,
+                                    int&      theUFirstSpan,
+                                    int&      theULastSpan,
+                                    int&      theVFirstSpan,
+                                    int&      theVLastSpan,
+                                    const int theUSide,
+                                    const int theVSide) const
 {
-  const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-  int         Ideb, Ifin;
-  int         anUFKIndx = aBSpl->FirstUKnotIndex(), anULKIndx = aBSpl->LastUKnotIndex(),
-      aVFKIndx = aBSpl->FirstVKnotIndex(), aVLKIndx = aBSpl->LastVKnotIndex();
-  aBSpl->LocateU(U, PosTol, Ideb, Ifin, false);
-  bool Local = (Ideb == Ifin);
-  Span(USide, Ideb, Ifin, Ideb, Ifin, anUFKIndx, anULKIndx);
-  int IVdeb, IVfin;
-  aBSpl->LocateV(V, PosTol, IVdeb, IVfin, false);
-  if (IVdeb == IVfin)
-  {
-    Local = true;
-  }
-  Span(VSide, IVdeb, IVfin, IVdeb, IVfin, aVFKIndx, aVLKIndx);
-
-  IOutDeb  = Ideb;
-  IOutFin  = Ifin;
-  IOutVDeb = IVdeb;
-  IOutVFin = IVfin;
-
-  return Local;
-}
-
-//=======================================================================
-// function : Span <private>
-// purpose  : locates U,V parameters if U=UFirst or U=ULast,
-//	     processes the finding span and returns the
-//	     parameters for LocalDi
-//=======================================================================
-
-void GeomAdaptor_Surface::Span(const int Side,
-                               const int Ideb,
-                               const int Ifin,
-                               int&      OutIdeb,
-                               int&      OutIfin,
-                               const int theFKIndx,
-                               const int theLKIndx) const
-{
-  if (Ideb != Ifin) // not a knot
-  {
-    if (Ideb < theFKIndx)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    }
-    else if (Ifin > theLKIndx)
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    }
-    else if (Ideb >= (theLKIndx - 1))
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    }
-    else if (Ifin <= theFKIndx + 1)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    }
-    else if (Ideb > Ifin)
-    {
-      OutIdeb = Ifin - 1;
-      OutIfin = Ifin;
-    }
-    else
-    {
-      OutIdeb = Ideb;
-      OutIfin = Ifin;
-    }
-  }
-  else
-  {
-    if (Ideb <= theFKIndx)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    } // first knot
-    else if (Ifin >= theLKIndx)
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    } // last knot
-    else
-    {
-      if (Side == -1)
-      {
-        OutIdeb = Ideb - 1;
-        OutIfin = Ifin;
-      }
-      else
-      {
-        OutIdeb = Ideb;
-        OutIfin = Ifin + 1;
-      }
-    }
-  }
+  const auto& aSurface = std::get<BSplineData>(mySurfaceData).Surface;
+  int         aUFirst, aULast, aVFirst, aVLast;
+  aSurface->LocateU(theU, 0.0, aUFirst, aULast, false);
+  aSurface->LocateV(theV, 0.0, aVFirst, aVLast, false);
+  const BSplSLib::LocalSpan aUSpan = BSplSLib::SelectLocalSpan(theU,
+                                                               theUSide,
+                                                               aUFirst,
+                                                               aULast,
+                                                               aSurface->FirstUKnotIndex(),
+                                                               aSurface->LastUKnotIndex(),
+                                                               aSurface->UKnots(),
+                                                               aSurface->IsUPeriodic());
+  const BSplSLib::LocalSpan aVSpan = BSplSLib::SelectLocalSpan(theV,
+                                                               theVSide,
+                                                               aVFirst,
+                                                               aVLast,
+                                                               aSurface->FirstVKnotIndex(),
+                                                               aSurface->LastVKnotIndex(),
+                                                               aSurface->VKnots(),
+                                                               aSurface->IsVPeriodic());
+  theU                             = aUSpan.Parameter;
+  theV                             = aVSpan.Parameter;
+  theUFirstSpan                    = aUSpan.First;
+  theULastSpan                     = aUSpan.Last;
+  theVFirstSpan                    = aVSpan.First;
+  theVLastSpan                     = aVSpan.Last;
+  return aUSpan.IsKnot || aVSpan.IsKnot;
 }

@@ -95,7 +95,7 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
     }
     if (aMax == 0.0)
     {
-      aResult.Status = Status::NumericalError; // Singular matrix
+      aResult.Status = Status::Singular;
       return aResult;
     }
     aRowScale[i] = aMax;
@@ -133,9 +133,14 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
     // Check for singular matrix
     const double anAbsPivot   = std::abs(aLU.At(k, k));
     const double aScaledPivot = anAbsPivot / aRowScale[k];
-    if (!std::isfinite(anAbsPivot) || !std::isfinite(aScaledPivot) || aScaledPivot <= aRelTol)
+    if (!std::isfinite(anAbsPivot) || !std::isfinite(aScaledPivot))
     {
       aResult.Status = Status::NumericalError;
+      return aResult;
+    }
+    if (aScaledPivot <= aRelTol)
+    {
+      aResult.Status = Status::Singular;
       return aResult;
     }
 
@@ -157,9 +162,9 @@ inline LUResult LU(const math_Matrix& theA, double theTolerance = 1.0e-15)
   aResult.Determinant = static_cast<double>(aResult.Sign);
   for (size_t i = 0; i < aRowCount; ++i)
   {
-    const double aPivot = aLU.At(i, i);
-    *aResult.Determinant *= aPivot;
-    if (!std::isfinite(*aResult.Determinant) || (*aResult.Determinant == 0.0 && aPivot != 0.0))
+    const double aDiagonal = aLU.At(i, i);
+    *aResult.Determinant *= aDiagonal;
+    if (!std::isfinite(*aResult.Determinant) || (*aResult.Determinant == 0.0 && aDiagonal != 0.0))
     {
       aResult.Determinant.reset();
       break;

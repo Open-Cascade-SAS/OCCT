@@ -19,6 +19,7 @@
 
 #include <BOPAlgo_CheckerSI.hxx>
 #include <BOPAlgo_Alerts.hxx>
+#include <BOPAlgo_Algo.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_IteratorSI.hxx>
@@ -26,75 +27,344 @@
 #include <BOPDS_Pair.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepClass_Edge.hxx>
+#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTools.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_Parallel.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <IntTools_Context.hxx>
-#include <IntTools_FaceFace.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomInt_LineConstructor.hxx>
+#include <IntPatch_Intersection.hxx>
+#include <IntPatch_Point.hxx>
+#include <IntPatch_WLine.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <Precision.hxx>
+#include <gp_Pnt2d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopExp.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+
+#include <cmath>
 
 //=================================================================================================
 
-class BOPAlgo_FaceSelfIntersect : public IntTools_FaceFace, public BOPAlgo_ParallelAlgo
+namespace
+{
+
+//! Returns the boundary vertex at the classifier's edge parameter, or null.
+TopoDS_Vertex classifiedVertex(const BRepClass_FaceClassifier& theClassifier);
+
+//! Returns true for equivalent seam points or a shared boundary vertex.
+bool isSeamPoint(const TopoDS_Face&        theFace,
+                 const IntSurf_PntOn2S&    thePoint,
+                 BRepClass_FaceClassifier& theFirstClassifier,
+                 BRepClass_FaceClassifier& theSecondClassifier);
+
+//! Checks every walking point of a retained interval for seam equivalence.
+bool isSeamLine(const TopoDS_Face&                theFace,
+                const occ::handle<IntPatch_Line>& theLine,
+                const double                      theFirst,
+                const double                      theLast,
+                BRepClass_FaceClassifier&         theFirstClassifier,
+                BRepClass_FaceClassifier&         theSecondClassifier);
+
+//! Checks surface self-intersections inside both copies of a face domain.
+class BOPAlgo_FaceSelfIntersect : public BOPAlgo_ParallelAlgo
 {
 
 public:
   DEFINE_STANDARD_ALLOC
 
-  BOPAlgo_FaceSelfIntersect()
-      : BOPAlgo_ParallelAlgo(),
-        myIF(-1),
-        myTolF(1.e-7)
-  {
-  }
+  //! Initializes an unchecked face task.
+  BOPAlgo_FaceSelfIntersect();
 
   //
   ~BOPAlgo_FaceSelfIntersect() override = default;
 
-  //
-  void SetIndex(const int nF) { myIF = nF; }
+  //! Sets the face index in the interference data.
+  void SetIndex(const int theIndex);
 
-  //
-  int IndexOfFace() const { return myIF; }
+  //! Returns the face index in the interference data.
+  int IndexOfFace() const;
 
-  //
-  void SetFace(const TopoDS_Face& aF) { myF = aF; }
+  //! Retains the shared face for this task.
+  void SetFace(const TopoDS_Face& theFace);
 
-  //
-  const TopoDS_Face& Face() const { return myF; }
+  //! Returns true when the geometric and domain checks completed.
+  bool IsDone() const;
 
-  //
-  void SetTolF(const double aTolF) { myTolF = aTolF; }
+  //! Returns true for a self-intersection within the trimmed face.
+  bool HasInterference() const;
 
-  //
-  double TolF() const { return myTolF; }
-
-  //
-  void Perform() override
-  {
-    Message_ProgressScope aPS(myProgressRange, nullptr, 1);
-    if (UserBreak(aPS))
-    {
-      return;
-    }
-    IntTools_FaceFace::Perform(myF, myF, myRunParallel);
-  }
+  //! Checks both surface preimages against the face domain and seams.
+  void Perform() override;
 
   //
 protected:
-  int         myIF;
-  double      myTolF;
-  TopoDS_Face myF;
+  int         myIF;              //!< Face index in the interference data.
+  TopoDS_Face myF;               //!< Shared face retained during the check.
+  bool        myIsDone;          //!< True after a completed intersection check.
+  bool        myHasInterference; //!< True for an intersection within both domains.
 };
 
-// end of definition of class BOPAlgo_FaceSelfIntersect
+//==================================================================================================
+
+TopoDS_Vertex classifiedVertex(const BRepClass_FaceClassifier& theClassifier)
+{
+  const BRepClass_Edge& anEdge = theClassifier.Edge();
+  if (anEdge.Edge().IsNull())
+  {
+    return TopoDS_Vertex();
+  }
+  double aFirst, aLast;
+  BRep_Tool::Range(anEdge.Edge(), anEdge.Face(), aFirst, aLast);
+  const double aParameter = theClassifier.EdgeParameter();
+  if (std::abs(aParameter - aFirst) <= Precision::PConfusion())
+  {
+    return TopExp::FirstVertex(anEdge.Edge());
+  }
+  if (std::abs(aParameter - aLast) <= Precision::PConfusion())
+  {
+    return TopExp::LastVertex(anEdge.Edge());
+  }
+  return TopoDS_Vertex();
+}
+
+//==================================================================================================
+
+bool isSeamPoint(const TopoDS_Face&        theFace,
+                 const IntSurf_PntOn2S&    thePoint,
+                 BRepClass_FaceClassifier& theFirstClassifier,
+                 BRepClass_FaceClassifier& theSecondClassifier)
+{
+  double aU1, aV1, aU2, aV2;
+  thePoint.Parameters(aU1, aV1, aU2, aV2);
+  theFirstClassifier.Perform(theFace, gp_Pnt2d(aU1, aV1), Precision::PConfusion());
+  theSecondClassifier.Perform(theFace, gp_Pnt2d(aU2, aV2), Precision::PConfusion());
+  if (theFirstClassifier.State() != TopAbs_ON || theSecondClassifier.State() != TopAbs_ON)
+  {
+    return false;
+  }
+  const TopoDS_Edge& aFirstEdge  = theFirstClassifier.Edge().Edge();
+  const TopoDS_Edge& aSecondEdge = theSecondClassifier.Edge().Edge();
+  if (!aFirstEdge.IsNull() && aFirstEdge.IsSame(aSecondEdge)
+      && BRep_Tool::IsClosed(aFirstEdge, theFace) && BRep_Tool::SameParameter(aFirstEdge)
+      && std::abs(theFirstClassifier.EdgeParameter() - theSecondClassifier.EdgeParameter())
+           <= Precision::PConfusion())
+  {
+    return true;
+  }
+  const TopoDS_Vertex aFirstVertex = classifiedVertex(theFirstClassifier);
+  return !aFirstVertex.IsNull() && aFirstVertex.IsSame(classifiedVertex(theSecondClassifier));
+}
+
+//==================================================================================================
+
+bool isSeamLine(const TopoDS_Face&                theFace,
+                const occ::handle<IntPatch_Line>& theLine,
+                const double                      theFirst,
+                const double                      theLast,
+                BRepClass_FaceClassifier&         theFirstClassifier,
+                BRepClass_FaceClassifier&         theSecondClassifier)
+{
+  const occ::handle<IntPatch_WLine> aLine = occ::down_cast<IntPatch_WLine>(theLine);
+  if (aLine.IsNull() || theFirst < 1.0 || theLast > aLine->NbPnts() || theFirst > theLast)
+  {
+    return false;
+  }
+  // Walking-line parameters are point indices. Preserve other parameter layouts.
+  const int aFirst = static_cast<int>(theFirst);
+  const int aLast  = static_cast<int>(theLast);
+  if (aFirst != theFirst || aLast != theLast)
+  {
+    return false;
+  }
+  const int aMiddle = aFirst + (aLast - aFirst) / 2;
+  if (!isSeamPoint(theFace, aLine->Point(aMiddle), theFirstClassifier, theSecondClassifier))
+  {
+    return false;
+  }
+  // Retain the wrapper before the classifiers are reused for other points.
+  const TopoDS_Edge aSeam = theFirstClassifier.Edge().Edge();
+  if (aSeam.IsNull() || !aSeam.IsSame(theSecondClassifier.Edge().Edge())
+      || !BRep_Tool::IsClosed(aSeam, theFace) || !BRep_Tool::SameParameter(aSeam)
+      || std::abs(theFirstClassifier.EdgeParameter() - theSecondClassifier.EdgeParameter())
+           > Precision::PConfusion())
+  {
+    return false;
+  }
+  const TopoDS_Vertex aFirstVertex = TopExp::FirstVertex(aSeam);
+  const TopoDS_Vertex aLastVertex  = TopExp::LastVertex(aSeam);
+  for (int i = aFirst; i <= aLast; ++i)
+  {
+    if (!isSeamPoint(theFace, aLine->Point(i), theFirstClassifier, theSecondClassifier))
+    {
+      return false;
+    }
+    if (!aSeam.IsSame(theFirstClassifier.Edge().Edge())
+        || !aSeam.IsSame(theSecondClassifier.Edge().Edge()))
+    {
+      const TopoDS_Vertex aVertex = classifiedVertex(theFirstClassifier);
+      if (aVertex.IsNull() || (!aVertex.IsSame(aFirstVertex) && !aVertex.IsSame(aLastVertex)))
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+//==================================================================================================
+
+BOPAlgo_FaceSelfIntersect::BOPAlgo_FaceSelfIntersect()
+    : myIF(-1),
+      myIsDone(false),
+      myHasInterference(false)
+{
+}
+
+//==================================================================================================
+
+void BOPAlgo_FaceSelfIntersect::SetIndex(const int theIndex)
+{
+  myIF = theIndex;
+}
+
+//==================================================================================================
+
+int BOPAlgo_FaceSelfIntersect::IndexOfFace() const
+{
+  return myIF;
+}
+
+//==================================================================================================
+
+void BOPAlgo_FaceSelfIntersect::SetFace(const TopoDS_Face& theFace)
+{
+  myF = theFace;
+}
+
+//==================================================================================================
+
+bool BOPAlgo_FaceSelfIntersect::IsDone() const
+{
+  return myIsDone;
+}
+
+//==================================================================================================
+
+bool BOPAlgo_FaceSelfIntersect::HasInterference() const
+{
+  return myHasInterference;
+}
+
+//==================================================================================================
+
+void BOPAlgo_FaceSelfIntersect::Perform()
+{
+  myIsDone          = false;
+  myHasInterference = false;
+  Message_ProgressScope aPS(myProgressRange, nullptr, 1);
+  if (UserBreak(aPS))
+  {
+    return;
+  }
+
+  const occ::handle<Geom_Surface> aGeometry = BRep_Tool::Surface(myF);
+  if (aGeometry.IsNull())
+  {
+    return;
+  }
+  double aUFirst, aULast, aVFirst, aVLast;
+  BRepTools::UVBounds(myF, aUFirst, aULast, aVFirst, aVLast);
+  const occ::handle<GeomAdaptor_Surface> aSurface =
+    new GeomAdaptor_Surface(aGeometry, aUFirst, aULast, aVFirst, aVLast);
+  const occ::handle<BRepTopAdaptor_TopolTool> aFirstDomain =
+    new BRepTopAdaptor_TopolTool(new BRepAdaptor_Surface(myF));
+  const occ::handle<BRepTopAdaptor_TopolTool> aSecondDomain =
+    new BRepTopAdaptor_TopolTool(new BRepAdaptor_Surface(myF));
+
+  // Both preimages must belong to the trimmed face, including its inner wires.
+  // No fitted 3D intersection curve is needed to establish an interference.
+  const double aTolerance = 2.0 * BRep_Tool::Tolerance(myF) + Precision::Confusion();
+  const double aMaxStep =
+    IntPatch_Intersection::DefineUVMaxStep(aSurface, aFirstDomain, aSurface, aSecondDomain);
+  const double          aDeflection = aSurface->GetType() == GeomAbs_BSplineSurface ? 0.01 : 0.1;
+  IntPatch_Intersection anIntersection;
+  anIntersection.SetTolerances(aTolerance, aTolerance, aMaxStep, aDeflection);
+  anIntersection.Perform(aSurface, aFirstDomain, aTolerance, aTolerance);
+  if (!anIntersection.IsDone() || UserBreak(aPS))
+  {
+    return;
+  }
+  BRepClass_FaceClassifier aFirstClassifier;
+  BRepClass_FaceClassifier aSecondClassifier;
+  for (int i = 1; i <= anIntersection.NbPnts(); ++i)
+  {
+    double aU1, aV1, aU2, aV2;
+    anIntersection.Point(i).PntOn2S().Parameters(aU1, aV1, aU2, aV2);
+    const TopAbs_State aFirstState =
+      aFirstDomain->Classify(gp_Pnt2d(aU1, aV1), Precision::PConfusion());
+    const TopAbs_State aSecondState =
+      aSecondDomain->Classify(gp_Pnt2d(aU2, aV2), Precision::PConfusion());
+    if (aFirstState == TopAbs_UNKNOWN || aSecondState == TopAbs_UNKNOWN)
+    {
+      return;
+    }
+    if (aFirstState != TopAbs_OUT && aSecondState != TopAbs_OUT
+        && !isSeamPoint(myF,
+                        anIntersection.Point(i).PntOn2S(),
+                        aFirstClassifier,
+                        aSecondClassifier))
+    {
+      myHasInterference = true;
+      myIsDone          = true;
+      return;
+    }
+  }
+  GeomInt_LineConstructor aConstructor;
+  aConstructor.Load(aFirstDomain, aSecondDomain, aSurface, aSurface);
+  for (int i = 1; i <= anIntersection.NbLines(); ++i)
+  {
+    aConstructor.Perform(anIntersection.Line(i));
+    if (!aConstructor.IsDone())
+    {
+      return;
+    }
+    for (int j = 1; j <= aConstructor.NbParts(); ++j)
+    {
+      double aFirst, aLast;
+      aConstructor.Part(j, aFirst, aLast);
+      if (!isSeamLine(myF,
+                      anIntersection.Line(i),
+                      aFirst,
+                      aLast,
+                      aFirstClassifier,
+                      aSecondClassifier))
+      {
+        myHasInterference = true;
+        myIsDone          = true;
+        return;
+      }
+    }
+  }
+  myIsDone = true;
+}
 
 //=======================================================================
 
 typedef NCollection_DynamicArray<BOPAlgo_FaceSelfIntersect> BOPAlgo_VectorOfFaceSelfIntersect;
+
+} // namespace
 
 //=================================================================================================
 
@@ -456,14 +726,11 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& t
       }
     }
 
-    double aTolF = BRep_Tool::Tolerance(aF);
-
     BOPAlgo_FaceSelfIntersect& aFaceSelfIntersect = aVFace.Appended();
     //
     aFaceSelfIntersect.SetRunParallel(myRunParallel);
     aFaceSelfIntersect.SetIndex(i);
     aFaceSelfIntersect.SetFace(aF);
-    aFaceSelfIntersect.SetTolF(aTolF);
   }
 
   int                   aNbFace = aVFace.Length();
@@ -488,20 +755,15 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection(const Message_ProgressRange& t
     //
     int nF = aFaceSelfIntersect.IndexOfFace();
 
-    bool bIsDone = aFaceSelfIntersect.IsDone();
-    if (bIsDone)
+    if (!aFaceSelfIntersect.IsDone())
     {
-      const NCollection_Sequence<IntTools_Curve>&       aCvsX  = aFaceSelfIntersect.Lines();
-      const NCollection_Sequence<IntTools_PntOn2Faces>& aPntsX = aFaceSelfIntersect.Points();
-      //
-      int aNbCurves = aCvsX.Length();
-      int aNbPoints = aPntsX.Length();
-      //
-      if (aNbCurves || aNbPoints)
-      {
-        aPK.SetIndices(nF, nF);
-        aMPK.Add(aPK);
-      }
+      AddError(new BOPAlgo_AlertIntersectionFailed);
+      return;
+    }
+    if (aFaceSelfIntersect.HasInterference())
+    {
+      aPK.SetIndices(nF, nF);
+      aMPK.Add(aPK);
     }
   }
 }

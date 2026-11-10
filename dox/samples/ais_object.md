@@ -50,7 +50,7 @@ These tools could be found within @c Prs3d, @c StdPrs and @c DsgPrs packages:
   provides builders for analytical geometry and B-Rep shapes (@c TopoDS_Shape).
   - @c StdPrs_WFShape, @c StdPrs_ShadedShape, @c StdPrs_BRepFont
 - **BRepFont**
-  converts font outlines into planar regions and TopoDS or BRepGraph topology.
+  converts font outlines into planar regions and TopoDS topology.
   - @c BRepFont_Regularizer, @c BRepFont_Builder
 - **DsgPrs**
   provides builders for datums, dimensions and relations.

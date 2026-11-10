@@ -1,0 +1,60 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation_HeaderFile
+#define _RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation_HeaderFile
+
+#include <Standard.hxx>
+#include <Standard_Handle.hxx>
+
+class Interface_Check;
+class Interface_EntityIterator;
+class StepData_StepReaderData;
+class StepData_StepWriter;
+class StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation;
+
+//! Read and write characterized draughting/tessellated shape representations.
+//! CHARACTERIZED_OBJECT attributes are written as derived values.
+class RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation
+{
+public:
+  //! Read representation attributes.
+  //! @param[in] theData STEP records
+  //! @param[in] theNumber complex entity record number
+  //! @param[in,out] theCheck read diagnostics
+  //! @param[out] theEntity representation to initialize
+  Standard_HIDDEN void ReadStep(
+    const occ::handle<StepData_StepReaderData>& theData,
+    int                                         theNumber,
+    occ::handle<Interface_Check>&               theCheck,
+    const occ::handle<StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation>&
+      theEntity) const;
+
+  //! Write the STEP complex entity.
+  //! @param[in,out] theWriter STEP output
+  //! @param[in] theEntity representation to write
+  Standard_HIDDEN void WriteStep(
+    StepData_StepWriter& theWriter,
+    const occ::handle<StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation>&
+      theEntity) const;
+
+  //! Visit representation items and their unit context.
+  //! @param[in] theEntity representation to inspect
+  //! @param[in,out] theIterator referenced entities
+  Standard_HIDDEN void Share(
+    const occ::handle<StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation>&
+                              theEntity,
+    Interface_EntityIterator& theIterator) const;
+};
+
+#endif // _RWStepVisual_RWCharacterizedDraughtingModelAndTessellatedShapeRepresentation_HeaderFile

@@ -18,24 +18,12 @@
 #include <NCollection_Array1.hxx>
 #include <cstring>
 #include <AdvApp2Var_SysBase.hxx>
-#include "AdvApp2Var_Data.pxx"
 #include <Standard.hxx>
 
 namespace
 {
-// Keep legacy behavior: initialize unit tables once before first package usage.
-void initSysBaseUnits()
-{
-  int anErrorCode = 0;
-  // Allocation tables are local now; keep only units initialization.
-  AdvApp2Var_SysBase::macinit_(&anErrorCode, &anErrorCode);
-}
-
-// One-time static initialization trigger for this translation unit.
-[[maybe_unused]] const bool THE_STBAS_LIB_INIT = []() {
-  initSysBaseUnits();
-  return true;
-}();
+constexpr double THE_REAL8_OVERFLOW       = 1.797693134862315e307;
+constexpr int    THE_REAL8_DECIMAL_DIGITS = 17;
 } // namespace
 
 static int __i__len();
@@ -94,13 +82,6 @@ static int mcrfree_(int* ibyte, intptr_t iadr, int* ier);
 
 static int mcrgetv_(int* sz, intptr_t* iad, int* ier);
 
-static struct
-{
-  int lec, imp, keyb, mae, jscrn, itblt, ibb;
-} mblank__;
-
-#define mcrfill_ABS(a) (((a) < 0) ? (-(a)) : (a))
-
 //=================================================================================================
 
 AdvApp2Var_SysBase::AdvApp2Var_SysBase()
@@ -118,7 +99,7 @@ AdvApp2Var_SysBase::~AdvApp2Var_SysBase()
 
 //=================================================================================================
 
-int AdvApp2Var_SysBase::macinit_(int* imode, int* ival)
+int AdvApp2Var_SysBase::macinit_(int* /* imode */, int* /* ival */)
 
 {
 
@@ -171,25 +152,6 @@ int AdvApp2Var_SysBase::macinit_(int* imode, int* ival)
   /*            (BUT IT IS NOT TRUE FOR ALL ROUTINES OF T) */
   /* > */
   /* ***********************************************************************/
-
-  if (*imode == 0)
-  {
-    mblank__.imp = 6;
-    mblank__.ibb = 0;
-    mblank__.lec = 5;
-  }
-  else if (*imode == 1)
-  {
-    mblank__.imp = *ival;
-  }
-  else if (*imode == 2)
-  {
-    mblank__.ibb = *ival;
-  }
-  else if (*imode == 3)
-  {
-    mblank__.lec = *ival;
-  }
 
   /* ***********************************************************************/
 
@@ -1647,7 +1609,7 @@ int maoverf_(int* nbentr, double* dtable)
   {
     for (icompt = 1; icompt <= 63; ++icompt)
     {
-      buff[icompt - 1] = AdvApp2Var_Data::Getmaovpar().r8ovr;
+      buff[icompt - 1] = THE_REAL8_OVERFLOW;
       /* L20: */
     }
     ifois = 1;
@@ -1696,7 +1658,7 @@ int maoverf_(int* nbentr, double* dtable)
 
 int AdvApp2Var_SysBase::maovsr8_(int* ivalcs)
 {
-  *ivalcs = AdvApp2Var_Data::Getmaovpar().r8ncs;
+  *ivalcs = THE_REAL8_DECIMAL_DIGITS;
   return 0;
 } /* maovsr8_ */
 
@@ -2265,32 +2227,12 @@ C**********************************************************************
 
 //=================================================================================================
 
-int AdvApp2Var_SysBase::mcrfill_(int* size, void* tin, void* tout)
+int AdvApp2Var_SysBase::mcrfill_(int* size, const void* tin, void* tout)
 
 {
-  char* jmin  = static_cast<char*>(tin);
-  char* jmout = static_cast<char*>(tout);
-  if (mcrfill_ABS(jmout - jmin) >= *size)
+  if (*size > 0)
   {
-    memcpy(tout, tin, *size);
-  }
-  else if (tin > tout)
-  {
-    int n = *size;
-    while (n-- > 0)
-    {
-      *jmout++ = *jmin++;
-    }
-  }
-  else
-  {
-    int n = *size;
-    jmin += n;
-    jmout += n;
-    while (n-- > 0)
-    {
-      *--jmout = *--jmin;
-    }
+    std::memmove(tout, tin, static_cast<size_t>(*size));
   }
   return 0;
 }

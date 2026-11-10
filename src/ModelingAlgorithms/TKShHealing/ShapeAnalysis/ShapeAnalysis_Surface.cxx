@@ -1080,6 +1080,12 @@ int ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d& p2dPrev,
   constexpr double Tol2 = Tol * Tol; //, rs2p=1e10;
   double           U = p2dPrev.X(), V = p2dPrev.Y();
   gp_Vec           rsfirst = P3D.XYZ() - Value(U, V).XYZ(); // pdn
+  // Keep a converged hint, including at a singular point.
+  if (rsfirst.SquareMagnitude() <= std::min(preci * preci, Tol2))
+  {
+    sol = p2dPrev;
+    return 1;
+  }
   for (int i = 0; i < 25; i++)
   {
     gp_Vec ru, rv, ruu, rvv, ruv;

@@ -244,14 +244,7 @@ static bool FindPoint(const gp_Pnt2d& theFirstPoint,
       gp_Pnt2d acurpoint(aprojpoint.XY() + (anOtherVec.XY() * anoffset));
       gp_Vec2d acurvec(theLastPoint, acurpoint);
 
-      //
-      double aDotX, anAngleX, aPC;
-      //
-      aDotX    = aVec.Dot(acurvec);
-      anAngleX = aVec.Angle(acurvec);
-      aPC      = Precision::PConfusion();
-      //
-      if (aDotX > 0. && fabs(anAngleX) < aPC)
+      if (aVec.Dot(acurvec) > 0. && fabs(aVec.Angle(acurvec)) < Precision::PConfusion())
       {
         //
         if ((i % 2) == 0)

@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
@@ -38,7 +37,7 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::Init(
   const occ::handle<StepRepr_ShapeAspect>&                            theTolerancedShapeAspect,
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR,
   const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      theGTWM,
-  const occ::handle<StepBasic_LengthMeasureWithUnit>&                 theMaxTol,
+  const occ::handle<Standard_Transient>&                              theMaxTol,
   const StepDimTol_GeometricToleranceType                             theType)
 {
   StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init(theName,
@@ -60,7 +59,7 @@ void StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol::Init(
   const StepDimTol_GeometricToleranceTarget&                          theTolerancedShapeAspect,
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& theGTWDR,
   const occ::handle<StepDimTol_GeometricToleranceWithModifiers>&      theGTWM,
-  const occ::handle<StepBasic_LengthMeasureWithUnit>&                 theMaxTol,
+  const occ::handle<Standard_Transient>&                              theMaxTol,
   const StepDimTol_GeometricToleranceType                             theType)
 {
   StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod::Init(theName,

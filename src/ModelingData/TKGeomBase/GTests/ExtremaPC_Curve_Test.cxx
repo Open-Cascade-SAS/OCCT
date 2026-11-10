@@ -1223,3 +1223,51 @@ TEST_F(ExtremaPC_CurveTest, TransformedCurve_SearchMode_Max)
   EXPECT_FALSE(aResult[0].IsMinimum);
   EXPECT_NEAR(std::sqrt(aResult[0].SquareDistance), 30.0, THE_TOL);
 }
+
+//==================================================================================================
+
+TEST_F(ExtremaPC_CurveTest, GenericAdaptorPreservesShortNativeBSplineDomain)
+{
+  for (const double aSpan : {7.0, 1.0e-12, 1.0e12})
+  {
+    SCOPED_TRACE(aSpan);
+    NCollection_Array1<gp_Pnt> aPoles(0, 1);
+    aPoles.ChangeAt(0) = gp_Pnt(0, 0, 0);
+    aPoles.ChangeAt(1) = gp_Pnt(2, 0, 0);
+    NCollection_Array1<double> aKnots(0, 1);
+    aKnots.ChangeAt(0) = 0;
+    aKnots.ChangeAt(1) = aSpan;
+    NCollection_Array1<int> aMults(0, 1);
+    aMults.Init(2);
+    const occ::handle<Geom_BSplineCurve> aGeometry =
+      new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+    GeomAdaptor_Curve        aCurve(aGeometry, 0, aSpan);
+    ExtremaPC_Curve          aProjector(static_cast<const Adaptor3d_Curve&>(aCurve), 0, aSpan);
+    const ExtremaPC::Result& aResult =
+      aProjector.PerformWithEndpoints(gp_Pnt(1, .5, 0), 1.0e-7, ExtremaPC::SearchMode::Min);
+    ASSERT_EQ(aResult.Status, ExtremaPC::Status::OK);
+    ASSERT_NE(aResult.MinIndex(), ExtremaPC::Result::INVALID_INDEX);
+    const ExtremaPC::ExtremumResult& anExtremum = aResult[aResult.MinIndex()];
+    EXPECT_NEAR(anExtremum.Parameter / aSpan, .5, 1.0e-7);
+    EXPECT_NEAR(anExtremum.SquareDistance, .25, 1.0e-12);
+    EXPECT_NEAR(anExtremum.Point.X(), 1, 1.0e-7);
+  }
+}
+
+//==================================================================================================
+
+TEST_F(ExtremaPC_CurveTest, GenericConstantCurveDoesNotRequireFiniteResolution)
+{
+  NCollection_Array1<gp_Pnt> aPoles(size_t{2});
+  aPoles.Init(gp_Pnt(2, 3, 4));
+  const occ::handle<Geom_BezierCurve> aGeometry = new Geom_BezierCurve(aPoles);
+  const GeomAdaptor_Curve             anAdaptor(aGeometry);
+  const ExtremaPC_Curve anEvaluator(static_cast<const Adaptor3d_Curve&>(anAdaptor), 0, 1);
+  for (const double aTolerance : {1.e-7, 10.0})
+  {
+    SCOPED_TRACE(aTolerance);
+    const ExtremaPC::Result& aResult = anEvaluator.Perform(gp_Pnt(3, 3, 4), aTolerance);
+    ASSERT_EQ(aResult.Status, ExtremaPC::Status::InfiniteSolutions);
+    EXPECT_EQ(aResult.InfiniteSquareDistance, 1.0);
+  }
+}

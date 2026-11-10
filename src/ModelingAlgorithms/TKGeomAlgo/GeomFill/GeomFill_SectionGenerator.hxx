@@ -30,22 +30,28 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
-//! gives the functions needed for instantiation from
-//! AppSurf in AppBlend. Allow to evaluate a surface
-//! passing by all the curves if the Profiler.
+//! Supplies profiler sections and endpoint derivatives for AppSurf approximation.
 class GeomFill_SectionGenerator : public GeomFill_Profiler
 {
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Creates a section generator without curves or section parameters.
   Standard_EXPORT GeomFill_SectionGenerator();
 
+  //! Copies section parameters into independent one-based storage.
+  //! @param[in] Params nonempty array of finite, strictly increasing parameters
+  //! @throws Standard_NullObject if Params is null
+  //! @throws Standard_ConstructionError for invalid values; parameters remain unchanged
   Standard_EXPORT void SetParam(const occ::handle<NCollection_HArray1<double>>& Params);
 
+  //! Returns the pole counts, knot count and degree of the section curves.
   Standard_EXPORT void GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d) const;
 
+  //! Fills TKnots with the common section knot sequence.
   Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) const;
 
+  //! Fills TMults with the common section knot multiplicities.
   Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) const;
 
   //! Used for the first and last section
@@ -59,6 +65,7 @@ public:
                                NCollection_Array1<double>&   Weigths,
                                NCollection_Array1<double>&   DWeigths) const;
 
+  //! Returns poles and weights for section P.
   Standard_EXPORT void Section(const int                     P,
                                NCollection_Array1<gp_Pnt>&   Poles,
                                NCollection_Array1<gp_Pnt2d>& Poles2d,

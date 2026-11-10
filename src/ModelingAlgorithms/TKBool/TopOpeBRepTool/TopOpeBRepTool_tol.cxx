@@ -16,12 +16,12 @@
 
 #include <TopOpeBRepTool_tol.hxx>
 
+#include <algorithm>
 #include <TopoDS.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Precision.hxx>
 #include <BRep_Tool.hxx>
 #include <Bnd_Box.hxx>
-#include <TopOpeBRepTool_box.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
@@ -222,43 +222,10 @@ Standard_EXPORT void FTOL_FaceTolerances3d(const TopoDS_Face& myFace1,
                                            const TopoDS_Face& myFace2,
                                            double&            Tol)
 {
-  const occ::handle<TopOpeBRepTool_HBoxTool>& hbt = FBOX_GetHBoxTool();
-  Bnd_Box                                     B1, B2;
-  if (hbt->HasBox(myFace1))
-  {
-    B1 = hbt->Box(myFace1);
-  }
-  else
-  {
-    B1.Update(0., 0., 0., 1., 1., 1.);
-  }
-  if (hbt->HasBox(myFace2))
-  {
-    B2 = hbt->Box(myFace2);
-  }
-  else
-  {
-    B2.Update(0., 0., 0., 1., 1., 1.);
-  }
-  BRepAdaptor_Surface mySurface1;
-  BRepAdaptor_Surface mySurface2;
-  mySurface1.Initialize(myFace1);
-  mySurface2.Initialize(myFace2);
-  double Deflection = 0.01, MaxUV = 0.01;
-  double myTol1, myTol2;
-  FTOL_FaceTolerances(B1,
-                      B2,
-                      myFace1,
-                      myFace2,
-                      mySurface1,
-                      mySurface2,
-                      myTol1,
-                      myTol2,
-                      Deflection,
-                      MaxUV);
-  myTol1 = (myTol1 > 1.e-4) ? 1.e-4 : myTol1;
-  myTol2 = (myTol2 > 1.e-4) ? 1.e-4 : myTol2;
-  Tol    = std::max(myTol1, myTol2);
+  // This overload returns only the combined face tolerance. Bounding boxes,
+  // edge tolerances, and surface parameters are used by the full overload,
+  // but do not affect this result.
+  Tol = std::min(BRep_Tool::Tolerance(myFace1) + BRep_Tool::Tolerance(myFace2), 1.e-4);
 }
 
 Standard_EXPORT void FTOL_FaceTolerances3d(const Bnd_Box&             B1,

@@ -27,6 +27,7 @@
 #include <NCollection_LinearVector.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_NotImplemented.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -83,18 +84,36 @@ public:
       myResult.Status = ExtremaPC::Status::NoSolution;
       return myResult;
     }
-    if (!validateParams(theDomain))
-    {
-      myResult.Status = ExtremaPC::Status::InvalidInput;
-      return myResult;
-    }
-
+    myParameterTolerance = ExtremaPC::THE_PARAM_TOLERANCE;
     const std::optional<double> aConstantDistance =
       constantSquareDistance(theCurve, theP, theDomain);
     if (aConstantDistance.has_value())
     {
+      if (!validateParams(theDomain))
+      {
+        myResult.Status = ExtremaPC::Status::InvalidInput;
+        return myResult;
+      }
       myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aConstantDistance.value();
+      return myResult;
+    }
+    try
+    {
+      myParameterTolerance = theCurve.Resolution(theTol);
+    }
+    catch (const Standard_NotImplemented&)
+    {
+      // Adaptors without a resolution retain the existing parameter tolerance.
+    }
+    if (!std::isfinite(myParameterTolerance) || myParameterTolerance <= 0.0)
+    {
+      myResult.Status = ExtremaPC::Status::NumericalError;
+      return myResult;
+    }
+    if (!validateParams(theDomain))
+    {
+      myResult.Status = ExtremaPC::Status::InvalidInput;
       return myResult;
     }
 
@@ -104,7 +123,7 @@ public:
 
     MathRoot::MultipleConfig aConfig;
     aConfig.NbSamples     = 2;
-    aConfig.XTolerance    = ExtremaPC::THE_PARAM_TOLERANCE;
+    aConfig.XTolerance    = myParameterTolerance;
     aConfig.FTolerance    = theTol;
     aConfig.NullTolerance = theTol;
 
@@ -113,7 +132,7 @@ public:
     {
       const double aLower  = myPartition.Value(anInterval);
       const double anUpper = myPartition.Value(anInterval + 1);
-      if (anUpper - aLower <= ExtremaPC::THE_PARAM_TOLERANCE)
+      if (!(aLower < anUpper))
       {
         continue;
       }
@@ -167,7 +186,9 @@ public:
       }
       for (size_t aRootIndex = 0; aRootIndex < anIntervalRoots.NbRoots(); ++aRootIndex)
       {
-        appendRoot(myRoots, RootCandidate{anIntervalRoots[aRootIndex], aLower, anUpper});
+        appendRoot(myRoots,
+                   RootCandidate{anIntervalRoots[aRootIndex], aLower, anUpper},
+                   myParameterTolerance);
       }
     }
     ExtremaPC_DistanceFunction aFunction(theCurve, theP);
@@ -228,7 +249,7 @@ public:
       {
         const double aLower  = theDomain.Clamp(anIntervals.At(anInterval));
         const double anUpper = theDomain.Clamp(anIntervals.At(anInterval + 1));
-        if (anUpper - aLower <= ExtremaPC::THE_PARAM_TOLERANCE)
+        if (!(aLower < anUpper))
         {
           continue;
         }
@@ -309,8 +330,8 @@ private:
     {
       return false;
     }
-    if (std::abs(myParams.First() - theDomain.Min) > ExtremaPC::THE_PARAM_TOLERANCE
-        || std::abs(myParams.Last() - theDomain.Max) > ExtremaPC::THE_PARAM_TOLERANCE)
+    if (std::abs(myParams.First() - theDomain.Min) > myParameterTolerance
+        || std::abs(myParams.Last() - theDomain.Max) > myParameterTolerance)
     {
       return false;
     }
@@ -400,11 +421,8 @@ private:
         anUpper = aMiddle;
       }
     }
-    if ((aLower < theParameters.Size()
-         && std::abs(theParameters.Value(aLower) - theParameter) <= ExtremaPC::THE_PARAM_TOLERANCE)
-        || (aLower > 0
-            && std::abs(theParameters.Value(aLower - 1) - theParameter)
-                 <= ExtremaPC::THE_PARAM_TOLERANCE))
+    if ((aLower < theParameters.Size() && theParameters.Value(aLower) == theParameter)
+        || (aLower > 0 && theParameters.Value(aLower - 1) == theParameter))
     {
       return;
     }
@@ -443,8 +461,7 @@ private:
       {
         const double aParameter = theDomain.Clamp(anIntervals.At(anIndex));
         insertParameter(thePartition, aParameter);
-        if (aParameter > theDomain.Min + ExtremaPC::THE_PARAM_TOLERANCE
-            && aParameter < theDomain.Max - ExtremaPC::THE_PARAM_TOLERANCE)
+        if (theDomain.Min < aParameter && aParameter < theDomain.Max)
         {
           insertParameter(theContinuityBounds, aParameter);
         }
@@ -458,12 +475,13 @@ private:
 
   //! Appends a sorted root, merging the cells of an equivalent boundary root.
   static void appendRoot(NCollection_LinearVector<RootCandidate>& theRoots,
-                         const RootCandidate&                     theRoot)
+                         const RootCandidate&                     theRoot,
+                         double                                   theParameterTolerance)
   {
     if (!theRoots.IsEmpty())
     {
       RootCandidate& aLast = theRoots.ChangeValue(theRoots.Size() - 1);
-      if (std::abs(aLast.Parameter - theRoot.Parameter) <= ExtremaPC::THE_PARAM_TOLERANCE)
+      if (std::abs(aLast.Parameter - theRoot.Parameter) <= theParameterTolerance)
       {
         aLast.LeftBound  = std::min(aLast.LeftBound, theRoot.LeftBound);
         aLast.RightBound = std::max(aLast.RightBound, theRoot.RightBound);
@@ -481,7 +499,7 @@ private:
     for (size_t anIndex = 0; anIndex < theRoots.Size(); ++anIndex)
     {
       RootCandidate& anExisting = theRoots.ChangeValue(anIndex);
-      if (std::abs(anExisting.Parameter - theRoot.Parameter) <= ExtremaPC::THE_PARAM_TOLERANCE)
+      if (std::abs(anExisting.Parameter - theRoot.Parameter) <= theParameterTolerance)
       {
         anExisting.LeftBound  = std::min(anExisting.LeftBound, theRoot.LeftBound);
         anExisting.RightBound = std::max(anExisting.RightBound, theRoot.RightBound);
@@ -536,7 +554,7 @@ private:
     for (size_t anIndex = 0; anIndex < myResult.Extrema.Size(); ++anIndex)
     {
       if (std::abs(myResult.Extrema.Value(anIndex).Parameter - theParameter)
-          <= ExtremaPC::THE_PARAM_TOLERANCE)
+          <= myParameterTolerance)
       {
         return;
       }
@@ -569,7 +587,7 @@ private:
       for (size_t aJunctionIndex = 0; aJunctionIndex < theContinuityBounds.Size(); ++aJunctionIndex)
       {
         if (std::abs(aRoot.Parameter - theContinuityBounds.Value(aJunctionIndex))
-            <= ExtremaPC::THE_PARAM_TOLERANCE)
+            <= myParameterTolerance)
         {
           isJunction = true;
           break;
@@ -580,8 +598,8 @@ private:
         continue;
       }
 
-      const bool isAtFirst = aRoot.Parameter <= theDomain.Min + ExtremaPC::THE_PARAM_TOLERANCE;
-      const bool isAtLast  = aRoot.Parameter >= theDomain.Max - ExtremaPC::THE_PARAM_TOLERANCE;
+      const bool isAtFirst = aRoot.Parameter <= theDomain.Min + myParameterTolerance;
+      const bool isAtLast  = aRoot.Parameter >= theDomain.Max - myParameterTolerance;
       if (isAtFirst || isAtLast)
       {
         continue;
@@ -630,7 +648,7 @@ private:
         {
           aLeftBound  = thePartition.Value(aParamIndex - 1);
           aRightBound = thePartition.Value(aParamIndex);
-          if (std::abs(aRightBound - aJunction) <= ExtremaPC::THE_PARAM_TOLERANCE
+          if (std::abs(aRightBound - aJunction) <= myParameterTolerance
               && aParamIndex + 1 < thePartition.Size())
           {
             aRightBound = thePartition.Value(aParamIndex + 1);
@@ -641,13 +659,12 @@ private:
       for (size_t aRootIndex = 0; aRootIndex < theRoots.Size(); ++aRootIndex)
       {
         const double aRoot = theRoots.Value(aRootIndex).Parameter;
-        if (aRoot > aLeftBound + ExtremaPC::THE_PARAM_TOLERANCE
-            && aRoot < aJunction - ExtremaPC::THE_PARAM_TOLERANCE)
+        if (aRoot > aLeftBound + myParameterTolerance && aRoot < aJunction - myParameterTolerance)
         {
           aLeftBound = aRoot;
         }
-        else if (aRoot > aJunction + ExtremaPC::THE_PARAM_TOLERANCE
-                 && aRoot < aRightBound - ExtremaPC::THE_PARAM_TOLERANCE)
+        else if (aRoot > aJunction + myParameterTolerance
+                 && aRoot < aRightBound - myParameterTolerance)
         {
           aRightBound = aRoot;
           break;
@@ -666,13 +683,13 @@ private:
       for (size_t aRootIndex = 0; aRootIndex < theRoots.Size(); ++aRootIndex)
       {
         const double aRoot = theRoots.Value(aRootIndex).Parameter;
-        if (aRoot > aLeftBound + ExtremaPC::THE_PARAM_TOLERANCE
-            && aRoot < theDomain.Max - ExtremaPC::THE_PARAM_TOLERANCE)
+        if (aRoot > aLeftBound + myParameterTolerance
+            && aRoot < theDomain.Max - myParameterTolerance)
         {
           aLeftBound = aRoot;
         }
-        if (aRoot > theDomain.Min + ExtremaPC::THE_PARAM_TOLERANCE
-            && aRoot < aRightBound - ExtremaPC::THE_PARAM_TOLERANCE)
+        if (aRoot > theDomain.Min + myParameterTolerance
+            && aRoot < aRightBound - myParameterTolerance)
         {
           aRightBound = aRoot;
         }
@@ -690,7 +707,8 @@ private:
   mutable NCollection_LinearVector<double>        myContinuityBounds; //!< Reusable C2 bounds
   mutable NCollection_LinearVector<double>        myPartition;        //!< Reusable merged partition
   mutable NCollection_LinearVector<RootCandidate> myRoots;            //!< Reusable root candidates
-  mutable ExtremaPC::Result                       myResult;           //!< Reusable result
+  mutable double            myParameterTolerance = 0.0; //!< Native tolerance from curve resolution.
+  mutable ExtremaPC::Result myResult;                   //!< Reusable result
 };
 
 #endif // _ExtremaPC_GridEvaluator_HeaderFile

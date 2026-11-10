@@ -1387,14 +1387,15 @@ void ComputeInternalPoints(Contap_Line&         Line,
       {
         // Essayer de converger
         // std::cout << "Changement de signe detecte" << std::endl;
+        const int    anAxis = std::abs(XSup(1) - XInf(1)) >= std::abs(XSup(2) - XInf(2)) ? 1 : 2;
+        const double aLower = infb(anAxis), anUpper = supb(anAxis);
         solution = false;
         while (!solution)
         {
-          // Selecting the middle point between XInf and XSup leads situation, where X values almost
-          // do not change. To prevent this situation, select shifted point instead of middle.
-          const double aCoef = 2. / 3.;
-          X(1)               = XInf(1) + aCoef * (XSup(1) - XInf(1));
-          X(2)               = XInf(2) + aCoef * (XSup(2) - XInf(2));
+          X(1) = XInf(1) + 0.5 * (XSup(1) - XInf(1));
+          X(2) = XInf(2) + 0.5 * (XSup(2) - XInf(2));
+          // Keep the subdivision parameter fixed during contour projection.
+          infb(anAxis) = supb(anAxis) = X(anAxis);
           rsnld.Perform(SFunc, X, infb, supb);
 
           if (!rsnld.IsDone())
@@ -1449,6 +1450,9 @@ void ComputeInternalPoints(Contap_Line&         Line,
             }
           }
         }
+
+        infb(anAxis) = aLower;
+        supb(anAxis) = anUpper;
 
         if (ok)
         {
