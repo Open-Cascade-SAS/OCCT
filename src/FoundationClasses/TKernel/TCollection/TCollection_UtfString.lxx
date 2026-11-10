@@ -35,9 +35,7 @@ bool TCollection_UtfString<Type>::FromUnicode(const TypeFrom* theString, size_t 
 
   size_t aLength       = 0;
   size_t anOutputUnits = 0;
-  for (TCollection_UtfIterator<TypeFrom> anIter(theString, theCodeUnits);
-       anIter.More();
-       ++anIter)
+  for (TCollection_UtfIterator<TypeFrom> anIter(theString, theCodeUnits); anIter.More(); ++anIter)
   {
     if (!anIter.IsValid())
     {
