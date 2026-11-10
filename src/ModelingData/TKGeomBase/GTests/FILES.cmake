@@ -22,9 +22,11 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomBndLib_Surface_Test.cxx
   GeomBndLib_SurfaceOfExtrusion_Test.cxx
   GeomBndLib_SurfaceOfRevolution_Test.cxx
+  Extrema_ExtCS_Test.cxx
   Extrema_ExtPC_Test.cxx
   Extrema_GlobOptFuncCC_Test.cxx
   Extrema_GenLocateExtPS_Test.cxx
+  Extrema_ExtSS_Test.cxx
   ExtremaPC_BezierCurve_Test.cxx
   ExtremaPC_BSplineCurve_Test.cxx
   ExtremaPC_Circle_Test.cxx
