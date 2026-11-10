@@ -242,7 +242,7 @@ inline LinearResult Solve(const math_Matrix& theA,
     aX[i] = aSum / aLU.At(i, i);
   }
 
-  aResult.Solution = math_Vector(aN);
+  aResult.Solution.emplace(aN);
   for (size_t i = 0; i < aN; ++i)
   {
     (*aResult.Solution)[i] = aX[i];

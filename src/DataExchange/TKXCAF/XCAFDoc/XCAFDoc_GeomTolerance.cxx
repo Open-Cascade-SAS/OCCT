@@ -40,6 +40,8 @@
 
 IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_GeomTolerance, TDataStd_GenericEmpty)
 
+namespace
+{
 enum ChildLab
 {
   ChildLab_Begin = 1,
@@ -65,6 +67,7 @@ enum ChildLab
   ChildLab_Description,
   ChildLab_End
 };
+} // namespace
 
 //=================================================================================================
 
