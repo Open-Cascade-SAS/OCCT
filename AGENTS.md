@@ -25,10 +25,24 @@ This repository is the user's public fork [paulnamalomba/OCCT](https://github.co
 - **Required:** a change is adopted only after it has an independent review and the consumer's acceptance gates pass on the fork commit. A zero exit is never success evidence by itself.
 - Keep upstream's version macros (`OCC_VERSION_*`) unchanged. The internal version below is separate.
 
-### Internal version (Proposed)
+### Internal Version And Build Records
 
-`OCCT_INTERNAL_VERSION` holds the fork's four-part identity, `<breaking>.<major>.<minor>.<build>`, seeded unbuilt at `8.0.1.0`. A build is qualifying when the consumer's acceptance builds this fork commit from its archive and passes its required checks. The first qualifying build advances the version to `8.0.1.1`. Major, minor and build each range from 0 to 9, and overflow carries (`8.0.1.9 -> 8.0.2.0`), as in the MS-MPI fork. Failed, configure-only and documentation-only work does not advance it. Notes are Markdown, grouped under `.commits/<breaking>.<major>.<minor>.md`. The user may re-seed or change this scheme.
+**Required (user, 10 November 2026):** owned dependency forks follow the established fork practice of the [MS-MPI fork](https://github.com/paulnamalomba/microsoft-mpi-native-windows). This section applies that practice to this fork.
 
+`OCCT_INTERNAL_VERSION` is the fork's authoritative internal four-part version, independent of upstream's `OCC_VERSION_*` macros:
+
+```text
+<breaking>.<major>.<minor>.<build-number>
+```
+
+- The seed is `8.0.1.0`: upstream release 8.0.1 plus build zero. It is unbuilt, and it is not a release or a passing-build claim. The first qualifying build advances it to `8.0.1.1`. Build zero after a later rollover can identify a successful build.
+- Major, minor and build each range from 0 through 9. A successful build increments the fourth field. Overflow carries to the next field and resets the following fields to zero: `8.0.1.9 -> 8.0.2.0`, `8.0.9.9 -> 8.1.0.0`, `8.9.9.9 -> 9.0.0.0`. Coordinate allocation across branches, and never publish different artifacts under the same complete identity.
+- A build qualifies when the consumer's acceptance builds this fork commit from its pinned archive and its required checks pass. Record the actual scope. Failed, cancelled, skipped, configure-only, documentation-only and no-op work does not advance any field.
+- Explicit breaking, major or minor decisions select a candidate family. They do not change `OCCT_INTERNAL_VERSION` until an accepted build confirms that candidate.
+- Do not encode the internal identity into upstream's `OCC_VERSION_*` macros.
+- Group notes by the first three fields in Markdown: `.commits/<breaking>.<major>.<minor>.md`, so the 8.0.1 family shares [.commits/8.0.1.md](.commits/8.0.1.md). Use the `create-commit-notes` skill at seed initialization and at every minor, major or breaking change, including carries. Append every accepted build. Never collapse or rewrite earlier transitions.
+- Each accepted build gets `.commits/builds/<version>.json` and a family-note record. The build record holds `accepted`, `status`, `source_commit` (the 40-character fork commit that the consumer built), checks with results, artifact or archive hashes and remaining limits. Persist the accepted version and its record in the same change. This record layout is Proposed.
+- `.commits/manage-repo.ps1` reads `OCCT_INTERNAL_VERSION` and never changes it. Any `-Version` must equal it. Mutating actions require an attached branch, a clean tree and `-Yes`. Pushes target only `paulnamalomba/OCCT`. Tags use the `native/v<internal version>` namespace and are never replaced. Run `pwsh -NoProfile -File .commits/manage-repo.ps1 -Action check` for its self-checks, and add `-WhatIf` to preview a mutating action.
 ### Change register
 
 | Commit subject | Files | Evidence |
