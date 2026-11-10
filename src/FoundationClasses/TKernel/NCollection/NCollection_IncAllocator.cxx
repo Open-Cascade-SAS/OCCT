@@ -25,6 +25,7 @@
 #include <Standard_OutOfMemory.hxx>
 
 #include <cmath>
+#include <mutex>
 
 IMPLEMENT_STANDARD_RTTIEXT(NCollection_IncAllocator, NCollection_BaseAllocator)
 

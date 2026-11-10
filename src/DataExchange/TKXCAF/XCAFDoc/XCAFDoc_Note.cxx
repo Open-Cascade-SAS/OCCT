@@ -36,6 +36,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Note, TDF_Attribute)
 
+namespace
+{
 enum ChildLab
 {
   ChildLab_PntText = 1,
@@ -43,6 +45,7 @@ enum ChildLab
   ChildLab_Pnt,
   ChildLab_Presentation
 };
+} // namespace
 
 //=================================================================================================
 

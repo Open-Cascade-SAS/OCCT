@@ -42,6 +42,8 @@
 
 IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_Dimension, TDataStd_GenericEmpty)
 
+namespace
+{
 enum ChildLab
 {
   ChildLab_Begin = 1,
@@ -67,6 +69,7 @@ enum ChildLab
   ChildLab_ConnectionAxis2,
   ChildLab_End
 };
+} // namespace
 
 //=================================================================================================
 
