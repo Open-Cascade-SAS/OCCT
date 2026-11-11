@@ -17,7 +17,7 @@ set viewname ""
 if { [regexp {Windows} [dversion]] } {
   set length 404.02
 } else {
-  set length 404.371
+  set length 404.394
 }
 
 COMPUTE_HLR $viewname $algotype
