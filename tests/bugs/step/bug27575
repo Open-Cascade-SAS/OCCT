@@ -1,3 +1,6 @@
+puts "TODO OCC000000 ALL: Error: Shape Processing: Operator FixShape failed"
+puts "TODO OCC000000 ALL: Faulty shapes in variables"
+
 puts "========"
 puts "OCC27575"
 puts "========"

@@ -3,11 +3,11 @@ set filename 16.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 3  ( 8 )  Summary  = 3  ( 8 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 3  ( 7 )  Summary  = 3  ( 7 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 103  ( 103 ) 
 STATSHAPE   : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 103  ( 103 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   = 0.0008797337545  ( 0.0008797337553 )  AvgTol   =  0.0001325620461  (  0.0001325882912 )
+TOLERANCE   : MaxTol   =  0.01741383086  (    56.32559099 )  AvgTol   =  0.0005660353051  (    0.5040394347 )
 LABELS      : N0Labels = 14  ( 14 )  N1Labels = 13  ( 13 )  N2Labels = 0  ( 0 )   TotalLabels = 27  ( 27 )   NameLabels = 27  ( 27 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

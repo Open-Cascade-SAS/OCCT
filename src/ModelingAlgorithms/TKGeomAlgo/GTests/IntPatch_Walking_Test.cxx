@@ -12,6 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <gtest/gtest.h>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <IntImp_ConstIsoparametric.hxx>
+#include <IntSurf_PntOn2S.hxx>
+#include <limits>
 #include <ElSLib.hxx>
 #include <GeomAPI_IntSS.hxx>
 #include <GeomInt_IntSS.hxx>
@@ -1802,4 +1807,81 @@ TEST(ApproxInt_MultiLineTest, FaceResamplingUsesSpatialTurning)
                                                                                           false);
   checkResamplingCurvedParameters<BRepApprox_ApproxLine, BRepApprox_TheMultiLineOfApprox>(aReversed,
                                                                                           true);
+}
+
+//==================================================================================================
+
+TEST(IntPatch_WalkingTest, TrimmedConeCylinderIntersectionPreservesCoverage)
+{
+  gp_Ax3 aConeAxes(gp_Pnt(44.5, 0.0, 0.0), gp_Dir(-1.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  aConeAxes.YReverse();
+  const occ::handle<Geom_ConicalSurface> aCone =
+    new Geom_ConicalSurface(aConeAxes, -0.0174881991049735, 420.253604741463);
+  gp_Ax3 aCylinderAxes(gp_Pnt(6.409, -16.8821091720184, 2.60760187008043),
+                       gp_Dir(0.0, -0.152649284218875, -0.988280423780349),
+                       gp_Dir(0.707106781186552, -0.698819789368995, 0.107939344014438));
+  aCylinderAxes.YReverse();
+  const occ::handle<Geom_CylindricalSurface> aCylinder =
+    new Geom_CylindricalSurface(aCylinderAxes, 0.091);
+  const occ::handle<GeomAdaptor_Surface> aSurface1 =
+    new GeomAdaptor_Surface(aCone, 0.0, 3.1415926535897931, 0.0, 61.479350324527601);
+  // Face-face walking combines both face tolerances and the fuzzy value.
+  const double                aFaceTolerance = Precision::Confusion();
+  const double                aFuzzyValue    = Precision::Confusion();
+  const double                aTolerance     = 2.0 * aFaceTolerance + aFuzzyValue;
+  const std::array<double, 4> anUpperBounds  = {0.7, 0.75, 0.78539816339751001, 0.82};
+  const std::array<double, 3> aSeedFractions = {0.0, 0.1, 0.5};
+  for (const double anUpper : anUpperBounds)
+  {
+    const occ::handle<GeomAdaptor_Surface> aSurface2 =
+      new GeomAdaptor_Surface(aCylinder, 0.0, anUpper, -462.816410926446, -361.88177343650477);
+    for (const double aFraction : aSeedFractions)
+    {
+      SCOPED_TRACE(::testing::Message() << "Upper=" << anUpper << " seed fraction=" << aFraction);
+      NCollection_Array1<double> aSeed(1, 4);
+      aSeed.ChangeAt(0) = 1.4584246887483627;
+      aSeed.ChangeAt(1) = 38.032469004851009;
+      aSeed.ChangeAt(2) = aFraction * anUpper;
+      aSeed.ChangeAt(3) = -419.23802042586186;
+      IntWalk_TheInt2S     aSeedSolver(aSurface1, aSurface2, aTolerance);
+      math_FunctionSetRoot aRoot(aSeedSolver.Function());
+      aSeedSolver.Perform(aSeed, aRoot, IntImp_UIsoparametricOnCaro2);
+      ASSERT_TRUE(aSeedSolver.IsDone());
+      ASSERT_FALSE(aSeedSolver.IsEmpty());
+      aSeedSolver.Point().Parameters(aSeed.ChangeAt(0),
+                                     aSeed.ChangeAt(1),
+                                     aSeed.ChangeAt(2),
+                                     aSeed.ChangeAt(3));
+      IntWalk_PWalking aWalking(aSurface1, aSurface2, aTolerance, aTolerance, 0.1, 0.001);
+      aWalking.Perform(aSeed,
+                       aSurface1->FirstUParameter(),
+                       aSurface1->FirstVParameter(),
+                       aSurface2->FirstUParameter(),
+                       aSurface2->FirstVParameter(),
+                       aSurface1->LastUParameter(),
+                       aSurface1->LastVParameter(),
+                       aSurface2->LastUParameter(),
+                       aSurface2->LastVParameter());
+      ASSERT_TRUE(aWalking.IsDone());
+      ASSERT_GT(aWalking.NbPoints(), 1);
+      const double aResolutionU2 = aSurface2->UResolution(aTolerance);
+      double       aMinimumU     = std::numeric_limits<double>::infinity();
+      double       aMaximumU     = -std::numeric_limits<double>::infinity();
+      for (int anIndex = 1; anIndex <= aWalking.NbPoints(); ++anIndex)
+      {
+        const IntSurf_PntOn2S& aPoint = aWalking.Line()->Value(anIndex);
+        double                 aU1, aV1, aU2, aV2;
+        aPoint.Parameters(aU1, aV1, aU2, aV2);
+        aMinimumU                     = std::min(aMinimumU, aU2);
+        aMaximumU                     = std::max(aMaximumU, aU2);
+        const gp_Pnt aPointOnSurface1 = aSurface1->EvalD0(aU1, aV1);
+        const gp_Pnt aPointOnSurface2 = aSurface2->EvalD0(aU2, aV2);
+        EXPECT_LE(aPointOnSurface1.Distance(aPointOnSurface2), aTolerance);
+        EXPECT_LE(aPoint.Value().Distance(aPointOnSurface1), aTolerance);
+        EXPECT_LE(aPoint.Value().Distance(aPointOnSurface2), aTolerance);
+      }
+      EXPECT_LE(aMinimumU, aSurface2->FirstUParameter() + aResolutionU2);
+      EXPECT_GE(aMaximumU, aSurface2->LastUParameter() - aResolutionU2);
+    }
+  }
 }
