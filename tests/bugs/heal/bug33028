@@ -22,6 +22,7 @@ Number of shapes in shape
 checknbshapes s_1 -ref ${nbsBefore} -t -m "result before attempt to simplify the model"
 
 unifysamedom result s_1
+checkshape result
 
 set nbsAfter "
 Number of shapes in shape

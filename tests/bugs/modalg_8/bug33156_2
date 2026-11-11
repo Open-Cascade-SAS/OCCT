@@ -13,6 +13,7 @@ edge e3 v3 v1
 
 wire w1 e1 e2 e3
 mkplane f1 w1 1
+checkshape f1
 
 set state [issubshape w1 f1]
 

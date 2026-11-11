@@ -14,6 +14,7 @@ bop c1 c2
 bopfuse c3
 
 unifysamedom result c3
+checkshape result
 
 checknbshapes result -t -solid 1 -shell 1 -face 3 -wire 3 -edge 3 -vertex 3
 checkview -display result -2d -path ${imagedir}/${test_image}.png

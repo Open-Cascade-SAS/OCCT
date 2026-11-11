@@ -13,8 +13,10 @@ restore [locate_data_file bug25019_prism.brep] p1
 dchrono h1 restart
 bsection r a1 p1 -n2d2
 dchrono h1 stop counter BSectionN2D2
+checkshape r
 
 # 2.
 dchrono h2 restart
 bsection r a1 p1
 dchrono h2 stop counter BSection
+checkshape r

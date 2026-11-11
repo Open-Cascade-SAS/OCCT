@@ -15,6 +15,7 @@ baddobjects b1
 baddtools b2
 bfillds
 bbuild result
+checkshape result
 
 checkprops result -s 1.21915e+08
 

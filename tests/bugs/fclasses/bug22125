@@ -17,6 +17,7 @@ file delete -force ${imagedir}/$filename
 box b 10 10 10
 brepiges b ${imagedir}/$filename
 igesbrep ${imagedir}/$filename result *
+checkshape result
 
 if { ! [file exists ${imagedir}/$filename] } {
   puts "Error: file is not found with expected name \"${imagedir}/$filename\""

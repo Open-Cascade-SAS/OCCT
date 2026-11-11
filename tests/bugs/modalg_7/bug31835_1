@@ -37,6 +37,7 @@ bcbuild r
 bcremoveall
 bcadd result1 c1 1 c2 1 c3 1
 
+checkshape result1
 checkprops result1 -equal result
 checknbshapes result1 -ref [nbshapes result]
 checkmaxtol result1 -ref 2.e-7

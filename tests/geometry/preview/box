@@ -34,6 +34,9 @@ fit
 checkview -screenshot -2d -path $anImage4
                 
 box b5 20.0 20.0 20.0
+checkshape b3
+checkshape b4
+checkshape b5
 donly b5
 fit            
 checkview -screenshot -2d -path $anImage5

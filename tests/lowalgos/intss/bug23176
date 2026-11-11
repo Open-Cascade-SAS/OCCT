@@ -53,6 +53,7 @@ checksection rw -r 0
 checkmaxtol rw -min_tol 2.0e-7
 
 checknbshapes rw -edge 4 -vertex 4
+checkshape rw
 
 smallview
 don result*

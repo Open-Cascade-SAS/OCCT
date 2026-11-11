@@ -63,6 +63,8 @@ if { $nbv < 2 } {
   }
 }
 
+checkshape rs
+
 smallview
 don res_*
 

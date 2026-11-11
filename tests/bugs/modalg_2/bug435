@@ -20,11 +20,11 @@ repeat 8 {
 	puts "Faulty  OCC435 : merge operation was made incorrect"
     } else {
 	puts " OCC435 OK:  merge operation was made properly"
+	checkshape result
     }
     incr j
 } 
 
 checkprops result -l 17.2848 
-checkshape result 
 checksection result
 checkview -display result -3d -path ${imagedir}/${test_image}.png

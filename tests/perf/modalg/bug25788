@@ -34,3 +34,4 @@ brunparallel 1
 dchrono cpu restart
 bcut r b1 b2 
 dchrono cpu stop counter bcut
+checkshape r

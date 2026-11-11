@@ -48,6 +48,7 @@ proc perform_offset_multi {theResult theShape theValue theFaceIds theFaceValues}
   
   if {![catch { checkshape ${theResult} } ] } {
     unifysamedom ${theResult}_unif ${theResult}
+    checkshape ${theResult}_unif
     return 1
   }
   return 0

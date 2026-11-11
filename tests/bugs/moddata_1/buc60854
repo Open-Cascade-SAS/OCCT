@@ -28,6 +28,7 @@ vertex test_vertex_6 1 1 0
 edge test_edge_3 test_vertex_6 test_vertex_4
 
 BUC60854 result test_shape test_face test_edge_2 test_edge_3 @ test_edge test_edge_1 # L
+checkshape result
 
 regexp {FACE +: +([-0-9.+eE]+)} [numshapes result] full FACE_num
 
@@ -36,6 +37,7 @@ if {${FACE_num} != 3} {
 }
 
 BUC60854 result_2 test_shape test_face test_edge_2 test_edge_3 @ test_edge test_edge_1 # R
+checkshape result_2
 
 regexp {FACE +: +([-0-9.+eE]+)} [numshapes result_2] full FACE_num
 

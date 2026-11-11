@@ -13,6 +13,7 @@ ptorus t2 100 9.99
 ttranslate t2 100 0 0 
 
 bfuseblend result t1 t2 5
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}-2d.png
 checkview -display result -3d -path ${imagedir}/${test_image}-3d.png

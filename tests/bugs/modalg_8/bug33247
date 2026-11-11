@@ -10,4 +10,5 @@ bcommon r a b
 checknbshapes r -vertex 98 -edge 131 -wire 35 -face 26
 checkprops r -s 157.39
 
+checkshape r
 checkview -display r -2d -path ${imagedir}/${test_image}.png

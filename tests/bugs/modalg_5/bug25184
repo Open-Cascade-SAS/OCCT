@@ -34,6 +34,7 @@ for {set i 1} {$i < $N} {incr i} {
     break
   }
 }
+checkshape r
 if { $N == 0 } {
   puts "Error: Bad order of wires in the result of General Fuse"
 } else {

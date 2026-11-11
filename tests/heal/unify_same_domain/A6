@@ -15,6 +15,7 @@ explode a e
 unifysamedom result a a_3 a_1_3 a_1_4 -e
 
 savehistory usd_hist
+checkshape result
 
 set bug_info [isdeleted usd_hist a_1_8]
 if {$bug_info != "Not deleted."} {

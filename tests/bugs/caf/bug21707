@@ -75,6 +75,7 @@ set Sel11 [AttachShape D Pr_10 ${Prism} ${Prism} 0]
 
 GetShape D $Cut1:2 result
 
+checkshape result
 checknbshapes result -vertex 10
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -14,6 +14,7 @@ trotate s2 0 0 0 0 1 0 90
 trotate s2 0 0 0 1 0 0 -45
 ttranslate s2 -0.2 0 0.48
 bcut result s1 s2
+checkshape result
 
 checknbshapes result -vertex 4 -edge 6 -wire 6 -face 4 -shell 1 -solid 1 -compsolid 0 -compound 1 -shape 23
 checkview -display result -2d -path ${imagedir}/${test_image}.png
