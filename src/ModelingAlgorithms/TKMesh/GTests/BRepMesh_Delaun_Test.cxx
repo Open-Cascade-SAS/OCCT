@@ -430,12 +430,12 @@ TEST(BRepMesh_DelaunTest, SharedEdgeAndBoundaryInsertionKeepConstraints)
       int aTriangleNodes[3];
       aStructure->ElementNodes(aStructure->GetElement(anIndex), aTriangleNodes);
       for (int aNode : aTriangleNodes)
-     {
+      {
         if (aNode == aPoint)
         {
           ++anIncident;
         }
-     }
+      }
     }
     EXPECT_EQ(anIncident, aCase == 0 ? 4 : 0) << "case=" << aCase;
     for (const int anEdge : anOuter)
