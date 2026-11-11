@@ -418,9 +418,11 @@ static bool Update(const occ::handle<Adaptor3d_Surface>& face,
 
 // Parameters of the point of theSurf that is nearest to thePnt. False if there is none or if it is
 // farther than theTol3d. A trimmed surface is replaced by its basis surface, thePnt may be outside
-// the trim.
+// the trim. The first extremum is the nearest with Extrema_ExtFlag_MIN. U is shifted by whole
+// periods to the period of theFace.
 static bool ChFi3d_ProjectOnSurface(const gp_Pnt&                    thePnt,
                                     const occ::handle<Geom_Surface>& theSurf,
+                                    const TopoDS_Face&               theFace,
                                     const double                     theTolUV,
                                     const double                     theTol3d,
                                     gp_Pnt2d&                        theUV)
@@ -434,24 +436,18 @@ static bool ChFi3d_ProjectOnSurface(const gp_Pnt&                    thePnt,
   GeomAdaptor_Surface anAdaptor;
   anAdaptor.Load(aSurf);
   Extrema_ExtPS anExt(thePnt, anAdaptor, theTolUV, theTolUV, Extrema_ExtFlag_MIN);
-  if (!anExt.IsDone() || anExt.NbExt() < 1)
-  {
-    return false;
-  }
-  int aNearest = 1;
-  for (int anIdx = 2; anIdx <= anExt.NbExt(); ++anIdx)
-  {
-    if (anExt.SquareDistance(anIdx) < anExt.SquareDistance(aNearest))
-    {
-      aNearest = anIdx;
-    }
-  }
-  if (anExt.SquareDistance(aNearest) > theTol3d * theTol3d)
+  if (!anExt.IsDone() || anExt.NbExt() < 1 || anExt.SquareDistance(1) > theTol3d * theTol3d)
   {
     return false;
   }
   double aU, aV;
-  anExt.Point(aNearest).Parameter(aU, aV);
+  anExt.Point(1).Parameter(aU, aV);
+  double aUMin, aUMax, aVMin, aVMax;
+  BRepTools::UVBounds(theFace, aUMin, aUMax, aVMin, aVMax);
+  if (aSurf->IsUPeriodic())
+  {
+    aU += aSurf->UPeriod() * std::round(((aUMin + aUMax) / 2 - aU) / aSurf->UPeriod());
+  }
   theUV.SetCoord(aU, aV);
   return true;
 }
@@ -2790,6 +2786,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
           }
           else if (!ChFi3d_ProjectOnSurface(CV1.Point(),
                                             Sfacemoins1,
+                                            F,
                                             BRep_Tool::Tolerance(F),
                                             10 * tolapp3d,
                                             pfac1))
@@ -3033,6 +3030,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
         }
         else if (!ChFi3d_ProjectOnSurface(CV2.Point(),
                                           Sfacemoins1,
+                                          F,
                                           BRep_Tool::Tolerance(F),
                                           10 * tolapp3d,
                                           pfac2))
