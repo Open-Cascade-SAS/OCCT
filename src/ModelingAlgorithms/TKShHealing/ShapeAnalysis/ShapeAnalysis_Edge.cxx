@@ -738,12 +738,11 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
                                             const bool         theExact)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  maxdev   = 0.0;
   if (BRep_Tool::Degenerated(edge))
   {
     return false;
   }
-
-  maxdev = 0;
 
   // Get same parameter flag
   occ::handle<BRep_TEdge>& TE            = *((occ::handle<BRep_TEdge>*)&edge.TShape());

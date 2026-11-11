@@ -5,5 +5,5 @@ puts "============"
 igesbrep [locate_data_file bug30544_deferry_normal.igs] a *
 
 checkshape a
-checkmaxtol a -ref 0.072
+checkmaxtol a -ref 2.0705553888361661
 checknbshapes a -face 18

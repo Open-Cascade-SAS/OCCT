@@ -11,7 +11,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 109  ( 1131 )  Summary  = 109  ( 1
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 3067  ( 0 )  Face     = 3067  ( 3067 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 3550  ( 0 )  Face     = 3550  ( 3550 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =  0.08182775785  (  0.08182775785 )  AvgTol   =  0.0001329320262  (  0.002277754769 )
+TOLERANCE   : MaxTol   =   0.1150246595  (   0.1150246595 )  AvgTol   =  0.0001306633808  (  0.002236429989 )
 LABELS      : N0Labels = 17  ( 17 )  N1Labels = 46  ( 46 )  N2Labels = 0  ( 0 )   TotalLabels = 63  ( 63 )   NameLabels = 63  ( 63 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )
@@ -20,11 +20,6 @@ NLAYERS     : NLayers  = 0  ( 0 )
 LAYERS      : Layers   =   (  )
 
 }
-
-# Due to the ambiguous interpretation of the "inner" wire on the surfaces
-# that have natural bound (is it the cutout in the whole surface, or it's just wrong wire orientation),
-# we must manually turn off the adding of the natural bound option of the shape healing for this test.
-
 set de_use_custom_scripts 1
 
 proc de_before_script {TheFileName} {

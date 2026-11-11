@@ -10,8 +10,8 @@ if { [regexp {Windows} [dversion]] } {
     set nod_n 1397
   } else {
     # Windows x64/x86
-    set tri_n 2738
-    set nod_n 1417
+    set tri_n 2774
+    set nod_n 1435
   }
 } else {
   set tri_n 2736

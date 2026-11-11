@@ -140,6 +140,8 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
     while (!Finish)
     {
 
+      bool aStopCutting = false;
+
       // Management of the multiline splitting for approximation:
       if (!begin)
       {
@@ -174,8 +176,17 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
             aNbImp++;
           }
 
-          // cut an interval
-          mylastU = (myfirstU + mylastU) / 2;
+          // Both children need distinct endpoints and an interior parameter.
+          const double aMid = (myfirstU + mylastU) / 2;
+          if (aMid - myfirstU <= Epsilon(std::abs(myfirstU))
+              || mylastU - aMid <= Epsilon(std::abs(aMid)))
+          {
+            aStopCutting = true;
+          }
+          else
+          {
+            mylastU = aMid;
+          }
           aNbCut++;
         }
       }
@@ -188,7 +199,6 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
       }
 
       // cout << myfirstU << " - " << mylastU << "  tol : " << thetol3d << " " << thetol2d << endl;
-      bool aStopCutting = false;
       if (myHangChecking && aNbCut >= aNbComp)
       {
         if (aNbCut > aNbImp + 1)

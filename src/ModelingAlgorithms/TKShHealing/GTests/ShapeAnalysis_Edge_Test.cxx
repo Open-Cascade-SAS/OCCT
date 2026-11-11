@@ -25,6 +25,7 @@
 #include <Precision.hxx>
 #include <gp_Pln.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_Circle.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
@@ -186,4 +187,33 @@ TEST(ShapeAnalysis_EdgeTest, SameParameterRepairPreservesToleranceStatus)
     aPoles.ChangeAt(2) = gp_Pnt2d(1.0, aDeviation * (1.0 - (1.0 - aPeak) * (1.0 - aPeak)));
     aCheckRepair(new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2), aDeviation);
   }
+}
+
+//==================================================================================================
+TEST(ShapeAnalysis_EdgeTest, DegeneratedEdgeResetsSameParameterDeviation)
+{
+  BRepPrimAPI_MakeSphere aSphere(1.0);
+  aSphere.Build();
+  ASSERT_TRUE(aSphere.IsDone());
+  ShapeAnalysis_Edge anAnalysis;
+  int                aNbDegenerated = 0;
+  for (TopExp_Explorer anExp(aSphere.Shape(), TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
+    if (!BRep_Tool::Degenerated(anEdge))
+    {
+      continue;
+    }
+    ++aNbDegenerated;
+    double aMaxDeviation = 1.0;
+    EXPECT_FALSE(anAnalysis.CheckSameParameter(anEdge, aMaxDeviation));
+    EXPECT_TRUE(anAnalysis.Status(ShapeExtend_OK));
+    EXPECT_DOUBLE_EQ(aMaxDeviation, 0.0);
+    aMaxDeviation = 1.0;
+    const TopoDS_Face anEmptyFace;
+    EXPECT_FALSE(anAnalysis.CheckSameParameter(anEdge, anEmptyFace, aMaxDeviation));
+    EXPECT_TRUE(anAnalysis.Status(ShapeExtend_OK));
+    EXPECT_DOUBLE_EQ(aMaxDeviation, 0.0);
+  }
+  EXPECT_GT(aNbDegenerated, 0);
 }
