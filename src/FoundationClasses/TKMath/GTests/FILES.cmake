@@ -51,6 +51,7 @@ set(OCCT_TKMath_GTests_FILES
   gp_Dir2d_Test.cxx
   gp_GTrsf_Test.cxx
   gp_Hypr_Test.cxx
+  gp_Hypr2d_Test.cxx
   gp_Lin_Test.cxx
   gp_Mat_Test.cxx
   gp_Pln_Test.cxx
