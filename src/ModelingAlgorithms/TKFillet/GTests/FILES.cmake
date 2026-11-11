@@ -12,4 +12,5 @@ set(OCCT_TKFillet_GTests_FILES
   BRepBlend_Line_Test.cxx
   ChFi3d_FilBuilder_Test.cxx
   ChFi3d_IsTangentFaces_Test.cxx
+  BRepFilletAPI_MakeFillet_TangentEdges_Test.cxx
 )
