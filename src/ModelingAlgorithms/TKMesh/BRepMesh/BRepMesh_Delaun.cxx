@@ -2618,19 +2618,12 @@ bool BRepMesh_Delaun::Contains(const int              theTriangleId,
   }
 
   const bool isNotFree = (anEdges[aEdgeOnId]->Movability() != BRepMesh_Free);
-  if (aSqMinDist > theSqTolerance)
+  if (aSqMinDist <= theSqTolerance)
   {
-    if (isNotFree && aDistance[aEdgeOnId] < (aSqModulus[aEdgeOnId] / 5.))
+    if (isNotFree)
     {
-      theEdgeOn = e[aEdgeOnId];
+      return false;
     }
-  }
-  else if (isNotFree)
-  {
-    return false;
-  }
-  else
-  {
     theEdgeOn = e[aEdgeOnId];
   }
 

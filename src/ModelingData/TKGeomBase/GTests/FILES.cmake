@@ -48,6 +48,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   IntAna_IntQuadQuad_Test.cxx
   ProjLib_Cone_Test.cxx
   ProjLib_ComputeApproxOnPolarSurface_Test.cxx
+  ProjLib_ProjectionDerivative_Test.cxx
   gce_MakeCone_Test.cxx
   gce_MakeCirc2d_Test.cxx
   gce_MakeCylinder_Test.cxx
@@ -56,4 +57,5 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomLProp_CLProps2d_Test.cxx
   GeomLProp_CurAndInf2d_Test.cxx
   LProp_CurAndInf_Test.cxx
+  GCPnts_TangentialDeflection_Test.cxx
 )

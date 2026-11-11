@@ -11,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_Circle.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
 #include <ShapeAnalysis_Edge.hxx>
+#include <ShapeExtend_Status.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -88,4 +91,39 @@ TEST(ShapeAnalysis_EdgeTest, IsSeam_NonSeam)
 
   ShapeAnalysis_Edge anAnalyzer;
   EXPECT_FALSE(anAnalyzer.IsSeam(anEdge, aFace));
+}
+
+//==================================================================================================
+
+TEST(ShapeAnalysis_EdgeTest, DegeneratedEdgeResetsSameParameterDeviation)
+{
+  BRepPrimAPI_MakeSphere aSphere(1.0);
+  aSphere.Build();
+  ASSERT_TRUE(aSphere.IsDone());
+  ShapeAnalysis_Edge anAnalysis;
+  int                aNbDegenerated = 0;
+  for (TopExp_Explorer anExp(aSphere.Shape(), TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
+    if (!BRep_Tool::Degenerated(anEdge))
+    {
+      double aDeviation = 1.0;
+      EXPECT_FALSE(anAnalysis.CheckSameParameter(anEdge, aDeviation));
+      EXPECT_TRUE(anAnalysis.Status(ShapeExtend_OK));
+      EXPECT_GE(aDeviation, 0.0);
+      EXPECT_LE(aDeviation, BRep_Tool::Tolerance(anEdge));
+      continue;
+    }
+    ++aNbDegenerated;
+    double aMaxDeviation = 1.0;
+    EXPECT_FALSE(anAnalysis.CheckSameParameter(anEdge, aMaxDeviation));
+    EXPECT_TRUE(anAnalysis.Status(ShapeExtend_OK));
+    EXPECT_DOUBLE_EQ(aMaxDeviation, 0.0);
+    aMaxDeviation = 1.0;
+    const TopoDS_Face anEmptyFace;
+    EXPECT_FALSE(anAnalysis.CheckSameParameter(anEdge, anEmptyFace, aMaxDeviation));
+    EXPECT_TRUE(anAnalysis.Status(ShapeExtend_OK));
+    EXPECT_DOUBLE_EQ(aMaxDeviation, 0.0);
+  }
+  EXPECT_GT(aNbDegenerated, 0);
 }
