@@ -364,7 +364,7 @@ TEST(BRepMesh_DelaunTest, InteriorPointNearLongFrontierIsInserted)
     }
     const int aTriangle =
       aStructure->AddElement(BRepMesh_Triangle(aEdges, anOrientations, BRepMesh_Free));
-    BRepMesh_Delaun       aMesher(aStructure, 2, 2, true);
+    BRepMesh_Delaun aMesher(aStructure, 2, 2, true);
     // The centroid height is one third of the triangle height aScale / 4.
     const BRepMesh_Vertex aPoint(.5 * aScale, aScale / 12., BRepMesh_Free);
     double                aTolU, aTolV;
