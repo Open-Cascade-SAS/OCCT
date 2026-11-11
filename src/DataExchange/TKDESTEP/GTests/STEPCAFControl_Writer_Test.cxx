@@ -12,9 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRep_Builder.hxx>
 #include <DESTEP_Parameters.hxx>
 #include <Precision.hxx>
 #include <STEPCAFControl_Controller.hxx>
+#include <STEPCAFControl_ExternFile.hxx>
 #include <STEPCAFControl_Writer.hxx>
 #include <STEPConstruct_UnitContext.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
@@ -30,6 +32,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
+#include <TopoDS_Compound.hxx>
 #include <UnitsMethods_LengthUnit.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
@@ -38,6 +41,7 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XSControl_WorkSession.hxx>
 
 #include <gtest/gtest.h>
 
@@ -213,5 +217,40 @@ TEST(STEPCAFControl_WriterTest, RunoutOnlyCreatedForRunoutModifier)
       }
     }
     EXPECT_EQ(aRunouts, isRunout ? 1 : 0);
+  }
+}
+
+// Test that the files of the parts (external references) get the write parameters of the main file
+TEST(STEPCAFControl_WriterTest, ExternFilesGetTheParametersOfTheMainFile)
+{
+  STEPCAFControl_Controller::Init();
+  const occ::handle<TDocStd_Document>  aDocument = new TDocStd_Document("BinXCAF");
+  const occ::handle<XCAFDoc_ShapeTool> aShapes = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+  TopoDS_Compound                      anAssembly;
+  BRep_Builder                         aBuilder;
+  aBuilder.MakeCompound(anAssembly);
+  aBuilder.Add(anAssembly, BRepPrimAPI_MakeBox(10, 10, 10).Shape());
+  aBuilder.Add(anAssembly, BRepPrimAPI_MakeBox(gp_Pnt(20, 0, 0), 5, 5, 5).Shape());
+  aShapes->AddShape(anAssembly, true);
+
+  DESTEP_Parameters aParameters;
+  aParameters.WriteSchema         = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aParameters.WriteStringEncoding = DESTEP_Parameters::WriteMode_StringEncoding_Escape;
+  STEPCAFControl_Writer aWriter;
+  ASSERT_TRUE(aWriter.Transfer(aDocument, aParameters, STEPControl_AsIs, "part_"));
+  ASSERT_EQ(aWriter.ExternFiles().Extent(), 2);
+  for (NCollection_DataMap<TCollection_AsciiString,
+                           occ::handle<STEPCAFControl_ExternFile>>::Iterator
+         aFile(aWriter.ExternFiles());
+       aFile.More();
+       aFile.Next())
+  {
+    const occ::handle<StepData_StepModel> aModel =
+      occ::down_cast<StepData_StepModel>(aFile.Value()->GetWS()->Model());
+    ASSERT_FALSE(aModel.IsNull());
+    EXPECT_EQ(aModel->InternalParameters.WriteStringEncoding,
+              DESTEP_Parameters::WriteMode_StringEncoding_Escape);
+    EXPECT_EQ(aModel->InternalParameters.WriteSchema,
+              DESTEP_Parameters::WriteMode_StepSchema_AP242DIS);
   }
 }
