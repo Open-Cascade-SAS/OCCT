@@ -403,8 +403,10 @@ TEST(BRepMesh_DelaunTest, SharedEdgeAndBoundaryInsertionKeepConstraints)
                            aStructure->AddNode(BRepMesh_Vertex(0., 1., BRepMesh_Frontier))};
     int       anOuter[4];
     for (int anIndex = 0; anIndex < 4; ++anIndex)
+    {
       anOuter[anIndex] = aStructure->AddLink(
         BRepMesh_Edge(aNodes[anIndex], aNodes[(anIndex + 1) % 4], BRepMesh_Frontier));
+    }
     const int aDiagonal = aStructure->AddLink(
       BRepMesh_Edge(aNodes[0], aNodes[2], aCase == 3 ? BRepMesh_Fixed : BRepMesh_Free));
     const int  aTriangle1Edges[3]        = {anOuter[0], anOuter[1], aDiagonal};
@@ -428,13 +430,21 @@ TEST(BRepMesh_DelaunTest, SharedEdgeAndBoundaryInsertionKeepConstraints)
       int aTriangleNodes[3];
       aStructure->ElementNodes(aStructure->GetElement(anIndex), aTriangleNodes);
       for (int aNode : aTriangleNodes)
+     {
         if (aNode == aPoint)
+        {
           ++anIncident;
+        }
+     }
     }
     EXPECT_EQ(anIncident, aCase == 0 ? 4 : 0) << "case=" << aCase;
     for (const int anEdge : anOuter)
+    {
       EXPECT_EQ(aStructure->GetLink(anEdge).Movability(), BRepMesh_Frontier);
+    }
     if (aCase == 3)
+    {
       EXPECT_EQ(aStructure->GetLink(aDiagonal).Movability(), BRepMesh_Fixed);
+    }
   }
 }
