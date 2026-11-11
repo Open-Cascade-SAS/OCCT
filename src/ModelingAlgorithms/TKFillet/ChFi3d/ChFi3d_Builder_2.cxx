@@ -3288,17 +3288,20 @@ void ChFi3d_Builder::PerformSetOfKPart(occ::handle<ChFiDS_Stripe>& Stripe, const
             // start section -> first KPart
             // update of extension.
             Spine->SetFirstTgt(std::min(0., WFirst));
-            CurrentHE->LastParameter(WFirst);
-            CurrentHE->SetLastPointAndTgt(PFirst, TFirst);
-            Spine->AppendElSpine(CurrentHE);
-            CurrentHE->ChangeNext() = LSD.Value(j);
-            CurrentHE               = new ChFiDS_ElSpine();
+            if (WFirst - CurrentHE->FirstParameter() > tolesp)
+            {
+              CurrentHE->LastParameter(WFirst);
+              CurrentHE->SetLastPointAndTgt(PFirst, TFirst);
+              Spine->AppendElSpine(CurrentHE);
+              CurrentHE->ChangeNext() = LSD.Value(j);
+              CurrentHE               = new ChFiDS_ElSpine();
 
-            CurrentOffsetHE->LastParameter(WFirst);
-            CurrentOffsetHE->SetLastPointAndTgt(PFirst, TFirst);
-            Spine->AppendOffsetElSpine(CurrentOffsetHE);
-            CurrentOffsetHE->ChangeNext() = LSD.Value(j);
-            CurrentOffsetHE               = new ChFiDS_ElSpine();
+              CurrentOffsetHE->LastParameter(WFirst);
+              CurrentOffsetHE->SetLastPointAndTgt(PFirst, TFirst);
+              Spine->AppendOffsetElSpine(CurrentOffsetHE);
+              CurrentOffsetHE->ChangeNext() = LSD.Value(j);
+              CurrentOffsetHE               = new ChFiDS_ElSpine();
+            }
           }
           CurrentHE->FirstParameter(WLast);
           CurrentHE->SetFirstPointAndTgt(PLast, TLast);

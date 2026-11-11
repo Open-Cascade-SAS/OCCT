@@ -572,6 +572,12 @@ occ::handle<Law_Composite> ChFiDS_FilSpine::ComputeLaw(const occ::handle<ChFiDS_
     }
     nbed = bidfin - ideb + 1;
   }
+  if (nbed < 1)
+  {
+    // A section within the spine tolerance of a single vertex starts on the edge after that vertex
+    // and ends on the edge before it, so it has no edge to take a radius from.
+    throw Standard_DomainError("AppendLaw : section does not cover any edge");
+  }
   NCollection_Array1<int> ind(1, nbed);
   int                     j = 1;
   for (int i = ideb; i <= bidfin; i++)

@@ -19,6 +19,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
@@ -43,6 +44,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <GC_MakeSegment.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <GProp_GProps.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_List.hxx>
@@ -913,4 +915,76 @@ TEST(BRepFilletAPI_MakeFilletTest, CollapsedFreeBoundarySectionSharesEndpoint)
     BRepGProp::SurfaceProperties(aFillet.Shape(), aProperties);
     EXPECT_NEAR(aProperties.Mass(), 803799.0, 803799.0 * 1.e-4) << aShift;
   }
+}
+
+//==================================================================================================
+
+TEST(BRepFilletAPI_MakeFilletTest, SliverEdgeBeforeFirstAnalyticSection)
+{
+  // Three fillets meet at the inner corner of a stepped prism, where their spines are not extended.
+  // The one along X can start with a free-form sliver shorter than the spine tolerance, tangent to
+  // a straight edge. Only the straight edge has an analytic fillet, so the section left before it
+  // lies within the tolerance of a single vertex.
+  const auto aFilletInnerCorner = [](const double theSliverLength, TopoDS_Shape& theResult) {
+    const bool          hasSliver = theSliverLength > 0.0;
+    const gp_Pnt        aCorner(0, 0, 0);
+    const gp_Pnt        aSliverEnd(theSliverLength, 0, 0);
+    const TopoDS_Vertex aV0 = BRepBuilderAPI_MakeVertex(aCorner);
+    const TopoDS_Vertex aV1 = hasSliver ? BRepBuilderAPI_MakeVertex(aSliverEnd).Vertex() : aV0;
+    const TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(10, 0, 0));
+    const TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(10, 10, 0));
+    const TopoDS_Vertex aV4 = BRepBuilderAPI_MakeVertex(gp_Pnt(-10, 10, 0));
+    const TopoDS_Vertex aV5 = BRepBuilderAPI_MakeVertex(gp_Pnt(-10, -10, 0));
+    const TopoDS_Vertex aV6 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, -10, 0));
+
+    BRepBuilderAPI_MakeWire aWire;
+    if (hasSliver)
+    {
+      NCollection_Array1<gp_Pnt> aPoles(1, 3);
+      aPoles(1)                                        = aCorner;
+      aPoles(2)                                        = gp_Pnt(0.5 * theSliverLength, 0, 0);
+      aPoles(3)                                        = aSliverEnd;
+      const occ::handle<Geom_BezierCurve> aSliverCurve = new Geom_BezierCurve(aPoles);
+      aWire.Add(BRepBuilderAPI_MakeEdge(aSliverCurve, aV0, aV1));
+    }
+    const TopoDS_Edge aAlongX = BRepBuilderAPI_MakeEdge(aV1, aV2);
+    aWire.Add(aAlongX);
+    aWire.Add(BRepBuilderAPI_MakeEdge(aV2, aV3));
+    aWire.Add(BRepBuilderAPI_MakeEdge(aV3, aV4));
+    aWire.Add(BRepBuilderAPI_MakeEdge(aV4, aV5));
+    aWire.Add(BRepBuilderAPI_MakeEdge(aV5, aV6));
+    const TopoDS_Edge aAlongY = BRepBuilderAPI_MakeEdge(aV6, aV0);
+    aWire.Add(aAlongY);
+    ASSERT_TRUE(aWire.IsDone());
+
+    const TopoDS_Face aBase = BRepBuilderAPI_MakeFace(aWire.Wire(), true);
+    ASSERT_FALSE(aBase.IsNull());
+    BRepPrimAPI_MakePrism aPrism(aBase, gp_Vec(0, 0, 10));
+    ASSERT_TRUE(aPrism.IsDone());
+    ASSERT_TRUE(BRepCheck_Analyzer(aPrism.Shape()).IsValid());
+    ASSERT_EQ(aPrism.Generated(aV0).Size(), 1u);
+
+    BRepFilletAPI_MakeFillet aFillet(aPrism.Shape());
+    aFillet.Add(1.0, TopoDS::Edge(aPrism.LastShape(aAlongX)));
+    aFillet.Add(1.0, TopoDS::Edge(aPrism.LastShape(aAlongY)));
+    aFillet.Add(1.0, TopoDS::Edge(aPrism.Generated(aV0).First()));
+    ASSERT_EQ(aFillet.NbContours(), 3);
+    ASSERT_EQ(aFillet.NbEdges(1), hasSliver ? 2 : 1);
+
+    aFillet.Build();
+    ASSERT_TRUE(aFillet.IsDone());
+    theResult = aFillet.Shape();
+  };
+
+  TopoDS_Shape aReference, aResult;
+  aFilletInnerCorner(0.0, aReference);
+  aFilletInnerCorner(5.e-5, aResult);
+  ASSERT_FALSE(aReference.IsNull());
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+
+  GProp_GProps aReferenceProperties, aProperties;
+  BRepGProp::VolumeProperties(aReference, aReferenceProperties);
+  BRepGProp::VolumeProperties(aResult, aProperties);
+  EXPECT_NEAR(aProperties.Mass(), aReferenceProperties.Mass(), 1.e-2);
 }
