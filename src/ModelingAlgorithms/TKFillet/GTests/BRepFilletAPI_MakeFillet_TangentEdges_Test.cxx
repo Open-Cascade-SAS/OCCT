@@ -89,7 +89,8 @@ TopoDS_Shape makeBlockWithRoof(const bool theCylindricalRoof, const bool theRoof
 //! toward the front by theSlope per unit length, so the edge before the vertex leaves the line of
 //! the edge after it. The axis of the roof is theCrease below the top face, so the roof meets the
 //! walls at an angle and the stripe end point is off the roof surface by about
-//! theSlope * theCrease / 30 mm (a tangent roof would give the square of that).
+//! theSlope * theCrease / sqrt(900 + theCrease^2) mm (a tangent roof would give the square of
+//! that).
 TopoDS_Shape makeSlopedBlockWithRoof(const double theSlope,
                                      const double theCrease,
                                      const bool   theRoofFirst)
@@ -333,14 +334,17 @@ bool blend(const TopoDS_Shape& theShape,
 }
 
 //! Blends the concave edge of the sloped block with THE_Size, as a chamfer or a fillet. Checks that
-//! the builder declines, or that it adds faces and keeps the vertex tolerance of the input. A
-//! tilted top face leaves a few tiny edges in the result whatever the roof, so validity is not
-//! asserted.
-void checkSloped(const double theCrease, const bool theChamfer, const bool theExpectDone)
+//! the builder declines, or that it builds a valid solid that has more faces than the input and the
+//! vertex tolerance of the input. A slope of 1e-5 or more can leave tiny edges in the result
+//! whatever the roof, so the case that must build uses a smaller one and stays valid.
+void checkSloped(const double theSlope,
+                 const double theCrease,
+                 const bool   theChamfer,
+                 const bool   theExpectDone)
 {
   for (const bool aRoofFirst : {false, true})
   {
-    const TopoDS_Shape aShape = makeSlopedBlockWithRoof(0.005, theCrease, aRoofFirst);
+    const TopoDS_Shape aShape = makeSlopedBlockWithRoof(theSlope, theCrease, aRoofFirst);
     ASSERT_TRUE(BRepCheck_Analyzer(aShape).IsValid());
     const TopoDS_Edge anEdge = findConcaveEdge(aShape);
     ASSERT_FALSE(anEdge.IsNull());
@@ -348,6 +352,7 @@ void checkSloped(const double theCrease, const bool theChamfer, const bool theEx
     ASSERT_EQ(blend(aShape, anEdge, theChamfer, aResult), theExpectDone);
     if (theExpectDone)
     {
+      EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
       EXPECT_GT(faceCount(aResult), faceCount(aShape));
       EXPECT_LT(maxVertexTolerance(aResult), 1.e-3);
     }
@@ -415,24 +420,24 @@ TEST(BRepFilletAPI_MakeChamferTest, EndOnPlainWall_BoxRoof_BuildsExactChamfer)
   checkChamfer(false, true);
 }
 
-TEST(BRepFilletAPI_MakeFilletTest, EndOnTangentEdgePair_EndPointNearFace_KeepsVertexTolerance)
+TEST(BRepFilletAPI_MakeFilletTest, EndOnTangentEdgePair_EndPointNearFace_BuildsValidSolid)
 {
-  checkSloped(1.0, false, true);
+  checkSloped(5.e-6, 100.0, false, true);
 }
 
-TEST(BRepFilletAPI_MakeChamferTest, EndOnTangentEdgePair_EndPointNearFace_KeepsVertexTolerance)
+TEST(BRepFilletAPI_MakeChamferTest, EndOnTangentEdgePair_EndPointNearFace_BuildsValidSolid)
 {
-  checkSloped(1.0, true, true);
+  checkSloped(5.e-6, 100.0, true, true);
 }
 
 TEST(BRepFilletAPI_MakeFilletTest, EndOnTangentEdgePair_EndPointFarFromFace_IsDeclined)
 {
-  checkSloped(30.0, false, false);
+  checkSloped(0.005, 30.0, false, false);
 }
 
 TEST(BRepFilletAPI_MakeChamferTest, EndOnTangentEdgePair_EndPointFarFromFace_IsDeclined)
 {
-  checkSloped(30.0, true, false);
+  checkSloped(0.005, 30.0, true, false);
 }
 
 TEST(BRepFilletAPI_MakeFilletTest, EndOnTangentEdgePair_TorusRoof_BuildsExactFillet)
