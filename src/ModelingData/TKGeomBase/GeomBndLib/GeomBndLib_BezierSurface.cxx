@@ -233,11 +233,13 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
 
     double aCMin = aCoordMin[aK];
     double aCMax = aCoordMax[aK];
+    // A sample whose gap to the extremum equals the deflection must still be
+    // refined; the tolerance keeps rounding from deciding that tie.
     for (int anI = 1; anI <= aNbUSamples; ++anI)
     {
       for (int aJ = 1; aJ <= aNbVSamples; ++aJ)
       {
-        if (aPnts(anI, aJ).Coord(aK + 1) - aCMin < aDiff)
+        if (aPnts(anI, aJ).Coord(aK + 1) - aCMin < aDiff + anEps)
         {
           const double anUMin  = theUMin + std::max(0, anI - 2) * aDU;
           const double anUMax  = theUMin + std::min(aNbUSamples - 1, anI) * aDU;
@@ -257,7 +259,7 @@ Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theUMin,
             aCMin = aLocMin;
           }
         }
-        else if (aCMax - aPnts(anI, aJ).Coord(aK + 1) < aDiff)
+        else if (aCMax - aPnts(anI, aJ).Coord(aK + 1) < aDiff + anEps)
         {
           const double anUMin  = theUMin + std::max(0, anI - 2) * aDU;
           const double anUMax  = theUMin + std::min(aNbUSamples - 1, anI) * aDU;

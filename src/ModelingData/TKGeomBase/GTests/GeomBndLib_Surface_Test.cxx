@@ -15,6 +15,8 @@
 
 #include <BndLib_AddSurface.hxx>
 #include <Bnd_Box.hxx>
+#include <GeomBndLib_OtherSurface.hxx>
+#include <GeomConvert.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -49,6 +51,55 @@ void CompareBoxes(const Bnd_Box& theNew, const Bnd_Box& theOld, const double the
   EXPECT_NEAR(aYmaxN, aYmaxO, theTol);
   EXPECT_NEAR(aZminN, aZminO, theTol);
   EXPECT_NEAR(aZmaxN, aZmaxO, theTol);
+}
+
+//! Helper: poles of a 10 x 10 dome, z = 160 u (1 - u) v (1 - v).
+//! Its peak, z = 10 at u = v = 0.5, is the centre of a sampling cell of
+//! the optimal box, where no point is evaluated.
+NCollection_Array2<gp_Pnt> DomePoles()
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  for (int anI = 1; anI <= 3; ++anI)
+  {
+    for (int aJ = 1; aJ <= 3; ++aJ)
+    {
+      const double aZ = (anI == 2 && aJ == 2) ? 40.0 : 0.0;
+      aPoles.SetValue(anI, aJ, gp_Pnt(5.0 * (anI - 1), 5.0 * (aJ - 1), aZ));
+    }
+  }
+  return aPoles;
+}
+
+//! Helper: ellipsoid with semi-axes 20, 10 and 5 as a rational B-spline,
+//! the unit sphere converted and its poles scaled.
+occ::handle<Geom_BSplineSurface> Ellipsoid()
+{
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 1.0);
+  occ::handle<Geom_BSplineSurface>   aBSpl   = GeomConvert::SurfaceToBSplineSurface(aSphere);
+  for (int anI = 1; anI <= aBSpl->NbUPoles(); ++anI)
+  {
+    for (int aJ = 1; aJ <= aBSpl->NbVPoles(); ++aJ)
+    {
+      const gp_Pnt aP = aBSpl->Pole(anI, aJ);
+      aBSpl->SetPole(anI,
+                     aJ,
+                     gp_Pnt(20.0 * aP.X(), 10.0 * aP.Y(), 5.0 * aP.Z()),
+                     aBSpl->Weight(anI, aJ));
+    }
+  }
+  return aBSpl;
+}
+
+//! Helper: check that an optimal box is the ellipsoid's exact box.
+void ExpectEllipsoidBox(const Bnd_Box& theBox)
+{
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = theBox.Get();
+  EXPECT_NEAR(aXmin, -20.0, 1.0e-6);
+  EXPECT_NEAR(aXmax, 20.0, 1.0e-6);
+  EXPECT_NEAR(aYmin, -10.0, 1.0e-6);
+  EXPECT_NEAR(aYmax, 10.0, 1.0e-6);
+  EXPECT_NEAR(aZmin, -5.0, 1.0e-6);
+  EXPECT_NEAR(aZmax, 5.0, 1.0e-6);
 }
 
 } // namespace
@@ -596,4 +647,61 @@ TEST(GeomBndLib_SurfaceTest, Torus_NegativeVMin_NoUnderBounding)
       EXPECT_LE(aP.Z(), aZmax + Precision::Confusion());
     }
   }
+}
+
+// =========================================================================
+// BoxOptimal: extremum between the samples (issue #1604)
+// =========================================================================
+
+// The best sample lies halfway between two equal samples, so its gap to them
+// equals the deflection exactly; the extremum must still be refined.
+TEST(GeomBndLib_SurfaceTest, Issue1604_BezierSurface_PeakBetweenSamples)
+{
+  occ::handle<Geom_BezierSurface> aDome = new Geom_BezierSurface(DomePoles());
+  GeomBndLib_Surface              aSurf(aDome);
+  EXPECT_EQ(aSurf.GetType(), GeomAbs_BezierSurface);
+
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aSurf.BoxOptimal(0.0).Get();
+  EXPECT_NEAR(aZmax, 10.0, 1.0e-6);
+}
+
+TEST(GeomBndLib_SurfaceTest, Issue1604_BSplineSurface_PeakBetweenSamples)
+{
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+  NCollection_Array1<int> aMults(1, 2);
+  aMults.SetValue(1, 3);
+  aMults.SetValue(2, 3);
+
+  occ::handle<Geom_BSplineSurface> aDome =
+    new Geom_BSplineSurface(DomePoles(), aKnots, aKnots, aMults, aMults, 2, 2);
+  GeomBndLib_Surface aSurf(aDome);
+  EXPECT_EQ(aSurf.GetType(), GeomAbs_BSplineSurface);
+
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aSurf.BoxOptimal(0.0).Get();
+  EXPECT_NEAR(aZmax, 10.0, 1.0e-6);
+}
+
+TEST(GeomBndLib_SurfaceTest, Issue1604_OtherSurface_PeakBetweenSamples)
+{
+  occ::handle<Geom_BezierSurface> aDome = new Geom_BezierSurface(DomePoles());
+  GeomAdaptor_Surface             anAdaptor(aDome);
+
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] =
+    GeomBndLib_OtherSurface(anAdaptor).BoxOptimal(0.0).Get();
+  EXPECT_NEAR(aZmax, 10.0, 1.0e-6);
+}
+
+TEST(GeomBndLib_SurfaceTest, Issue1604_BSplineSurface_Ellipsoid)
+{
+  GeomBndLib_Surface aSurf(Ellipsoid());
+  EXPECT_EQ(aSurf.GetType(), GeomAbs_BSplineSurface);
+  ExpectEllipsoidBox(aSurf.BoxOptimal(0.0));
+}
+
+TEST(GeomBndLib_SurfaceTest, Issue1604_OtherSurface_Ellipsoid)
+{
+  GeomAdaptor_Surface anAdaptor(Ellipsoid());
+  ExpectEllipsoidBox(GeomBndLib_OtherSurface(anAdaptor).BoxOptimal(0.0));
 }
