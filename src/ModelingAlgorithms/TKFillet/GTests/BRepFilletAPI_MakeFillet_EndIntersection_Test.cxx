@@ -18,6 +18,7 @@
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
@@ -34,7 +35,10 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 
 #include <gtest/gtest.h>
@@ -47,6 +51,7 @@ namespace
 constexpr double THE_PLATE_THICKNESS = 2.5;
 constexpr double THE_LIP_HEIGHT      = 4.0;
 constexpr double THE_ROOT_RADIUS     = 1.3;
+constexpr double THE_SMALL_RADIUS    = 0.8;
 
 //! A 10 x 10 x 2.5 plate with a lip on top for y < 5, and the concave edge where the end face of
 //! the lip meets the plate top.
@@ -107,8 +112,13 @@ double maxVertexTolerance(const TopoDS_Shape& theShape)
 
 //! The plate profile is extruded along y. The front face of the lip leans by theLeanDeg and meets
 //! the plate in a root fillet. The lip is then cut to y < 5, which leaves a concave end edge at
-//! y = 5 whose end vertex lies on the tangent line of the root fillet.
-bool makePlateWithLip(const double theLeanDeg, PlateWithLip& thePlate)
+//! y = 5 whose end vertex lies on the tangent line of the root fillet. The mirror image of the
+//! plate in the plane x = 5 is the same shape with the opposite sense of the intersection of the
+//! two fillets.
+bool makePlateWithLip(const double  theLeanDeg,
+                      const double  theRootRadius,
+                      const bool    theMirror,
+                      PlateWithLip& thePlate)
 {
   const double aLipFootX =
     3.2 + (THE_LIP_HEIGHT - THE_PLATE_THICKNESS) * std::tan(theLeanDeg * M_PI / 180.0);
@@ -134,7 +144,7 @@ bool makePlateWithLip(const double theLeanDeg, PlateWithLip& thePlate)
     return false;
   }
   BRepFilletAPI_MakeFillet aRootFillet(aPrism);
-  aRootFillet.Add(THE_ROOT_RADIUS, aRootEdge);
+  aRootFillet.Add(theRootRadius, aRootEdge);
   aRootFillet.Build();
   if (!aRootFillet.IsDone())
   {
@@ -152,9 +162,22 @@ bool makePlateWithLip(const double theLeanDeg, PlateWithLip& thePlate)
 
   thePlate.EndEdge = findUniqueEdge(thePlate.Solid, [&](const gp_Pnt& thePnt) {
     return std::abs(thePnt.Y() - 5.0) < 1.e-6 && std::abs(thePnt.Z() - THE_PLATE_THICKNESS) < 1.e-6
-           && thePnt.X() < aLipFootX + THE_ROOT_RADIUS + 1.e-3;
+           && thePnt.X() < aLipFootX + theRootRadius + 1.e-3;
   });
-  return !thePlate.EndEdge.IsNull();
+  if (thePlate.EndEdge.IsNull())
+  {
+    return false;
+  }
+
+  if (theMirror)
+  {
+    gp_Trsf aMirror;
+    aMirror.SetMirror(gp_Ax2(gp_Pnt(5.0, 5.0, 0.0), gp_Dir(1.0, 0.0, 0.0)));
+    BRepBuilderAPI_Transform aTransform(thePlate.Solid, aMirror, true);
+    thePlate.Solid   = aTransform.Shape();
+    thePlate.EndEdge = TopoDS::Edge(aTransform.ModifiedShape(thePlate.EndEdge));
+  }
+  return true;
 }
 
 //=================================================================================================
@@ -188,7 +211,7 @@ void checkEndFillet(const PlateWithLip& thePlate, const double theRadius)
 TEST(BRepFilletAPI_MakeFilletTest, EndOnFilletTangentLine_RadiusEqualToExistingFillet_ResultIsValid)
 {
   PlateWithLip aPlate;
-  ASSERT_TRUE(makePlateWithLip(1.0, aPlate));
+  ASSERT_TRUE(makePlateWithLip(1.0, THE_ROOT_RADIUS, false, aPlate));
   ASSERT_TRUE(BRepCheck_Analyzer(aPlate.Solid).IsValid());
 
   checkEndFillet(aPlate, THE_ROOT_RADIUS);
@@ -197,7 +220,7 @@ TEST(BRepFilletAPI_MakeFilletTest, EndOnFilletTangentLine_RadiusEqualToExistingF
 TEST(BRepFilletAPI_MakeFilletTest, EndOnFilletTangentLine_RadiusNearExistingFillet_ResultIsValid)
 {
   PlateWithLip aPlate;
-  ASSERT_TRUE(makePlateWithLip(1.0, aPlate));
+  ASSERT_TRUE(makePlateWithLip(1.0, THE_ROOT_RADIUS, false, aPlate));
 
   checkEndFillet(aPlate, 1.299);
   checkEndFillet(aPlate, 1.301);
@@ -208,7 +231,7 @@ TEST(BRepFilletAPI_MakeFilletTest,
      EndOnFilletTangentLine_RadiusScanAroundExistingFillet_ResultsAreValid)
 {
   PlateWithLip aPlate;
-  ASSERT_TRUE(makePlateWithLip(1.0, aPlate));
+  ASSERT_TRUE(makePlateWithLip(1.0, THE_ROOT_RADIUS, false, aPlate));
 
   const double aDeltas[] = {-1.e-5, -1.e-7, 0.0, 1.e-7, 1.e-5};
   for (const double aDelta : aDeltas)
@@ -221,7 +244,35 @@ TEST(BRepFilletAPI_MakeFilletTest,
      EndOnFilletTangentLine_VerticalLip_RadiusEqualToExistingFillet_ResultIsValid)
 {
   PlateWithLip aPlate;
-  ASSERT_TRUE(makePlateWithLip(0.0, aPlate));
+  ASSERT_TRUE(makePlateWithLip(0.0, THE_ROOT_RADIUS, false, aPlate));
 
   checkEndFillet(aPlate, THE_ROOT_RADIUS);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest,
+     EndOnFilletTangentLine_MirrorImage_RadiusEqualToExistingFillet_ResultIsValid)
+{
+  PlateWithLip aPlate;
+  ASSERT_TRUE(makePlateWithLip(1.0, THE_ROOT_RADIUS, true, aPlate));
+  ASSERT_TRUE(BRepCheck_Analyzer(aPlate.Solid).IsValid());
+
+  checkEndFillet(aPlate, THE_ROOT_RADIUS);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest,
+     EndOnFilletTangentLine_SmallerRadius_RadiusEqualToExistingFillet_ResultIsValid)
+{
+  PlateWithLip aPlate;
+  ASSERT_TRUE(makePlateWithLip(1.0, THE_SMALL_RADIUS, false, aPlate));
+
+  checkEndFillet(aPlate, THE_SMALL_RADIUS);
+}
+
+TEST(BRepFilletAPI_MakeFilletTest,
+     EndOnFilletTangentLine_SmallerRadiusMirrorImage_RadiusEqualToExistingFillet_ResultIsValid)
+{
+  PlateWithLip aPlate;
+  ASSERT_TRUE(makePlateWithLip(1.0, THE_SMALL_RADIUS, true, aPlate));
+
+  checkEndFillet(aPlate, THE_SMALL_RADIUS);
 }
