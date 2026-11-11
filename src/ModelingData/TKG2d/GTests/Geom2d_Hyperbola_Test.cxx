@@ -149,4 +149,24 @@ TEST_F(Geom2d_HyperbolaTest, Asymptotes)
   // Asymptotes pass through center
   EXPECT_NEAR(anAsym1.Location().X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(anAsym2.Location().X(), 0.0, Precision::Confusion());
+
+  // Local equations are Y = (B/A)*X and Y = -(B/A)*X, so the unit directions are (A, +-B) / C.
+  const double c = std::sqrt(25.0 + 9.0);
+  EXPECT_NEAR(anAsym1.Direction().X(), 5.0 / c, Precision::Confusion());
+  EXPECT_NEAR(anAsym1.Direction().Y(), 3.0 / c, Precision::Confusion());
+  EXPECT_NEAR(anAsym2.Direction().X(), 5.0 / c, Precision::Confusion());
+  EXPECT_NEAR(anAsym2.Direction().Y(), -3.0 / c, Precision::Confusion());
+}
+
+TEST_F(Geom2d_HyperbolaTest, Directrices)
+{
+  const gp_Ax2d aDirectrix1 = myHyperbola->Directrix1();
+  const gp_Ax2d aDirectrix2 = myHyperbola->Directrix2();
+
+  // Both directrices are at distance A/E = A*A/C from the center, on opposite sides of it.
+  const double aDistance = 25.0 / std::sqrt(25.0 + 9.0);
+  EXPECT_NEAR(aDirectrix1.Location().X(), aDistance, Precision::Confusion());
+  EXPECT_NEAR(aDirectrix1.Location().Y(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aDirectrix2.Location().X(), -aDistance, Precision::Confusion());
+  EXPECT_NEAR(aDirectrix2.Location().Y(), 0.0, Precision::Confusion());
 }
