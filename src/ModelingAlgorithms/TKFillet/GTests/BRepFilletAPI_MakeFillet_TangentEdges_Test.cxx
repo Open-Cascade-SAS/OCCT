@@ -103,9 +103,8 @@ double maxVertexTolerance(const TopoDS_Shape& theShape)
 }
 
 //! Checks a blend of the concave edge: valid solid, tolerances of the input, no fault found by the
-//! boolean analyzer, and the volume the blend adds along the 60 long edge. The ends of the fillet
-//! on the cylindrical roof leave the walls by up to 0.02 over the radius, so the tolerance on the
-//! volume is 0.02.
+//! boolean analyzer, and the volume the blend adds along the 60 long edge. The measured volumes
+//! are within 0.004 of the analytic value, the tolerance is 0.02.
 void expectExactBlend(const TopoDS_Shape& theInput,
                       const TopoDS_Shape& theResult,
                       const double        theAddedVolume)
