@@ -423,7 +423,10 @@ int ChFi3d_FilBuilder::NbSurf(const int IC) const
   {
     if (i == IC)
     {
-      return itel.Value()->SetOfSurfData()->Length();
+      // The contour has no surface data until Build or Simulate reaches it.
+      const occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& aSurfData =
+        itel.Value()->SetOfSurfData();
+      return aSurfData.IsNull() ? 0 : aSurfData->Length();
     }
   }
   return 0;
@@ -441,7 +444,13 @@ occ::handle<NCollection_HArray1<ChFiDS_CircSection>> ChFi3d_FilBuilder::Sect(con
   {
     if (i == IC)
     {
-      occ::handle<Standard_Transient> bid = itel.Value()->SetOfSurfData()->Value(IS)->Simul();
+      const occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& aSurfData =
+        itel.Value()->SetOfSurfData();
+      if (aSurfData.IsNull())
+      {
+        return occ::handle<NCollection_HArray1<ChFiDS_CircSection>>();
+      }
+      occ::handle<Standard_Transient> bid = aSurfData->Value(IS)->Simul();
       res = occ::down_cast<NCollection_HArray1<ChFiDS_CircSection>>(bid);
       return res;
     }

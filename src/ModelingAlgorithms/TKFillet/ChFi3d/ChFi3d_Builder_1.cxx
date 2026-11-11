@@ -510,8 +510,16 @@ occ::handle<Geom_Surface> ChFi3d_Builder::ComputedSurface(const int IC, const in
       break;
     }
   }
-  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> hd    = st->SetOfSurfData();
-  int                                                              isurf = hd->Value(IS)->Surf();
+  if (st.IsNull())
+  {
+    return occ::handle<Geom_Surface>();
+  }
+  occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> hd = st->SetOfSurfData();
+  if (hd.IsNull())
+  {
+    return occ::handle<Geom_Surface>();
+  }
+  int isurf = hd->Value(IS)->Surf();
   return myDS->Surface(isurf).Surface();
 }
 

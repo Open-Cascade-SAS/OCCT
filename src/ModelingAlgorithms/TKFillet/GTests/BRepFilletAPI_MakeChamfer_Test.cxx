@@ -17,6 +17,7 @@
 #include <BRepBuilderAPI_NurbsConvert.hxx>
 #include <BRepGProp.hxx>
 #include <ChFiDS_ChamfMode.hxx>
+#include <ChFiDS_CircSection.hxx>
 #include <gp_Pnt.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
@@ -29,6 +30,7 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Ax2.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_List.hxx>
@@ -48,6 +50,31 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <cmath>
+
+namespace
+{
+//==================================================================================================
+
+//! Find an edge of theShape that shares no vertex with theEdge.
+TopoDS_Edge findDisjointEdge(const TopoDS_Shape& theShape, const TopoDS_Edge& theEdge)
+{
+  const TopoDS_Vertex aFirst = TopExp::FirstVertex(theEdge);
+  const TopoDS_Vertex aLast  = TopExp::LastVertex(theEdge);
+  for (TopExp_Explorer anExp(theShape, TopAbs_EDGE); anExp.More(); anExp.Next())
+  {
+    const TopoDS_Edge&  anEdge   = TopoDS::Edge(anExp.Current());
+    const TopoDS_Vertex aVertex1 = TopExp::FirstVertex(anEdge);
+    const TopoDS_Vertex aVertex2 = TopExp::LastVertex(anEdge);
+    if (!aVertex1.IsSame(aFirst) && !aVertex1.IsSame(aLast) && !aVertex2.IsSame(aFirst)
+        && !aVertex2.IsSame(aLast))
+    {
+      return anEdge;
+    }
+  }
+  return TopoDS_Edge();
+}
+
+} // namespace
 
 TEST(BRepFilletAPI_MakeChamferTest, SymmetricChamfer)
 {
@@ -90,6 +117,152 @@ TEST(BRepFilletAPI_MakeChamferTest, AsymmetricChamfer)
 
   BRepCheck_Analyzer anAnalyzer(aResult);
   EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+// A contour has no surface data until Build() or Simulate() reaches it, and Reset() clears it.
+TEST(BRepFilletAPI_MakeChamferTest, NbSurf_EdgeAddedNeverRun_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aChamfer.NbContours(), 1);
+
+  EXPECT_EQ(aChamfer.NbSurf(1), 0);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, NbSurf_AfterSimulateThenReset_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aChamfer.Simulate(1);
+  ASSERT_EQ(aChamfer.NbSurf(1), 1);
+
+  aChamfer.Reset();
+  EXPECT_EQ(aChamfer.NbSurf(1), 0);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, NbSurf_AfterBuildThenReset_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aChamfer.Build();
+  ASSERT_TRUE(aChamfer.IsDone());
+  ASSERT_EQ(aChamfer.NbSurf(1), 1);
+
+  aChamfer.Reset();
+  EXPECT_EQ(aChamfer.NbSurf(1), 0);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, NbSurf_SecondContourNotSimulated_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+  const TopoDS_Edge anEdge1 = TopoDS::Edge(anExp.Current());
+  const TopoDS_Edge anEdge2 = findDisjointEdge(aBox, anEdge1);
+  ASSERT_FALSE(anEdge2.IsNull());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, anEdge1);
+  aChamfer.Add(1.0, anEdge2);
+  ASSERT_EQ(aChamfer.NbContours(), 2);
+
+  aChamfer.Simulate(1);
+  ASSERT_EQ(aChamfer.NbSurf(1), 1);
+  EXPECT_EQ(aChamfer.NbSurf(2), 0);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, NbSurf_ContourIndexOutOfRange_ReturnsZero)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aChamfer.NbContours(), 1);
+
+  EXPECT_EQ(aChamfer.NbSurf(0), 0);
+  EXPECT_EQ(aChamfer.NbSurf(2), 0);
+  EXPECT_EQ(aChamfer.NbSurf(99), 0);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, NbSurf_AfterSimulate_ReturnsSurfaceCountAndSections)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aChamfer.Simulate(1);
+
+  EXPECT_EQ(aChamfer.NbSurf(1), 1);
+  const occ::handle<NCollection_HArray1<ChFiDS_CircSection>> aSections = aChamfer.Sect(1, 1);
+  ASSERT_FALSE(aSections.IsNull());
+  EXPECT_GT(aSections->Length(), 0);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, NbSurf_AfterBuild_ReturnsSurfaceCount)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, TopoDS::Edge(anExp.Current()));
+  aChamfer.Build();
+  ASSERT_TRUE(aChamfer.IsDone());
+
+  EXPECT_EQ(aChamfer.NbSurf(1), 1);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, Sect_EdgeAddedNeverRun_ReturnsNull)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  TopExp_Explorer anExp(aBox, TopAbs_EDGE);
+  ASSERT_TRUE(anExp.More());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  aChamfer.Add(1.0, TopoDS::Edge(anExp.Current()));
+  ASSERT_EQ(aChamfer.NbContours(), 1);
+
+  EXPECT_TRUE(aChamfer.Sect(1, 1).IsNull());
 }
 
 // Chamfer every edge of a flat 50x50x10 slab with distance 5. The top and
