@@ -1,0 +1,15 @@
+##################################################
+# Corrected classification of a vertex relatively a circular edge
+##################################################
+
+pcylinder cyl1 100 300
+explode cyl1 F
+point p2d 100 0
+
+set res1 [b2dclassify cyl1_3 p2d]
+
+if { [ regexp "ON" $res1 ] != 1 } {
+  puts "Error: Wrong result of classification"
+} else {
+  puts "OK: good result of classification"
+}

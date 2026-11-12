@@ -426,6 +426,16 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
                 return true;
               }
             }
+            else
+            {
+              // vertex of a circular edge is wrongly classified IN without this code
+              aC2d->D0(aLPar, aPOnC);
+              if (P.SquareDistance(aFPOnC) < aTolParConf2 || P.SquareDistance(aPOnC) < aTolParConf2)
+              {
+                Par = 0.0;
+                return true;
+              }
+            }
           }
         }
       } // if (!aC2d.IsNull()) {
