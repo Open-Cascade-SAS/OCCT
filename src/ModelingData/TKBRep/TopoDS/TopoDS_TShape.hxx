@@ -26,6 +26,8 @@
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
+#include <atomic>
+
 class TopoDS_Shape;
 
 // resolve name collisions with X11 headers
@@ -59,6 +61,10 @@ class TopoDS_Shape;
 //! Users have no direct access to the classes derived
 //! from TShape. They handle them with the classes
 //! derived from Shape.
+//!
+//! myState is atomic: TShapes are shared between a boolean operation's
+//! result and its inputs, so concurrent flag mutations on one instance are
+//! an ordinary access pattern, not a misuse.
 class TopoDS_TShape : public Standard_Transient
 {
 public:
@@ -83,19 +89,19 @@ public:
 
 public:
   //! Returns the free flag.
-  bool Free() const { return (myState & Bit_Free) != 0; }
+  bool Free() const { return (myState.load(std::memory_order_acquire) & Bit_Free) != 0; }
 
   //! Sets the free flag.
   void Free(bool theIsFree) { setBit(Bit_Free, theIsFree); }
 
   //! Returns the locked flag.
-  bool Locked() const { return (myState & Bit_Locked) != 0; }
+  bool Locked() const { return (myState.load(std::memory_order_acquire) & Bit_Locked) != 0; }
 
   //! Sets the locked flag.
   void Locked(bool theIsLocked) { setBit(Bit_Locked, theIsLocked); }
 
   //! Returns the modification flag.
-  bool Modified() const { return (myState & Bit_Modified) != 0; }
+  bool Modified() const { return (myState.load(std::memory_order_acquire) & Bit_Modified) != 0; }
 
   //! Sets the modification flag.
   void Modified(bool theIsModified)
@@ -109,31 +115,34 @@ public:
   }
 
   //! Returns the checked flag.
-  bool Checked() const { return (myState & Bit_Checked) != 0; }
+  bool Checked() const { return (myState.load(std::memory_order_acquire) & Bit_Checked) != 0; }
 
   //! Sets the checked flag.
   void Checked(bool theIsChecked) { setBit(Bit_Checked, theIsChecked); }
 
   //! Returns the orientability flag.
-  bool Orientable() const { return (myState & Bit_Orientable) != 0; }
+  bool Orientable() const
+  {
+    return (myState.load(std::memory_order_acquire) & Bit_Orientable) != 0;
+  }
 
   //! Sets the orientability flag.
   void Orientable(bool theIsOrientable) { setBit(Bit_Orientable, theIsOrientable); }
 
   //! Returns the closedness flag.
-  bool Closed() const { return (myState & Bit_Closed) != 0; }
+  bool Closed() const { return (myState.load(std::memory_order_acquire) & Bit_Closed) != 0; }
 
   //! Sets the closedness flag.
   void Closed(bool theIsClosed) { setBit(Bit_Closed, theIsClosed); }
 
   //! Returns the infinity flag.
-  bool Infinite() const { return (myState & Bit_Infinite) != 0; }
+  bool Infinite() const { return (myState.load(std::memory_order_acquire) & Bit_Infinite) != 0; }
 
   //! Sets the infinity flag.
   void Infinite(bool theIsInfinite) { setBit(Bit_Infinite, theIsInfinite); }
 
   //! Returns the convexness flag.
-  bool Convex() const { return (myState & Bit_Convex) != 0; }
+  bool Convex() const { return (myState.load(std::memory_order_acquire) & Bit_Convex) != 0; }
 
   //! Sets the convexness flag.
   void Convex(bool theIsConvex) { setBit(Bit_Convex, theIsConvex); }
@@ -143,7 +152,8 @@ public:
   //! The type is embedded in the lower 4 bits of the state.
   TopAbs_ShapeEnum ShapeType() const
   {
-    return static_cast<TopAbs_ShapeEnum>(myState & Bits_ShapeType_Mask);
+    return static_cast<TopAbs_ShapeEnum>(myState.load(std::memory_order_acquire)
+                                         & Bits_ShapeType_Mask);
   }
 
   //! Returns a copy of the TShape with no sub-shapes.
@@ -170,20 +180,26 @@ protected:
   {
   }
 
-  //! Set a bit flag.
+  //! Set a bit flag atomically, via a compare-exchange retry loop.
   //! @param theBit the bit to set
   //! @param theIsOn true to set, false to clear
   void setBit(uint16_t theBit, bool theIsOn)
   {
-    if (theIsOn)
-      myState |= theBit;
-    else
-      myState &= ~theBit;
+    uint16_t aState = myState.load(std::memory_order_relaxed);
+    uint16_t aNewState;
+    do
+    {
+      aNewState = theIsOn ? (aState | theBit) : (aState & ~theBit);
+    } while (!myState.compare_exchange_weak(aState,
+                                            aNewState,
+                                            std::memory_order_release,
+                                            std::memory_order_relaxed));
   }
 
 private:
   NCollection_List<TopoDS_Shape> myShapes; //!< Child shapes stored in a list
-  uint16_t myState; //!< Compact state: shape type(bits 0-3)+flags(bits 4-11)+reserved(bits 12-15)
+  std::atomic<uint16_t>
+    myState; //!< Compact state: shape type(bits 0-3)+flags(bits 4-11)+reserved(bits 12-15)
 };
 
 #endif // _TopoDS_TShape_HeaderFile
