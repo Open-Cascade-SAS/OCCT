@@ -258,10 +258,6 @@ static bool KPartCircle(
       {
         anOffset *= -1;
       }
-      if (!BRep_Tool::IsClosed(E))
-      {
-        anOffset *= -1;
-      }
       gp_Circ2d theCirc = AHC->Circle();
       if (anOffset > 0. || std::abs(anOffset) < theCirc.Radius())
       {
