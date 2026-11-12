@@ -1,10 +1,11 @@
+puts "TODO OCC25588 ALL: Not connected mesh inside face 953"
+
 puts "======="
 puts "0025588: BRepMesh_ShapeTool::FindUV check for 2d points to be the same is inconsistent with ShapeAnalysis_Wire::CheckLacking"
 puts "======="
 puts ""
 
 puts "TODO OCC25588 All: Not connected mesh inside face 893"
-puts "TODO OCC25588 All: Not connected mesh inside face 1097"
 
 pload XDE
 

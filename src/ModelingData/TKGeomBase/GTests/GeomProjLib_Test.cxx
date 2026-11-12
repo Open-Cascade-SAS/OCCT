@@ -12,6 +12,8 @@
 // commercial license or contractual agreement.
 
 #include <Geom_Circle.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_CylindricalSurface.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GeomProjLib.hxx>
 #include <GeomAdaptor_Curve.hxx>
@@ -326,5 +328,40 @@ TEST(GeomProjLibTest, ProjectionPreservesTrimmedPeriodicChart)
     gp_Pnt anExpected = aCurve->EvalD0(aParameter);
     anExpected.SetZ(0);
     EXPECT_LE(aResult->EvalD0(aParameter).Distance(anExpected), 1.e-12);
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomProjLibTest, NarrowEllipseProjectionKeepsRepresentableIntervals)
+{
+  const gp_Ax2                    anAxis(gp_Pnt(0.0, 0.0, 31371842.237994),
+                      gp_Dir(0.896180225730533, -0.443690209949384, 2.45894715195094e-5),
+                      gp_Dir(-2.20365981436106e-5, 1.09101077843339e-5, 0.999999999697679));
+  const occ::handle<Geom_Ellipse> anEllipse   = new Geom_Ellipse(anAxis, 344456365.940189, 8470.0);
+  constexpr double                aFirst      = 4.62118620655235;
+  constexpr double                aLast       = 4.62119080827043;
+  const occ::handle<Geom_TrimmedCurve> aCurve = new Geom_TrimmedCurve(anEllipse, aFirst, aLast);
+  const occ::handle<Geom_CylindricalSurface> aSurface =
+    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 2579.0), gp_Dir(0.0, 0.0, 1.0)), 8470.0);
+  occ::handle<Geom2d_Curve> aResult;
+  double                    aTolerance = Precision::PConfusion();
+  ASSERT_NO_THROW(aResult = GeomProjLib::Curve2d(aCurve, aFirst, aLast, aSurface, aTolerance));
+  RecordProperty("ReachedTolerance", aTolerance);
+  ASSERT_TRUE(std::isfinite(aTolerance));
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_DOUBLE_EQ(aResult->FirstParameter(), aFirst);
+  EXPECT_DOUBLE_EQ(aResult->LastParameter(), aLast);
+  for (int anIndex = 0; anIndex <= 100; ++anIndex)
+  {
+    const double   aParameter = aFirst + (aLast - aFirst) * (anIndex / 100.0);
+    const gp_Pnt   aPoint     = aCurve->EvalD0(aParameter);
+    const gp_Pnt2d aUV        = aResult->EvalD0(aParameter);
+    const gp_Pnt   aProjected = aSurface->EvalD0(aUV.X(), aUV.Y());
+    const double   aRadius    = std::hypot(aPoint.X(), aPoint.Y());
+    const gp_Pnt   anExpected(8470.0 * aPoint.X() / aRadius,
+                            8470.0 * aPoint.Y() / aRadius,
+                            aPoint.Z());
+    EXPECT_LE(aProjected.Distance(anExpected), aTolerance) << anIndex;
   }
 }

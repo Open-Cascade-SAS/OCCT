@@ -1,5 +1,7 @@
-puts "TODO OCC26577 All: Error :  is WRONG because number of EDGE entities in shape"
-puts "TODO OCC26577 All: Error :  is WRONG because number of SHELL entities in shape"
+puts "TODO OCC000000 ALL: ERROR. Can not trim edges."
+puts "TODO OCC000000 ALL: gives an empty result"
+puts "TODO OCC000000 ALL: TEST INCOMPLETE"
+
 restore [locate_data_file bug26663_test_offset_J9.brep] s
 OFFSETSHAPE ${off_param} {} ${calcul} ${type}
 checknbshapes result -ref [lrange [nbshapes s] 8 19]

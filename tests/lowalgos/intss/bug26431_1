@@ -15,7 +15,7 @@ explode b2 f
 set log [bopcurves b1_3 b2_1 -2d]
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Tolerance_Reached NbCurv
 
-set expected_Tolerance_Reached 6.6458102567665664e-006
+set expected_Tolerance_Reached 5.253700831994269e-7
 set tol_abs_Tolerance_Reached 1.0e-7
 set tol_rel_Tolerance_Reached 0.0
 checkreal "Tolerance Reached" ${Tolerance_Reached} ${expected_Tolerance_Reached} ${tol_abs_Tolerance_Reached} ${tol_rel_Tolerance_Reached}

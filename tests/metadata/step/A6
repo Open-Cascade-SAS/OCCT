@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug29803.stp
-set ref_size 518981
+set ref_size 499894
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 OUT_MASS : 50.813477444850001

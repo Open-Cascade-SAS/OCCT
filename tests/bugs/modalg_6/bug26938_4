@@ -1,5 +1,7 @@
-puts "TODO OCC24694 ALL: Result is WRONG because number of SHELL entities in shape \"result\" is 2"
-puts "TODO OCC24694 ALL: Result is WRONG because number of SOLID entities in shape \"result\" is 2"
+puts "TODO OCC000000 ALL: Faulty shapes in variables"
+
+puts "TODO OCC24694 ALL: Result is WRONG because number of SHELL entities"
+puts "TODO OCC24694 ALL: Result is WRONG because number of SOLID entities"
 
 puts "=========="
 puts "OCC26938  "

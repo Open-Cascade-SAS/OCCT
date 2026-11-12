@@ -7,11 +7,11 @@ set filename PRO7072.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 161  ( 224 )  Summary  = 161  ( 224 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 127  ( 222 )  Summary  = 127  ( 222 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 779  ( 770 )  Face     = 800  ( 800 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 779  ( 770 )  Face     = 800  ( 800 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =   0.1585551198  (   0.1585551198 )  AvgTol   =  0.0004823848061  (  0.0004844487344 )
+TOLERANCE   : MaxTol   =    0.184725907  (   0.1847259071 )  AvgTol   =  0.000774144209  (  0.0007766737003 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

@@ -206,6 +206,7 @@ public:
   //! <NbControl> equidistant points, using projection when SameParameter is unset.
   //! Returns the deviation in <maxdev> and True if the edge tolerance is
   //! exceeded or the SameParameter flag is unset. Check Status() for failures.
+  //! Degenerated edges are not checked and return zero deviation.
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& edge,
                                           double&            maxdev,
                                           const int          NbControl = 23);
@@ -215,6 +216,7 @@ public:
   //! <NbControl> equidistant points, using projection when SameParameter is unset.
   //! Returns the deviation in <maxdev> and True if the edge tolerance is
   //! exceeded or the SameParameter flag is unset. Check Status() for failures.
+  //! Degenerated edges are not checked and return zero deviation.
   Standard_EXPORT bool CheckSameParameter(const TopoDS_Edge& theEdge,
                                           const TopoDS_Face& theFace,
                                           double&            theMaxdev,
@@ -222,7 +224,7 @@ public:
 
   //! Checks all pcurves using the selected deviation method.
   //! @param[in] theEdge edge to check
-  //! @param[out] theMaxdev maximum deviation in model units
+  //! @param[out] theMaxdev maximum deviation in model units; zero for degenerated edges
   //! @param[in] theNbControl sample count for the sampled method
   //! @param[in] theExact use GeomLib_CheckCurveOnSurface for SameParameter edges, else sample
   //! @return true if the edge tolerance is exceeded or SameParameter is unset;
@@ -235,7 +237,7 @@ public:
   //! Checks the pcurves on a face using the selected deviation method.
   //! @param[in] theEdge edge to check
   //! @param[in] theFace face to check; a null face selects all pcurves
-  //! @param[out] theMaxdev maximum deviation in model units
+  //! @param[out] theMaxdev maximum deviation in model units; zero for degenerated edges
   //! @param[in] theNbControl sample count for the sampled method
   //! @param[in] theExact use GeomLib_CheckCurveOnSurface for SameParameter edges, else sample
   //! @return true if the edge tolerance is exceeded or SameParameter is unset;

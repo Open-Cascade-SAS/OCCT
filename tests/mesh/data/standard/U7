@@ -23,7 +23,7 @@ if { [string compare $command "shading"] == 0 } {
 ##set nbt 14
   set nbt 3
   set nbn 60
-  set nbl 11
+  set nbl 0
   set nbwithouttri([checkplatform]) $nbt
   set nbfree([checkplatform]) $nbl
   set nbfreenodes([checkplatform]) $nbn
