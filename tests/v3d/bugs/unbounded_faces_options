@@ -1,0 +1,72 @@
+puts "=========================================="
+puts "Visualization - explicit display of unbounded face isolines"
+puts "=========================================="
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1 -width 640 -height 480
+vbackground -color WHITE
+vaxo
+
+proc unboundedOptionBounds {theObject} {
+  set aBounds [lrange [vbounding -print $theObject] 1 6]
+  if {[llength $aBounds] != 6} {
+    error "Error: no presentation bounds for $theObject"
+  }
+  return $aBounds
+}
+
+box finite 80 60 40
+cylinder cylsurf 40 30 20 15
+mkface bounded cylsurf 0 6 -5 5
+emptycopy unbounded bounded
+compound finite unbounded result
+
+# A context default enables intentional infinite-surface display, including
+# linked drawers used for highlighted presentations.
+vaspects -defaults -isoOnUnboundedFace 1 -maxParamValue 64
+vdisplay -dispMode 1 result
+vfit
+set aBounds [unboundedOptionBounds result]
+if {[lindex $aBounds 2] >= 0.0 && [lindex $aBounds 5] <= 40.0} {
+  puts "Error: the enabled unbounded cylinder has no isolines"
+}
+vdump ${imagedir}/${casename}_enabled.png
+set anEnabledScale [lindex [vviewparams -scale] 1]
+foreach aSelectionMode {0 8} {
+  vselmode result $aSelectionMode on -set
+  foreach aHighlightMode {0 1} {
+    vselprops selHighlight -dispMode $aHighlightMode
+    vselprops localSelHighlight -dispMode $aHighlightMode
+    vselect 320 240
+    if {![lindex [vstate -hasSelected] end]} {
+      puts "Error: the box is not selectable with unbounded isolines enabled"
+    }
+    vfit
+    checkreal "enabled isoline highlighted fit" [lindex [vviewparams -scale] 1] $anEnabledScale 0.0001 0.0001
+    vselect 0 0
+  }
+}
+
+# An object can override the context default, then restore inheritance.
+vaspects result -isoOnUnboundedFace 0
+set aBounds [unboundedOptionBounds result]
+foreach aValue $aBounds anExpected {0 0 0 80 60 40} {
+  checkreal "disabled unbounded isolines" $aValue $anExpected 0.001 0.0
+}
+vaspects result -unsetIsoOnUnboundedFace
+set aBounds [unboundedOptionBounds result]
+if {[lindex $aBounds 2] >= 0.0 && [lindex $aBounds 5] <= 40.0} {
+  puts "Error: unsetting the object option did not restore inherited isolines"
+}
+
+# Restore the default policy and recompute the previously displayed object.
+vaspects -defaults -isoOnUnboundedFace 0 -maxParamValue 500000
+vdisplay -redisplay result
+set aBounds [unboundedOptionBounds result]
+foreach aValue $aBounds anExpected {0 0 0 80 60 40} {
+  checkreal "restored unbounded isoline default" $aValue $anExpected 0.001 0.0
+}
+vfit
+vdump ${imagedir}/${casename}_disabled.png
+rename unboundedOptionBounds {}

@@ -33,7 +33,10 @@ class TopLoc_Location;
 //! Depending on a flags set to the given Prs3d_Drawer instance, on-surface (is used
 //! by default) or on-triangulation isoline builder algorithm will be used.
 //! If the given shape is not triangulated, on-surface isoline builder will be applied
-//! regardless of Prs3d_Drawer flags.
+//! regardless of Prs3d_Drawer::IsoOnTriangulation().
+//! Automatic isolines on faces with infinite UV bounds, no wires and no usable triangulation
+//! are controlled by Prs3d_Drawer::IsoOnUnboundedFace() and are disabled by default.
+//! Overloads taking explicit isoline parameters keep the requested surface representation.
 class StdPrs_Isolines : public Prs3d_Root
 {
 public:
