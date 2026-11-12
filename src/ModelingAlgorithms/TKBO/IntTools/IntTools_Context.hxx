@@ -20,6 +20,7 @@
 
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <Standard_Integer.hxx>
 #include <Precision.hxx>
@@ -42,6 +43,7 @@ class gp_Pnt2d;
 class IntTools_Curve;
 class Bnd_Box;
 class Bnd_OBB;
+class IntCurveSurface_PolyhedronCache;
 
 //! The intersection Context contains geometrical
 //! and topological toolkit (classifiers, projectors, etc).
@@ -227,6 +229,10 @@ public:
 
   Standard_EXPORT Bnd_Box& BndBox(const TopoDS_Shape& theS);
 
+  //! Returns the cache of the polyhedra of the surface of the face, built for the
+  //! intersections of lines with the face (see IntCurveSurface_HInter::SetPolyhedronCache()).
+  Standard_EXPORT IntCurveSurface_PolyhedronCache& PolyhedronCache(const TopoDS_Face& theFace);
+
   //! Returns true if the solid <theFace> has
   //! infinite bounds
   Standard_EXPORT bool IsInfiniteFace(const TopoDS_Face& theFace);
@@ -235,6 +241,30 @@ public:
   //! Clears map of already cached projectors in order to maintain
   //! correct value for all projectors
   Standard_EXPORT void SetPOnSProjectionTolerance(const double theValue);
+
+  //! Releases all data cached for the face theFace: point projector, 2D classifier, hatcher,
+  //! surface adaptor, surface localization data, bounding box, oriented bounding box and
+  //! polyhedra.
+  //! The data is computed again when requested. A context performing the faces one after
+  //! another can so keep the data of one face at a time. The point projector is kept to be
+  //! initialized again for the next face requested (see ClearPOnSProjectors()).
+  //! References to the data of this face obtained from the context before become invalid.
+  Standard_EXPORT void ClearFaceCache(const TopoDS_Face& theFace);
+
+  //! Returns the number of point projectors on surfaces cached by the context (see ProjPS()).
+  Standard_EXPORT int NbPOnSProjectors() const;
+
+  //! Releases all cached point projectors on surfaces (see ProjPS()) if there are more than
+  //! theMaxNb of them. For B-spline surfaces they are the largest data cached by the context,
+  //! as each one keeps a sampling grid of the surface after its first use. They are computed
+  //! again, with the same results, when requested.
+  //! The polyhedra of the faces (see PolyhedronCache()) are released in the same way.
+  //! If theToReuse is true, the released projectors are kept to be initialized again for the
+  //! next faces requested, so that their sampling grids are not allocated again; this is
+  //! faster when the context keeps on requesting projectors for other faces, but keeps their
+  //! memory. Otherwise the projectors are destroyed, with those kept before.
+  //! References to projectors obtained from the context before become invalid.
+  Standard_EXPORT void ClearPOnSProjectors(const int theMaxNb = 0, const bool theToReuse = false);
 
   DEFINE_STANDARD_RTTIEXT(IntTools_Context, Standard_Transient)
 
@@ -255,13 +285,23 @@ protected:
   NCollection_DataMap<TopoDS_Shape, BRepAdaptor_Surface*, TopTools_ShapeMapHasher> mySurfAdaptorMap;
   // clang-format off
   NCollection_DataMap<TopoDS_Shape, Bnd_OBB*, TopTools_ShapeMapHasher> myOBBMap; // Map of oriented bounding boxes
+  NCollection_DataMap<TopoDS_Shape, IntCurveSurface_PolyhedronCache*, TopTools_ShapeMapHasher> myPolyhedraMap; // Map of polyhedra of faces
   // clang-format on
-  int    myCreateFlag;
-  double myPOnSTolerance;
+  //! Released point projectors kept to be initialized again for other faces (see ProjPS()),
+  //! which avoids allocating again the sampling grids of the surfaces. There are never more
+  //! projectors, cached and released, than cached ones at once before.
+  NCollection_DynamicArray<GeomAPI_ProjectPointOnSurf*> myFreeProjPS;
+  int                                                   myCreateFlag;
+  double                                                myPOnSTolerance;
 
 private:
   //! Clears map of already cached projectors.
-  Standard_EXPORT void clearCachedPOnSProjectors();
+  //! If theToReuse is true, the projectors are kept to be used for other faces,
+  //! otherwise they are destroyed, with the ones kept before.
+  Standard_EXPORT void clearCachedPOnSProjectors(const bool theToReuse = false);
+
+  //! Destroys the point projector thePrj
+  void destroyProjPS(GeomAPI_ProjectPointOnSurf* thePrj);
 };
 
 #endif // _IntTools_Context_HeaderFile

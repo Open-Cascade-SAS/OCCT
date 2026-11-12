@@ -25,6 +25,7 @@
 // code is involved and which license requirement needs to be resolved.
 
 #include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_Tools.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <TopExp.hxx>
@@ -75,8 +76,42 @@ const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS
 
   // Analyze all types of Interferences which can produce
   // new vertices - Edge/Edge and Edge/Face
-  NCollection_DynamicArray<BOPDS_InterfEE>& aEEs = myDS->InterfEE();
-  NCollection_DynamicArray<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
+  // The interferences are indexed by shape once (the key -1 marks the index as filled),
+  // so that the history of many shapes does not scan all interferences for each of them.
+  if (!myEFVerticesNew.IsBound(-1))
+  {
+    myEEVerticesNew.Clear();
+    myEFVerticesNew.Clear();
+    myEFVerticesNew.Bind(-1, NCollection_List<int>());
+    for (int k = 0; k < 2; ++k)
+    {
+      NCollection_DataMap<int, NCollection_List<int>>& aMap =
+        !k ? myEEVerticesNew : myEFVerticesNew;
+      const int aNbLines = !k ? myDS->InterfEE().Length() : myDS->InterfEF().Length();
+      for (int i = 0; i < aNbLines; ++i)
+      {
+        const BOPDS_Interf* aInt = !k ? (const BOPDS_Interf*)(&myDS->InterfEE()(i))
+                                      : (const BOPDS_Interf*)(&myDS->InterfEF()(i));
+        if (!aInt->HasIndexNew())
+        {
+          // No new vertices created
+          continue;
+        }
+        int n1, n2;
+        aInt->Indices(n1, n2);
+        for (int j = 0; j < (n1 == n2 ? 1 : 2); ++j)
+        {
+          const int              n     = !j ? n1 : n2;
+          NCollection_List<int>* pList = aMap.ChangeSeek(n);
+          if (!pList)
+          {
+            pList = aMap.Bound(n, NCollection_List<int>());
+          }
+          pList->Append(aInt->IndexNew());
+        }
+      }
+    }
+  }
 
   // Fence map to avoid duplicates in the list of Generated;
   NCollection_Map<int> aMFence;
@@ -88,22 +123,14 @@ const NCollection_List<TopoDS_Shape>& BOPAlgo_Builder::LocGenerated(const TopoDS
 
   for (int k = (isFace ? 1 : 0); k < 2; ++k)
   {
-    int aNbLines = !k ? aEEs.Length() : aEFs.Length();
-    for (int i = 0; i < aNbLines; ++i)
+    const NCollection_List<int>* pNewVertices = (!k ? myEEVerticesNew : myEFVerticesNew).Seek(nS);
+    if (!pNewVertices)
     {
-      BOPDS_Interf* aInt = !k ? (BOPDS_Interf*)(&aEEs(i)) : (BOPDS_Interf*)(&aEFs(i));
-      if (!aInt->HasIndexNew())
-      {
-        // No new vertices created
-        continue;
-      }
-
-      if (!aInt->Contains(nS))
-      {
-        continue;
-      }
-
-      int nVNew = aInt->IndexNew();
+      continue;
+    }
+    for (NCollection_List<int>::Iterator aItNV(*pNewVertices); aItNV.More(); aItNV.Next())
+    {
+      int nVNew = aItNV.Value();
       myDS->HasShapeSD(nVNew, nVNew);
       if (!aMFence.Add(nVNew))
       {
@@ -183,6 +210,9 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
   // Map the result shape
   myMapShape.Clear();
   TopExp::MapShapes(myShape, myMapShape);
+  // The index of the interferences used by LocGenerated() is filled again on first use
+  myEEVerticesNew.Clear();
+  myEFVerticesNew.Clear();
 
   // Among all input shapes find:
   // - Shapes that have been modified (split). Add the splits kept in the result
@@ -208,6 +238,8 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
       return;
     }
 
+    // Orienting the splits of the faces projects points on the faces
+    BOPAlgo_Tools::LimitCachedProjectors(myContext);
     bool isModified = false;
 
     // Check if the shape has any splits
@@ -258,4 +290,6 @@ void BOPAlgo_Builder::PrepareHistory(const Message_ProgressRange& theRange)
       myHistory->Remove(aS);
     }
   }
+  myEEVerticesNew.Clear();
+  myEFVerticesNew.Clear();
 }

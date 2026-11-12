@@ -43,6 +43,7 @@
 #include <GeomInt.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntCurveSurface_HInter.hxx>
+#include <IntCurveSurface_PolyhedronCache.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <IntCurveSurface_IntersectionSegment.hxx>
 #include <IntTools_Context.hxx>
@@ -573,6 +574,11 @@ double IntTools_BeanFaceIntersector::Distance(const double theArg,
 void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 {
   IntCurveSurface_HInter anExactIntersector;
+  // The polyhedron of the face is shared by the intersections of all edges with the face
+  if (!myContext.IsNull())
+  {
+    anExactIntersector.SetPolyhedronCache(&myContext->PolyhedronCache(mySurface.Face()));
+  }
 
   occ::handle<BRepAdaptor_Curve>   aCurve   = new BRepAdaptor_Curve(myCurve);
   occ::handle<BRepAdaptor_Surface> aSurface = new BRepAdaptor_Surface(mySurface);

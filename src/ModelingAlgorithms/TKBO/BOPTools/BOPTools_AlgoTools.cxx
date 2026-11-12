@@ -33,6 +33,7 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepLib.hxx>
 #include <Geom2d_Curve.hxx>
@@ -41,6 +42,8 @@
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Extrema_GenLocateExtPS.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
@@ -94,7 +97,9 @@ static bool   GetFaceDir(const TopoDS_Edge&                   aE,
                          const occ::handle<IntTools_Context>& theContext,
                          GeomAPI_ProjectPointOnSurf&          aProjPL,
                          const double                         aDt);
-static bool   FindPointInFace(const TopoDS_Face&                   aF,
+static bool   FindPointInFace(const TopoDS_Edge&                   aE,
+                              const double                         aT,
+                              const TopoDS_Face&                   aF,
                               const gp_Pnt&                        aP,
                               gp_Dir&                              aDB,
                               gp_Pnt&                              aPOut,
@@ -2189,7 +2194,7 @@ bool GetFaceDir(const TopoDS_Edge&                   aE,
   // it with the circle because, most likely, the intersection point will
   // be out of the face
   bool bFound =
-    !theSmallFaces && FindPointInFace(aF, aP, aDB, aPx, theContext, aProjPL, aDt, aTolE);
+    !theSmallFaces && FindPointInFace(aE, aT, aF, aP, aDB, aPx, theContext, aProjPL, aDt, aTolE);
   if (!bFound)
   {
     // if the first method did not succeed, try to use hatcher to find the point
@@ -2205,13 +2210,89 @@ bool GetFaceDir(const TopoDS_Edge&                   aE,
   return bFound;
 }
 
+namespace
+{
+//! Projects points close to an edge on a face. The points are projected locally, starting from
+//! the point of the edge (then from the previous projection), instead of with the projector of
+//! the whole face, which samples a grid on the face: when building shells from many faces, most
+//! faces are only visited here, and building their grids was most of the work.
+//! Falls back to the projector of the face if the local projection fails.
+class FacePointProjector
+{
+public:
+  FacePointProjector(const TopoDS_Edge&                   theE,
+                     const double                         theT,
+                     const TopoDS_Face&                   theF,
+                     const occ::handle<IntTools_Context>& theContext)
+      : myFace(theF),
+        myContext(theContext),
+        myLocal(theContext->SurfaceAdaptor(theF), THE_TOL, THE_TOL),
+        myGlobal(nullptr),
+        myU(0.),
+        myV(0.),
+        myIsLocal(false)
+  {
+    double                          aT1, aT2;
+    const occ::handle<Geom2d_Curve> aC2D = BRep_Tool::CurveOnSurface(theE, theF, aT1, aT2);
+    if (!aC2D.IsNull())
+    {
+      aC2D->Value(theT).Coord(myU, myV);
+      myIsLocal = true;
+    }
+  }
+
+  //! Projects the point, returns its projection and its distance to it
+  bool Perform(const gp_Pnt& theP, gp_Pnt& theProj, double& theDist)
+  {
+    if (myIsLocal)
+    {
+      myLocal.Perform(theP, myU, myV);
+      if (myLocal.IsDone())
+      {
+        myLocal.Point().Parameter(myU, myV);
+        theProj = myLocal.Point().Value();
+        theDist = std::sqrt(myLocal.SquareDistance());
+        return true;
+      }
+      myIsLocal = false;
+    }
+    if (!myGlobal)
+    {
+      myGlobal = &myContext->ProjPS(myFace);
+    }
+    myGlobal->Perform(theP);
+    if (!myGlobal->IsDone())
+    {
+      return false;
+    }
+    theProj = myGlobal->NearestPoint();
+    theDist = myGlobal->LowerDistance();
+    return true;
+  }
+
+private:
+  //! Parametric tolerance, the one of the projectors of IntTools_Context
+  static constexpr double THE_TOL = 1.e-12;
+
+  const TopoDS_Face&                   myFace;
+  const occ::handle<IntTools_Context>& myContext;
+  Extrema_GenLocateExtPS               myLocal;
+  GeomAPI_ProjectPointOnSurf*          myGlobal;
+  double                               myU;
+  double                               myV;
+  bool                                 myIsLocal;
+};
+} // namespace
+
 //=======================================================================
 // function : FindPointInFace
 // purpose  : Find a point in the face in direction of <aDB>.
 //           To get this point the method intersects the circle with radius
 //           <aDt> built in point <aP> with normal perpendicular to <aDB>.
 //=======================================================================
-bool FindPointInFace(const TopoDS_Face&                   aF,
+bool FindPointInFace(const TopoDS_Edge&                   aE,
+                     const double                         aT,
+                     const TopoDS_Face&                   aF,
                      const gp_Pnt&                        aP,
                      gp_Dir&                              aDB,
                      gp_Pnt&                              aPOut,
@@ -2235,25 +2316,21 @@ bool FindPointInFace(const TopoDS_Face&                   aF,
   aNbItMax = 15;
   anEps    = Precision::SquareConfusion();
   //
-  GeomAPI_ProjectPointOnSurf& aProj = theContext->ProjPS(aF);
+  FacePointProjector aProj(aE, aT, aF, theContext);
   //
   aPS = aP;
-  aProj.Perform(aPS);
-  if (!aProj.IsDone())
+  if (!aProj.Perform(aPS, aPS, aDist))
   {
     return bRet;
   }
-  aPS = aProj.NearestPoint();
   aProjPL.Perform(aPS);
   aPS = aProjPL.NearestPoint();
   //
   aPS.SetXYZ(aPS.XYZ() + 2. * aTolE * aDB.XYZ());
-  aProj.Perform(aPS);
-  if (!aProj.IsDone())
+  if (!aProj.Perform(aPS, aPS, aDist))
   {
     return bRet;
   }
-  aPS = aProj.NearestPoint();
   aProjPL.Perform(aPS);
   aPS = aProjPL.NearestPoint();
   //
@@ -2261,13 +2338,10 @@ bool FindPointInFace(const TopoDS_Face&                   aF,
   {
     aP1.SetXYZ(aPS.XYZ() + aDt * aDB.XYZ());
     //
-    aProj.Perform(aP1);
-    if (!aProj.IsDone())
+    if (!aProj.Perform(aP1, aPOut, aDist))
     {
       return bRet;
     }
-    aPOut = aProj.NearestPoint();
-    aDist = aProj.LowerDistance();
     //
     aProjPL.Perform(aPOut);
     aPOut = aProjPL.NearestPoint();

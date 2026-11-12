@@ -24,6 +24,7 @@
 // code is involved and which license requirement needs to be resolved.
 
 #include <IntCurveSurface_HInter.hxx>
+#include <IntCurveSurface_PolyhedronCache.hxx>
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_HSurfaceTool.hxx>
@@ -407,7 +408,13 @@ void IntCurveSurface_HInter::PerformConicSurf(const gp_Lin&     Line,
            double               v1,
            double               u2,
            double               v2) { this->InternalPerform(c, p, s, ph, u1, v1, u2, v2); },
-    [this](const IntCurveSurface_IntersectionPoint& pt) { this->Append(pt); });
+    [this](const IntCurveSurface_IntersectionPoint& pt) { this->Append(pt); },
+    [this, &surface](int nbu, int nbv, double u1, double v1, double u2, double v2)
+      -> const ThePolyhedron* {
+      return myPolyhedronCache != nullptr
+               ? &myPolyhedronCache->Polyhedron(surface, nbu, nbv, u1, v1, u2, v2)
+               : nullptr;
+    });
 }
 
 //=================================================================================================

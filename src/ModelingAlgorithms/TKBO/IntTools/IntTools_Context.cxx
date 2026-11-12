@@ -26,6 +26,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <IntCurveSurface_PolyhedronCache.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -70,6 +71,7 @@ IntTools_Context::IntTools_Context()
       myBndBoxDataMap(100, myAllocator),
       mySurfAdaptorMap(100, myAllocator),
       myOBBMap(100, myAllocator),
+      myPolyhedraMap(100, myAllocator),
       myCreateFlag(0),
       myPOnSTolerance(1.e-12)
 {
@@ -89,6 +91,7 @@ IntTools_Context::IntTools_Context(const occ::handle<NCollection_BaseAllocator>&
       myBndBoxDataMap(100, myAllocator),
       mySurfAdaptorMap(100, myAllocator),
       myOBBMap(100, myAllocator),
+      myPolyhedraMap(100, myAllocator),
       myCreateFlag(1),
       myPOnSTolerance(1.e-12)
 {
@@ -199,6 +202,18 @@ IntTools_Context::~IntTools_Context()
     myAllocator->Free(pOBB);
   }
   myOBBMap.Clear();
+
+  for (NCollection_DataMap<TopoDS_Shape,
+                           IntCurveSurface_PolyhedronCache*,
+                           TopTools_ShapeMapHasher>::Iterator anIt(myPolyhedraMap);
+       anIt.More();
+       anIt.Next())
+  {
+    IntCurveSurface_PolyhedronCache* pCache = anIt.Value();
+    (*pCache).~IntCurveSurface_PolyhedronCache();
+    myAllocator->Free(pCache);
+  }
+  myPolyhedraMap.Clear();
 }
 
 //=================================================================================================
@@ -262,9 +277,18 @@ GeomAPI_ProjectPointOnSurf& IntTools_Context::ProjPS(const TopoDS_Face& aF)
     UVBounds(aF, Umin, Usup, Vmin, Vsup);
     const occ::handle<Geom_Surface>& aS = BRep_Tool::Surface(aF);
     //
-    pProjPS =
-      (GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
-    new (pProjPS) GeomAPI_ProjectPointOnSurf();
+    if (!myFreeProjPS.IsEmpty())
+    {
+      // Initialize a released projector again, keeping its sampling grid allocated
+      pProjPS = myFreeProjPS.Last();
+      myFreeProjPS.EraseLast();
+    }
+    else
+    {
+      pProjPS =
+        (GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
+      new (pProjPS) GeomAPI_ProjectPointOnSurf();
+    }
     pProjPS->Init(aS, Umin, Usup, Vmin, Vsup, myPOnSTolerance);
     pProjPS->SetExtremaFlag(Extrema_ExtFlag_MIN); ///
     //
@@ -420,6 +444,21 @@ Bnd_OBB& IntTools_Context::OBB(const TopoDS_Shape& aS, const double theGap)
     myOBBMap.Bind(aS, pBox);
   }
   return *pBox;
+}
+
+//=================================================================================================
+
+IntCurveSurface_PolyhedronCache& IntTools_Context::PolyhedronCache(const TopoDS_Face& theFace)
+{
+  IntCurveSurface_PolyhedronCache* pCache = nullptr;
+  if (!myPolyhedraMap.Find(theFace, pCache))
+  {
+    pCache = (IntCurveSurface_PolyhedronCache*)myAllocator->Allocate(
+      sizeof(IntCurveSurface_PolyhedronCache));
+    new (pCache) IntCurveSurface_PolyhedronCache();
+    myPolyhedraMap.Bind(theFace, pCache);
+  }
+  return *pCache;
 }
 
 //=================================================================================================
@@ -1018,18 +1057,110 @@ void IntTools_Context::SetPOnSProjectionTolerance(const double theValue)
 
 //=================================================================================================
 
-void IntTools_Context::clearCachedPOnSProjectors()
+namespace
+{
+//! Destroys the item bound to theShape in theMap, if any, and unbinds it
+template <class TypeItem>
+void releaseItem(NCollection_DataMap<TopoDS_Shape, TypeItem*, TopTools_ShapeMapHasher>& theMap,
+                 const TopoDS_Shape&                                                    theShape,
+                 const occ::handle<NCollection_BaseAllocator>& theAllocator)
+{
+  TypeItem* anItem = nullptr;
+  if (theMap.Find(theShape, anItem))
+  {
+    theMap.UnBind(theShape);
+    anItem->~TypeItem();
+    theAllocator->Free(anItem);
+  }
+}
+} // namespace
+
+//=================================================================================================
+
+void IntTools_Context::ClearFaceCache(const TopoDS_Face& theFace)
+{
+  GeomAPI_ProjectPointOnSurf* pProjPS = nullptr;
+  if (myProjPSMap.Find(theFace, pProjPS))
+  {
+    myProjPSMap.UnBind(theFace);
+    myFreeProjPS.Append(pProjPS);
+  }
+  releaseItem(myFClass2dMap, theFace, myAllocator);
+  releaseItem(myHatcherMap, theFace, myAllocator);
+  releaseItem(myProjSDataMap, theFace, myAllocator);
+  releaseItem(mySurfAdaptorMap, theFace, myAllocator);
+  releaseItem(myBndBoxDataMap, theFace, myAllocator);
+  releaseItem(myOBBMap, theFace, myAllocator);
+  releaseItem(myPolyhedraMap, theFace, myAllocator);
+}
+
+//=================================================================================================
+
+int IntTools_Context::NbPOnSProjectors() const
+{
+  return myProjPSMap.Extent();
+}
+
+//=================================================================================================
+
+void IntTools_Context::ClearPOnSProjectors(const int theMaxNb, const bool theToReuse)
+{
+  if (myProjPSMap.Extent() > theMaxNb)
+  {
+    clearCachedPOnSProjectors(theToReuse);
+  }
+  // The polyhedra of the faces are smaller, but are limited in the same way
+  if (myPolyhedraMap.Extent() > std::max(theMaxNb, 0))
+  {
+    for (NCollection_DataMap<TopoDS_Shape,
+                             IntCurveSurface_PolyhedronCache*,
+                             TopTools_ShapeMapHasher>::Iterator anIt(myPolyhedraMap);
+         anIt.More();
+         anIt.Next())
+    {
+      IntCurveSurface_PolyhedronCache* pCache = anIt.Value();
+      (*pCache).~IntCurveSurface_PolyhedronCache();
+      myAllocator->Free(pCache);
+    }
+    myPolyhedraMap.Clear();
+  }
+}
+
+//=================================================================================================
+
+void IntTools_Context::clearCachedPOnSProjectors(const bool theToReuse)
 {
   for (NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnSurf*, TopTools_ShapeMapHasher>::
          Iterator aIt(myProjPSMap);
        aIt.More();
        aIt.Next())
   {
-    GeomAPI_ProjectPointOnSurf* pProjPS = aIt.Value();
-    (*pProjPS).~GeomAPI_ProjectPointOnSurf();
-    myAllocator->Free(pProjPS);
+    if (theToReuse)
+    {
+      myFreeProjPS.Append(aIt.Value());
+    }
+    else
+    {
+      destroyProjPS(aIt.Value());
+    }
   }
   myProjPSMap.Clear();
+  if (!theToReuse)
+  {
+    for (GeomAPI_ProjectPointOnSurf* pProjPS : myFreeProjPS)
+    {
+      destroyProjPS(pProjPS);
+    }
+    myFreeProjPS.Clear(true);
+  }
+}
+
+//=================================================================================================
+
+void IntTools_Context::destroyProjPS(GeomAPI_ProjectPointOnSurf* thePrj)
+{
+  thePrj->~GeomAPI_ProjectPointOnSurf();
+  myAllocator->Free(thePrj);
 }
 
 //=================================================================================================

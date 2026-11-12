@@ -154,11 +154,11 @@ void Extrema_GenLocateExtPS::Perform(const gp_Pnt& theP,
   aBoundSup(2) = mySurf.LastVParameter();
 
   // A closed seam connects the two ends of the parameter interval.
-  if (mySurf.IsUClosed() && (aStart(1) < aBoundInf(1) || aStart(1) > aBoundSup(1)))
+  if ((aStart(1) < aBoundInf(1) || aStart(1) > aBoundSup(1)) && mySurf.IsUClosed())
   {
     aStart(1) = ElCLib::InPeriod(aStart(1), aBoundInf(1), aBoundSup(1));
   }
-  if (mySurf.IsVClosed() && (aStart(2) < aBoundInf(2) || aStart(2) > aBoundSup(2)))
+  if ((aStart(2) < aBoundInf(2) || aStart(2) > aBoundSup(2)) && mySurf.IsVClosed())
   {
     aStart(2) = ElCLib::InPeriod(aStart(2), aBoundInf(2), aBoundSup(2));
   }

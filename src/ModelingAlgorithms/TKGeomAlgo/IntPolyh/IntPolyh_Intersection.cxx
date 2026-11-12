@@ -38,6 +38,14 @@
 
 static int ComputeIntersection(IntPolyh_MaillageAffinage*& theMaillage);
 
+namespace
+{
+// Initial capacity of the arrays of section lines and tangent zones, i.e. one block of their
+// dynamic arrays. The arrays grow when needed: a larger capacity only constructs, allocates
+// and destroys many unused items for every intersection.
+constexpr int THE_INITIAL_NB_ITEMS = 255;
+} // namespace
+
 //=================================================================================================
 
 IntPolyh_Intersection::IntPolyh_Intersection(const occ::handle<Adaptor3d_Surface>& theS1,
@@ -51,8 +59,8 @@ IntPolyh_Intersection::IntPolyh_Intersection(const occ::handle<Adaptor3d_Surface
   myNbSV2      = 10;
   myIsDone     = false;
   myIsParallel = false;
-  mySectionLines.Init(1000);
-  myTangentZones.Init(10000);
+  mySectionLines.Init(THE_INITIAL_NB_ITEMS);
+  myTangentZones.Init(THE_INITIAL_NB_ITEMS);
   Perform();
 }
 
@@ -73,8 +81,8 @@ IntPolyh_Intersection::IntPolyh_Intersection(const occ::handle<Adaptor3d_Surface
   myNbSV2      = theNbSV2;
   myIsDone     = false;
   myIsParallel = false;
-  mySectionLines.Init(1000);
-  myTangentZones.Init(10000);
+  mySectionLines.Init(THE_INITIAL_NB_ITEMS);
+  myTangentZones.Init(THE_INITIAL_NB_ITEMS);
   Perform();
 }
 
@@ -95,8 +103,8 @@ IntPolyh_Intersection::IntPolyh_Intersection(const occ::handle<Adaptor3d_Surface
   myNbSV2      = theVPars2.Length();
   myIsDone     = false;
   myIsParallel = false;
-  mySectionLines.Init(1000);
-  myTangentZones.Init(10000);
+  mySectionLines.Init(THE_INITIAL_NB_ITEMS);
+  myTangentZones.Init(THE_INITIAL_NB_ITEMS);
   Perform(theUPars1, theVPars1, theUPars2, theVPars2);
 }
 
