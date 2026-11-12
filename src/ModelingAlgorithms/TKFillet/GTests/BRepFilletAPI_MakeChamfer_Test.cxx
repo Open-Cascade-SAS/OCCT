@@ -34,6 +34,7 @@
 #include <NCollection_List.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
@@ -47,7 +48,9 @@
 
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <limits>
 
 TEST(BRepFilletAPI_MakeChamferTest, SymmetricChamfer)
 {
@@ -137,6 +140,154 @@ TEST(BRepFilletAPI_MakeChamferTest, Issue1177_ChamferAllEdgesFlatBox_SucceedsWit
   }
   EXPECT_LE(aMaxTolerance, 1.01e-4)
     << "Chamfer construction must not hide inconsistent edge parameterization with tolerance";
+}
+
+namespace
+{
+//==================================================================================================
+
+//! Add one edge per contour, taken from the edges that meet at the first vertex of theBox.
+void addContours(BRepFilletAPI_MakeChamfer& theChamfer, const TopoDS_Shape& theBox, const int theNb)
+{
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+    aVertexEdges;
+  TopExp::MapShapesAndAncestors(theBox, TopAbs_VERTEX, TopAbs_EDGE, aVertexEdges);
+  int aNbAdded = 0;
+  for (const TopoDS_Shape& anEdge : aVertexEdges.FindFromIndex(1))
+  {
+    if (aNbAdded < theNb)
+    {
+      theChamfer.Add(1.0, TopoDS::Edge(anEdge));
+      ++aNbAdded;
+    }
+  }
+}
+
+//==================================================================================================
+
+//! Contour indices below, just above and far outside 1..NbContours().
+std::array<int, 5> outOfRangeIndices(const int theNbContours)
+{
+  return {-1,
+          0,
+          theNbContours + 1,
+          std::numeric_limits<int>::max(),
+          std::numeric_limits<int>::min()};
+}
+
+//==================================================================================================
+
+//! Every call raises, except Length above the range, which answers -1.
+void expectContourAccessorsReject(const BRepFilletAPI_MakeChamfer& theChamfer)
+{
+  for (const int anIndex : outOfRangeIndices(theChamfer.NbContours()))
+  {
+    SCOPED_TRACE(anIndex);
+    double aDist1 = 0.0;
+    double aDist2 = 0.0;
+    EXPECT_THROW(theChamfer.NbEdges(anIndex), Standard_OutOfRange);
+    EXPECT_THROW(theChamfer.Edge(anIndex, 1), Standard_OutOfRange);
+    EXPECT_THROW(theChamfer.GetDist(anIndex, aDist1), Standard_OutOfRange);
+    EXPECT_THROW(theChamfer.Dists(anIndex, aDist1, aDist2), Standard_OutOfRange);
+    EXPECT_THROW(theChamfer.GetDistAngle(anIndex, aDist1, aDist2), Standard_OutOfRange);
+    EXPECT_THROW(theChamfer.IsTwoDistances(anIndex), Standard_OutOfRange);
+    EXPECT_THROW(theChamfer.IsDistanceAngle(anIndex), Standard_OutOfRange);
+    if (anIndex < 1)
+    {
+      EXPECT_THROW(theChamfer.Length(anIndex), Standard_OutOfRange);
+    }
+    else
+    {
+      EXPECT_EQ(theChamfer.Length(anIndex), -1.0);
+    }
+  }
+}
+
+} // namespace
+
+// Contour accessors raise for an index outside 1..NbContours().
+TEST(BRepFilletAPI_MakeChamferTest, ContourIndex_NothingAdded_AccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  ASSERT_EQ(aChamfer.NbContours(), 0);
+
+  expectContourAccessorsReject(aChamfer);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, ContourIndex_OneContour_AccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  addContours(aChamfer, aBox, 1);
+  ASSERT_EQ(aChamfer.NbContours(), 1);
+
+  expectContourAccessorsReject(aChamfer);
+}
+
+TEST(BRepFilletAPI_MakeChamferTest, ContourIndex_TwoContours_AccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  addContours(aChamfer, aBox, 2);
+  ASSERT_EQ(aChamfer.NbContours(), 2);
+
+  expectContourAccessorsReject(aChamfer);
+}
+
+// After Build, three edges at a vertex add a corner stripe without a spine after the contours.
+TEST(BRepFilletAPI_MakeChamferTest, ContourIndex_AfterBuildWithCorner_AccessorsThrow)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  addContours(aChamfer, aBox, 3);
+  ASSERT_EQ(aChamfer.NbContours(), 3);
+  aChamfer.Build();
+  ASSERT_TRUE(aChamfer.IsDone());
+
+  expectContourAccessorsReject(aChamfer);
+}
+
+// A valid index answers as before, and Length still answers -1 above the range.
+TEST(BRepFilletAPI_MakeChamferTest, ContourIndex_InRange_AnswersUnchanged)
+{
+  BRepPrimAPI_MakeBox aBoxMaker(10.0, 10.0, 10.0);
+  const TopoDS_Shape& aBox = aBoxMaker.Shape();
+  ASSERT_TRUE(aBoxMaker.IsDone());
+
+  BRepFilletAPI_MakeChamfer aChamfer(aBox);
+  addContours(aChamfer, aBox, 2);
+  ASSERT_EQ(aChamfer.NbContours(), 2);
+
+  for (int anIndex = 1; anIndex <= 2; ++anIndex)
+  {
+    SCOPED_TRACE(anIndex);
+    double aDist = 0.0;
+    EXPECT_EQ(aChamfer.NbEdges(anIndex), 1);
+    EXPECT_FALSE(aChamfer.Edge(anIndex, 1).IsNull());
+    EXPECT_NEAR(aChamfer.Length(anIndex), 10.0, 1.0e-9);
+    aChamfer.GetDist(anIndex, aDist);
+    EXPECT_NEAR(aDist, 1.0, 1.0e-12);
+    EXPECT_FALSE(aChamfer.IsTwoDistances(anIndex));
+    EXPECT_FALSE(aChamfer.IsDistanceAngle(anIndex));
+  }
+  EXPECT_EQ(aChamfer.Length(3), -1.0);
+  EXPECT_EQ(aChamfer.Length(std::numeric_limits<int>::max()), -1.0);
+
+  aChamfer.Build();
+  ASSERT_TRUE(aChamfer.IsDone());
 }
 
 TEST(BRepFilletAPI_MakeChamferTest, ChamferMoreFaces)
