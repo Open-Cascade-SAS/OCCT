@@ -92,7 +92,7 @@ jobs:
               package: "mingw-w64-x86_64-toolchain",
               msystem: "MINGW64",
               compiler_flags: "",
-              dependencies: "mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-rapidjson mingw-w64-x86_64-freetype mingw-w64-x86_64-draco mingw-w64-x86_64-freeimage mingw-w64-x86_64-tbb mingw-w64-x86_64-tk mingw-w64-x86_64-tcl mingw-w64-x86_64-openvr mingw-w64-x86_64-jemalloc mingw-w64-x86_64-mesa mingw-w64-x86_64-angleproject mingw-w64-x86_64-llvm-openmp mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+              dependencies: "mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-rapidjson mingw-w64-x86_64-freetype mingw-w64-x86_64-draco mingw-w64-x86_64-freeimage mingw-w64-x86_64-tbb mingw-w64-x86_64-tk mingw-w64-x86_64-tcl mingw-w64-x86_64-openvr mingw-w64-x86_64-jemalloc mingw-w64-x86_64-mesa mingw-w64-x86_64-angleproject mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
             }
           - {
               name: "Clang",

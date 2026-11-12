@@ -19,5 +19,5 @@ isos result 0
 triangles result
 fit
 
-checktrinfo result -tri 10491 -nod 7656
+checktrinfo result -tri 10765 -nod 7793
 checkview -screenshot -2d -path ${imagedir}/${test_image}_axo.png

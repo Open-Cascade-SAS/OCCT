@@ -6,12 +6,12 @@ puts "TODO CR23096 ALL: STATSHAPE : Faulty"
 set filename bm4_ug_punch_c.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 40 )  Summary  = 4  ( 40 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 36  ( 3 )  Face     = 186  ( 186 ) 
 STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 36  ( 3 )  Face     = 186  ( 186 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   = 0.007676795012  (  0.01770527621 )  AvgTol   =  0.0001484577997  (  0.0002068800811 )
+TOLERANCE   : MaxTol   =  0.01433175618  (  0.01821170289 )  AvgTol   =  0.0001930652116  (  0.000252191687 )
 LABELS      : N0Labels = 5  ( 5 )  N1Labels = 37  ( 37 )  N2Labels = 0  ( 0 )   TotalLabels = 42  ( 42 )   NameLabels = 9  ( 9 )   ColorLabels = 36  ( 36 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

@@ -149,7 +149,7 @@ inline MathUtils::EigenResult Jacobi(const math_Matrix& theA, bool theSortDescen
     }
   }
 
-  aResult.EigenValues = math_Vector(aN);
+  aResult.EigenValues.emplace(aN);
   for (size_t i = 0; i < aN; ++i)
   {
     (*aResult.EigenValues)[i] = aEigenValsStorage[i];

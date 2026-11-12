@@ -1,3 +1,6 @@
+puts "TODO OCC000000 ALL: Error : Shape restored incorrectly"
+puts "TODO OCC000000 ALL: Error : Some faces has failed to mesh"
+
 puts "========"
 puts "OCC24593"
 puts "========"

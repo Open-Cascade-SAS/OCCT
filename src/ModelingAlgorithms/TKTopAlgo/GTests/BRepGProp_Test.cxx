@@ -21,6 +21,7 @@
 #include <BRepGProp_Face.hxx>
 #include <BRepGProp_Sinert.hxx>
 #include <BRepGProp_Vinert.hxx>
+#include <BRepGProp_VinertGK.hxx>
 #include <BRepLib.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -382,14 +383,48 @@ TEST(BRepGPropTest, AdaptivePlaneLimitedInertia)
   BRepGProp_Domain anAdaptiveDomain(aFace);
   BRepGProp_Vinert anAdaptive(anAdaptiveFace, anAdaptiveDomain, aReferencePlane, aLocation, 1.0e-8);
 
+  // MatrixOfInertia is about the centre of mass: m (b^2 + c^2) / 12 on the diagonal for the block,
+  // zero elsewhere.
   const gp_Mat anAdaptiveInertia = anAdaptive.MatrixOfInertia();
-  EXPECT_NEAR(anAdaptiveInertia.Value(1, 1), 160.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(2, 2), 104.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(3, 3), 200.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(1, 2), -72.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(1, 3), -36.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(2, 3), -48.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(1, 1), 40.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(2, 2), 26.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(3, 3), 50.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(1, 2), 0.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(1, 3), 0.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(2, 3), 0.0, 1.0e-10);
   expectGPropsNear(anAdaptive, aFixed, 1.0e-10);
+}
+
+TEST(BRepGPropTest, VinertByPlane_BoxVolume_KeepsMassAndCentre)
+{
+  const gp_Dir            aNormal(0.0, 0.0, 1.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 2.0), aNormal), 0.0, 3.0, 0.0, 4.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  const gp_Pln      aReferencePlane(gp_Pnt(0.0, 0.0, 0.0), aNormal);
+  const gp_Pnt      aLocation(0.0, 0.0, 0.0);
+
+  // The volume between the face and the reference plane is a 3 x 4 x 2 block.
+  GProp_GProps aBlock;
+  BRepGProp::VolumeProperties(BRepPrimAPI_MakeBox(3.0, 4.0, 2.0).Shape(), aBlock);
+
+  BRepGProp_Face   aFixedFace(aFace);
+  BRepGProp_Domain aFixedDomain(aFace);
+  BRepGProp_Vinert aFixed(aFixedFace, aFixedDomain, aReferencePlane, aLocation);
+  EXPECT_NEAR(aFixed.Mass(), 24.0, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().X(), 1.5, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().Y(), 2.0, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().Z(), 1.0, 1.0e-10);
+  expectGPropsNear(aFixed, aBlock, 1.0e-9);
+
+  BRepGProp_Face   anAdaptiveFace(aFace);
+  BRepGProp_Domain anAdaptiveDomain(aFace);
+  BRepGProp_Vinert anAdaptive(anAdaptiveFace, anAdaptiveDomain, aReferencePlane, aLocation, 1.0e-8);
+  EXPECT_NEAR(anAdaptive.Mass(), 24.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().X(), 1.5, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().Y(), 2.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().Z(), 1.0, 1.0e-10);
+  expectGPropsNear(anAdaptive, aBlock, 1.0e-9);
 }
 
 TEST(BRepGPropTest, NaturalInfinitePlane_UsesInfiniteArithmetic)
@@ -402,6 +437,46 @@ TEST(BRepGPropTest, NaturalInfinitePlane_UsesInfiniteArithmetic)
   BRepGProp_Face   aFaceTool(aFace);
   BRepGProp_Sinert aProperties(aFaceTool, gp_Pnt(0.0, 0.0, 0.0));
   EXPECT_TRUE(Precision::IsPositiveInfinite(aProperties.Mass()));
+}
+
+// A 3 x 4 face at z = 2 and the plane z = 1 delimit a 3 x 4 x 1 block. The by-plane overloads
+// must measure about the plane as passed, not its mirror through the origin. The location is the
+// centre of the block, so the diagonal is m (b^2 + c^2) / 12 whichever point the matrix refers to.
+TEST(BRepGPropTest, VolumePropertiesByPlane_OffsetPlane_Inertia)
+{
+  const gp_Dir            aNormal(0.0, 0.0, 1.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 2.0), aNormal), 0.0, 3.0, 0.0, 4.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  const gp_Pln      aPlane(gp_Pnt(0.0, 0.0, 1.0), aNormal);
+  const gp_Pnt      aCentre(1.5, 2.0, 1.5);
+
+  BRepGProp_Face   aFaceTool(aFace);
+  BRepGProp_Domain aDomain(aFace);
+  BRepGProp_Vinert aVinert(aFaceTool, aDomain, aPlane, aCentre);
+  EXPECT_NEAR(aVinert.MatrixOfInertia().Value(1, 1), 17.0, 1.0e-10);
+  EXPECT_NEAR(aVinert.MatrixOfInertia().Value(2, 2), 10.0, 1.0e-10);
+  EXPECT_NEAR(aVinert.MatrixOfInertia().Value(3, 3), 25.0, 1.0e-10);
+}
+
+TEST(BRepGPropTest, VolumePropertiesByPlane_OffsetPlane_MassAndCentre)
+{
+  const gp_Dir            aNormal(0.0, 0.0, 1.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 2.0), aNormal), 0.0, 3.0, 0.0, 4.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  const gp_Pln      aPlane(gp_Pnt(0.0, 0.0, 1.0), aNormal);
+
+  for (const gp_Pnt& aLocation : {gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.0, 0.0, 4.0)})
+  {
+    BRepGProp_Face     aFaceTool(aFace);
+    BRepGProp_Domain   aDomain(aFace);
+    BRepGProp_VinertGK aGK(aFaceTool, aDomain, aPlane, aLocation, 1.0e-8, true);
+    EXPECT_NEAR(aGK.Mass(), 12.0, 1.0e-8);
+    EXPECT_NEAR(aGK.CentreOfMass().X(), 1.5, 1.0e-8);
+    EXPECT_NEAR(aGK.CentreOfMass().Y(), 2.0, 1.0e-8);
+    EXPECT_NEAR(aGK.CentreOfMass().Z(), 1.5, 1.0e-8);
+  }
 }
 
 TEST(BRepGPropTest, LinearProperties_SkipShared)

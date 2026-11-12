@@ -21,7 +21,7 @@ regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCu
 
 set GoodNbCurv 3
 
-checkreal TolReached ${Toler} 0.00027763280312203317 0.0 0.01
+checkreal TolReached ${Toler} 1.0108671012248698e-7 0.0 0.01
 
 if { ${NbCurv} != ${GoodNbCurv} } {
   puts "Error: Curve Number is bad!"

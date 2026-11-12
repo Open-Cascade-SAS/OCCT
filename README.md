@@ -18,33 +18,30 @@ You can receive certified versions of OCCT code in different packages:
 - **Complete source archive:** Contains all sources of OCCT, generated HTML and PDF documentation, and ready-to-use projects for building on all officially supported platforms.
 - **Binary package (platform-specific):** In addition to the complete source archive, it includes binaries of OCCT and third-party libraries built on one platform. This package allows using OCCT immediately after installation.
 
-Certified versions of OCCT can be downloaded from:
-- [Open CASCADE Releases](https://dev.opencascade.org/release)
-- [GitHub Releases](https://github.com/Open-Cascade-SAS/OCCT/releases)
+Download OCCT release packages from [GitHub Releases](https://github.com/Open-Cascade-SAS/OCCT/releases).
 
 You can also find OCCT pre-installed on your system or install it from packages provided by a third party. Note that packaging and functionality of such versions can be different from certified releases. Please consult the documentation accompanying your version for details.
 
 ## Documentation
 
 Documentation is available at the following links:
-- [Latest version](https://dev.opencascade.org/doc/overview)
-- [Version 8.0](https://dev.opencascade.org/doc/occt-8.0.0/overview)
+- [Guides and overview](https://occt3d.com/dev/doc/overview/html/index.html)
+- [C++ API reference](https://occt3d.com/dev/doc/refman/html/index.html)
 
-Documentation can be part of the package. To preview documentation as part of the package, open the file `doc/html/index.html` to browse HTML documentation.
+If your package includes HTML documentation, open `doc/overview/html/index.html` for the guides or `doc/refman/html/index.html` for the C++ API reference.
 
 If HTML documentation is not available in your package, you can:
 
-- **Generate it from sources:** You need to have Tcl and Doxygen 1.8.4 (or above) installed on your system and accessible in your environment (check the environment variable PATH). Use the batch file `adm/gendoc.bat` on Windows or the Bash script `adm/gendoc` on Linux or OS X to (re)generate documentation.
-- **Generate together with sources:** You need to have CMake and Doxygen 1.8.4 (or above) installed on your system. Enable `BUILD_DOC_Overview` CMake parameter and set the path to Doxygen `3RDPARTY_DOXYGEN_EXECUTABLE`. Then build ALL or only `Overview`.
+- **Generate it from sources:** Install CMake and Doxygen 1.8.4 or later. Enable `BUILD_DOC_Overview` for guides and `BUILD_DOC_RefMan` for the API reference. Set `3RDPARTY_DOXYGEN_EXECUTABLE` if Doxygen is not found. Build `Overview` for guides, `RefMan` for the API reference, or `doc` for all enabled documentation targets. Tcl/Tk is required for a full build with DRAW enabled.
 - **Read documentation in source plain text (Markdown) format** found in the subfolder `dox` or [GitHub Wiki](https://github.com/Open-Cascade-SAS/OCCT/wiki).
 
-See [dox/build/build_documentation/building_documentation.md](dox/build/build_documentation/building_documentation.md) or [Building Documentation](https://dev.opencascade.org/doc/occt-8.0.0/overview/html/build_upgrade__building_documentation.html) for details.
+See [dox/build/build_documentation/building_documentation.md](dox/build/build_documentation/building_documentation.md) or [Building Documentation](https://occt3d.com/dev/doc/overview/html/build_upgrade__building_documentation.html) for details.
 
 ## Building
 
 In most cases, you need to rebuild OCCT on your platform (OS, compiler) before using it in your project to ensure binary compatibility.
 
-Consult the file [dox/build/build_occt/building_occt.md](dox/build/build_occt/building_occt.md) or [Building OCCT](https://dev.opencascade.org/doc/overview/html/build_upgrade__building_occt.html) or [Building OCCT Wiki](https://github.com/Open-Cascade-SAS/OCCT/wiki/build_upgrade) for instructions on building OCCT from sources on supported platforms.
+Consult the file [dox/build/build_occt/building_occt.md](dox/build/build_occt/building_occt.md) or [Building OCCT](https://occt3d.com/dev/doc/overview/html/build_upgrade__building_occt.html) or [Building OCCT Wiki](https://github.com/Open-Cascade-SAS/OCCT/wiki/build_upgrade) for instructions on building OCCT from sources on supported platforms.
 
 ## Version
 
@@ -54,11 +51,10 @@ The current version of OCCT can be found in the file [`adm/cmake/version.cmake`]
 
 ### Bug Tracker
 - [GitHub Issues](https://github.com/Open-Cascade-SAS/OCCT/issues)
-- [OCCT Tracker](https://tracker.dev.opencascade.org/)
+- [Historical issue archive (read-only)](https://occt3d.com/dev/tickets/)
 
-For information regarding OCCT code development, please consult the official OCCT Collaborative Development Portal:
-- [OCCT Development Portal](https://dev.opencascade.org)
+For the contribution workflow and CLA request instructions, see [Contributing to OCCT](.github/CONTRIBUTING.md) or the [online contribution guide](https://occt3d.com/dev/doc/overview/html/contribution.html).
 
 ### Forum and Discussions
-- [OCCT Forums](https://dev.opencascade.org/forums)
+- [Historical forum archive (read-only)](https://occt3d.com/dev/)
 - [GitHub Discussions](https://github.com/Open-Cascade-SAS/OCCT/discussions)

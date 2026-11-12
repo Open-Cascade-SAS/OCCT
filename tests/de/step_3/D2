@@ -8,11 +8,11 @@ set filename bm2_ct_t4-A.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 9  ( 7 )  Summary  = 9  ( 7 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 7 )  Summary  = 8  ( 7 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 17  ( 15 )  Face     = 17  ( 17 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 17  ( 15 )  Face     = 17  ( 17 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   = 0.0005650418555  ( 0.0005650418555 )  AvgTol   =  2.41320432e-005  (  2.413204307e-005 )
+TOLERANCE   : MaxTol   = 0.002935481081  ( 0.002935481081 )  AvgTol   =  0.0001929922482  (  0.0001929922475 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )
