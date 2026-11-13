@@ -66,6 +66,7 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
@@ -3819,6 +3820,18 @@ static void CurveCleaner(occ::handle<Geom_BSplineCurve>& BS, const double Tol, c
   }
 }
 
+namespace
+{
+//=================================================================================================
+
+//! Returns true if the curve, or the basis curve of a trimmed curve, is periodic.
+bool isBasisPeriodic(const occ::handle<Geom_Curve>& theCurve)
+{
+  const occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(theCurve);
+  return aTrimmed.IsNull() ? theCurve->IsPeriodic() : aTrimmed->BasisCurve()->IsPeriodic();
+}
+} // namespace
+
 //=======================================================================
 // function : ComputeCurves
 // purpose  : Calculates intersection between two HSurfaces.
@@ -4145,7 +4158,7 @@ bool ChFi3d_ComputeCurves(const occ::handle<Adaptor3d_Surface>& S1,
               }
               ptestdeb = C3d->Value(Uf);
               ptestfin = C3d->Value(Ul);
-              if (C3d->IsPeriodic() && !(failedF && failedL))
+              if (isBasisPeriodic(C3d) && !(failedF && failedL))
               {
                 // assure the same order of ends, otherwise TrimmedCurve will take
                 // the other part of C3d
