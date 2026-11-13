@@ -13,7 +13,9 @@
 
 #include <gtest/gtest.h>
 
+#include <Adaptor3d_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_TrimmedCurve.hxx>
@@ -22,6 +24,9 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+
+#include <thread>
+#include <vector>
 
 //=================================================================================================
 // Test fixture for GeomAdaptor_Curve degenerated curve handling
@@ -285,4 +290,82 @@ TEST_F(GeomAdaptor_Curve_Test, Constructor_WithValidRange_Success)
   EXPECT_DOUBLE_EQ(anAdaptor.FirstParameter(), aFirst);
   EXPECT_DOUBLE_EQ(anAdaptor.LastParameter(), aLast);
   EXPECT_EQ(anAdaptor.GetType(), GeomAbs_Circle);
+}
+
+//=================================================================================================
+// Concurrency
+//=================================================================================================
+
+namespace
+{
+// File scope so the worker lambda reads them without capturing: MSVC rejects an uncaptured
+// constexpr local and Clang with -Werror rejects a captured one.
+constexpr int THE_NB_THREADS = 8;
+constexpr int THE_NB_EVALS   = 400;
+} // namespace
+
+// The supported way to evaluate one curve from several threads is one adaptor per thread.
+//
+// GeomAdaptor_Curve keeps the polynomial coefficients of the span it last evaluated, and that cache
+// is deliberately local to the adaptor and unsynchronised: it is not shared between instances and
+// takes no lock. Adaptor3d_Curve::ShallowCopy() is the per-thread constructor for it, and for
+// GeomAdaptor_Curve it deliberately leaves the cache behind, so a copy starts empty and a thread
+// never sees another's span. Copying from a shared adaptor is therefore itself race-free provided
+// nothing evaluates that shared adaptor, which is what this test does.
+//
+// Each thread evaluates alternating ends of a three-span curve, so consecutive evaluations land in
+// different spans and every one forces a cache rebuild, and checks the result against the curve's
+// own evaluation, which does not go through an adaptor cache.
+TEST_F(GeomAdaptor_Curve_Test, PerThreadShallowCopyEvaluatesCorrectlyAcrossSpans)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 6);
+  aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(2) = gp_Pnt(1.0, 2.0, 0.0);
+  aPoles(3) = gp_Pnt(2.0, -1.0, 0.0);
+  aPoles(4) = gp_Pnt(3.0, 3.0, 0.0);
+  aPoles(5) = gp_Pnt(4.0, 0.0, 0.0);
+  aPoles(6) = gp_Pnt(5.0, 2.0, 0.0);
+
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.34;
+  aKnots(3) = 0.67;
+  aKnots(4) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 4);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 4;
+
+  const occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  const GeomAdaptor_Curve              aShared(aCurve);
+
+  std::vector<std::thread> aThreads;
+  std::vector<int>         aMismatches(THE_NB_THREADS, 0);
+  for (int aThreadIndex = 0; aThreadIndex < THE_NB_THREADS; ++aThreadIndex)
+  {
+    aThreads.emplace_back([&aShared, &aCurve, &aMismatches, aThreadIndex]() {
+      const occ::handle<Adaptor3d_Curve> aLocal = aShared.ShallowCopy();
+      for (int anIter = 0; anIter < THE_NB_EVALS; ++anIter)
+      {
+        const double aParam = ((aThreadIndex + anIter) % 2 == 0) ? 0.05 + 0.001 * (anIter % 100)
+                                                                 : 0.95 - 0.001 * (anIter % 100);
+        if (aLocal->Value(aParam).Distance(aCurve->EvalD0(aParam)) > 1.0e-9)
+        {
+          ++aMismatches[aThreadIndex];
+        }
+      }
+    });
+  }
+  for (std::thread& aThread : aThreads)
+  {
+    aThread.join();
+  }
+
+  for (int aThreadIndex = 0; aThreadIndex < THE_NB_THREADS; ++aThreadIndex)
+  {
+    EXPECT_EQ(0, aMismatches[aThreadIndex])
+      << "thread " << aThreadIndex << " read a point from the wrong span";
+  }
 }
