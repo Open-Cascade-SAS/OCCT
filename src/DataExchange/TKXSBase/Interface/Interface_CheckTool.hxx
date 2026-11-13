@@ -119,6 +119,9 @@ private:
   occ::handle<Interface_GTool> thegtool;
   Interface_ShareTool          theshare;
   int                          thestat;
+  //! True while FillCheck should guard each call itself; the bulk list builders clear it because
+  //! they already wrap the whole loop.
+  bool myOwnErrorHandling = true;
 };
 
 #endif // _Interface_CheckTool_HeaderFile
