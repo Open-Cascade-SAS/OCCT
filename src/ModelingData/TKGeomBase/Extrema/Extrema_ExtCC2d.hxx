@@ -79,6 +79,8 @@ public:
 
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the first curve, P2 on the second one.
+  //! Exceptions
+  //! Standard_OutOfRange if N is not in [1, NbExt()].
   Standard_EXPORT void Points(const int N, Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const;
 
   //! if the curve is a trimmed curve,
