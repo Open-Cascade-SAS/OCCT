@@ -46,6 +46,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <cstdio>
+#include <vector>
 #define StepLong 72
 // StepLong: maximum length of a Step file line
 
@@ -919,10 +920,20 @@ void StepData_StepWriter::Send(const int val)
 void StepData_StepWriter::Send(const double val)
 {
   //    Floating point value, cleaned of trailing "0000" and "E+00"
-  char lval[24] = {};
-  int  lng      = thefloatw.Write(val, lval);
+  // %.17E needs up to 26 bytes including the sign, three-digit exponent and NUL.
+  char              lval[64] = {};
+  int               lng      = thefloatw.Write(val, lval, sizeof(lval));
+  std::vector<char> aLongValue;
+  const char*       aValue = lval;
+  if (static_cast<size_t>(lng) >= sizeof(lval))
+  {
+    // User-defined width, precision or fixed-point formats can exceed any fixed buffer.
+    aLongValue.resize(static_cast<size_t>(lng) + 1);
+    lng    = thefloatw.Write(val, aLongValue.data(), aLongValue.size());
+    aValue = aLongValue.data();
+  }
   AddParam();
-  AddString(lval, lng); // handles specific format: if needed
+  AddString(aValue, lng); // handles specific format: if needed
 }
 
 //  Send(String): note, we send a Text ... so between '  '
