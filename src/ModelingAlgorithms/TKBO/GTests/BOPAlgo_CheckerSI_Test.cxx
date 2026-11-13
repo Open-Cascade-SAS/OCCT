@@ -21,7 +21,10 @@
 #include <BRepLib.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
+#include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Geom2d_Line.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
@@ -41,6 +44,7 @@
 
 #include <utility>
 #include <cmath>
+#include <cstdint>
 
 namespace
 {
@@ -52,6 +56,34 @@ occ::handle<Geom_BSplineSurface> createCrosscapSurface();
 
 //! Returns completion status and the number of self-intersecting faces.
 std::pair<bool, int> checkSelfFaces(const TopoDS_Face& theFace);
+
+//! Counts the polls of the user break while a face is checked for self-intersection.
+class PollCountingIndicator : public Message_ProgressIndicator
+{
+public:
+  bool UserBreak() override
+  {
+    ++myPolls;
+    return false;
+  }
+
+  void Show(const Message_ProgressScope&, const bool) override {}
+
+  int NbPolls() const { return myPolls; }
+
+  DEFINE_STANDARD_RTTI_INLINE(PollCountingIndicator, Message_ProgressIndicator)
+
+private:
+  int myPolls = 0;
+};
+
+//! Creates a cubic sheet through points displaced by a fixed pseudo-random sequence, so that it
+//! crosses itself in many places. The generator is a plain integer LCG: the same poles on every
+//! platform.
+occ::handle<Geom_BSplineSurface> createWavySurface();
+
+//! Returns how often the face check polls the user break, run single-threaded or in parallel.
+int countPolls(const TopoDS_Face& theFace, const bool theRunParallel);
 
 //==================================================================================================
 
@@ -110,6 +142,30 @@ occ::handle<Geom_BSplineSurface> createCrosscapSurface()
 
 //==================================================================================================
 
+occ::handle<Geom_BSplineSurface> createWavySurface()
+{
+  constexpr int aNb    = 6;
+  uint32_t      aState = 12345u;
+  const auto    aNext  = [&aState]() {
+    aState = aState * 1664525u + 1013904223u;
+    return 5.0 * ((aState >> 8) / double(1u << 24)) - 2.5;
+  };
+  NCollection_Array2<gp_Pnt> aPoints(1, aNb, 1, aNb);
+  for (int u = 1; u <= aNb; ++u)
+  {
+    for (int v = 1; v <= aNb; ++v)
+    {
+      const double aDX = aNext();
+      const double aDY = aNext();
+      const double aDZ = aNext();
+      aPoints.SetValue(u, v, gp_Pnt(u + aDX, v + aDY, aDZ));
+    }
+  }
+  return GeomAPI_PointsToBSplineSurface(aPoints, 3, 3).Surface();
+}
+
+//==================================================================================================
+
 std::pair<bool, int> checkSelfFaces(const TopoDS_Face& theFace)
 {
   BOPAlgo_CheckerSI aChecker;
@@ -129,6 +185,19 @@ std::pair<bool, int> checkSelfFaces(const TopoDS_Face& theFace)
     aCount += aFirst == aSecond && aChecker.PDS()->Shape(aFirst).ShapeType() == TopAbs_FACE;
   }
   return {true, aCount};
+}
+
+//==================================================================================================
+
+int countPolls(const TopoDS_Face& theFace, const bool theRunParallel)
+{
+  occ::handle<PollCountingIndicator> anIndicator = new PollCountingIndicator;
+  BOPAlgo_CheckerSI                  aChecker;
+  aChecker.AddArgument(theFace);
+  aChecker.SetLevelOfCheck(5);
+  aChecker.SetRunParallel(theRunParallel);
+  aChecker.Perform(anIndicator->Start());
+  return aChecker.HasErrors() ? -1 : anIndicator->NbPolls();
 }
 } // namespace
 
@@ -323,4 +392,26 @@ TEST(BOPAlgo_CheckerSITest, ClosedSeamJoinsTwoSurfacePreimages)
   const auto [isDone, aCount] = checkSelfFaces(aFace);
   ASSERT_TRUE(isDone);
   EXPECT_EQ(aCount, 0);
+}
+
+//==================================================================================================
+
+// The self-interference search of one face can run for as long as the surface is degenerate. Run
+// single-threaded, it polls the user break from inside the intersection, so a caller's deadline
+// can interrupt it. The parallel path cannot, because an exception must not leave a worker thread,
+// so it polls only between the phases. The same face therefore gets more polls when serial.
+TEST(BOPAlgo_CheckerSITest, SingleThreadedSelfIntersectionPollsInsideTheIntersection)
+{
+  BRepBuilderAPI_MakeFace aMaker(createWavySurface(), Precision::Confusion());
+  ASSERT_TRUE(aMaker.IsDone());
+  const TopoDS_Face aFace = aMaker.Face();
+
+  const auto [isDone, aCount] = checkSelfFaces(aFace);
+  ASSERT_TRUE(isDone);
+  ASSERT_EQ(aCount, 1) << "the sheet must self-intersect for the search to have work to do";
+
+  const int aSerial   = countPolls(aFace, false);
+  const int aParallel = countPolls(aFace, true);
+  ASSERT_GT(aParallel, 0);
+  EXPECT_GT(aSerial, aParallel) << "polls: " << aSerial << " serial, " << aParallel << " parallel";
 }
