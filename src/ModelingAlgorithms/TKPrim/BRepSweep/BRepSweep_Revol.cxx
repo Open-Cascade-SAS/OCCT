@@ -170,3 +170,10 @@ bool BRepSweep_Revol::IsUsed(const TopoDS_Shape& aGenS) const
 {
   return myRotation.IsUsed(aGenS);
 }
+
+//=================================================================================================
+
+bool BRepSweep_Revol::GenIsUsed(const TopoDS_Shape& aGenS) const
+{
+  return myRotation.GenIsUsed(aGenS);
+}
