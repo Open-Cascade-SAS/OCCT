@@ -416,6 +416,44 @@ static bool Update(const occ::handle<Adaptor3d_Surface>& face,
 
 //=================================================================================================
 
+// Parameters of the point of theSurf that is nearest to thePnt. False if there is none or if it is
+// farther than theTol3d. A trimmed surface is replaced by its basis surface, thePnt may be outside
+// the trim. The first extremum is the nearest with Extrema_ExtFlag_MIN. U is shifted by whole
+// periods to the period of theFace.
+static bool ChFi3d_ProjectOnSurface(const gp_Pnt&                    thePnt,
+                                    const occ::handle<Geom_Surface>& theSurf,
+                                    const TopoDS_Face&               theFace,
+                                    const double                     theTolUV,
+                                    const double                     theTol3d,
+                                    gp_Pnt2d&                        theUV)
+{
+  occ::handle<Geom_Surface> aSurf = theSurf;
+  while (occ::handle<Geom_RectangularTrimmedSurface> aTrimmed =
+           occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf))
+  {
+    aSurf = aTrimmed->BasisSurface();
+  }
+  GeomAdaptor_Surface anAdaptor;
+  anAdaptor.Load(aSurf);
+  Extrema_ExtPS anExt(thePnt, anAdaptor, theTolUV, theTolUV, Extrema_ExtFlag_MIN);
+  if (!anExt.IsDone() || anExt.NbExt() < 1 || anExt.SquareDistance(1) > theTol3d * theTol3d)
+  {
+    return false;
+  }
+  double aU, aV;
+  anExt.Point(1).Parameter(aU, aV);
+  double aUMin, aUMax, aVMin, aVMax;
+  BRepTools::UVBounds(theFace, aUMin, aUMax, aVMin, aVMax);
+  if (aSurf->IsUPeriodic())
+  {
+    aU += aSurf->UPeriod() * std::round(((aUMin + aUMax) / 2 - aU) / aSurf->UPeriod());
+  }
+  theUV.SetCoord(aU, aV);
+  return true;
+}
+
+//=================================================================================================
+
 static void ChFi3d_ExtendSurface(occ::handle<Geom_Surface>& S, int& prol)
 {
   if (prol)
@@ -2746,6 +2784,15 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
               }
             }
           }
+          else if (!ChFi3d_ProjectOnSurface(CV1.Point(),
+                                            Sfacemoins1,
+                                            F,
+                                            BRep_Tool::Tolerance(F),
+                                            10 * tolapp3d,
+                                            pfac1))
+          {
+            throw Standard_ConstructionError("IntersectionAtEnd: the end point is not on the face");
+          }
         }
         else
         {
@@ -2980,6 +3027,15 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
             pfac2.SetX(uc2);
             pfac2.SetY(vc2);
           }
+        }
+        else if (!ChFi3d_ProjectOnSurface(CV2.Point(),
+                                          Sfacemoins1,
+                                          F,
+                                          BRep_Tool::Tolerance(F),
+                                          10 * tolapp3d,
+                                          pfac2))
+        {
+          throw Standard_ConstructionError("IntersectionAtEnd: the end point is not on the face");
         }
       }
       else
