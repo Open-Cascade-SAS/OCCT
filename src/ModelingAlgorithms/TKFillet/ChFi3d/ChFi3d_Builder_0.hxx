@@ -389,8 +389,15 @@ void ChFi3d_StripeEdgeInter(const occ::handle<ChFiDS_Stripe>& theStripe1,
 
 //! Checks whether a 2D intersection contains a transversal crossing.
 //! @param[in] theIntersector intersection result to examine
-//! @return true if at least one intersection point crosses either curve
-bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter& theIntersector);
+//! @param[in] theFirstCurve first intersected curve
+//! @param[in] theSecondCurve second intersected curve
+//! @param[in] theTolerance largest length of a segment taken for a point
+//! @return true if at least one intersection point crosses either curve, or the curves cross at
+//! a segment of no length
+bool ChFi3d_HasTransversalIntersection(const Geom2dInt_GInter&    theIntersector,
+                                       const Geom2dAdaptor_Curve& theFirstCurve,
+                                       const Geom2dAdaptor_Curve& theSecondCurve,
+                                       const double               theTolerance);
 
 //! Checks whether a non-transversal contact joins two curve ends.
 //! @param[in] theIntersector intersection result to examine
