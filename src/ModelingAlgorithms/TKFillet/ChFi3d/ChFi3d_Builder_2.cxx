@@ -1576,8 +1576,7 @@ bool ChFi3d_Builder::StartSol(
         }
         else
         {
-          prepareDefaultReturn();
-          return false;
+          throw Standard_Failure("StartSol: no matching obstacle edge");
         }
       }
       else
