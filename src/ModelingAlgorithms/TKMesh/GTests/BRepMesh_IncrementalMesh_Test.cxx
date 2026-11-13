@@ -32,7 +32,10 @@
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <Geom_Line.hxx>
+#include <Geom2d_Line.hxx>
 #include <IMeshData_Status.hxx>
 #include <IMeshTools_Parameters.hxx>
 #include <NCollection_Array1.hxx>
@@ -583,5 +586,74 @@ TEST(BRepMesh_IncrementalMeshTest, LocalizedSplinePeaksRespectDeflection)
       }
     }
     EXPECT_LE(aMaxDistance, aParameters.Deflection);
+  }
+}
+
+// Regression test for issue #572: a conical face must be meshed when its seam pcurves are
+// infinite lines whose direction is tilted by rounding error.
+TEST(BRepMesh_IncrementalMeshTest, ConeWithTiltedSeamPCurves_IsTriangulated)
+{
+  const double                           aVMin = -25.0 * std::sqrt(2.0);
+  const occ::handle<Geom_ConicalSurface> aCone =
+    new Geom_ConicalSurface(gp::XOY(), M_PI / 4.0, 36.4);
+  const gp_Pnt aTopPnt    = aCone->Value(0.0, 0.0);
+  const gp_Pnt aBottomPnt = aCone->Value(0.0, aVMin);
+
+  int aReferenceTriangles = 0;
+  for (const double aTilt : {0.0, 2.0e-16, -2.0e-16})
+  {
+    SCOPED_TRACE(aTilt);
+    const TopoDS_Vertex aTopVertex    = BRepBuilderAPI_MakeVertex(aTopPnt);
+    const TopoDS_Vertex aBottomVertex = BRepBuilderAPI_MakeVertex(aBottomPnt);
+    const TopoDS_Edge   aTopEdge =
+      BRepBuilderAPI_MakeEdge(aCone->VIso(0.0), aTopVertex, aTopVertex, 0.0, 2.0 * M_PI);
+    const TopoDS_Edge aBottomEdge =
+      BRepBuilderAPI_MakeEdge(aCone->VIso(aVMin), aBottomVertex, aBottomVertex, 0.0, 2.0 * M_PI);
+    const TopoDS_Edge aSeamEdge =
+      BRepBuilderAPI_MakeEdge(new Geom_Line(aTopPnt, gp_Dir(gp_Vec(aTopPnt, aBottomPnt))),
+                              aTopVertex,
+                              aBottomVertex,
+                              0.0,
+                              -aVMin);
+
+    BRep_Builder aBuilder;
+    TopoDS_Face  aFace;
+    aBuilder.MakeFace(aFace, aCone, Precision::Confusion());
+    aBuilder.UpdateEdge(aTopEdge,
+                        new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)),
+                        aFace,
+                        Precision::Confusion());
+    aBuilder.UpdateEdge(aBottomEdge,
+                        new Geom2d_Line(gp_Pnt2d(0.0, aVMin), gp_Dir2d(1.0, 0.0)),
+                        aFace,
+                        Precision::Confusion());
+    aBuilder.UpdateEdge(aSeamEdge,
+                        new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(aTilt, -1.0)),
+                        new Geom2d_Line(gp_Pnt2d(2.0 * M_PI, 0.0), gp_Dir2d(aTilt, -1.0)),
+                        aFace,
+                        Precision::Confusion());
+
+    TopoDS_Wire aWire;
+    aBuilder.MakeWire(aWire);
+    aBuilder.Add(aWire, aTopEdge.Reversed());
+    aBuilder.Add(aWire, aSeamEdge);
+    aBuilder.Add(aWire, aBottomEdge);
+    aBuilder.Add(aWire, aSeamEdge.Reversed());
+    aBuilder.Add(aFace, aWire);
+
+    BRepMesh_IncrementalMesh aMesher(aFace, 0.01);
+    ASSERT_TRUE(aMesher.IsDone());
+    EXPECT_EQ(aMesher.GetStatusFlags(), IMeshData_NoError);
+
+    TopLoc_Location                       aLocation;
+    const occ::handle<Poly_Triangulation> aTriangulation =
+      BRep_Tool::Triangulation(aFace, aLocation);
+    ASSERT_FALSE(aTriangulation.IsNull());
+    if (aTilt == 0.0)
+    {
+      aReferenceTriangles = aTriangulation->NbTriangles();
+      EXPECT_GT(aReferenceTriangles, 0);
+    }
+    EXPECT_EQ(aTriangulation->NbTriangles(), aReferenceTriangles);
   }
 }
