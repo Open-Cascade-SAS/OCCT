@@ -176,6 +176,9 @@ public:
   //! in the state of the last acquisition to enable modification of contours or areas.
   Standard_EXPORT void Reset();
 
+  //! Returns the shape on which the fillets are computed.
+  const TopoDS_Shape& InitialShape() const { return myShape; }
+
   //! Returns the Builder of topologic operations.
   Standard_EXPORT occ::handle<TopOpeBRepBuild_HBuilder> Builder() const;
 
