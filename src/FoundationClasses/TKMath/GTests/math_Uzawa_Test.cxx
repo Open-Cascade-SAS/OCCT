@@ -410,3 +410,64 @@ TEST(math_Uzawa, IterationCount)
   EXPECT_GT(solver.NbIterations(), 0);
   EXPECT_LE(solver.NbIterations(), 500); // Default max iterations
 }
+
+TEST(math_Uzawa, InitialError_HasOneEntryPerConstraint)
+{
+  // More constraints than unknowns: the initial error C*x0 - b has one entry per row.
+  math_Matrix C(1, 3, 1, 2);
+  C(1, 1) = 1.0;
+  C(1, 2) = 0.0;
+  C(2, 1) = 0.0;
+  C(2, 2) = 1.0;
+  C(3, 1) = 1.0;
+  C(3, 2) = 1.0;
+
+  math_Vector b(1, 3);
+  b(1) = 2.0;
+  b(2) = 1.0;
+  b(3) = 3.0;
+
+  math_Vector x0(1, 2);
+  x0(1) = 5.0;
+  x0(2) = 4.0;
+
+  // Two equalities and one inequality, so the iterative branch runs and no inverse is formed.
+  math_Uzawa solver(C, b, x0, 2, 1);
+
+  const math_Vector& initialError = solver.InitialError();
+  ASSERT_EQ(initialError.Length(), 3);
+  EXPECT_NEAR(initialError(1), 3.0, TOLERANCE);
+  EXPECT_NEAR(initialError(2), 3.0, TOLERANCE);
+  EXPECT_NEAR(initialError(3), 6.0, TOLERANCE);
+}
+
+TEST(math_Uzawa, ManyMoreConstraintsThanUnknowns_DoesNotOverrunInitialError)
+{
+  // x = 2 and y = 1 as equalities, plus 98 inequalities that the solution satisfies with room.
+  const int   aRows = 100;
+  math_Matrix C(1, aRows, 1, 2);
+  math_Vector b(1, aRows);
+  C(1, 1) = 1.0;
+  C(1, 2) = 0.0;
+  b(1)    = 2.0;
+  C(2, 1) = 0.0;
+  C(2, 2) = 1.0;
+  b(2)    = 1.0;
+  for (int i = 3; i <= aRows; ++i)
+  {
+    C(i, 1) = 1.0 + 0.01 * i;
+    C(i, 2) = 1.0 - 0.003 * i;
+    b(i)    = 1000.0;
+  }
+  math_Vector x0(1, 2);
+  x0(1) = 0.0;
+  x0(2) = 0.0;
+
+  // The initial error used to be written 98 entries past a two-entry vector.
+  math_Uzawa solver(C, b, x0, 2, aRows - 2, 1.0e-8, 1.0e-8, 100000);
+  ASSERT_TRUE(solver.IsDone());
+  EXPECT_EQ(solver.InitialError().Length(), aRows);
+  // The dual step is scaled by all 100 rows, so the iteration stops short of TOLERANCE.
+  EXPECT_NEAR(solver.Value()(1), 2.0, 1.0e-4);
+  EXPECT_NEAR(solver.Value()(2), 1.0, 1.0e-4);
+}
