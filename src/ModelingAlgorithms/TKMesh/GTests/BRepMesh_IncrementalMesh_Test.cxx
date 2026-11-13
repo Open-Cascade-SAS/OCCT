@@ -39,6 +39,7 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
+#include <Standard_NumericError.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -57,6 +58,8 @@
 #include <TopoDS_Wire.hxx>
 
 #include <gtest/gtest.h>
+
+#include <limits>
 
 // Test OCC26407: BRepMesh_Delaun must not fail on a planar polygon with frontier edges.
 // The key check is that GetStatusFlags() == 0 (success) after meshing.
@@ -404,6 +407,61 @@ TEST(BRepMesh_IncrementalMeshTest, OCC31125_EmptyCompoundDoesNotCrash)
   IMeshTools_Parameters aParameters;
   aParameters.Deflection = 1.0;
   EXPECT_NO_THROW(BRepMesh_IncrementalMesh(anEmptyCompound, aParameters));
+}
+
+// A NaN parameter defeats every "value < bound" test, so it must be refused or replaced explicitly.
+TEST(BRepMesh_IncrementalMeshTest, NaNDeflection_IsRefused)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+
+  IMeshTools_Parameters aParameters;
+  aParameters.Deflection = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_THROW(BRepMesh_IncrementalMesh(aBox, aParameters), Standard_NumericError);
+}
+
+TEST(BRepMesh_IncrementalMeshTest, NaNAngle_IsRefused)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10.0, 5.0).Shape();
+
+  IMeshTools_Parameters aParameters;
+  aParameters.Deflection = 10.0;
+  aParameters.Angle      = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_THROW(BRepMesh_IncrementalMesh(aCylinder, aParameters), Standard_NumericError);
+}
+
+TEST(BRepMesh_IncrementalMeshTest, NaNOptionalParameters_AreReplaced)
+{
+  const TopoDS_Shape aCylinder = BRepPrimAPI_MakeCylinder(10.0, 5.0).Shape();
+
+  IMeshTools_Parameters aParameters;
+  aParameters.Deflection         = 1.0;
+  aParameters.Angle              = 0.5;
+  aParameters.DeflectionInterior = std::numeric_limits<double>::quiet_NaN();
+  aParameters.AngleInterior      = std::numeric_limits<double>::quiet_NaN();
+  aParameters.MinSize            = std::numeric_limits<double>::quiet_NaN();
+
+  const BRepMesh_IncrementalMesh aMesh(aCylinder, aParameters);
+  EXPECT_DOUBLE_EQ(aMesh.Parameters().DeflectionInterior, aParameters.Deflection);
+  EXPECT_DOUBLE_EQ(aMesh.Parameters().AngleInterior, 2.0 * aParameters.Angle);
+  EXPECT_GE(aMesh.Parameters().MinSize, Precision::Confusion());
+}
+
+// Values outside the bounds were already refused and valid ones must still mesh.
+TEST(BRepMesh_IncrementalMeshTest, OutOfRangeParameters_StayRefused)
+{
+  const TopoDS_Shape aBox = BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape();
+
+  IMeshTools_Parameters aParameters;
+  aParameters.Deflection = 0.0;
+  EXPECT_THROW(BRepMesh_IncrementalMesh(aBox, aParameters), Standard_NumericError);
+
+  aParameters.Deflection = 1.0;
+  aParameters.Angle      = -1.0;
+  EXPECT_THROW(BRepMesh_IncrementalMesh(aBox, aParameters), Standard_NumericError);
+
+  aParameters.Angle = 0.5;
+  const BRepMesh_IncrementalMesh aMesh(aBox, aParameters);
+  EXPECT_TRUE(aMesh.IsDone());
 }
 
 // Migrated from tests/bugs/mesh/bug31461.  A second pass with

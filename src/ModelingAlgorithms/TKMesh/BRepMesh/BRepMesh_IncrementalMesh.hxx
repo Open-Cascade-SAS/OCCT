@@ -78,17 +78,18 @@ private:
   //! Initializes specific parameters
   void initParameters()
   {
-    if (myParameters.Deflection < Precision::Confusion())
+    // Written as !(x >= bound) so that NaN is refused or replaced like any out-of-range value.
+    if (!(myParameters.Deflection >= Precision::Confusion()))
     {
       throw Standard_NumericError(
         "BRepMesh_IncrementalMesh::initParameters : invalid parameter value");
     }
-    if (myParameters.DeflectionInterior < Precision::Confusion())
+    if (!(myParameters.DeflectionInterior >= Precision::Confusion()))
     {
       myParameters.DeflectionInterior = myParameters.Deflection;
     }
 
-    if (myParameters.MinSize < Precision::Confusion())
+    if (!(myParameters.MinSize >= Precision::Confusion()))
     {
       myParameters.MinSize =
         (std::max)(IMeshTools_Parameters::RelMinSize()
@@ -96,12 +97,12 @@ private:
                    Precision::Confusion());
     }
 
-    if (myParameters.Angle < Precision::Angular())
+    if (!(myParameters.Angle >= Precision::Angular()))
     {
       throw Standard_NumericError(
         "BRepMesh_IncrementalMesh::initParameters : invalid parameter value");
     }
-    if (myParameters.AngleInterior < Precision::Angular())
+    if (!(myParameters.AngleInterior >= Precision::Angular()))
     {
       myParameters.AngleInterior = 2.0 * myParameters.Angle;
     }
