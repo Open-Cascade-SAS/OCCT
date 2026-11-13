@@ -1187,6 +1187,10 @@ private:
   occ::handle<IFSelect_ModelCopier>     thecopier;
   occ::handle<Interface_InterfaceModel> theoldel;
   bool                                  themodelstat;
+  //! Guards the self-recursive error-handling frame in EvalSelection and its eight siblings.
+  //! Per instance, not per process: two sessions on two threads must not be able to clear each
+  //! other's guard.
+  mutable bool myInErrorHandler = false;
 };
 
 #endif // _IFSelect_WorkSession_HeaderFile
