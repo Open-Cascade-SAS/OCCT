@@ -52,6 +52,7 @@
 #include <GeomPlate_PointConstraint.hxx>
 #include <GeomPlate_Aij.hxx>
 #include <GeomPlate_Surface.hxx>
+#include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -1528,6 +1529,12 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Message_ProgressRange& t
         {
           myLinCont->Value(i)->D1(Uinit + Inter, Pts->ChangeValue(++pnum), Vec1, Vec2);
           Normal = Vec1 ^ Vec2;
+          // A null normal cannot orient the initial plane.
+          if (Normal.Magnitude() <= gp::Resolution())
+          {
+            throw Standard_ConstructionError(
+              "GeomPlate_BuildPlateSurface: null normal of a constraint");
+          }
           Normal.Normalize();
           if (ToReverse)
           {

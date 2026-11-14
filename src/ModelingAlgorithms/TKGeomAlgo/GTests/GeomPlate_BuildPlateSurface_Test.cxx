@@ -14,16 +14,27 @@
 #include <GeomPlate_BuildPlateSurface.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
 #include <GeomPlate_PointConstraint.hxx>
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <Geom_BezierCurve.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressScope.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_Sequence.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 
 #include <gtest/gtest.h>
 
@@ -95,6 +106,46 @@ void addCurveConstraint(GeomPlate_BuildPlateSurface& theBuilder, const TopoDS_Ed
   theBuilder.Add(new GeomPlate_CurveConstraint(aCurveAdaptor, 0));
 }
 
+//! Flat patch with the corners (0, 0), theCorner21, theCorner12 and (10, 10). The first derivative
+//! of the patch along an edge is null where the two corners of the edge coincide.
+occ::handle<Geom_BezierSurface> createFlatPatch(const gp_Pnt& theCorner21,
+                                                const gp_Pnt& theCorner12)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0);
+  aPoles(2, 1) = theCorner21;
+  aPoles(1, 2) = theCorner12;
+  aPoles(2, 2) = gp_Pnt(10, 10, 0);
+  return new Geom_BezierSurface(aPoles);
+}
+
+//! Adds the G1 constraint along the straight segment of the parameter space of the surface.
+void addSurfaceEdgeConstraint(GeomPlate_BuildPlateSurface&     theBuilder,
+                              const occ::handle<Geom_Surface>& theSurface,
+                              const gp_Pnt2d&                  theFrom,
+                              const gp_Pnt2d&                  theTo)
+{
+  const gp_Vec2d                  aDirection(theFrom, theTo);
+  const occ::handle<Geom2d_Line>  aLine = new Geom2d_Line(theFrom, gp_Dir2d(aDirection));
+  const occ::handle<Geom2d_Curve> aPCurve =
+    new Geom2d_TrimmedCurve(aLine, 0.0, aDirection.Magnitude());
+  const occ::handle<Geom2dAdaptor_Curve>      aPCurveAdaptor  = new Geom2dAdaptor_Curve(aPCurve);
+  const occ::handle<GeomAdaptor_Surface>      aSurfaceAdaptor = new GeomAdaptor_Surface(theSurface);
+  const occ::handle<Adaptor3d_CurveOnSurface> anEdge =
+    new Adaptor3d_CurveOnSurface(aPCurveAdaptor, aSurfaceAdaptor);
+  theBuilder.Add(new GeomPlate_CurveConstraint(anEdge, 1, 10, 1.e-4, 0.01, 0.1));
+}
+
+//! Adds the four edges of the patch as G1 constraints.
+void addPatchBoundary(GeomPlate_BuildPlateSurface&     theBuilder,
+                      const occ::handle<Geom_Surface>& theSurface)
+{
+  addSurfaceEdgeConstraint(theBuilder, theSurface, gp_Pnt2d(0, 0), gp_Pnt2d(1, 0));
+  addSurfaceEdgeConstraint(theBuilder, theSurface, gp_Pnt2d(1, 0), gp_Pnt2d(1, 1));
+  addSurfaceEdgeConstraint(theBuilder, theSurface, gp_Pnt2d(1, 1), gp_Pnt2d(0, 1));
+  addSurfaceEdgeConstraint(theBuilder, theSurface, gp_Pnt2d(0, 1), gp_Pnt2d(0, 0));
+}
+
 void expectPlateProgress(const ProgressObserver& theObserver)
 {
   EXPECT_GT(theObserver.Messages().Length(), 0);
@@ -138,6 +189,42 @@ TEST(GeomPlate_BuildPlateSurface, Perform_ClearsStaleResult)
   aBuilder.Perform();
   EXPECT_TRUE(aBuilder.IsDone());
   EXPECT_TRUE(aBuilder.Surface().IsNull()) << "Surface must be null after Init() + empty Perform()";
+}
+
+// A G1 constraint on an edge where the normal of the surface is null cannot orient the initial
+// plane. The edge v = 0 or the edge u = 0 of a triangular patch collapses to a point.
+TEST(GeomPlate_BuildPlateSurface, Perform_CollapsedEdgeConstraint_ThrowsConstructionError)
+{
+  const occ::handle<Geom_BezierSurface> aPatches[] = {
+    createFlatPatch(gp_Pnt(0, 0, 0), gp_Pnt(0, 10, 0)),
+    createFlatPatch(gp_Pnt(10, 0, 0), gp_Pnt(0, 0, 0))};
+  for (const occ::handle<Geom_BezierSurface>& aPatch : aPatches)
+  {
+    GeomPlate_BuildPlateSurface aBuilder(3, 10, 3, 1.e-5, 1.e-4, 0.01, 0.1, false);
+    addPatchBoundary(aBuilder, aPatch);
+    EXPECT_THROW(aBuilder.Perform(), Standard_ConstructionError);
+  }
+}
+
+TEST(GeomPlate_BuildPlateSurface, Perform_RegularEdgeConstraint_BuildsSurface)
+{
+  GeomPlate_BuildPlateSurface aBuilder(3, 10, 3, 1.e-5, 1.e-4, 0.01, 0.1, false);
+  addPatchBoundary(aBuilder, createFlatPatch(gp_Pnt(10, 0, 0), gp_Pnt(0, 10, 0)));
+  aBuilder.Perform();
+  ASSERT_TRUE(aBuilder.IsDone());
+  ASSERT_FALSE(aBuilder.Surface().IsNull());
+  EXPECT_LT(aBuilder.G0Error(), 1.e-3);
+}
+
+// The normal is small but not null: the constraint is accepted.
+TEST(GeomPlate_BuildPlateSurface, Perform_NearNullEdgeConstraint_BuildsSurface)
+{
+  GeomPlate_BuildPlateSurface aBuilder(3, 10, 3, 1.e-5, 1.e-4, 0.01, 0.1, false);
+  addPatchBoundary(aBuilder, createFlatPatch(gp_Pnt(1.e-8, 0, 0), gp_Pnt(0, 10, 0)));
+  aBuilder.Perform();
+  ASSERT_TRUE(aBuilder.IsDone());
+  ASSERT_FALSE(aBuilder.Surface().IsNull());
+  EXPECT_LT(aBuilder.G0Error(), 1.e-3);
 }
 
 // Migrated from tests/lowalgos/progress/A1.  Validate the progress scopes
