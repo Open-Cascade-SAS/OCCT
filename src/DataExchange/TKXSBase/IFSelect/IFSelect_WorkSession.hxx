@@ -726,11 +726,17 @@ public:
 
   //! Extracts File Root Name from a given complete file name
   //! (uses OSD_Path)
-  Standard_EXPORT const char* GiveFileRoot(const char* const file) const;
+  //! @param[in] file complete file name
+  //! @return the root name, or a copy of <file> if it is not a valid path
+  Standard_EXPORT TCollection_AsciiString GiveFileRoot(const char* const file) const;
 
   //! Completes a file name as required, with Prefix and Extension
   //! (if defined; for a non-defined item, completes nothing)
-  Standard_EXPORT const char* GiveFileComplete(const char* const file) const;
+  //! The Prefix is inserted unless <file> contains the last character of the Prefix.
+  //! The Extension is appended unless <file> contains the first character of the Extension.
+  //! @param[in] file file name to complete
+  //! @return the completed name
+  Standard_EXPORT TCollection_AsciiString GiveFileComplete(const char* const file) const;
 
   //! Erases all stored data from the File Evaluation
   //! (i.e. ALL former naming information are lost)
