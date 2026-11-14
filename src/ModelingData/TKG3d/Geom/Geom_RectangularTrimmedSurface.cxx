@@ -45,6 +45,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 
 typedef Geom_RectangularTrimmedSurface RectangularTrimmedSurface;
@@ -231,6 +233,12 @@ void Geom_RectangularTrimmedSurface::SetTrim(const double U1,
                                              const bool   USense,
                                              const bool   VSense)
 {
+  // The trim parameters of a trimmed direction must be finite.
+  if ((UTrim && !(std::isfinite(U1) && std::isfinite(U2)))
+      || (VTrim && !(std::isfinite(V1) && std::isfinite(V2))))
+  {
+    throw Standard_ConstructionError("Geom_RectangularTrimmedSurface::parameters are not finite");
+  }
 
   bool   UsameSense = true;
   bool   VsameSense = true;
