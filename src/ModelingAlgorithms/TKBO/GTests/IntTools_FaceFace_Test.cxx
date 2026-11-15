@@ -24,6 +24,10 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepTools.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -533,4 +537,81 @@ TEST_F(IntTools_FaceFaceTest, OCC23644_CoaxialConesNoRegularCurve)
   EXPECT_EQ(anInters.Lines().Length(), 0);
   ASSERT_EQ(anInters.Points().Length(), 1);
   EXPECT_TRUE(anInters.Points()(1).P1().Pnt().IsEqual(gp_Pnt(0.0, 0.0, 20.0), 1.e-7));
+}
+
+// A strip 12.5 mm long and 0.035 mm tall crosses a wall lofted between two arcs of
+// radius ~7 m, which is parametrised by the arcs' angle (7168 mm per unit). The step of
+// the walking algorithm along the wall, 1.4e-5 mm long, is below 1e-7 in parametric
+// units; it was nullified, the points repeated that way ended the line inside both
+// faces, and the intersection curve stopped 9e-5 mm short of the strip's edge.
+TEST_F(IntTools_FaceFaceTest, ThinStripAcrossHighSpeedBSpline_CurveReachesBothEdges)
+{
+  const double aWallCoords[6][2][3] = {
+    {{254.59226230894529, 185.33834500880221, 21.932675824796718},
+     {259.98690833641098, 195.11248563517802, 195.0}},
+    {{152.78242183036258, 188.2137647100356, 21.932675824796668},
+     {156.01620994859167, 197.85247429580761, 194.99999999999963}},
+    {{50.931986842068667, 189.65185665945538, 21.932675824796831},
+     {52.009415811260141, 199.22278565684402, 195.00000000000108}},
+    {{-50.931986842067992, 189.65185665945413, 21.932675824796632},
+     {-52.009415811258464, 199.22278565683266, 194.99999999999906}},
+    {{-152.7824218303619, 188.21376471003649, 21.932675824796739},
+     {-156.0162099485899, 197.85247429581003, 195.00000000000037}},
+    {{-254.59226230894464, 185.33834500880224, 21.932675824796721},
+     {-259.9869083364091, 195.11248563517984, 195.0}}};
+  NCollection_Array2<gp_Pnt> aWallPoles(1, 6, 1, 2);
+  for (int i = 1; i <= 6; ++i)
+  {
+    for (int j = 1; j <= 2; ++j)
+    {
+      const double* aC = aWallCoords[i - 1][j - 1];
+      aWallPoles.SetValue(i, j, gp_Pnt(aC[0], aC[1], aC[2]));
+    }
+  }
+  const double               aWallUMin = 0.0007592086234779522, aWallUMax = 0.05723028270790119;
+  NCollection_Array1<double> aWallUKnots(1, 2), aUnitKnots(1, 2);
+  aWallUKnots.SetValue(1, aWallUMin);
+  aWallUKnots.SetValue(2, aWallUMax);
+  aUnitKnots.SetValue(1, 0.0);
+  aUnitKnots.SetValue(2, 1.0);
+  NCollection_Array1<int> aMults6(1, 2), aMults2(1, 2);
+  aMults6.Init(6);
+  aMults2.Init(2);
+  const occ::handle<Geom_BSplineSurface> aWall =
+    new Geom_BSplineSurface(aWallPoles, aWallUKnots, aUnitKnots, aMults6, aMults2, 5, 1);
+
+  // The strip: its edges V = 0 and V = 1 are horizontal, at aZLow and aZHigh.
+  const double               aZLow = 22.868920334438986, aZHigh = 22.904334418836829;
+  const double               aStripUMax = 12.479615301720344;
+  NCollection_Array2<gp_Pnt> aStripPoles(1, 2, 1, 2);
+  aStripPoles.SetValue(1, 1, gp_Pnt(204.42146896571498, 188.99028150434606, aZLow));
+  aStripPoles.SetValue(1, 2, gp_Pnt(204.42271160150284, 188.99234095310203, aZHigh));
+  aStripPoles.SetValue(2, 1, gp_Pnt(204.42146896571498, 176.51066620262571, aZLow));
+  aStripPoles.SetValue(2, 2, gp_Pnt(204.42271160150284, 176.53971995386672, aZHigh));
+  NCollection_Array1<double> aStripUKnots(1, 2);
+  aStripUKnots.SetValue(1, 0.0);
+  aStripUKnots.SetValue(2, aStripUMax);
+  const occ::handle<Geom_BSplineSurface> aStrip =
+    new Geom_BSplineSurface(aStripPoles, aStripUKnots, aUnitKnots, aMults2, aMults2, 1, 1);
+
+  const TopoDS_Face aWallFace =
+    BRepBuilderAPI_MakeFace(aWall, aWallUMin, aWallUMax, 0.0, 1.0, 1.0e-7).Face();
+  const TopoDS_Face aStripFace =
+    BRepBuilderAPI_MakeFace(aStrip, 0.0, aStripUMax, 0.0, 1.0, 1.0e-7).Face();
+
+  for (int anOrder = 0; anOrder < 2; ++anOrder)
+  {
+    IntTools_FaceFace aFF;
+    aFF.SetParameters(true, true, true, 1.0e-7);
+    aFF.Perform(anOrder == 0 ? aStripFace : aWallFace, anOrder == 0 ? aWallFace : aStripFace);
+    ASSERT_TRUE(aFF.IsDone());
+    ASSERT_EQ(aFF.Lines().Length(), 1);
+
+    const occ::handle<Geom_Curve>& aCurve = aFF.Lines().Value(1).Curve();
+    ASSERT_FALSE(aCurve.IsNull());
+    const double aZ1 = aCurve->Value(aCurve->FirstParameter()).Z();
+    const double aZ2 = aCurve->Value(aCurve->LastParameter()).Z();
+    EXPECT_NEAR(std::min(aZ1, aZ2), aZLow, 1.0e-6) << "order " << anOrder;
+    EXPECT_NEAR(std::max(aZ1, aZ2), aZHigh, 1.0e-6) << "order " << anOrder;
+  }
 }
