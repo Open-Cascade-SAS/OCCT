@@ -46,6 +46,8 @@
 #include <Geom_OffsetSurface.hxx>
 #include <gp_Pnt.hxx>
 #include <math_FunctionSetRoot.hxx>
+#include <math_FunctionSetWithDerivatives.hxx>
+#include <math_Matrix.hxx>
 #include <math_NewtonFunctionSetRoot.hxx>
 #include <math_Vector.hxx>
 #include <Precision.hxx>
@@ -939,6 +941,129 @@ void Extrema_GenExtPS::BuildTree()
   aFiller.Fill();
 }
 
+namespace
+{
+//! Forwards the evaluation of the extremum equations to Extrema_FuncPSNorm, but
+//! keeps for itself the decision to record a solution: the solver calls
+//! GetStateNumber() wherever it stops, converged or not.
+class Extrema_PSNormProxy : public math_FunctionSetWithDerivatives
+{
+public:
+  Extrema_PSNormProxy(Extrema_FuncPSNorm& theF)
+      : myF(theF),
+        myUV(1, 2, 0.0),
+        myIsStopped(false)
+  {
+  }
+
+  int NbVariables() const override { return 2; }
+
+  int NbEquations() const override { return 2; }
+
+  bool Value(const math_Vector& theUV, math_Vector& theF) override
+  {
+    myUV = theUV;
+    return myF.Value(theUV, theF);
+  }
+
+  bool Derivatives(const math_Vector& theUV, math_Matrix& theDF) override
+  {
+    myUV = theUV;
+    return myF.Derivatives(theUV, theDF);
+  }
+
+  bool Values(const math_Vector& theUV, math_Vector& theF, math_Matrix& theDF) override
+  {
+    myUV = theUV;
+    return myF.Values(theUV, theF, theDF);
+  }
+
+  int GetStateNumber() override
+  {
+    myIsStopped = true;
+    return 0;
+  }
+
+  //! True if the solver stopped on a point; this point is the last one evaluated.
+  bool IsStopped() const { return myIsStopped; }
+
+  const math_Vector& Point() const { return myUV; }
+
+private:
+  Extrema_FuncPSNorm& myF;
+  math_Vector         myUV;
+  bool                myIsStopped;
+};
+
+//! Newton iterations on the extremum equations from the point where the general
+//! solver stopped. That solver also stops, and reports success, when its step stalls;
+//! on a surface whose parametrization is skew and of very different speed along U
+//! and V this happens far from the extremum. The point is replaced only if the
+//! iterations converge inside the bounds; otherwise it is left as it is.
+//! Returns true if theUV is changed.
+bool RefineExtremum(Extrema_FuncPSNorm& theF,
+                    const math_Vector&  theTol,
+                    const math_Vector&  theInf,
+                    const math_Vector&  theSup,
+                    math_Vector&        theUV)
+{
+  // A point on the border of the domain is an extremum of the bounded problem only.
+  for (int i = 1; i <= 2; ++i)
+  {
+    if (theUV(i) - theInf(i) <= theTol(i) || theSup(i) - theUV(i) <= theTol(i))
+    {
+      return false;
+    }
+  }
+
+  const int   aNbIterMax = 20;
+  math_Vector aUV(theUV), aF(1, 2);
+  math_Matrix aDF(1, 2, 1, 2);
+  double      aPrevStep = RealLast();
+  for (int anIter = 1; anIter <= aNbIterMax; ++anIter)
+  {
+    if (!theF.Values(aUV, aF, aDF))
+    {
+      return false;
+    }
+    const double aDet = aDF(1, 1) * aDF(2, 2) - aDF(1, 2) * aDF(2, 1);
+    if (std::abs(aDet)
+        <= Epsilon(std::abs(aDF(1, 1) * aDF(2, 2)) + std::abs(aDF(1, 2) * aDF(2, 1))))
+    {
+      return false;
+    }
+    const double aDU = (aF(2) * aDF(1, 2) - aF(1) * aDF(2, 2)) / aDet;
+    const double aDV = (aF(1) * aDF(2, 1) - aF(2) * aDF(1, 1)) / aDet;
+    if (std::abs(aDU) <= theTol(1) && std::abs(aDV) <= theTol(2))
+    {
+      // The correction is below the tolerance: aUV is the extremum.
+      if (anIter == 1)
+      {
+        return false; // the solver has converged, nothing to change
+      }
+      theUV = aUV;
+      return true;
+    }
+    // Relative size of the step, to detect that it does not decrease any more.
+    const double aStep = std::max(std::abs(aDU) / theTol(1), std::abs(aDV) / theTol(2));
+    if (aStep > 0.5 * aPrevStep && anIter > 2)
+    {
+      return false;
+    }
+    aPrevStep = aStep;
+    aUV(1) += aDU;
+    aUV(2) += aDV;
+    if (aUV(1) < theInf(1) || aUV(1) > theSup(1) || aUV(2) < theInf(2) || aUV(2) > theSup(2))
+    {
+      return false;
+    }
+  }
+  return false;
+}
+} // namespace
+
+//=================================================================================================
+
 void Extrema_GenExtPS::FindSolution(const gp_Pnt& /*P*/, const Extrema_POnSurfParams& theParams)
 {
   math_Vector Tol(1, 2);
@@ -954,8 +1079,20 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& /*P*/, const Extrema_POnSurfPa
   UVsup(1) = myusup;
   UVsup(2) = myvsup;
 
-  math_FunctionSetRoot S(myF, Tol);
-  S.Perform(myF, UV, UVinf, UVsup);
+  Extrema_PSNormProxy  aProxy(myF);
+  math_FunctionSetRoot S(aProxy, Tol);
+  S.Perform(aProxy, UV, UVinf, UVsup);
+
+  if (aProxy.IsStopped())
+  {
+    math_Vector aSol(aProxy.Point()), aFSol(1, 2);
+    RefineExtremum(myF, Tol, UVinf, UVsup, aSol);
+    // Record the solution.
+    if (myF.Value(aSol, aFSol))
+    {
+      myF.GetStateNumber();
+    }
+  }
 
   myDone = true;
 }
