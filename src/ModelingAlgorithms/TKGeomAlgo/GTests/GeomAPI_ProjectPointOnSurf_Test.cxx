@@ -19,6 +19,9 @@
 #include <BRep_Tool.hxx>
 #include <Geom_Ellipse.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <TopExp_Explorer.hxx>
@@ -100,4 +103,65 @@ TEST(GeomAPI_ProjectPointOnSurfTest, OCC24138_ProjectPointOnEllipticalPrismFace)
   EXPECT_NEAR(aProjectedPoint.X(), 0.75307115689421944, 1.0e-7);
   EXPECT_NEAR(aProjectedPoint.Y(), 4.9858019383179632, 1.0e-7);
   EXPECT_NEAR(aProjectedPoint.Z(), 0.0, 1.0e-7);
+}
+
+// A ruled surface between two shallow arcs of radius ~7 m, 0.16 mm apart, parametrised
+// by the arcs' angle: 7168 mm per unit along U, 0.16 mm per unit along V, the two
+// directions 159 degrees apart. The solver of Extrema_GenExtPS stalled on it and the
+// point where it stopped was returned as the projection, 2.2e-4 mm away from a point
+// lying on the surface.
+TEST(GeomAPI_ProjectPointOnSurfTest, SkewHighSpeedBSpline_PointOnSurfaceProjectsOnItself)
+{
+  const double aPoleCoords[6][2][3] = {
+    {{-168.06808015045235, 182.68806273884002, 121.3727180156735},
+     {-166.88676528845548, 182.71787692666567, 121.42894128318932}},
+    {{-100.85311333160814, 184.26082604497103, 121.3727180156732},
+     {-100.1440726755654, 184.26893685203746, 121.42894128318903}},
+    {{-33.619749322069985, 185.04735117145427, 121.37271801567391},
+     {-33.383360457532881, 185.04460638516164, 121.4289412831896}},
+    {{33.61974932207, 185.04735117145415, 121.37271801567319},
+     {33.383360457532724, 185.04460638516329, 121.42894128318916}},
+    {{100.85311333160828, 184.26082604497157, 121.37271801567357},
+     {100.1440726755656, 184.26893685203726, 121.42894128318937}},
+    {{168.06808015045237, 182.68806273884002, 121.3727180156735},
+     {166.88676528845554, 182.71787692666476, 121.42894128318933}}};
+  NCollection_Array2<gp_Pnt> aPoles(1, 6, 1, 2);
+  for (int i = 1; i <= 6; ++i)
+  {
+    for (int j = 1; j <= 2; ++j)
+    {
+      const double* aC = aPoleCoords[i - 1][j - 1];
+      aPoles.SetValue(i, j, gp_Pnt(aC[0], aC[1], aC[2]));
+    }
+  }
+  const double               aUMax = 0.0467894708121695;
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+  aUKnots.SetValue(1, 0.0);
+  aUKnots.SetValue(2, aUMax);
+  aVKnots.SetValue(1, 0.0);
+  aVKnots.SetValue(2, 1.0);
+  NCollection_Array1<int> aUMults(1, 2), aVMults(1, 2);
+  aUMults.Init(6);
+  aVMults.Init(2);
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 5, 1);
+
+  const double aU = 0.0263048862144, aV = 0.323791168705;
+  const gp_Pnt aPoint = aSurface->Value(aU, aV);
+
+  for (const Extrema_ExtAlgo anAlgo : {Extrema_ExtAlgo_Grad, Extrema_ExtAlgo_Tree})
+  {
+    GeomAPI_ProjectPointOnSurf aProjector;
+    aProjector.Init(aSurface, 0.0, aUMax, 0.0, 1.0, 1.0e-12, anAlgo);
+    aProjector.SetExtremaFlag(Extrema_ExtFlag_MIN);
+    aProjector.Perform(aPoint);
+
+    ASSERT_TRUE(aProjector.IsDone());
+    ASSERT_GT(aProjector.NbPoints(), 0);
+    double aProjU = 0.0, aProjV = 0.0;
+    aProjector.LowerDistanceParameters(aProjU, aProjV);
+    EXPECT_LT(aProjector.LowerDistance(), 1.0e-9);
+    EXPECT_NEAR(aProjU, aU, 1.0e-9);
+    EXPECT_NEAR(aProjV, aV, 1.0e-6);
+  }
 }
