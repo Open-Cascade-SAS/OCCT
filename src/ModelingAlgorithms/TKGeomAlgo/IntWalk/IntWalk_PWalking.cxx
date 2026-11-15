@@ -1196,8 +1196,13 @@ void IntWalk_PWalking::Perform(const NCollection_Array1<double>& ParDep,
     dP3 = sensCheminement * pasuv[2] * previousd2.X() / f;
     dP4 = sensCheminement * pasuv[3] * previousd2.Y() / f;
     //
+    // A too small step of the fixed parameter is amplified only while the walk cannot
+    // leave its first point: IncKey counts these attempts. Otherwise the step is kept.
+    // Multiplying it by a null IncKey returned the previous point again, and a step
+    // below aEps in parametric units is not small in 3D on a surface of high
+    // parametric speed: the points repeated this way ended the line before the boundary.
     aIncKey = 5. * (double)IncKey;
-    aEps    = 1.e-7;
+    aEps    = IncKey > 0 ? 1.e-7 : 0.0;
     if (ChoixIso == IntImp_UIsoparametricOnCaro1 && std::abs(dP1) < aEps)
     {
       dP1 *= aIncKey;
@@ -3942,6 +3947,29 @@ IntWalk_StatusDeflection IntWalk_PWalking::TestDeflection(const IntImp_ConstIsop
 
   const double aCosBetweenTangent  = TgCourante.Dot(previousd);
   bool         isInflexionRecovery = false;
+
+  //==================================================================================
+  //=========   P o i n t   b e h i n d   t h e   p r e v i o u s   o n e   ==========
+  //==================================================================================
+  // The new point has to lie ahead of the previous one along the walking direction.
+  // Where the surfaces are close to tangent the solver can return a point of the part
+  // of the line already passed. Accepting it makes the line run back and forth over
+  // itself, adding a point at each step up to the limit on their number, so it is
+  // handled as a too great step.
+  const gp_Vec aChord(previousPoint.Value(), CurrentPoint.Value());
+  if (sensCheminement * aChord.Dot(gp_Vec(previousd)) < 0.0
+      && aChord.SquareMagnitude() > Precision::SquareConfusion())
+  {
+    pasuv[0] *= 0.5;
+    pasuv[1] *= 0.5;
+    pasuv[2] *= 0.5;
+    pasuv[3] *= 0.5;
+    if (pasuv[0] < ResoU1 && pasuv[1] < ResoV1 && pasuv[2] < ResoU2 && pasuv[3] < ResoV2)
+    {
+      return IntWalk_ArretSurPointPrecedent;
+    }
+    return IntWalk_PasTropGrand;
+  }
 
   //==================================================================================
   //=========   R i s k   o f    i n f l e x i o n   p o i n t  ============
