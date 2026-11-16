@@ -34,6 +34,8 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_Ellipse.hxx>
@@ -1309,4 +1311,104 @@ TEST(BRepOffset_MakeOffsetTest, ArcOffset_SplitSplineConeKeepsSeamAtFirstFace)
       EXPECT_EQ(aNbFaces, 3);
     }
   }
+}
+
+//==================================================================================================
+
+namespace
+{
+TopoDS_Face MakeFaceForOpenOffset(const bool isCircle, const bool isOpen, const bool isForward)
+{
+  occ::handle<Geom_Curve> aCurve;
+  if (isCircle)
+  {
+    aCurve = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 30.0);
+  }
+  else
+  {
+    aCurve = new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 40.0, 30.0);
+  }
+
+  TopoDS_Edge anEdge;
+  if (isOpen)
+  {
+    const double U1 = 1.2 * M_PI;
+    const double U2 = 1.8 * M_PI;
+    anEdge          = BRepBuilderAPI_MakeEdge(aCurve, U1, U2);
+  }
+  else
+  {
+    anEdge = BRepBuilderAPI_MakeEdge(aCurve);
+  }
+
+  if (!isForward)
+    anEdge.Complement();
+
+  TopoDS_Wire aWire = BRepBuilderAPI_MakeWire(anEdge);
+
+  gp_Pln      aPln(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  TopoDS_Face aFace = BRepBuilderAPI_MakeFace(aPln, aWire);
+
+  return aFace;
+}
+} // namespace
+
+static void CheckOpenOffset(const bool   isCircle,
+                            const bool   isOpen,
+                            const bool   isForward,
+                            const double theOffsetValue,
+                            const double theExpectedLength)
+{
+  const TopoDS_Face aFace = MakeFaceForOpenOffset(isCircle, isOpen, isForward);
+  ASSERT_FALSE(aFace.IsNull());
+
+  bool             isOpenResult = true;
+  bool             toApprox     = false;
+  double           anAltitude   = 0.;
+  GeomAbs_JoinType aJoinType    = GeomAbs_Arc;
+
+  BRepOffsetAPI_MakeOffset anOffsetMaker;
+  anOffsetMaker.Init(aFace, aJoinType, isOpenResult);
+  anOffsetMaker.SetApprox(toApprox);
+  anOffsetMaker.Perform(theOffsetValue, anAltitude);
+
+  ASSERT_TRUE(anOffsetMaker.IsDone());
+
+  TopoDS_Shape aResult = anOffsetMaker.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+
+  GProp_GProps aProperties;
+  BRepGProp::LinearProperties(aResult, aProperties);
+  EXPECT_NEAR(aProperties.Mass(), theExpectedLength, 0.001);
+
+  BRepCheck_Analyzer anAnalyzer(aResult);
+  EXPECT_TRUE(anAnalyzer.IsValid());
+}
+
+TEST(BRepOffset_MakeOffsetTest, Open_Offset_On_Circle)
+{
+  // isCircle, isOpen, isForward, theExpectedLength
+  CheckOpenOffset(true, true, true, 14., 82.938);
+  CheckOpenOffset(true, true, true, -14., 30.1593);
+  CheckOpenOffset(true, true, false, 14., 30.1593);
+  CheckOpenOffset(true, true, false, -14., 82.938);
+
+  CheckOpenOffset(true, false, true, 14., 276.46);
+  CheckOpenOffset(true, false, true, -14., 100.531);
+  CheckOpenOffset(true, false, false, 14., 276.46);
+  CheckOpenOffset(true, false, false, -14., 100.531);
+}
+
+TEST(BRepOffset_MakeOffsetTest, Open_Offset_On_Ellipse)
+{
+  // isCircle, isOpen, isForward, theExpectedLength
+  CheckOpenOffset(false, true, true, 14., 93.539);
+  CheckOpenOffset(false, true, true, -14., 48.6671);
+  CheckOpenOffset(false, true, false, 14., 48.6671);
+  CheckOpenOffset(false, true, false, -14., 93.539);
+
+  CheckOpenOffset(false, false, true, 14., 309.);
+  CheckOpenOffset(false, false, true, -14., 133.07);
+  CheckOpenOffset(false, false, false, 14., 309.);
+  CheckOpenOffset(false, false, false, -14., 133.07);
 }
