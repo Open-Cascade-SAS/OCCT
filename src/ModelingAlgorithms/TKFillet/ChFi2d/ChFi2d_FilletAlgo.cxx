@@ -193,7 +193,7 @@ static bool IsRadiusIntersected(const occ::handle<Geom2d_Curve>& theCurve,
   {
     aPoint = anInter.Point(a);
     Geom2dAPI_ProjectPointOnCurve aProjInt(aPoint, theCurve, theCurveMin, theCurveMax);
-    if (aProjInt.NbPoints() < 1 || aProjInt.LowerDistanceParameter() > Precision::Confusion())
+    if (aProjInt.NbPoints() < 1 || aProjInt.LowerDistance() > Precision::Confusion())
     {
       continue; // point is not on edge
     }
