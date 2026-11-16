@@ -911,11 +911,12 @@ int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
   gp_Pnt2d theLoc1 = L1->Location();
   gp_Pnt2d theLoc2 = L2->Location();
 
-  if (theDir.X() > 0.)
+  // Ignore transverse roundoff when choosing the seam direction.
+  if (theDir.X() > std::abs(theDir.Y()))
   {
     UdirPos = true; // szv#4:S4163:12Mar99 Udir unused
   }
-  else if (theDir.X() < 0.)
+  else if (-theDir.X() > std::abs(theDir.Y()))
   {
     UdirNeg = true; // szv#4:S4163:12Mar99 Udir unused
   }
