@@ -233,7 +233,7 @@ private:
     }
 
     // Select the correct pcurve of the seam-edge.
-    const gp_Pnt2d& aFPntOfPC1 = aPC1->Value(aPC1->FirstParameter());
+    const gp_Pnt2d& aFPntOfPC1 = aPC1->Value(af);
 
     if (std::abs(aLPntOfIPC1.X() - aFPntOfPC1.X()) > Precision::Confusion())
     {
