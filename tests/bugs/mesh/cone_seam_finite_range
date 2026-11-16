@@ -1,0 +1,102 @@
+puts "Mesh coverage of a cone with sub-tolerance seam pcurve drift"
+
+# Cone(3, 3.4, 0.4), with unbounded seam lines and a finite edge range.
+# Keep both seam branches: addpcurve replaces them with a single pcurve.
+set data {
+DBRep_DrawableShape
+
+CASCADE Topology V3, (c) Open Cascade
+Locations 0
+Curve2ds 6
+1 0 0.56568542494923801 1 0
+2 0 0 1 0 -0 1 3.3999999999999999
+1 6.2831853071795862 0 $slope 1
+1 0 0 $slope 1
+1 0 0 1 0
+2 0 0 1 0 -0 1 3
+Curves 3
+2 0 0 0.40000000000000002 0 0 1 1 0 -0 -0 1 0 3.3999999999999999
+1 3 -7.3478807948841188e-16 0 0.70710678118654746 -1.7319121124709863e-16 0.70710678118654757
+2 0 0 0 0 0 1 1 0 -0 -0 1 0 3
+Polygon3D 0
+PolygonOnTriangulations 0
+Surfaces 3
+3 0 0 0 0 0 1 1 0 0 0 1 0 3
+0.78539816339744817
+1 0 0 0.40000000000000002 0 0 1 1 0 0 0 1 0
+1 0 0 0 0 0 1 1 0 0 0 1 0
+Triangulations 0
+
+TShapes 7
+Ve
+1e-07
+3.4 -8.327598234202e-16 0.4
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  1 0 0 6.28318530717959
+2  1 1 0 0 6.28318530717959
+2  2 2 0 0 6.28318530717959
+0
+
+0101000
++7 0 -7 0 *
+Ve
+1e-07
+3 -7.34788079488412e-16 0
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  2 0 0 0.565685424949238
+3  3 4CN 1 0 0 0.565685424949238
+0
+
+0101000
+-7 0 +5 0 *
+Ed
+ 1e-07 1 1 0
+1  3 0 0 6.28318530717959
+2  5 1 0 0 6.28318530717959
+2  6 3 0 0 6.28318530717959
+0
+
+0101000
++5 0 -5 0 *
+Wi
+
+0101100
+$order *
+Fa
+0  1e-07 1 0
+
+0111000
++2 0 *
+
++1 0
+0
+}
+
+set expected [expr {acos(-1.0) * (3.0 + 3.4) * hypot(0.4, 0.4)}]
+set filename "$imagedir/cone_seam_finite_range.brep"
+foreach slope {0 -1e-14 1e-14} {
+  # Change which seam branch is encountered first without changing the wire.
+  foreach order {{-6 0 +4 0 +3 0 -4 0} {+4 0 +3 0 -4 0 -6 0} \
+                 {+3 0 -4 0 -6 0 +4 0} {-4 0 -6 0 +4 0 +3 0}} {
+    set channel [open $filename w]
+    puts $channel [subst -nocommands -nobackslashes $data]
+    close $channel
+    restore $filename result
+    file delete $filename
+
+    checkshape result
+    incmesh result 0.005 -a 28.64788975654116
+    set area [lindex [triarea result] 0]
+    checkreal "mesh area (slope $slope, order $order)" $area $expected 0 0.001
+  }
+}
