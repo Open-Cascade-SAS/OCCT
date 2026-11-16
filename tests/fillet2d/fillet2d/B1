@@ -1,0 +1,15 @@
+# Disconnected endpoints force ChFi2d_FilletAlgo, not the analytical algorithm.
+circle c 0 0 0 0 0 1 1
+mkedge e1 c 0 5
+line l 0 -2 0 1 0 0
+mkedge e2 l -5 5
+
+fillet2d result e1 e2 1.5
+
+# External tangency gives center (-sqrt(6), -0.5) and arc angle acos(-0.2).
+# The internal-tangency candidate crosses the input circle along its radius.
+checkprops result -l [expr {1.5 * acos(-0.2)}] -deps 1e-6
+checkprops e1 -l [expr {acos(-1.0) + asin(0.2)}] -deps 1e-6
+checkprops e2 -l [expr {5.0 - sqrt(6.0)}] -deps 1e-6
+checkshape e1
+checkshape e2
