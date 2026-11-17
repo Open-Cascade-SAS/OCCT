@@ -864,8 +864,6 @@ int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
   //  SelectForward est destine a devenir un outil distinct
   //  Il est sans doute optimisable !
 
-  int theCurveIndice = 0;
-
   occ::handle<Geom2d_Line> L1 = occ::down_cast<Geom2d_Line>(C1);
   if (L1.IsNull())
   {
@@ -873,14 +871,14 @@ int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
     occ::handle<Geom2d_BoundedCurve> BC1 = occ::down_cast<Geom2d_BoundedCurve>(C1);
     if (BC1.IsNull())
     {
-      return theCurveIndice;
+      return 0;
     }
     gp_Pnt2d StartBC1 = BC1->StartPoint();
     gp_Pnt2d EndBC1   = BC1->EndPoint();
     gp_Vec2d VecBC1(StartBC1, EndBC1);
     if (VecBC1.SquareMagnitude() < gp::Resolution())
     {
-      return theCurveIndice;
+      return 0;
     }
     L1 = new Geom2d_Line(StartBC1, VecBC1);
   }
@@ -892,90 +890,27 @@ int ShapeAnalysis_Curve::SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
     occ::handle<Geom2d_BoundedCurve> BC2 = occ::down_cast<Geom2d_BoundedCurve>(C2);
     if (BC2.IsNull())
     {
-      return theCurveIndice;
+      return 0;
     }
     gp_Pnt2d StartBC2 = BC2->StartPoint();
     gp_Pnt2d EndBC2   = BC2->EndPoint();
     gp_Vec2d VecBC2(StartBC2, EndBC2);
     if (VecBC2.SquareMagnitude() < gp::Resolution())
     {
-      return theCurveIndice;
+      return 0;
     }
     L2 = new Geom2d_Line(StartBC2, VecBC2);
   }
 
-  bool UdirPos, UdirNeg, VdirPos, VdirNeg;
-  UdirPos = UdirNeg = VdirPos = VdirNeg = false;
-
-  gp_Dir2d theDir  = L1->Direction();
-  gp_Pnt2d theLoc1 = L1->Location();
-  gp_Pnt2d theLoc2 = L2->Location();
-
-  if (theDir.X() > 0.)
+  // The other pcurve lies to the left of the forward pcurve in UV space.
+  const gp_Vec2d aDirection(L1->Direction());
+  const gp_Vec2d aShift(L1->Location(), L2->Location());
+  const double   aSide = aDirection.Crossed(aShift);
+  if (aSide == 0.0)
   {
-    UdirPos = true; // szv#4:S4163:12Mar99 Udir unused
+    return 0;
   }
-  else if (theDir.X() < 0.)
-  {
-    UdirNeg = true; // szv#4:S4163:12Mar99 Udir unused
-  }
-  else if (theDir.Y() > 0.)
-  {
-    VdirPos = true; // szv#4:S4163:12Mar99 Vdir unused
-  }
-  else if (theDir.Y() < 0.)
-  {
-    VdirNeg = true; // szv#4:S4163:12Mar99 Vdir unused
-  }
-
-  if (VdirPos)
-  {
-    // max of Loc1.X() Loc2.X()
-    if (theLoc1.X() > theLoc2.X())
-    {
-      theCurveIndice = 1;
-    }
-    else
-    {
-      theCurveIndice = 2;
-    }
-  }
-  else if (VdirNeg)
-  {
-    if (theLoc1.X() > theLoc2.X())
-    {
-      theCurveIndice = 2;
-    }
-    else
-    {
-      theCurveIndice = 1;
-    }
-  }
-  else if (UdirPos)
-  {
-    // min of Loc1.X() Loc2.X()
-    if (theLoc1.Y() < theLoc2.Y())
-    {
-      theCurveIndice = 1;
-    }
-    else
-    {
-      theCurveIndice = 2;
-    }
-  }
-  else if (UdirNeg)
-  {
-    if (theLoc1.Y() < theLoc2.Y())
-    {
-      theCurveIndice = 2;
-    }
-    else
-    {
-      theCurveIndice = 1;
-    }
-  }
-
-  return theCurveIndice;
+  return aSide > 0.0 ? 1 : 2;
 }
 
 //%11 pdn 12.01.98

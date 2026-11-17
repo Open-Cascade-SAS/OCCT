@@ -3,6 +3,7 @@ set(OCCT_TKShHealing_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKShHealing_GTests_FILES
   ShapeAnalysis_CanonicalRecognition_Test.cxx
+  ShapeAnalysis_Curve_Test.cxx
   ShapeAnalysis_Edge_Test.cxx
   ShapeAnalysis_FreeBounds_Test.cxx
   ShapeBuild_ReShape_Test.cxx
