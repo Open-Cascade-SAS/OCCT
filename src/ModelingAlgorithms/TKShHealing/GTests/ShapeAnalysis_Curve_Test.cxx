@@ -19,8 +19,16 @@
 
 TEST(ShapeAnalysis_CurveTest, SeamDirectionRoundoff)
 {
-  enum class Axis { U, V };
-  enum class Form { Line, Trimmed };
+  enum class Axis
+  {
+    U,
+    V
+  };
+  enum class Form
+  {
+    Line,
+    Trimmed
+  };
 
   ShapeAnalysis_Curve anAnalyzer;
   for (const Axis anAxis : {Axis::U, Axis::V})
@@ -31,18 +39,18 @@ TEST(ShapeAnalysis_CurveTest, SeamDirectionRoundoff)
       {
         for (const Form aForm : {Form::Line, Form::Trimmed})
         {
-          SCOPED_TRACE(testing::Message() << "axis=" << static_cast<int>(anAxis)
-                                         << ", sign=" << aSign << ", noise=" << aNoise
-                                         << ", form=" << static_cast<int>(aForm));
-          const gp_Dir2d aDirection = anAxis == Axis::U ? gp_Dir2d(aSign, aNoise)
-                                                       : gp_Dir2d(aNoise, aSign);
-          const gp_Pnt2d aLocation = anAxis == Axis::U ? gp_Pnt2d(0.0, 2.0 * M_PI)
-                                                      : gp_Pnt2d(2.0 * M_PI, 0.0);
-          occ::handle<Geom2d_Curve> aFirst = new Geom2d_Line(aLocation, aDirection);
+          SCOPED_TRACE(testing::Message()
+                       << "axis=" << static_cast<int>(anAxis) << ", sign=" << aSign
+                       << ", noise=" << aNoise << ", form=" << static_cast<int>(aForm));
+          const gp_Dir2d aDirection =
+            anAxis == Axis::U ? gp_Dir2d(aSign, aNoise) : gp_Dir2d(aNoise, aSign);
+          const gp_Pnt2d aLocation =
+            anAxis == Axis::U ? gp_Pnt2d(0.0, 2.0 * M_PI) : gp_Pnt2d(2.0 * M_PI, 0.0);
+          occ::handle<Geom2d_Curve> aFirst  = new Geom2d_Line(aLocation, aDirection);
           occ::handle<Geom2d_Curve> aSecond = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), aDirection);
           if (aForm == Form::Trimmed)
           {
-            aFirst = new Geom2d_TrimmedCurve(aFirst, -1.0, 1.0);
+            aFirst  = new Geom2d_TrimmedCurve(aFirst, -1.0, 1.0);
             aSecond = new Geom2d_TrimmedCurve(aSecond, -1.0, 1.0);
           }
 
@@ -53,4 +61,26 @@ TEST(ShapeAnalysis_CurveTest, SeamDirectionRoundoff)
       }
     }
   }
+}
+
+TEST(ShapeAnalysis_CurveTest, ObliqueSeams)
+{
+  ShapeAnalysis_Curve anAnalyzer;
+  const double        aPeriod = 2.0 * M_PI;
+
+  const gp_Dir2d                 aUDir(2.0, 1.0);
+  const occ::handle<Geom2d_Line> aU1 = new Geom2d_Line(gp_Pnt2d(aPeriod, 0.0), aUDir);
+  const occ::handle<Geom2d_Line> aU2 = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), aUDir);
+  EXPECT_EQ(anAnalyzer.SelectForwardSeam(aU1, aU2), 1);
+  EXPECT_EQ(anAnalyzer.SelectForwardSeam(aU2, aU1), 2);
+
+  const gp_Dir2d                 aVDir(1.0, 2.0);
+  const occ::handle<Geom2d_Line> aV1 = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), aVDir);
+  const occ::handle<Geom2d_Line> aV2 = new Geom2d_Line(gp_Pnt2d(0.0, aPeriod), aVDir);
+  EXPECT_EQ(anAnalyzer.SelectForwardSeam(aV1, aV2), 1);
+  EXPECT_EQ(anAnalyzer.SelectForwardSeam(aV2, aV1), 2);
+
+  const occ::handle<Geom2d_Line> aV3 = new Geom2d_Line(gp_Pnt2d(1.0, 2.0), aVDir);
+  EXPECT_EQ(anAnalyzer.SelectForwardSeam(aV1, aV3), 0);
+  EXPECT_EQ(anAnalyzer.SelectForwardSeam(aV3, aV1), 0);
 }
