@@ -914,3 +914,113 @@ TEST(BRepFilletAPI_MakeFilletTest, CollapsedFreeBoundarySectionSharesEndpoint)
     EXPECT_NEAR(aProperties.Mass(), 803799.0, 803799.0 * 1.e-4) << aShift;
   }
 }
+
+//==================================================================================================
+
+TEST(BRepFilletAPI_MakeFilletTest, TwoSequentialFilletsMeet)
+{
+  BRepPrimAPI_MakeBox aBoxMaker1(60, 60, 20);
+  const TopoDS_Shape& aBox1 = aBoxMaker1.Shape();
+
+  BRepPrimAPI_MakeBox aBoxMaker2(12, 60, 50);
+  const TopoDS_Shape& aBox2 = aBoxMaker2.Shape();
+
+  const TopoDS_Shape aCyl =
+    BRepPrimAPI_MakeCylinder(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), 55, 200).Shape();
+
+  gp_Trsf aRotation1;
+  aRotation1.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), -90.0 * M_PI / 180.0);
+  const TopoDS_Shape aRot1 = BRepBuilderAPI_Transform(aCyl, aRotation1).Shape();
+
+  gp_Trsf aTranslation1;
+  aTranslation1.SetTranslation(gp_Vec(100, 0, 55));
+  const TopoDS_Shape aTrans1 = BRepBuilderAPI_Transform(aRot1, aTranslation1).Shape();
+
+  gp_Trsf aRotation2;
+  aRotation2.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 31.0 * M_PI / 180.0);
+  const TopoDS_Shape aRot2 = BRepBuilderAPI_Transform(aTrans1, aRotation2).Shape();
+
+  BRepAlgoAPI_Cut aCutMaker(aBox2, aRot2);
+  ASSERT_TRUE(aCutMaker.IsDone());
+  const TopoDS_Shape& aCut = aCutMaker.Shape();
+
+  gp_Trsf aTranslation2;
+  aTranslation2.SetTranslation(gp_Vec(24, 0, 20));
+  const TopoDS_Shape aTrans2 = BRepBuilderAPI_Transform(aCut, aTranslation2).Shape();
+
+  BRepAlgoAPI_Fuse aFuseMaker(aBox1, aTrans2);
+  ASSERT_TRUE(aFuseMaker.IsDone());
+  const TopoDS_Shape aFuse = aFuseMaker.Shape();
+
+  // Fillet # 1
+  BRepFilletAPI_MakeFillet aFilletMaker1(aFuse);
+  aFilletMaker1.SetParams(0.01, 1.e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
+
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+  TopExp::MapShapes(aFuse, TopAbs_EDGE, anEdges);
+  for (const auto& aShapeEdge : anEdges)
+  {
+    // 24,0,20 - 24,y,70
+    // 36,0,20 - 36,y,70
+    const TopoDS_Edge& anEdge = TopoDS::Edge(aShapeEdge);
+    TopoDS_Vertex      aV1, aV2;
+    TopExp::Vertices(anEdge, aV1, aV2);
+    gp_Pnt aP1 = BRep_Tool::Pnt(aV1);
+    gp_Pnt aP2 = BRep_Tool::Pnt(aV2);
+    if ((std::abs(aP1.X() - 24) < Precision::Confusion()
+         && std::abs(aP2.X() - 24) < Precision::Confusion())
+        || (std::abs(aP1.X() - 36) < Precision::Confusion()
+            && std::abs(aP2.X() - 36) < Precision::Confusion()))
+    {
+      if ((std::abs(aP1.Z() - 20) < Precision::Confusion()
+           && std::abs(aP2.Z() - 70) < Precision::Confusion())
+          || (std::abs(aP1.Z() - 70) < Precision::Confusion()
+              && std::abs(aP2.Z() - 20) < Precision::Confusion()))
+      {
+        if (std::abs(aP1.Y()) < Precision::Confusion()
+            || std::abs(aP2.Y()) < Precision::Confusion())
+        {
+          aFilletMaker1.Add(2.0, anEdge);
+        }
+      }
+    }
+  }
+  aFilletMaker1.Build();
+  ASSERT_TRUE(aFilletMaker1.IsDone());
+  const TopoDS_Shape aFillet1 = aFilletMaker1.Shape();
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet1).IsValid());
+
+  // Fillet # 2
+  BRepFilletAPI_MakeFillet aFilletMaker2(aFillet1);
+  aFilletMaker2.SetParams(0.01, 1.e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
+
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges2;
+  TopExp::MapShapes(aFillet1, TopAbs_EDGE, anEdges2);
+  for (const auto& aShapeEdge : anEdges2)
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(aShapeEdge);
+    TopoDS_Vertex      aV1, aV2;
+    TopExp::Vertices(anEdge, aV1, aV2);
+    gp_Pnt aP1 = BRep_Tool::Pnt(aV1);
+    gp_Pnt aP2 = BRep_Tool::Pnt(aV2);
+    // 24,y,20 - 24,60,20
+    // 36,y,20 - 36,60,20
+    if ((std::abs(aP1.X() - 24) < Precision::Confusion()
+         && std::abs(aP2.X() - 24) < Precision::Confusion())
+        || (std::abs(aP1.X() - 36) < Precision::Confusion()
+            && std::abs(aP2.X() - 36) < Precision::Confusion()))
+    {
+      if (std::abs(aP1.Z() - 20) < Precision::Confusion()
+          && std::abs(aP2.Z() - 20) < Precision::Confusion())
+      {
+        aFilletMaker2.Add(2.0, anEdge);
+      }
+    }
+  }
+  aFilletMaker2.Build();
+  ASSERT_TRUE(aFilletMaker2.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFilletMaker2.Shape()).IsValid());
+  GProp_GProps aProperties;
+  BRepGProp::SurfaceProperties(aFilletMaker2.Shape(), aProperties);
+  EXPECT_NEAR(aProperties.Mass(), 16866.0, 16866.0 * 1.e-4);
+}

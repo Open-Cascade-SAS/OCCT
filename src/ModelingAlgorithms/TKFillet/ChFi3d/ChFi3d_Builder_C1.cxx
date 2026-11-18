@@ -47,6 +47,7 @@
 #include <ChFiDS_Map.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ElCLib.hxx>
+#include <ElSLib.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <Extrema_ExtPS.hxx>
@@ -2744,7 +2745,20 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
                 pfac1.SetX(uc1);
                 pfac1.SetY(vc1);
               }
+              else
+                throw Standard_ConstructionError("Failed to project first point on end face");
             }
+          }
+          else
+          {
+            GeomAdaptor_Surface aSurf(Sfacemoins1);
+            if (aSurf.GetType() != GeomAbs_Cylinder)
+              throw Standard_ConstructionError("Failed to find first point on end face");
+            Standard_Real u, v;
+            ElSLib::Parameters(aSurf.Cylinder(), CV1.Point(), u, v);
+            if (aSurf.Value(u, v).Distance(CV1.Point()) > Max(tolpt, CV1.Tolerance()))
+              throw Standard_ConstructionError("First point is not on cylindrical end face");
+            pfac1.SetCoord(u, v);
           }
         }
         else
@@ -2980,6 +2994,19 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
             pfac2.SetX(uc2);
             pfac2.SetY(vc2);
           }
+          else
+            throw Standard_ConstructionError("Failed to project last point on end face");
+        }
+        else
+        {
+          GeomAdaptor_Surface aSurf(Sfacemoins1);
+          if (aSurf.GetType() != GeomAbs_Cylinder)
+            throw Standard_ConstructionError("Failed to find last point on end face");
+          Standard_Real u, v;
+          ElSLib::Parameters(aSurf.Cylinder(), CV2.Point(), u, v);
+          if (aSurf.Value(u, v).Distance(CV2.Point()) > Max(tolpt, CV2.Tolerance()))
+            throw Standard_ConstructionError("Last point is not on cylindrical end face");
+          pfac2.SetCoord(u, v);
         }
       }
       else
