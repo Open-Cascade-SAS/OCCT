@@ -561,7 +561,8 @@ public:
   //! Returns False.
   Standard_EXPORT bool IsVPeriodic() const final;
 
-  //! Returns False if the weights are identical in the U direction,
+  //! Returns False if for each row of weights all the weights
+  //! are identical.
   //! The tolerance criterion is Resolution from package gp.
   //! Example :
   //! |1.0, 1.0, 1.0|
@@ -569,7 +570,8 @@ public:
   //! |2.0, 2.0, 2.0|
   Standard_EXPORT bool IsURational() const;
 
-  //! Returns False if the weights are identical in the V direction,
+  //! Returns False if for each column of weights all the weights
+  //! are identical.
   //! The tolerance criterion is Resolution from package gp.
   //! Example :
   //! |1.0, 2.0, 0.5|

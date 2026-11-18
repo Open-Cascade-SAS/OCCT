@@ -16,7 +16,6 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
@@ -37,24 +36,25 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
 
 namespace
 {
 struct GdtContext
 {
-  occ::handle<TDocStd_Application> Application;
-  occ::handle<TDocStd_Document>    Document;
-  occ::handle<XCAFDoc_ShapeTool>   ShapeTool;
-  occ::handle<XCAFDoc_DimTolTool>  DimTolTool;
-  TDF_Label                        Shape1;
-  TDF_Label                        Shape2;
+  occ::handle<TDocStd_Document>   Document;
+  occ::handle<XCAFDoc_ShapeTool>  ShapeTool;
+  occ::handle<XCAFDoc_DimTolTool> DimTolTool;
+  TDF_Label                       Shape1;
+  TDF_Label                       Shape2;
 };
 
 static GdtContext NewContext()
 {
   GdtContext aContext;
-  aContext.Application = new TDocStd_Application();
-  aContext.Application->NewDocument("BinXCAF", aContext.Document);
+  aContext.Document   = new TDocStd_Document("BinXCAF");
   aContext.ShapeTool  = XCAFDoc_DocumentTool::ShapeTool(aContext.Document->Main());
   aContext.DimTolTool = XCAFDoc_DocumentTool::DimTolTool(aContext.Document->Main());
   aContext.Shape1     = aContext.ShapeTool->AddShape(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
@@ -122,6 +122,28 @@ static TDF_Label AddDatum(GdtContext&      theContext,
   }
   anAttribute->SetObject(anObject);
   theContext.DimTolTool->SetDatumToGeomTol(aDatum, theTolerance);
+  return aDatum;
+}
+
+static TDF_Label AddBareDatum(GdtContext& theContext,
+                              const char* theName,
+                              const bool  theWithPlane,
+                              const bool  theWithPoint)
+{
+  const TDF_Label            aDatum = theContext.DimTolTool->AddDatum();
+  occ::handle<XCAFDoc_Datum> anAttribute;
+  EXPECT_TRUE(aDatum.FindAttribute(XCAFDoc_Datum::GetID(), anAttribute));
+  occ::handle<XCAFDimTolObjects_DatumObject> anObject = anAttribute->GetObject();
+  anObject->SetName(new TCollection_HAsciiString(theName));
+  if (theWithPlane)
+  {
+    anObject->SetPlane(gp_Ax2(gp_Pnt(6.0, 6.0, 6.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)));
+  }
+  if (theWithPoint)
+  {
+    anObject->SetPoint(gp_Pnt(7.0, 7.0, 7.0));
+  }
+  anAttribute->SetObject(anObject);
   return aDatum;
 }
 
@@ -356,4 +378,109 @@ TEST(XCAFDoc_GDT_Test, GdtTolerances_A2_TwoDatums)
   EXPECT_EQ(aDatumObjectB->GetPosition(), 2);
   EXPECT_EQ(aDatumObjectA->GetModifiers().Length(), 1);
   EXPECT_EQ(aDatumObjectB->GetModifiers().Length(), 0);
+}
+
+// The datum point is read back from its own array. It used to be built with the X of the
+// annotation plane's location, which also dereferenced a null handle when there was no plane.
+TEST(XCAFDoc_GDT_Test, GdtDatum_PointIsReadFromItsOwnArray)
+{
+  GdtContext      aContext = NewContext();
+  const TDF_Label aDatum   = AddBareDatum(aContext, "A", true, true);
+
+  const occ::handle<XCAFDimTolObjects_DatumObject> anObject = DatumObject(aDatum);
+  ASSERT_TRUE(anObject->HasPlane());
+  ASSERT_TRUE(anObject->HasPoint());
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().X(), 6.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().X(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Y(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Z(), 7.0);
+}
+
+// A datum may carry a point without an annotation plane, in which case the plane's array is never
+// bound and must not be read.
+TEST(XCAFDoc_GDT_Test, GdtDatum_PointWithoutPlane)
+{
+  GdtContext      aContext = NewContext();
+  const TDF_Label aDatum   = AddBareDatum(aContext, "A", false, true);
+
+  const occ::handle<XCAFDimTolObjects_DatumObject> anObject = DatumObject(aDatum);
+  ASSERT_FALSE(anObject->HasPlane());
+  ASSERT_TRUE(anObject->HasPoint());
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().X(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Y(), 7.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPoint().Z(), 7.0);
+}
+
+// A datum with a plane and no point is what a STEP import produces, and is unaffected.
+TEST(XCAFDoc_GDT_Test, GdtDatum_PlaneWithoutPoint)
+{
+  GdtContext      aContext = NewContext();
+  const TDF_Label aDatum   = AddBareDatum(aContext, "A", true, false);
+
+  const occ::handle<XCAFDimTolObjects_DatumObject> anObject = DatumObject(aDatum);
+  ASSERT_TRUE(anObject->HasPlane());
+  EXPECT_FALSE(anObject->HasPoint());
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().X(), 6.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().Y(), 6.0);
+  EXPECT_DOUBLE_EQ(anObject->GetPlane().Location().Z(), 6.0);
+}
+
+//==================================================================================================
+
+TEST(XCAFDoc_GDT_Test, DirectionPresenceSurvivesCopyAndLabelStorage)
+{
+  const occ::handle<XCAFDimTolObjects_DimensionObject> anObject =
+    new XCAFDimTolObjects_DimensionObject();
+  gp_Dir aDirection(0, 1, 0);
+  EXPECT_FALSE(anObject->GetDirection(aDirection));
+  EXPECT_DOUBLE_EQ(aDirection.Y(), 1.0);
+  anObject->SetType(XCAFDimTolObjects_DimensionType_Location_LinearDistance);
+  anObject->SetDirection(gp_Dir(1, 0, 0));
+  const occ::handle<XCAFDimTolObjects_DimensionObject> aCopy =
+    new XCAFDimTolObjects_DimensionObject(anObject);
+  ASSERT_TRUE(aCopy->GetDirection(aDirection));
+  EXPECT_DOUBLE_EQ(aDirection.X(), 1.0);
+  GdtContext                           aContext    = NewContext();
+  const TDF_Label                      aLabel      = AddDimension(aContext, true);
+  const occ::handle<XCAFDoc_Dimension> anAttribute = XCAFDoc_Dimension::Set(aLabel);
+  anAttribute->SetObject(aCopy);
+  ASSERT_TRUE(anAttribute->GetObject()->GetDirection(aDirection));
+  EXPECT_DOUBLE_EQ(aDirection.X(), 1.0);
+  aCopy->ClearDirection();
+  anAttribute->SetObject(aCopy);
+  EXPECT_FALSE(anAttribute->GetObject()->GetDirection(aDirection));
+}
+
+//==================================================================================================
+
+TEST(XCAFDoc_GDT_Test, UnequalDisplacementDescriptionAndZoneValueRoundTrip)
+{
+  GdtContext                               aContext    = NewContext();
+  const TDF_Label                          aLabel      = AddGeomTolerance(aContext);
+  const occ::handle<XCAFDoc_GeomTolerance> anAttribute = XCAFDoc_GeomTolerance::Set(aLabel);
+  const occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObject =
+    new XCAFDimTolObjects_GeomToleranceObject();
+  anObject->SetDescription(new TCollection_HAsciiString("signed displacement"));
+  anObject->SetZoneModifier(XCAFDimTolObjects_GeomToleranceZoneModif_Runout);
+  anObject->SetValueOfZoneModifier(-0.25);
+  for (const double aValue : {-0.5, 0.0, 0.5})
+  {
+    anObject->SetUnequalDisplacement(aValue);
+    const occ::handle<XCAFDimTolObjects_GeomToleranceObject> aCopy =
+      new XCAFDimTolObjects_GeomToleranceObject(anObject);
+    ASSERT_TRUE(aCopy->GetUnequalDisplacement().has_value());
+    EXPECT_DOUBLE_EQ(*aCopy->GetUnequalDisplacement(), aValue);
+    ASSERT_FALSE(aCopy->GetDescription().IsNull());
+    EXPECT_STREQ(aCopy->GetDescription()->ToCString(), "signed displacement");
+    anAttribute->SetObject(aCopy);
+    const occ::handle<XCAFDimTolObjects_GeomToleranceObject> aStored = anAttribute->GetObject();
+    ASSERT_TRUE(aStored->GetUnequalDisplacement().has_value());
+    EXPECT_DOUBLE_EQ(*aStored->GetUnequalDisplacement(), aValue);
+    EXPECT_DOUBLE_EQ(aStored->GetValueOfZoneModifier(), -0.25);
+    ASSERT_FALSE(aStored->GetDescription().IsNull());
+    EXPECT_STREQ(aStored->GetDescription()->ToCString(), "signed displacement");
+  }
+  anAttribute->SetObject(new XCAFDimTolObjects_GeomToleranceObject());
+  EXPECT_FALSE(anAttribute->GetObject()->GetUnequalDisplacement().has_value());
+  EXPECT_TRUE(anAttribute->GetObject()->GetDescription().IsNull());
 }

@@ -11,10 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
-#include <cmath>
-
+#include <GeomGridEval_Surface.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
@@ -24,6 +21,10 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+
+#include <gtest/gtest.h>
+
+#include <cmath>
 
 class Geom_BSplineSurface_Test : public ::testing::Test
 {
@@ -1050,4 +1051,114 @@ TEST_F(Geom_BSplineSurface_Test, OCC30990_CacheConsistencyAtKnots)
   }
 
   EXPECT_EQ(0, aNbErr) << "BSpline surface cache is inconsistent at span knots";
+}
+
+//==================================================================================================
+
+TEST_F(Geom_BSplineSurface_Test, PeriodicTrimUsesInteriorSeamDerivative)
+{
+  for (const bool aIsU : {true, false})
+  {
+    SCOPED_TRACE(aIsU ? "U periodic" : "V periodic");
+    NCollection_Array2<gp_Pnt> aPoles(1, aIsU ? 4 : 2, 1, aIsU ? 2 : 4);
+    const gp_Pnt               aCorners[] = {gp_Pnt(1, 0, 0),
+                                             gp_Pnt(0, 1, 0),
+                                             gp_Pnt(-1, 0, 0),
+                                             gp_Pnt(0, -1, 0)};
+    for (int anItemIndex = 1; anItemIndex <= 4; ++anItemIndex)
+    {
+      for (int aSecondItemIndex = 1; aSecondItemIndex <= 2; ++aSecondItemIndex)
+      {
+        gp_Pnt aPoint = aCorners[anItemIndex - 1];
+        aPoint.SetZ(aSecondItemIndex - 1);
+        aPoles(aIsU ? anItemIndex : aSecondItemIndex, aIsU ? aSecondItemIndex : anItemIndex) =
+          aPoint;
+      }
+    }
+    NCollection_Array1<double> aPeriodicKnots(1, 5), aLinearKnots(1, 2);
+    NCollection_Array1<int>    aPeriodicMults(1, 5), aLinearMults(1, 2);
+    for (int anItemIndex = 1; anItemIndex <= 5; ++anItemIndex)
+    {
+      aPeriodicKnots(anItemIndex) = anItemIndex - 1;
+    }
+    aPeriodicMults.Init(1);
+    aLinearKnots(1) = 0;
+    aLinearKnots(2) = 1;
+    aLinearMults.Init(2);
+    const occ::handle<Geom_BSplineSurface> aSurface =
+      new Geom_BSplineSurface(aPoles,
+                              aIsU ? aPeriodicKnots : aLinearKnots,
+                              aIsU ? aLinearKnots : aPeriodicKnots,
+                              aIsU ? aPeriodicMults : aLinearMults,
+                              aIsU ? aLinearMults : aPeriodicMults,
+                              1,
+                              1,
+                              aIsU,
+                              !aIsU);
+    GeomAdaptor_Surface aAdaptor(aSurface);
+    for (const double aSeam : {-4.0, 0.0, 4.0, 8.0})
+    {
+      for (const int aSide : {-1, 1})
+      {
+        SCOPED_TRACE(::testing::Message() << "seam " << aSeam << " side " << aSide);
+        const double                         aFirst = aSeam + (aSide < 0 ? -0.25 : 0);
+        const double                         aLast  = aSeam + (aSide > 0 ? 0.25 : 0);
+        const occ::handle<Adaptor3d_Surface> aTrim =
+          aIsU ? aAdaptor.UTrim(aFirst, aLast, 0) : aAdaptor.VTrim(aFirst, aLast, 0);
+        const double              aU = aIsU ? aSeam : 0.3, aV = aIsU ? 0.3 : aSeam;
+        const Geom_Surface::ResD1 aExpected =
+          aAdaptor.EvalD1(aIsU ? aSeam + aSide * 1.e-6 : aU, aIsU ? aV : aSeam + aSide * 1.e-6);
+        const GeomGridEval_Surface aBatch(*aTrim);
+        NCollection_Array1<double> aUParameters(-3, 0);
+        NCollection_Array1<double> aVParameters(7, 10);
+        aUParameters.Init(aU);
+        aVParameters.Init(aV);
+        const NCollection_Array2<GeomGridEval::SurfD1> aGrid =
+          aBatch.EvaluateGridD1(aUParameters, aVParameters);
+        const NCollection_Array2<GeomGridEval::SurfD2> aGridD2 =
+          aBatch.EvaluateGridD2(aUParameters, aVParameters);
+        const NCollection_Array2<GeomGridEval::SurfD3> aGridD3 =
+          aBatch.EvaluateGridD3(aUParameters, aVParameters);
+        const NCollection_Array2<gp_Vec> aGridDN =
+          aBatch.EvaluateGridDN(aUParameters, aVParameters, 1, 0);
+        for (size_t anIndex = 0; anIndex < aGrid.Size(); ++anIndex)
+        {
+          EXPECT_TRUE(aGrid.At(anIndex).D1U.IsEqual(aExpected.D1U, 1.e-12, 1.e-12));
+          EXPECT_TRUE(aGrid.At(anIndex).D1V.IsEqual(aExpected.D1V, 1.e-12, 1.e-12));
+          EXPECT_TRUE(aGridD2.At(anIndex).D1U.IsEqual(aExpected.D1U, 1.e-12, 1.e-12));
+          EXPECT_TRUE(aGridD3.At(anIndex).D1V.IsEqual(aExpected.D1V, 1.e-12, 1.e-12));
+          EXPECT_TRUE(aGridDN.At(anIndex).IsEqual(aExpected.D1U, 1.e-12, 1.e-12));
+        }
+        const Geom_Surface::ResD1 aActual = aTrim->EvalD1(aU, aV);
+        EXPECT_TRUE(aActual.Point.IsEqual(aAdaptor.EvalD0(aU, aV), 1.e-12));
+        EXPECT_TRUE(aActual.D1U.IsEqual(aExpected.D1U, 1.e-12, 1.e-12));
+        EXPECT_TRUE(aActual.D1V.IsEqual(aExpected.D1V, 1.e-12, 1.e-12));
+        const Geom_Surface::ResD2 aD2 = aTrim->EvalD2(aU, aV);
+        const Geom_Surface::ResD3 aD3 = aTrim->EvalD3(aU, aV);
+        EXPECT_TRUE(aD2.Point.IsEqual(aActual.Point, 1.e-12));
+        EXPECT_TRUE(aD3.Point.IsEqual(aActual.Point, 1.e-12));
+        EXPECT_TRUE(aD2.D1U.IsEqual(aExpected.D1U, 1.e-12, 1.e-12));
+        EXPECT_TRUE(aD2.D1V.IsEqual(aExpected.D1V, 1.e-12, 1.e-12));
+        EXPECT_TRUE(aD3.D1U.IsEqual(aExpected.D1U, 1.e-12, 1.e-12));
+        EXPECT_TRUE(aD3.D1V.IsEqual(aExpected.D1V, 1.e-12, 1.e-12));
+        EXPECT_TRUE(aTrim->EvalDN(aU, aV, 1, 0).IsEqual(aExpected.D1U, 1.e-12, 1.e-12));
+        EXPECT_TRUE(aTrim->EvalDN(aU, aV, 0, 1).IsEqual(aExpected.D1V, 1.e-12, 1.e-12));
+        for (const double aDelta : {-1.e-12, 1.e-12})
+        {
+          const double                         aBound = aSeam + aDelta;
+          const occ::handle<Adaptor3d_Surface> aNearTrim =
+            aIsU
+              ? aAdaptor.UTrim(aBound - (aSide < 0 ? .25 : 0), aBound + (aSide > 0 ? .25 : 0), 0)
+              : aAdaptor.VTrim(aBound - (aSide < 0 ? .25 : 0), aBound + (aSide > 0 ? .25 : 0), 0);
+          const double              aNearU      = aIsU ? aBound : aU;
+          const double              aNearV      = aIsU ? aV : aBound;
+          const Geom_Surface::ResD1 aDirect     = aSurface->EvalD1(aNearU, aNearV);
+          const Geom_Surface::ResD1 aNearResult = aNearTrim->EvalD1(aNearU, aNearV);
+          EXPECT_LE(aNearResult.Point.Distance(aDirect.Point), 1.e-14);
+          EXPECT_LE((aNearResult.D1U - aDirect.D1U).Magnitude(), 1.e-12);
+          EXPECT_LE((aNearResult.D1V - aDirect.D1V).Magnitude(), 1.e-12);
+        }
+      }
+    }
+  }
 }

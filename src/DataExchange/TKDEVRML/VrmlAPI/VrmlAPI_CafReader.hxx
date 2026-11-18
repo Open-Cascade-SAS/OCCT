@@ -14,12 +14,21 @@
 #ifndef _VrmlAPI_Reader_HeaderFile
 #define _VrmlAPI_Reader_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <RWMesh_CafReader.hxx>
 
 //! The Vrml mesh reader into XDE document.
 class VrmlAPI_CafReader : public RWMesh_CafReader
 {
   DEFINE_STANDARD_RTTIEXT(VrmlAPI_CafReader, RWMesh_CafReader)
+
+public:
+  //! Set streams for Inline scenes and images instead of files.
+  //! @param[in] theStreams caller-owned list used by Perform(); null restores file lookup
+  void SetResourceStreams(const DE_Provider::ReadStreamList* theStreams)
+  {
+    myResourceStreams = theStreams;
+  }
 
 protected:
   //! Read the mesh data from specified file.
@@ -32,6 +41,9 @@ protected:
                                    const TCollection_AsciiString& theFile,
                                    const Message_ProgressRange&   theProgress,
                                    const bool                     theToProbe) override;
+
+private:
+  const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed named streams.
 };
 
 #endif // _VrmlAPI_Reader_HeaderFile

@@ -105,16 +105,16 @@ public:
 
   /**
    * Query one polygon.
-   * @param iFace
+   * @param theFaceIndex
    *   rank of the polygon [0 .. N-1]
-   * @param outIndice
+   * @param theIndices
    *   <tt>[out]</tt> array of vertex indice
    * @return
    *   number of vertice in the polygon - the dimension of outIndice array
    */
-  inline int Polygon(const int iFace, const int*& outIndice)
+  inline int Polygon(const size_t theFaceIndex, const int*& theIndices)
   {
-    return *(outIndice = myArrPolygons[iFace])++;
+    return *(theIndices = myArrPolygons[theFaceIndex])++;
   }
 
   /**
@@ -153,16 +153,16 @@ public:
   /**
    * Query normals indice for one face. This method should be called after
    * checking myArrNormalInd != NULL, otherwise exception will be thrown.
-   * @param iFace
+   * @param theFaceIndex
    *   rank of the face [0 .. N-1]
-   * @param outIndice
+   * @param theIndices
    *   <tt>[out]</tt> array of normals indice
    * @return
    *   number of indice in the array - the dimension of outIndice array
    */
-  inline int IndiceNormals(const int iFace, const int*& outIndice)
+  inline int IndiceNormals(const size_t theFaceIndex, const int*& theIndices)
   {
-    return *(outIndice = myArrNormalInd[iFace])++;
+    return *(theIndices = myArrNormalInd[theFaceIndex])++;
   }
 
   /**

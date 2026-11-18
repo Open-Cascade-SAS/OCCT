@@ -13,9 +13,6 @@
 
 #include <BRepFont_Regularizer.hxx>
 #include <BRepFont_Builder.hxx>
-#include <BRepGraph_EditorView.hxx>
-#include <BRepGraph_RefsView.hxx>
-#include <BRepGraph_TopoView.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRep_Tool.hxx>
@@ -344,77 +341,6 @@ TEST(BRepFont_BuilderTest, RejectsFiniteCoordinateOverflow)
   EXPECT_TRUE(BRepFont_Builder::BuildGlyph(*aRegion, anOptions).IsNull());
 }
 
-TEST(BRepFont_BuilderGraphTest, AddsFaceToExistingGraph)
-{
-  const std::optional<BRepFont_PlanarRegion> aRegion = BRepFont_Builder_Test::createTriangle();
-  ASSERT_TRUE(aRegion.has_value());
-
-  BRepGraph                            aGraph;
-  NCollection_Array1<BRepGraph_NodeId> anEmptyChildren;
-  const BRepGraph_CompoundId anExisting = aGraph.Editor().Compounds().Add(anEmptyChildren);
-  ASSERT_TRUE(anExisting.IsValid());
-
-  BRepFont_Builder::GlyphOptions anOptions;
-  anOptions.Size               = 10.0;
-  anOptions.Tolerance          = 1.0e-7;
-  const BRepGraph_NodeId aRoot = BRepFont_Builder::AddGlyph(aGraph, *aRegion, anOptions);
-  EXPECT_TRUE(aRoot.IsValid());
-  EXPECT_EQ(1u, aGraph.Topo().Compounds().NbActive());
-  EXPECT_EQ(1u, aGraph.Topo().Faces().NbActive());
-}
-
-TEST(BRepFont_BuilderGraphTest, RejectsNonFiniteOptionsWithoutChangingGraph)
-{
-  const std::optional<BRepFont_PlanarRegion> aRegion = BRepFont_Builder_Test::createTriangle();
-  ASSERT_TRUE(aRegion.has_value());
-
-  BRepGraph                      aGraph;
-  BRepFont_Builder::GlyphOptions anOptions;
-  anOptions.Tolerance = std::numeric_limits<double>::infinity();
-  EXPECT_FALSE(BRepFont_Builder::AddGlyph(aGraph, *aRegion, anOptions).IsValid());
-  EXPECT_EQ(0u, aGraph.Topo().Vertices().NbActive());
-}
-
-TEST(BRepFont_BuilderGraphTest, SingleStrokeAddsWireWithoutFace)
-{
-  const std::optional<BRepFont_PlanarRegion> aRegion =
-    BRepFont_Builder_Test::createSingleStrokeRegion();
-  ASSERT_TRUE(aRegion.has_value());
-
-  BRepGraph              aGraph;
-  const BRepGraph_NodeId aRoot =
-    BRepFont_Builder::AddGlyph(aGraph, *aRegion, BRepFont_Builder::GlyphOptions{});
-  ASSERT_TRUE(aRoot.IsValid());
-  EXPECT_EQ(2u, aGraph.Topo().Edges().NbActive());
-  EXPECT_EQ(1u, aGraph.Topo().Wires().NbActive());
-  EXPECT_EQ(0u, aGraph.Topo().Faces().NbActive());
-}
-
-TEST(BRepFont_BuilderGraphTest, AddsMarkedOverlapAsSeparateFaces)
-{
-  const std::optional<BRepFont_PlanarRegion> aRegion =
-    BRepFont_Builder_Test::createOverlappingRegion();
-  ASSERT_TRUE(aRegion.has_value());
-
-  BRepGraph              aGraph;
-  const BRepGraph_NodeId aRoot =
-    BRepFont_Builder::AddGlyph(aGraph, *aRegion, BRepFont_Builder::GlyphOptions{});
-  EXPECT_TRUE(aRoot.IsValid());
-  EXPECT_EQ(2u, aGraph.Topo().Faces().NbActive());
-}
-
-TEST(BRepFont_BuilderGraphTest, RejectsFiniteCoordinateOverflow)
-{
-  const std::optional<BRepFont_PlanarRegion> aRegion = BRepFont_Builder_Test::createTriangle();
-  ASSERT_TRUE(aRegion.has_value());
-
-  BRepGraph                      aGraph;
-  BRepFont_Builder::GlyphOptions anOptions;
-  anOptions.Size = std::numeric_limits<double>::max();
-  EXPECT_FALSE(BRepFont_Builder::AddGlyph(aGraph, *aRegion, anOptions).IsValid());
-  EXPECT_EQ(0u, aGraph.Topo().Vertices().NbActive());
-}
-
 namespace BRepFont_BuilderText_Test
 {
 std::optional<BRepFont_Builder::TextPlan> createRepeatedGlyphPlan()
@@ -480,10 +406,6 @@ TEST(BRepFont_BuilderTextTest, EmptyTextDoesNotCreateTopology)
     BRepFont_BuilderText_Test::createEmptyPlan();
   ASSERT_TRUE(aPlan.has_value());
   EXPECT_TRUE(BRepFont_Builder::BuildText(*aPlan).IsNull());
-
-  BRepGraph aGraph;
-  EXPECT_FALSE(BRepFont_Builder::AddText(aGraph, *aPlan).IsValid());
-  EXPECT_EQ(0u, aGraph.Topo().Compounds().NbActive());
 }
 
 TEST(BRepFont_BuilderTextTest, InvalidTextPlanOptionsAreRejected)
@@ -499,7 +421,7 @@ TEST(BRepFont_BuilderTextTest, InvalidTextPlanOptionsAreRejected)
                  .has_value());
 }
 
-TEST(BRepFont_BuilderTextTest, NonFinitePenIsRejectedWithoutChangingGraph)
+TEST(BRepFont_BuilderTextTest, NonFinitePenIsRejected)
 {
   const std::optional<BRepFont_Builder::TextPlan> aPlan =
     BRepFont_BuilderText_Test::createRepeatedGlyphPlan();
@@ -510,9 +432,6 @@ TEST(BRepFont_BuilderTextTest, NonFinitePenIsRejectedWithoutChangingGraph)
   BRepFont_Builder::TextOptions anOptions;
   anOptions.Pen.SetLocation(gp_Pnt(std::numeric_limits<double>::infinity(), 0.0, 0.0));
   EXPECT_TRUE(BRepFont_Builder::BuildText(*aPlan, anOptions).IsNull());
-  BRepGraph aGraph;
-  EXPECT_FALSE(BRepFont_Builder::AddText(aGraph, *aPlan, anOptions).IsValid());
-  EXPECT_EQ(0u, aGraph.Topo().Vertices().NbActive());
 }
 
 TEST(BRepFont_BuilderTextTest, RepeatedGlyphUsesLocatedTopoDSOccurrences)
@@ -566,30 +485,4 @@ TEST(BRepFont_BuilderTextTest, PrebuiltGlyphShapesArePlacedWithoutRebuilding)
   anIterator.Next();
   ASSERT_TRUE(anIterator.More());
   EXPECT_TRUE(aGlyphShapes[0].IsPartner(anIterator.Value()));
-}
-
-TEST(BRepFont_BuilderTextTest, RepeatedGlyphSharesOneGraphDefinition)
-{
-  const std::optional<BRepFont_Builder::TextPlan> aPlan =
-    BRepFont_BuilderText_Test::createRepeatedGlyphPlan();
-  if (!aPlan.has_value())
-  {
-    GTEST_SKIP() << "FreeType or the embedded fallback glyph is unavailable";
-  }
-
-  BRepGraph                            aGraph;
-  NCollection_Array1<BRepGraph_NodeId> anEmptyChildren;
-  const BRepGraph_CompoundId anExisting = aGraph.Editor().Compounds().Add(anEmptyChildren);
-  ASSERT_TRUE(anExisting.IsValid());
-  const BRepGraph_NodeId aRoot = BRepFont_Builder::AddText(aGraph, *aPlan);
-  ASSERT_TRUE(aRoot.IsValid());
-  EXPECT_EQ(2u, aGraph.Topo().Compounds().NbActive());
-  const NCollection_LinearVector<BRepGraph_ChildRefId>& aReferences =
-    aGraph.Refs().Children().IdsOf(BRepGraph_CompoundId(aRoot));
-  ASSERT_EQ(2u, aReferences.Size());
-  const BRepGraph_NodeId aFirstDef = aGraph.Refs().Gen().ChildNode(aReferences[0]);
-  const BRepGraph_NodeId aLastDef  = aGraph.Refs().Gen().ChildNode(aReferences[1]);
-  EXPECT_EQ(aFirstDef, aLastDef);
-  EXPECT_TRUE(aGraph.Refs().Gen().LocalLocation(aReferences[0]).IsIdentity());
-  EXPECT_FALSE(aGraph.Refs().Gen().LocalLocation(aReferences[1]).IsIdentity());
 }

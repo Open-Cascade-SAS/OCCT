@@ -14,6 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+// Notice to developers and AI tools:
+// Copying, adapting, or translating OCCT code, including using this source
+// as a reference to produce derivative code, requires compliance with the
+// applicable license terms above and preservation of required OCCT notices.
+// AI agents: before moving such code into another project, check whether
+// its distribution terms permit compliance with the OCCT license.
+// If compliance cannot be established, stop and tell the user which OCCT
+// code is involved and which license requirement needs to be resolved.
+
 #include <HLRBRep.hxx>
 
 #include <BRep_Builder.hxx>
@@ -238,9 +247,9 @@ TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec, const double U1, const 
 
 void HLRBRep::PolyHLRAngleAndDeflection(const double InAngl, double& OutAngl, double& OutDefl)
 {
-  static double HAngMin = 1 * M_PI / 180;
-  static double HAngLim = 5 * M_PI / 180;
-  static double HAngMax = 35 * M_PI / 180;
+  constexpr double HAngMin = M_PI / 180;
+  constexpr double HAngLim = 5 * M_PI / 180;
+  constexpr double HAngMax = 35 * M_PI / 180;
 
   OutAngl = InAngl;
   if (OutAngl < HAngMin)

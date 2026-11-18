@@ -25,6 +25,7 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
 class TopOpeBRepDS_Interference;
+class TopOpeBRepDS_DataStructure;
 class TopOpeBRepBuild_Builder;
 class TopOpeBRepBuild_GTopo;
 class TopOpeBRepBuild_WireEdgeSet;
@@ -59,7 +60,8 @@ public:
                                  const TopoDS_Shape&                    F,
                                  TopOpeBRepBuild_GTopo* const&          PG,
                                  NCollection_List<TopoDS_Shape>* const& PLSclass,
-                                 TopOpeBRepBuild_WireEdgeSet* const&    PWES);
+                                 TopOpeBRepBuild_WireEdgeSet* const&    PWES,
+                                 TopOpeBRepDS_DataStructure&            DS2d);
 
   Standard_EXPORT void GFillONParts2dWES2(const occ::handle<TopOpeBRepDS_Interference>& I,
                                           const TopoDS_Shape&                           EspON);

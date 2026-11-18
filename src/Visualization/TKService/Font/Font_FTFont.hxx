@@ -25,7 +25,7 @@
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <Image_PixMap.hxx>
-#include <NCollection_String.hxx>
+#include <TCollection_UtfString.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <array>
@@ -37,6 +37,7 @@
 // forward declarations to avoid including of FreeType headers
 typedef struct FT_FaceRec_* FT_Face;
 typedef struct FT_Vector_   FT_Vector;
+typedef struct FT_Outline_  FT_Outline;
 class Font_FTLibrary;
 
 //! Wrapper over FreeType font.
@@ -150,7 +151,9 @@ public:
   //! @return true if font is loaded
   inline bool IsValid() const { return myFTFace != nullptr; }
 
-  //! @return image plane for currently rendered glyph
+  //! Return tightly packed, top-down alpha coverage for the rendered glyph.
+  //! The image is borrowed until the next glyph operation, configuration change, or Release().
+  //! @return image plane, or an empty image when no bitmap is available
   inline const Image_PixMap& GlyphImage() const { return myGlyphImg; }
 
   //! Initialize the font from the given file path.
@@ -261,9 +264,17 @@ public:
   //! @return true when the identity can still be loaded by this font
   [[nodiscard]] Standard_EXPORT bool IsGlyphValid(const Font_GlyphOutline::Glyph& theGlyph) const;
 
+  //! Load a borrowed outline in configured pixel units.
+  //! The next glyph operation, configuration change, or Release() invalidates the pointer.
+  //! @param[in] theChar Unicode character
+  //! @return outline in the FreeType slot, or null when loading fails
+  Standard_DEPRECATED("Use LoadGlyphOutline() for an owned outline in design units")
+  Standard_EXPORT const FT_Outline* renderGlyphOutline(char32_t theChar);
+
   //! Extract an outline for a Unicode character.
   //! Fallback-face selection follows the same policy as bitmap glyph loading.
   //! Coordinates are returned in the selected face's design units.
+  //! Loading clears the bitmap image and preserves the last pixel advances.
   //! This method mutates the FreeType glyph slot and is not thread-safe.
   //! @param[in] theUChar Unicode character
   //! @return outline, or empty when loading or decomposition fails
@@ -272,6 +283,7 @@ public:
 
   //! Extract an outline by resolved glyph identity.
   //! Coordinates are returned in the selected face's design units.
+  //! Loading clears the bitmap image and preserves the last pixel advances.
   //! This method mutates the FreeType glyph slot and is not thread-safe.
   //! @param[in] theGlyph face-local glyph identity returned by ResolveGlyph()
   //! @return outline, or empty when the glyph is stale or decomposition fails
@@ -313,7 +325,7 @@ public:
   //! Note that bounding box takes into account the text alignment options.
   //! Its corners are relative to the text alignment anchor point, their coordinates can be
   //! negative.
-  Standard_EXPORT Font_Rect BoundingBox(const NCollection_String&               theString,
+  Standard_EXPORT Font_Rect BoundingBox(const TCollection_UtfString<char>&      theString,
                                         const Graphic3d_HorizontalTextAlignment theAlignX,
                                         const Graphic3d_VerticalTextAlignment   theAlignY);
 
@@ -325,7 +337,9 @@ public:
   //! @return true on success
   Standard_DEPRECATED("Deprecated method, Font_FTFont::Params should be used for passing "
                       "parameters")
-  bool Init(const NCollection_String& theFontPath, uint32_t thePointSize, uint32_t theResolution)
+  bool Init(const TCollection_UtfString<char>& theFontPath,
+            uint32_t                           thePointSize,
+            uint32_t                           theResolution)
   {
     Params aParams;
     aParams.PointSize  = thePointSize;
@@ -341,10 +355,10 @@ public:
   //! @return true on success
   Standard_DEPRECATED("Deprecated method, Font_FTFont::Params should be used for passing "
                       "parameters")
-  bool Init(const NCollection_String& theFontName,
-            Font_FontAspect           theFontAspect,
-            uint32_t                  thePointSize,
-            uint32_t                  theResolution)
+  bool Init(const TCollection_UtfString<char>& theFontName,
+            Font_FontAspect                    theFontAspect,
+            uint32_t                           thePointSize,
+            uint32_t                           theResolution)
   {
     Params aParams;
     aParams.PointSize  = thePointSize;
@@ -353,6 +367,12 @@ public:
   }
 
 private:
+  friend class StdPrs_BRepFont;
+
+  //! Copy the initialized source and configuration without sharing mutable FreeType slots.
+  //! Return null when the new face cannot be initialized.
+  Standard_EXPORT occ::handle<Font_FTFont> copy() const;
+
   //! Load glyph without rendering it.
   bool loadGlyph(char32_t theUChar);
 
@@ -378,30 +398,37 @@ private:
     uint32_t     Index;
   };
 
-  //! Coherent state of the FreeType slot currently exposed through bitmap/advance APIs.
+  //! Pixel advances remain valid when outline extraction overwrites the FreeType slot.
   class LoadedGlyph
   {
   public:
     void Reset() noexcept
     {
-      Face      = nullptr;
-      Character = 0;
-      HasBitmap = false;
+      Face       = nullptr;
+      Character  = 0;
+      HasBitmap  = false;
+      myAdvanceX = 0;
+      myAdvanceY = 0;
     }
 
-    FT_Face  Face      = nullptr;
-    char32_t Character = 0;
-    bool     HasBitmap = false;
+    FT_Face  Face       = nullptr; //!< Face used for the last pixel glyph load.
+    char32_t Character  = 0;       //!< Character selected by the last pixel glyph load.
+    bool     HasBitmap  = false;   //!< True while the slot contains the exposed bitmap.
+    int64_t  myAdvanceX = 0; //!< Horizontal advance including side-bearing deltas, in 26.6 units.
+    int64_t  myAdvanceY = 0; //!< Vertical advance in 26.6 units.
   };
 
   [[nodiscard]] std::optional<GlyphSelection> selectGlyph(char32_t theUChar);
   [[nodiscard]] const Font_FTFont* fontForGlyph(const Font_GlyphOutline::Glyph& theGlyph) const;
   void                             invalidateGlyphState();
 
+  //! Copy pixel advances from the current slot and record its selected character.
+  void setLoadedGlyph(FT_Face theFace, char32_t theCharacter, bool theHasBitmap);
+
   occ::handle<Font_FTLibrary>     myFTLib;  //!< handle to the FT library object
   occ::handle<NCollection_Buffer> myBuffer; //!< memory buffer
   std::array<occ::handle<Font_FTFont>, Font_UnicodeSubset_NB>
-                          myFallbackFaces; //!< fallback fonts by Unicode subset
+                          myFallbackFaces; //!< Fallback fonts by Unicode subset.
   FT_Face                 myFTFace;        //!< FT face object
   TCollection_AsciiString myFontPath;      //!< font path
   Params                  myFontParams;    //!< font initialization parameters
@@ -415,6 +442,22 @@ private:
   Image_PixMap myGlyphImg;    //!< cached glyph plane
   LoadedGlyph  myLoadedGlyph; //!< currently loaded FreeType slot and its exposed state
   bool         myToUseUnicodeSubsetFallback; //!< use subset fallback faces for missing characters
+};
+
+//! Compatibility parameters accepted by Font_FTFont initialization methods.
+//! Prefer Font_FTFont::Params in new code.
+struct Standard_DEPRECATED("Use Font_FTFont::Params") Font_FTFontParams : Font_FTFont::Params
+{
+  //! Create default initialization parameters.
+  Font_FTFontParams() = default;
+
+  //! Create parameters with a point size and resolution.
+  //! @param[in] thePointSize font size in points
+  //! @param[in] theResolution device resolution in dpi
+  Font_FTFontParams(uint32_t thePointSize, uint32_t theResolution)
+      : Font_FTFont::Params{thePointSize, theResolution}
+  {
+  }
 };
 
 #endif // Font_FTFont_HeaderFile

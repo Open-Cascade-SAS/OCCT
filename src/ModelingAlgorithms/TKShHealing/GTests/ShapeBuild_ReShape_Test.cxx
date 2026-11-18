@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -28,6 +29,11 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+#include <gp.hxx>
 
 #include <gtest/gtest.h>
 
@@ -173,4 +179,79 @@ TEST(ShapeBuild_ReShapeTest, Apply_DiamondSharedVertexInTwoCompounds)
   }
   EXPECT_EQ(aNbOriginals, 0) << "Original vertex must be substituted everywhere";
   EXPECT_EQ(aNbReplVerts, 2) << "Replacement must appear in both parentA and parentB";
+}
+
+//==================================================================================================
+
+TEST(ShapeBuild_ReShapeTest, CopyEdgePreservesPlacementAndSharing)
+{
+  const TopoDS_Edge aClosedEdge    = BRepBuilderAPI_MakeEdge(gp_Circ(gp::XOY(), 2.0));
+  TopoDS_Edge       anInfiniteEdge = BRepBuilderAPI_MakeEdge(gp_Lin(gp::OX()));
+  anInfiniteEdge.Infinite(true);
+  for (const TopoDS_Edge& anEdge : {aClosedEdge, anInfiniteEdge})
+  {
+    ShapeBuild_ReShape aContext;
+    const TopoDS_Edge  aCopy = aContext.CopyEdge(anEdge);
+    ASSERT_FALSE(aCopy.IsNull());
+    EXPECT_EQ(aCopy.Closed(), anEdge.Closed());
+    EXPECT_EQ(aCopy.Infinite(), anEdge.Infinite());
+    EXPECT_EQ(aCopy.Orientable(), anEdge.Orientable());
+    EXPECT_EQ(aCopy.Convex(), anEdge.Convex());
+    EXPECT_TRUE(aCopy.Free());
+    EXPECT_EQ(BRep_Tool::IsClosed(aCopy), BRep_Tool::IsClosed(anEdge));
+  }
+  for (const bool toConsiderLocation : {false, true})
+  {
+    for (const TopAbs_Orientation anOrientation :
+         {TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_INTERNAL, TopAbs_EXTERNAL})
+    {
+      SCOPED_TRACE(toConsiderLocation);
+      SCOPED_TRACE(anOrientation);
+      TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(1.0, 2.0, 3.0), gp_Pnt(4.0, 5.0, 6.0));
+      gp_Trsf     aTransform;
+      aTransform.SetRotation(gp::OZ(), 0.3);
+      aTransform.SetTranslationPart(gp_Vec(10.0, 20.0, 30.0));
+      anEdge.Location(TopLoc_Location(aTransform));
+      anEdge.Orientation(anOrientation);
+      ShapeBuild_ReShape aContext;
+      aContext.ModeConsiderLocation() = toConsiderLocation;
+      const TopoDS_Edge aCopy         = aContext.CopyEdge(anEdge);
+      ASSERT_FALSE(aCopy.IsNull());
+      EXPECT_FALSE(aCopy.IsSame(anEdge));
+      EXPECT_EQ(aCopy.Orientation(), anOrientation);
+      EXPECT_EQ(aCopy.Location(), anEdge.Location());
+      EXPECT_TRUE(aContext.CopyEdge(anEdge).IsSame(aCopy));
+      EXPECT_TRUE(aContext.CopyEdge(aCopy).IsSame(aCopy));
+      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertices;
+      TopExp::MapShapes(anEdge, TopAbs_VERTEX, aVertices);
+      for (TopExp_Explorer anExplorer(aCopy, TopAbs_VERTEX); anExplorer.More(); anExplorer.Next())
+      {
+        EXPECT_TRUE(aVertices.Contains(anExplorer.Current()));
+      }
+      double          aFirst, aLast, aCopyFirst, aCopyLast;
+      TopLoc_Location aLocation, aCopyLocation;
+      EXPECT_EQ(BRep_Tool::Curve(anEdge, aLocation, aFirst, aLast),
+                BRep_Tool::Curve(aCopy, aCopyLocation, aCopyFirst, aCopyLast));
+      EXPECT_DOUBLE_EQ(aFirst, aCopyFirst);
+      EXPECT_DOUBLE_EQ(aLast, aCopyLast);
+      EXPECT_EQ(aLocation, aCopyLocation);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ShapeBuild_ReShapeTest, CopyEdgeHandlesRemovedAndSplitEdges)
+{
+  const TopoDS_Edge  anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(1.0, 0.0, 0.0));
+  ShapeBuild_ReShape aContext;
+  aContext.Remove(anEdge);
+  EXPECT_TRUE(aContext.CopyEdge(anEdge).IsNull());
+  TopoDS_Compound aSplit;
+  BRep_Builder    aBuilder;
+  aBuilder.MakeCompound(aSplit);
+  aBuilder.Add(aSplit, BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.5, 0.0, 0.0)));
+  aBuilder.Add(aSplit, BRepBuilderAPI_MakeEdge(gp_Pnt(0.5, 0.0, 0.0), gp_Pnt(1.0, 0.0, 0.0)));
+  aContext.Replace(anEdge, aSplit);
+  EXPECT_TRUE(aContext.CopyEdge(anEdge).IsNull());
 }

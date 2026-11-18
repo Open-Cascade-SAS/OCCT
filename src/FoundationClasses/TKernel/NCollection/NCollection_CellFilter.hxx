@@ -150,8 +150,7 @@ public:
   //! Clear the data structures, set new cell size and allocator
   void Reset(double theCellSize, const occ::handle<NCollection_IncAllocator>& theAlloc = nullptr)
   {
-    for (int i = 0; i < myDim; i++)
-      myCellSize(i) = theCellSize;
+    myCellSize.Init(theCellSize);
     resetAllocator(theAlloc);
   }
 

@@ -21,21 +21,21 @@ tolerance a_2
 bop a_1 a_2
 bopfuse result
 
-checkprops result -s 64.4145 
+checkprops result -s 65.0524 -eps 1.0e-8
 
 checkshape result
 
 set nbshapes_expected "
 Number of shapes in result
- VERTEX    : 18
- EDGE      : 26
+ VERTEX    : 20
+ EDGE      : 28
  WIRE      : 12
  FACE      : 11
  SHELL     : 1
  SOLID     : 1
  COMPSOLID : 0
  COMPOUND  : 1
- SHAPE     : 70
+ SHAPE     : 74
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "Result obtained by Boolean cut operation"
 

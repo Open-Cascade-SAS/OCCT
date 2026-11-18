@@ -15,23 +15,43 @@
 #ifndef _RWObj_MtlReader_HeaderFile
 #define _RWObj_MtlReader_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <NCollection_Vec3.hxx>
 #include <Standard_TypeDef.hxx>
 #include <RWObj_Material.hxx>
 #include <NCollection_DataMap.hxx>
 
-//! Reader of mtl files.
+#include <istream>
+
+//! Reads OBJ material libraries from files or streams.
+//! Named texture data is owned and shared until the stream list is replaced.
 class RWObj_MtlReader
 {
 public:
   //! Main constructor.
-  RWObj_MtlReader(NCollection_DataMap<TCollection_AsciiString, RWObj_Material>& theMaterials);
+  Standard_EXPORT RWObj_MtlReader(
+    NCollection_DataMap<TCollection_AsciiString, RWObj_Material>& theMaterials);
 
   //! Destructor.
-  ~RWObj_MtlReader();
+  Standard_EXPORT ~RWObj_MtlReader();
 
   //! Read the file.
-  bool Read(const TCollection_AsciiString& theFolder, const TCollection_AsciiString& theFile);
+  Standard_EXPORT bool Read(const TCollection_AsciiString& theFolder,
+                            const TCollection_AsciiString& theFile);
+
+  //! Read material definitions from the beginning of a seekable stream.
+  //! @param[in,out] theStream material input
+  //! @param[in] theName material name used to resolve relative image references
+  //! @return false for a read error or a missing companion
+  Standard_EXPORT bool Read(std::istream& theStream, const TCollection_AsciiString& theName);
+
+  //! Set streams for texture references instead of files.
+  //! @param[in] theStreams caller-owned list; must remain valid during Read()
+  void SetResourceStreams(const DE_Provider::ReadStreamList& theStreams)
+  {
+    myTextures.Clear();
+    myResourceStreams = &theStreams;
+  }
 
 private:
   //! Validate scalar value
@@ -41,11 +61,14 @@ private:
   bool validateColor(const NCollection_Vec3<float>& theVec);
 
   //! Process texture path.
-  void processTexturePath(TCollection_AsciiString&       theTexturePath,
-                          const TCollection_AsciiString& theFolder);
+  bool processTexturePath(TCollection_AsciiString&       theTexturePath,
+                          const TCollection_AsciiString& theFolder,
+                          occ::handle<Image_Texture>*    theSource = nullptr);
 
 private:
-  FILE*                                                         myFile;
+  const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed named input streams.
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Image_Texture>>
+    myTextures; //!< Images shared by material libraries in the current stream list.
   TCollection_AsciiString                                       myPath;
   NCollection_DataMap<TCollection_AsciiString, RWObj_Material>* myMaterials;
   int                                                           myNbLines;

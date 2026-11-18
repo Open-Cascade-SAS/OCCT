@@ -75,6 +75,12 @@ public:
   //! Return TRUE if there is no transformation (target and current coordinates systems are same).
   bool IsEmpty() const { return myIsEmpty; }
 
+  //! Return the length scale from input units to output units, or 1 for undefined units.
+  double LengthUnitFactor() const { return myUnitFactor; }
+
+  //! Return the coordinate-system transformation without the length scale.
+  const gp_Trsf& CoordinateTransformation() const { return myTrsf; }
+
   //! Return source length units, defined as scale factor to m (meters).
   //! -1.0 by default, which means that NO conversion will be applied (regardless output length
   //! unit).

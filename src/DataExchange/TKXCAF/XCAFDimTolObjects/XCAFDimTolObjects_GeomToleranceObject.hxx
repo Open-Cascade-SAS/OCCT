@@ -19,6 +19,7 @@
 #include <Standard.hxx>
 
 #include <XCAFDimTolObjects_GeomToleranceType.hxx>
+#include <optional>
 #include <XCAFDimTolObjects_GeomToleranceTypeValue.hxx>
 #include <Standard_Real.hxx>
 #include <XCAFDimTolObjects_GeomToleranceMatReqModif.hxx>
@@ -192,33 +193,61 @@ public:
   //! Returns affected plane.
   const gp_Pln& GetAffectedPlane() const { return myAffectedPlane; }
 
+  //! Authored tolerance description, independent of its semantic name.
+  const occ::handle<TCollection_HAsciiString>& GetDescription() const { return myDescription; }
+
+  //! Retain the source tolerance description; a null handle clears it.
+  //! @param[in] theDescription authored description, independent of the semantic name
+  void SetDescription(const occ::handle<TCollection_HAsciiString>& theDescription)
+  {
+    myDescription = theDescription;
+  }
+
+  //! Unequally disposed tolerance displacement in document length units.
+  //! An authored zero differs from an absent modifier.
+  const std::optional<double>& GetUnequalDisplacement() const { return myUnequalDisplacement; }
+
+  //! Set or remove the independently authored displacement.
+  //! @param[in] theValue displacement in document length units, or nullopt to remove it
+  void SetUnequalDisplacement(const std::optional<double>& theValue)
+  {
+    myUnequalDisplacement = theValue;
+  }
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_GeomToleranceObject, Standard_Transient)
 
 private:
-  XCAFDimTolObjects_GeomToleranceType                        myType;
-  XCAFDimTolObjects_GeomToleranceTypeValue                   myTypeOfValue;
-  double                                                     myValue;
-  XCAFDimTolObjects_GeomToleranceMatReqModif                 myMatReqModif;
-  XCAFDimTolObjects_GeomToleranceZoneModif                   myZoneModif;
-  double                                                     myValueOfZoneModif;
+  XCAFDimTolObjects_GeomToleranceType      myType = XCAFDimTolObjects_GeomToleranceType_None;
+  XCAFDimTolObjects_GeomToleranceTypeValue myTypeOfValue =
+    XCAFDimTolObjects_GeomToleranceTypeValue_None;
+  double                                     myValue = 0.0;
+  XCAFDimTolObjects_GeomToleranceMatReqModif myMatReqModif =
+    XCAFDimTolObjects_GeomToleranceMatReqModif_None;
+  XCAFDimTolObjects_GeomToleranceZoneModif myZoneModif =
+    XCAFDimTolObjects_GeomToleranceZoneModif_None;
+  double                                                     myValueOfZoneModif = 0.0;
   NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> myModifiers;
-  double                                                     myMaxValueModif;
+  double                                                     myMaxValueModif = 0.0;
   gp_Ax2                                                     myAxis;
-  bool                                                       myHasAxis;
+  bool                                                       myHasAxis = false;
   gp_Ax2                                                     myPlane;
   gp_Pnt                                                     myPnt;
   gp_Pnt                                                     myPntText;
-  bool                                                       myHasPlane;
-  bool                                                       myHasPnt;
-  bool                                                       myHasPntText;
+  bool                                                       myHasPlane   = false;
+  bool                                                       myHasPnt     = false;
+  bool                                                       myHasPntText = false;
   TopoDS_Shape                                               myPresentation;
   occ::handle<TCollection_HAsciiString>                      mySemanticName;
   occ::handle<TCollection_HAsciiString>                      myPresentationName;
-  XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType;
-  gp_Pln                                                     myAffectedPlane;
+  XCAFDimTolObjects_ToleranceZoneAffectedPlane               myAffectedPlaneType =
+    XCAFDimTolObjects_ToleranceZoneAffectedPlane_None;
+  gp_Pln myAffectedPlane;
+  std::optional<double>
+    myUnequalDisplacement; //!< Authored displacement; zero differs from absence.
+  occ::handle<TCollection_HAsciiString> myDescription; //!< Authored tolerance description.
 };
 
 #endif // _XCAFDimTolObjects_GeomToleranceObject_HeaderFile

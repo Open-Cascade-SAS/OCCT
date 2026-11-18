@@ -11,12 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+
 #include <algorithm>
+#include <limits>
 #include <numeric>
+#include <utility>
 #include <vector>
 
 // --- Constructor Tests ---
@@ -285,6 +289,60 @@ TEST(NCollection_Array2Test, MoveConstructor)
   // Verify the moved-from array is empty
   EXPECT_EQ(0, anArray1.Length());
   EXPECT_EQ(0, anArray1.NbRows());
+}
+
+TEST(NCollection_Array2Test, MoveConstructorFromArray1)
+{
+  NCollection_Array1<int> anArray1(1, 6);
+  for (size_t anIndex = 0; anIndex < anArray1.Size(); ++anIndex)
+  {
+    anArray1.ChangeAt(anIndex) = static_cast<int>(anIndex + 1);
+  }
+  const int* aData = anArray1.Data();
+
+  NCollection_Array2<int> anArray2(std::move(anArray1), 1, 2, 1, 3);
+
+  EXPECT_EQ(aData, anArray2.Data());
+  EXPECT_EQ(0u, anArray1.Size());
+  EXPECT_TRUE(anArray2.IsDeletable());
+  EXPECT_EQ(2, anArray2.NbRows());
+  EXPECT_EQ(3, anArray2.NbColumns());
+  EXPECT_EQ(NCollection_Array2<int>::BeginPosition(1, 2, 1, 3), anArray2.Array1().Lower());
+  EXPECT_EQ(1, anArray2(1, 1));
+  EXPECT_EQ(6, anArray2(2, 3));
+}
+
+TEST(NCollection_Array2Test, MoveConstructorFromArray1ZeroBased)
+{
+  NCollection_Array1<int> anArray1(6);
+  for (size_t anIndex = 0; anIndex < anArray1.Size(); ++anIndex)
+  {
+    anArray1.ChangeAt(anIndex) = static_cast<int>(anIndex + 1);
+  }
+  const int* aData = anArray1.Data();
+
+  NCollection_Array2<int> anArray2(std::move(anArray1), size_t(2), size_t(3));
+
+  EXPECT_EQ(aData, anArray2.Data());
+  EXPECT_EQ(0u, anArray1.Size());
+  EXPECT_TRUE(anArray2.IsDeletable());
+  EXPECT_EQ(0, anArray2.LowerRow());
+  EXPECT_EQ(0, anArray2.LowerCol());
+  EXPECT_EQ(2, anArray2.NbRows());
+  EXPECT_EQ(3, anArray2.NbColumns());
+  EXPECT_EQ(0, anArray2.Array1().Lower());
+  EXPECT_EQ(1, anArray2.At(0, 0));
+  EXPECT_EQ(6, anArray2.At(1, 2));
+}
+
+TEST(NCollection_Array2Test, MoveConstructorFromArray1RejectsWrongSize)
+{
+#ifndef No_Exception
+  NCollection_Array1<int> anArray1(1, 5);
+  EXPECT_THROW((NCollection_Array2<int>(std::move(anArray1), 1, 2, 1, 3)),
+               Standard_DimensionMismatch);
+  EXPECT_EQ(5u, anArray1.Size());
+#endif
 }
 
 TEST(NCollection_Array2Test, MoveAssignment)
@@ -888,5 +946,66 @@ TEST(NCollection_Array2Test, SizeConstructor_ResizeWithTrim_GrowPreserves)
     {
       EXPECT_EQ(42, anArray.At(aRow, aCol));
     }
+  }
+}
+
+//==================================================================================================
+
+TEST(NCollection_ArrayRangeTest, WideSignedBoundsPreserveRebaseArithmetic)
+{
+  const int                aMin = std::numeric_limits<int>::min();
+  const int                aMax = std::numeric_limits<int>::max();
+  NCollection_Array1<char> aLine(aMin, aMin + 2);
+  aLine.Init(7);
+  EXPECT_EQ(aLine.Upper(), aMin + 2);
+  aLine.UpdateUpperBound(aMax);
+  EXPECT_EQ(aLine.Lower(), aMax - 2);
+  EXPECT_EQ(aLine.Upper(), aMax);
+  EXPECT_EQ(aLine.Value(aMax), 7);
+  aLine.UpdateUpperBound(aMin + 2);
+  EXPECT_EQ(aLine.Lower(), aMin);
+  EXPECT_EQ(aLine.Value(aMin + 2), 7);
+
+  const int                aRow = aMin / 2 - 1;
+  NCollection_Array2<char> aShiftedGrid(aRow, aRow, aMax - 1, aMax);
+  aShiftedGrid.Init(9);
+  EXPECT_EQ(aShiftedGrid.Size(), size_t(2));
+  EXPECT_EQ(aShiftedGrid.UpperRow(), aRow);
+  EXPECT_EQ(aShiftedGrid.UpperCol(), aMax);
+  EXPECT_EQ(aShiftedGrid.Value(aRow, aMax), 9);
+  EXPECT_EQ(NCollection_Array2<char>::BeginPosition(aRow, aRow, aMax - 1, aMax), -4);
+  EXPECT_EQ(NCollection_Array2<char>::LastPosition(aRow, aRow, aMax - 1, aMax), -3);
+
+  NCollection_Array2<char> aGrid(0, 2, 0, 1);
+  aGrid.Init(7);
+  aGrid.UpdateUpperRow(aMin + 2);
+  aGrid.UpdateUpperCol(aMax);
+  EXPECT_EQ(aGrid.LowerRow(), aMin);
+  EXPECT_EQ(aGrid.LowerCol(), aMax - 1);
+  EXPECT_EQ(aGrid.Value(aMin + 2, aMax), 7);
+  aGrid.UpdateUpperRow(aMax);
+  aGrid.UpdateUpperCol(aMin + 1);
+  EXPECT_EQ(aGrid.LowerRow(), aMax - 2);
+  EXPECT_EQ(aGrid.LowerCol(), aMin);
+  EXPECT_EQ(aGrid.Value(aMax, aMin), 7);
+}
+
+//==================================================================================================
+
+TEST(NCollection_ArrayRangeTest, EmptyStorageCopyAndMovePreserveDimensions)
+{
+  for (const bool isEmptyRow : {false, true})
+  {
+    const size_t                  aRows = isEmptyRow ? 0 : 3;
+    const size_t                  aCols = isEmptyRow ? 3 : 0;
+    const NCollection_Array2<int> aSource(aRows, aCols);
+    EXPECT_EQ(aSource.UpperRow(), isEmptyRow ? -1 : 2);
+    EXPECT_EQ(aSource.UpperCol(), isEmptyRow ? 2 : -1);
+    NCollection_Array2<int> aCopy(aSource);
+    EXPECT_EQ(aCopy.RowSize(), aRows);
+    EXPECT_EQ(aCopy.ColSize(), aCols);
+    NCollection_Array2<int> aMoved(std::move(aCopy));
+    EXPECT_EQ(aMoved.RowSize(), aRows);
+    EXPECT_EQ(aMoved.ColSize(), aCols);
   }
 }

@@ -11,17 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
-#include <cmath>
-
 #include <Geom_BezierCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_Failure.hxx>
+
+#include <gtest/gtest.h>
+
+#include <cmath>
 
 class Geom_BezierCurve_Test : public ::testing::Test
 {
@@ -344,6 +345,33 @@ TEST_F(Geom_BezierCurve_Test, MaxDegree)
   EXPECT_GE(Geom_BezierCurve::MaxDegree(), 25);
 }
 
+TEST_F(Geom_BezierCurve_Test, InsertPoleAfter_GrowsToTheConstructorLimit)
+{
+  // MaxDegree() bounds the degree, so MaxDegree() + 1 poles are legal, as the constructor allows.
+  const int aMaxPoles = Geom_BezierCurve::MaxDegree() + 1;
+
+  NCollection_Array1<gp_Pnt> aAllPoles(1, aMaxPoles);
+  for (int anIdx = 1; anIdx <= aMaxPoles; ++anIdx)
+  {
+    aAllPoles(anIdx) = gp_Pnt(anIdx, 0.0, 0.0);
+  }
+  EXPECT_NO_THROW(new Geom_BezierCurve(aAllPoles));
+
+  NCollection_Array1<gp_Pnt> aPoles(1, aMaxPoles - 1);
+  for (int anIdx = 1; anIdx < aMaxPoles; ++anIdx)
+  {
+    aPoles(anIdx) = aAllPoles(anIdx);
+  }
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+  EXPECT_NO_THROW(aCurve->InsertPoleAfter(aMaxPoles - 1, aAllPoles(aMaxPoles)));
+  EXPECT_EQ(aCurve->NbPoles(), aMaxPoles);
+  EXPECT_EQ(aCurve->Degree(), Geom_BezierCurve::MaxDegree());
+  EXPECT_NEAR(aCurve->EndPoint().X(), static_cast<double>(aMaxPoles), Precision::Confusion());
+
+  EXPECT_THROW(aCurve->InsertPoleAfter(aMaxPoles, aAllPoles(aMaxPoles)),
+               Standard_ConstructionError);
+}
+
 TEST_F(Geom_BezierCurve_Test, SetPoleWithWeight)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 3);
@@ -554,4 +582,29 @@ TEST(Geom_BezierCurveTest, OCC2569_ThrowsForTooManyPoles)
   }
 
   EXPECT_THROW(new Geom_BezierCurve(aPoles), Standard_Failure);
+}
+
+//==================================================================================================
+
+TEST_F(Geom_BezierCurve_Test, WeightArrayBounds)
+{
+  // Pole and weight arrays may have independent lower bounds. The last weight
+  // differs so rationality detection must visit the entire array.
+  NCollection_Array1<gp_Pnt> aPoles(-2, 0);
+  aPoles.ChangeAt(0) = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles.ChangeAt(1) = gp_Pnt(1.0, 1.0, 0.0);
+  aPoles.ChangeAt(2) = gp_Pnt(2.0, 0.0, 0.0);
+  NCollection_Array1<double> aWeights(0, 2);
+  aWeights.Init(1.0);
+  aWeights.ChangeAt(2) = 2.0;
+
+  Geom_BezierCurve aCurve(aPoles, aWeights);
+  EXPECT_TRUE(aCurve.IsRational());
+  EXPECT_DOUBLE_EQ(aCurve.Weight(3), 2.0);
+  EXPECT_TRUE(aCurve.EvalD0(0.5).IsEqual(gp_Pnt(1.2, 0.4, 0.0), 1.0e-14));
+
+  aWeights.Init(2.0);
+  Geom_BezierCurve aPolynomial(aPoles, aWeights);
+  EXPECT_FALSE(aPolynomial.IsRational());
+  EXPECT_TRUE(aPolynomial.EvalD0(0.5).IsEqual(gp_Pnt(1.0, 0.5, 0.0), 1.0e-14));
 }

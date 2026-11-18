@@ -15,11 +15,14 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepGProp_Domain.hxx>
 #include <BRepGProp_Face.hxx>
 #include <BRepGProp_Sinert.hxx>
 #include <BRepGProp_Vinert.hxx>
+#include <BRepGProp_VinertGK.hxx>
+#include <BRepLib.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -27,6 +30,7 @@
 #include <GC_MakeArcOfCircle.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -34,6 +38,7 @@
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
@@ -54,6 +59,7 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <cmath>
 
 namespace
@@ -276,6 +282,62 @@ TEST(BRepGPropTest, AdaptiveTrimmedQuarterDisk_ReusesBoundaryBuffers)
   expectGPropsNear(aFallback, aFixed, 5.0e-5);
 }
 
+TEST(BRepGPropTest, AdaptiveQuarterDisk_BoundaryBeyondLastKnot)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles(1) = gp_Pnt(1.0, 0.0, 0.0);
+  aPoles(2) = gp_Pnt(1.0, 1.0, 0.0);
+  aPoles(3) = gp_Pnt(0.0, 1.0, 0.0);
+
+  // Projective scaling preserves the quarter circle.
+  const double               aParameterScale = 1.0e-3;
+  NCollection_Array1<double> aWeights(1, 3);
+  aWeights(1) = aParameterScale * aParameterScale;
+  aWeights(2) = aParameterScale * std::sqrt(0.5);
+  aWeights(3) = 1.0;
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  NCollection_Array1<int> aMultiplicities(1, 2);
+  aMultiplicities.Init(3);
+  const occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMultiplicities, 2);
+  BRepBuilderAPI_MakeEdge anArcBuilder(aCurve);
+  ASSERT_TRUE(anArcBuilder.IsDone());
+  const TopoDS_Edge       anArc = anArcBuilder.Edge();
+  BRepBuilderAPI_MakeWire aWireBuilder;
+  aWireBuilder.Add(anArc);
+  aWireBuilder.Add(BRepBuilderAPI_MakeEdge(aPoles(3), gp_Pnt(0.0, 0.0, 0.0)).Edge());
+  aWireBuilder.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), aPoles(1)).Edge());
+  ASSERT_TRUE(aWireBuilder.IsDone());
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
+                                       aWireBuilder.Wire());
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+
+  const std::array<double, 2> aLastParameters = {1.0, std::nextafter(1.0, 2.0)};
+  for (const double aLast : aLastParameters)
+  {
+    BRep_Builder().Range(anArc, 0.0, aLast);
+    ASSERT_TRUE(BRepCheck_Analyzer(aFace).IsValid());
+    BRepGProp_Face   aSurface(aFace);
+    BRepGProp_Domain aDomain(aFace);
+    BRepGProp_Sinert anInertia(aSurface, aDomain, gp_Pnt(0.0, 0.0, 0.0), 1.0e-8);
+
+    EXPECT_LE(anInertia.GetEpsilon(), 1.0e-8);
+    EXPECT_NEAR(anInertia.Mass(), M_PI / 4.0, 1.0e-10);
+    EXPECT_NEAR(anInertia.CentreOfMass().X(), 4.0 / (3.0 * M_PI), 1.0e-7);
+    EXPECT_NEAR(anInertia.CentreOfMass().Y(), 4.0 / (3.0 * M_PI), 1.0e-7);
+    EXPECT_NEAR(anInertia.CentreOfMass().Z(), 0.0, 1.0e-12);
+    const gp_Mat aMatrix = anInertia.MatrixOfInertia();
+    const double aMoment = M_PI / 16.0 - 4.0 / (9.0 * M_PI);
+    EXPECT_NEAR(aMatrix(1, 1), aMoment, 1.0e-10);
+    EXPECT_NEAR(aMatrix(2, 2), aMoment, 1.0e-10);
+    EXPECT_NEAR(aMatrix(3, 3), 2.0 * aMoment, 1.0e-10);
+    EXPECT_NEAR(aMatrix(1, 2), 4.0 / (9.0 * M_PI) - 1.0 / 8.0, 1.0e-10);
+  }
+}
+
 TEST(BRepGPropTest, AdaptiveVolumeProperties_Cylinder)
 {
   const double       aRadius   = 3.0;
@@ -321,14 +383,48 @@ TEST(BRepGPropTest, AdaptivePlaneLimitedInertia)
   BRepGProp_Domain anAdaptiveDomain(aFace);
   BRepGProp_Vinert anAdaptive(anAdaptiveFace, anAdaptiveDomain, aReferencePlane, aLocation, 1.0e-8);
 
+  // MatrixOfInertia is about the centre of mass: m (b^2 + c^2) / 12 on the diagonal for the block,
+  // zero elsewhere.
   const gp_Mat anAdaptiveInertia = anAdaptive.MatrixOfInertia();
-  EXPECT_NEAR(anAdaptiveInertia.Value(1, 1), 160.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(2, 2), 104.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(3, 3), 200.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(1, 2), -72.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(1, 3), -36.0, 1.0e-10);
-  EXPECT_NEAR(anAdaptiveInertia.Value(2, 3), -48.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(1, 1), 40.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(2, 2), 26.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(3, 3), 50.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(1, 2), 0.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(1, 3), 0.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptiveInertia.Value(2, 3), 0.0, 1.0e-10);
   expectGPropsNear(anAdaptive, aFixed, 1.0e-10);
+}
+
+TEST(BRepGPropTest, VinertByPlane_BoxVolume_KeepsMassAndCentre)
+{
+  const gp_Dir            aNormal(0.0, 0.0, 1.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 2.0), aNormal), 0.0, 3.0, 0.0, 4.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  const gp_Pln      aReferencePlane(gp_Pnt(0.0, 0.0, 0.0), aNormal);
+  const gp_Pnt      aLocation(0.0, 0.0, 0.0);
+
+  // The volume between the face and the reference plane is a 3 x 4 x 2 block.
+  GProp_GProps aBlock;
+  BRepGProp::VolumeProperties(BRepPrimAPI_MakeBox(3.0, 4.0, 2.0).Shape(), aBlock);
+
+  BRepGProp_Face   aFixedFace(aFace);
+  BRepGProp_Domain aFixedDomain(aFace);
+  BRepGProp_Vinert aFixed(aFixedFace, aFixedDomain, aReferencePlane, aLocation);
+  EXPECT_NEAR(aFixed.Mass(), 24.0, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().X(), 1.5, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().Y(), 2.0, 1.0e-10);
+  EXPECT_NEAR(aFixed.CentreOfMass().Z(), 1.0, 1.0e-10);
+  expectGPropsNear(aFixed, aBlock, 1.0e-9);
+
+  BRepGProp_Face   anAdaptiveFace(aFace);
+  BRepGProp_Domain anAdaptiveDomain(aFace);
+  BRepGProp_Vinert anAdaptive(anAdaptiveFace, anAdaptiveDomain, aReferencePlane, aLocation, 1.0e-8);
+  EXPECT_NEAR(anAdaptive.Mass(), 24.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().X(), 1.5, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().Y(), 2.0, 1.0e-10);
+  EXPECT_NEAR(anAdaptive.CentreOfMass().Z(), 1.0, 1.0e-10);
+  expectGPropsNear(anAdaptive, aBlock, 1.0e-9);
 }
 
 TEST(BRepGPropTest, NaturalInfinitePlane_UsesInfiniteArithmetic)
@@ -341,6 +437,46 @@ TEST(BRepGPropTest, NaturalInfinitePlane_UsesInfiniteArithmetic)
   BRepGProp_Face   aFaceTool(aFace);
   BRepGProp_Sinert aProperties(aFaceTool, gp_Pnt(0.0, 0.0, 0.0));
   EXPECT_TRUE(Precision::IsPositiveInfinite(aProperties.Mass()));
+}
+
+// A 3 x 4 face at z = 2 and the plane z = 1 delimit a 3 x 4 x 1 block. The by-plane overloads
+// must measure about the plane as passed, not its mirror through the origin. The location is the
+// centre of the block, so the diagonal is m (b^2 + c^2) / 12 whichever point the matrix refers to.
+TEST(BRepGPropTest, VolumePropertiesByPlane_OffsetPlane_Inertia)
+{
+  const gp_Dir            aNormal(0.0, 0.0, 1.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 2.0), aNormal), 0.0, 3.0, 0.0, 4.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  const gp_Pln      aPlane(gp_Pnt(0.0, 0.0, 1.0), aNormal);
+  const gp_Pnt      aCentre(1.5, 2.0, 1.5);
+
+  BRepGProp_Face   aFaceTool(aFace);
+  BRepGProp_Domain aDomain(aFace);
+  BRepGProp_Vinert aVinert(aFaceTool, aDomain, aPlane, aCentre);
+  EXPECT_NEAR(aVinert.MatrixOfInertia().Value(1, 1), 17.0, 1.0e-10);
+  EXPECT_NEAR(aVinert.MatrixOfInertia().Value(2, 2), 10.0, 1.0e-10);
+  EXPECT_NEAR(aVinert.MatrixOfInertia().Value(3, 3), 25.0, 1.0e-10);
+}
+
+TEST(BRepGPropTest, VolumePropertiesByPlane_OffsetPlane_MassAndCentre)
+{
+  const gp_Dir            aNormal(0.0, 0.0, 1.0);
+  BRepBuilderAPI_MakeFace aFaceBuilder(gp_Pln(gp_Pnt(0.0, 0.0, 2.0), aNormal), 0.0, 3.0, 0.0, 4.0);
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  const gp_Pln      aPlane(gp_Pnt(0.0, 0.0, 1.0), aNormal);
+
+  for (const gp_Pnt& aLocation : {gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(0.0, 0.0, 4.0)})
+  {
+    BRepGProp_Face     aFaceTool(aFace);
+    BRepGProp_Domain   aDomain(aFace);
+    BRepGProp_VinertGK aGK(aFaceTool, aDomain, aPlane, aLocation, 1.0e-8, true);
+    EXPECT_NEAR(aGK.Mass(), 12.0, 1.0e-8);
+    EXPECT_NEAR(aGK.CentreOfMass().X(), 1.5, 1.0e-8);
+    EXPECT_NEAR(aGK.CentreOfMass().Y(), 2.0, 1.0e-8);
+    EXPECT_NEAR(aGK.CentreOfMass().Z(), 1.5, 1.0e-8);
+  }
 }
 
 TEST(BRepGPropTest, LinearProperties_SkipShared)
@@ -483,4 +619,67 @@ TEST(BRepGPropTest, LinearProperties_DegenerateEdgeWithBSplinePCurveNoCrash)
   // before returning.
   EXPECT_TRUE(std::isfinite(aProps.Mass()));
   EXPECT_GE(aProps.Mass(), 0.0);
+}
+
+TEST(BRepGPropTest, AdaptiveTrimmedBSplineSurface_DenseKnots)
+{
+  const int                    aNbIntervals = 2 * math::GaussPointsMax();
+  NCollection_Array2<gp_Pnt>   aPoles(1, aNbIntervals + 1, 1, 2);
+  NCollection_Array1<double>   aUKnots(1, aNbIntervals + 1);
+  NCollection_Array1<int>      aUMultiplicities(1, aNbIntervals + 1);
+  NCollection_Array1<gp_Pnt2d> aCurvePoles(1, aNbIntervals + 1);
+  NCollection_Array1<double>   aCurveKnots(1, aNbIntervals + 1);
+  for (int anIndex = 0; anIndex <= aNbIntervals; ++anIndex)
+  {
+    const double aU               = static_cast<double>(anIndex);
+    const double aV               = aU / aNbIntervals;
+    aPoles(anIndex + 1, 1)        = gp_Pnt(aU, 0.0, 0.0);
+    aPoles(anIndex + 1, 2)        = gp_Pnt(aU, 1.0, 0.0);
+    aUKnots(anIndex + 1)          = aU;
+    aUMultiplicities(anIndex + 1) = anIndex == 0 || anIndex == aNbIntervals ? 2 : 1;
+    aCurvePoles(anIndex + 1)      = gp_Pnt2d(aU, aV);
+    aCurveKnots(anIndex + 1)      = aV;
+  }
+  NCollection_Array1<double> aVKnots(1, 2);
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+  NCollection_Array1<int> aVMultiplicities(1, 2);
+  aVMultiplicities.Init(2);
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMultiplicities, aVMultiplicities, 1, 1);
+  const occ::handle<Geom2d_BSplineCurve> aDiagonal =
+    new Geom2d_BSplineCurve(aCurvePoles, aCurveKnots, aUMultiplicities, 1);
+  BRepBuilderAPI_MakeEdge aDiagonalBuilder(aDiagonal, aSurface);
+  ASSERT_TRUE(aDiagonalBuilder.IsDone());
+  BRepBuilderAPI_MakeEdge aTopBuilder(
+    new Geom2d_Line(gp_Pnt2d(aNbIntervals, 1.0), gp_Dir2d(-1.0, 0.0)),
+    aSurface,
+    0.0,
+    aNbIntervals);
+  ASSERT_TRUE(aTopBuilder.IsDone());
+  BRepBuilderAPI_MakeEdge aLeftBuilder(new Geom2d_Line(gp_Pnt2d(0.0, 1.0), gp_Dir2d(0.0, -1.0)),
+                                       aSurface,
+                                       0.0,
+                                       1.0);
+  ASSERT_TRUE(aLeftBuilder.IsDone());
+  BRepBuilderAPI_MakeWire aWireBuilder;
+  aWireBuilder.Add(aDiagonalBuilder.Edge());
+  aWireBuilder.Add(aTopBuilder.Edge());
+  aWireBuilder.Add(aLeftBuilder.Edge());
+  ASSERT_TRUE(aWireBuilder.IsDone());
+  BRepBuilderAPI_MakeFace aFaceBuilder(aSurface, aWireBuilder.Wire());
+  ASSERT_TRUE(aFaceBuilder.IsDone());
+  const TopoDS_Face aFace = aFaceBuilder.Face();
+  ASSERT_TRUE(BRepLib::BuildCurves3d(aFace));
+  ASSERT_TRUE(BRepCheck_Analyzer(aFace).IsValid());
+
+  BRepGProp_Face   anIntegrationFace(aFace);
+  BRepGProp_Domain aDomain(aFace);
+  BRepGProp_Sinert aProperties(anIntegrationFace, aDomain, gp_Pnt(0.0, 0.0, 0.0), 1.0e-8);
+  EXPECT_GE(aProperties.GetEpsilon(), 0.0);
+  EXPECT_LE(aProperties.GetEpsilon(), 1.0e-8);
+  EXPECT_NEAR(aProperties.Mass(), 0.5 * aNbIntervals, 1.0e-10);
+  EXPECT_NEAR(aProperties.CentreOfMass().X(), aNbIntervals / 3.0, 1.0e-10);
+  EXPECT_NEAR(aProperties.CentreOfMass().Y(), 2.0 / 3.0, 1.0e-12);
+  EXPECT_NEAR(aProperties.CentreOfMass().Z(), 0.0, 1.0e-12);
 }

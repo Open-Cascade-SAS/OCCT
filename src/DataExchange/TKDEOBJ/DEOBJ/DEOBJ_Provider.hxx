@@ -129,6 +129,50 @@ public:
     const Message_ProgressRange&   theProgress = Message_ProgressRange()) override;
 
 public:
+  //! Read the first OBJ stream into a document. Remaining streams are ignored.
+  //! @param[in] theStreams named borrowed streams; the first stream must support seeking
+  //! @param[in,out] theDocument document receiving the mesh
+  //! @param[in,out] theWS unused work session
+  //! @param[in] theProgress progress indicator
+  //! @return false for invalid input, configuration or read failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    occ::handle<XSControl_WorkSession>&  theWS,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Read the first OBJ stream into a document. Remaining streams are ignored.
+  //! @param[in] theStreams named borrowed streams; the first stream must support seeking
+  //! @param[in,out] theDocument document receiving the mesh
+  //! @param[in] theProgress progress indicator
+  //! @return false for invalid input, configuration or read failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&                      theStreams,
+    const occ::handle<TDocStd_Document>& theDocument,
+    const Message_ProgressRange&         theProgress = Message_ProgressRange()) override;
+
+  //! Read the first OBJ stream into a shape. Remaining streams are ignored.
+  //! @param[in] theStreams named borrowed streams; the first stream must support seeking
+  //! @param[out] theShape result mesh shape
+  //! @param[in,out] theWS unused work session
+  //! @param[in] theProgress progress indicator
+  //! @return false for invalid input, configuration or read failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&                     theStreams,
+    TopoDS_Shape&                       theShape,
+    occ::handle<XSControl_WorkSession>& theWS,
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) override;
+
+  //! Read the first OBJ stream into a shape. Remaining streams are ignored.
+  //! @param[in] theStreams named borrowed streams; the first stream must support seeking
+  //! @param[out] theShape result mesh shape
+  //! @param[in] theProgress progress indicator
+  //! @return false for invalid input, configuration or read failure
+  Standard_EXPORT bool Read(
+    ReadStreamList&              theStreams,
+    TopoDS_Shape&                theShape,
+    const Message_ProgressRange& theProgress = Message_ProgressRange()) override;
+
   //! Gets CAD format name of associated provider
   //! @return provider CAD format
   Standard_EXPORT TCollection_AsciiString GetFormat() const override;

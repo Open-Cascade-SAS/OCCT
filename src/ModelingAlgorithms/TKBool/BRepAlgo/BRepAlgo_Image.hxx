@@ -77,9 +77,19 @@ public:
 
   Standard_EXPORT bool HasImage(const TopoDS_Shape& S) const;
 
-  //! Returns the Image of <S>.
-  //! Returns <S> in the list if HasImage(S) is false.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Image(const TopoDS_Shape& S) const;
+  //! Returns the image list associated with theShape.
+  //! @throws Standard_ConstructionError if no image is associated with theShape.
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& Image(const TopoDS_Shape& theShape) const;
+
+  //! Returns the first image associated with theShape, or theShape if no image exists.
+  Standard_EXPORT TopoDS_Shape FirstImage(const TopoDS_Shape& theShape) const;
+
+  //! Returns the image list associated with theShape.
+  //! If no image exists, stores theShape in theFallback and returns it.
+  //! The returned reference remains valid while theFallback is unchanged.
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ImageOrSelf(
+    const TopoDS_Shape&             theShape,
+    NCollection_List<TopoDS_Shape>& theFallback) const;
 
   //! Stores in <L> the images of images of...images of <S>.
   //! <L> contains only <S> if HasImage(S) is false.

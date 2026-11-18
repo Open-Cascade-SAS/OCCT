@@ -18,6 +18,7 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Trsf.hxx>
 
+#include <cmath>
 #include <optional>
 
 class Geom_BezierSurface;
@@ -192,9 +193,17 @@ public:
                                               const int    theNu,
                                               const int    theNv) const final;
 
-  double UResolution(const double theR3d) const override { return mySurf.UResolution(theR3d); }
+  //! Return the U resolution for a distance after transformation.
+  double UResolution(const double theR3d) const override
+  {
+    return mySurf.UResolution(theR3d / std::abs(myTrsf.ScaleFactor()));
+  }
 
-  double VResolution(const double theR3d) const override { return mySurf.VResolution(theR3d); }
+  //! Return the V resolution for a distance after transformation.
+  double VResolution(const double theR3d) const override
+  {
+    return mySurf.VResolution(theR3d / std::abs(myTrsf.ScaleFactor()));
+  }
 
   GeomAbs_SurfaceType GetType() const override { return mySurf.GetType(); }
 

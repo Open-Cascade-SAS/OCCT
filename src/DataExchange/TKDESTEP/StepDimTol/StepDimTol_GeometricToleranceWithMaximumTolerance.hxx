@@ -44,17 +44,17 @@ public:
     const occ::handle<Standard_Transient>&       theMagnitude,
     const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
     const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers,
-    const occ::handle<StepBasic_LengthMeasureWithUnit>&                            theUnitSize);
+    const occ::handle<Standard_Transient>&                                         theUnitSize);
 
-  //! Returns field MaximumUpperTolerance
-  inline occ::handle<StepBasic_LengthMeasureWithUnit> MaximumUpperTolerance() const
+  //! Returns the length-measure entity, including representation-item complexes.
+  inline occ::handle<Standard_Transient> MaximumUpperTolerance() const
   {
     return myMaximumUpperTolerance;
   }
 
-  //! Set field MaximumUpperTolerance
+  //! Set the maximum length-measure entity, preserving its complex constituents.
   inline void SetMaximumUpperTolerance(
-    const occ::handle<StepBasic_LengthMeasureWithUnit>& theMaximumUpperTolerance)
+    const occ::handle<Standard_Transient>& theMaximumUpperTolerance)
   {
     myMaximumUpperTolerance = theMaximumUpperTolerance;
   }
@@ -63,6 +63,6 @@ public:
                           StepDimTol_GeometricToleranceWithModifiers)
 
 private:
-  occ::handle<StepBasic_LengthMeasureWithUnit> myMaximumUpperTolerance;
+  occ::handle<Standard_Transient> myMaximumUpperTolerance;
 };
 #endif // _StepDimTol_GeometricToleranceWithMaximumTolerance_HeaderFile

@@ -57,10 +57,6 @@ constexpr T optimalSeed() noexcept
 }; // namespace MurmurHash
 
 //! Implementation of FNV-1a with autodetect of sizeof(size_t).
-//! This function should work on unsigned char, otherwise it does not
-//! correctly implement the FNV-1a algorithm.
-//! The existing behaviour is retained for backwards compatibility.
-//!
 //! The default value for the seed is optimal for general cases at a certain hash size.
 namespace FNVHash
 {

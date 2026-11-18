@@ -17,6 +17,6 @@ if { [string compare $command "shading"] == 0 } {
   set bug_freenodes "OCC23473"
   set nbfreenodes(All) 11
   set bug_freelinks "OCC22687"
-  set nbfree(All) 2
+  set nbfree(All) 0
 }
 set max_rel_tol_diff 0.001

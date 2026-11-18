@@ -1,5 +1,6 @@
-puts "TODO OCC28595 ALL: Faulty shapes in variables faulty_1"
-#puts "TODO OCC28595 ALL: Error: bad tolerance of fixshape"
+puts "TODO OCC28595 ALL: Error: bad tolerance of fixshape"
+
+puts "TODO OCC28595 ALL: Faulty shapes in variables"
 
 puts "========"
 puts "OCC28595"

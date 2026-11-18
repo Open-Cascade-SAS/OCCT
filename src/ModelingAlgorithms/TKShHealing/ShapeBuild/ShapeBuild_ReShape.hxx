@@ -27,6 +27,7 @@
 #include <Standard_Integer.hxx>
 #include <ShapeExtend_Status.hxx>
 class TopoDS_Shape;
+class TopoDS_Edge;
 
 // resolve name collisions with X11 headers
 #ifdef Status
@@ -51,6 +52,14 @@ class ShapeBuild_ReShape : public BRepTools_ReShape
 public:
   //! Returns an empty Reshape
   Standard_EXPORT ShapeBuild_ReShape();
+
+  //! Returns a modifiable edge and records its replacement in this context.
+  //! Applies existing replacements and reuses edges already recorded as results.
+  //! Geometry and unchanged vertices remain shared; polygons are not copied.
+  //! Record vertex changes separately with CopyVertex().
+  //! @param[in] theEdge edge to copy or reuse
+  //! @return mutable replacement, or a null edge if the edge was removed or split
+  Standard_EXPORT TopoDS_Edge CopyEdge(const TopoDS_Edge& theEdge);
 
   //! Applies the substitutions requests to a shape
   //!

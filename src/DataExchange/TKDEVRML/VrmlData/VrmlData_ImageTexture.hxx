@@ -17,6 +17,7 @@
 #define VrmlData_ImageTexture_HeaderFile
 
 #include <VrmlData_Texture.hxx>
+#include <Image_Texture.hxx>
 
 /**
  *  Implementation of the ImageTexture node
@@ -45,6 +46,9 @@ public:
    */
   inline const NCollection_List<TCollection_AsciiString>& URL() const { return myURL; }
 
+  //! Return the image loaded from a companion stream, or null.
+  const occ::handle<Image_Texture>& Image() const { return myImage; }
+
   /**
    * Create a copy of this node.
    * If the parameter is null, a new copied node is created. Otherwise new node
@@ -63,14 +67,14 @@ public:
    */
   Standard_EXPORT VrmlData_ErrorStatus Write(const char* thePrefix) const override;
 
+  // Declaration of CASCADE RTTI
+  DEFINE_STANDARD_RTTI_INLINE(VrmlData_ImageTexture, VrmlData_Texture)
+
 private:
   // ---------- PRIVATE FIELDS ----------
 
   NCollection_List<TCollection_AsciiString> myURL;
-
-public:
-  // Declaration of CASCADE RTTI
-  DEFINE_STANDARD_RTTI_INLINE(VrmlData_ImageTexture, VrmlData_Texture)
+  occ::handle<Image_Texture>                myImage; //!< Image loaded from a companion stream.
 };
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx

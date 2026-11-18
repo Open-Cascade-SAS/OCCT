@@ -2,12 +2,12 @@
 set filename BUC61003-2.stp
 
 set ref_data {
-DATA        : Faulties = 0  ( 2 )  Warnings = 0  ( 39 )  Summary  = 0  ( 41 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 30  ( 42 )  Summary  = 30  ( 42 )
-CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 39 )  Summary  = 0  ( 40 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 18  ( 44 )  Summary  = 18  ( 44 )
+CHECKSHAPE  : Wires    = 0  ( 4 )  Faces    = 0  ( 4 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 26  ( 26 ) 
 STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 26  ( 26 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =  0.03890637869  (  0.03890637869 )  AvgTol   =  0.005594595963  (  0.005595230228 )
+TOLERANCE   : MaxTol   =      2.6327727  (    378.6252422 )  AvgTol   =    0.2994204632  (     20.95967307 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

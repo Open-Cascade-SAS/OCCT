@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <DEIGES_ConfigurationNode.hxx>
+#include <DE_Wrapper.hxx>
 #include <DEIGES_Provider.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -20,7 +21,7 @@
 #include <IGESFile_Read.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TDF_Label.hxx>
-#include <TDocStd_Application.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -61,10 +62,7 @@ occ::handle<DEIGES_Provider> createProvider()
 //! @return empty document
 occ::handle<TDocStd_Document> createDocument()
 {
-  occ::handle<TDocStd_Application> anApp = new TDocStd_Application();
-  occ::handle<TDocStd_Document>    aDocument;
-  anApp->NewDocument("BinXCAF", aDocument);
-  return aDocument;
+  return new TDocStd_Document("BinXCAF");
 }
 
 //! Creates a box shape.
@@ -93,22 +91,32 @@ int countShapeElements(const TopoDS_Shape& theShape, TopAbs_ShapeEnum theType)
 //! Checks that content consists of valid 80-column records and contains all IGES sections.
 //! @param[in] theContent serialized IGES content
 //! @return true if all mandatory sections are present
-bool isValidIGESContent(const std::string& theContent)
+bool isValidIGESContent(const TCollection_AsciiString& theContent)
 {
-  bool               aFoundSections[5] = {};
-  std::istringstream aStream(theContent);
-  std::string        aRecord;
-  while (std::getline(aStream, aRecord))
+  bool         aFoundSections[5] = {};
+  const char*  aContent          = theContent.ToCString();
+  const size_t aSize             = static_cast<size_t>(theContent.Length());
+  size_t       aLineStart        = 0;
+  for (size_t anEnd = 0; anEnd <= aSize; ++anEnd)
   {
-    if (!aRecord.empty() && aRecord.back() == '\r')
+    if (anEnd < aSize && aContent[anEnd] != '\n')
     {
-      aRecord.pop_back();
+      continue;
     }
-    if (aRecord.size() != 80)
+    if (aLineStart >= aSize)
+    {
+      break; // A trailing newline does not introduce an empty record.
+    }
+    size_t aLength = anEnd - aLineStart;
+    if (aLength > 0 && aContent[anEnd - 1] == '\r')
+    {
+      --aLength;
+    }
+    if (aLength != 80)
     {
       return false;
     }
-    switch (aRecord[72])
+    switch (aContent[aLineStart + 72])
     {
       case 'S':
         aFoundSections[0] = true;
@@ -128,6 +136,7 @@ bool isValidIGESContent(const std::string& theContent)
       default:
         return false;
     }
+    aLineStart = anEnd + 1;
   }
   return aFoundSections[0] && aFoundSections[1] && aFoundSections[2] && aFoundSections[3]
          && aFoundSections[4];
@@ -140,7 +149,7 @@ bool isValidIGESContent(const std::string& theContent)
 //! @return true if serialization succeeded
 bool writeShape(const occ::handle<DEIGES_Provider>& theProvider,
                 const TopoDS_Shape&                 theShape,
-                std::string&                        theContent)
+                TCollection_AsciiString&            theContent)
 {
   std::ostringstream           anOutputStream;
   DE_Provider::WriteStreamList aStreams;
@@ -149,7 +158,7 @@ bool writeShape(const occ::handle<DEIGES_Provider>& theProvider,
   {
     return false;
   }
-  theContent = anOutputStream.str();
+  theContent = anOutputStream.str().c_str();
   return true;
 }
 
@@ -159,10 +168,10 @@ bool writeShape(const occ::handle<DEIGES_Provider>& theProvider,
 //! @param[out] theShape translated shape
 //! @return true if reading and translation succeeded
 bool readShape(const occ::handle<DEIGES_Provider>& theProvider,
-               const std::string&                  theContent,
+               const TCollection_AsciiString&      theContent,
                TopoDS_Shape&                       theShape)
 {
-  std::istringstream          anInputStream(theContent);
+  std::istringstream          anInputStream(theContent.ToCString());
   DE_Provider::ReadStreamList aStreams;
   aStreams.Append(DE_Provider::ReadStreamNode("shape.igs", anInputStream));
   return theProvider->Read(aStreams, theShape);
@@ -172,9 +181,10 @@ bool readShape(const occ::handle<DEIGES_Provider>& theProvider,
 //! @param[in] theContent serialized IGES content
 //! @param[in] theIsFNES whether FNES compatibility mode is enabled
 //! @return parsed model, or a null handle on failure
-occ::handle<IGESData_IGESModel> readModel(const std::string& theContent, bool theIsFNES = false)
+occ::handle<IGESData_IGESModel> readModel(const TCollection_AsciiString& theContent,
+                                          bool                           theIsFNES = false)
 {
-  std::istringstream                   anInputStream(theContent);
+  std::istringstream                   anInputStream(theContent.ToCString());
   occ::handle<IGESData_IGESModel>      aModel    = new IGESData_IGESModel();
   occ::handle<IGESData_Protocol>       aProtocol = new IGESData_Protocol();
   occ::handle<IGESData_FileRecognizer> aRecognizer;
@@ -205,10 +215,10 @@ TEST_F(DEIGES_ProviderTest, StreamShapeWriteRead)
 
   EXPECT_TRUE(aProvider->Write(aWriteStreams, aBox));
 
-  const std::string anIgesContent = anOStream.str();
+  const TCollection_AsciiString anIgesContent(anOStream.str().c_str());
   EXPECT_TRUE(isValidIGESContent(anIgesContent));
 
-  std::istringstream          anIStream(anIgesContent);
+  std::istringstream          anIStream(anIgesContent.ToCString());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("shape.igs", anIStream));
 
@@ -235,12 +245,12 @@ TEST_F(DEIGES_ProviderTest, StreamDocumentWriteRead)
 
   EXPECT_TRUE(aProvider->Write(aWriteStreams, aDocument));
 
-  const std::string anIgesContent = anOStream.str();
+  const TCollection_AsciiString anIgesContent(anOStream.str().c_str());
   EXPECT_TRUE(isValidIGESContent(anIgesContent));
 
   const occ::handle<TDocStd_Document> aReadDocument = createDocument();
 
-  std::istringstream          anIStream(anIgesContent);
+  std::istringstream          anIStream(anIgesContent.ToCString());
   DE_Provider::ReadStreamList aReadStreams;
   aReadStreams.Append(DE_Provider::ReadStreamNode("document.igs", anIStream));
 
@@ -259,20 +269,20 @@ TEST_F(DEIGES_ProviderTest, ReadStream_CRRecordSeparators_ReadsShape)
   const TopoDS_Shape                 aBox      = createBoxShape();
   ASSERT_FALSE(aBox.IsNull());
 
-  std::string anIGESContent;
+  TCollection_AsciiString anIGESContent;
   ASSERT_TRUE(writeShape(aProvider, aBox, anIGESContent));
 
-  std::string aCRContent;
-  aCRContent.reserve(anIGESContent.size());
-  for (const char aCharacter : anIGESContent)
+  TCollection_AsciiString aCRContent;
+  for (int anIndex = 1; anIndex <= anIGESContent.Length(); ++anIndex)
   {
+    const char aCharacter = anIGESContent.Value(anIndex);
     if (aCharacter == '\n')
     {
-      aCRContent.push_back('\r');
+      aCRContent += '\r';
     }
     else if (aCharacter != '\r')
     {
-      aCRContent.push_back(aCharacter);
+      aCRContent += aCharacter;
     }
   }
 
@@ -287,13 +297,14 @@ TEST_F(DEIGES_ProviderTest, ReadStream_CRInsideFixedWidthRecord_PreservesStartRe
   const TopoDS_Shape                 aBox      = createBoxShape();
   ASSERT_FALSE(aBox.IsNull());
 
-  std::string anIGESContent;
+  TCollection_AsciiString anIGESContent;
   ASSERT_TRUE(writeShape(aProvider, aBox, anIGESContent));
-  ASSERT_GE(anIGESContent.size(), 80u);
-  ASSERT_EQ(anIGESContent[72], 'S');
-  const std::string aStartText = "Legacy fixed-width Start record";
-  anIGESContent.replace(0, 45, aStartText + std::string(45 - aStartText.size(), ' '));
-  anIGESContent[45] = '\r';
+  ASSERT_GE(anIGESContent.Length(), 80u);
+  ASSERT_EQ(anIGESContent.Value(73), 'S');
+  const TCollection_AsciiString aStartText = "Legacy fixed-width Start record";
+  anIGESContent.Remove(1, 45);
+  anIGESContent.Insert(1, aStartText + TCollection_AsciiString(45 - aStartText.Length(), ' '));
+  anIGESContent.SetValue(46, '\r');
 
   const occ::handle<IGESData_IGESModel> aModel = readModel(anIGESContent);
   ASSERT_FALSE(aModel.IsNull());
@@ -317,16 +328,16 @@ TEST_F(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
   const TopoDS_Shape                 aBox      = createBoxShape();
   ASSERT_FALSE(aBox.IsNull());
 
-  std::string anIGESContent;
+  TCollection_AsciiString anIGESContent;
   ASSERT_TRUE(writeShape(aProvider, aBox, anIGESContent));
 
-  std::string aFixedRecords;
-  aFixedRecords.reserve(anIGESContent.size());
-  for (const char aCharacter : anIGESContent)
+  TCollection_AsciiString aFixedRecords;
+  for (int anIndex = 1; anIndex <= anIGESContent.Length(); ++anIndex)
   {
+    const char aCharacter = anIGESContent.Value(anIndex);
     if (aCharacter != '\r' && aCharacter != '\n')
     {
-      aFixedRecords.push_back(aCharacter);
+      aFixedRecords += aCharacter;
     }
   }
 
@@ -338,28 +349,29 @@ TEST_F(DEIGES_ProviderTest, ReadStream_DelimiterFreeRecords_ReadsShape)
 TEST_F(DEIGES_ProviderTest, ReadStream_ShiftedDExponentRecord_RestoresValue)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
-  std::string                        anIGESContent;
+  TCollection_AsciiString            anIGESContent;
   ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
-  ASSERT_GE(anIGESContent.size(), 81u);
+  ASSERT_GE(anIGESContent.Length(), 81u);
 
-  const std::string aStartValue = ".123D-4";
-  anIGESContent.replace(0, 72, aStartValue + std::string(72 - aStartValue.size(), ' '));
-  ASSERT_EQ(anIGESContent[72], 'S');
-  anIGESContent.erase(0, 1);
+  const TCollection_AsciiString aStartValue = ".123D-4";
+  anIGESContent.Remove(1, 72);
+  anIGESContent.Insert(1, aStartValue + TCollection_AsciiString(72 - aStartValue.Length(), ' '));
+  ASSERT_EQ(anIGESContent.Value(73), 'S');
+  anIGESContent.Remove(1, 1);
 
   const occ::handle<IGESData_IGESModel> aModel = readModel(anIGESContent);
   ASSERT_FALSE(aModel.IsNull());
   ASSERT_EQ(aModel->NbStartLines(), 1);
-  EXPECT_STREQ(aStartValue.c_str(), aModel->StartLine(1));
+  EXPECT_STREQ(aStartValue.ToCString(), aModel->StartLine(1));
 }
 
 TEST_F(DEIGES_ProviderTest, ReadStream_PlainPreamble_IsSkipped)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
-  std::string                        anIGESContent;
+  TCollection_AsciiString            anIGESContent;
   ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
 
-  const std::string                     aPreamble = "FNES compatibility preamble\n";
+  const TCollection_AsciiString         aPreamble = "FNES compatibility preamble\n";
   const occ::handle<IGESData_IGESModel> aModel    = readModel(aPreamble + anIGESContent);
   ASSERT_FALSE(aModel.IsNull());
   EXPECT_EQ(aModel->NbEntities(), 49);
@@ -368,11 +380,11 @@ TEST_F(DEIGES_ProviderTest, ReadStream_PlainPreamble_IsSkipped)
 TEST_F(DEIGES_ProviderTest, ReadStream_LongFNESPreamble_IsSkippedAsPhysicalLine)
 {
   const occ::handle<DEIGES_Provider> aProvider = createProvider();
-  std::string                        anIGESContent;
+  TCollection_AsciiString            anIGESContent;
   ASSERT_TRUE(writeShape(aProvider, createBoxShape(), anIGESContent));
 
-  std::string aPreamble(96, 'X');
-  aPreamble.push_back('\n');
+  TCollection_AsciiString aPreamble(96, 'X');
+  aPreamble += '\n';
   const occ::handle<IGESData_IGESModel> aModel = readModel(aPreamble + anIGESContent, true);
   ASSERT_FALSE(aModel.IsNull());
   EXPECT_EQ(aModel->NbEntities(), 49);
@@ -390,4 +402,27 @@ TEST_F(DEIGES_ProviderTest, ReadStream_FailedStream_ReturnsFalse)
   TopoDS_Shape aReadShape;
   EXPECT_FALSE(aProvider->Read(aStreams, aReadShape));
   EXPECT_TRUE(aReadShape.IsNull());
+}
+
+//==================================================================================================
+
+TEST_F(DEIGES_ProviderTest, WrapperStreamDocumentWriteRead)
+{
+  occ::handle<DE_Wrapper> aWrapper = new DE_Wrapper();
+  ASSERT_TRUE(aWrapper->Bind(new DEIGES_ConfigurationNode()));
+  const occ::handle<TDocStd_Document> aDocument = createDocument();
+  XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->AddShape(createBoxShape());
+  std::stringstream            aStream;
+  DE_Provider::WriteStreamList aWriteStreams;
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("model.igs", aStream));
+  ASSERT_TRUE(aWrapper->Write(aWriteStreams, aDocument));
+  aStream.seekg(0);
+  const occ::handle<TDocStd_Document> aReadDocument = createDocument();
+  DE_Provider::ReadStreamList         aReadStreams;
+  aReadStreams.Append(DE_Provider::ReadStreamNode("model.igs", aStream));
+  ASSERT_TRUE(aWrapper->Read(aReadStreams, aReadDocument));
+  NCollection_Sequence<TDF_Label> aRoots;
+  XCAFDoc_DocumentTool::ShapeTool(aReadDocument->Main())->GetFreeShapes(aRoots);
+  ASSERT_EQ(aRoots.Size(), 1);
+  EXPECT_FALSE(XCAFDoc_ShapeTool::GetShape(aRoots.First()).IsNull());
 }
