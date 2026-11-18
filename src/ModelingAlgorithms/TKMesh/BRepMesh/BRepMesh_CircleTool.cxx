@@ -90,49 +90,27 @@ bool BRepMesh_CircleTool::MakeCircle(const gp_XY& thePoint1,
   static const double aPrecision   = Precision::PConfusion();
   static const double aSqPrecision = aPrecision * aPrecision;
 
-  gp_XY aLink1(
-    const_cast<gp_XY&>(thePoint3).ChangeCoord(1) - const_cast<gp_XY&>(thePoint2).ChangeCoord(1),
-    const_cast<gp_XY&>(thePoint2).ChangeCoord(2) - const_cast<gp_XY&>(thePoint3).ChangeCoord(2));
-  if (aLink1.SquareModulus() < aSqPrecision)
+  const gp_XY  aFirstEdge  = thePoint2 - thePoint1;
+  const gp_XY  aSecondEdge = thePoint3 - thePoint1;
+  const double aSqMod2     = aFirstEdge.SquareModulus();
+  const double aSqMod3     = aSecondEdge.SquareModulus();
+  if ((thePoint3 - thePoint2).SquareModulus() < aSqPrecision || aSqMod3 < aSqPrecision
+      || aSqMod2 < aSqPrecision)
   {
     return false;
   }
 
-  gp_XY aLink2(
-    const_cast<gp_XY&>(thePoint1).ChangeCoord(1) - const_cast<gp_XY&>(thePoint3).ChangeCoord(1),
-    const_cast<gp_XY&>(thePoint3).ChangeCoord(2) - const_cast<gp_XY&>(thePoint1).ChangeCoord(2));
-  if (aLink2.SquareModulus() < aSqPrecision)
-  {
-    return false;
-  }
-
-  gp_XY aLink3(
-    const_cast<gp_XY&>(thePoint2).ChangeCoord(1) - const_cast<gp_XY&>(thePoint1).ChangeCoord(1),
-    const_cast<gp_XY&>(thePoint1).ChangeCoord(2) - const_cast<gp_XY&>(thePoint2).ChangeCoord(2));
-  if (aLink3.SquareModulus() < aSqPrecision)
-  {
-    return false;
-  }
-
-  const double aD = 2
-                    * (const_cast<gp_XY&>(thePoint1).ChangeCoord(1) * aLink1.Y()
-                       + const_cast<gp_XY&>(thePoint2).ChangeCoord(1) * aLink2.Y()
-                       + const_cast<gp_XY&>(thePoint3).ChangeCoord(1) * aLink3.Y());
-
+  const double aD = 2.0 * (aFirstEdge ^ aSecondEdge);
   if (std::abs(aD) < gp::Resolution())
   {
     return false;
   }
 
-  const double aInvD   = 1. / aD;
-  const double aSqMod1 = thePoint1.SquareModulus();
-  const double aSqMod2 = thePoint2.SquareModulus();
-  const double aSqMod3 = thePoint3.SquareModulus();
-  theLocation.ChangeCoord(1) =
-    (aSqMod1 * aLink1.Y() + aSqMod2 * aLink2.Y() + aSqMod3 * aLink3.Y()) * aInvD;
-
-  theLocation.ChangeCoord(2) =
-    (aSqMod1 * aLink1.X() + aSqMod2 * aLink2.X() + aSqMod3 * aLink3.X()) * aInvD;
+  // Squared edge lengths avoid cancellation from absolute coordinates.
+  const double aInvD = 1.0 / aD;
+  theLocation.SetCoord(
+    thePoint1.X() + (aSqMod2 * aSecondEdge.Y() - aSqMod3 * aFirstEdge.Y()) * aInvD,
+    thePoint1.Y() + (aFirstEdge.X() * aSqMod3 - aSecondEdge.X() * aSqMod2) * aInvD);
 
   theRadius = std::sqrt(std::max(std::max((thePoint1 - theLocation).SquareModulus(),
                                           (thePoint2 - theLocation).SquareModulus()),

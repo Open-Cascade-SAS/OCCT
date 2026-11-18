@@ -1,4 +1,3 @@
-puts "TODO OCC0000000 Windows: TEST INCOMPLETE"
 
 #polyline d 0 0 0  0 5 0 7 7 -1
 #polyline dd -5 0 -5  -5 0 5  5 0 5  5 0 -5 -5 0 -5

@@ -257,7 +257,7 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
   // Special case: 1x1 matrix
   if (aN == 1)
   {
-    aResult.EigenValues       = math_Vector(size_t{1});
+    aResult.EigenValues.emplace(size_t{1});
     (*aResult.EigenValues)[0] = aDiag[0];
     aResult.EigenVectors      = math_Matrix(size_t{1}, size_t{1}, 1.0);
     aResult.Status            = Status::OK;
@@ -295,7 +295,7 @@ inline EigenResult EigenTridiagonal(const math_Vector& theDiagonal,
     } while (aEnd != aStart);
   }
 
-  aResult.EigenValues  = math_Vector(aN);
+  aResult.EigenValues.emplace(aN);
   aResult.EigenVectors = math_Matrix(aN, aN);
   for (size_t i = 0; i < aN; ++i)
   {

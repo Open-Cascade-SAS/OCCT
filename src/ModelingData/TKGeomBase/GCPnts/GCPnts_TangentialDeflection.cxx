@@ -619,8 +619,10 @@ void GCPnts_TangentialDeflection::PerformCurve(const TheCurve& theC)
           L2 = V2.Modulus();
           if (L2 > LTol)
           {
-            const double aAngle = V2.CrossMagnitude(V1) / (L1 * L2);
-            IsLine              = (aAngle < ATol);
+            const double aCrossMagnitude = V2.CrossMagnitude(V1);
+            const double aAngle          = aCrossMagnitude / (L1 * L2);
+            // A small angle does not bound linear deflection on long chords.
+            IsLine = aAngle < ATol && aCrossMagnitude / L1 <= myCurvatureDeflection;
           }
         }
       }

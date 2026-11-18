@@ -36,6 +36,8 @@
 
 IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_View, TDataStd_GenericEmpty)
 
+namespace
+{
 enum ChildLab
 {
   ChildLab_Name = 1,
@@ -52,6 +54,7 @@ enum ChildLab
   ChildLab_ClippingExpression,
   ChildLab_GDTPoints
 };
+} // namespace
 
 //=================================================================================================
 
