@@ -1,4 +1,3 @@
-puts {TODO OCC00000 All: Error: MaxTolerance = 0\.014139993291913153 is not equal to expected 0\.0020859166104267744$}
 puts "========"
 puts "OCC26896"
 puts "========"
@@ -26,7 +25,7 @@ bsection result b1 f3
 
 regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTolerance
 
-set expected_MaxTolerance 0.0020859166104267744
+set expected_MaxTolerance 5.000001e-6
 set tol_abs_MaxTolerance 0.0
 set tol_rel_MaxTolerance 1.0e-4
 checkreal "MaxTolerance" ${MaxTolerance} ${expected_MaxTolerance} ${tol_abs_MaxTolerance} ${tol_rel_MaxTolerance}

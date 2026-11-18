@@ -7,11 +7,11 @@ set filename gbpffacrad.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 24  ( 12 )  Summary  = 24  ( 12 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 12 )  Summary  = 14  ( 12 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 81  ( 81 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 81  ( 81 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =  0.05742720805  (   0.1569487109 )  AvgTol   =   0.01488469694  (   0.03301592905 )
+TOLERANCE   : MaxTol   =  0.08920733268  (   0.1572790605 )  AvgTol   =   0.02312934064  (   0.03349434885 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

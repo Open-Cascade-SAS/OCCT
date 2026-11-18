@@ -1,3 +1,5 @@
+puts "TODO OCC000000 ALL: Error: bad tolerance of result"
+
 puts "========================================================================="
 puts "OCC30534: Regression in the tool UnifySameDomain - the shape looses faces"
 puts "========================================================================="

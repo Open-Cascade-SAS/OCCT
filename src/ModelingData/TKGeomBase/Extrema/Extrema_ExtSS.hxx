@@ -88,7 +88,13 @@ public:
   //! Returns the value of the Nth resulting square distance.
   Standard_EXPORT double SquareDistance(const int N) const;
 
-  //! Returns the point of the Nth resulting distance.
+  //! Returns the point pair of the Nth extremum distance.
+  //! Parallel results have a distance but no point pair.
+  //! @param[in] N one-based index of the point pair
+  //! @param[out] P1 point on the first surface
+  //! @param[out] P2 point on the second surface
+  //! @throws StdFail_NotDone if the computation is not done
+  //! @throws Standard_OutOfRange if N is outside the point range, including parallel results
   Standard_EXPORT void Points(const int N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const;
 
 private:

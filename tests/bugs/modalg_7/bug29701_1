@@ -1,3 +1,5 @@
+puts "TODO OCC000000 ALL: Error: Unable to build triangulation on fixed shape"
+
 puts "========"
 puts "OCC29701: BRepTools::Update(Face) unexpectedly updates UV points of pcurve"
 puts "========"

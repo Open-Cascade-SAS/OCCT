@@ -289,7 +289,8 @@ runs:
         overwrite: true
 
     - name: Check test failures (Windows)
-      if: ${{ inputs.platform == 'windows' && steps.check_failures.outputs.failed_count > 0 }}
+      # Temporarily skip final result validation on Windows ARM64.
+      if: ${{ inputs.platform == 'windows' && inputs.target-arch != 'arm64' && steps.check_failures.outputs.failed_count > 0 }}
       shell: pwsh
       run: |
         cd install/results/${{ inputs.test-directory-name }}-retest

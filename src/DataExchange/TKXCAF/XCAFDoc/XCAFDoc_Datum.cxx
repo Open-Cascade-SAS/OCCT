@@ -40,6 +40,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Datum, TDF_Attribute)
 
+namespace
+{
 enum ChildLab
 {
   ChildLab_Begin = 1,
@@ -64,6 +66,7 @@ enum ChildLab
   ChildLab_Presentation,
   ChildLab_End
 };
+} // namespace
 
 //=================================================================================================
 
