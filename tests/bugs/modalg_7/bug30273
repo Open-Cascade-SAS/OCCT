@@ -32,4 +32,4 @@ stepread [locate_data_file bug30273.stp] res *
 # Restoring the path to the old resource file
 set ::env(CSF_STEPDefaults) ${old_resource_path}
 
-checknbshapes res_1 -solid 176 -face 10463 -shape 72893
+checknbshapes res_1 -solid 176 -face 10463 -shape 72884

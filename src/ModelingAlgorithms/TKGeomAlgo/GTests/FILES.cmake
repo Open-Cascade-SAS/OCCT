@@ -12,6 +12,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   Geom2dAPI_PointsToBSpline_Test.cxx
   GeomFill_BSplineCurves_Test.cxx
   GeomFill_NSections_Test.cxx
+  GeomFill_Profiler_Test.cxx
   Geom2dHatch_Elements_Test.cxx
   Geom2dHatch_Intersector_Test.cxx
   GeomAPI_PointsToBSplineSurface_Test.cxx
@@ -20,6 +21,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   Geom2dGcc_Circ2d3Tan_Test.cxx
   GccAna_Circ2d3Tan_Test.cxx
   Geom2dGcc_Lin2d2Tan_Test.cxx
+  GeomFill_CoonsAlgPatch_Test.cxx
   GeomFill_CorrectedFrenet_Test.cxx
   GeomFill_Gordon_Test.cxx
   GeomFill_GuideTrihedronAC_Test.cxx
@@ -30,6 +32,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntCurveSurface_ThePolyhedronOfHInter_Test.cxx
   IntCurveSurface_ThePolygonOfHInter_Test.cxx
   Intf_Tool_Test.cxx
+  Intf_InterferencePolygon2d_Test.cxx
   IntPatch_Polyhedron_Test.cxx
   IntPatch_PolyhedronBVH_Test.cxx
   IntPolyh_Intersection_Test.cxx
@@ -47,4 +50,8 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   TopTrans_SurfaceTransition_Test.cxx
   GeomFill_SectionGenerator_Test.cxx
   LocalAnalysis_SurfaceContinuity_Test.cxx
+  ApproxInt_ImpPrmSvSurfaces_Test.cxx
+  Law_Linear_Test.cxx
+  Law_BSpFunc_Test.cxx
+  GeomAPI_Test.cxx
 )

@@ -714,7 +714,7 @@ Congratulations! Your bottle is complete. Here is the result snapshot of the Tut
 @figure{/tutorial/images/tutorial_image019.png,"",320} height=450px
 
 We hope that this tutorial has provided you with a feel for the industrial strength power of Open CASCADE Technology.
-If you want to know more and develop major projects using Open CASCADE Technology, we invite you to study our training, support, and consulting services on our site at https://www.opencascade.com/content/technology-support (commercial product page, URL may change). Our professional services can maximize the power of your Open CASCADE Technology applications.
+For help with application development, see [training](https://occt3d.com/training-programs/) and [development and consulting services](https://occt3d.com/custom-software-development-services/).
 
 
 @section sec6 Appendix

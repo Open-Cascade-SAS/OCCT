@@ -10,7 +10,7 @@ The term "You" shall mean the person or entity identified below, representing th
 
 Read this CLA carefully before signing and keep a copy for Your records. This CLA, its terms and conditions, constitute a binding legal agreement.
 
-If You agree to be bound by the terms of this CLA, please complete and sign this CLA where indicated below, then scan and submit the scanned copy as a PDF file to OPEN CASCADE SAS via Your user account section on the Web portal. Alternatively, You may send the signed CLA to OPEN CASCADE SAS by facsimile or in hard copy to the attention of DANIEL BRUNIER-COULIN at OPEN CASCADE SAS headquarters using the contact information provided in the "Contact Us" section.
+To request the CLA PDF and signing and submission instructions, use the [OCCT3D contact page](https://occt3d.com/contact). Include Your name, GitHub username, and company, if applicable. Review and send the email draft opened by the contact page.
 
 1. The term "contribution" or "contributed materials" means any source code, object code, patch, tool, sample, graphic, specification, manual, documentation, any original work of authorship, including any modifications or additions to an existing work or any other material intentionally posted or submitted by You to us. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to OPEN CASCADE SAS or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, OPEN CASCADE SAS for the purpose of, but not limited to, discussing and improving a work or possible integration to future certified releases of OCCT, but excluding communication that is conspicuously marked or otherwise designated in writing by You or OPEN CASCADE SAS as "Not A Contribution" or "NAC".
 
@@ -56,4 +56,4 @@ If You agree to be bound by the terms of this CLA, please complete and sign this
 
 10. You may stop being bound by the terms of this CLA at any time, for any reason, by asking OPEN CASCADE through the Contact Us form. Even after its termination, this CLA still applies to all contributions You made prior to terminating the CLA. On the other hand, if You want to contribute again, You'll need to sign a new CLA.
 
-[Contributor_License_Agreement.pdf](https://dev.opencascade.org/sites/default/files/Contributor_License_Agreement.pdf)
+[Request Contributor_License_Agreement.pdf and submission instructions](https://occt3d.com/contact)

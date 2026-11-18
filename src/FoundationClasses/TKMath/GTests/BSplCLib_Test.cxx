@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
 #include <BSplCLib.hxx>
 #include <math_Matrix.hxx>
 #include <NCollection_Array1.hxx>
@@ -23,6 +21,8 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_Real.hxx>
 #include <Precision.hxx>
+
+#include <gtest/gtest.h>
 
 #include <algorithm>
 #include <cfenv>
@@ -1091,4 +1091,33 @@ TEST(BSplCLibTest, Rational2dDerivativesAreTranslationInvariant)
 TEST(BSplCLibTest, Rational3dDerivativesAreTranslationInvariant)
 {
   checkRationalDerivativeTranslation<gp_Pnt, gp_Vec, 3>();
+}
+
+//==================================================================================================
+
+TEST(BSplCLibTest, RationalEvaluationPreservesCommonWeightScale)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 2);
+  aPoles.ChangeAt(0) = gp_Pnt(4.0, 3.0, 0.0);
+  aPoles.ChangeAt(1) = gp_Pnt(8.0, 3.0, 0.0);
+  NCollection_Array1<double> aWeights(1, 2), aKnots(1, 2);
+  NCollection_Array1<int>    aMults(1, 2);
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 1.0;
+  aMults.Init(2);
+  for (const double aScale :
+       {1.0, 1.0e308, 1.0e-300, 2.0 * std::numeric_limits<double>::denorm_min()})
+  {
+    aWeights.ChangeAt(0) = aScale;
+    aWeights.ChangeAt(1) = 0.5 * aScale;
+    gp_Pnt aPoint;
+    gp_Vec aD1;
+    BSplCLib::D0(.5, 0, 1, false, aPoles, &aWeights, aKnots, &aMults, aPoint);
+    EXPECT_NEAR(aPoint.X(), 16.0 / 3.0, 1.0e-14);
+    EXPECT_EQ(aPoint.Y(), 3.0);
+    BSplCLib::D1(.5, 0, 1, false, aPoles, &aWeights, aKnots, &aMults, aPoint, aD1);
+    EXPECT_NEAR(aPoint.X(), 16.0 / 3.0, 1.0e-14);
+    EXPECT_NEAR(aD1.X(), 32.0 / 9.0, 1.0e-14);
+    EXPECT_EQ(aD1.Y(), 0.0);
+  }
 }

@@ -25,6 +25,6 @@ if {[llength [tricheck result]] != 0} {
 }
 
 checkshape result
-checktrinfo result -tri 27030 -nod 13563
+checktrinfo result -tri 27410 -nod 13753
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

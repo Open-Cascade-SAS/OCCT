@@ -176,7 +176,7 @@ inline SVDResult SVD(const math_Matrix& theA, double theTolerance = 1.0e-15)
     }
   }
 
-  aResult.SingularValues = math_Vector(aN);
+  aResult.SingularValues.emplace(aN);
   for (size_t i = 0; i < aN; ++i)
   {
     (*aResult.SingularValues)[i] = aWStorage[i];

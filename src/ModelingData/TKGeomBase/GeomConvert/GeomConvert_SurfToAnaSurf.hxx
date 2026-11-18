@@ -29,6 +29,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 class Geom_Surface;
+class Geom_Curve;
+class gp_Ax3;
 class Geom_SurfaceOfRevolution;
 class Geom_Circle;
 

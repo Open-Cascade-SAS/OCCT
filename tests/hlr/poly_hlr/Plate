@@ -15,9 +15,9 @@ filling a 4 0 1  f1_4 f1 1  f2_4 f2 1  f3_4 f3 1  f4_4 f4 1  pp 0
 
 set viewname ""
 if { [regexp {Windows} [dversion]] } {
-  set length 404.09
+  set length 404.02
 } else {
-  set length 404.371
+  set length 404.394
 }
 
 COMPUTE_HLR $viewname $algotype

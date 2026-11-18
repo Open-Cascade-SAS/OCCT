@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
 #include <MathLin_SVD.hxx>
 #include <MathLin_Householder.hxx>
 #include <MathLin_Jacobi.hxx>
@@ -25,6 +23,8 @@
 #include <math_GaussLeastSquare.hxx>
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
+
+#include <gtest/gtest.h>
 
 #include <cmath>
 #include <limits>
@@ -1802,4 +1802,19 @@ TEST(MathLin_Householder_Test, ReflectorsPreserveMixedMagnitudeComponents)
       EXPECT_NEAR(aFit.Solutions->At(i, j) / aB.At(i, j), 1.0, 1.e-14);
     }
   }
+}
+
+//==================================================================================================
+
+TEST(MathLinTest, SingularLUHasSpecificStatus)
+{
+  math_Matrix aMatrix(size_t(2), size_t(2), 0.0);
+  EXPECT_EQ(MathLin::LU(aMatrix).Status, MathUtils::Status::Singular);
+  aMatrix.ChangeAt(0, 0) = 1.0;
+  aMatrix.ChangeAt(0, 1) = 2.0;
+  aMatrix.ChangeAt(1, 0) = 2.0;
+  aMatrix.ChangeAt(1, 1) = 4.0;
+  EXPECT_EQ(MathLin::LU(aMatrix).Status, MathUtils::Status::Singular);
+  aMatrix.ChangeAt(1, 1) = 5.0;
+  EXPECT_EQ(MathLin::LU(aMatrix).Status, MathUtils::Status::OK);
 }

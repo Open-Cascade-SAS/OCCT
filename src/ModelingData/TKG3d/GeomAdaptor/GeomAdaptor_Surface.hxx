@@ -346,22 +346,15 @@ public:
   Standard_EXPORT double OffsetValue() const override;
 
 private:
-  Standard_EXPORT void Span(const int Side,
-                            const int Ideb,
-                            const int Ifin,
-                            int&      OutIdeb,
-                            int&      OutIfin,
-                            const int FKIndx,
-                            const int LKIndx) const;
-
-  Standard_EXPORT bool IfUVBound(const double U,
-                                 const double V,
-                                 int&         Ideb,
-                                 int&         Ifin,
-                                 int&         IVdeb,
-                                 int&         IVfin,
-                                 const int    USide,
-                                 const int    VSide) const;
+  //! Select one-sided knot spans and wrap periodic seam parameters for local evaluation.
+  Standard_EXPORT bool IfUVBound(double&   theU,
+                                 double&   theV,
+                                 int&      theUFirstSpan,
+                                 int&      theULastSpan,
+                                 int&      theVFirstSpan,
+                                 int&      theVLastSpan,
+                                 const int theUSide,
+                                 const int theVSide) const;
 
   Standard_EXPORT void load(const occ::handle<Geom_Surface>& S,
                             const double                     UFirst,

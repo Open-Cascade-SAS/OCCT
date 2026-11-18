@@ -2,6 +2,10 @@
 set(OCCT_StepVisual_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_StepVisual_FILES
+  StepVisual_DraughtingModelAndTessellatedShapeRepresentation.cxx
+  StepVisual_DraughtingModelAndTessellatedShapeRepresentation.hxx
+  StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.cxx
+  StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.hxx
   StepVisual_AnnotationCurveOccurrence.cxx
   StepVisual_AnnotationCurveOccurrence.hxx
   StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.cxx

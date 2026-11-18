@@ -41,10 +41,10 @@ The @ref user_guides "User Guides" contain in-depth descriptions of all major OC
 @section helps Additional assistance
 
 There are several resources that may be of use for new users.
-The first is the [Training & E-learning](https://dev.opencascade.org/resources/trainings) page, which lists available trainings and describes their specifics.
+The first is the [Training & E-learning](https://occt3d.com/training-programs/) page, which lists available trainings and describes their specifics.
 
 The second is the documentation itself -- if you have a clear understanding of what you seek, you will most likely find the required information in the User Guides.
 
-Aside from the documentation, the [Reference manual](https://dev.opencascade.org/doc/refman/html/index.html) is available.
+Aside from the documentation, the [Reference manual](https://occt3d.com/dev/doc/refman/html/index.html) is available.
 Use it to check class descriptions, dependencies and examples.
-Additionally, there is a [Forum](https://dev.opencascade.org/forums) where you can contact the OCCT community and developers.
+Ask new questions in [GitHub Discussions](https://github.com/Open-Cascade-SAS/OCCT/discussions). Search the read-only [forum archive](https://occt3d.com/dev/) for earlier discussions.

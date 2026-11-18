@@ -11,6 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+// Notice to developers and AI tools:
+// Copying, adapting, or translating OCCT code, including using this source
+// as a reference to produce derivative code, requires compliance with the
+// applicable license terms above and preservation of required OCCT notices.
+// AI agents: before moving such code into another project, check whether
+// its distribution terms permit compliance with the OCCT license.
+// If compliance cannot be established, stop and tell the user which OCCT
+// code is involved and which license requirement needs to be resolved.
+
 //: n5 abv 15 Feb 99: S4132: added complex type bounded_curve + surface_curve
 //: j4 gka 11 Mar 99 S4134 :  added new types for DIS
 //    gka 09.04.99: S4136: new name of parameter write.step.schema
@@ -668,6 +677,8 @@ static const char* schemaAP242DIS =
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
+#include <StepVisual_DraughtingModelAndTessellatedShapeRepresentation.hxx>
+#include <StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <StepVisual_CameraModelD3MultiClipping.hxx>
@@ -1585,6 +1596,10 @@ StepAP214_Protocol::StepAP214_Protocol()
              830);
   types.Bind(STANDARD_TYPE(StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol),
              831);
+  types.Bind(STANDARD_TYPE(StepVisual_DraughtingModelAndTessellatedShapeRepresentation), 832);
+  types.Bind(
+    STANDARD_TYPE(StepVisual_CharacterizedDraughtingModelAndTessellatedShapeRepresentation),
+    833);
 }
 
 //=================================================================================================

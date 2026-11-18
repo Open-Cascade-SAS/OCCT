@@ -21,6 +21,7 @@
 #include <gp_XY.hxx>
 
 #include <cmath>
+#include <array>
 #include <cstdlib>
 #include <ctime>
 
@@ -60,6 +61,92 @@ bool isOnCircle(const gp_XY& thePoint, const gp_XY& theCenter, const double theR
   return aDiff.SquareModulus() - theRadius * theRadius < aSqPrec;
 }
 } // namespace
+
+TEST(BRepMesh_CircleToolTest, CircumcircleKeepsPointsBeyondSecantOutside)
+{
+  const std::array<gp_XY, 3> aPoints       = {gp_XY(12.463211482361567, 1.9738661904523815e-06),
+                                              gp_XY(12.463212204366371, 4.7372788570857157e-06),
+                                              gp_XY(12.361816737261172, 0.025871858931497457)};
+  const std::array<gp_XY, 3> aTranslations = {gp_XY(0.0, 0.0),
+                                              gp_XY(16.0, -8.0),
+                                              gp_XY(-32.0, 64.0)};
+  BRepMesh_CircleInspector   anInspector(Precision::PConfusion(), 1, new NCollection_IncAllocator);
+  for (const double aScale : {0.25, 1.0, 4.0})
+  {
+    for (const gp_XY& aTranslation : aTranslations)
+    {
+      SCOPED_TRACE(::testing::Message() << "Scale=" << aScale << " translation=" << aTranslation.X()
+                                        << "," << aTranslation.Y());
+      const gp_XY aP1 = aPoints[0] * aScale + aTranslation;
+      const gp_XY aP2 = aPoints[1] * aScale + aTranslation;
+      const gp_XY aP3 = aPoints[2] * aScale + aTranslation;
+      gp_XY       aCenter;
+      double      aRadius;
+      ASSERT_TRUE(BRepMesh_CircleTool::MakeCircle(aP1, aP2, aP3, aCenter, aRadius));
+      anInspector.Bind(1, BRepMesh_Circle(aCenter, aRadius));
+      for (const gp_XY& aPoint : {aP1, aP2, aP3})
+      {
+        anInspector.SetPoint(aPoint);
+        anInspector.Inspect(1);
+        EXPECT_FALSE(anInspector.GetShotCircles().IsEmpty());
+      }
+      // A point beyond an endpoint of a secant is outside the circle.
+      anInspector.SetPoint(aP1 + (aP1 - aP2) * 0.5);
+      anInspector.Inspect(1);
+      EXPECT_TRUE(anInspector.GetShotCircles().IsEmpty());
+    }
+  }
+}
+
+TEST(BRepMesh_CircleToolTest, TranslatedRightTrianglesHaveAnalyticCircumcircles)
+{
+  const std::array<gp_XY, 3> aLegs = {gp_XY(1.0, 1.0), gp_XY(1.0, 1.e-6), gp_XY(1.e-3, 1.e-4)};
+  const std::array<gp_XY, 3> aTranslations = {gp_XY(0.0, 0.0),
+                                              gp_XY(16.0, -8.0),
+                                              gp_XY(-32.0, 64.0)};
+  for (const gp_XY& aLeg : aLegs)
+  {
+    for (const double aScale : {0.25, 1.0, 4.0})
+    {
+      for (const gp_XY& aTranslation : aTranslations)
+      {
+        const gp_XY  aP2              = aTranslation + gp_XY(aLeg.X() * aScale, 0.0);
+        const gp_XY  aP3              = aTranslation + gp_XY(0.0, aLeg.Y() * aScale);
+        const gp_XY  anExpectedCenter = aTranslation + aLeg * (0.5 * aScale);
+        const double anExpectedRadius = (aLeg * (0.5 * aScale)).Modulus();
+        gp_XY        aCenter;
+        double       aRadius;
+        ASSERT_TRUE(BRepMesh_CircleTool::MakeCircle(aTranslation, aP2, aP3, aCenter, aRadius));
+        EXPECT_NEAR(aCenter.X(), anExpectedCenter.X(), Precision::PConfusion());
+        EXPECT_NEAR(aCenter.Y(), anExpectedCenter.Y(), Precision::PConfusion());
+        EXPECT_NEAR(aRadius, anExpectedRadius, Precision::PConfusion());
+      }
+    }
+  }
+}
+
+TEST(BRepMesh_CircleToolTest, CircumcircleRejectsDegenerateEdges)
+{
+  const std::array<gp_XY, 3> aPoints   = {gp_XY(0.0, 0.0), gp_XY(1.0, 0.0), gp_XY(0.0, 1.0)};
+  std::array<gp_XY, 3>       aTriangle = aPoints;
+  for (size_t anIndex = 0; anIndex < aPoints.size(); ++anIndex)
+  {
+    aTriangle = aPoints;
+    aTriangle[(anIndex + 1) % aTriangle.size()] =
+      aTriangle[anIndex] + gp_XY(0.5 * Precision::PConfusion(), 0.0);
+    gp_XY  aCenter;
+    double aRadius;
+    EXPECT_FALSE(
+      BRepMesh_CircleTool::MakeCircle(aTriangle[0], aTriangle[1], aTriangle[2], aCenter, aRadius));
+  }
+  gp_XY  aCenter;
+  double aRadius;
+  EXPECT_FALSE(BRepMesh_CircleTool::MakeCircle(gp_XY(0.0, 0.0),
+                                               gp_XY(1.0, 0.0),
+                                               gp_XY(2.0, 0.0),
+                                               aCenter,
+                                               aRadius));
+}
 
 TEST(BRepMesh_CircleInspectorTest, RepeatedSelectionsRetainCircleStorage)
 {

@@ -37,9 +37,16 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Poly_Polygon2D.hxx>
+#include <TopLoc_Location.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
+
+#include <gtest/gtest.h>
 
 #include <algorithm>
-#include <gtest/gtest.h>
 
 TEST(BRep_Tool_Test, Pnt_FromVertex)
 {
@@ -323,6 +330,52 @@ TEST(BRep_Tool_Test, CurveOnPlane_OffsetApproximationRespectsEdgeTolerance)
         aMaxError = std::max(aMaxError, aPlane->EvalD0(aUV.X(), aUV.Y()).Distance(aPoint));
       }
       EXPECT_LE(aMaxError, BRep_Tool::Tolerance(anEdgeMaker.Edge()));
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(BRep_Tool_Test, ClosedSurfacePolygonsPreserveRelativeLocation)
+{
+  const occ::handle<Geom_Surface>   aSurface  = new Geom_CylindricalSurface(gp_Ax3(), 3.0);
+  const occ::handle<Poly_Polygon2D> aForward  = new Poly_Polygon2D(2);
+  const occ::handle<Poly_Polygon2D> aReversed = new Poly_Polygon2D(2);
+  aForward->ChangeNodes()(1)                  = gp_Pnt2d(0.0, 0.0);
+  aForward->ChangeNodes()(2)                  = gp_Pnt2d(0.0, 5.0);
+  aReversed->ChangeNodes()(1)                 = gp_Pnt2d(2.0 * M_PI, 0.0);
+  aReversed->ChangeNodes()(2)                 = gp_Pnt2d(2.0 * M_PI, 5.0);
+  for (const bool isSurfaceLocated : {false, true})
+  {
+    for (const bool isEdgeLocated : {false, true})
+    {
+      SCOPED_TRACE(isSurfaceLocated);
+      SCOPED_TRACE(isEdgeLocated);
+      gp_Trsf aSurfaceTransform, anEdgeTransform;
+      if (isSurfaceLocated)
+      {
+        aSurfaceTransform.SetTranslation(gp_Vec(10.0, 20.0, 30.0));
+      }
+      if (isEdgeLocated)
+      {
+        anEdgeTransform.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
+      }
+      const TopLoc_Location aSurfaceLocation(aSurfaceTransform);
+      BRep_Builder          aBuilder;
+      TopoDS_Edge           anEdge;
+      aBuilder.MakeEdge(anEdge);
+      anEdge.Location(TopLoc_Location(anEdgeTransform));
+      aBuilder.UpdateEdge(anEdge, aForward, aReversed, aSurface, aSurfaceLocation);
+      EXPECT_EQ(BRep_Tool::PolygonOnSurface(anEdge, aSurface, aSurfaceLocation), aForward);
+      anEdge.Orientation(TopAbs_REVERSED);
+      EXPECT_EQ(BRep_Tool::PolygonOnSurface(anEdge, aSurface, aSurfaceLocation), aReversed);
+
+      aBuilder.UpdateEdge(anEdge, aReversed, aForward, aSurface, aSurfaceLocation);
+      EXPECT_EQ(BRep_Tool::PolygonOnSurface(anEdge, aSurface, aSurfaceLocation), aForward);
+      anEdge.Orientation(TopAbs_FORWARD);
+      EXPECT_EQ(BRep_Tool::PolygonOnSurface(anEdge, aSurface, aSurfaceLocation), aReversed);
+      aBuilder.UpdateEdge(anEdge, nullptr, nullptr, aSurface, aSurfaceLocation);
+      EXPECT_TRUE(BRep_Tool::PolygonOnSurface(anEdge, aSurface, aSurfaceLocation).IsNull());
     }
   }
 }

@@ -118,6 +118,7 @@ public:
   size_t Size() const noexcept { return mySize; }
 
   //! Return the number of elements as the legacy integer length.
+  //! @pre Size() fits int; use Size() for larger arrays.
   int Length() const noexcept { return static_cast<int>(mySize); }
 
   //! Return TRUE when the array is empty.
@@ -127,7 +128,11 @@ public:
   int Lower() const noexcept { return myLowerBound; }
 
   //! Return the inclusive upper bound.
-  int Upper() const noexcept { return myLowerBound + static_cast<int>(mySize) - 1; }
+  //! For size-based arrays the signed bound must be representable as int.
+  int Upper() const noexcept
+  {
+    return static_cast<int>(static_cast<size_t>(myLowerBound) + mySize - 1);
+  }
 
   //! Return TRUE when this array owns its storage.
   bool IsDeletable() const noexcept { return myIsOwner; }
@@ -135,7 +140,7 @@ public:
   //! Compute the number of elements in an inclusive integer range.
   static size_t RangeSize(const int theLower, const int theUpper)
   {
-    return static_cast<size_t>(theUpper - theLower + 1);
+    return static_cast<size_t>(theUpper) - static_cast<size_t>(theLower) + 1;
   }
 
 public:
@@ -404,7 +409,7 @@ public:
   //! Changes the upper bound. Do not move data
   void UpdateUpperBound(const int theUpper) noexcept
   {
-    myLowerBound = myLowerBound - Upper() + theUpper;
+    myLowerBound = static_cast<int>(static_cast<size_t>(theUpper) - mySize + 1);
   }
 
   //! Resizes the array to specified bounds.
@@ -430,11 +435,9 @@ protected:
   //! Check an integer index and return its zero-based offset.
   size_t offsetOf(const int theIndex, [[maybe_unused]] const char* theMessage) const
   {
-    const std::ptrdiff_t anOffset =
-      static_cast<std::ptrdiff_t>(theIndex) - static_cast<std::ptrdiff_t>(myLowerBound);
-    Standard_OutOfRange_Raise_if(anOffset < 0 || static_cast<size_t>(anOffset) >= mySize,
-                                 theMessage);
-    return static_cast<size_t>(anOffset);
+    const size_t anOffset = static_cast<size_t>(theIndex) - static_cast<size_t>(myLowerBound);
+    Standard_OutOfRange_Raise_if(theIndex < myLowerBound || anOffset >= mySize, theMessage);
+    return anOffset;
   }
 
   //! Allocate raw storage for the array.

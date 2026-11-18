@@ -14,6 +14,7 @@
 #ifndef _RWObj_CafReader_HeaderFile
 #define _RWObj_CafReader_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <RWMesh_CafReader.hxx>
 #include <RWObj_TriangulationReader.hxx>
 
@@ -24,6 +25,13 @@ class RWObj_CafReader : public RWMesh_CafReader, protected RWObj_IShapeReceiver
 public:
   //! Empty constructor.
   Standard_EXPORT RWObj_CafReader();
+
+  //! Set streams for material and texture references instead of files.
+  //! @param[in] theStreams caller-owned list; must remain valid during Perform()
+  void SetResourceStreams(const DE_Provider::ReadStreamList& theStreams)
+  {
+    myResourceStreams = &theStreams;
+  }
 
   //! Return single precision flag for reading vertex data (coordinates); FALSE by default.
   bool IsSinglePrecision() const { return myIsSinglePrecision; }
@@ -55,6 +63,7 @@ protected:
 
 protected:
   NCollection_DataMap<TCollection_AsciiString, occ::handle<XCAFDoc_VisMaterial>> myObjMaterialMap;
+  const DE_Provider::ReadStreamList* myResourceStreams = nullptr; //!< Borrowed named input streams.
   // clang-format off
   bool myIsSinglePrecision; //!< flag for reading vertex data with single or double floating point precision
   // clang-format on

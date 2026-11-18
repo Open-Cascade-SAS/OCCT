@@ -16,6 +16,7 @@
 #define _GeomLProp_NumericCurInf2d_HeaderFile
 
 #include <Geom2d_Curve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <GeomLProp_FuncCurExt2d.pxx>
 #include <GeomLProp_FuncCurNul2d.pxx>
 #include <LProp_CurAndInf.hxx>
@@ -61,8 +62,9 @@ public:
     constexpr double aTol       = Precision::PConfusion();
     constexpr int    aNbSamples = 100;
 
-    GeomLProp_FuncCurExt2d aFunc(theCurve, anEpsH);
-    math_FunctionRoots     aRootFinder(aFunc, theUMin, theUMax, aNbSamples, anEpsH, anEpsH, anEpsH);
+    const Geom2dAdaptor_Curve anAdaptor(theCurve, theUMin, theUMax);
+    GeomLProp_FuncCurExt2d    aFunc(anAdaptor, anEpsH);
+    math_FunctionRoots aRootFinder(aFunc, theUMin, theUMax, aNbSamples, anEpsH, anEpsH, anEpsH);
 
     if (aRootFinder.IsDone())
     {

@@ -33,11 +33,9 @@ bool TCollection_UtfString<Type>::FromUnicode(const TypeFrom* theString, size_t 
     return true;
   }
 
-  TCollection_UtfIterator<TypeFrom> anIter(theString, theCodeUnits);
-  StorageType                       aResult;
-  size_t                            aLength       = 0;
-  size_t                            anOutputUnits = 0;
-  for (; anIter.More(); ++anIter)
+  size_t aLength       = 0;
+  size_t anOutputUnits = 0;
+  for (TCollection_UtfIterator<TypeFrom> anIter(theString, theCodeUnits); anIter.More(); ++anIter)
   {
     if (!anIter.IsValid())
     {
@@ -54,6 +52,7 @@ bool TCollection_UtfString<Type>::FromUnicode(const TypeFrom* theString, size_t 
     }
     ++aLength;
   }
+  StorageType aResult;
   if constexpr (std::is_same_v<Type, TypeFrom>)
   {
     // Validate before replacing storage, including when input aliases this string.
@@ -64,26 +63,34 @@ bool TCollection_UtfString<Type>::FromUnicode(const TypeFrom* theString, size_t 
     aResult.Resize(theCodeUnits + 1);
     std::copy_n(theString, theCodeUnits, aResult.Data());
   }
-  else if (sizeof(TypeFrom) == 1 && aLength == theCodeUnits)
-  {
-    // Valid UTF-8 with one code unit per scalar is ASCII, including embedded nulls.
-    aResult.Resize(theCodeUnits + 1);
-    for (size_t anIndex = 0; anIndex < theCodeUnits; ++anIndex)
-    {
-      aResult[anIndex] = static_cast<Type>(theString[anIndex]);
-    }
-  }
   else
   {
-    aResult.Resize(anOutputUnits + 1);
-    Type*  aWrite     = aResult.Data();
-    size_t aRemaining = anOutputUnits;
-    anIter.Init(theString, theCodeUnits);
-    for (; anIter.More(); ++anIter)
+    bool anIsAscii = false;
+    if constexpr (sizeof(TypeFrom) == 1)
     {
-      Type* anEnd = anIter.GetUtf(aWrite, aRemaining);
-      aRemaining -= static_cast<size_t>(anEnd - aWrite);
-      aWrite = anEnd;
+      // Valid UTF-8 with one code unit per scalar is ASCII, including embedded nulls.
+      anIsAscii = aLength == theCodeUnits;
+    }
+    aResult.Resize(anOutputUnits + 1);
+    if (anIsAscii)
+    {
+      for (size_t anIndex = 0; anIndex < theCodeUnits; ++anIndex)
+      {
+        aResult[anIndex] = static_cast<Type>(theString[anIndex]);
+      }
+    }
+    else
+    {
+      Type*  aWrite     = aResult.Data();
+      size_t aRemaining = anOutputUnits;
+      for (TCollection_UtfIterator<TypeFrom> anOutputIter(theString, theCodeUnits);
+           anOutputIter.More();
+           ++anOutputIter)
+      {
+        Type* anEnd = anOutputIter.GetUtf(aWrite, aRemaining);
+        aRemaining -= static_cast<size_t>(anEnd - aWrite);
+        aWrite = anEnd;
+      }
     }
   }
   aResult.ChangeLast() = Type(0);

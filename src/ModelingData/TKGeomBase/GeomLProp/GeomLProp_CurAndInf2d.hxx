@@ -48,6 +48,7 @@ public:
   Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& C);
 
   //! For the curve C, Computes the locals extremas of curvature.
+  //! Includes one-sided extrema at regular C1 and C2 spline knots.
   Standard_EXPORT void PerformCurExt(const occ::handle<Geom2d_Curve>& C);
 
   //! For the curve C, computes inflections, including changes of concavity

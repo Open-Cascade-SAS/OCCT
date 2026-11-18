@@ -14,11 +14,24 @@
 #include <DESTEP_ConfigurationNode.hxx>
 #include <DESTEP_Provider.hxx>
 #include <IFSelect_ReturnStatus.hxx>
+#include <Interface_Check.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Resource_FormatType.hxx>
 #include <Resource_Unicode.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPCAFControl_Writer.hxx>
+#include <STEPConstruct.hxx>
+#include <StepData_StepModel.hxx>
+#include <StepRepr_RepresentationItem.hxx>
+#include <StepVisual_AnnotationCurveOccurrence.hxx>
+#include <StepVisual_DraughtingCallout.hxx>
+#include <StepVisual_DraughtingCalloutElement.hxx>
+#include <StepVisual_TessellatedAnnotationOccurrence.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <XSControl_TransferWriter.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <Precision.hxx>
 
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
@@ -37,6 +50,8 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
+#include <XCAFDimTolObjects_DatumModifWithValue.hxx>
+#include <XCAFDimTolObjects_DatumTargetType.hxx>
 #include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 #include <XCAFDimTolObjects_DimensionType.hxx>
@@ -51,6 +66,7 @@
 #include <XCAFDoc_MaterialTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <gp_Ax2.hxx>
+#include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Lin.hxx>
@@ -64,6 +80,7 @@
 
 #include <optional>
 #include <sstream>
+#include <string_view>
 
 #include <gtest/gtest.h>
 
@@ -1394,4 +1411,277 @@ TEST(GDT_STEP_Storage_Test, UnequalToleranceRoundTrip)
       }
     }
   }
+}
+
+//==================================================================================================
+
+TEST(DESTEP_Provider_StorageTest, DraughtingCallout_MultipleContents_ImportsAllShapesAndBoundingBox)
+{
+  occ::handle<TDocStd_Document> aDocument = NewDocument();
+  ASSERT_FALSE(aDocument.IsNull());
+  const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
+  occ::handle<XCAFDoc_Dimension> aDimension;
+  ASSERT_TRUE(aDimensionLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension));
+  const TopoDS_Shape anAnnotationShape =
+    BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0));
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+  ASSERT_FALSE(aShapeTool->AddShape(anAnnotationShape).IsNull());
+
+  occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimension->GetObject();
+  anObject->SetType(XCAFDimTolObjects_DimensionType_Size_CurveLength);
+  anObject->SetValue(10.0);
+  anObject->SetPresentation(
+    BRepBuilderAPI_MakeEdge(gp_Pnt(100.0, 0.0, 0.0), gp_Pnt(110.0, 0.0, 0.0)),
+    new TCollection_HAsciiString("multiple contents"));
+  aDimension->SetObject(anObject);
+
+  DESTEP_Parameters aParameters;
+  aParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  STEPCAFControl_Writer aWriter;
+  ASSERT_TRUE(aWriter.Transfer(aDocument, aParameters));
+  occ::handle<StepData_StepModel> aModel = aWriter.ChangeWriter().Model();
+  ASSERT_FALSE(aModel.IsNull());
+
+  const occ::handle<Transfer_FinderProcess>& aFinderProcess =
+    aWriter.ChangeWriter().WS()->TransferWriter()->FinderProcess();
+  const occ::handle<StepRepr_RepresentationItem> anAnnotationItem =
+    STEPConstruct::FindEntity(aFinderProcess, anAnnotationShape);
+  ASSERT_FALSE(anAnnotationItem.IsNull());
+
+  occ::handle<StepVisual_DraughtingCallout> aCallout;
+  for (int anIndex = 1; anIndex <= aModel->NbEntities() && aCallout.IsNull(); ++anIndex)
+  {
+    aCallout = occ::down_cast<StepVisual_DraughtingCallout>(aModel->Value(anIndex));
+  }
+  ASSERT_FALSE(aCallout.IsNull());
+  ASSERT_EQ(1, aCallout->NbContents());
+  const occ::handle<StepVisual_TessellatedAnnotationOccurrence> aTessellatedOccurrence =
+    aCallout->ContentsValue(1).TessellatedAnnotationOccurrence();
+  ASSERT_FALSE(aTessellatedOccurrence.IsNull());
+
+  occ::handle<StepVisual_AnnotationCurveOccurrence> anAnnotationOccurrence =
+    new StepVisual_AnnotationCurveOccurrence();
+  anAnnotationOccurrence->Init(new TCollection_HAsciiString(),
+                               aTessellatedOccurrence->Styles(),
+                               anAnnotationItem);
+
+  StepVisual_DraughtingCalloutElement anAnnotationElement;
+  anAnnotationElement.SetValue(anAnnotationOccurrence);
+  occ::handle<NCollection_HArray1<StepVisual_DraughtingCalloutElement>> aContents =
+    new NCollection_HArray1<StepVisual_DraughtingCalloutElement>(1, 2);
+  aContents->SetValue(1, anAnnotationElement);
+  aContents->SetValue(2, aCallout->ContentsValue(1));
+  aCallout->SetContents(aContents);
+  ASSERT_EQ(2, aCallout->NbContents());
+  aModel->AddWithRefs(anAnnotationOccurrence);
+
+  std::stringstream aStream;
+  ASSERT_EQ(aWriter.WriteStream(aStream), IFSelect_RetDone);
+  ASSERT_FALSE(aStream.str().empty());
+  aStream.seekg(0);
+
+  STEPCAFControl_Reader aReader;
+  ASSERT_EQ(aReader.ReadStream("multiple_callout_contents.step", aStream), IFSelect_RetDone);
+  occ::handle<TDocStd_Document> aRestoredDocument = NewDocument();
+  ASSERT_FALSE(aRestoredDocument.IsNull());
+  ASSERT_TRUE(aReader.Transfer(aRestoredDocument));
+
+  const occ::handle<XCAFDimTolObjects_DimensionObject> aRestoredObject =
+    RestoreDimension(aRestoredDocument);
+  ASSERT_FALSE(aRestoredObject.IsNull());
+  const TopoDS_Shape aRestoredPresentation = aRestoredObject->GetPresentation();
+  ASSERT_FALSE(aRestoredPresentation.IsNull());
+  int anEdgeCount = 0;
+  for (TopExp_Explorer anEdgeExplorer(aRestoredPresentation, TopAbs_EDGE); anEdgeExplorer.More();
+       anEdgeExplorer.Next())
+  {
+    ++anEdgeCount;
+  }
+  EXPECT_EQ(2, anEdgeCount);
+  ASSERT_TRUE(aRestoredObject->HasTextPoint());
+  // Without an annotation plane, the imported text point is the presentation box center.
+  EXPECT_NEAR(55.0, aRestoredObject->GetPointTextAttach().X(), Precision::Confusion());
+  EXPECT_NEAR(0.0, aRestoredObject->GetPointTextAttach().Y(), Precision::Confusion());
+  EXPECT_NEAR(0.0, aRestoredObject->GetPointTextAttach().Z(), Precision::Confusion());
+}
+
+//==================================================================================================
+
+TEST(DESTEP_Provider_StorageTest, SemanticMeasuresFollowOutputUnits)
+{
+  for (const UnitsMethods_LengthUnit anOutputUnit :
+       {UnitsMethods_LengthUnit_Inch, UnitsMethods_LengthUnit_Millimeter})
+  {
+    for (const DESTEP_Parameters::AngleUnitMode anAngleUnit :
+         {DESTEP_Parameters::AngleUnitMode_Rad, DESTEP_Parameters::AngleUnitMode_Deg})
+    {
+      for (const bool isAngle : {false, true})
+      {
+        const occ::handle<TDocStd_Document> aDocument = NewDocument();
+        XCAFDoc_DocumentTool::SetLengthUnit(aDocument, 0.001);
+        const TDF_Label                aDimensionLabel = AddBoxAndDimension(aDocument);
+        occ::handle<XCAFDoc_Dimension> aDimension;
+        ASSERT_TRUE(aDimensionLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension));
+        const occ::handle<XCAFDimTolObjects_DimensionObject> aValue = aDimension->GetObject();
+        aValue->SetType(isAngle ? XCAFDimTolObjects_DimensionType_Size_Angular
+                                : XCAFDimTolObjects_DimensionType_Size_CurveLength);
+        aValue->SetValue(isAngle ? 45.0 : 25.4);
+        aValue->SetLowerTolValue(0.125);
+        aValue->SetUpperTolValue(0.25);
+        aDimension->SetObject(aValue);
+        const occ::handle<XCAFDoc_ShapeTool> aShapeTool =
+          XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+        NCollection_Sequence<TDF_Label> aShapes;
+        aShapeTool->GetFreeShapes(aShapes);
+        const occ::handle<XCAFDoc_DimTolTool> aTool =
+          XCAFDoc_DocumentTool::DimTolTool(aDocument->Main());
+        const TDF_Label aToleranceLabel = aTool->AddGeomTolerance();
+        aTool->SetGeomTolerance(aShapes.First(), aToleranceLabel);
+        occ::handle<XCAFDoc_GeomTolerance> aTolerance;
+        ASSERT_TRUE(aToleranceLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aTolerance));
+        const occ::handle<XCAFDimTolObjects_GeomToleranceObject> aToleranceValue =
+          aTolerance->GetObject();
+        aToleranceValue->SetType(XCAFDimTolObjects_GeomToleranceType_Position);
+        aToleranceValue->SetValue(0.508);
+        aToleranceValue->SetMaterialRequirementModifier(
+          XCAFDimTolObjects_GeomToleranceMatReqModif_M);
+        aToleranceValue->SetMaxValueModifier(0.762);
+        aToleranceValue->SetZoneModifier(XCAFDimTolObjects_GeomToleranceZoneModif_Runout);
+        aToleranceValue->SetValueOfZoneModifier(30.0);
+        aTolerance->SetObject(aToleranceValue);
+        const TDF_Label aDatumLabel = aTool->AddDatum();
+        aTool->SetDatum(aShapes, aDatumLabel);
+        const occ::handle<XCAFDimTolObjects_DatumObject> aDatumObject =
+          new XCAFDimTolObjects_DatumObject();
+        aDatumObject->SetName(new TCollection_HAsciiString("A"));
+        aDatumObject->SetPosition(1);
+        aDatumObject->IsDatumTarget(true);
+        aDatumObject->SetDatumTargetType(XCAFDimTolObjects_DatumTargetType_Rectangle);
+        aDatumObject->SetDatumTargetNumber(1);
+        aDatumObject->SetDatumTargetAxis(gp_Ax2(gp_Pnt(25.4, 0.0, 0.0), gp::DZ()));
+        aDatumObject->SetDatumTargetLength(50.8);
+        aDatumObject->SetDatumTargetWidth(25.4);
+        aDatumObject->SetModifierWithValue(XCAFDimTolObjects_DatumModifWithValue_Distance, 0.508);
+        XCAFDoc_Datum::Set(aDatumLabel)->SetObject(aDatumObject);
+        aTool->SetDatumToGeomTol(aDatumLabel, aToleranceLabel);
+        DESTEP_Parameters aParameters;
+        aParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+        aParameters.WriteUnit   = anOutputUnit;
+        aParameters.AngleUnit   = anAngleUnit;
+        STEPCAFControl_Writer aWriter;
+        ASSERT_TRUE(aWriter.Transfer(aDocument, aParameters));
+        std::stringstream aStream;
+        ASSERT_EQ(IFSelect_RetDone, aWriter.WriteStream(aStream));
+        STEPCAFControl_Reader aReader;
+        ASSERT_EQ(IFSelect_RetDone, aReader.ReadStream("semantic-units.step", aStream));
+        EXPECT_FALSE(aReader.Reader().StepModel()->GlobalCheck()->HasFailed());
+        const occ::handle<TDocStd_Document> aRestored = NewDocument();
+        ASSERT_TRUE(aReader.Transfer(aRestored));
+        const occ::handle<XCAFDimTolObjects_DimensionObject> aResult = RestoreDimension(aRestored);
+        ASSERT_FALSE(aResult.IsNull());
+        EXPECT_NEAR(aValue->GetValue(), aResult->GetValue(), Precision::Confusion());
+        EXPECT_NEAR(0.125, aResult->GetLowerTolValue(), Precision::Confusion());
+        EXPECT_NEAR(0.25, aResult->GetUpperTolValue(), Precision::Confusion());
+        NCollection_Sequence<TDF_Label> aTolerances;
+        XCAFDoc_DocumentTool::DimTolTool(aRestored->Main())->GetGeomToleranceLabels(aTolerances);
+        ASSERT_EQ(1, aTolerances.Length());
+        ASSERT_TRUE(aTolerances.First().FindAttribute(XCAFDoc_GeomTolerance::GetID(), aTolerance));
+        EXPECT_NEAR(0.508, aTolerance->GetObject()->GetValue(), Precision::Confusion());
+        EXPECT_NEAR(0.762, aTolerance->GetObject()->GetMaxValueModifier(), Precision::Confusion());
+        EXPECT_NEAR(30.0,
+                    aTolerance->GetObject()->GetValueOfZoneModifier(),
+                    Precision::Confusion());
+        NCollection_Sequence<TDF_Label> aDatums;
+        XCAFDoc_DocumentTool::DimTolTool(aRestored->Main())->GetDatumLabels(aDatums);
+        ASSERT_EQ(aDatums.Length(), 1);
+        occ::handle<XCAFDoc_Datum> aDatum;
+        ASSERT_TRUE(aDatums.First().FindAttribute(XCAFDoc_Datum::GetID(), aDatum));
+        const occ::handle<XCAFDimTolObjects_DatumObject> aRestoredDatum = aDatum->GetObject();
+        ASSERT_TRUE(aRestoredDatum->IsDatumTarget());
+        EXPECT_NEAR(aRestoredDatum->GetDatumTargetLength(), 50.8, Precision::Confusion());
+        EXPECT_NEAR(aRestoredDatum->GetDatumTargetWidth(), 25.4, Precision::Confusion());
+        EXPECT_NEAR(aRestoredDatum->GetDatumTargetAxis().Location().X(),
+                    25.4,
+                    Precision::Confusion());
+        XCAFDimTolObjects_DatumModifWithValue aModifier;
+        double                                aModifierValue = 0.0;
+        aRestoredDatum->GetModifierWithValue(aModifier, aModifierValue);
+        EXPECT_EQ(aModifier, XCAFDimTolObjects_DatumModifWithValue_Distance);
+        EXPECT_NEAR(aModifierValue, 0.508, Precision::Confusion());
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(DESTEP_Provider_StorageTest, GraphicalAnnotationUsesRepresentationUnits)
+{
+  const occ::handle<TDocStd_Document> aDocument = NewDocument();
+  XCAFDoc_DocumentTool::SetLengthUnit(aDocument, 0.001);
+  const TDF_Label                aLabel = AddBoxAndDimension(aDocument);
+  occ::handle<XCAFDoc_Dimension> aDimension;
+  ASSERT_TRUE(aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension));
+  const occ::handle<XCAFDimTolObjects_DimensionObject> anObject = aDimension->GetObject();
+  anObject->SetType(XCAFDimTolObjects_DimensionType_Size_CurveLength);
+  anObject->SetValue(10.0);
+  anObject->SetPresentation(
+    BRepBuilderAPI_MakeEdge(gp_Pnt(100.0, 0.0, 0.0), gp_Pnt(110.0, 0.0, 0.0)),
+    new TCollection_HAsciiString("graphical note"));
+  anObject->SetPlane(gp_Ax2(gp_Pnt(105.0, 5.0, 0.0), gp::DZ()));
+  anObject->SetPointTextAttach(gp_Pnt(105.0, 5.0, 0.0));
+  aDimension->SetObject(anObject);
+  DESTEP_Parameters aParameters;
+  aParameters.WriteSchema = DESTEP_Parameters::WriteMode_StepSchema_AP242DIS;
+  aParameters.WriteUnit   = UnitsMethods_LengthUnit_Inch;
+  STEPCAFControl_Writer aWriter;
+  ASSERT_TRUE(aWriter.Transfer(aDocument, aParameters));
+  std::stringstream aWritten;
+  ASSERT_EQ(aWriter.WriteStream(aWritten), IFSelect_RetDone);
+  TCollection_AsciiString aText(aWritten.str().c_str());
+  int                     aRemoved = 0;
+  for (;;)
+  {
+    const std::string_view aView = static_cast<std::string_view>(aText);
+    const size_t           aType = aView.find("DRAUGHTING_MODEL_ITEM_ASSOCIATION");
+    if (aType == aView.npos)
+    {
+      break;
+    }
+    const size_t aStart = aView.rfind('#', aType);
+    const size_t anEnd  = aView.find(';', aType);
+    ASSERT_NE(aStart, aView.npos);
+    ASSERT_NE(anEnd, aView.npos);
+    aText.Remove(static_cast<int>(aStart) + 1, static_cast<int>(anEnd - aStart + 1));
+    ++aRemoved;
+  }
+  ASSERT_GT(aRemoved, 0);
+  std::stringstream     aStream(aText.ToCString());
+  STEPCAFControl_Reader aReader;
+  ASSERT_EQ(aReader.ReadStream("graphical-inch.step", aStream), IFSelect_RetDone);
+  const occ::handle<TDocStd_Document> aRestored = NewDocument();
+  ASSERT_TRUE(aReader.Transfer(aRestored));
+  NCollection_Sequence<TDF_Label> aLabels;
+  XCAFDoc_DocumentTool::DimTolTool(aRestored->Main())->GetDimensionLabels(aLabels);
+  int aCount = 0;
+  for (const TDF_Label& aDimensionLabel : aLabels)
+  {
+    const occ::handle<XCAFDimTolObjects_DimensionObject> aValue = DimensionObject(aDimensionLabel);
+    if (aValue.IsNull() || aValue->GetPresentation().IsNull())
+    {
+      continue;
+    }
+    ++aCount;
+    ASSERT_TRUE(aValue->HasPlane());
+    EXPECT_NEAR(aValue->GetPlane().Location().Distance(gp_Pnt(105.0, 5.0, 0.0)),
+                0.0,
+                Precision::Confusion());
+    Bnd_Box aBounds;
+    BRepBndLib::Add(aValue->GetPresentation(), aBounds);
+    ASSERT_FALSE(aBounds.IsVoid());
+    const Bnd_Box::Limits aLimits = aBounds.Get();
+    EXPECT_NEAR(aLimits.Xmin, 100.0, aBounds.GetGap() + Precision::Confusion());
+    EXPECT_NEAR(aLimits.Xmax, 110.0, aBounds.GetGap() + Precision::Confusion());
+  }
+  EXPECT_EQ(aCount, 1);
 }

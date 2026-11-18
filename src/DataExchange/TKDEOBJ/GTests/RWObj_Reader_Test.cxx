@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 
 #include <sstream>
+#include <limits>
 
 namespace
 {
@@ -39,6 +40,57 @@ private:
   NCollection_LinearVector<TCollection_AsciiString> myGroups;
 };
 } // namespace
+
+TEST(RWObj_ReaderTest, ReportsInvalidFaceIndices)
+{
+  for (const char* aFace : {"f 1 2 4\n", "f 0 2 3\n", "f -4 -2 -1\n"})
+  {
+    const TCollection_AsciiString aText =
+      TCollection_AsciiString("v 0 0 0\nv 1 0 0\nv 0 1 0\n") + aFace;
+    std::istringstream        anInput(aText.ToCString());
+    RWObj_TriangulationReader aReader;
+    EXPECT_FALSE(aReader.Read(anInput, "invalid.obj", Message_ProgressRange()));
+  }
+}
+
+//==================================================================================================
+
+TEST(RWObj_ReaderTest, ReadsIndentedCommands)
+{
+  std::istringstream anInput(" \t# comment\n  v 0 0 0\n\tv 1 0 0\n v 0 1 0\n \tf -3 -2 -1\n");
+  RWObj_TriangulationReader aReader;
+  ASSERT_TRUE(aReader.Read(anInput, "indented.obj", Message_ProgressRange()));
+  EXPECT_FALSE(aReader.ResultShape().IsNull());
+  EXPECT_EQ(aReader.NbProbeNodes(), 3);
+  EXPECT_EQ(aReader.NbProbeElems(), 1);
+}
+
+//==================================================================================================
+
+TEST(RWObj_ReaderTest, ConvertsMemoryLimitMiB)
+{
+  RWObj_TriangulationReader aReader;
+  ASSERT_TRUE(aReader.SetMemoryLimitMiB(-1));
+  EXPECT_EQ(aReader.MemoryLimit(), std::numeric_limits<size_t>::max());
+  ASSERT_TRUE(aReader.SetMemoryLimitMiB(0));
+  EXPECT_EQ(aReader.MemoryLimit(), size_t(0));
+  constexpr size_t aMiB = 1024 * 1024;
+  for (const int aLimit : {1, 2047, 2048, 4095})
+  {
+    ASSERT_TRUE(aReader.SetMemoryLimitMiB(aLimit));
+    EXPECT_EQ(aReader.MemoryLimit(), size_t(aLimit) * aMiB);
+  }
+  const int  aLargestLimit = std::numeric_limits<int>::max();
+  const bool aFits         = size_t(aLargestLimit) <= std::numeric_limits<size_t>::max() / aMiB;
+  EXPECT_EQ(aReader.SetMemoryLimitMiB(aLargestLimit), aFits);
+  if (aFits)
+  {
+    EXPECT_EQ(aReader.MemoryLimit(), size_t(aLargestLimit) * aMiB);
+  }
+  const size_t aPrevious = aReader.MemoryLimit();
+  EXPECT_FALSE(aReader.SetMemoryLimitMiB(-2));
+  EXPECT_EQ(aReader.MemoryLimit(), aPrevious);
+}
 
 TEST(RWObj_ReaderTest, IgnoresIncompleteCommands)
 {

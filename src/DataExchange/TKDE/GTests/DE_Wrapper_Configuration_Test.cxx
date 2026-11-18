@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
 #include <DEBREP_ConfigurationNode.hxx>
 #include <DE_ConfigurationContext.hxx>
 #include <DE_ConfigurationNode.hxx>
@@ -28,6 +26,8 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
 #include <TCollection_AsciiString.hxx>
+
+#include <gtest/gtest.h>
 
 namespace
 {
@@ -165,6 +165,8 @@ provider.IGES.OCC.write.offset :	 0
 provider.IGES.OCC.write.color :	 1
 provider.IGES.OCC.write.name :	 1
 provider.IGES.OCC.write.layer :	 1
+provider.IGES.OCC.healing.detalization.level :	 6
+provider.IGES.OCC.healing.non.manifold :	 0
 provider.IGES.OCC.healing.tolerance3d :	 1e-06
 provider.IGES.OCC.healing.max.tolerance3d :	 1
 provider.IGES.OCC.healing.min.tolerance3d :	 1e-07
@@ -317,6 +319,8 @@ provider.STEP.OCC.write.props :	 1
 provider.STEP.OCC.write.model.type :	 0
 provider.STEP.OCC.write.cleanduplicates : 0
 provider.STEP.OCC.write.scaling.trsf : 1
+provider.STEP.OCC.healing.detalization.level :	 7
+provider.STEP.OCC.healing.non.manifold :	 0
 provider.STEP.OCC.healing.tolerance3d :	 1e-06
 provider.STEP.OCC.healing.max.tolerance3d :	 1
 provider.STEP.OCC.healing.min.tolerance3d :	 1e-07
@@ -422,6 +426,8 @@ provider.IGES.OCC.write.offset :	 0
 provider.IGES.OCC.write.color :	 1
 provider.IGES.OCC.write.name :	 1
 provider.IGES.OCC.write.layer :	 1
+provider.IGES.OCC.healing.detalization.level :	 6
+provider.IGES.OCC.healing.non.manifold :	 0
 provider.IGES.OCC.healing.tolerance3d :	 1e-06
 provider.IGES.OCC.healing.max.tolerance3d :	 1
 provider.IGES.OCC.healing.min.tolerance3d :	 1e-07
@@ -524,6 +530,8 @@ provider.STEP.OCC.write.metadata :  1
 provider.STEP.OCC.write.model.type :	 0
 provider.STEP.OCC.write.cleanduplicates : 0
 provider.STEP.OCC.write.scaling.trsf : 1
+provider.STEP.OCC.healing.detalization.level :	 7
+provider.STEP.OCC.healing.non.manifold :	 0
 provider.STEP.OCC.healing.tolerance3d :	 1e-06
 provider.STEP.OCC.healing.max.tolerance3d :	 1
 provider.STEP.OCC.healing.min.tolerance3d :	 1e-07

@@ -21,6 +21,7 @@
 #include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
 
+#include <algorithm>
 #include <cmath>
 
 //! Internal helper namespace for 2D offset curve calculations.
@@ -194,74 +195,60 @@ inline bool CalculateD3(gp_Pnt2d&       theValue,
                         bool            theIsDirChange,
                         double          theOffset)
 {
-  // P(u) = p(u) + Offset * Ndir / R
-  // with R = || p' ^ Z|| and Ndir = P' ^ Z
+  // P = p + d*N/R, where p is the basis curve, d is the offset,
+  // N = p' x Z and R = |N|. Primes denote parameter derivatives.
+  // For q = 1/R, let a = N.N', b = N'.N' + N.N'', c = 3*N'.N'' + N.N'''.
+  // q' = -a/R^3, q'' = 3*a^2/R^5 - b/R^3,
+  // q''' = 9*a*b/R^5 - 15*a^3/R^7 - c/R^3.
+  // P' = p' + d*(q*N' + q'*N).
+  // P'' = p'' + d*(q*N'' + 2*q'*N' + q''*N).
+  // P''' = p''' + d*(q*N''' + 3*q'*N'' + 3*q''*N' + q'''*N).
 
-  // P'(u)  = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
-
-  // P"(u)  = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
-  //          Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
-
-  // P"'(u) = p"'(u) + (Offset / R) * (D3Ndir - (3.0 * Dr/R**2 ) * D2Ndir -
-  //          (3.0 * D2r / R2) * DNdir) + (3.0 * Dr * Dr / R4) * DNdir -
-  //          (D3r/R2) * Ndir + (6.0 * Dr * Dr / R4) * Ndir +
-  //          (6.0 * Dr * D2r / R4) * Ndir - (15.0 * Dr* Dr* Dr /R6) * Ndir
-
-  gp_XY  Ndir(theD1.Y(), -theD1.X());
-  gp_XY  DNdir(theD2.Y(), -theD2.X());
-  gp_XY  D2Ndir(theD3.Y(), -theD3.X());
-  gp_XY  D3Ndir(theD4.Y(), -theD4.X());
+  gp_XY Ndir(theD1.Y(), -theD1.X());
+  gp_XY DNdir(theD2.Y(), -theD2.X());
+  gp_XY D2Ndir(theD3.Y(), -theD3.X());
+  gp_XY D3Ndir(theD4.Y(), -theD4.X());
+  if (std::hypot(Ndir.X(), Ndir.Y()) <= gp::Resolution())
+  {
+    return false;
+  }
+  // A common power-of-two scale leaves the normalized normal and its derivatives unchanged.
+  const double aMaxComponent = std::max(std::abs(Ndir.X()), std::abs(Ndir.Y()));
+  if (!std::isfinite(aMaxComponent))
+  {
+    return false;
+  }
+  int anExponent = 0;
+  std::frexp(aMaxComponent, &anExponent);
+  for (int aCoord = 1; aCoord <= 2; ++aCoord)
+  {
+    Ndir.SetCoord(aCoord, std::scalbn(Ndir.Coord(aCoord), -anExponent));
+    DNdir.SetCoord(aCoord, std::scalbn(DNdir.Coord(aCoord), -anExponent));
+    D2Ndir.SetCoord(aCoord, std::scalbn(D2Ndir.Coord(aCoord), -anExponent));
+    D3Ndir.SetCoord(aCoord, std::scalbn(D3Ndir.Coord(aCoord), -anExponent));
+  }
   double R2  = Ndir.SquareModulus();
   double R   = std::sqrt(R2);
   double R3  = R2 * R;
-  double R4  = R2 * R2;
   double R5  = R3 * R2;
-  double R6  = R3 * R3;
   double R7  = R5 * R2;
   double Dr  = Ndir.Dot(DNdir);
   double D2r = Ndir.Dot(D2Ndir) + DNdir.Dot(DNdir);
   double D3r = Ndir.Dot(D3Ndir) + 3.0 * DNdir.Dot(D2Ndir);
 
-  if (R7 <= gp::Resolution())
-  {
-    if (R6 <= gp::Resolution())
-    {
-      return false;
-    }
-    // We try another computation but the stability is not very good dixit ISG.
-    // V3 = P"' (U) :
-    D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * Dr / R2));
-    D3Ndir.Subtract(DNdir.Multiplied(3.0 * ((D2r / R2) + (Dr * Dr / R4))));
-    D3Ndir.Add(
-      Ndir.Multiplied(6.0 * Dr * Dr / R4 + 6.0 * Dr * D2r / R4 - 15.0 * Dr * Dr * Dr / R6 - D3r));
-    D3Ndir.Multiply(theOffset / R);
-    // V2 = P" (U) :
-    R4 = R2 * R2;
-    D2Ndir.Subtract(DNdir.Multiplied(2.0 * Dr / R2));
-    D2Ndir.Subtract(Ndir.Multiplied((3.0 * Dr * Dr / R4) - (D2r / R2)));
-    D2Ndir.Multiply(theOffset / R);
-    // V1 = P' (U) :
-    DNdir.Multiply(R);
-    DNdir.Subtract(Ndir.Multiplied(Dr / R));
-    DNdir.Multiply(theOffset / R2);
-  }
-  else
-  {
-    // Same computation as IICURV in EUCLID-IS because the stability is better.
-    // V3 = P"' (U) :
-    D3Ndir.Multiply(theOffset / R);
-    D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * theOffset * Dr / R3));
-    D3Ndir.Subtract(DNdir.Multiplied(((3.0 * theOffset) * ((D2r / R3) + (Dr * Dr) / R5))));
-    D3Ndir.Add(Ndir.Multiplied(
-      (theOffset * (6.0 * Dr * Dr / R5 + 6.0 * Dr * D2r / R5 - 15.0 * Dr * Dr * Dr / R7 - D3r))));
-    // V2 = P" (U) :
-    D2Ndir.Multiply(theOffset / R);
-    D2Ndir.Subtract(DNdir.Multiplied(2.0 * theOffset * Dr / R3));
-    D2Ndir.Subtract(Ndir.Multiplied(theOffset * (((3.0 * Dr * Dr) / R5) - (D2r / R3))));
-    // V1 = P' (U) :
-    DNdir.Multiply(theOffset / R);
-    DNdir.Subtract(Ndir.Multiplied(theOffset * Dr / R3));
-  }
+  // Compute higher derivatives first, while the lower derivatives are unchanged.
+  D3Ndir.Multiply(theOffset / R);
+  D3Ndir.Subtract(D2Ndir.Multiplied(3.0 * theOffset * Dr / R3));
+  D3Ndir.Subtract(DNdir.Multiplied(theOffset * (3.0 * D2r / R3 - 9.0 * Dr * Dr / R5)));
+  D3Ndir.Add(
+    Ndir.Multiplied((theOffset * (9.0 * Dr * D2r / R5 - 15.0 * Dr * Dr * Dr / R7 - D3r / R3))));
+  // V2 = P" (U) :
+  D2Ndir.Multiply(theOffset / R);
+  D2Ndir.Subtract(DNdir.Multiplied(2.0 * theOffset * Dr / R3));
+  D2Ndir.Add(Ndir.Multiplied(theOffset * (((3.0 * Dr * Dr) / R5) - (D2r / R3))));
+  // V1 = P' (U) :
+  DNdir.Multiply(theOffset / R);
+  DNdir.Subtract(Ndir.Multiplied(theOffset * Dr / R3));
 
   Ndir.Multiply(theOffset / R);
   // P(u)
