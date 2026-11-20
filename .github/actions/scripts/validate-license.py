@@ -307,6 +307,10 @@ def process_file(filepath: str, fix: bool = False, dry_run: bool = False) -> Tup
     Returns:
         Tuple of (has_license, was_modified)
     """
+    # The imported conversion code carries its original Lucent license.
+    if Path(filepath).parts[-3:] == ('TKernel', 'Standard', 'Standard_Strtod.cxx'):
+        return True, False
+
     has_license, _, _ = check_license_header(filepath)
 
     if has_license:
