@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColgp_HArray2OfLin2d.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray2<gp_Lin2d> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColgp_HArray2OfLin2d is deprecated, use NCollection_HArray2<gp_Lin2d> directly")
 typedef NCollection_HArray2<gp_Lin2d> TColgp_HArray2OfLin2d;
 

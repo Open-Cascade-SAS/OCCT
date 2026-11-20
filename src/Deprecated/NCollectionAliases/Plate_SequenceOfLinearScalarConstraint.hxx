@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "Plate_SequenceOfLinearScalarConstraint.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<Plate_LinearScalarConstraint> directly.")
 
-  Standard_DEPRECATED("Plate_SequenceOfLinearScalarConstraint is deprecated, use "
+Standard_DEPRECATED("Plate_SequenceOfLinearScalarConstraint is deprecated, use "
                       "NCollection_Sequence<Plate_LinearScalarConstraint> directly")
 typedef NCollection_Sequence<Plate_LinearScalarConstraint> Plate_SequenceOfLinearScalarConstraint;
 

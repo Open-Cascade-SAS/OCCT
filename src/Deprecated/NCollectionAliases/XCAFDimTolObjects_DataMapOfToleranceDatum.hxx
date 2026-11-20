@@ -30,10 +30,10 @@ Standard_HEADER_DEPRECATED(
   "NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, "
   "opencascade::handle<XCAFDimTolObjects_DatumObject>> directly.")
 
-  Standard_DEPRECATED(
-    "XCAFDimTolObjects_DataMapOfToleranceDatum is deprecated, use "
-    "NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, "
-    "opencascade::handle<XCAFDimTolObjects_DatumObject>> directly")
+Standard_DEPRECATED(
+  "XCAFDimTolObjects_DataMapOfToleranceDatum is deprecated, use "
+  "NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, "
+  "opencascade::handle<XCAFDimTolObjects_DatumObject>> directly")
 typedef NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>,
                             opencascade::handle<XCAFDimTolObjects_DatumObject>>
   XCAFDimTolObjects_DataMapOfToleranceDatum;

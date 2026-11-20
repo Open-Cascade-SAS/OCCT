@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_HArray1OfTessellatedStructuredItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly.")
 
-  Standard_DEPRECATED(
-    "StepVisual_HArray1OfTessellatedStructuredItem is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly")
+Standard_DEPRECATED(
+  "StepVisual_HArray1OfTessellatedStructuredItem is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepVisual_TessellatedStructuredItem>>
   StepVisual_HArray1OfTessellatedStructuredItem;
 

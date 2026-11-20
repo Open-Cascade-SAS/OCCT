@@ -579,10 +579,16 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used instead")
-  void AllowBackFace() { myFaceCulling = Graphic3d_TypeOfBackfacingModel_DoubleSided; }
+  void AllowBackFace()
+  {
+    myFaceCulling = Graphic3d_TypeOfBackfacingModel_DoubleSided;
+  }
 
   Standard_DEPRECATED("Deprecated method, SetFaceCulling() should be used instead")
-  void SuppressBackFace() { myFaceCulling = Graphic3d_TypeOfBackfacingModel_Auto; }
+  void SuppressBackFace()
+  {
+    myFaceCulling = Graphic3d_TypeOfBackfacingModel_Auto;
+  }
 
 protected:
   occ::handle<Graphic3d_ShaderProgram>  myProgram;

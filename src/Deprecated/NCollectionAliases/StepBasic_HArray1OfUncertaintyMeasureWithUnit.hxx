@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly.")
 
-  Standard_DEPRECATED(
-    "StepBasic_HArray1OfUncertaintyMeasureWithUnit is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly")
+Standard_DEPRECATED(
+  "StepBasic_HArray1OfUncertaintyMeasureWithUnit is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>>
   StepBasic_HArray1OfUncertaintyMeasureWithUnit;
 

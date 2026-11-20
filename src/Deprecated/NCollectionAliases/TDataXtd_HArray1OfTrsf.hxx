@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TDataXtd_HArray1OfTrsf.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<gp_Trsf> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TDataXtd_HArray1OfTrsf is deprecated, use NCollection_HArray1<gp_Trsf> directly")
 typedef NCollection_HArray1<gp_Trsf> TDataXtd_HArray1OfTrsf;
 

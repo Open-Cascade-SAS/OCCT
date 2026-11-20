@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntPolyh_SeqOfStartPoints.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntPolyh_StartPoint> directly.")
 
-  Standard_DEPRECATED("IntPolyh_SeqOfStartPoints is deprecated, use "
+Standard_DEPRECATED("IntPolyh_SeqOfStartPoints is deprecated, use "
                       "NCollection_Sequence<IntPolyh_StartPoint> directly")
 typedef NCollection_Sequence<IntPolyh_StartPoint> IntPolyh_SeqOfStartPoints;
 

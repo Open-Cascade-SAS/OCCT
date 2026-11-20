@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "TDF_IDMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_IDMap is deprecated, use NCollection_Map<Standard_GUID> directly")
-typedef NCollection_Map<Standard_GUID> TDF_IDMap;
+Standard_DEPRECATED("TDF_IDMap is deprecated, use NCollection_Map<Standard_GUID> directly")
+typedef NCollection_Map<Standard_GUID>           TDF_IDMap;
 Standard_DEPRECATED(
   "TDF_MapIteratorOfIDMap is deprecated, use NCollection_Map<Standard_GUID>::Iterator directly")
 typedef NCollection_Map<Standard_GUID>::Iterator TDF_MapIteratorOfIDMap;

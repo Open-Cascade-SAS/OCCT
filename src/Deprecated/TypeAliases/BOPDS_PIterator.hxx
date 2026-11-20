@@ -27,7 +27,7 @@ class BOPDS_Iterator;
 Standard_HEADER_DEPRECATED("BOPDS_PIterator.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("BOPDS_PIterator is deprecated, use the underlying type directly")
+Standard_DEPRECATED("BOPDS_PIterator is deprecated, use the underlying type directly")
 typedef BOPDS_Iterator* BOPDS_PIterator;
 
 #endif // _BOPDS_PIterator_HeaderFile

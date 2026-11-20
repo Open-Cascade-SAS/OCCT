@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED("TopOpeBRepDS_MapOfShapeData.hxx is deprecated since 
                            "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, "
                            "TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED(
-    "TopOpeBRepDS_MapOfShapeData is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, "
-    "TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "TopOpeBRepDS_MapOfShapeData is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, "
+  "TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>
   TopOpeBRepDS_MapOfShapeData;
 

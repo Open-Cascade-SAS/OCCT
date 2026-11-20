@@ -57,7 +57,10 @@ public:
 
   //! Returns error message
   Standard_DEPRECATED("Use what() instead")
-  const char* GetMessageString() const noexcept { return what(); }
+  const char* GetMessageString() const noexcept
+  {
+    return what();
+  }
 
   //! Returns the exception type name.
   //! Default implementation returns "Standard_Failure".

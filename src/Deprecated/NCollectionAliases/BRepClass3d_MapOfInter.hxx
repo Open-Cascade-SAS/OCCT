@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "BRepClass3d_MapOfInter.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("BRepClass3d_MapOfInter is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+Standard_DEPRECATED("BRepClass3d_MapOfInter is deprecated, use NCollection_DataMap<TopoDS_Shape, "
                       "void*, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> BRepClass3d_MapOfInter;
 Standard_DEPRECATED(

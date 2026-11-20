@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "XCAFDimTolObjects_GeomToleranceModifiersSequence.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> directly.")
 
-  Standard_DEPRECATED("XCAFDimTolObjects_GeomToleranceModifiersSequence is deprecated, use "
-                      "NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> directly")
+Standard_DEPRECATED("XCAFDimTolObjects_GeomToleranceModifiersSequence is deprecated, use "
+                    "NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> directly")
 typedef NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif>
   XCAFDimTolObjects_GeomToleranceModifiersSequence;
 

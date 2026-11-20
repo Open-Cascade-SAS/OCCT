@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "TDF_AttributeList.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_AttributeList is deprecated, use "
+Standard_DEPRECATED("TDF_AttributeList is deprecated, use "
                       "NCollection_List<opencascade::handle<TDF_Attribute>> directly")
 typedef NCollection_List<opencascade::handle<TDF_Attribute>> TDF_AttributeList;
 Standard_DEPRECATED("TDF_ListIteratorOfAttributeList is deprecated, use "

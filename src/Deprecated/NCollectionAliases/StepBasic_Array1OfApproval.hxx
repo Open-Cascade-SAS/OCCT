@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepBasic_Array1OfApproval.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<opencascade::handle<StepBasic_Approval>> directly.")
 
-  Standard_DEPRECATED("StepBasic_Array1OfApproval is deprecated, use "
+Standard_DEPRECATED("StepBasic_Array1OfApproval is deprecated, use "
                       "NCollection_Array1<opencascade::handle<StepBasic_Approval>> directly")
 typedef NCollection_Array1<opencascade::handle<StepBasic_Approval>> StepBasic_Array1OfApproval;
 

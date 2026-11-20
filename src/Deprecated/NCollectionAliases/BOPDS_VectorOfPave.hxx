@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfPave.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<BOPDS_Pave> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BOPDS_VectorOfPave is deprecated, use NCollection_Array1<BOPDS_Pave> directly")
 typedef NCollection_Array1<BOPDS_Pave> BOPDS_VectorOfPave;
 

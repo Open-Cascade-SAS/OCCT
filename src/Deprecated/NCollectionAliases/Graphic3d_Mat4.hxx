@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "Graphic3d_Mat4.hxx is deprecated since OCCT 8.0.0. Use NCollection_Mat4<float> directly.")
 
-  Standard_DEPRECATED("Graphic3d_Mat4 is deprecated, use NCollection_Mat4<float> directly")
+Standard_DEPRECATED("Graphic3d_Mat4 is deprecated, use NCollection_Mat4<float> directly")
 typedef NCollection_Mat4<float> Graphic3d_Mat4;
 
 #endif // _Graphic3d_Mat4_hxx

@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerColor.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("MeshVS_DataMapOfIntegerColor is deprecated, use NCollection_DataMap<int, "
+Standard_DEPRECATED("MeshVS_DataMapOfIntegerColor is deprecated, use NCollection_DataMap<int, "
                       "Quantity_Color> directly")
 typedef NCollection_DataMap<int, Quantity_Color> MeshVS_DataMapOfIntegerColor;
 Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerColor is deprecated, use "

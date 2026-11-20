@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "StepElement_HArray1OfCurveElementEndReleasePacket.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly.")
 
-  Standard_DEPRECATED(
-    "StepElement_HArray1OfCurveElementEndReleasePacket is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly")
+Standard_DEPRECATED(
+  "StepElement_HArray1OfCurveElementEndReleasePacket is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepElement_CurveElementEndReleasePacket>>
   StepElement_HArray1OfCurveElementEndReleasePacket;
 

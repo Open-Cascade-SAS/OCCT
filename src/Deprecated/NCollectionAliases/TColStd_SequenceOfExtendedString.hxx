@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColStd_SequenceOfExtendedString.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Sequence<TCollection_ExtendedString> directly.")
 
-  Standard_DEPRECATED("TColStd_SequenceOfExtendedString is deprecated, use "
+Standard_DEPRECATED("TColStd_SequenceOfExtendedString is deprecated, use "
                       "NCollection_Sequence<TCollection_ExtendedString> directly")
 typedef NCollection_Sequence<TCollection_ExtendedString> TColStd_SequenceOfExtendedString;
 

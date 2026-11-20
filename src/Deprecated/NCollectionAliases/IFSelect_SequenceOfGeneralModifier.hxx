@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IFSelect_SequenceOfGeneralModifier.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly.")
 
-  Standard_DEPRECATED(
-    "IFSelect_SequenceOfGeneralModifier is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly")
+Standard_DEPRECATED("IFSelect_SequenceOfGeneralModifier is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly")
 typedef NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>>
   IFSelect_SequenceOfGeneralModifier;
 

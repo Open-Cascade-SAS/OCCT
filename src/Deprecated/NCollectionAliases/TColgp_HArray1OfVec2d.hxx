@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColgp_HArray1OfVec2d.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<gp_Vec2d> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColgp_HArray1OfVec2d is deprecated, use NCollection_HArray1<gp_Vec2d> directly")
 typedef NCollection_HArray1<gp_Vec2d> TColgp_HArray1OfVec2d;
 

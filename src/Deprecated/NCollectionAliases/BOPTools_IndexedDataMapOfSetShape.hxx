@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("BOPTools_IndexedDataMapOfSetShape.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_IndexedDataMap<BOPTools_Set, TopoDS_Shape> directly.")
 
-  Standard_DEPRECATED("BOPTools_IndexedDataMapOfSetShape is deprecated, use "
+Standard_DEPRECATED("BOPTools_IndexedDataMapOfSetShape is deprecated, use "
                       "NCollection_IndexedDataMap<BOPTools_Set, TopoDS_Shape> directly")
 typedef NCollection_IndexedDataMap<BOPTools_Set, TopoDS_Shape> BOPTools_IndexedDataMapOfSetShape;
 

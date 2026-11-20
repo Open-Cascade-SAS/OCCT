@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HArray1OfListOfInteger.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<TColStd_ListOfInteger> directly.")
 
-  Standard_DEPRECATED("TColStd_HArray1OfListOfInteger is deprecated, use "
+Standard_DEPRECATED("TColStd_HArray1OfListOfInteger is deprecated, use "
                       "NCollection_HArray1<TColStd_ListOfInteger> directly")
 typedef NCollection_HArray1<TColStd_ListOfInteger> TColStd_HArray1OfListOfInteger;
 

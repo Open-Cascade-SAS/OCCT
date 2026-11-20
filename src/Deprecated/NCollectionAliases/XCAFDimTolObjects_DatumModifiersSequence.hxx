@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "XCAFDimTolObjects_DatumModifiersSequence.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> directly.")
 
-  Standard_DEPRECATED("XCAFDimTolObjects_DatumModifiersSequence is deprecated, use "
-                      "NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> directly")
+Standard_DEPRECATED("XCAFDimTolObjects_DatumModifiersSequence is deprecated, use "
+                    "NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> directly")
 typedef NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>
   XCAFDimTolObjects_DatumModifiersSequence;
 

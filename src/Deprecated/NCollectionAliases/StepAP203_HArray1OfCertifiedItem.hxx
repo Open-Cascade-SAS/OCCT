@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepAP203_HArray1OfCertifiedItem.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<StepAP203_CertifiedItem> directly.")
 
-  Standard_DEPRECATED("StepAP203_HArray1OfCertifiedItem is deprecated, use "
+Standard_DEPRECATED("StepAP203_HArray1OfCertifiedItem is deprecated, use "
                       "NCollection_HArray1<StepAP203_CertifiedItem> directly")
 typedef NCollection_HArray1<StepAP203_CertifiedItem> StepAP203_HArray1OfCertifiedItem;
 

@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "MAT_DataMapOfIntegerArc.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("MAT_DataMapOfIntegerArc is deprecated, use NCollection_DataMap<int, "
+Standard_DEPRECATED("MAT_DataMapOfIntegerArc is deprecated, use NCollection_DataMap<int, "
                       "opencascade::handle<MAT_Arc>> directly")
 typedef NCollection_DataMap<int, opencascade::handle<MAT_Arc>> MAT_DataMapOfIntegerArc;
 Standard_DEPRECATED("MAT_DataMapIteratorOfDataMapOfIntegerArc is deprecated, use "

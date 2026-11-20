@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "Interface_Array1OfHAsciiString.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<TCollection_HAsciiString>> directly.")
 
-  Standard_DEPRECATED("Interface_Array1OfHAsciiString is deprecated, use "
-                      "NCollection_Array1<opencascade::handle<TCollection_HAsciiString>> directly")
+Standard_DEPRECATED("Interface_Array1OfHAsciiString is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<TCollection_HAsciiString>> directly")
 typedef NCollection_Array1<opencascade::handle<TCollection_HAsciiString>>
   Interface_Array1OfHAsciiString;
 

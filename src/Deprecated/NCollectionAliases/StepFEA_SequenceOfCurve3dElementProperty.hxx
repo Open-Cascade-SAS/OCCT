@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepFEA_SequenceOfCurve3dElementProperty.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<StepFEA_Curve3dElementProperty>> directly.")
 
-  Standard_DEPRECATED(
-    "StepFEA_SequenceOfCurve3dElementProperty is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<StepFEA_Curve3dElementProperty>> directly")
+Standard_DEPRECATED(
+  "StepFEA_SequenceOfCurve3dElementProperty is deprecated, use "
+  "NCollection_Sequence<opencascade::handle<StepFEA_Curve3dElementProperty>> directly")
 typedef NCollection_Sequence<opencascade::handle<StepFEA_Curve3dElementProperty>>
   StepFEA_SequenceOfCurve3dElementProperty;
 

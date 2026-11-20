@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "MAT2d_DataMapOfBiIntInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "MAT2d_DataMapOfBiIntInteger is deprecated, use NCollection_DataMap<MAT2d_BiInt, int> directly")
 typedef NCollection_DataMap<MAT2d_BiInt, int> MAT2d_DataMapOfBiIntInteger;
 Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfBiIntInteger is deprecated, use "

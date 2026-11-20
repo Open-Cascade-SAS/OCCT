@@ -29,7 +29,7 @@ class TopTools_LocationSet;
 Standard_HEADER_DEPRECATED("TopTools_LocationSetPtr.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TopTools_LocationSetPtr is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TopTools_LocationSetPtr is deprecated, use the underlying type directly")
 typedef TopTools_LocationSet* TopTools_LocationSetPtr;
 
 #endif // _TopTools_LocationSetPtr_HeaderFile

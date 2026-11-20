@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED(
   "Draft_IndexedDataMapOfVertexVertexInfo.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedDataMap<TopoDS_Vertex, Draft_VertexInfo, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED(
-    "Draft_IndexedDataMapOfVertexVertexInfo is deprecated, use "
-    "NCollection_IndexedDataMap<TopoDS_Vertex, Draft_VertexInfo, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "Draft_IndexedDataMapOfVertexVertexInfo is deprecated, use "
+  "NCollection_IndexedDataMap<TopoDS_Vertex, Draft_VertexInfo, TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Vertex, Draft_VertexInfo, TopTools_ShapeMapHasher>
   Draft_IndexedDataMapOfVertexVertexInfo;
 

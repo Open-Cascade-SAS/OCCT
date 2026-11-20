@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntSurf_SequenceOfInteriorPoint.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Sequence<IntSurf_InteriorPoint> directly.")
 
-  Standard_DEPRECATED("IntSurf_SequenceOfInteriorPoint is deprecated, use "
+Standard_DEPRECATED("IntSurf_SequenceOfInteriorPoint is deprecated, use "
                       "NCollection_Sequence<IntSurf_InteriorPoint> directly")
 typedef NCollection_Sequence<IntSurf_InteriorPoint> IntSurf_SequenceOfInteriorPoint;
 

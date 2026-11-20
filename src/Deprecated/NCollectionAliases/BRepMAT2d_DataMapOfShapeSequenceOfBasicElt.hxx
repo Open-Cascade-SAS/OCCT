@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("BRepMAT2d_DataMapOfShapeSequenceOfBasicElt.hxx is deprecated since "
                            "OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "BRepMAT2d_DataMapOfShapeSequenceOfBasicElt is deprecated, use "
-    "NCollection_DataMap<TopoDS_Shape, MAT_SequenceOfBasicElt, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "BRepMAT2d_DataMapOfShapeSequenceOfBasicElt is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, MAT_SequenceOfBasicElt, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, MAT_SequenceOfBasicElt, TopTools_ShapeMapHasher>
   BRepMAT2d_DataMapOfShapeSequenceOfBasicElt;
 Standard_DEPRECATED("BRepMAT2d_DataMapIteratorOfDataMapOfShapeSequenceOfBasicElt is deprecated, "

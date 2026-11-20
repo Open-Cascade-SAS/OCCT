@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("BRepTopAdaptor_MapOfShapeTool.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "BRepTopAdaptor_MapOfShapeTool is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "BRepTopAdaptor_Tool, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "BRepTopAdaptor_MapOfShapeTool is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "BRepTopAdaptor_Tool, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>
   BRepTopAdaptor_MapOfShapeTool;
 Standard_DEPRECATED("BRepTopAdaptor_DataMapIteratorOfMapOfShapeTool is deprecated, use "

@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "IntTools_ListOfBox.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("IntTools_ListOfBox is deprecated, use NCollection_List<Bnd_Box> directly")
-typedef NCollection_List<Bnd_Box> IntTools_ListOfBox;
+Standard_DEPRECATED("IntTools_ListOfBox is deprecated, use NCollection_List<Bnd_Box> directly")
+typedef NCollection_List<Bnd_Box>           IntTools_ListOfBox;
 Standard_DEPRECATED("IntTools_ListIteratorOfListOfBox is deprecated, use "
                     "NCollection_List<Bnd_Box>::Iterator directly")
 typedef NCollection_List<Bnd_Box>::Iterator IntTools_ListIteratorOfListOfBox;

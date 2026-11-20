@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "TDF_GUIDProgIDMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_GUIDProgIDMap is deprecated, use NCollection_DoubleMap<Standard_GUID, "
+Standard_DEPRECATED("TDF_GUIDProgIDMap is deprecated, use NCollection_DoubleMap<Standard_GUID, "
                       "TCollection_ExtendedString> directly")
 typedef NCollection_DoubleMap<Standard_GUID, TCollection_ExtendedString> TDF_GUIDProgIDMap;
 Standard_DEPRECATED(

@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IGESDimen_HArray1OfGeneralNote.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly.")
 
-  Standard_DEPRECATED("IGESDimen_HArray1OfGeneralNote is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly")
+Standard_DEPRECATED("IGESDimen_HArray1OfGeneralNote is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>>
   IGESDimen_HArray1OfGeneralNote;
 

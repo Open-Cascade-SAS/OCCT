@@ -153,8 +153,8 @@ void BRepMesh_MeshTool::CleanFrontierLinks()
     {
       const int                aPriorElemId = aPair.Index(aElemIt);
       const BRepMesh_Triangle& aElement     = myStructure->GetElement(aPriorElemId);
-      const int (&e)[3]                     = aElement.myEdges;
-      const bool (&o)[3]                    = aElement.myOrientations;
+      const int(&e)[3]                      = aElement.myEdges;
+      const bool(&o)[3]                     = aElement.myOrientations;
 
       for (int n = 0; n < 3 && !isTriangleFound; ++n)
       {
@@ -193,8 +193,8 @@ void BRepMesh_MeshTool::EraseTriangle(const int                       theTriangl
                                       IMeshData::MapOfIntegerInteger& theLoopEdges)
 {
   const BRepMesh_Triangle& aElement = myStructure->GetElement(theTriangleIndex);
-  const int (&e)[3]                 = aElement.myEdges;
-  const bool (&o)[3]                = aElement.myOrientations;
+  const int(&e)[3]                  = aElement.myEdges;
+  const bool(&o)[3]                 = aElement.myOrientations;
 
   myStructure->RemoveElement(theTriangleIndex);
 
@@ -259,7 +259,7 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
         theTriangles.Add(aIndex);
 
         const BRepMesh_Triangle& aElement = myStructure->GetElement(aIndex);
-        const int (&aEdges)[3]            = aElement.myEdges;
+        const int(&aEdges)[3]             = aElement.myEdges;
 
         for (int i = 0; i < 3; ++i)
         {

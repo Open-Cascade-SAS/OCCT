@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColgp_HSequenceOfPnt.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HSequence<gp_Pnt> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColgp_HSequenceOfPnt is deprecated, use NCollection_HSequence<gp_Pnt> directly")
 typedef NCollection_HSequence<gp_Pnt> TColgp_HSequenceOfPnt;
 

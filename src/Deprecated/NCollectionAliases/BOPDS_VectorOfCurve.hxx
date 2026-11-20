@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfCurve.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<BOPDS_Curve> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BOPDS_VectorOfCurve is deprecated, use NCollection_DynamicArray<BOPDS_Curve> directly")
 typedef NCollection_DynamicArray<BOPDS_Curve> BOPDS_VectorOfCurve;
 

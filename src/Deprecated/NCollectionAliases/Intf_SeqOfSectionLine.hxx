@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Intf_SeqOfSectionLine.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<Intf_SectionLine> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Intf_SeqOfSectionLine is deprecated, use NCollection_Sequence<Intf_SectionLine> directly")
 typedef NCollection_Sequence<Intf_SectionLine> Intf_SeqOfSectionLine;
 

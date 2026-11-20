@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "StepRepr_HArray1OfPropertyDefinitionRepresentation.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepRepr_PropertyDefinitionRepresentation>> directly.")
 
-  Standard_DEPRECATED(
-    "StepRepr_HArray1OfPropertyDefinitionRepresentation is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepRepr_PropertyDefinitionRepresentation>> directly")
+Standard_DEPRECATED(
+  "StepRepr_HArray1OfPropertyDefinitionRepresentation is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<StepRepr_PropertyDefinitionRepresentation>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepRepr_PropertyDefinitionRepresentation>>
   StepRepr_HArray1OfPropertyDefinitionRepresentation;
 

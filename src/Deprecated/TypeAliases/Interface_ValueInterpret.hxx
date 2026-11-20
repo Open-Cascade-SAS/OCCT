@@ -27,7 +27,7 @@ class Interface_TypedValue;
 Standard_HEADER_DEPRECATED("Interface_ValueInterpret.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("Interface_ValueInterpret is deprecated, use the underlying type directly")
+Standard_DEPRECATED("Interface_ValueInterpret is deprecated, use the underlying type directly")
 typedef occ::handle<TCollection_HAsciiString> (*Interface_ValueInterpret)(
   const occ::handle<Interface_TypedValue>&     typval,
   const occ::handle<TCollection_HAsciiString>& val,

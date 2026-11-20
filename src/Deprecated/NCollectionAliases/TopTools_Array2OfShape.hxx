@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TopTools_Array2OfShape.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array2<TopoDS_Shape> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TopTools_Array2OfShape is deprecated, use NCollection_Array2<TopoDS_Shape> directly")
 typedef NCollection_Array2<TopoDS_Shape> TopTools_Array2OfShape;
 

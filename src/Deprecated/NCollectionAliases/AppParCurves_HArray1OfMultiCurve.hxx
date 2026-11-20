@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("AppParCurves_HArray1OfMultiCurve.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<AppParCurves_MultiCurve> directly.")
 
-  Standard_DEPRECATED("AppParCurves_HArray1OfMultiCurve is deprecated, use "
+Standard_DEPRECATED("AppParCurves_HArray1OfMultiCurve is deprecated, use "
                       "NCollection_HArray1<AppParCurves_MultiCurve> directly")
 typedef NCollection_HArray1<AppParCurves_MultiCurve> AppParCurves_HArray1OfMultiCurve;
 

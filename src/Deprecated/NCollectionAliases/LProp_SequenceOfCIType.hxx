@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("LProp_SequenceOfCIType.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<LProp_CIType> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "LProp_SequenceOfCIType is deprecated, use NCollection_Sequence<LProp_CIType> directly")
 typedef NCollection_Sequence<LProp_CIType> LProp_SequenceOfCIType;
 

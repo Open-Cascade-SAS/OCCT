@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect.hxx is deprecated since OCCT "
   "8.0.0. Use NCollection_Array1<StepVisual_CameraModelD3MultiClippingInterectionSelect> directly.")
 
-  Standard_DEPRECATED(
-    "StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect is deprecated, use "
-    "NCollection_Array1<StepVisual_CameraModelD3MultiClippingInterectionSelect> directly")
+Standard_DEPRECATED(
+  "StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect is deprecated, use "
+  "NCollection_Array1<StepVisual_CameraModelD3MultiClippingInterectionSelect> directly")
 typedef NCollection_Array1<StepVisual_CameraModelD3MultiClippingInterectionSelect>
   StepVisual_Array1OfCameraModelD3MultiClippingInterectionSelect;
 

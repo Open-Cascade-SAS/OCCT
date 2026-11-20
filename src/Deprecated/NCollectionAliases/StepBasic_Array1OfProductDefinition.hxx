@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepBasic_Array1OfProductDefinition.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepBasic_ProductDefinition>> directly.")
 
-  Standard_DEPRECATED(
-    "StepBasic_Array1OfProductDefinition is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepBasic_ProductDefinition>> directly")
+Standard_DEPRECATED("StepBasic_Array1OfProductDefinition is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<StepBasic_ProductDefinition>> directly")
 typedef NCollection_Array1<opencascade::handle<StepBasic_ProductDefinition>>
   StepBasic_Array1OfProductDefinition;
 

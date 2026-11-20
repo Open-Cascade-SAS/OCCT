@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerAsciiString.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED("MeshVS_DataMapOfIntegerAsciiString is deprecated, use "
+Standard_DEPRECATED("MeshVS_DataMapOfIntegerAsciiString is deprecated, use "
                       "NCollection_DataMap<int, TCollection_AsciiString> directly")
 typedef NCollection_DataMap<int, TCollection_AsciiString> MeshVS_DataMapOfIntegerAsciiString;
 Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString is deprecated, use "

@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepShape_Array1OfOrientedEdge.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepShape_OrientedEdge>> directly.")
 
-  Standard_DEPRECATED("StepShape_Array1OfOrientedEdge is deprecated, use "
-                      "NCollection_Array1<opencascade::handle<StepShape_OrientedEdge>> directly")
+Standard_DEPRECATED("StepShape_Array1OfOrientedEdge is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<StepShape_OrientedEdge>> directly")
 typedef NCollection_Array1<opencascade::handle<StepShape_OrientedEdge>>
   StepShape_Array1OfOrientedEdge;
 

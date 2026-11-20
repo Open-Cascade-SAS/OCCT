@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED(
   "TPrsStd_DataMapOfGUIDDriver.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "TPrsStd_DataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, "
-    "opencascade::handle<TPrsStd_Driver>> directly")
+Standard_DEPRECATED(
+  "TPrsStd_DataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, "
+  "opencascade::handle<TPrsStd_Driver>> directly")
 typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>>
   TPrsStd_DataMapOfGUIDDriver;
 Standard_DEPRECATED(

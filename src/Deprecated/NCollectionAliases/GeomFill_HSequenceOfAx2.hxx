@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("GeomFill_HSequenceOfAx2.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HSequence<gp_Ax2> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "GeomFill_HSequenceOfAx2 is deprecated, use NCollection_HSequence<gp_Ax2> directly")
 typedef NCollection_HSequence<gp_Ax2> GeomFill_HSequenceOfAx2;
 

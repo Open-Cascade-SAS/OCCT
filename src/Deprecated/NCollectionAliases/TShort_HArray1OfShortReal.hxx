@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TShort_HArray1OfShortReal.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<float> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TShort_HArray1OfShortReal is deprecated, use NCollection_HArray1<float> directly")
 typedef NCollection_HArray1<float> TShort_HArray1OfShortReal;
 

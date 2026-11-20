@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("STEPConstruct_DataMapOfAsciiStringTransient.hxx is deprecated since "
                            "OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("STEPConstruct_DataMapOfAsciiStringTransient is deprecated, use "
-                      "NCollection_DataMap<TCollection_AsciiString, "
-                      "opencascade::handle<Standard_Transient>> directly")
+Standard_DEPRECATED("STEPConstruct_DataMapOfAsciiStringTransient is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, "
+                    "opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Standard_Transient>>
   STEPConstruct_DataMapOfAsciiStringTransient;
 Standard_DEPRECATED("STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient is deprecated, "

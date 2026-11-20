@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TopBas_ListOfTestInterference.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("TopBas_ListOfTestInterference is deprecated, use "
+Standard_DEPRECATED("TopBas_ListOfTestInterference is deprecated, use "
                       "NCollection_List<TopBas_TestInterference> directly")
 typedef NCollection_List<TopBas_TestInterference> TopBas_ListOfTestInterference;
 Standard_DEPRECATED("TopBas_ListIteratorOfListOfTestInterference is deprecated, use "

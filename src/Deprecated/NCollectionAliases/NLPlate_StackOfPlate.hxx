@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "NLPlate_StackOfPlate.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "NLPlate_StackOfPlate is deprecated, use NCollection_List<Plate_Plate> directly")
-typedef NCollection_List<Plate_Plate> NLPlate_StackOfPlate;
+typedef NCollection_List<Plate_Plate>           NLPlate_StackOfPlate;
 Standard_DEPRECATED("NLPlate_ListIteratorOfStackOfPlate is deprecated, use "
                     "NCollection_List<Plate_Plate>::Iterator directly")
 typedef NCollection_List<Plate_Plate>::Iterator NLPlate_ListIteratorOfStackOfPlate;

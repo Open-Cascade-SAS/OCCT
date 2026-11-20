@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "Geom_SequenceOfBSplineSurface.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<Geom_BSplineSurface>> directly.")
 
-  Standard_DEPRECATED("Geom_SequenceOfBSplineSurface is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<Geom_BSplineSurface>> directly")
+Standard_DEPRECATED("Geom_SequenceOfBSplineSurface is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<Geom_BSplineSurface>> directly")
 typedef NCollection_Sequence<opencascade::handle<Geom_BSplineSurface>>
   Geom_SequenceOfBSplineSurface;
 

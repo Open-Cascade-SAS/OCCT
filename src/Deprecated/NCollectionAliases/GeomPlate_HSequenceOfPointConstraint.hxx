@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "GeomPlate_HSequenceOfPointConstraint.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HSequence<opencascade::handle<GeomPlate_PointConstraint>> directly.")
 
-  Standard_DEPRECATED(
-    "GeomPlate_HSequenceOfPointConstraint is deprecated, use "
-    "NCollection_HSequence<opencascade::handle<GeomPlate_PointConstraint>> directly")
+Standard_DEPRECATED(
+  "GeomPlate_HSequenceOfPointConstraint is deprecated, use "
+  "NCollection_HSequence<opencascade::handle<GeomPlate_PointConstraint>> directly")
 typedef NCollection_HSequence<opencascade::handle<GeomPlate_PointConstraint>>
   GeomPlate_HSequenceOfPointConstraint;
 

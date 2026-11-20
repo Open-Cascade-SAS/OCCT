@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IGESGraph_HArray1OfColor.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<IGESGraph_Color>> directly.")
 
-  Standard_DEPRECATED("IGESGraph_HArray1OfColor is deprecated, use "
+Standard_DEPRECATED("IGESGraph_HArray1OfColor is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<IGESGraph_Color>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESGraph_Color>> IGESGraph_HArray1OfColor;
 

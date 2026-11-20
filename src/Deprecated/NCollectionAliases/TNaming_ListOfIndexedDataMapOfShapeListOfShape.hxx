@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED("TNaming_ListOfIndexedDataMapOfShapeListOfShape.hxx is deprecated since "
                            "OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TNaming_ListOfIndexedDataMapOfShapeListOfShape is deprecated, use "
-                      "NCollection_List<TopTools_IndexedDataMapOfShapeListOfShape> directly")
+Standard_DEPRECATED("TNaming_ListOfIndexedDataMapOfShapeListOfShape is deprecated, use "
+                    "NCollection_List<TopTools_IndexedDataMapOfShapeListOfShape> directly")
 typedef NCollection_List<TopTools_IndexedDataMapOfShapeListOfShape>
   TNaming_ListOfIndexedDataMapOfShapeListOfShape;
 Standard_DEPRECATED(

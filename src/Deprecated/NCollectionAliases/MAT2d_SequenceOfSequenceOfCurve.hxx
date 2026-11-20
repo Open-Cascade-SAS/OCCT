@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("MAT2d_SequenceOfSequenceOfCurve.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Sequence<TColGeom2d_SequenceOfCurve> directly.")
 
-  Standard_DEPRECATED("MAT2d_SequenceOfSequenceOfCurve is deprecated, use "
+Standard_DEPRECATED("MAT2d_SequenceOfSequenceOfCurve is deprecated, use "
                       "NCollection_Sequence<TColGeom2d_SequenceOfCurve> directly")
 typedef NCollection_Sequence<TColGeom2d_SequenceOfCurve> MAT2d_SequenceOfSequenceOfCurve;
 

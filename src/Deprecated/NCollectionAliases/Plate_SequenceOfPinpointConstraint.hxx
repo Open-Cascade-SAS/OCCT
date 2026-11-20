@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Plate_SequenceOfPinpointConstraint.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Sequence<Plate_PinpointConstraint> directly.")
 
-  Standard_DEPRECATED("Plate_SequenceOfPinpointConstraint is deprecated, use "
+Standard_DEPRECATED("Plate_SequenceOfPinpointConstraint is deprecated, use "
                       "NCollection_Sequence<Plate_PinpointConstraint> directly")
 typedef NCollection_Sequence<Plate_PinpointConstraint> Plate_SequenceOfPinpointConstraint;
 

@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "SelectMgr_SequenceOfSelection.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<SelectMgr_Selection>> directly.")
 
-  Standard_DEPRECATED("SelectMgr_SequenceOfSelection is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<SelectMgr_Selection>> directly")
+Standard_DEPRECATED("SelectMgr_SequenceOfSelection is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<SelectMgr_Selection>> directly")
 typedef NCollection_Sequence<opencascade::handle<SelectMgr_Selection>>
   SelectMgr_SequenceOfSelection;
 

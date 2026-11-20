@@ -27,9 +27,8 @@ Standard_HEADER_DEPRECATED(
   "Graphic3d_MapIteratorOfMapOfStructure.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Map<opencascade::handle<Graphic3d_Structure>>::Iterator directly.")
 
-  Standard_DEPRECATED(
-    "Graphic3d_MapIteratorOfMapOfStructure is deprecated, use "
-    "NCollection_Map<opencascade::handle<Graphic3d_Structure>>::Iterator directly")
+Standard_DEPRECATED("Graphic3d_MapIteratorOfMapOfStructure is deprecated, use "
+                    "NCollection_Map<opencascade::handle<Graphic3d_Structure>>::Iterator directly")
 typedef NCollection_Map<opencascade::handle<Graphic3d_Structure>>::Iterator
   Graphic3d_MapIteratorOfMapOfStructure;
 

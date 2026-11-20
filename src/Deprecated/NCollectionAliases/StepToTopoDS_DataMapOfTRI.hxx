@@ -27,12 +27,11 @@
 Standard_HEADER_DEPRECATED(
   "StepToTopoDS_DataMapOfTRI.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("StepToTopoDS_DataMapOfTRI is deprecated, use "
+Standard_DEPRECATED("StepToTopoDS_DataMapOfTRI is deprecated, use "
                       "NCollection_DataMap<opencascade::handle<StepShape_"
                       "TopologicalRepresentationItem>, TopoDS_Shape> directly")
 typedef NCollection_DataMap<opencascade::handle<StepShape_TopologicalRepresentationItem>,
-                            TopoDS_Shape>
-  StepToTopoDS_DataMapOfTRI;
+                            TopoDS_Shape>           StepToTopoDS_DataMapOfTRI;
 Standard_DEPRECATED("StepToTopoDS_DataMapIteratorOfDataMapOfTRI is deprecated, use "
                     "NCollection_DataMap<opencascade::handle<StepShape_"
                     "TopologicalRepresentationItem>, TopoDS_Shape>::Iterator directly")

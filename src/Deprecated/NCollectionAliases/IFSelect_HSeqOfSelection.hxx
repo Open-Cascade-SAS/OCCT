@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "IFSelect_HSeqOfSelection.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HSequence<opencascade::handle<IFSelect_Selection>> directly.")
 
-  Standard_DEPRECATED("IFSelect_HSeqOfSelection is deprecated, use "
+Standard_DEPRECATED("IFSelect_HSeqOfSelection is deprecated, use "
                       "NCollection_HSequence<opencascade::handle<IFSelect_Selection>> directly")
 typedef NCollection_HSequence<opencascade::handle<IFSelect_Selection>> IFSelect_HSeqOfSelection;
 

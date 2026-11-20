@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "BRepCheck_IndexedDataMapOfShapeResult.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<BRepCheck_Result>> directly.")
 
-  Standard_DEPRECATED(
-    "BRepCheck_IndexedDataMapOfShapeResult is deprecated, use "
-    "NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<BRepCheck_Result>> directly")
+Standard_DEPRECATED(
+  "BRepCheck_IndexedDataMapOfShapeResult is deprecated, use "
+  "NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<BRepCheck_Result>> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<BRepCheck_Result>>
   BRepCheck_IndexedDataMapOfShapeResult;
 

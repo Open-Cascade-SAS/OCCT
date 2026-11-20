@@ -27,12 +27,11 @@
 Standard_HEADER_DEPRECATED(
   "AIS_DataMapOfIOStatus.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("AIS_DataMapOfIOStatus is deprecated, use "
+Standard_DEPRECATED("AIS_DataMapOfIOStatus is deprecated, use "
                       "NCollection_DataMap<opencascade::handle<AIS_InteractiveObject>, "
                       "opencascade::handle<AIS_GlobalStatus>> directly")
 typedef NCollection_DataMap<opencascade::handle<AIS_InteractiveObject>,
-                            opencascade::handle<AIS_GlobalStatus>>
-  AIS_DataMapOfIOStatus;
+                            opencascade::handle<AIS_GlobalStatus>> AIS_DataMapOfIOStatus;
 Standard_DEPRECATED("AIS_DataMapIteratorOfDataMapOfIOStatus is deprecated, use "
                     "NCollection_DataMap<opencascade::handle<AIS_InteractiveObject>, "
                     "opencascade::handle<AIS_GlobalStatus>>::Iterator directly")

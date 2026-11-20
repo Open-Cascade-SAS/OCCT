@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepElement_HArray1OfMeasureOrUnspecifiedValue.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue> directly.")
 
-  Standard_DEPRECATED("StepElement_HArray1OfMeasureOrUnspecifiedValue is deprecated, use "
-                      "NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue> directly")
+Standard_DEPRECATED("StepElement_HArray1OfMeasureOrUnspecifiedValue is deprecated, use "
+                    "NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue> directly")
 typedef NCollection_HArray1<StepElement_MeasureOrUnspecifiedValue>
   StepElement_HArray1OfMeasureOrUnspecifiedValue;
 

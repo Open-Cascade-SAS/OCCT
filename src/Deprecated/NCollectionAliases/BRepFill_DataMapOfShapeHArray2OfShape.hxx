@@ -28,13 +28,12 @@
 Standard_HEADER_DEPRECATED("BRepFill_DataMapOfShapeHArray2OfShape.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BRepFill_DataMapOfShapeHArray2OfShape is deprecated, use NCollection_DataMap<TopoDS_Shape, "
     "opencascade::handle<TopTools_HArray2OfShape>, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape,
                             opencascade::handle<TopTools_HArray2OfShape>,
-                            TopTools_ShapeMapHasher>
-  BRepFill_DataMapOfShapeHArray2OfShape;
+                            TopTools_ShapeMapHasher> BRepFill_DataMapOfShapeHArray2OfShape;
 Standard_DEPRECATED(
   "BRepFill_DataMapIteratorOfDataMapOfShapeHArray2OfShape is deprecated, use "
   "NCollection_DataMap<TopoDS_Shape, opencascade::handle<TopTools_HArray2OfShape>, "

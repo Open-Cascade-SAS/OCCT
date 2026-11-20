@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BRepExtrema_SeqOfSolution.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<BRepExtrema_SolutionElem> directly.")
 
-  Standard_DEPRECATED("BRepExtrema_SeqOfSolution is deprecated, use "
+Standard_DEPRECATED("BRepExtrema_SeqOfSolution is deprecated, use "
                       "NCollection_Sequence<BRepExtrema_SolutionElem> directly")
 typedef NCollection_Sequence<BRepExtrema_SolutionElem> BRepExtrema_SeqOfSolution;
 

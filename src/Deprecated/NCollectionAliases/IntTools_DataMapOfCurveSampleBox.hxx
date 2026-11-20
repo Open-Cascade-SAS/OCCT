@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("IntTools_DataMapOfCurveSampleBox.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED("IntTools_DataMapOfCurveSampleBox is deprecated, use "
+Standard_DEPRECATED("IntTools_DataMapOfCurveSampleBox is deprecated, use "
                       "NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box> directly")
 typedef NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box> IntTools_DataMapOfCurveSampleBox;
 Standard_DEPRECATED("IntTools_DataMapIteratorOfDataMapOfCurveSampleBox is deprecated, use "

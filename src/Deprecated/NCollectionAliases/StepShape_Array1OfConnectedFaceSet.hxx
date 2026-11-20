@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepShape_Array1OfConnectedFaceSet.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepShape_ConnectedFaceSet>> directly.")
 
-  Standard_DEPRECATED(
-    "StepShape_Array1OfConnectedFaceSet is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepShape_ConnectedFaceSet>> directly")
+Standard_DEPRECATED("StepShape_Array1OfConnectedFaceSet is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<StepShape_ConnectedFaceSet>> directly")
 typedef NCollection_Array1<opencascade::handle<StepShape_ConnectedFaceSet>>
   StepShape_Array1OfConnectedFaceSet;
 

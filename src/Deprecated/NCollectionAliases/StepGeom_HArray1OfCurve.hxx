@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("StepGeom_HArray1OfCurve.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<StepGeom_Curve>> directly.")
 
-  Standard_DEPRECATED("StepGeom_HArray1OfCurve is deprecated, use "
+Standard_DEPRECATED("StepGeom_HArray1OfCurve is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<StepGeom_Curve>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepGeom_Curve>> StepGeom_HArray1OfCurve;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BRepAdaptor_Array1OfCurve.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<BRepAdaptor_Curve> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BRepAdaptor_Array1OfCurve is deprecated, use NCollection_Array1<BRepAdaptor_Curve> directly")
 typedef NCollection_Array1<BRepAdaptor_Curve> BRepAdaptor_Array1OfCurve;
 

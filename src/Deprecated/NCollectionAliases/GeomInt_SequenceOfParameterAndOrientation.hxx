@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "GeomInt_SequenceOfParameterAndOrientation.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<GeomInt_ParameterAndOrientation> directly.")
 
-  Standard_DEPRECATED("GeomInt_SequenceOfParameterAndOrientation is deprecated, use "
-                      "NCollection_Sequence<GeomInt_ParameterAndOrientation> directly")
+Standard_DEPRECATED("GeomInt_SequenceOfParameterAndOrientation is deprecated, use "
+                    "NCollection_Sequence<GeomInt_ParameterAndOrientation> directly")
 typedef NCollection_Sequence<GeomInt_ParameterAndOrientation>
   GeomInt_SequenceOfParameterAndOrientation;
 

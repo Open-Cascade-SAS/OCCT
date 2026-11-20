@@ -27,12 +27,12 @@
 Standard_HEADER_DEPRECATED(
   "Extrema_HUBTreeOfSphere.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Extrema_UBTreeOfSphere is deprecated, use NCollection_UBTree<int, Bnd_Sphere> directly")
-typedef NCollection_UBTree<int, Bnd_Sphere> Extrema_UBTreeOfSphere;
+typedef NCollection_UBTree<int, Bnd_Sphere>        Extrema_UBTreeOfSphere;
 Standard_DEPRECATED("Extrema_UBTreeFillerOfSphere is deprecated, use NCollection_UBTreeFiller<int, "
                     "Bnd_Sphere> directly")
-typedef NCollection_UBTreeFiller<int, Bnd_Sphere> Extrema_UBTreeFillerOfSphere;
+typedef NCollection_UBTreeFiller<int, Bnd_Sphere>  Extrema_UBTreeFillerOfSphere;
 Standard_DEPRECATED(
   "Extrema_HUBTreeOfSphere is deprecated, use NCollection_Handle<Extrema_UBTreeOfSphere> directly")
 typedef NCollection_Handle<Extrema_UBTreeOfSphere> Extrema_HUBTreeOfSphere;

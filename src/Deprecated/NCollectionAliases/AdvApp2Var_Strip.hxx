@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("AdvApp2Var_Strip.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<AdvApp2Var_Iso>> directly.")
 
-  Standard_DEPRECATED("AdvApp2Var_Strip is deprecated, use "
+Standard_DEPRECATED("AdvApp2Var_Strip is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<AdvApp2Var_Iso>> directly")
 typedef NCollection_Sequence<opencascade::handle<AdvApp2Var_Iso>> AdvApp2Var_Strip;
 

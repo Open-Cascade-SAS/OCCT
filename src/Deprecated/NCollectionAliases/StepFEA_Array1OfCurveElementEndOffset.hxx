@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepFEA_Array1OfCurveElementEndOffset.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly.")
 
-  Standard_DEPRECATED(
-    "StepFEA_Array1OfCurveElementEndOffset is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly")
+Standard_DEPRECATED(
+  "StepFEA_Array1OfCurveElementEndOffset is deprecated, use "
+  "NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly")
 typedef NCollection_Array1<opencascade::handle<StepFEA_CurveElementEndOffset>>
   StepFEA_Array1OfCurveElementEndOffset;
 

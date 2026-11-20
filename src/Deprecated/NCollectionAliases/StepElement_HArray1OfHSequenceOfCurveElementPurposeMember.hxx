@@ -31,10 +31,10 @@ Standard_HEADER_DEPRECATED(
   "Use NCollection_HArray1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> "
   "directly.")
 
-  Standard_DEPRECATED(
-    "StepElement_HArray1OfHSequenceOfCurveElementPurposeMember is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> "
-    "directly")
+Standard_DEPRECATED(
+  "StepElement_HArray1OfHSequenceOfCurveElementPurposeMember is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> "
+  "directly")
 typedef NCollection_HArray1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>>
   StepElement_HArray1OfHSequenceOfCurveElementPurposeMember;
 

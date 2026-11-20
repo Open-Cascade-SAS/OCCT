@@ -31,7 +31,8 @@ public:
 
   Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::CurrentGroup() should be "
                       "called instead")
-  static occ::handle<Graphic3d_Group> CurrentGroup(const occ::handle<Prs3d_Presentation>& thePrs3d)
+    static occ::handle<Graphic3d_Group> CurrentGroup(
+      const occ::handle<Prs3d_Presentation>& thePrs3d)
   {
     return thePrs3d->CurrentGroup();
   }

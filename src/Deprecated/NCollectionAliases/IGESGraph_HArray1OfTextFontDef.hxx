@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IGESGraph_HArray1OfTextFontDef.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESGraph_TextFontDef>> directly.")
 
-  Standard_DEPRECATED("IGESGraph_HArray1OfTextFontDef is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<IGESGraph_TextFontDef>> directly")
+Standard_DEPRECATED("IGESGraph_HArray1OfTextFontDef is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<IGESGraph_TextFontDef>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESGraph_TextFontDef>>
   IGESGraph_HArray1OfTextFontDef;
 

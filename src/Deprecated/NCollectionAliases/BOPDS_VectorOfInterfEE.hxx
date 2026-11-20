@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfInterfEE.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<BOPDS_InterfEE> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BOPDS_VectorOfInterfEE is deprecated, use NCollection_DynamicArray<BOPDS_InterfEE> directly")
 typedef NCollection_DynamicArray<BOPDS_InterfEE> BOPDS_VectorOfInterfEE;
 

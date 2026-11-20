@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("AdvApp2Var_SequenceOfStrip.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<AdvApp2Var_Strip> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "AdvApp2Var_SequenceOfStrip is deprecated, use NCollection_Sequence<AdvApp2Var_Strip> directly")
 typedef NCollection_Sequence<AdvApp2Var_Strip> AdvApp2Var_SequenceOfStrip;
 

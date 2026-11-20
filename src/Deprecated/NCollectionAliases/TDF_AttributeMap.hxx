@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED(
   "TDF_AttributeMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_AttributeMap is deprecated, use "
+Standard_DEPRECATED("TDF_AttributeMap is deprecated, use "
                       "NCollection_Map<opencascade::handle<TDF_Attribute>> directly")
-typedef NCollection_Map<opencascade::handle<TDF_Attribute>> TDF_AttributeMap;
+typedef NCollection_Map<opencascade::handle<TDF_Attribute>>           TDF_AttributeMap;
 Standard_DEPRECATED("TDF_MapIteratorOfAttributeMap is deprecated, use "
                     "NCollection_Map<opencascade::handle<TDF_Attribute>>::Iterator directly")
 typedef NCollection_Map<opencascade::handle<TDF_Attribute>>::Iterator TDF_MapIteratorOfAttributeMap;

@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HArray1OfCharacter.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<char> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColStd_HArray1OfCharacter is deprecated, use NCollection_HArray1<char> directly")
 typedef NCollection_HArray1<char> TColStd_HArray1OfCharacter;
 

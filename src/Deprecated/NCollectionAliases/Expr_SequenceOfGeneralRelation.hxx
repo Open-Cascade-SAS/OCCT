@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "Expr_SequenceOfGeneralRelation.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<Expr_GeneralRelation>> directly.")
 
-  Standard_DEPRECATED("Expr_SequenceOfGeneralRelation is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<Expr_GeneralRelation>> directly")
+Standard_DEPRECATED("Expr_SequenceOfGeneralRelation is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<Expr_GeneralRelation>> directly")
 typedef NCollection_Sequence<opencascade::handle<Expr_GeneralRelation>>
   Expr_SequenceOfGeneralRelation;
 

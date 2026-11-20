@@ -35,7 +35,10 @@ public:
   Standard_EXPORT ~PrsMgr_Presentation() override;
 
   Standard_DEPRECATED("Dummy to simplify porting - returns self")
-  Prs3d_Presentation* Presentation() { return this; }
+  Prs3d_Presentation* Presentation()
+  {
+    return this;
+  }
 
   //! returns the PresentationManager in which the presentation has been created.
   const occ::handle<PrsMgr_PresentationManager>& PresentationManager() const

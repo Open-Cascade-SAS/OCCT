@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect.hxx is deprecated since OCCT 8.0.0. "
   "Use NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly.")
 
-  Standard_DEPRECATED(
-    "StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect is deprecated, use "
-    "NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly")
+Standard_DEPRECATED(
+  "StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect is deprecated, use "
+  "NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly")
 typedef NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>
   StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect;
 

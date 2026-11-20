@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("BRepOffset_DataMapOfShapeListOfInterval.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "BRepOffset_DataMapOfShapeListOfInterval is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "BRepOffset_ListOfInterval, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "BRepOffset_DataMapOfShapeListOfInterval is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "BRepOffset_ListOfInterval, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, BRepOffset_ListOfInterval, TopTools_ShapeMapHasher>
   BRepOffset_DataMapOfShapeListOfInterval;
 Standard_DEPRECATED("BRepOffset_DataMapIteratorOfDataMapOfShapeListOfInterval is deprecated, use "

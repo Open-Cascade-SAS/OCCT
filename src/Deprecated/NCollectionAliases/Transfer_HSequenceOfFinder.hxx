@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Transfer_HSequenceOfFinder.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HSequence<opencascade::handle<Transfer_Finder>> directly.")
 
-  Standard_DEPRECATED("Transfer_HSequenceOfFinder is deprecated, use "
+Standard_DEPRECATED("Transfer_HSequenceOfFinder is deprecated, use "
                       "NCollection_HSequence<opencascade::handle<Transfer_Finder>> directly")
 typedef NCollection_HSequence<opencascade::handle<Transfer_Finder>> Transfer_HSequenceOfFinder;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("HatchGen_PointsOnHatching.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<HatchGen_PointOnHatching> directly.")
 
-  Standard_DEPRECATED("HatchGen_PointsOnHatching is deprecated, use "
+Standard_DEPRECATED("HatchGen_PointsOnHatching is deprecated, use "
                       "NCollection_Sequence<HatchGen_PointOnHatching> directly")
 typedef NCollection_Sequence<HatchGen_PointOnHatching> HatchGen_PointsOnHatching;
 

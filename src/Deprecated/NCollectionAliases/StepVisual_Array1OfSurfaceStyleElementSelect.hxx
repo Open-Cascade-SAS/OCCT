@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_Array1OfSurfaceStyleElementSelect.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepVisual_SurfaceStyleElementSelect> directly.")
 
-  Standard_DEPRECATED("StepVisual_Array1OfSurfaceStyleElementSelect is deprecated, use "
-                      "NCollection_Array1<StepVisual_SurfaceStyleElementSelect> directly")
+Standard_DEPRECATED("StepVisual_Array1OfSurfaceStyleElementSelect is deprecated, use "
+                    "NCollection_Array1<StepVisual_SurfaceStyleElementSelect> directly")
 typedef NCollection_Array1<StepVisual_SurfaceStyleElementSelect>
   StepVisual_Array1OfSurfaceStyleElementSelect;
 

@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx is deprecated "
                            "since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TopOpeBRepDS_DataMapOfIntegerListOfInterference is deprecated, use "
-                      "NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference> directly")
+Standard_DEPRECATED("TopOpeBRepDS_DataMapOfIntegerListOfInterference is deprecated, use "
+                    "NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference> directly")
 typedef NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference>
   TopOpeBRepDS_DataMapOfIntegerListOfInterference;
 Standard_DEPRECATED(

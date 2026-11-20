@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("AdvApp2Var_SequenceOfPatch.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<AdvApp2Var_Patch>> directly.")
 
-  Standard_DEPRECATED("AdvApp2Var_SequenceOfPatch is deprecated, use "
+Standard_DEPRECATED("AdvApp2Var_SequenceOfPatch is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<AdvApp2Var_Patch>> directly")
 typedef NCollection_Sequence<opencascade::handle<AdvApp2Var_Patch>> AdvApp2Var_SequenceOfPatch;
 

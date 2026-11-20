@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntTools_SequenceOfCurves.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntTools_Curve> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "IntTools_SequenceOfCurves is deprecated, use NCollection_Sequence<IntTools_Curve> directly")
 typedef NCollection_Sequence<IntTools_Curve> IntTools_SequenceOfCurves;
 

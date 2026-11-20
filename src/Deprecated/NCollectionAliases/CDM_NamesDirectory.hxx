@@ -25,7 +25,7 @@
 Standard_HEADER_DEPRECATED("CDM_NamesDirectory.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DataMap<TCollection_ExtendedString, int> directly.")
 
-  Standard_DEPRECATED("CDM_NamesDirectory is deprecated, use "
+Standard_DEPRECATED("CDM_NamesDirectory is deprecated, use "
                       "NCollection_DataMap<TCollection_ExtendedString, int> directly")
 typedef NCollection_DataMap<TCollection_ExtendedString, int> CDM_NamesDirectory;
 

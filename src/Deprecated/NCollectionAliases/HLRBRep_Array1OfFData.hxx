@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("HLRBRep_Array1OfFData.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<HLRBRep_FaceData> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "HLRBRep_Array1OfFData is deprecated, use NCollection_Array1<HLRBRep_FaceData> directly")
 typedef NCollection_Array1<HLRBRep_FaceData> HLRBRep_Array1OfFData;
 

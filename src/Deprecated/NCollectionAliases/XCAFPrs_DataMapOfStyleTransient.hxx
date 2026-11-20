@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("XCAFPrs_DataMapOfStyleTransient.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "XCAFPrs_DataMapOfStyleTransient is deprecated, use NCollection_DataMap<XCAFPrs_Style, "
-    "opencascade::handle<Standard_Transient>> directly")
+Standard_DEPRECATED(
+  "XCAFPrs_DataMapOfStyleTransient is deprecated, use NCollection_DataMap<XCAFPrs_Style, "
+  "opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>>
   XCAFPrs_DataMapOfStyleTransient;
 Standard_DEPRECATED(

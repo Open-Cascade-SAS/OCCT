@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "DBRep_ListOfFace.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("DBRep_ListOfFace is deprecated, use "
+Standard_DEPRECATED("DBRep_ListOfFace is deprecated, use "
                       "NCollection_List<opencascade::handle<DBRep_Face>> directly")
-typedef NCollection_List<opencascade::handle<DBRep_Face>> DBRep_ListOfFace;
+typedef NCollection_List<opencascade::handle<DBRep_Face>>           DBRep_ListOfFace;
 Standard_DEPRECATED("DBRep_ListIteratorOfListOfFace is deprecated, use "
                     "NCollection_List<opencascade::handle<DBRep_Face>>::Iterator directly")
 typedef NCollection_List<opencascade::handle<DBRep_Face>>::Iterator DBRep_ListIteratorOfListOfFace;

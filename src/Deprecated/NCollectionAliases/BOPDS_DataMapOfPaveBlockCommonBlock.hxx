@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED("BOPDS_DataMapOfPaveBlockCommonBlock.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("BOPDS_DataMapOfPaveBlockCommonBlock is deprecated, use "
-                      "NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, "
-                      "opencascade::handle<BOPDS_CommonBlock>> directly")
+Standard_DEPRECATED("BOPDS_DataMapOfPaveBlockCommonBlock is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, "
+                    "opencascade::handle<BOPDS_CommonBlock>> directly")
 typedef NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>,
                             opencascade::handle<BOPDS_CommonBlock>>
   BOPDS_DataMapOfPaveBlockCommonBlock;

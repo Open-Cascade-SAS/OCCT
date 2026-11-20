@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntTools_ListOfSurfaceRangeSample.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED("IntTools_ListOfSurfaceRangeSample is deprecated, use "
+Standard_DEPRECATED("IntTools_ListOfSurfaceRangeSample is deprecated, use "
                       "NCollection_List<IntTools_SurfaceRangeSample> directly")
 typedef NCollection_List<IntTools_SurfaceRangeSample> IntTools_ListOfSurfaceRangeSample;
 Standard_DEPRECATED("IntTools_ListIteratorOfListOfSurfaceRangeSample is deprecated, use "

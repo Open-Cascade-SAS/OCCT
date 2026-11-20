@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColgp_Array2OfCirc2d.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array2<gp_Circ2d> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColgp_Array2OfCirc2d is deprecated, use NCollection_Array2<gp_Circ2d> directly")
 typedef NCollection_Array2<gp_Circ2d> TColgp_Array2OfCirc2d;
 

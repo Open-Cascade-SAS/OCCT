@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("Units_UnitsSequence.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HSequence<opencascade::handle<Units_Unit>> directly.")
 
-  Standard_DEPRECATED("Units_UnitsSequence is deprecated, use "
+Standard_DEPRECATED("Units_UnitsSequence is deprecated, use "
                       "NCollection_HSequence<opencascade::handle<Units_Unit>> directly")
 typedef NCollection_HSequence<opencascade::handle<Units_Unit>> Units_UnitsSequence;
 

@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED("ExprIntrp_StackOfGeneralFunction.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED("ExprIntrp_StackOfGeneralFunction is deprecated, use "
-                      "NCollection_List<opencascade::handle<Expr_GeneralFunction>> directly")
+Standard_DEPRECATED("ExprIntrp_StackOfGeneralFunction is deprecated, use "
+                    "NCollection_List<opencascade::handle<Expr_GeneralFunction>> directly")
 typedef NCollection_List<opencascade::handle<Expr_GeneralFunction>>
   ExprIntrp_StackOfGeneralFunction;
 Standard_DEPRECATED(

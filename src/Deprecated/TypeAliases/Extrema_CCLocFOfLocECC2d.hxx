@@ -36,7 +36,7 @@
 Standard_HEADER_DEPRECATED("Extrema_CCLocFOfLocECC2d.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("Extrema_CCLocFOfLocECC2d is deprecated, use the underlying type directly")
+Standard_DEPRECATED("Extrema_CCLocFOfLocECC2d is deprecated, use the underlying type directly")
 typedef Extrema_GFuncExtCC<Adaptor2d_Curve2d,
                            Extrema_Curve2dTool,
                            Adaptor2d_Curve2d,
@@ -44,7 +44,6 @@ typedef Extrema_GFuncExtCC<Adaptor2d_Curve2d,
                            Extrema_POnCurv2d,
                            gp_Pnt2d,
                            gp_Vec2d,
-                           NCollection_Sequence<Extrema_POnCurv2d>>
-  Extrema_CCLocFOfLocECC2d;
+                           NCollection_Sequence<Extrema_POnCurv2d>> Extrema_CCLocFOfLocECC2d;
 
 #endif // _Extrema_CCLocFOfLocECC2d_HeaderFile

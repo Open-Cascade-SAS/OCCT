@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("MAT2d_Array2OfConnexion.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array2<opencascade::handle<MAT2d_Connexion>> directly.")
 
-  Standard_DEPRECATED("MAT2d_Array2OfConnexion is deprecated, use "
+Standard_DEPRECATED("MAT2d_Array2OfConnexion is deprecated, use "
                       "NCollection_Array2<opencascade::handle<MAT2d_Connexion>> directly")
 typedef NCollection_Array2<opencascade::handle<MAT2d_Connexion>> MAT2d_Array2OfConnexion;
 

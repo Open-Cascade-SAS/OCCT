@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "DDF_TransactionStack.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("DDF_TransactionStack is deprecated, use "
+Standard_DEPRECATED("DDF_TransactionStack is deprecated, use "
                       "NCollection_List<opencascade::handle<DDF_Transaction>> directly")
 typedef NCollection_List<opencascade::handle<DDF_Transaction>> DDF_TransactionStack;
 Standard_DEPRECATED("DDF_ListIteratorOfTransactionStack is deprecated, use "

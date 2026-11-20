@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IFSelect_SequenceOfInterfaceModel.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly.")
 
-  Standard_DEPRECATED(
-    "IFSelect_SequenceOfInterfaceModel is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly")
+Standard_DEPRECATED("IFSelect_SequenceOfInterfaceModel is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly")
 typedef NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>>
   IFSelect_SequenceOfInterfaceModel;
 

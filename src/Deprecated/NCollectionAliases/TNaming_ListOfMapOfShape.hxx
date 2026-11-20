@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "TNaming_ListOfMapOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TNaming_ListOfMapOfShape is deprecated, use NCollection_List<TopTools_MapOfShape> directly")
-typedef NCollection_List<TopTools_MapOfShape> TNaming_ListOfMapOfShape;
+typedef NCollection_List<TopTools_MapOfShape>           TNaming_ListOfMapOfShape;
 Standard_DEPRECATED("TNaming_ListIteratorOfListOfMapOfShape is deprecated, use "
                     "NCollection_List<TopTools_MapOfShape>::Iterator directly")
 typedef NCollection_List<TopTools_MapOfShape>::Iterator TNaming_ListIteratorOfListOfMapOfShape;

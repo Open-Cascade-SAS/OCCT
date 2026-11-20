@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "Graphic3d_MapOfObject.hxx is deprecated since OCCT 8.0.0. Use NCollection_DataMap<const "
   "Standard_Transient*, opencascade::handle<Graphic3d_ViewAffinity>> directly.")
 
-  Standard_DEPRECATED("Graphic3d_MapOfObject is deprecated, use NCollection_DataMap<const "
-                      "Standard_Transient*, opencascade::handle<Graphic3d_ViewAffinity>> directly")
+Standard_DEPRECATED("Graphic3d_MapOfObject is deprecated, use NCollection_DataMap<const "
+                    "Standard_Transient*, opencascade::handle<Graphic3d_ViewAffinity>> directly")
 typedef NCollection_DataMap<const Standard_Transient*, opencascade::handle<Graphic3d_ViewAffinity>>
   Graphic3d_MapOfObject;
 

@@ -29,13 +29,12 @@
 Standard_HEADER_DEPRECATED("BRepCheck_DataMapOfShapeListOfStatus.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BRepCheck_DataMapOfShapeListOfStatus is deprecated, use NCollection_DataMap<TopoDS_Shape, "
     "Handle(NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape,
                             Handle(NCollection_Shared<BRepCheck_ListOfStatus>),
-                            TopTools_ShapeMapHasher>
-  BRepCheck_DataMapOfShapeListOfStatus;
+                            TopTools_ShapeMapHasher> BRepCheck_DataMapOfShapeListOfStatus;
 Standard_DEPRECATED(
   "BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus is deprecated, use "
   "NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<BRepCheck_ListOfStatus>), "

@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "LocOpe_DataMapOfShapePnt.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("LocOpe_DataMapOfShapePnt is deprecated, use "
+Standard_DEPRECATED("LocOpe_DataMapOfShapePnt is deprecated, use "
                       "NCollection_DataMap<TopoDS_Shape, gp_Pnt, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, gp_Pnt, TopTools_ShapeMapHasher> LocOpe_DataMapOfShapePnt;
 Standard_DEPRECATED(

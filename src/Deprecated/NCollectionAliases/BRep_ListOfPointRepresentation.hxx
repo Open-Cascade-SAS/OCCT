@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED("BRep_ListOfPointRepresentation.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("BRep_ListOfPointRepresentation is deprecated, use "
-                      "NCollection_List<opencascade::handle<BRep_PointRepresentation>> directly")
+Standard_DEPRECATED("BRep_ListOfPointRepresentation is deprecated, use "
+                    "NCollection_List<opencascade::handle<BRep_PointRepresentation>> directly")
 typedef NCollection_List<opencascade::handle<BRep_PointRepresentation>>
   BRep_ListOfPointRepresentation;
 Standard_DEPRECATED(

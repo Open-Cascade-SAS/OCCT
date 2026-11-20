@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfFaceInfo.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<BOPDS_FaceInfo> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BOPDS_VectorOfFaceInfo is deprecated, use NCollection_DynamicArray<BOPDS_FaceInfo> directly")
 typedef NCollection_DynamicArray<BOPDS_FaceInfo> BOPDS_VectorOfFaceInfo;
 

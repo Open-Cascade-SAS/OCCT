@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("TNaming_DataMapOfShapePtrRefShape.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "TNaming_DataMapOfShapePtrRefShape is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "TNaming_PtrRefShape, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "TNaming_DataMapOfShapePtrRefShape is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "TNaming_PtrRefShape, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>
   TNaming_DataMapOfShapePtrRefShape;
 Standard_DEPRECATED("TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape is deprecated, use "

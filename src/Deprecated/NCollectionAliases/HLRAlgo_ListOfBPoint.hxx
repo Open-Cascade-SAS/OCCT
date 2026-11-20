@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "HLRAlgo_ListOfBPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "HLRAlgo_ListOfBPoint is deprecated, use NCollection_List<HLRAlgo_BiPoint> directly")
-typedef NCollection_List<HLRAlgo_BiPoint> HLRAlgo_ListOfBPoint;
+typedef NCollection_List<HLRAlgo_BiPoint>           HLRAlgo_ListOfBPoint;
 Standard_DEPRECATED("HLRAlgo_ListIteratorOfListOfBPoint is deprecated, use "
                     "NCollection_List<HLRAlgo_BiPoint>::Iterator directly")
 typedef NCollection_List<HLRAlgo_BiPoint>::Iterator HLRAlgo_ListIteratorOfListOfBPoint;

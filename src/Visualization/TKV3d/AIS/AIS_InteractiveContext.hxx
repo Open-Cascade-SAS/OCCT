@@ -574,7 +574,10 @@ public: //! @name Selection management
   Standard_EXPORT Bnd_Box BoundingBoxOfSelection(const occ::handle<V3d_View>& theView) const;
 
   Standard_DEPRECATED("BoundingBoxOfSelection() should be called with View argument")
-  Bnd_Box BoundingBoxOfSelection() const { return BoundingBoxOfSelection(occ::handle<V3d_View>()); }
+  Bnd_Box                 BoundingBoxOfSelection() const
+  {
+    return BoundingBoxOfSelection(occ::handle<V3d_View>());
+  }
 
   //! Sets list of owner selected/deselected using specified selection scheme.
   //! @param theOwners owners to change selection state
@@ -1352,7 +1355,10 @@ public:
   //! current objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void UpdateCurrent() { UpdateSelected(true); }
+  void UpdateCurrent()
+  {
+    UpdateSelected(true);
+  }
 
   //! Returns true if there is a non-null interactive object in Neutral Point.
   //! Objects selected when there is no open local context are called current objects;
@@ -1369,53 +1375,77 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void InitCurrent() { InitSelected(); }
+  void InitCurrent()
+  {
+    InitSelected();
+  }
 
   //! Returns true if there is another object found by the scan of the list of current objects.
   //! Objects selected when there is no open local context are called current objects; those
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-  bool MoreCurrent() const { return MoreSelected(); }
+  bool MoreCurrent() const
+  {
+    return MoreSelected();
+  }
 
   //! Continues the scan to the next object in the list of current objects.
   //! Objects selected when there is no open local context are called current objects; those
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void NextCurrent() { NextSelected(); }
+  void NextCurrent()
+  {
+    NextSelected();
+  }
 
   //! Returns the current interactive object.
   //! Objects selected when there is no open local context are called current objects; those
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-  occ::handle<AIS_InteractiveObject> Current() const { return SelectedInteractive(); }
+  occ::handle<AIS_InteractiveObject> Current() const
+  {
+    return SelectedInteractive();
+  }
 
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-  int NbCurrents() { return NbSelected(); }
+  int NbCurrents()
+  {
+    return NbSelected();
+  }
 
   //! Highlights current objects.
   //! Objects selected when there is no open local context are called current objects; those
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void HilightCurrents(const bool theToUpdateViewer) { HilightSelected(theToUpdateViewer); }
+  void HilightCurrents(const bool theToUpdateViewer)
+  {
+    HilightSelected(theToUpdateViewer);
+  }
 
   //! Removes highlighting from current objects.
   //! Objects selected when there is no open local context are called current objects; those
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void UnhilightCurrents(const bool theToUpdateViewer) { UnhilightSelected(theToUpdateViewer); }
+  void UnhilightCurrents(const bool theToUpdateViewer)
+  {
+    UnhilightSelected(theToUpdateViewer);
+  }
 
   //! Empties previous current objects in order to get the current objects detected by the selector
   //! using UpdateCurrent. Objects selected when there is no open local context are called current
   //! objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-  void ClearCurrents(const bool theToUpdateViewer) { ClearSelected(theToUpdateViewer); }
+  void ClearCurrents(const bool theToUpdateViewer)
+  {
+    ClearSelected(theToUpdateViewer);
+  }
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object
   //! is not a shape (AIS_Shape) or there is no current mouse-detected interactive object at all.

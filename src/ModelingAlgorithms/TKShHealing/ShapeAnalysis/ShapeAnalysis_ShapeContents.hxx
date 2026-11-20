@@ -166,7 +166,10 @@ public:
 
 public:
   Standard_DEPRECATED("ModifyOffsetSurfaceMode() should be used instead")
-  bool& ModifyOffestSurfaceMode() { return myOffsetSurfaceMode; }
+  bool& ModifyOffestSurfaceMode()
+  {
+    return myOffsetSurfaceMode;
+  }
 
 private:
   int                                              myNbSolids;

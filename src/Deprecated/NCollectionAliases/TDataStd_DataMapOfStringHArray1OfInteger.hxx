@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringHArray1OfInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDataStd_DataMapOfStringHArray1OfInteger is deprecated, use "
-                      "NCollection_DataMap<TCollection_ExtendedString, "
-                      "opencascade::handle<TColStd_HArray1OfInteger>> directly")
+Standard_DEPRECATED("TDataStd_DataMapOfStringHArray1OfInteger is deprecated, use "
+                    "NCollection_DataMap<TCollection_ExtendedString, "
+                    "opencascade::handle<TColStd_HArray1OfInteger>> directly")
 typedef NCollection_DataMap<TCollection_ExtendedString,
                             opencascade::handle<TColStd_HArray1OfInteger>>
   TDataStd_DataMapOfStringHArray1OfInteger;

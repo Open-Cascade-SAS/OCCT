@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("BinObjMgt_PChar.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("BinObjMgt_PChar is deprecated, use the underlying type directly")
+Standard_DEPRECATED("BinObjMgt_PChar is deprecated, use the underlying type directly")
 typedef char* BinObjMgt_PChar;
 
 #endif

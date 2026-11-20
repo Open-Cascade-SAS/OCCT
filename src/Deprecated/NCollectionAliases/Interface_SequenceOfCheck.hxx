@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Interface_SequenceOfCheck.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<Interface_Check>> directly.")
 
-  Standard_DEPRECATED("Interface_SequenceOfCheck is deprecated, use "
+Standard_DEPRECATED("Interface_SequenceOfCheck is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<Interface_Check>> directly")
 typedef NCollection_Sequence<opencascade::handle<Interface_Check>> Interface_SequenceOfCheck;
 

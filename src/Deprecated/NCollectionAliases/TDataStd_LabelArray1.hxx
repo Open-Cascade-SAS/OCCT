@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TDataStd_LabelArray1.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<TDF_Label> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TDataStd_LabelArray1 is deprecated, use NCollection_Array1<TDF_Label> directly")
 typedef NCollection_Array1<TDF_Label> TDataStd_LabelArray1;
 

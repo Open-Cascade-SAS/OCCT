@@ -26,12 +26,11 @@
 Standard_HEADER_DEPRECATED(
   "TDF_AttributeDoubleMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_AttributeDoubleMap is deprecated, use "
+Standard_DEPRECATED("TDF_AttributeDoubleMap is deprecated, use "
                       "NCollection_DoubleMap<opencascade::handle<TDF_Attribute>, "
                       "opencascade::handle<TDF_Attribute>> directly")
 typedef NCollection_DoubleMap<opencascade::handle<TDF_Attribute>,
-                              opencascade::handle<TDF_Attribute>>
-  TDF_AttributeDoubleMap;
+                              opencascade::handle<TDF_Attribute>> TDF_AttributeDoubleMap;
 Standard_DEPRECATED("TDF_DoubleMapIteratorOfAttributeDoubleMap is deprecated, use "
                     "NCollection_DoubleMap<opencascade::handle<TDF_Attribute>, "
                     "opencascade::handle<TDF_Attribute>>::Iterator directly")

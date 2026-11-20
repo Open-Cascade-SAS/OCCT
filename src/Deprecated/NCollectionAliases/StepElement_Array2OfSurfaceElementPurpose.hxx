@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepElement_Array2OfSurfaceElementPurpose.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array2<StepElement_SurfaceElementPurpose> directly.")
 
-  Standard_DEPRECATED("StepElement_Array2OfSurfaceElementPurpose is deprecated, use "
-                      "NCollection_Array2<StepElement_SurfaceElementPurpose> directly")
+Standard_DEPRECATED("StepElement_Array2OfSurfaceElementPurpose is deprecated, use "
+                    "NCollection_Array2<StepElement_SurfaceElementPurpose> directly")
 typedef NCollection_Array2<StepElement_SurfaceElementPurpose>
   StepElement_Array2OfSurfaceElementPurpose;
 

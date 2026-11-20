@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HSequenceOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HSequence<TCollection_AsciiString> directly.")
 
-  Standard_DEPRECATED("TColStd_HSequenceOfAsciiString is deprecated, use "
+Standard_DEPRECATED("TColStd_HSequenceOfAsciiString is deprecated, use "
                       "NCollection_HSequence<TCollection_AsciiString> directly")
 typedef NCollection_HSequence<TCollection_AsciiString> TColStd_HSequenceOfAsciiString;
 

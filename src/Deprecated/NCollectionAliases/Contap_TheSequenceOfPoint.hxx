@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Contap_TheSequenceOfPoint.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<Contap_Point> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Contap_TheSequenceOfPoint is deprecated, use NCollection_Sequence<Contap_Point> directly")
 typedef NCollection_Sequence<Contap_Point> Contap_TheSequenceOfPoint;
 

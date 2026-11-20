@@ -29,7 +29,7 @@ class TopOpeBRep_FacesFiller;
 Standard_HEADER_DEPRECATED("TopOpeBRep_PFacesFiller.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TopOpeBRep_PFacesFiller is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TopOpeBRep_PFacesFiller is deprecated, use the underlying type directly")
 typedef TopOpeBRep_FacesFiller* TopOpeBRep_PFacesFiller;
 
 #endif // _TopOpeBRep_PFacesFiller_HeaderFile

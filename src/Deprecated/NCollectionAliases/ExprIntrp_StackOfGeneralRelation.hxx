@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED("ExprIntrp_StackOfGeneralRelation.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED("ExprIntrp_StackOfGeneralRelation is deprecated, use "
-                      "NCollection_List<opencascade::handle<Expr_GeneralRelation>> directly")
+Standard_DEPRECATED("ExprIntrp_StackOfGeneralRelation is deprecated, use "
+                    "NCollection_List<opencascade::handle<Expr_GeneralRelation>> directly")
 typedef NCollection_List<opencascade::handle<Expr_GeneralRelation>>
   ExprIntrp_StackOfGeneralRelation;
 Standard_DEPRECATED(

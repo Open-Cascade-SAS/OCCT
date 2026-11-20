@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepData_HArray1OfField.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<StepData_Field> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "StepData_HArray1OfField is deprecated, use NCollection_HArray1<StepData_Field> directly")
 typedef NCollection_HArray1<StepData_Field> StepData_HArray1OfField;
 
