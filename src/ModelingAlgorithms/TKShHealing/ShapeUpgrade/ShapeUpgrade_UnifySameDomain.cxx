@@ -881,7 +881,8 @@ static void ReconstructMissedSeam(const NCollection_Sequence<TopoDS_Shape>& theR
         && BRep_Tool::IsClosed(anEdge, theFrefFace))
     {
       // Problem with mirrored cylinder BEGIN
-      if (!aFirstVertex.IsSame(theCurVertex)) {
+      if (!aFirstVertex.IsSame(theCurVertex))
+      {
         anEdge.Reverse();
         aPC = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
         TopExp::Vertices(anEdge, aFirstVertex, aLastVertex, true);
