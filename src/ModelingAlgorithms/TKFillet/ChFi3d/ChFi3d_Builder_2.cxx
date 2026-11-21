@@ -1567,6 +1567,7 @@ bool ChFi3d_Builder::StartSol(
         }
         else
         {
+          Spine->SetErrorStatus(ChFiDS_StartsolFailure);
           throw Standard_Failure("StartSol: no matching obstacle edge");
         }
       }
