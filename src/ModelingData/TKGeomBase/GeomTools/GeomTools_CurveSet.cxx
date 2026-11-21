@@ -891,7 +891,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Trimm
   {
     return IS;
   }
-  C                          = new Geom_TrimmedCurve(BC, p1, p2);
+  C = new Geom_TrimmedCurve(BC, p1, p2);
   return IS;
 }
 
@@ -912,7 +912,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Offse
   {
     return IS;
   }
-  C                          = new Geom_OffsetCurve(BC, p, D);
+  C = new Geom_OffsetCurve(BC, p, D);
   return IS;
 }
 

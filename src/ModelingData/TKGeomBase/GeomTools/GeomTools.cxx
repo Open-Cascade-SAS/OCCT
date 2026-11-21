@@ -113,9 +113,9 @@ void GeomTools::GetReal(Standard_IStream& IS, double& theValue)
   // An IEEE-754 double in scientific notation with 17 significant digits
   // needs at most 25 characters including the null terminator; 32 covers this usual case.
   constexpr size_t THE_BUFFER_SIZE = 32;
-  char aBuffer[THE_BUFFER_SIZE];
+  char             aBuffer[THE_BUFFER_SIZE];
   aBuffer[0] = aBuffer[THE_BUFFER_SIZE - 3] = '\0';
-  const std::streamsize anOldWidth = IS.width(THE_BUFFER_SIZE - 1);
+  const std::streamsize anOldWidth          = IS.width(THE_BUFFER_SIZE - 1);
   IS >> aBuffer;
   IS.width(anOldWidth);
   // Continue only if the token fills the short buffer and has a non-space suffix.
@@ -127,13 +127,15 @@ void GeomTools::GetReal(Standard_IStream& IS, double& theValue)
     constexpr size_t THE_MAX_BUFFER_SIZE = 512;
     constexpr size_t THE_PREFIX_LENGTH   = THE_BUFFER_SIZE - 2;
     constexpr size_t THE_SUFFIX_WIDTH    = THE_MAX_BUFFER_SIZE - THE_PREFIX_LENGTH;
+
     // Keep the array bound for formatted extraction in C++20.
     struct RealBuffer
     {
       char Data[THE_MAX_BUFFER_SIZE];
     };
+
     const std::unique_ptr<RealBuffer> aStorage = opencascade::make_unique<RealBuffer>();
-    char (&aToken)[THE_MAX_BUFFER_SIZE]       = aStorage->Data;
+    char (&aToken)[THE_MAX_BUFFER_SIZE]        = aStorage->Data;
     IS.width(THE_SUFFIX_WIDTH);
     IS >> aToken;
     IS.width(anOldWidth);
@@ -149,8 +151,8 @@ void GeomTools::GetReal(Standard_IStream& IS, double& theValue)
     }
     // Open space for the prefix after reading the suffix into the fixed array.
     std::char_traits<char>::move(aToken + THE_PREFIX_LENGTH,
-                                aToken,
-                                std::char_traits<char>::length(aToken) + 1);
+                                 aToken,
+                                 std::char_traits<char>::length(aToken) + 1);
     std::char_traits<char>::copy(aToken, aBuffer, THE_PREFIX_LENGTH);
     theValue = Strtod(aToken, nullptr);
     return;

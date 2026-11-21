@@ -53,9 +53,13 @@ TEST(GeomToolsTest, Curve2dRoundTripPreservesTrimmedPeriodicChart)
 
 TEST(GeomToolsTest, LongRealTokenPreservesValueAndFollowingField)
 {
-  const double aValues[] = {Precision::Infinite(), -Precision::Infinite(),
-                           std::numeric_limits<double>::max(),
-                           -std::numeric_limits<double>::max(), 1.25, -1.25, 0.0};
+  const double aValues[] = {Precision::Infinite(),
+                            -Precision::Infinite(),
+                            std::numeric_limits<double>::max(),
+                            -std::numeric_limits<double>::max(),
+                            1.25,
+                            -1.25,
+                            0.0};
   for (const double aValue : aValues)
   {
     std::stringstream aStream;
@@ -72,17 +76,17 @@ TEST(GeomToolsTest, RealTokenBufferBoundaryAndEndOfStream)
 {
   for (int aLength = 28; aLength <= 34; ++aLength)
   {
-    const TCollection_AsciiString aToken =
-      TCollection_AsciiString(aLength - 1, '0') + "1";
-    std::istringstream aStream(aToken.ToCString());
-    double aResult = 0.0;
+    const TCollection_AsciiString aToken = TCollection_AsciiString(aLength - 1, '0') + "1";
+    std::istringstream            aStream(aToken.ToCString());
+    double                        aResult = 0.0;
     GeomTools::GetReal(aStream, aResult);
     EXPECT_DOUBLE_EQ(aResult, 1.0);
     EXPECT_FALSE(aStream.fail());
     GeomTools::GetReal(aStream, aResult);
     EXPECT_DOUBLE_EQ(aResult, 0.0);
   }
-  std::istringstream aStream("1.00000000000000000000000000000000000000000000000000000000001e-100 9");
+  std::istringstream aStream(
+    "1.00000000000000000000000000000000000000000000000000000000001e-100 9");
   double aResult = 0.0;
   GeomTools::GetReal(aStream, aResult);
   EXPECT_DOUBLE_EQ(aResult, 1.e-100);
@@ -94,7 +98,7 @@ TEST(GeomToolsTest, LongLeadingZerosPreserveSignAndStreamWidth)
 {
   const TCollection_AsciiString aZeros(480, '0');
   const TCollection_AsciiString aToken = TCollection_AsciiString("-") + aZeros + "1.25e-20 8";
-  std::istringstream aStream(aToken.ToCString());
+  std::istringstream            aStream(aToken.ToCString());
   aStream.width(7);
   double aValue = 0.0;
   GeomTools::GetReal(aStream, aValue);
@@ -109,8 +113,8 @@ TEST(GeomToolsTest, RealTokenLimitRejectsOversizedInput)
   for (const int aLength : {511, 512, 2048})
   {
     const TCollection_AsciiString aToken = TCollection_AsciiString(aLength - 1, '0') + "1";
-    std::istringstream aStream(aToken.ToCString());
-    double aValue = 0.0;
+    std::istringstream            aStream(aToken.ToCString());
+    double                        aValue = 0.0;
     if (aLength == 511)
     {
       GeomTools::GetReal(aStream, aValue);
@@ -127,10 +131,10 @@ TEST(GeomToolsTest, RealTokenLimitRejectsOversizedInput)
 
 TEST(GeomToolsTest, OversizedCurveCoordinateStopsGeometryRead)
 {
-  const TCollection_AsciiString aToken = TCollection_AsciiString(511, '0') + "1";
+  const TCollection_AsciiString aToken  = TCollection_AsciiString(511, '0') + "1";
   const TCollection_AsciiString aRecord = TCollection_AsciiString("1 ") + aToken + " 0 0 1 0 0";
-  std::istringstream aStream(aRecord.ToCString());
-  occ::handle<Geom_Curve> aCurve;
+  std::istringstream            aStream(aRecord.ToCString());
+  occ::handle<Geom_Curve>       aCurve;
   EXPECT_NO_THROW(GeomTools::Read(aCurve, aStream));
   EXPECT_TRUE(aStream.fail());
   EXPECT_TRUE(aCurve.IsNull());

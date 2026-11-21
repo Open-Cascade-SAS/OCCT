@@ -792,18 +792,17 @@ TEST(BRepTools_Test, NullSurfaceFacePreservesToleranceAndRestriction)
 
 TEST(BRepToolsTest, OversizedRealTokenRejectsShapeRead)
 {
-  const TopoDS_Edge anEdge =
-    BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0)).Edge();
+  const TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0)).Edge();
   std::stringstream aWritten;
   BRepTools::Write(anEdge, aWritten);
-  TCollection_AsciiString aRecord(aWritten.str().c_str());
+  TCollection_AsciiString       aRecord(aWritten.str().c_str());
   const TCollection_AsciiString aPrefix("Curves 1\n1 ");
-  const int aPosition = aRecord.Search(aPrefix);
+  const int                     aPosition = aRecord.Search(aPrefix);
   ASSERT_GE(aPosition, 1);
   aRecord.Insert(aPosition + aPrefix.Length(), TCollection_AsciiString(512, '0'));
 
   std::istringstream aStream(aRecord.ToCString());
-  TopoDS_Shape aRead;
+  TopoDS_Shape       aRead;
   EXPECT_NO_THROW(BRepTools::Read(aRead, aStream, BRep_Builder()));
   EXPECT_TRUE(aStream.fail());
   EXPECT_TRUE(aRead.IsNull());
@@ -811,9 +810,9 @@ TEST(BRepToolsTest, OversizedRealTokenRejectsShapeRead)
 
 TEST(BRepToolsTest, OversizedLocationValueDoesNotAddTransform)
 {
-  TopTools_LocationSet aLocations;
+  TopTools_LocationSet          aLocations;
   const TCollection_AsciiString aHeader("Locations 1\n1\n");
-  TCollection_AsciiString aRecord(aHeader);
+  TCollection_AsciiString       aRecord(aHeader);
   aRecord += TCollection_AsciiString(510, '0');
   aRecord += "1 0 0 4\n0 1 0 0\n0 0 1 0\n";
 

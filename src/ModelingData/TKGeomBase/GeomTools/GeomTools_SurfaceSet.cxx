@@ -981,7 +981,7 @@ static Standard_IStream& operator>>(Standard_IStream&                           
   {
     return IS;
   }
-  S                         = new Geom_SurfaceOfLinearExtrusion(C, D);
+  S = new Geom_SurfaceOfLinearExtrusion(C, D);
   return IS;
 }
 
@@ -997,7 +997,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Surfa
   {
     return IS;
   }
-  S                         = new Geom_SurfaceOfRevolution(C, gp_Ax1(P, D));
+  S = new Geom_SurfaceOfRevolution(C, gp_Ax1(P, D));
   return IS;
 }
 
@@ -1139,7 +1139,7 @@ static Standard_IStream& operator>>(Standard_IStream&                           
   {
     return IS;
   }
-  S                            = new Geom_RectangularTrimmedSurface(BS, U1, U2, V1, V2);
+  S = new Geom_RectangularTrimmedSurface(BS, U1, U2, V1, V2);
   return IS;
 }
 
@@ -1154,7 +1154,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Offse
   {
     return IS;
   }
-  S                            = new Geom_OffsetSurface(BS, O, true);
+  S = new Geom_OffsetSurface(BS, O, true);
   return IS;
 }
 

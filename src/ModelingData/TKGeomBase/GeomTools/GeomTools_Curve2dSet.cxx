@@ -864,7 +864,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Tri
   {
     return IS;
   }
-  C                            = new Geom2d_TrimmedCurve(BC, p1, p2, true, false);
+  C = new Geom2d_TrimmedCurve(BC, p1, p2, true, false);
   return IS;
 }
 
@@ -879,7 +879,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Off
   {
     return IS;
   }
-  C                            = new Geom2d_OffsetCurve(BC, p);
+  C = new Geom2d_OffsetCurve(BC, p);
   return IS;
 }
 
