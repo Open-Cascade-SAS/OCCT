@@ -23,11 +23,11 @@
 
 TEST(GeomConvert_ApproxSurfaceTest, SphereApproximationRespectsTolerance)
 {
-  constexpr double THE_TOLERANCE = 1.e-3;
+  constexpr double                         THE_TOLERANCE = 1.e-3;
   const occ::handle<Geom_SphericalSurface> aSphere =
     new Geom_SphericalSurface(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
-  const GeomConvert_ApproxSurface anApproximation(
-    aSphere, THE_TOLERANCE, GeomAbs_C0, GeomAbs_C0, 8, 8, 100, 0);
+  const GeomConvert_ApproxSurface
+    anApproximation(aSphere, THE_TOLERANCE, GeomAbs_C0, GeomAbs_C0, 8, 8, 100, 0);
   ASSERT_TRUE(anApproximation.IsDone());
   const occ::handle<Geom_BSplineSurface> aResult = anApproximation.Surface();
   ASSERT_FALSE(aResult.IsNull());

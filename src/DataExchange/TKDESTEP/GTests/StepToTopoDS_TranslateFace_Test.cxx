@@ -1036,10 +1036,10 @@ TEST_F(StepToTopoDS_TranslateFaceTest, TessellatedItems_OnlyAllocateSupportedNor
 TEST_F(StepToTopoDS_TranslateFaceTest, TriangulatedFace_NormalCountUsesPnindexNodes)
 {
   NCollection_Array1<gp_XYZ> aPoints(1, 4);
-  aPoints(1) = gp_XYZ(-1.0, -1.0, 0.0);
-  aPoints(2) = gp_XYZ(0.0, 0.0, 0.0);
-  aPoints(3) = gp_XYZ(1.0, 0.0, 0.0);
-  aPoints(4) = gp_XYZ(0.0, 1.0, 0.0);
+  aPoints(1)                                           = gp_XYZ(-1.0, -1.0, 0.0);
+  aPoints(2)                                           = gp_XYZ(0.0, 0.0, 0.0);
+  aPoints(3)                                           = gp_XYZ(1.0, 0.0, 0.0);
+  aPoints(4)                                           = gp_XYZ(0.0, 1.0, 0.0);
   const occ::handle<NCollection_HArray1<int>> aPnindex = new NCollection_HArray1<int>(1, 3);
   aPnindex->SetValue(1, 2);
   aPnindex->SetValue(2, 3);
@@ -1063,7 +1063,7 @@ TEST_F(StepToTopoDS_TranslateFaceTest, TriangulatedFace_NormalCountUsesPnindexNo
                 StepVisual_FaceOrSurface(),
                 aPnindex,
                 aTriangles);
-    bool aHasGeometry = false;
+    bool                             aHasGeometry = false;
     const StepToTopoDS_TranslateFace aTranslator(aFace, myTool, myNMTool, false, aHasGeometry);
     ASSERT_TRUE(aTranslator.IsDone());
     const occ::handle<Poly_Triangulation> aMesh = getMesh(aTranslator);

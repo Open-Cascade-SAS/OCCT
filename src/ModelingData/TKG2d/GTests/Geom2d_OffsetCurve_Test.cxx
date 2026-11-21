@@ -13,6 +13,7 @@
 
 #include <NCollection_Array1.hxx>
 #include <Adaptor2d_OffsetCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_Ellipse.hxx>
 

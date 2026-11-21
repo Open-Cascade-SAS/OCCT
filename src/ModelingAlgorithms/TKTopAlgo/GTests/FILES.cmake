@@ -11,6 +11,7 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepClass3d_SolidClassifier_Test.cxx
   BRepExtrema_DistShapeShape_Test.cxx
   BRepGProp_Test.cxx
+  Bisector_BisecAna_Test.cxx
   BRepLib_CheckCurveOnSurface_Test.cxx
   BRepLib_MakeWire_Test.cxx
   BRepOffsetAPI_ThruSections_Test.cxx

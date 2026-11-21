@@ -145,7 +145,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     {
       const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aCopy =
         new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(aStrings->Lower(),
-                                                                     aStrings->Upper());
+                                                                       aStrings->Upper());
       for (size_t anOffset = 0; anOffset < aStrings->Size(); ++anOffset)
       {
         const occ::handle<TCollection_HAsciiString>& aString = aStrings->At(anOffset);

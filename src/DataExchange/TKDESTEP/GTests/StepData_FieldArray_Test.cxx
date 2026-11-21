@@ -21,8 +21,7 @@
 
 TEST(StepData_FieldArrayTest, WritesIntegerRowsInDeclaredOrder)
 {
-  const occ::handle<NCollection_HArray2<int>> anArray =
-    new NCollection_HArray2<int>(-2, -1, 4, 6);
+  const occ::handle<NCollection_HArray2<int>> anArray = new NCollection_HArray2<int>(-2, -1, 4, 6);
   anArray->SetValue(-2, 4, 11);
   anArray->SetValue(-2, 5, 12);
   anArray->SetValue(-2, 6, 13);

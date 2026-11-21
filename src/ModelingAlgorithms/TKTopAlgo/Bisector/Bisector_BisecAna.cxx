@@ -1546,7 +1546,10 @@ bool Bisector_BisecAna::IsCN(const int N) const
 occ::handle<Geom2d_Geometry> Bisector_BisecAna::Copy() const
 {
   occ::handle<Bisector_BisecAna> C = new Bisector_BisecAna();
-  C->Init(occ::down_cast<Geom2d_TrimmedCurve>(thebisector->Copy()));
+  // Analytic bisectors use the natural period for parameter comparisons.
+  C->Init(new Geom2d_TrimmedCurve(thebisector->BasisCurve(),
+                                  thebisector->FirstParameter(),
+                                  thebisector->LastParameter()));
   return C;
 }
 

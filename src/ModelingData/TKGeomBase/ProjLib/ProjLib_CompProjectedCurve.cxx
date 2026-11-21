@@ -245,11 +245,11 @@ static void d1(const double                          t,
 
 //=================================================================================================
 
-static void d2(const double                         t,
-               const double                         u,
-               const double                         v,
-               gp_Vec2d&                            V1,
-               gp_Vec2d&                            V2,
+static void d2(const double                          t,
+               const double                          u,
+               const double                          v,
+               gp_Vec2d&                             V1,
+               gp_Vec2d&                             V2,
                const occ::handle<Adaptor3d_Curve>&   Curve,
                const occ::handle<Adaptor3d_Surface>& Surface)
 {

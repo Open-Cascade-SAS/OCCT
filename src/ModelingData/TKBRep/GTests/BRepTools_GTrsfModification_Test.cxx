@@ -464,7 +464,7 @@ TEST(BRepTools_GTrsfModificationTest, Tolerance_TracksCurrentTransformation)
   aBuilder.MakeVertex(aVertex, gp_Pnt(1.0, 2.0, 3.0), 0.1);
 
   BRepTools_GTrsfModification aModification{gp_GTrsf()};
-  gp_GTrsf& aMutableTrsf = aModification.GTrsf();
+  gp_GTrsf&                   aMutableTrsf = aModification.GTrsf();
   aMutableTrsf = makeGTrsf(gp_Mat(2.0, 0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 4.0));
   gp_Pnt aPoint;
   double aTolerance = 0.0;
@@ -478,7 +478,7 @@ TEST(BRepTools_GTrsfModificationTest, Tolerance_TracksCurrentTransformation)
   expectPointNear(aPoint, gp_Pnt(3.0, 2.0, 3.0));
 
   const double aCos = std::sqrt(0.5);
-  aMutableTrsf = makeGTrsf(gp_Mat(aCos, -aCos, 0.0, aCos, aCos, 0.0, 0.0, 0.0, 1.0));
+  aMutableTrsf      = makeGTrsf(gp_Mat(aCos, -aCos, 0.0, aCos, aCos, 0.0, 0.0, 0.0, 1.0));
   ASSERT_TRUE(aModification.NewPoint(aVertex, aPoint, aTolerance));
   EXPECT_NEAR(aTolerance, 0.1, 1.0e-14);
 
@@ -513,19 +513,17 @@ TEST(BRepTools_GTrsfModificationTest, PolygonOnTriangulation_PreservesDeflection
   EXPECT_DOUBLE_EQ(aResult->Deflection(), 0.25);
 }
 
-
 //==================================================================================================
 
 TEST(BRepTools_GTrsfModificationTest, Triangulation_TransformsNormalsUnderShear)
 {
-  BRep_Builder aBuilder;
-  TopoDS_Face aFace;
+  BRep_Builder                          aBuilder;
+  TopoDS_Face                           aFace;
   const occ::handle<Poly_Triangulation> aSource = makeTriangulation(true);
   aBuilder.MakeFace(aFace, aSource);
 
-  const gp_GTrsf aGTrsf =
-    makeGTrsf(gp_Mat(2.0, 0.5, 0.25, 0.0, 3.0, 0.75, 0.0, 0.0, 4.0));
-  BRepTools_GTrsfModification aModification(aGTrsf);
+  const gp_GTrsf aGTrsf = makeGTrsf(gp_Mat(2.0, 0.5, 0.25, 0.0, 3.0, 0.75, 0.0, 0.0, 4.0));
+  BRepTools_GTrsfModification     aModification(aGTrsf);
   occ::handle<Poly_Triangulation> aResult;
   ASSERT_TRUE(aModification.NewTriangulation(aFace, aResult));
   ASSERT_FALSE(aResult.IsNull());
@@ -544,16 +542,16 @@ TEST(BRepTools_GTrsfModificationTest, Triangulation_TransformsNormalsUnderShear)
 TEST(BRepTools_GTrsfModificationTest, Polygon3D_ParameterlessScaledLocation)
 {
   NCollection_Array1<gp_Pnt> aNodes(1, 2);
-  aNodes(1) = gp_Pnt(1.0, 2.0, 3.0);
-  aNodes(2) = gp_Pnt(4.0, 5.0, 6.0);
+  aNodes(1)                                 = gp_Pnt(1.0, 2.0, 3.0);
+  aNodes(2)                                 = gp_Pnt(4.0, 5.0, 6.0);
   const occ::handle<Poly_Polygon3D> aSource = new Poly_Polygon3D(aNodes);
-  gp_Trsf aSourceTrsf;
+  gp_Trsf                           aSourceTrsf;
   aSourceTrsf.SetScale(gp_Pnt(3.0, 2.0, 1.0), 2.0);
   gp_Trsf aTargetTrsf;
   aTargetTrsf.SetScale(gp_Pnt(1.0, 1.0, 1.0), 3.0);
 
   BRep_Builder aBuilder;
-  TopoDS_Edge anEdge;
+  TopoDS_Edge  anEdge;
   aBuilder.MakeEdge(anEdge);
   aBuilder.UpdateEdge(anEdge, aSource, TopLoc_Location(aSourceTrsf));
   anEdge.Location(TopLoc_Location(aTargetTrsf));

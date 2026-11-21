@@ -3669,7 +3669,7 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
 
   // Nominal value
   const double aNominal = theObject->GetValue() * aValueFactor;
-  int    aLeftNbDigits, aRightNbDigits;
+  int          aLeftNbDigits, aRightNbDigits;
   theObject->GetNbOfDecimalPlaces(aLeftNbDigits, aRightNbDigits);
   int aNbQualifiers = 0;
   if (theObject->HasQualifier() && !isAngle)

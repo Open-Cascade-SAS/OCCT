@@ -222,7 +222,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 
   AppCont_ContMatrices::VBernstein(classe, myNbPoints, myVB);
 
-  // Processing of the right-hand side:
+  // Center the right-hand side to avoid cancellation for curves far from the origin.
   NCollection_Array1<double> tmppoints(1, nbcol);
 
   for (c = 1; c <= classe; c++)
@@ -233,7 +233,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       Coeff = TheWeights(i) * myVB(c, i);
       for (j = 1; j <= nbcol; j++)
       {
-        tmppoints(j) += myPoints(i, j) * Coeff;
+        tmppoints(j) += (myPoints(i, j) - myPoints(1, j)) * Coeff;
       }
     }
     for (k = 1; k <= nbcol; k++)
@@ -352,6 +352,18 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
           double aMult = myPoles(classe, aDimIdx) < myPoints(myNbPoints, aDimIdx) ? 1.0 : -1.0;
           myPoles(classe, aDimIdx) += aMult * myPerInfo(aDimIdx).myPeriod;
         }
+      }
+    }
+
+    for (int aColumn = 1; aColumn <= nbcol; ++aColumn)
+    {
+      if (myFirstC != AppParCurves_NoConstraint)
+      {
+        myPoles(1, aColumn) -= myPoints(1, aColumn);
+      }
+      if (myLastC != AppParCurves_NoConstraint)
+      {
+        myPoles(classe, aColumn) -= myPoints(1, aColumn);
       }
     }
 
@@ -510,6 +522,13 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
           }
         }
       }
+    }
+  }
+  for (int aRow = 1; aRow <= classe; ++aRow)
+  {
+    for (int aColumn = 1; aColumn <= nbcol; ++aColumn)
+    {
+      myPoles(aRow, aColumn) += myPoints(1, aColumn);
     }
   }
 }

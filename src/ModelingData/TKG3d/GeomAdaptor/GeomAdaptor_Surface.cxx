@@ -91,32 +91,32 @@ void selectSpan(const int theSide,
     if (theLocatedFirst < theFirstKnot)
     {
       theFirstSpan = theFirstKnot;
-      theLastSpan = theFirstKnot + 1;
+      theLastSpan  = theFirstKnot + 1;
     }
     else if (theLocatedLast > theLastKnot)
     {
       theFirstSpan = theLastKnot - 1;
-      theLastSpan = theLastKnot;
+      theLastSpan  = theLastKnot;
     }
     else if (theLocatedFirst >= (theLastKnot - 1))
     {
       theFirstSpan = theLastKnot - 1;
-      theLastSpan = theLastKnot;
+      theLastSpan  = theLastKnot;
     }
     else if (theLocatedLast <= theFirstKnot + 1)
     {
       theFirstSpan = theFirstKnot;
-      theLastSpan = theFirstKnot + 1;
+      theLastSpan  = theFirstKnot + 1;
     }
     else if (theLocatedFirst > theLocatedLast)
     {
       theFirstSpan = theLocatedLast - 1;
-      theLastSpan = theLocatedLast;
+      theLastSpan  = theLocatedLast;
     }
     else
     {
       theFirstSpan = theLocatedFirst;
-      theLastSpan = theLocatedLast;
+      theLastSpan  = theLocatedLast;
     }
   }
   else
@@ -124,24 +124,24 @@ void selectSpan(const int theSide,
     if (theLocatedFirst <= theFirstKnot)
     {
       theFirstSpan = theFirstKnot;
-      theLastSpan = theFirstKnot + 1;
+      theLastSpan  = theFirstKnot + 1;
     } // first knot
     else if (theLocatedLast >= theLastKnot)
     {
       theFirstSpan = theLastKnot - 1;
-      theLastSpan = theLastKnot;
+      theLastSpan  = theLastKnot;
     } // last knot
     else
     {
       if (theSide == -1)
       {
         theFirstSpan = theLocatedFirst - 1;
-        theLastSpan = theLocatedLast;
+        theLastSpan  = theLocatedLast;
       }
       else
       {
         theFirstSpan = theLocatedFirst;
-        theLastSpan = theLocatedLast + 1;
+        theLastSpan  = theLocatedLast + 1;
       }
     }
   }
@@ -165,12 +165,12 @@ void selectTrimSpan(double&                           theParameter,
     if (theSide < 0)
     {
       theLocatedFirst = theLocatedLast = theLastKnot;
-      theParameter = theKnots.Value(theLastKnot);
+      theParameter                     = theKnots.Value(theLastKnot);
     }
     else if (theSide > 0)
     {
       theLocatedFirst = theLocatedLast = theFirstKnot;
-      theParameter = theKnots.Value(theFirstKnot);
+      theParameter                     = theKnots.Value(theFirstKnot);
     }
   }
   selectSpan(theSide,

@@ -25,14 +25,14 @@
 
 TEST(XCAFDoc_DatumTest, PointRoundTripUsesIndependentArray)
 {
-  const occ::handle<TDocStd_Document> aDoc = new TDocStd_Document("BinXCAF");
+  const occ::handle<TDocStd_Document>   aDoc  = new TDocStd_Document("BinXCAF");
   const occ::handle<XCAFDoc_DimTolTool> aTool = XCAFDoc_DocumentTool::DimTolTool(aDoc->Main());
   for (const int aCase : {0, 1, 2})
   {
     SCOPED_TRACE(aCase);
-    const bool hasPlane = aCase != 0;
-    const bool hasPoint = aCase != 1;
-    const TDF_Label aLabel = aTool->AddDatum();
+    const bool                 hasPlane = aCase != 0;
+    const bool                 hasPoint = aCase != 1;
+    const TDF_Label            aLabel   = aTool->AddDatum();
     occ::handle<XCAFDoc_Datum> anAttribute;
     ASSERT_TRUE(aLabel.FindAttribute(XCAFDoc_Datum::GetID(), anAttribute));
     const occ::handle<XCAFDimTolObjects_DatumObject> anObject = anAttribute->GetObject();

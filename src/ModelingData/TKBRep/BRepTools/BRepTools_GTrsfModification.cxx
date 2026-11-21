@@ -127,7 +127,7 @@ gp_GTrsf representationTransformation(const gp_GTrsf&        theGTrsf,
   // Store full linear matrices: gp_GTrsf::Multiply() uses them directly for general transforms.
   const gp_Trsf  aTargetInverse = theTargetLocation.Transformation().Inverted();
   const gp_Trsf& aSource        = theSourceLocation.Transformation();
-  gp_GTrsf aLocalTrsf(aTargetInverse.VectorialPart(), aTargetInverse.TranslationPart());
+  gp_GTrsf       aLocalTrsf(aTargetInverse.VectorialPart(), aTargetInverse.TranslationPart());
   aLocalTrsf.Multiply(gp_GTrsf(vectorialPart(theGTrsf), theGTrsf.TranslationPart()));
   aLocalTrsf.Multiply(gp_GTrsf(aSource.VectorialPart(), aSource.TranslationPart()));
   return aLocalTrsf;
@@ -167,10 +167,10 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
   }
   const gp_Mat aLinear = vectorialPart(myGTrsf);
   const double aScale  = maxAbsCoefficient(aLinear);
-  Tol      = BRep_Tool::Tolerance(F) * aScale;
-  RevWires = false;
-  RevFace  = normalizedMatrix(aLinear, aScale).Determinant() < 0.0;
-  S        = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
+  Tol                  = BRep_Tool::Tolerance(F) * aScale;
+  RevWires             = false;
+  RevFace              = normalizedMatrix(aLinear, aScale).Determinant() < 0.0;
+  S                    = occ::down_cast<Geom_Surface>(S->Transformed(L.Transformation()));
 
   occ::handle<Standard_Type> TheTypeS = S->DynamicType();
   if (TheTypeS == STANDARD_TYPE(Geom_BSplineSurface))
@@ -324,7 +324,7 @@ bool BRepTools_GTrsfModification::NewTriangulation(
     return false;
   }
 
-  const gp_GTrsf aGTrsf = representationTransformation(myGTrsf, aLoc, theFace.Location());
+  const gp_GTrsf aGTrsf  = representationTransformation(myGTrsf, aLoc, theFace.Location());
   const gp_Mat&  aLinear = aGTrsf.VectorialPart();
   const gp_Mat   aNormalizedVectorialPart = normalizedMatrix(aLinear, maxAbsCoefficient(aLinear));
   const bool     aIsNegative              = aNormalizedVectorialPart.Determinant() < 0.0;
@@ -366,10 +366,9 @@ bool BRepTools_GTrsfModification::NewTriangulation(
         // A collapsed tangent plane has no transformed normal; preserve the source cache value.
         continue;
       }
-      theTriangulation->SetNormal(anInd,
-                                 gp_Dir(aNormal.X() / aScale,
-                                        aNormal.Y() / aScale,
-                                        aNormal.Z() / aScale));
+      theTriangulation->SetNormal(
+        anInd,
+        gp_Dir(aNormal.X() / aScale, aNormal.Y() / aScale, aNormal.Z() / aScale));
     }
   }
 

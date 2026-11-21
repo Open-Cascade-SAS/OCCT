@@ -8,6 +8,7 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 
 #include <AppCont_Function.hxx>
+#include <AppCont_LeastSquare.hxx>
 #include <AppParCurves_MultiCurve.hxx>
 #include <Approx_FitAndDivide.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -115,6 +116,64 @@ void checkEndLayer(Approx_FitAndDivide& theFit, const double theWidth)
   }
 }
 
+class ApproxTest_TranslatedParabola : public AppCont_Function
+{
+public:
+  ApproxTest_TranslatedParabola();
+  double FirstParameter() const override;
+  double LastParameter() const override;
+  bool   Value(double                        theU,
+               NCollection_Array1<gp_Pnt2d>& thePoints2d,
+               NCollection_Array1<gp_Pnt>&   thePoints) const override;
+  bool   D1(double                        theU,
+            NCollection_Array1<gp_Vec2d>& theVectors2d,
+            NCollection_Array1<gp_Vec>&   theVectors) const override;
+};
+
+//===================================================================================================
+
+ApproxTest_TranslatedParabola::ApproxTest_TranslatedParabola()
+{
+  myNbPnt   = 1;
+  myNbPnt2d = 1;
+}
+
+//===================================================================================================
+
+double ApproxTest_TranslatedParabola::FirstParameter() const
+{
+  return 0.0;
+}
+
+//===================================================================================================
+
+double ApproxTest_TranslatedParabola::LastParameter() const
+{
+  return 1.0;
+}
+
+//===================================================================================================
+
+bool ApproxTest_TranslatedParabola::Value(double                        theU,
+                                          NCollection_Array1<gp_Pnt2d>& thePoints2d,
+                                          NCollection_Array1<gp_Pnt>&   thePoints) const
+{
+  thePoints2d.ChangeAt(0) = gp_Pnt2d(1.e6 + theU, 1.e6 + theU * theU);
+  thePoints.ChangeAt(0)   = gp_Pnt(1.e6 + theU, 1.e6 + theU * theU, 1.e6 - theU);
+  return true;
+}
+
+//===================================================================================================
+
+bool ApproxTest_TranslatedParabola::D1(double                        theU,
+                                       NCollection_Array1<gp_Vec2d>& theVectors2d,
+                                       NCollection_Array1<gp_Vec>&   theVectors) const
+{
+  theVectors2d.ChangeAt(0) = gp_Vec2d(1.0, 2.0 * theU);
+  theVectors.ChangeAt(0)   = gp_Vec(1.0, 2.0 * theU, -1.0);
+  return true;
+}
+
 } // namespace
 
 TEST(ApproxFitAndDivideTest, DisabledHangCheckingResolvesNarrowEndLayer)
@@ -128,4 +187,44 @@ TEST(ApproxFitAndDivideTest, DefaultHangCheckingApproximatesSmoothEndLayer)
 {
   Approx_FitAndDivide aFit(8, 8, THE_TOLERANCE, THE_TOLERANCE, true);
   checkEndLayer(aFit, 0.02);
+}
+
+TEST(ApproxFitAndDivideTest, LeastSquaresPreservesTranslatedParabola)
+{
+  const ApproxTest_TranslatedParabola aFunction;
+  for (const AppParCurves_Constraint aFirst : {AppParCurves_PassPoint, AppParCurves_TangencyPoint})
+  {
+    for (const AppParCurves_Constraint aLast :
+         {AppParCurves_NoConstraint, AppParCurves_PassPoint, AppParCurves_TangencyPoint})
+    {
+      AppCont_LeastSquare aFit(aFunction, 0.0, 1.0, aFirst, aLast, 8, 17);
+      ASSERT_TRUE(aFit.IsDone());
+      double anError, anError3d, anError2d;
+      aFit.Error(anError, anError3d, anError2d);
+      EXPECT_LT(anError3d, 1.e-8);
+      EXPECT_LT(anError2d, 1.e-8);
+      const AppParCurves_MultiCurve& aResult = aFit.Value();
+      NCollection_Array1<gp_Pnt>     aPoles(1, aResult.Degree() + 1);
+      aResult.Curve(1, aPoles);
+      const Geom_BezierCurve aCurve(aPoles);
+      for (int anIndex = 0; anIndex <= 100; ++anIndex)
+      {
+        const double aU = anIndex / 100.0;
+        const gp_Pnt anExpected(1.e6 + aU, 1.e6 + aU * aU, 1.e6 - aU);
+        EXPECT_LT(aCurve.EvalD0(aU).Distance(anExpected), 1.e-8);
+      }
+    }
+  }
+}
+
+TEST(ApproxFitAndDivideTest, LeastSquaresPreservesTranslatedParabolaWithFreeStart)
+{
+  const ApproxTest_TranslatedParabola aFunction;
+  AppCont_LeastSquare
+    aFit(aFunction, 0.0, 1.0, AppParCurves_NoConstraint, AppParCurves_TangencyPoint, 8, 17);
+  ASSERT_TRUE(aFit.IsDone());
+  double anError, anError3d, anError2d;
+  aFit.Error(anError, anError3d, anError2d);
+  EXPECT_LT(anError3d, 1.e-8);
+  EXPECT_LT(anError2d, 1.e-8);
 }

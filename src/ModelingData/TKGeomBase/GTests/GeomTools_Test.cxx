@@ -57,9 +57,10 @@ TEST(GeomToolsTest, Curve2dRoundTripPreservesTrimmedPeriodicChart)
 
 TEST(GeomToolsTest, CurveRoundTripPreservesTrimmedPeriodicChart)
 {
-  const occ::handle<Geom_Curve> aBasis = new Geom_Circle(gp_Ax2(gp_Pnt(3, 0, 0), gp_Dir(0, 0, 1)), 2);
+  const occ::handle<Geom_Curve> aBasis =
+    new Geom_Circle(gp_Ax2(gp_Pnt(3, 0, 0), gp_Dir(0, 0, 1)), 2);
   const occ::handle<Geom_Curve> aCurve = new Geom_TrimmedCurve(aBasis, 18, 23, false, false);
-  std::stringstream aStream;
+  std::stringstream             aStream;
   aStream.precision(17);
   GeomTools::Write(aCurve, aStream);
   occ::handle<Geom_Curve> aResult;

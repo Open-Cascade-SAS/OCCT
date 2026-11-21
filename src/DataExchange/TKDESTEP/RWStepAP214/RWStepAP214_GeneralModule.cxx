@@ -1187,13 +1187,11 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule, StepData_GeneralModule)
 #include <StepDimTol_NonUniformZoneDefinition.hxx>
 #include <StepDimTol_ProjectedZoneDefinition.hxx>
 #include <StepDimTol_RunoutZoneDefinition.hxx>
-#include <StepDimTol_RunoutZoneOrientation.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
 #include <StepDimTol_ToleranceZoneDefinition.hxx>
 #include <StepDimTol_ToleranceZoneForm.hxx>
 #include <StepShape_ValueFormatTypeQualifier.hxx>
 #include <StepDimTol_DatumReferenceElement.hxx>
-#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 #include <StepDimTol_DatumSystem.hxx>
 #include <StepDimTol_GeneralDatumReference.hxx>
 #include <StepRepr_ReprItemAndPlaneAngleMeasureWithUnit.hxx>

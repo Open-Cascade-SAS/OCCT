@@ -81,7 +81,8 @@ TEST(Geom2dAdaptorTest, MakeCurve_BoundedLine_PreservesInterval)
 
 TEST(Geom2dAdaptorTest, CopyAndOffsetPreserveReversedMultiPeriodTrim)
 {
-  const occ::handle<Geom2d_Curve> aBasis = new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(2, -3), gp_Dir2d(1, 2)), 4);
+  const occ::handle<Geom2d_Curve> aBasis =
+    new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(2, -3), gp_Dir2d(1, 2)), 4);
   const occ::handle<Geom2d_TrimmedCurve> aTrim =
     new Geom2d_TrimmedCurve(aBasis, 18.0, 23.0, false, false);
   const occ::handle<Geom2d_Curve> aCopy = occ::down_cast<Geom2d_Curve>(aTrim->Copy());

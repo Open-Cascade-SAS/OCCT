@@ -32,10 +32,10 @@ TEST(Adaptor3d_CurveOnSurfaceTest, D3UsesThirdDerivativeOfPlanarPCurve)
 {
   NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
   aPoles.Init(gp_Pnt2d(0.0, 0.0));
-  aPoles(4) = gp_Pnt2d(1.0, 2.0);
+  aPoles(4)                                     = gp_Pnt2d(1.0, 2.0);
   const occ::handle<Geom2d_BezierCurve> aPCurve = new Geom2d_BezierCurve(aPoles);
   const occ::handle<Geom_Plane>         aPlane  = new Geom_Plane(gp_Pln());
-  const Adaptor3d_CurveOnSurface aCurve(new Geom2dAdaptor_Curve(aPCurve),
+  const Adaptor3d_CurveOnSurface        aCurve(new Geom2dAdaptor_Curve(aPCurve),
                                         new GeomAdaptor_Surface(aPlane));
 
   const gp_Vec aD3 = aCurve.EvalD3(0.5).D3;
@@ -58,11 +58,11 @@ TEST(Adaptor3d_CurveOnSurfaceTest, D3CountsMixedSurfaceTermOnce)
     }
   }
   const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles);
-  NCollection_Array1<gp_Pnt2d> aPCurvePoles(1, 2);
-  aPCurvePoles(1) = gp_Pnt2d(0.0, 0.0);
-  aPCurvePoles(2) = gp_Pnt2d(1.0, 1.0);
+  NCollection_Array1<gp_Pnt2d>          aPCurvePoles(1, 2);
+  aPCurvePoles(1)                               = gp_Pnt2d(0.0, 0.0);
+  aPCurvePoles(2)                               = gp_Pnt2d(1.0, 1.0);
   const occ::handle<Geom2d_BezierCurve> aPCurve = new Geom2d_BezierCurve(aPCurvePoles);
-  const Adaptor3d_CurveOnSurface aCurve(new Geom2dAdaptor_Curve(aPCurve),
+  const Adaptor3d_CurveOnSurface        aCurve(new Geom2dAdaptor_Curve(aPCurve),
                                         new GeomAdaptor_Surface(aSurface));
 
   const gp_Vec aD3 = aCurve.EvalD3(0.4).D3;
@@ -74,11 +74,11 @@ TEST(Adaptor3d_CurveOnSurfaceTest, D3CountsMixedSurfaceTermOnce)
 TEST(Adaptor3d_CurveOnSurfaceTest, ReloadCurveRebuildsIntervalBounds)
 {
   NCollection_Array1<gp_Pnt2d> aPoles(1, 2);
-  aPoles(1) = gp_Pnt2d(0.0, 0.0);
-  aPoles(2) = gp_Pnt2d(1.0, 1.0);
+  aPoles(1)                                     = gp_Pnt2d(0.0, 0.0);
+  aPoles(2)                                     = gp_Pnt2d(1.0, 1.0);
   const occ::handle<Geom2d_BezierCurve> aPCurve = new Geom2d_BezierCurve(aPoles);
   const occ::handle<Geom_Plane>         aPlane  = new Geom_Plane(gp_Pln());
-  Adaptor3d_CurveOnSurface aCurve(new Geom2dAdaptor_Curve(aPCurve),
+  Adaptor3d_CurveOnSurface              aCurve(new Geom2dAdaptor_Curve(aPCurve),
                                   new GeomAdaptor_Surface(aPlane));
 
   NCollection_Array1<double> anIntervals(1, 2);
@@ -114,12 +114,12 @@ TEST(Adaptor3d_CurveOnSurfaceTest, ReloadSurfaceRebuildsEndpointEvaluation)
   const occ::handle<Geom_BSplineSurface> aBSpline =
     new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 1, 1);
   NCollection_Array1<gp_Pnt2d> aPCurvePoles(1, 2);
-  aPCurvePoles(1) = gp_Pnt2d(0.2, 0.2);
-  aPCurvePoles(2) = gp_Pnt2d(0.8, 0.8);
+  aPCurvePoles(1)                               = gp_Pnt2d(0.2, 0.2);
+  aPCurvePoles(2)                               = gp_Pnt2d(0.8, 0.8);
   const occ::handle<Geom2d_BezierCurve> aPCurve = new Geom2d_BezierCurve(aPCurvePoles);
-  Adaptor3d_CurveOnSurface aCurve(new Geom2dAdaptor_Curve(aPCurve),
+  Adaptor3d_CurveOnSurface              aCurve(new Geom2dAdaptor_Curve(aPCurve),
                                   new GeomAdaptor_Surface(aBSpline));
-  const occ::handle<Adaptor3d_Curve> aCopy = aCurve.ShallowCopy();
+  const occ::handle<Adaptor3d_Curve>    aCopy = aCurve.ShallowCopy();
   ASSERT_FALSE(aCopy.IsNull());
   EXPECT_DOUBLE_EQ(aCurve.EvalD1(0.0).Point.Z(), 10.0);
   EXPECT_DOUBLE_EQ(aCurve.EvalD1(1.0).Point.Z(), 10.0);

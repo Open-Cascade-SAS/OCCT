@@ -87,7 +87,7 @@ TEST(StepDimTol_ReferencesTest, RunoutZone_WritesAndSharesOrientation)
 TEST(StepDimTol_ReferencesTest, DatumModifier_AddWithRefsIncludesLengthMeasure)
 {
   STEPControl_Controller::Init();
-  const occ::handle<StepAP214_Protocol> aProtocol = new StepAP214_Protocol;
+  const occ::handle<StepAP214_Protocol>              aProtocol = new StepAP214_Protocol;
   const occ::handle<StepBasic_LengthMeasureWithUnit> aMeasure = new StepBasic_LengthMeasureWithUnit;
   const occ::handle<StepDimTol_DatumReferenceModifierWithValue> aModifier =
     new StepDimTol_DatumReferenceModifierWithValue;
