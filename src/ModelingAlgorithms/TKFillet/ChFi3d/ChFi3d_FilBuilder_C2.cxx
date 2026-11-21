@@ -921,10 +921,10 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         {
           break;
         }
-        else if (!ex.More())
-        {
-          throw Standard_Failure("TwoCorner : No common face to loop the contour");
-        }
+      }
+      if (!ex.More())
+      {
+        throw Standard_Failure("TwoCorner : No common face to loop the contour");
       }
 #ifdef OCCT_DEBUG
       ChFi3d_InitChron(ch); // init perf filling
