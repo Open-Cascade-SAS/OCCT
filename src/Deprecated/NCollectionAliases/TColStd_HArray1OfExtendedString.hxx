@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HArray1OfExtendedString.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<TCollection_ExtendedString> directly.")
 
-  Standard_DEPRECATED("TColStd_HArray1OfExtendedString is deprecated, use "
+Standard_DEPRECATED("TColStd_HArray1OfExtendedString is deprecated, use "
                       "NCollection_HArray1<TCollection_ExtendedString> directly")
 typedef NCollection_HArray1<TCollection_ExtendedString> TColStd_HArray1OfExtendedString;
 

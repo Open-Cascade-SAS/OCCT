@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfInterfVV.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<BOPDS_InterfVV> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BOPDS_VectorOfInterfVV is deprecated, use NCollection_DynamicArray<BOPDS_InterfVV> directly")
 typedef NCollection_DynamicArray<BOPDS_InterfVV> BOPDS_VectorOfInterfVV;
 

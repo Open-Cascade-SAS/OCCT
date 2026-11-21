@@ -85,7 +85,7 @@ public:
 
   Standard_DEPRECATED("Deprecated since OCCT7.7, Graphic3d_DisplayPriority should be passed "
                       "instead of integer number to SetDisplayPriority()")
-  void SetDisplayPriority(const int thePriority)
+  void                 SetDisplayPriority(const int thePriority)
   {
     SetDisplayPriority((Graphic3d_DisplayPriority)thePriority);
   }
@@ -320,7 +320,7 @@ public:
                                bool                       theWithCheck = false);
 
   Standard_DEPRECATED("Deprecated short-cut")
-  void Connect(const occ::handle<Graphic3d_Structure>& thePrs)
+  void                 Connect(const occ::handle<Graphic3d_Structure>& thePrs)
   {
     Connect(thePrs.get(), Graphic3d_TOC_DESCENDANT);
   }
@@ -332,7 +332,10 @@ public:
   Standard_EXPORT void Disconnect(Graphic3d_Structure* theStructure);
 
   Standard_DEPRECATED("Deprecated alias for Disconnect()")
-  void Remove(const occ::handle<Graphic3d_Structure>& thePrs) { Disconnect(thePrs.get()); }
+  void                 Remove(const occ::handle<Graphic3d_Structure>& thePrs)
+  {
+    Disconnect(thePrs.get());
+  }
 
   //! If Atype is TOC_DESCENDANT then suppress all
   //! the connections with the child structures of <me>.
@@ -341,7 +344,10 @@ public:
   Standard_EXPORT void DisconnectAll(const Graphic3d_TypeOfConnection AType);
 
   Standard_DEPRECATED("Deprecated alias for DisconnectAll()")
-  void RemoveAll() { DisconnectAll(Graphic3d_TOC_DESCENDANT); }
+  void                 RemoveAll()
+  {
+    DisconnectAll(Graphic3d_TOC_DESCENDANT);
+  }
 
   //! Returns <ASet> the group of structures :
   //! - directly or indirectly connected to <AStructure> if the

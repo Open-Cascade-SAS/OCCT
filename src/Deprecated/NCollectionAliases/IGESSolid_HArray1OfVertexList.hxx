@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "IGESSolid_HArray1OfVertexList.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESSolid_VertexList>> directly.")
 
-  Standard_DEPRECATED("IGESSolid_HArray1OfVertexList is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<IGESSolid_VertexList>> directly")
+Standard_DEPRECATED("IGESSolid_HArray1OfVertexList is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<IGESSolid_VertexList>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESSolid_VertexList>>
   IGESSolid_HArray1OfVertexList;
 

@@ -1123,25 +1123,37 @@ public: //! @name subvew management
   Standard_EXPORT bool RemoveSubview(const V3d_View* theView);
 
 public: //! @name deprecated methods
-  //! Returns True if One light more can be
-  //! activated in this View.
+        //! Returns True if One light more can be
+        //! activated in this View.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
   Standard_EXPORT bool IfMoreLights() const;
 
   //! initializes an iteration on the active Lights.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-  void InitActiveLights() { myActiveLightsIterator.Initialize(myActiveLights); }
+  void InitActiveLights()
+  {
+    myActiveLightsIterator.Initialize(myActiveLights);
+  }
 
   //! returns true if there are more active Light(s) to return.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-  bool MoreActiveLights() const { return myActiveLightsIterator.More(); }
+  bool MoreActiveLights() const
+  {
+    return myActiveLightsIterator.More();
+  }
 
   //! Go to the next active Light (if there is not, ActiveLight will raise an exception)
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-  void NextActiveLights() { myActiveLightsIterator.Next(); }
+  void NextActiveLights()
+  {
+    myActiveLightsIterator.Next();
+  }
 
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-  const occ::handle<V3d_Light>& ActiveLight() const { return myActiveLightsIterator.Value(); }
+  const occ::handle<V3d_Light>& ActiveLight() const
+  {
+    return myActiveLightsIterator.Value();
+  }
 
 protected:
   Standard_EXPORT void ImmediateUpdate() const;

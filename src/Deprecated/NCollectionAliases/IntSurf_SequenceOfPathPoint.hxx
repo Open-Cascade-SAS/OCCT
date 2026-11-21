@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntSurf_SequenceOfPathPoint.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntSurf_PathPoint> directly.")
 
-  Standard_DEPRECATED("IntSurf_SequenceOfPathPoint is deprecated, use "
+Standard_DEPRECATED("IntSurf_SequenceOfPathPoint is deprecated, use "
                       "NCollection_Sequence<IntSurf_PathPoint> directly")
 typedef NCollection_Sequence<IntSurf_PathPoint> IntSurf_SequenceOfPathPoint;
 

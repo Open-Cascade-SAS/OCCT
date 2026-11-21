@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepBasic_HArray1OfPerson.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<StepBasic_Person>> directly.")
 
-  Standard_DEPRECATED("StepBasic_HArray1OfPerson is deprecated, use "
+Standard_DEPRECATED("StepBasic_HArray1OfPerson is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<StepBasic_Person>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepBasic_Person>> StepBasic_HArray1OfPerson;
 

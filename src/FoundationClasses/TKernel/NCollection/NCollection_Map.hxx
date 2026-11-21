@@ -664,8 +664,9 @@ protected:
   //! @param theArgs arguments forwarded to key constructor
   //! @return bool or const TheKeyType& depending on ReturnRef
   template <bool IsTry, bool ReturnRef, typename... Args>
-  auto emplaceImpl(std::bool_constant<IsTry>, std::bool_constant<ReturnRef>, Args&&... theArgs)
-    -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
+  auto emplaceImpl(std::bool_constant<IsTry>,
+                   std::bool_constant<ReturnRef>,
+                   Args&&... theArgs) -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
   {
     if (resizable())
       ReSize(Extent());

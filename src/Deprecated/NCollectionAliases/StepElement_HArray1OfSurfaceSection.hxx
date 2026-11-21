@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepElement_HArray1OfSurfaceSection.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepElement_SurfaceSection>> directly.")
 
-  Standard_DEPRECATED(
-    "StepElement_HArray1OfSurfaceSection is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepElement_SurfaceSection>> directly")
+Standard_DEPRECATED("StepElement_HArray1OfSurfaceSection is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<StepElement_SurfaceSection>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepElement_SurfaceSection>>
   StepElement_HArray1OfSurfaceSection;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColStd_SequenceOfInteger.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<int> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColStd_SequenceOfInteger is deprecated, use NCollection_Sequence<int> directly")
 typedef NCollection_Sequence<int> TColStd_SequenceOfInteger;
 

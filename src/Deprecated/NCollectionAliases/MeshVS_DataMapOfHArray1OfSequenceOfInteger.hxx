@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("MeshVS_DataMapOfHArray1OfSequenceOfInteger.hxx is deprecated since "
                            "OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "MeshVS_DataMapOfHArray1OfSequenceOfInteger is deprecated, use NCollection_DataMap<int, "
-    "opencascade::handle<MeshVS_HArray1OfSequenceOfInteger>> directly")
+Standard_DEPRECATED(
+  "MeshVS_DataMapOfHArray1OfSequenceOfInteger is deprecated, use NCollection_DataMap<int, "
+  "opencascade::handle<MeshVS_HArray1OfSequenceOfInteger>> directly")
 typedef NCollection_DataMap<int, opencascade::handle<MeshVS_HArray1OfSequenceOfInteger>>
   MeshVS_DataMapOfHArray1OfSequenceOfInteger;
 Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfHArray1OfSequenceOfInteger is deprecated, "

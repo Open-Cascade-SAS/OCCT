@@ -947,7 +947,7 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
                                         {12, 9},
                                         {11, 8},
                                         {6, 3}};
-  for (const int (&aPair)[2] : anExpectedSamePairs)
+  for (const int(&aPair)[2] : anExpectedSamePairs)
   {
     EXPECT_TRUE(aShapes.Value(aPair[0]).IsSame(aShapes.Value(aPair[1])));
   }
@@ -961,7 +961,7 @@ TEST(TNaming_NamedShape_Test, CafNamedShape_A2_IteratorGraph)
       }
 
       bool isExpectedPair = false;
-      for (const int (&aPair)[2] : anExpectedSamePairs)
+      for (const int(&aPair)[2] : anExpectedSamePairs)
       {
         if ((aPair[0] == anFirst && aPair[1] == anSecond)
             || (aPair[0] == anSecond && aPair[1] == anFirst))

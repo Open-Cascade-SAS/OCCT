@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "TopOpeBRepDS_MapOfCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TopOpeBRepDS_MapOfCurve is deprecated, use NCollection_DataMap<int, "
+Standard_DEPRECATED("TopOpeBRepDS_MapOfCurve is deprecated, use NCollection_DataMap<int, "
                       "TopOpeBRepDS_CurveData> directly")
 typedef NCollection_DataMap<int, TopOpeBRepDS_CurveData> TopOpeBRepDS_MapOfCurve;
 Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfMapOfCurve is deprecated, use "

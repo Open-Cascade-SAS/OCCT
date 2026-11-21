@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepVisual_Array1OfFillStyleSelect.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Array1<StepVisual_FillStyleSelect> directly.")
 
-  Standard_DEPRECATED("StepVisual_Array1OfFillStyleSelect is deprecated, use "
+Standard_DEPRECATED("StepVisual_Array1OfFillStyleSelect is deprecated, use "
                       "NCollection_Array1<StepVisual_FillStyleSelect> directly")
 typedef NCollection_Array1<StepVisual_FillStyleSelect> StepVisual_Array1OfFillStyleSelect;
 

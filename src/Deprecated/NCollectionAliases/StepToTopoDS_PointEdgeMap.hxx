@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "StepToTopoDS_PointEdgeMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("StepToTopoDS_PointEdgeMap is deprecated, use "
+Standard_DEPRECATED("StepToTopoDS_PointEdgeMap is deprecated, use "
                       "NCollection_DataMap<StepToTopoDS_PointPair, TopoDS_Edge> directly")
 typedef NCollection_DataMap<StepToTopoDS_PointPair, TopoDS_Edge> StepToTopoDS_PointEdgeMap;
 Standard_DEPRECATED("StepToTopoDS_DataMapIteratorOfPointEdgeMap is deprecated, use "

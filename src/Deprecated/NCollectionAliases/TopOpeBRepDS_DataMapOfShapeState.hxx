@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfShapeState.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "TopOpeBRepDS_DataMapOfShapeState is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "TopAbs_State, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "TopOpeBRepDS_DataMapOfShapeState is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "TopAbs_State, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TopAbs_State, TopTools_ShapeMapHasher>
   TopOpeBRepDS_DataMapOfShapeState;
 Standard_DEPRECATED(

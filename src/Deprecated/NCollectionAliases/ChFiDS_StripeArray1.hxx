@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("ChFiDS_StripeArray1.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> directly.")
 
-  Standard_DEPRECATED("ChFiDS_StripeArray1 is deprecated, use "
+Standard_DEPRECATED("ChFiDS_StripeArray1 is deprecated, use "
                       "NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> directly")
 typedef NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> ChFiDS_StripeArray1;
 

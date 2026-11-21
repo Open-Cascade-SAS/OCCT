@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BRepBlend_SequenceOfPointOnRst.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<BRepBlend_PointOnRst> directly.")
 
-  Standard_DEPRECATED("BRepBlend_SequenceOfPointOnRst is deprecated, use "
+Standard_DEPRECATED("BRepBlend_SequenceOfPointOnRst is deprecated, use "
                       "NCollection_Sequence<BRepBlend_PointOnRst> directly")
 typedef NCollection_Sequence<BRepBlend_PointOnRst> BRepBlend_SequenceOfPointOnRst;
 

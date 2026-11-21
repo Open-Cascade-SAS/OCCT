@@ -26,14 +26,13 @@
 Standard_HEADER_DEPRECATED("TopOpeBRepDS_DoubleMapOfIntegerShape.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TopOpeBRepDS_DoubleMapOfIntegerShape is deprecated, use NCollection_DoubleMap<int, "
     "TopoDS_Shape, NCollection_DefaultHasher<int>, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DoubleMap<int,
                               TopoDS_Shape,
                               NCollection_DefaultHasher<int>,
-                              TopTools_ShapeMapHasher>
-  TopOpeBRepDS_DoubleMapOfIntegerShape;
+                              TopTools_ShapeMapHasher> TopOpeBRepDS_DoubleMapOfIntegerShape;
 Standard_DEPRECATED("TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape is deprecated, use "
                     "NCollection_DoubleMap<int, TopoDS_Shape, NCollection_DefaultHasher<int>, "
                     "TopTools_ShapeMapHasher>::Iterator directly")

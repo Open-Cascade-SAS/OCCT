@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "TDF_IDList.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_IDList is deprecated, use NCollection_List<Standard_GUID> directly")
-typedef NCollection_List<Standard_GUID> TDF_IDList;
+Standard_DEPRECATED("TDF_IDList is deprecated, use NCollection_List<Standard_GUID> directly")
+typedef NCollection_List<Standard_GUID>           TDF_IDList;
 Standard_DEPRECATED(
   "TDF_ListIteratorOfIDList is deprecated, use NCollection_List<Standard_GUID>::Iterator directly")
 typedef NCollection_List<Standard_GUID>::Iterator TDF_ListIteratorOfIDList;

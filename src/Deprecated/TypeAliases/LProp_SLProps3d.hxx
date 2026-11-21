@@ -30,7 +30,7 @@
 Standard_HEADER_DEPRECATED("LProp_SLProps3d.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("LProp_SLProps3d is deprecated, use the underlying type directly")
+Standard_DEPRECATED("LProp_SLProps3d is deprecated, use the underlying type directly")
 typedef GeomLProp_SLPropsBase<occ::handle<Adaptor3d_Surface>> LProp_SLProps3d;
 
 #endif // _LProp_SLProps3d_HeaderFile

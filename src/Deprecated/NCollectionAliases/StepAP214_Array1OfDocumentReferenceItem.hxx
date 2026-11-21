@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "StepAP214_Array1OfDocumentReferenceItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepAP214_DocumentReferenceItem> directly.")
 
-  Standard_DEPRECATED("StepAP214_Array1OfDocumentReferenceItem is deprecated, use "
+Standard_DEPRECATED("StepAP214_Array1OfDocumentReferenceItem is deprecated, use "
                       "NCollection_Array1<StepAP214_DocumentReferenceItem> directly")
 typedef NCollection_Array1<StepAP214_DocumentReferenceItem> StepAP214_Array1OfDocumentReferenceItem;
 

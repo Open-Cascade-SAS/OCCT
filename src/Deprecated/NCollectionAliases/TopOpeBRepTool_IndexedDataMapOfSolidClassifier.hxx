@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfSolidClassifier.hxx i
                            "OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, "
                            "BRepClass3d_SolidClassifier, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfSolidClassifier is deprecated, use "
-                      "NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier, "
-                      "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfSolidClassifier is deprecated, use "
+                    "NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier, "
+                    "TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape,
                                    BRepClass3d_SolidClassifier,
                                    TopTools_ShapeMapHasher>

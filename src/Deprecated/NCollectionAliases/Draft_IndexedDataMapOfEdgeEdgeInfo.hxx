@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED(
   "Draft_IndexedDataMapOfEdgeEdgeInfo.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedDataMap<TopoDS_Edge, Draft_EdgeInfo, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED(
-    "Draft_IndexedDataMapOfEdgeEdgeInfo is deprecated, use NCollection_IndexedDataMap<TopoDS_Edge, "
-    "Draft_EdgeInfo, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "Draft_IndexedDataMapOfEdgeEdgeInfo is deprecated, use NCollection_IndexedDataMap<TopoDS_Edge, "
+  "Draft_EdgeInfo, TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Edge, Draft_EdgeInfo, TopTools_ShapeMapHasher>
   Draft_IndexedDataMapOfEdgeEdgeInfo;
 

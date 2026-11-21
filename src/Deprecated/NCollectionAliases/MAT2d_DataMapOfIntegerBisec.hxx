@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "MAT2d_DataMapOfIntegerBisec.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("MAT2d_DataMapOfIntegerBisec is deprecated, use NCollection_DataMap<int, "
+Standard_DEPRECATED("MAT2d_DataMapOfIntegerBisec is deprecated, use NCollection_DataMap<int, "
                       "Bisector_Bisec> directly")
 typedef NCollection_DataMap<int, Bisector_Bisec> MAT2d_DataMapOfIntegerBisec;
 Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerBisec is deprecated, use "

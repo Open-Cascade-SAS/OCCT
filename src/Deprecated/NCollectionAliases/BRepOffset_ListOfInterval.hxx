@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "BRepOffset_ListOfInterval.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BRepOffset_ListOfInterval is deprecated, use NCollection_List<BRepOffset_Interval> directly")
-typedef NCollection_List<BRepOffset_Interval> BRepOffset_ListOfInterval;
+typedef NCollection_List<BRepOffset_Interval>           BRepOffset_ListOfInterval;
 Standard_DEPRECATED("BRepOffset_ListIteratorOfListOfInterval is deprecated, use "
                     "NCollection_List<BRepOffset_Interval>::Iterator directly")
 typedef NCollection_List<BRepOffset_Interval>::Iterator BRepOffset_ListIteratorOfListOfInterval;

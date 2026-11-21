@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("GeomPlate_Array1OfSequenceOfReal.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Array1<TColStd_SequenceOfReal> directly.")
 
-  Standard_DEPRECATED("GeomPlate_Array1OfSequenceOfReal is deprecated, use "
+Standard_DEPRECATED("GeomPlate_Array1OfSequenceOfReal is deprecated, use "
                       "NCollection_Array1<TColStd_SequenceOfReal> directly")
 typedef NCollection_Array1<TColStd_SequenceOfReal> GeomPlate_Array1OfSequenceOfReal;
 

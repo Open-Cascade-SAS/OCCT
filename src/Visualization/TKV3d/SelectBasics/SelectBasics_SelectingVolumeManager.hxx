@@ -204,7 +204,10 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPoint()")
-  bool Overlaps(const gp_Pnt& thePnt) const { return OverlapsPoint(thePnt); }
+  bool Overlaps(const gp_Pnt& thePnt) const
+  {
+    return OverlapsPoint(thePnt);
+  }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
   Standard_EXPORT bool Overlaps(const occ::handle<NCollection_HArray1<gp_Pnt>>& theArrayOfPts,
@@ -212,9 +215,9 @@ public:
                                 SelectBasics_PickResult& thePickResult) const;
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
-  bool Overlaps(const NCollection_Array1<gp_Pnt>& theArrayOfPts,
-                int                               theSensType,
-                SelectBasics_PickResult&          thePickResult) const
+  bool                 Overlaps(const NCollection_Array1<gp_Pnt>& theArrayOfPts,
+                                int                               theSensType,
+                                SelectBasics_PickResult&          thePickResult) const
   {
     return OverlapsPolygon(theArrayOfPts, theSensType, thePickResult);
   }
@@ -242,16 +245,16 @@ public:
 #if (!defined(_MSC_VER) || (_MSC_VER >= 1900))                                                     \
   && (!defined(__GNUC__) || (__GNUC__ != 5 && (__GNUC__ != 6 || __GNUC_MINOR__ >= 3)))
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Point = SelectMgr_SelectionType_Point;
+  static const SelectMgr_SelectionType Point    = SelectMgr_SelectionType_Point;
 
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Box = SelectMgr_SelectionType_Box;
+  static const SelectMgr_SelectionType Box      = SelectMgr_SelectionType_Box;
 
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
   static const SelectMgr_SelectionType Polyline = SelectMgr_SelectionType_Polyline;
 
   Standard_DEPRECATED("Deprecated alias - SelectMgr_SelectionType should be used instead")
-  static const SelectMgr_SelectionType Unknown = SelectMgr_SelectionType_Unknown;
+  static const SelectMgr_SelectionType Unknown  = SelectMgr_SelectionType_Unknown;
 #endif
 };
 

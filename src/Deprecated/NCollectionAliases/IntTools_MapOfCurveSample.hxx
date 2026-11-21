@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "IntTools_MapOfCurveSample.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("IntTools_MapOfCurveSample is deprecated, use "
+Standard_DEPRECATED("IntTools_MapOfCurveSample is deprecated, use "
                       "NCollection_Map<IntTools_CurveRangeSample> directly")
-typedef NCollection_Map<IntTools_CurveRangeSample> IntTools_MapOfCurveSample;
+typedef NCollection_Map<IntTools_CurveRangeSample>           IntTools_MapOfCurveSample;
 Standard_DEPRECATED("IntTools_MapIteratorOfMapOfCurveSample is deprecated, use "
                     "NCollection_Map<IntTools_CurveRangeSample>::Iterator directly")
 typedef NCollection_Map<IntTools_CurveRangeSample>::Iterator IntTools_MapIteratorOfMapOfCurveSample;

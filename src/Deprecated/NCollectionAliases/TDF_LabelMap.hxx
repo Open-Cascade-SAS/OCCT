@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "TDF_LabelMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_LabelMap is deprecated, use NCollection_Map<TDF_Label> directly")
-typedef NCollection_Map<TDF_Label> TDF_LabelMap;
+Standard_DEPRECATED("TDF_LabelMap is deprecated, use NCollection_Map<TDF_Label> directly")
+typedef NCollection_Map<TDF_Label>           TDF_LabelMap;
 Standard_DEPRECATED(
   "TDF_MapIteratorOfLabelMap is deprecated, use NCollection_Map<TDF_Label>::Iterator directly")
 typedef NCollection_Map<TDF_Label>::Iterator TDF_MapIteratorOfLabelMap;

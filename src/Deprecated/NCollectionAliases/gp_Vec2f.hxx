@@ -25,7 +25,7 @@
 Standard_HEADER_DEPRECATED(
   "gp_Vec2f.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vec2<float> directly.")
 
-  Standard_DEPRECATED("gp_Vec2f is deprecated, use NCollection_Vec2<float> directly")
+Standard_DEPRECATED("gp_Vec2f is deprecated, use NCollection_Vec2<float> directly")
 typedef NCollection_Vec2<float> gp_Vec2f;
 
 #endif // _gp_Vec2f_hxx

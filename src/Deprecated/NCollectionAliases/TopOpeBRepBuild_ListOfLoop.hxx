@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "TopOpeBRepBuild_ListOfLoop.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TopOpeBRepBuild_ListOfLoop is deprecated, use "
+Standard_DEPRECATED("TopOpeBRepBuild_ListOfLoop is deprecated, use "
                       "NCollection_List<opencascade::handle<TopOpeBRepBuild_Loop>> directly")
 typedef NCollection_List<opencascade::handle<TopOpeBRepBuild_Loop>> TopOpeBRepBuild_ListOfLoop;
 Standard_DEPRECATED(

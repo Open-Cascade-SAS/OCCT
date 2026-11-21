@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("StepToTopoDS_DataMapOfRINames.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("StepToTopoDS_DataMapOfRINames is deprecated, use "
+Standard_DEPRECATED("StepToTopoDS_DataMapOfRINames is deprecated, use "
                       "NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> StepToTopoDS_DataMapOfRINames;
 Standard_DEPRECATED("StepToTopoDS_DataMapIteratorOfDataMapOfRINames is deprecated, use "

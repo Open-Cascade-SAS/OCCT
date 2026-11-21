@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "IntTools_MapOfSurfaceSample.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("IntTools_MapOfSurfaceSample is deprecated, use "
+Standard_DEPRECATED("IntTools_MapOfSurfaceSample is deprecated, use "
                       "NCollection_Map<IntTools_SurfaceRangeSample> directly")
 typedef NCollection_Map<IntTools_SurfaceRangeSample> IntTools_MapOfSurfaceSample;
 Standard_DEPRECATED("IntTools_MapIteratorOfMapOfSurfaceSample is deprecated, use "

@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepElement_Array1OfVolumeElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly.")
 
-  Standard_DEPRECATED(
-    "StepElement_Array1OfVolumeElementPurposeMember is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly")
+Standard_DEPRECATED(
+  "StepElement_Array1OfVolumeElementPurposeMember is deprecated, use "
+  "NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly")
 typedef NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>>
   StepElement_Array1OfVolumeElementPurposeMember;
 

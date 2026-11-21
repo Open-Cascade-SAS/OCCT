@@ -19,8 +19,9 @@
 //! Functionality of this class (Message_ProgressSentry) has been superseded by
 //! Message_ProgressScope. This class is kept just to simplify transition of an old code and will be
 //! removed in future.
-class Standard_DEPRECATED("Deprecated class, Message_ProgressScope should be used instead")
-  Message_ProgressSentry : public Message_ProgressScope
+class Standard_DEPRECATED(
+  "Deprecated class, Message_ProgressScope should be used instead") Message_ProgressSentry
+    : public Message_ProgressScope
 {
 public:
   //! Deprecated constructor, Message_ProgressScope should be created instead.

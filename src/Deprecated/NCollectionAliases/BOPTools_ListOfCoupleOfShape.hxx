@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPTools_ListOfCoupleOfShape.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("BOPTools_ListOfCoupleOfShape is deprecated, use "
+Standard_DEPRECATED("BOPTools_ListOfCoupleOfShape is deprecated, use "
                       "NCollection_List<BOPTools_CoupleOfShape> directly")
 typedef NCollection_List<BOPTools_CoupleOfShape> BOPTools_ListOfCoupleOfShape;
 Standard_DEPRECATED("BOPTools_ListIteratorOfListOfCoupleOfShape is deprecated, use "

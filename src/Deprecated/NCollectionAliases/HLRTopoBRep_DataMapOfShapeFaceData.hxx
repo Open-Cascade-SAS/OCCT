@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("HLRTopoBRep_DataMapOfShapeFaceData.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "HLRTopoBRep_DataMapOfShapeFaceData is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "HLRTopoBRep_FaceData, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "HLRTopoBRep_DataMapOfShapeFaceData is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "HLRTopoBRep_FaceData, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_FaceData, TopTools_ShapeMapHasher>
   HLRTopoBRep_DataMapOfShapeFaceData;
 Standard_DEPRECATED("HLRTopoBRep_DataMapIteratorOfDataMapOfShapeFaceData is deprecated, use "

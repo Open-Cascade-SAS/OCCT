@@ -253,8 +253,8 @@ public:
                                           Aspect_TypeOfTriedronPosition& theCorner);
 
 public: //! @name deprecated methods
-  //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and
-  //! theArgVec[3].
+        //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1],
+        //! theArgVec[2] and theArgVec[3].
   Standard_DEPRECATED("Method has been moved to Draw::ParseColor()")
   Standard_EXPORT static int ParseColor(const int                theArgNb,
                                         const char* const* const theArgVec,
@@ -270,7 +270,7 @@ public: //! @name deprecated methods
   //! Parses boolean argument.
   //! Handles either flag specified by 0|1 or on|off.
   Standard_DEPRECATED("Method has been moved to Draw::ParseOnOff()")
-  Standard_EXPORT static bool ParseOnOff(const char* theArg, bool& theIsOn);
+  Standard_EXPORT static bool                 ParseOnOff(const char* theArg, bool& theIsOn);
 
   Standard_DEPRECATED("Method has been moved to Quantity_Color::ColorFromName()")
   Standard_EXPORT static Quantity_NameOfColor GetColorFromName(const char* const name);

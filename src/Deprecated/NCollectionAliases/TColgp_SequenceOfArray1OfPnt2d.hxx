@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "TColgp_SequenceOfArray1OfPnt2d.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly.")
 
-  Standard_DEPRECATED("TColgp_SequenceOfArray1OfPnt2d is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly")
+Standard_DEPRECATED("TColgp_SequenceOfArray1OfPnt2d is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly")
 typedef NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>>
   TColgp_SequenceOfArray1OfPnt2d;
 

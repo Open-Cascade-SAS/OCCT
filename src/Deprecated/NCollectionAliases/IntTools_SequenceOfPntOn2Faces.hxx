@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntTools_SequenceOfPntOn2Faces.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntTools_PntOn2Faces> directly.")
 
-  Standard_DEPRECATED("IntTools_SequenceOfPntOn2Faces is deprecated, use "
+Standard_DEPRECATED("IntTools_SequenceOfPntOn2Faces is deprecated, use "
                       "NCollection_Sequence<IntTools_PntOn2Faces> directly")
 typedef NCollection_Sequence<IntTools_PntOn2Faces> IntTools_SequenceOfPntOn2Faces;
 

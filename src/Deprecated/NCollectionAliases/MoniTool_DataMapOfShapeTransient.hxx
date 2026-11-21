@@ -28,13 +28,12 @@
 Standard_HEADER_DEPRECATED("MoniTool_DataMapOfShapeTransient.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "MoniTool_DataMapOfShapeTransient is deprecated, use NCollection_DataMap<TopoDS_Shape, "
     "opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape,
                             opencascade::handle<Standard_Transient>,
-                            TopTools_ShapeMapHasher>
-  MoniTool_DataMapOfShapeTransient;
+                            TopTools_ShapeMapHasher> MoniTool_DataMapOfShapeTransient;
 Standard_DEPRECATED("MoniTool_DataMapIteratorOfDataMapOfShapeTransient is deprecated, use "
                     "NCollection_DataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, "
                     "TopTools_ShapeMapHasher>::Iterator directly")

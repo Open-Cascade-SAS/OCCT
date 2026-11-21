@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IGESSolid_HArray1OfLoop.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<IGESSolid_Loop>> directly.")
 
-  Standard_DEPRECATED("IGESSolid_HArray1OfLoop is deprecated, use "
+Standard_DEPRECATED("IGESSolid_HArray1OfLoop is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<IGESSolid_Loop>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESSolid_Loop>> IGESSolid_HArray1OfLoop;
 

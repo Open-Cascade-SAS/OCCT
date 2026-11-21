@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED("BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks.hxx is
                            "OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, "
                            "BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED("BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks is deprecated, use "
-                      "NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, "
-                      "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED("BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks is deprecated, use "
+                    "NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, "
+                    "TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks;
 

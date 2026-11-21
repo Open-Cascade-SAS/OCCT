@@ -31,12 +31,11 @@ Standard_HEADER_DEPRECATED(
   "NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, "
   "opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly.")
 
-  Standard_DEPRECATED("Transfer_TransferMapOfProcessForFinder is deprecated, use "
+Standard_DEPRECATED("Transfer_TransferMapOfProcessForFinder is deprecated, use "
                       "NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, "
                       "opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly")
 typedef NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>,
                                    opencascade::handle<Transfer_Binder>,
-                                   Transfer_FindHasher>
-  Transfer_TransferMapOfProcessForFinder;
+                                   Transfer_FindHasher> Transfer_TransferMapOfProcessForFinder;
 
 #endif // _Transfer_TransferMapOfProcessForFinder_hxx

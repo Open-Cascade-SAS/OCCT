@@ -30,7 +30,7 @@
 Standard_HEADER_DEPRECATED("BRepOffsetAPI_Sewing.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("BRepOffsetAPI_Sewing is deprecated, use the underlying type directly")
+Standard_DEPRECATED("BRepOffsetAPI_Sewing is deprecated, use the underlying type directly")
 typedef BRepBuilderAPI_Sewing BRepOffsetAPI_Sewing;
 
 #endif // _BRepOffsetAPI_Sewing_HeaderFile

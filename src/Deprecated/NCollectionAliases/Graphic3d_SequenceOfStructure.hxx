@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "Graphic3d_SequenceOfStructure.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<Graphic3d_Structure>> directly.")
 
-  Standard_DEPRECATED("Graphic3d_SequenceOfStructure is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<Graphic3d_Structure>> directly")
+Standard_DEPRECATED("Graphic3d_SequenceOfStructure is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<Graphic3d_Structure>> directly")
 typedef NCollection_Sequence<opencascade::handle<Graphic3d_Structure>>
   Graphic3d_SequenceOfStructure;
 

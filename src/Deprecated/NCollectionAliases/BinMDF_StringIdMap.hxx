@@ -25,7 +25,7 @@
 Standard_HEADER_DEPRECATED("BinMDF_StringIdMap.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DataMap<TCollection_AsciiString, int> directly.")
 
-  Standard_DEPRECATED("BinMDF_StringIdMap is deprecated, use "
+Standard_DEPRECATED("BinMDF_StringIdMap is deprecated, use "
                       "NCollection_DataMap<TCollection_AsciiString, int> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, int> BinMDF_StringIdMap;
 

@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "ExprIntrp_SequenceOfNamedFunction.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<Expr_NamedFunction>> directly.")
 
-  Standard_DEPRECATED("ExprIntrp_SequenceOfNamedFunction is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<Expr_NamedFunction>> directly")
+Standard_DEPRECATED("ExprIntrp_SequenceOfNamedFunction is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<Expr_NamedFunction>> directly")
 typedef NCollection_Sequence<opencascade::handle<Expr_NamedFunction>>
   ExprIntrp_SequenceOfNamedFunction;
 

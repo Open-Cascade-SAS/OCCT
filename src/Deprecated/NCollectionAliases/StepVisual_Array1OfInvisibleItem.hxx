@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepVisual_Array1OfInvisibleItem.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Array1<StepVisual_InvisibleItem> directly.")
 
-  Standard_DEPRECATED("StepVisual_Array1OfInvisibleItem is deprecated, use "
+Standard_DEPRECATED("StepVisual_Array1OfInvisibleItem is deprecated, use "
                       "NCollection_Array1<StepVisual_InvisibleItem> directly")
 typedef NCollection_Array1<StepVisual_InvisibleItem> StepVisual_Array1OfInvisibleItem;
 

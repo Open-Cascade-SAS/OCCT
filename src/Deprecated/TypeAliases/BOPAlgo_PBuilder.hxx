@@ -27,7 +27,7 @@ class BOPAlgo_Builder;
 Standard_HEADER_DEPRECATED("BOPAlgo_PBuilder.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("BOPAlgo_PBuilder is deprecated, use the underlying type directly")
+Standard_DEPRECATED("BOPAlgo_PBuilder is deprecated, use the underlying type directly")
 typedef BOPAlgo_Builder* BOPAlgo_PBuilder;
 
 #endif // _BOPAlgo_PBuilder_HeaderFile

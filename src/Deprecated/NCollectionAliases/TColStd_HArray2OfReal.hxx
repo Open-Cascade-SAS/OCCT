@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HArray2OfReal.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray2<double> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColStd_HArray2OfReal is deprecated, use NCollection_HArray2<double> directly")
 typedef NCollection_HArray2<double> TColStd_HArray2OfReal;
 

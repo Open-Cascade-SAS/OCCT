@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "Approx_SequenceOfHArray1OfReal.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TColStd_HArray1OfReal>> directly.")
 
-  Standard_DEPRECATED("Approx_SequenceOfHArray1OfReal is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<TColStd_HArray1OfReal>> directly")
+Standard_DEPRECATED("Approx_SequenceOfHArray1OfReal is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<TColStd_HArray1OfReal>> directly")
 typedef NCollection_Sequence<opencascade::handle<TColStd_HArray1OfReal>>
   Approx_SequenceOfHArray1OfReal;
 

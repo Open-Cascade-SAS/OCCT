@@ -29,7 +29,7 @@ class TDocStd_XLink;
 Standard_HEADER_DEPRECATED("TDocStd_XLinkPtr.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TDocStd_XLinkPtr is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TDocStd_XLinkPtr is deprecated, use the underlying type directly")
 typedef TDocStd_XLink* TDocStd_XLinkPtr;
 
 #endif // _TDocStd_XLinkPtr_HeaderFile

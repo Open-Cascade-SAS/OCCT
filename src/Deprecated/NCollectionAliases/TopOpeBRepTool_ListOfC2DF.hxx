@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "TopOpeBRepTool_ListOfC2DF.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TopOpeBRepTool_ListOfC2DF is deprecated, use NCollection_List<TopOpeBRepTool_C2DF> directly")
-typedef NCollection_List<TopOpeBRepTool_C2DF> TopOpeBRepTool_ListOfC2DF;
+typedef NCollection_List<TopOpeBRepTool_C2DF>           TopOpeBRepTool_ListOfC2DF;
 Standard_DEPRECATED("TopOpeBRepTool_ListIteratorOfListOfC2DF is deprecated, use "
                     "NCollection_List<TopOpeBRepTool_C2DF>::Iterator directly")
 typedef NCollection_List<TopOpeBRepTool_C2DF>::Iterator TopOpeBRepTool_ListIteratorOfListOfC2DF;

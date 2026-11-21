@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerMeshEntityOwner.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "MeshVS_DataMapOfIntegerMeshEntityOwner is deprecated, use NCollection_DataMap<int, "
-    "opencascade::handle<MeshVS_MeshEntityOwner>> directly")
+Standard_DEPRECATED(
+  "MeshVS_DataMapOfIntegerMeshEntityOwner is deprecated, use NCollection_DataMap<int, "
+  "opencascade::handle<MeshVS_MeshEntityOwner>> directly")
 typedef NCollection_DataMap<int, opencascade::handle<MeshVS_MeshEntityOwner>>
   MeshVS_DataMapOfIntegerMeshEntityOwner;
 Standard_DEPRECATED(

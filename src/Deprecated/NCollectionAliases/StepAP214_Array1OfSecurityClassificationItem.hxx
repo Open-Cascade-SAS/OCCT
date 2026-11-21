@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepAP214_Array1OfSecurityClassificationItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepAP214_SecurityClassificationItem> directly.")
 
-  Standard_DEPRECATED("StepAP214_Array1OfSecurityClassificationItem is deprecated, use "
-                      "NCollection_Array1<StepAP214_SecurityClassificationItem> directly")
+Standard_DEPRECATED("StepAP214_Array1OfSecurityClassificationItem is deprecated, use "
+                    "NCollection_Array1<StepAP214_SecurityClassificationItem> directly")
 typedef NCollection_Array1<StepAP214_SecurityClassificationItem>
   StepAP214_Array1OfSecurityClassificationItem;
 

@@ -29,7 +29,7 @@ class TNaming_NamedShape;
 Standard_HEADER_DEPRECATED("TNaming_PtrAttribute.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TNaming_PtrAttribute is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TNaming_PtrAttribute is deprecated, use the underlying type directly")
 typedef TNaming_NamedShape* TNaming_PtrAttribute;
 
 #endif // _TNaming_PtrAttribute_HeaderFile

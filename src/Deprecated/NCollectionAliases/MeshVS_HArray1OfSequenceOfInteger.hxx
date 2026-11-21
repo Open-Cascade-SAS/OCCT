@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("MeshVS_HArray1OfSequenceOfInteger.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<TColStd_SequenceOfInteger> directly.")
 
-  Standard_DEPRECATED("MeshVS_HArray1OfSequenceOfInteger is deprecated, use "
+Standard_DEPRECATED("MeshVS_HArray1OfSequenceOfInteger is deprecated, use "
                       "NCollection_HArray1<TColStd_SequenceOfInteger> directly")
 typedef NCollection_HArray1<TColStd_SequenceOfInteger> MeshVS_HArray1OfSequenceOfInteger;
 

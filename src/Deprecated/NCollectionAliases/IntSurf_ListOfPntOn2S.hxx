@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "IntSurf_ListOfPntOn2S.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "IntSurf_ListOfPntOn2S is deprecated, use NCollection_List<IntSurf_PntOn2S> directly")
-typedef NCollection_List<IntSurf_PntOn2S> IntSurf_ListOfPntOn2S;
+typedef NCollection_List<IntSurf_PntOn2S>           IntSurf_ListOfPntOn2S;
 Standard_DEPRECATED("IntSurf_ListIteratorOfListOfPntOn2S is deprecated, use "
                     "NCollection_List<IntSurf_PntOn2S>::Iterator directly")
 typedef NCollection_List<IntSurf_PntOn2S>::Iterator IntSurf_ListIteratorOfListOfPntOn2S;

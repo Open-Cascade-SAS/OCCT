@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_Array1OfPresentationStyleAssignment.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly.")
 
-  Standard_DEPRECATED(
-    "StepVisual_Array1OfPresentationStyleAssignment is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly")
+Standard_DEPRECATED(
+  "StepVisual_Array1OfPresentationStyleAssignment is deprecated, use "
+  "NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly")
 typedef NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>>
   StepVisual_Array1OfPresentationStyleAssignment;
 

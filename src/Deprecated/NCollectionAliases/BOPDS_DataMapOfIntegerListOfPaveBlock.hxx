@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_DataMapOfIntegerListOfPaveBlock.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection_DataMap<int, BOPDS_ListOfPaveBlock> directly.")
 
-  Standard_DEPRECATED("BOPDS_DataMapOfIntegerListOfPaveBlock is deprecated, use "
+Standard_DEPRECATED("BOPDS_DataMapOfIntegerListOfPaveBlock is deprecated, use "
                       "NCollection_DataMap<int, BOPDS_ListOfPaveBlock> directly")
 typedef NCollection_DataMap<int, BOPDS_ListOfPaveBlock> BOPDS_DataMapOfIntegerListOfPaveBlock;
 

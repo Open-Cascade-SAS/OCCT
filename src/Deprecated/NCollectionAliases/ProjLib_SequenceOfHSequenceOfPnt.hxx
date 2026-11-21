@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "ProjLib_SequenceOfHSequenceOfPnt.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TColgp_HSequenceOfPnt>> directly.")
 
-  Standard_DEPRECATED("ProjLib_SequenceOfHSequenceOfPnt is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<TColgp_HSequenceOfPnt>> directly")
+Standard_DEPRECATED("ProjLib_SequenceOfHSequenceOfPnt is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<TColgp_HSequenceOfPnt>> directly")
 typedef NCollection_Sequence<opencascade::handle<TColgp_HSequenceOfPnt>>
   ProjLib_SequenceOfHSequenceOfPnt;
 

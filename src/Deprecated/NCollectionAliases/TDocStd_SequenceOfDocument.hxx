@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TDocStd_SequenceOfDocument.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<TDocStd_Document>> directly.")
 
-  Standard_DEPRECATED("TDocStd_SequenceOfDocument is deprecated, use "
+Standard_DEPRECATED("TDocStd_SequenceOfDocument is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<TDocStd_Document>> directly")
 typedef NCollection_Sequence<opencascade::handle<TDocStd_Document>> TDocStd_SequenceOfDocument;
 

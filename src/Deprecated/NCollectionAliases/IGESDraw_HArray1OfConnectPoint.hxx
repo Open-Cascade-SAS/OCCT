@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IGESDraw_HArray1OfConnectPoint.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly.")
 
-  Standard_DEPRECATED("IGESDraw_HArray1OfConnectPoint is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly")
+Standard_DEPRECATED("IGESDraw_HArray1OfConnectPoint is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>>
   IGESDraw_HArray1OfConnectPoint;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfPoint.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<BOPDS_Point> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BOPDS_VectorOfPoint is deprecated, use NCollection_DynamicArray<BOPDS_Point> directly")
 typedef NCollection_DynamicArray<BOPDS_Point> BOPDS_VectorOfPoint;
 

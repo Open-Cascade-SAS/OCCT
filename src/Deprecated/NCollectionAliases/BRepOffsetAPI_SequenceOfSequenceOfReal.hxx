@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BRepOffsetAPI_SequenceOfSequenceOfReal.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection_Sequence<TColStd_SequenceOfReal> directly.")
 
-  Standard_DEPRECATED("BRepOffsetAPI_SequenceOfSequenceOfReal is deprecated, use "
+Standard_DEPRECATED("BRepOffsetAPI_SequenceOfSequenceOfReal is deprecated, use "
                       "NCollection_Sequence<TColStd_SequenceOfReal> directly")
 typedef NCollection_Sequence<TColStd_SequenceOfReal> BRepOffsetAPI_SequenceOfSequenceOfReal;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("MeshVS_SequenceOfPrsBuilder.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<MeshVS_PrsBuilder>> directly.")
 
-  Standard_DEPRECATED("MeshVS_SequenceOfPrsBuilder is deprecated, use "
+Standard_DEPRECATED("MeshVS_SequenceOfPrsBuilder is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<MeshVS_PrsBuilder>> directly")
 typedef NCollection_Sequence<opencascade::handle<MeshVS_PrsBuilder>> MeshVS_SequenceOfPrsBuilder;
 

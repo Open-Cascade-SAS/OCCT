@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("BinObjMgt_PByte.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("BinObjMgt_PByte is deprecated, use the underlying type directly")
+Standard_DEPRECATED("BinObjMgt_PByte is deprecated, use the underlying type directly")
 typedef uint8_t* BinObjMgt_PByte;
 
 #endif // BinObjMgt_PByte_HeaderFile

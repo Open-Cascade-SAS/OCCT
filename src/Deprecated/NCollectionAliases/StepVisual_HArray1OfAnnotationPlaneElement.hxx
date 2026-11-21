@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_HArray1OfAnnotationPlaneElement.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<StepVisual_AnnotationPlaneElement> directly.")
 
-  Standard_DEPRECATED("StepVisual_HArray1OfAnnotationPlaneElement is deprecated, use "
-                      "NCollection_HArray1<StepVisual_AnnotationPlaneElement> directly")
+Standard_DEPRECATED("StepVisual_HArray1OfAnnotationPlaneElement is deprecated, use "
+                    "NCollection_HArray1<StepVisual_AnnotationPlaneElement> directly")
 typedef NCollection_HArray1<StepVisual_AnnotationPlaneElement>
   StepVisual_HArray1OfAnnotationPlaneElement;
 

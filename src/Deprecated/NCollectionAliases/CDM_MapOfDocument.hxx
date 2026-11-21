@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "CDM_MapOfDocument.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("CDM_MapOfDocument is deprecated, use "
+Standard_DEPRECATED("CDM_MapOfDocument is deprecated, use "
                       "NCollection_Map<opencascade::handle<CDM_Document>> directly")
-typedef NCollection_Map<opencascade::handle<CDM_Document>> CDM_MapOfDocument;
+typedef NCollection_Map<opencascade::handle<CDM_Document>>           CDM_MapOfDocument;
 Standard_DEPRECATED("CDM_MapIteratorOfMapOfDocument is deprecated, use "
                     "NCollection_Map<opencascade::handle<CDM_Document>>::Iterator directly")
 typedef NCollection_Map<opencascade::handle<CDM_Document>>::Iterator CDM_MapIteratorOfMapOfDocument;

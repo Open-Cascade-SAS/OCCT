@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape.hxx is deprecated "
                            "since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape is deprecated, use "
-                      "NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, "
-                      "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED("TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, "
+                    "TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape,
                             TopOpeBRepBuild_ListOfShapeListOfShape,
                             TopTools_ShapeMapHasher>

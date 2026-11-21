@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED(
   "NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion> "
   "directly.")
 
-  Standard_DEPRECATED("SelectMgr_IndexedDataMapOfOwnerCriterion is deprecated, use "
-                      "NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, "
-                      "SelectMgr_SortCriterion> directly")
+Standard_DEPRECATED("SelectMgr_IndexedDataMapOfOwnerCriterion is deprecated, use "
+                    "NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, "
+                    "SelectMgr_SortCriterion> directly")
 typedef NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>,
                                    SelectMgr_SortCriterion>
   SelectMgr_IndexedDataMapOfOwnerCriterion;

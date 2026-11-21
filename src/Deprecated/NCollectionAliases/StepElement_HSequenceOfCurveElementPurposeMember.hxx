@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED(
   "StepElement_HSequenceOfCurveElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HSequence<opencascade::handle<StepElement_CurveElementPurposeMember>> directly.")
 
-  Standard_DEPRECATED(
-    "StepElement_HSequenceOfCurveElementPurposeMember is deprecated, use "
-    "NCollection_HSequence<opencascade::handle<StepElement_CurveElementPurposeMember>> directly")
+Standard_DEPRECATED(
+  "StepElement_HSequenceOfCurveElementPurposeMember is deprecated, use "
+  "NCollection_HSequence<opencascade::handle<StepElement_CurveElementPurposeMember>> directly")
 typedef NCollection_HSequence<opencascade::handle<StepElement_CurveElementPurposeMember>>
   StepElement_HSequenceOfCurveElementPurposeMember;
 

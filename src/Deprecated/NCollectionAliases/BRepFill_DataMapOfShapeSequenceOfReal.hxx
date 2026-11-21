@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("BRepFill_DataMapOfShapeSequenceOfReal.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "BRepFill_DataMapOfShapeSequenceOfReal is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "TColStd_SequenceOfReal, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "BRepFill_DataMapOfShapeSequenceOfReal is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "TColStd_SequenceOfReal, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, TopTools_ShapeMapHasher>
   BRepFill_DataMapOfShapeSequenceOfReal;
 Standard_DEPRECATED("BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal is deprecated, use "

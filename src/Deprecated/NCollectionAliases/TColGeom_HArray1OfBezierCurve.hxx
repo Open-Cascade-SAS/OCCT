@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColGeom_HArray1OfBezierCurve.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<Geom_BezierCurve>> directly.")
 
-  Standard_DEPRECATED("TColGeom_HArray1OfBezierCurve is deprecated, use "
+Standard_DEPRECATED("TColGeom_HArray1OfBezierCurve is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<Geom_BezierCurve>> directly")
 typedef NCollection_HArray1<opencascade::handle<Geom_BezierCurve>> TColGeom_HArray1OfBezierCurve;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BRepFill_SequenceOfSection.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<BRepFill_Section> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BRepFill_SequenceOfSection is deprecated, use NCollection_Sequence<BRepFill_Section> directly")
 typedef NCollection_Sequence<BRepFill_Section> BRepFill_SequenceOfSection;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepShape_Array1OfShell.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<StepShape_Shell> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "StepShape_Array1OfShell is deprecated, use NCollection_Array1<StepShape_Shell> directly")
 typedef NCollection_Array1<StepShape_Shell> StepShape_Array1OfShell;
 

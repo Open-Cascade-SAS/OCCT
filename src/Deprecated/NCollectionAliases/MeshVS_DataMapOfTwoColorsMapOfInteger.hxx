@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED("MeshVS_DataMapOfTwoColorsMapOfInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("MeshVS_DataMapOfTwoColorsMapOfInteger is deprecated, use "
-                      "NCollection_DataMap<MeshVS_TwoColors, TColStd_MapOfInteger> directly")
+Standard_DEPRECATED("MeshVS_DataMapOfTwoColorsMapOfInteger is deprecated, use "
+                    "NCollection_DataMap<MeshVS_TwoColors, TColStd_MapOfInteger> directly")
 typedef NCollection_DataMap<MeshVS_TwoColors, TColStd_MapOfInteger>
   MeshVS_DataMapOfTwoColorsMapOfInteger;
 Standard_DEPRECATED(

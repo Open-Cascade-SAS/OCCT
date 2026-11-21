@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepVisual_HArray1OfLayeredItem.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<StepVisual_LayeredItem> directly.")
 
-  Standard_DEPRECATED("StepVisual_HArray1OfLayeredItem is deprecated, use "
+Standard_DEPRECATED("StepVisual_HArray1OfLayeredItem is deprecated, use "
                       "NCollection_HArray1<StepVisual_LayeredItem> directly")
 typedef NCollection_HArray1<StepVisual_LayeredItem> StepVisual_HArray1OfLayeredItem;
 

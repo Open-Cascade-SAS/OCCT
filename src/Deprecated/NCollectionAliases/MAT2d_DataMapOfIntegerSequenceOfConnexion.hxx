@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED("MAT2d_DataMapOfIntegerSequenceOfConnexion.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("MAT2d_DataMapOfIntegerSequenceOfConnexion is deprecated, use "
-                      "NCollection_DataMap<int, MAT2d_SequenceOfConnexion> directly")
+Standard_DEPRECATED("MAT2d_DataMapOfIntegerSequenceOfConnexion is deprecated, use "
+                    "NCollection_DataMap<int, MAT2d_SequenceOfConnexion> directly")
 typedef NCollection_DataMap<int, MAT2d_SequenceOfConnexion>
   MAT2d_DataMapOfIntegerSequenceOfConnexion;
 Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerSequenceOfConnexion is deprecated, use "

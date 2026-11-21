@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColGeom_SequenceOfCurve.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<Geom_Curve>> directly.")
 
-  Standard_DEPRECATED("TColGeom_SequenceOfCurve is deprecated, use "
+Standard_DEPRECATED("TColGeom_SequenceOfCurve is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<Geom_Curve>> directly")
 typedef NCollection_Sequence<opencascade::handle<Geom_Curve>> TColGeom_SequenceOfCurve;
 

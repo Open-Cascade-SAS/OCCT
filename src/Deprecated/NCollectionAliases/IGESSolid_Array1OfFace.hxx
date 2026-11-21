@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IGESSolid_Array1OfFace.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<opencascade::handle<IGESSolid_Face>> directly.")
 
-  Standard_DEPRECATED("IGESSolid_Array1OfFace is deprecated, use "
+Standard_DEPRECATED("IGESSolid_Array1OfFace is deprecated, use "
                       "NCollection_Array1<opencascade::handle<IGESSolid_Face>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESSolid_Face>> IGESSolid_Array1OfFace;
 

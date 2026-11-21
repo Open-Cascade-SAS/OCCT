@@ -25,8 +25,8 @@
 Standard_HEADER_DEPRECATED(
   "TColStd_MapOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TColStd_MapOfReal is deprecated, use NCollection_Map<double> directly")
-typedef NCollection_Map<double> TColStd_MapOfReal;
+Standard_DEPRECATED("TColStd_MapOfReal is deprecated, use NCollection_Map<double> directly")
+typedef NCollection_Map<double>           TColStd_MapOfReal;
 Standard_DEPRECATED(
   "TColStd_MapIteratorOfMapOfReal is deprecated, use NCollection_Map<double>::Iterator directly")
 typedef NCollection_Map<double>::Iterator TColStd_MapIteratorOfMapOfReal;

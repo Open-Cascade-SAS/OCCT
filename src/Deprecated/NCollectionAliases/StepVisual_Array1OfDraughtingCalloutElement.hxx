@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_Array1OfDraughtingCalloutElement.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepVisual_DraughtingCalloutElement> directly.")
 
-  Standard_DEPRECATED("StepVisual_Array1OfDraughtingCalloutElement is deprecated, use "
-                      "NCollection_Array1<StepVisual_DraughtingCalloutElement> directly")
+Standard_DEPRECATED("StepVisual_Array1OfDraughtingCalloutElement is deprecated, use "
+                    "NCollection_Array1<StepVisual_DraughtingCalloutElement> directly")
 typedef NCollection_Array1<StepVisual_DraughtingCalloutElement>
   StepVisual_Array1OfDraughtingCalloutElement;
 

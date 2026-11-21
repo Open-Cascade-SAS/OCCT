@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfLabelExternFile.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "STEPCAFControl_DataMapOfLabelExternFile is deprecated, use NCollection_DataMap<TDF_Label, "
-    "opencascade::handle<STEPCAFControl_ExternFile>> directly")
+Standard_DEPRECATED(
+  "STEPCAFControl_DataMapOfLabelExternFile is deprecated, use NCollection_DataMap<TDF_Label, "
+  "opencascade::handle<STEPCAFControl_ExternFile>> directly")
 typedef NCollection_DataMap<TDF_Label, opencascade::handle<STEPCAFControl_ExternFile>>
   STEPCAFControl_DataMapOfLabelExternFile;
 Standard_DEPRECATED("STEPCAFControl_DataMapIteratorOfDataMapOfLabelExternFile is deprecated, use "

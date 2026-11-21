@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("HLRAlgo_HArray1OfTData.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<HLRAlgo_TriangleData> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "HLRAlgo_HArray1OfTData is deprecated, use NCollection_HArray1<HLRAlgo_TriangleData> directly")
 typedef NCollection_HArray1<HLRAlgo_TriangleData> HLRAlgo_HArray1OfTData;
 

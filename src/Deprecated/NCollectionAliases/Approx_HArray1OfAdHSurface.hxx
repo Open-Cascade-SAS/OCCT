@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("Approx_HArray1OfAdHSurface.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<Adaptor3d_Surface>> directly.")
 
-  Standard_DEPRECATED("Approx_HArray1OfAdHSurface is deprecated, use "
+Standard_DEPRECATED("Approx_HArray1OfAdHSurface is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<Adaptor3d_Surface>> directly")
 typedef NCollection_HArray1<opencascade::handle<Adaptor3d_Surface>> Approx_HArray1OfAdHSurface;
 

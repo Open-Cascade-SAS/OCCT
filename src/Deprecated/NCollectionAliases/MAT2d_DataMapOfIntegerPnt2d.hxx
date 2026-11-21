@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "MAT2d_DataMapOfIntegerPnt2d.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "MAT2d_DataMapOfIntegerPnt2d is deprecated, use NCollection_DataMap<int, gp_Pnt2d> directly")
-typedef NCollection_DataMap<int, gp_Pnt2d> MAT2d_DataMapOfIntegerPnt2d;
+typedef NCollection_DataMap<int, gp_Pnt2d>           MAT2d_DataMapOfIntegerPnt2d;
 Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerPnt2d is deprecated, use "
                     "NCollection_DataMap<int, gp_Pnt2d>::Iterator directly")
 typedef NCollection_DataMap<int, gp_Pnt2d>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerPnt2d;

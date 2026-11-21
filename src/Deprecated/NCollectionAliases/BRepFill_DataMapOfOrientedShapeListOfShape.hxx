@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED("BRepFill_DataMapOfOrientedShapeListOfShape.hxx is deprecated since "
                            "OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("BRepFill_DataMapOfOrientedShapeListOfShape is deprecated, use "
-                      "NCollection_DataMap<TopoDS_Shape, TopTools_ListOfShape> directly")
+Standard_DEPRECATED("BRepFill_DataMapOfOrientedShapeListOfShape is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TopTools_ListOfShape> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TopTools_ListOfShape>
   BRepFill_DataMapOfOrientedShapeListOfShape;
 Standard_DEPRECATED(

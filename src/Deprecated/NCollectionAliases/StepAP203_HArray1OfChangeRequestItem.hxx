@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepAP203_HArray1OfChangeRequestItem.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection_HArray1<StepAP203_ChangeRequestItem> directly.")
 
-  Standard_DEPRECATED("StepAP203_HArray1OfChangeRequestItem is deprecated, use "
+Standard_DEPRECATED("StepAP203_HArray1OfChangeRequestItem is deprecated, use "
                       "NCollection_HArray1<StepAP203_ChangeRequestItem> directly")
 typedef NCollection_HArray1<StepAP203_ChangeRequestItem> StepAP203_HArray1OfChangeRequestItem;
 

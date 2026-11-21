@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "CDM_ListOfDocument.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("CDM_ListOfDocument is deprecated, use "
+Standard_DEPRECATED("CDM_ListOfDocument is deprecated, use "
                       "NCollection_List<opencascade::handle<CDM_Document>> directly")
 typedef NCollection_List<opencascade::handle<CDM_Document>> CDM_ListOfDocument;
 Standard_DEPRECATED("CDM_ListIteratorOfListOfDocument is deprecated, use "

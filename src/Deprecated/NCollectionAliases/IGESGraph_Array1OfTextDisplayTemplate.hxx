@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "IGESGraph_Array1OfTextDisplayTemplate.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly.")
 
-  Standard_DEPRECATED(
-    "IGESGraph_Array1OfTextDisplayTemplate is deprecated, use "
-    "NCollection_Array1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly")
+Standard_DEPRECATED(
+  "IGESGraph_Array1OfTextDisplayTemplate is deprecated, use "
+  "NCollection_Array1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESGraph_TextDisplayTemplate>>
   IGESGraph_Array1OfTextDisplayTemplate;
 

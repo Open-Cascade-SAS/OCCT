@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepAP214_HArray1OfApprovalItem.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<StepAP214_ApprovalItem> directly.")
 
-  Standard_DEPRECATED("StepAP214_HArray1OfApprovalItem is deprecated, use "
+Standard_DEPRECATED("StepAP214_HArray1OfApprovalItem is deprecated, use "
                       "NCollection_HArray1<StepAP214_ApprovalItem> directly")
 typedef NCollection_HArray1<StepAP214_ApprovalItem> StepAP214_HArray1OfApprovalItem;
 

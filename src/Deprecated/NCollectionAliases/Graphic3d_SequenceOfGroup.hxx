@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Graphic3d_SequenceOfGroup.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<Graphic3d_Group>> directly.")
 
-  Standard_DEPRECATED("Graphic3d_SequenceOfGroup is deprecated, use "
+Standard_DEPRECATED("Graphic3d_SequenceOfGroup is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<Graphic3d_Group>> directly")
 typedef NCollection_Sequence<opencascade::handle<Graphic3d_Group>> Graphic3d_SequenceOfGroup;
 

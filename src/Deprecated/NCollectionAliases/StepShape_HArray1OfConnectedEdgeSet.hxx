@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepShape_HArray1OfConnectedEdgeSet.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly.")
 
-  Standard_DEPRECATED(
-    "StepShape_HArray1OfConnectedEdgeSet is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly")
+Standard_DEPRECATED("StepShape_HArray1OfConnectedEdgeSet is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepShape_ConnectedEdgeSet>>
   StepShape_HArray1OfConnectedEdgeSet;
 

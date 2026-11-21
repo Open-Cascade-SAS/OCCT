@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepVisual_Array1OfStyleContextSelect.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection_Array1<StepVisual_StyleContextSelect> directly.")
 
-  Standard_DEPRECATED("StepVisual_Array1OfStyleContextSelect is deprecated, use "
+Standard_DEPRECATED("StepVisual_Array1OfStyleContextSelect is deprecated, use "
                       "NCollection_Array1<StepVisual_StyleContextSelect> directly")
 typedef NCollection_Array1<StepVisual_StyleContextSelect> StepVisual_Array1OfStyleContextSelect;
 

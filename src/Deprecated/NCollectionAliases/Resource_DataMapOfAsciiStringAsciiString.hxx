@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED("Resource_DataMapOfAsciiStringAsciiString.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "Resource_DataMapOfAsciiStringAsciiString is deprecated, use "
-    "NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> directly")
+Standard_DEPRECATED(
+  "Resource_DataMapOfAsciiStringAsciiString is deprecated, use "
+  "NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>
   Resource_DataMapOfAsciiStringAsciiString;
 Standard_DEPRECATED(

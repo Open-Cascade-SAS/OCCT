@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED("ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx is dep
                            "8.0.0. Use NCollection_IndexedDataMap<TopoDS_Vertex, "
                            "ChFiDS_ListOfStripe, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED("ChFiDS_IndexedDataMapOfVertexListOfStripe is deprecated, use "
-                      "NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, "
-                      "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED("ChFiDS_IndexedDataMapOfVertexListOfStripe is deprecated, use "
+                    "NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, "
+                    "TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, TopTools_ShapeMapHasher>
   ChFiDS_IndexedDataMapOfVertexListOfStripe;
 

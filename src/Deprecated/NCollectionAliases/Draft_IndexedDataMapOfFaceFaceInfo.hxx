@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED(
   "Draft_IndexedDataMapOfFaceFaceInfo.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedDataMap<TopoDS_Face, Draft_FaceInfo, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED(
-    "Draft_IndexedDataMapOfFaceFaceInfo is deprecated, use NCollection_IndexedDataMap<TopoDS_Face, "
-    "Draft_FaceInfo, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "Draft_IndexedDataMapOfFaceFaceInfo is deprecated, use NCollection_IndexedDataMap<TopoDS_Face, "
+  "Draft_FaceInfo, TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Face, Draft_FaceInfo, TopTools_ShapeMapHasher>
   Draft_IndexedDataMapOfFaceFaceInfo;
 

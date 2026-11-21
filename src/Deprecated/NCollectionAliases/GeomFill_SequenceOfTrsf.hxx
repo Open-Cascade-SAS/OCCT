@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("GeomFill_SequenceOfTrsf.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<gp_Trsf> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "GeomFill_SequenceOfTrsf is deprecated, use NCollection_Sequence<gp_Trsf> directly")
 typedef NCollection_Sequence<gp_Trsf> GeomFill_SequenceOfTrsf;
 

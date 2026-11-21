@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IGESAppli_Array1OfNode.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<opencascade::handle<IGESAppli_Node>> directly.")
 
-  Standard_DEPRECATED("IGESAppli_Array1OfNode is deprecated, use "
+Standard_DEPRECATED("IGESAppli_Array1OfNode is deprecated, use "
                       "NCollection_Array1<opencascade::handle<IGESAppli_Node>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESAppli_Node>> IGESAppli_Array1OfNode;
 

@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "TopTools_IndexedDataMapOfShapeAddress.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED(
-    "TopTools_IndexedDataMapOfShapeAddress is deprecated, use "
-    "NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "TopTools_IndexedDataMapOfShapeAddress is deprecated, use "
+  "NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher>
   TopTools_IndexedDataMapOfShapeAddress;
 

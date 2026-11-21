@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "Message_ListOfMsg.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("Message_ListOfMsg is deprecated, use NCollection_List<Message_Msg> directly")
-typedef NCollection_List<Message_Msg> Message_ListOfMsg;
+Standard_DEPRECATED("Message_ListOfMsg is deprecated, use NCollection_List<Message_Msg> directly")
+typedef NCollection_List<Message_Msg>           Message_ListOfMsg;
 Standard_DEPRECATED("Message_ListIteratorOfListOfMsg is deprecated, use "
                     "NCollection_List<Message_Msg>::Iterator directly")
 typedef NCollection_List<Message_Msg>::Iterator Message_ListIteratorOfListOfMsg;

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TopOpeBRep_HArray1OfLineInter.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<TopOpeBRep_LineInter> directly.")
 
-  Standard_DEPRECATED("TopOpeBRep_HArray1OfLineInter is deprecated, use "
+Standard_DEPRECATED("TopOpeBRep_HArray1OfLineInter is deprecated, use "
                       "NCollection_HArray1<TopOpeBRep_LineInter> directly")
 typedef NCollection_HArray1<TopOpeBRep_LineInter> TopOpeBRep_HArray1OfLineInter;
 

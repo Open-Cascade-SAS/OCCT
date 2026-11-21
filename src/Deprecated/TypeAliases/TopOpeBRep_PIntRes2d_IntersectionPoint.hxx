@@ -30,8 +30,8 @@ Standard_HEADER_DEPRECATED(
   "TopOpeBRep_PIntRes2d_IntersectionPoint.hxx is deprecated since OCCT 8.1.0. "
   "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED(
-    "TopOpeBRep_PIntRes2d_IntersectionPoint is deprecated, use the underlying type directly")
+Standard_DEPRECATED(
+  "TopOpeBRep_PIntRes2d_IntersectionPoint is deprecated, use the underlying type directly")
 typedef IntRes2d_IntersectionPoint* TopOpeBRep_PIntRes2d_IntersectionPoint;
 
 #endif // _TopOpeBRep_PIntRes2d_IntersectionPoint_HeaderFile

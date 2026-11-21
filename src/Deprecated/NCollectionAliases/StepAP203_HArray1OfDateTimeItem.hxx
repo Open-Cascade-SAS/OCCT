@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepAP203_HArray1OfDateTimeItem.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<StepAP203_DateTimeItem> directly.")
 
-  Standard_DEPRECATED("StepAP203_HArray1OfDateTimeItem is deprecated, use "
+Standard_DEPRECATED("StepAP203_HArray1OfDateTimeItem is deprecated, use "
                       "NCollection_HArray1<StepAP203_DateTimeItem> directly")
 typedef NCollection_HArray1<StepAP203_DateTimeItem> StepAP203_HArray1OfDateTimeItem;
 

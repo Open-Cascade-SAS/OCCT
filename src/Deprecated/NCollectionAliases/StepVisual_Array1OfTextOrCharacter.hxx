@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepVisual_Array1OfTextOrCharacter.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Array1<StepVisual_TextOrCharacter> directly.")
 
-  Standard_DEPRECATED("StepVisual_Array1OfTextOrCharacter is deprecated, use "
+Standard_DEPRECATED("StepVisual_Array1OfTextOrCharacter is deprecated, use "
                       "NCollection_Array1<StepVisual_TextOrCharacter> directly")
 typedef NCollection_Array1<StepVisual_TextOrCharacter> StepVisual_Array1OfTextOrCharacter;
 

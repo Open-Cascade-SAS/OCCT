@@ -29,7 +29,7 @@
 Standard_HEADER_DEPRECATED("TopOpeBRepTool_Plos.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TopOpeBRepTool_Plos is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TopOpeBRepTool_Plos is deprecated, use the underlying type directly")
 typedef NCollection_List<TopoDS_Shape>* TopOpeBRepTool_Plos;
 
 #endif // _TopOpeBRepTool_Plos_HeaderFile

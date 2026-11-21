@@ -22,9 +22,8 @@
 
 //! @deprecated OCCT 7.9.0 - This exception is deprecated and no longer thrown.
 //! Dead loop detection is now handled via local status flags instead of exceptions.
-class Standard_DEPRECATED(
-  "This exception is no longer thrown; dead loop handling uses local status flags")
-  Transfer_TransferDeadLoop;
+class Standard_DEPRECATED("This exception is no longer thrown; dead loop handling uses local "
+                          "status flags") Transfer_TransferDeadLoop;
 #if !defined No_Exception && !defined No_Transfer_TransferDeadLoop
   //! @deprecated OCCT 7.9.0 - This macro is deprecated and does nothing.
   #define Transfer_TransferDeadLoop_Raise_if(CONDITION, MESSAGE)                                   \

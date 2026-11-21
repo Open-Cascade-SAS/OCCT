@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "TColStd_IndexedMapOfTransient.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedMap<opencascade::handle<Standard_Transient>> directly.")
 
-  Standard_DEPRECATED("TColStd_IndexedMapOfTransient is deprecated, use "
-                      "NCollection_IndexedMap<opencascade::handle<Standard_Transient>> directly")
+Standard_DEPRECATED("TColStd_IndexedMapOfTransient is deprecated, use "
+                    "NCollection_IndexedMap<opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_IndexedMap<opencascade::handle<Standard_Transient>>
   TColStd_IndexedMapOfTransient;
 

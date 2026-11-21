@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED("TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx is d
                            "OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, "
                            "TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED("TopOpeBRepDS_IndexedDataMapOfShapeWithState is deprecated, use "
-                      "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, "
-                      "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED("TopOpeBRepDS_IndexedDataMapOfShapeWithState is deprecated, use "
+                    "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, "
+                    "TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape,
                                    TopOpeBRepDS_ShapeWithState,
                                    TopTools_ShapeMapHasher>

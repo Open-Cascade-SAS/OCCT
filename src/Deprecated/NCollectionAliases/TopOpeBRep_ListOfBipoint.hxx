@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "TopOpeBRep_ListOfBipoint.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TopOpeBRep_ListOfBipoint is deprecated, use NCollection_List<TopOpeBRep_Bipoint> directly")
-typedef NCollection_List<TopOpeBRep_Bipoint> TopOpeBRep_ListOfBipoint;
+typedef NCollection_List<TopOpeBRep_Bipoint>           TopOpeBRep_ListOfBipoint;
 Standard_DEPRECATED("TopOpeBRep_ListIteratorOfListOfBipoint is deprecated, use "
                     "NCollection_List<TopOpeBRep_Bipoint>::Iterator directly")
 typedef NCollection_List<TopOpeBRep_Bipoint>::Iterator TopOpeBRep_ListIteratorOfListOfBipoint;

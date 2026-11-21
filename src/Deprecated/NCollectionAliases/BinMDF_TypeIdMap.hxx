@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "BinMDF_TypeIdMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("BinMDF_TypeIdMap is deprecated, use "
+Standard_DEPRECATED("BinMDF_TypeIdMap is deprecated, use "
                       "NCollection_DoubleMap<opencascade::handle<Standard_Type>, int> directly")
 typedef NCollection_DoubleMap<opencascade::handle<Standard_Type>, int> BinMDF_TypeIdMap;
 Standard_DEPRECATED(

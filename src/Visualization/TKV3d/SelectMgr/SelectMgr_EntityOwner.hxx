@@ -161,7 +161,10 @@ public:
 
   //! Returns selection state.
   Standard_DEPRECATED("Deprecated method - IsSelected() should be used instead")
-  int State() const { return myIsSelected ? 1 : 0; }
+  int State() const
+  {
+    return myIsSelected ? 1 : 0;
+  }
 
   //! Set the state of the owner.
   //! The method is deprecated. Use SetSelected() instead.
@@ -214,11 +217,17 @@ public:
 public:
   //! Sets the selectable object.
   Standard_DEPRECATED("Deprecated method - SetSelectable() should be used instead")
-  void Set(const occ::handle<SelectMgr_SelectableObject>& theSelObj) { SetSelectable(theSelObj); }
+  void Set(const occ::handle<SelectMgr_SelectableObject>& theSelObj)
+  {
+    SetSelectable(theSelObj);
+  }
 
   //! sets the selectable priority of the owner
   Standard_DEPRECATED("Deprecated method - SetPriority() should be used instead")
-  void Set(const int thePriority) { SetPriority(thePriority); }
+  void Set(const int thePriority)
+  {
+    SetPriority(thePriority);
+  }
 
 protected:
   SelectMgr_SelectableObject* mySelectable; //!< raw pointer to selectable object

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BRepFill_SequenceOfFaceAndOrder.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Sequence<BRepFill_FaceAndOrder> directly.")
 
-  Standard_DEPRECATED("BRepFill_SequenceOfFaceAndOrder is deprecated, use "
+Standard_DEPRECATED("BRepFill_SequenceOfFaceAndOrder is deprecated, use "
                       "NCollection_Sequence<BRepFill_FaceAndOrder> directly")
 typedef NCollection_Sequence<BRepFill_FaceAndOrder> BRepFill_SequenceOfFaceAndOrder;
 

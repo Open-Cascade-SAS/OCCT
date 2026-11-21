@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "TObj_SequenceOfIterator.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TObj_ObjectIterator>> directly.")
 
-  Standard_DEPRECATED("TObj_SequenceOfIterator is deprecated, use "
+Standard_DEPRECATED("TObj_SequenceOfIterator is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<TObj_ObjectIterator>> directly")
 typedef NCollection_Sequence<opencascade::handle<TObj_ObjectIterator>> TObj_SequenceOfIterator;
 

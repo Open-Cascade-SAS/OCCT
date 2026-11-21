@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IFSelect_SequenceOfAppliedModifiers.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<IFSelect_AppliedModifiers>> directly.")
 
-  Standard_DEPRECATED(
-    "IFSelect_SequenceOfAppliedModifiers is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<IFSelect_AppliedModifiers>> directly")
+Standard_DEPRECATED("IFSelect_SequenceOfAppliedModifiers is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<IFSelect_AppliedModifiers>> directly")
 typedef NCollection_Sequence<opencascade::handle<IFSelect_AppliedModifiers>>
   IFSelect_SequenceOfAppliedModifiers;
 

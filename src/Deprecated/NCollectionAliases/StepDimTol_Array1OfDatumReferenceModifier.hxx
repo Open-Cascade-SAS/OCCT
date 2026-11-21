@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepDimTol_Array1OfDatumReferenceModifier.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepDimTol_DatumReferenceModifier> directly.")
 
-  Standard_DEPRECATED("StepDimTol_Array1OfDatumReferenceModifier is deprecated, use "
-                      "NCollection_Array1<StepDimTol_DatumReferenceModifier> directly")
+Standard_DEPRECATED("StepDimTol_Array1OfDatumReferenceModifier is deprecated, use "
+                    "NCollection_Array1<StepDimTol_DatumReferenceModifier> directly")
 typedef NCollection_Array1<StepDimTol_DatumReferenceModifier>
   StepDimTol_Array1OfDatumReferenceModifier;
 

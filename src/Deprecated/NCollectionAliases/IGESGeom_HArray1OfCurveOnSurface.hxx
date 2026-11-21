@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IGESGeom_HArray1OfCurveOnSurface.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESGeom_CurveOnSurface>> directly.")
 
-  Standard_DEPRECATED("IGESGeom_HArray1OfCurveOnSurface is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<IGESGeom_CurveOnSurface>> directly")
+Standard_DEPRECATED("IGESGeom_HArray1OfCurveOnSurface is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<IGESGeom_CurveOnSurface>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESGeom_CurveOnSurface>>
   IGESGeom_HArray1OfCurveOnSurface;
 

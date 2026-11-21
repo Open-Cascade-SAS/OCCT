@@ -28,7 +28,7 @@ Standard_HEADER_DEPRECATED(
   "HLRAlgo_Array1OfPINod.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<HLRAlgo_PolyInternalNode>> directly.")
 
-  Standard_DEPRECATED("HLRAlgo_Array1OfPINod is deprecated, use "
+Standard_DEPRECATED("HLRAlgo_Array1OfPINod is deprecated, use "
                       "NCollection_Array1<opencascade::handle<HLRAlgo_PolyInternalNode>> directly")
 typedef NCollection_Array1<opencascade::handle<HLRAlgo_PolyInternalNode>> HLRAlgo_Array1OfPINod;
 

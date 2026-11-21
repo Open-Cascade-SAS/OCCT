@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED("IntTools_DataMapOfSurfaceSampleBox.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED("IntTools_DataMapOfSurfaceSampleBox is deprecated, use "
-                      "NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box> directly")
+Standard_DEPRECATED("IntTools_DataMapOfSurfaceSampleBox is deprecated, use "
+                    "NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box> directly")
 typedef NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box>
   IntTools_DataMapOfSurfaceSampleBox;
 Standard_DEPRECATED("IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox is deprecated, use "

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TDF_LabelSequence.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<TDF_Label> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TDF_LabelSequence is deprecated, use NCollection_Sequence<TDF_Label> directly")
 typedef NCollection_Sequence<TDF_Label> TDF_LabelSequence;
 

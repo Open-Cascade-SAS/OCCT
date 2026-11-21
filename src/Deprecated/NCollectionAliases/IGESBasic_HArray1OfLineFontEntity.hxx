@@ -29,8 +29,8 @@ Standard_HEADER_DEPRECATED(
   "IGESBasic_HArray1OfLineFontEntity.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESData_LineFontEntity>> directly.")
 
-  Standard_DEPRECATED("IGESBasic_HArray1OfLineFontEntity is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<IGESData_LineFontEntity>> directly")
+Standard_DEPRECATED("IGESBasic_HArray1OfLineFontEntity is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<IGESData_LineFontEntity>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESData_LineFontEntity>>
   IGESBasic_HArray1OfLineFontEntity;
 

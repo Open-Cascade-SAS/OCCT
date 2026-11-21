@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "StepFEA_HArray1OfElementRepresentation.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepFEA_ElementRepresentation>> directly.")
 
-  Standard_DEPRECATED(
-    "StepFEA_HArray1OfElementRepresentation is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepFEA_ElementRepresentation>> directly")
+Standard_DEPRECATED(
+  "StepFEA_HArray1OfElementRepresentation is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<StepFEA_ElementRepresentation>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepFEA_ElementRepresentation>>
   StepFEA_HArray1OfElementRepresentation;
 

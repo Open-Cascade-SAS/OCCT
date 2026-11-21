@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepFEA_SequenceOfNodeRepresentation.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<StepFEA_NodeRepresentation>> directly.")
 
-  Standard_DEPRECATED(
-    "StepFEA_SequenceOfNodeRepresentation is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<StepFEA_NodeRepresentation>> directly")
+Standard_DEPRECATED(
+  "StepFEA_SequenceOfNodeRepresentation is deprecated, use "
+  "NCollection_Sequence<opencascade::handle<StepFEA_NodeRepresentation>> directly")
 typedef NCollection_Sequence<opencascade::handle<StepFEA_NodeRepresentation>>
   StepFEA_SequenceOfNodeRepresentation;
 

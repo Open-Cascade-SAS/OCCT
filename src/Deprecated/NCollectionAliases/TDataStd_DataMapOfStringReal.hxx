@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringReal.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("TDataStd_DataMapOfStringReal is deprecated, use "
+Standard_DEPRECATED("TDataStd_DataMapOfStringReal is deprecated, use "
                       "NCollection_DataMap<TCollection_ExtendedString, double> directly")
 typedef NCollection_DataMap<TCollection_ExtendedString, double> TDataStd_DataMapOfStringReal;
 Standard_DEPRECATED("TDataStd_DataMapIteratorOfDataMapOfStringReal is deprecated, use "

@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "TColStd_ListOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TColStd_ListOfAsciiString is deprecated, use "
+Standard_DEPRECATED("TColStd_ListOfAsciiString is deprecated, use "
                       "NCollection_List<TCollection_AsciiString> directly")
-typedef NCollection_List<TCollection_AsciiString> TColStd_ListOfAsciiString;
+typedef NCollection_List<TCollection_AsciiString>           TColStd_ListOfAsciiString;
 Standard_DEPRECATED("TColStd_ListIteratorOfListOfAsciiString is deprecated, use "
                     "NCollection_List<TCollection_AsciiString>::Iterator directly")
 typedef NCollection_List<TCollection_AsciiString>::Iterator TColStd_ListIteratorOfListOfAsciiString;

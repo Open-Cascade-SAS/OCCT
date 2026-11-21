@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("ChFiDS_SequenceOfSurfData.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<ChFiDS_SurfData>> directly.")
 
-  Standard_DEPRECATED("ChFiDS_SequenceOfSurfData is deprecated, use "
+Standard_DEPRECATED("ChFiDS_SequenceOfSurfData is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<ChFiDS_SurfData>> directly")
 typedef NCollection_Sequence<opencascade::handle<ChFiDS_SurfData>> ChFiDS_SequenceOfSurfData;
 

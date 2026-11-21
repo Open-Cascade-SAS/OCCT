@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "SelectMgr_ListOfFilter.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("SelectMgr_ListOfFilter is deprecated, use "
+Standard_DEPRECATED("SelectMgr_ListOfFilter is deprecated, use "
                       "NCollection_List<opencascade::handle<SelectMgr_Filter>> directly")
 typedef NCollection_List<opencascade::handle<SelectMgr_Filter>> SelectMgr_ListOfFilter;
 Standard_DEPRECATED("SelectMgr_ListIteratorOfListOfFilter is deprecated, use "

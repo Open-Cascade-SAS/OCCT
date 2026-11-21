@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "Law_Laws.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Law_Laws is deprecated, use NCollection_List<opencascade::handle<Law_Function>> directly")
-typedef NCollection_List<opencascade::handle<Law_Function>> Law_Laws;
+typedef NCollection_List<opencascade::handle<Law_Function>>           Law_Laws;
 Standard_DEPRECATED("Law_ListIteratorOfLaws is deprecated, use "
                     "NCollection_List<opencascade::handle<Law_Function>>::Iterator directly")
 typedef NCollection_List<opencascade::handle<Law_Function>>::Iterator Law_ListIteratorOfLaws;

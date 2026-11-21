@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("STEPConstruct_DataMapOfPointTransient.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "STEPConstruct_DataMapOfPointTransient is deprecated, use NCollection_DataMap<gp_Pnt, "
-    "opencascade::handle<Standard_Transient>> directly")
+Standard_DEPRECATED(
+  "STEPConstruct_DataMapOfPointTransient is deprecated, use NCollection_DataMap<gp_Pnt, "
+  "opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_DataMap<gp_Pnt, opencascade::handle<Standard_Transient>>
   STEPConstruct_DataMapOfPointTransient;
 Standard_DEPRECATED(

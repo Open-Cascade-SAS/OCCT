@@ -27,7 +27,7 @@ class BOPAlgo_Section;
 Standard_HEADER_DEPRECATED("BOPAlgo_PSection.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("BOPAlgo_PSection is deprecated, use the underlying type directly")
+Standard_DEPRECATED("BOPAlgo_PSection is deprecated, use the underlying type directly")
 typedef BOPAlgo_Section* BOPAlgo_PSection;
 
 #endif // _BOPAlgo_PSection_HeaderFile

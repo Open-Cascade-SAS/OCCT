@@ -26,17 +26,17 @@
 Standard_HEADER_DEPRECATED(
   "Graphic3d_Vec4.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("Graphic3d_Vec4 is deprecated, use NCollection_Vec4<float> directly")
-typedef NCollection_Vec4<float> Graphic3d_Vec4;
+Standard_DEPRECATED("Graphic3d_Vec4 is deprecated, use NCollection_Vec4<float> directly")
+typedef NCollection_Vec4<float>        Graphic3d_Vec4;
 Standard_DEPRECATED("Graphic3d_Vec4d is deprecated, use NCollection_Vec4<double> directly")
-typedef NCollection_Vec4<double> Graphic3d_Vec4d;
+typedef NCollection_Vec4<double>       Graphic3d_Vec4d;
 Standard_DEPRECATED("Graphic3d_Vec4i is deprecated, use NCollection_Vec4<int> directly")
-typedef NCollection_Vec4<int> Graphic3d_Vec4i;
+typedef NCollection_Vec4<int>          Graphic3d_Vec4i;
 Standard_DEPRECATED("Graphic3d_Vec4u is deprecated, use NCollection_Vec4<unsigned int> directly")
 typedef NCollection_Vec4<unsigned int> Graphic3d_Vec4u;
 Standard_DEPRECATED("Graphic3d_Vec4ub is deprecated, use NCollection_Vec4<uint8_t> directly")
-typedef NCollection_Vec4<uint8_t> Graphic3d_Vec4ub;
+typedef NCollection_Vec4<uint8_t>      Graphic3d_Vec4ub;
 Standard_DEPRECATED("Graphic3d_Vec4b is deprecated, use NCollection_Vec4<char> directly")
-typedef NCollection_Vec4<char> Graphic3d_Vec4b;
+typedef NCollection_Vec4<char>         Graphic3d_Vec4b;
 
 #endif // _Graphic3d_Vec4_hxx

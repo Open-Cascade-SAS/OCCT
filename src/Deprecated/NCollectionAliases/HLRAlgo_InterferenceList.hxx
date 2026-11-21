@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "HLRAlgo_InterferenceList.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "HLRAlgo_InterferenceList is deprecated, use NCollection_List<HLRAlgo_Interference> directly")
-typedef NCollection_List<HLRAlgo_Interference> HLRAlgo_InterferenceList;
+typedef NCollection_List<HLRAlgo_Interference>           HLRAlgo_InterferenceList;
 Standard_DEPRECATED("HLRAlgo_ListIteratorOfInterferenceList is deprecated, use "
                     "NCollection_List<HLRAlgo_Interference>::Iterator directly")
 typedef NCollection_List<HLRAlgo_Interference>::Iterator HLRAlgo_ListIteratorOfInterferenceList;

@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED(
   "BinMDF_TypeADriverMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("BinMDF_TypeADriverMap is deprecated, use "
-                      "NCollection_DataMap<opencascade::handle<Standard_Type>, "
-                      "opencascade::handle<BinMDF_ADriver>> directly")
+Standard_DEPRECATED("BinMDF_TypeADriverMap is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<Standard_Type>, "
+                    "opencascade::handle<BinMDF_ADriver>> directly")
 typedef NCollection_DataMap<opencascade::handle<Standard_Type>, opencascade::handle<BinMDF_ADriver>>
   BinMDF_TypeADriverMap;
 Standard_DEPRECATED("BinMDF_DataMapIteratorOfTypeADriverMap is deprecated, use "

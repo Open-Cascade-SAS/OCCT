@@ -29,7 +29,7 @@ class TopOpeBRepDS_DataStructure;
 Standard_HEADER_DEPRECATED("TopOpeBRepDS_PDataStructure.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TopOpeBRepDS_PDataStructure is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TopOpeBRepDS_PDataStructure is deprecated, use the underlying type directly")
 typedef TopOpeBRepDS_DataStructure* TopOpeBRepDS_PDataStructure;
 
 #endif // _TopOpeBRepDS_PDataStructure_HeaderFile
