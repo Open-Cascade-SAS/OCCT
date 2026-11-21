@@ -1,0 +1,115 @@
+puts "=========================================="
+puts "Visualization - automatic isolines on boundaryless unbounded faces"
+puts "=========================================="
+
+pload MODELING VISUALIZATION OCAFKERNEL XDEDRAW
+vclear
+vinit View1 -width 640 -height 480
+vbackground -color WHITE
+vaxo
+
+proc checkUnboundedFaceBounds {theObject theExpected} {
+  set aBounds [lrange [vbounding -print $theObject] 1 6]
+  if {[llength $aBounds] != 6} {
+    error "Error: no presentation bounds for $theObject"
+  }
+  foreach aValue $aBounds anExpected $theExpected anAxis {xmin ymin zmin xmax ymax zmax} {
+    checkreal "$theObject $anAxis" $aValue $anExpected 0.001 0.0
+  }
+}
+
+# All data is generated here. EmptyCopy removes the natural boundary wires
+# that MakeFace would otherwise add to the underlying analytic surface.
+box finite 80 60 40
+incmesh finite 0.1
+vdisplay -dispMode 1 finite
+vfit
+set aFiniteScale [lindex [vviewparams -scale] 1]
+verase finite
+
+cylinder cylsurf 40 30 20 15
+cone conesurf 40 30 20 17 15
+plane planesurf 40 30 20
+foreach aKind {cylinder cone plane} aSurface {cylsurf conesurf planesurf} {
+  mkface bounded $aSurface 0 6 -5 5
+  emptycopy unbounded bounded
+  checknbshapes unbounded -wire 0 -edge 0 -face 1
+  compound finite unbounded result
+  vdisplay -dispMode 1 result
+  visos result 3 3 1
+
+  # Include shaded fallback, boundaries, ordinary wireframe, and a recompute
+  # after switching modes. The finite box alone defines the expected bounds.
+  foreach {aMode aBoundary aName} {1 0 shaded 1 1 edges 0 0 wireframe 1 0 refresh} {
+    vsetdispmode result $aMode
+    vaspects result -setFaceBoundaryDraw $aBoundary
+    vdisplay -redisplay result
+    checkUnboundedFaceBounds result {0 0 0 80 60 40}
+    if {$aName == "shaded"} {
+      vviewparams -scale $aFiniteScale -at 40 30 20
+      vdump ${imagedir}/${casename}_${aKind}_local.png
+    }
+    vfit
+    checkreal "$aKind $aName fit" [lindex [vviewparams -scale] 1] $aFiniteScale 0.0001 0.0001
+    if {$aName == "shaded" || $aName == "wireframe"} {
+      vdump ${imagedir}/${casename}_${aKind}_${aName}.png
+    }
+  }
+
+  # Whole-object picking and compound selection use the original AIS classes.
+  # Exercise both highlight modes, including reconstruction from BRep owners.
+  foreach aSelectionMode {0 8} {
+    vselmode result $aSelectionMode on -set
+    foreach aHighlightMode {0 1} {
+      vselprops selHighlight -dispMode $aHighlightMode
+      vselprops localSelHighlight -dispMode $aHighlightMode
+      vselect 320 240
+      if {![lindex [vstate -hasSelected] end]} {
+        puts "Error: $aKind box is not selectable in mode $aSelectionMode"
+      }
+      vfit
+      checkreal "$aKind highlighted fit" [lindex [vviewparams -scale] 1] $aFiniteScale 0.0001 0.0001
+      vselect 0 0
+    }
+  }
+
+  # An ordinary connected instance must not resurrect the unbounded isolines
+  # when compound highlighting rebuilds a presentation from its shape owner.
+  vconnectto instance 100 0 0 result
+  verase result
+  vsetdispmode instance 1
+  vfit
+  checkUnboundedFaceBounds instance {100 0 0 180 60 40}
+  checkreal "$aKind instance fit" [lindex [vviewparams -scale] 1] $aFiniteScale 0.0001 0.0001
+  vselmode instance 8 on -set
+  vselect 320 240
+  if {![lindex [vstate -hasSelected] end]} {
+    puts "Error: $aKind connected box is not selectable"
+  }
+  vfit
+  checkreal "$aKind instance highlighted fit" [lindex [vviewparams -scale] 1] $aFiniteScale 0.0001 0.0001
+  vdump ${imagedir}/${casename}_${aKind}_instance.png
+  vselect 0 0
+  vremove instance result
+
+  # Recreate XCAF presentations from the document after a style change.
+  # Shapes, colors and label structure are kept in the original document.
+  XNewDoc D
+  set aLabel [XAddShape D result 0]
+  XSetColor D $aLabel 0.2 0.5 0.8
+  XDisplay D $aLabel -dispMode 1 -outDispList anObjects
+  set anObject [lindex $anObjects 0]
+  checkUnboundedFaceBounds $anObject {0 0 0 80 60 40}
+  vfit
+  checkreal "$aKind XCAF fit" [lindex [vviewparams -scale] 1] $aFiniteScale 0.0001 0.0001
+  XSetColor D $aLabel 0.8 0.3 0.2
+  XDisplay D $aLabel -dispMode 1 -outDispList anObjects
+  set anObject [lindex $anObjects 0]
+  checkUnboundedFaceBounds $anObject {0 0 0 80 60 40}
+  vfit
+  vdump ${imagedir}/${casename}_${aKind}_xcaf.png
+  vremove $anObject
+  Close D
+}
+
+rename checkUnboundedFaceBounds {}
