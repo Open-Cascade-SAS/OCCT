@@ -307,6 +307,7 @@ provider.STEP.OCC.write.product.name :
 provider.STEP.OCC.write.surfacecurve.mode :	 1
 provider.STEP.OCC.write.unit :	 2
 provider.STEP.OCC.write.vertex.mode :	 0
+provider.STEP.OCC.write.string.encoding :	 0
 provider.STEP.OCC.write.stepcaf.subshapes.name :	 0
 provider.STEP.OCC.write.color :	 1
 provider.STEP.OCC.write.nonmanifold :	 0
@@ -518,6 +519,7 @@ provider.STEP.OCC.write.product.name :
 provider.STEP.OCC.write.surfacecurve.mode :	 1
 provider.STEP.OCC.write.unit :	 2
 provider.STEP.OCC.write.vertex.mode :	 0
+provider.STEP.OCC.write.string.encoding :	 0
 provider.STEP.OCC.write.stepcaf.subshapes.name :	 0
 provider.STEP.OCC.write.color :	 1
 provider.STEP.OCC.write.nonmanifold :	 0

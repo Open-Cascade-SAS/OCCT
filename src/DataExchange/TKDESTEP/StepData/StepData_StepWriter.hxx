@@ -279,8 +279,10 @@ public:
   //!
   //! Supported control directive patterns that are preserved:
   //! - \X{HH}\ : Single byte character encoding (U+0000 to U+00FF)
-  //! - \X2\{HHHH}...\X0\ : UTF-16 character encoding
-  //! - \X4\{HHHHHHHH}...\X0\ : UTF-32 character encoding
+  //! - \X2\{HHHH}...\X0\ : UTF-16 character encoding, only when complete
+  //!   (groups of 4 hexadecimal digits up to \X0\)
+  //! - \X4\{HHHHHHHH}...\X0\ : UTF-32 character encoding, only when complete
+  //!   (groups of 8 hexadecimal digits up to \X0\)
   //! - \S\ : Latin codepoint character with current code page
   //! - \P{A-I}\ : Code page control directive
   //! - \N\ : Newline directive (preserved as-is)

@@ -963,6 +963,13 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label&        
     anExtFile->SetWS(aNewWS);
     anExtFile->SetName(aNewName);
     anExtFile->SetLabel(theLabel);
+    // the extern file is written with the same parameters as the main file
+    const occ::handle<StepData_StepModel> aMainModel =
+      occ::down_cast<StepData_StepModel>(myWriter.WS()->Model());
+    if (!aMainModel.IsNull())
+    {
+      aStepWriter.Model()->InternalParameters = aMainModel->InternalParameters;
+    }
     DESTEP_Parameters::WriteMode_Assembly anAssemblymode =
       aStepWriter.Model()->InternalParameters.WriteAssembly;
     aStepWriter.Model()->InternalParameters.WriteAssembly =

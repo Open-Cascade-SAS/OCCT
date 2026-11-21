@@ -65,6 +65,341 @@ static TCollection_AsciiString texttrue(".T.");
 static TCollection_AsciiString textfalse(".F.");
 static TCollection_AsciiString textunknown(".U.");
 
+namespace
+{
+//! Returns true for the second, third or fourth byte of a UTF-8 character.
+inline bool isUtf8Continuation(const char theByte)
+{
+  return (static_cast<unsigned char>(theByte) & 0xC0) == 0x80;
+}
+
+//! Returns the length of the control directive that starts at theIndex in theText,
+//! or 0 if there is no directive there (see StepData_StepWriter::CleanTextForSend()).
+int directiveLength(const TCollection_AsciiString& theText, const int theIndex)
+{
+  const int aNb = theText.Length();
+  if (theText.Value(theIndex) != '\\')
+  {
+    return 0;
+  }
+  // Check for \X2\ and \X4\ patterns first (need exactly 4 characters: \X2\)
+  if (theIndex + 3 <= aNb && theText.Value(theIndex + 1) == 'X'
+      && theText.Value(theIndex + 3) == '\\')
+  {
+    const char aThirdChar = theText.Value(theIndex + 2);
+    // \X2, \X4, \X0 patterns - special control sequences
+    if (aThirdChar != '2' && aThirdChar != '4')
+    {
+      return 0; // \X0\ alone does not end anything, it is text
+    }
+    // Keep only a complete run: \X2\ with groups of 4 hexadecimal digits, or \X4\ with groups
+    // of 8, up to \X0\ (ISO 10303-21, 6.4.3.3). Anything else is text, so its backslashes are
+    // doubled and its apostrophes too, which keeps the string valid.
+    const int aWidth = aThirdChar == '2' ? 4 : 8;
+    int       anEnd  = theIndex + 4;
+    while (anEnd <= aNb && std::isxdigit(static_cast<unsigned char>(theText.Value(anEnd))))
+    {
+      anEnd++;
+    }
+    const int aNbDigits = anEnd - theIndex - 4;
+    if (aNbDigits == 0 || aNbDigits % aWidth != 0 || anEnd + 3 > aNb || theText.Value(anEnd) != '\\'
+        || theText.Value(anEnd + 1) != 'X' || theText.Value(anEnd + 2) != '0'
+        || theText.Value(anEnd + 3) != '\\')
+    {
+      return 0;
+    }
+    return anEnd + 4 - theIndex; // Include the \X0 sequence
+  }
+  // Check for \X{HH}\ pattern (need exactly 5 characters: \X{HH}\)
+  if (theIndex + 4 <= aNb && theText.Value(theIndex + 1) == 'X'
+      && theText.Value(theIndex + 4) == '\\')
+  {
+    // Regular \X{HH}\ pattern - check for two hex characters
+    return std::isxdigit(static_cast<unsigned char>(theText.Value(theIndex + 2)))
+               && std::isxdigit(static_cast<unsigned char>(theText.Value(theIndex + 3)))
+             ? 5
+             : 0;
+  }
+  // Check for \S, \N, \T patterns (need exactly 3 characters: \S\)
+  if (theIndex + 2 <= aNb && theText.Value(theIndex + 2) == '\\')
+  {
+    const char aSecondChar = theText.Value(theIndex + 1);
+    return aSecondChar == 'S' || aSecondChar == 'N' || aSecondChar == 'T' ? 3 : 0;
+  }
+  // Check for \P{char}\ patterns (need exactly 4 characters: \P{char}\)
+  if (theIndex + 3 <= aNb && theText.Value(theIndex + 1) == 'P'
+      && theText.Value(theIndex + 3) == '\\')
+  {
+    return std::isalpha(static_cast<unsigned char>(theText.Value(theIndex + 2))) ? 4 : 0;
+  }
+  return 0;
+}
+
+//! Returns the length of the piece of theText (made by CleanTextForSend()) that starts at
+//! theIndex and must stay on one line: one UTF-8 character, a doubled apostrophe or backslash,
+//! or a control directive.
+int unitLength(const TCollection_AsciiString& theText, const int theIndex)
+{
+  const int  aNb   = theText.Length();
+  const char aChar = theText.Value(theIndex);
+  if (aChar == '\'' || aChar == '\\')
+  {
+    if (theIndex < aNb && theText.Value(theIndex + 1) == aChar)
+    {
+      return 2; // doubled apostrophe or backslash
+    }
+    if (aChar == '\\' && theIndex + 4 <= aNb && theText.Value(theIndex + 1) == 'X'
+        && theText.Value(theIndex + 2) == '\\')
+    {
+      return 5; // \X\hh, written for a byte that is not valid UTF-8
+    }
+    const int aLength = directiveLength(theText, theIndex);
+    if (aLength == 3 && theText.Value(theIndex + 1) == 'S' && theIndex + 3 <= aNb)
+    {
+      return aLength + unitLength(theText, theIndex + 3); // \S\ changes the next character
+    }
+    return aLength > 0 ? aLength : 1;
+  }
+  int aLength = 1;
+  while (theIndex + aLength <= aNb && isUtf8Continuation(theText.Value(theIndex + aLength)))
+  {
+    aLength++;
+  }
+  return aLength;
+}
+
+//! Returns the last position, not after theStop, where theText can be cut without cutting a
+//! piece (see unitLength()). If the first piece is already longer than theStop, returns its end:
+//! the line is then longer than usual. theIsQuoted tells that theText starts with the opening
+//! apostrophe, which is kept together with the first character.
+int safeBreak(const TCollection_AsciiString& theText, const int theStop, const bool theIsQuoted)
+{
+  int anEnd = 0;
+  for (int anIndex = 1; anIndex <= theText.Length();)
+  {
+    int aLast = anIndex + unitLength(theText, anIndex) - 1;
+    if (anIndex == 1 && theIsQuoted && theText.Length() > 1)
+    {
+      aLast = 1 + unitLength(theText, 2);
+    }
+    if (aLast > theStop)
+    {
+      return anEnd > 0 ? anEnd : aLast;
+    }
+    anEnd   = aLast;
+    anIndex = aLast + 1;
+  }
+  return anEnd;
+}
+
+//! If theText starts (after the opening apostrophe when theIsQuoted) with a \X2\ or \X4\ run that
+//! does not fit in theMax bytes, cuts the run in two: the first part fills the line and is closed
+//! with \X0\, and the rest is opened again with the same directive. A line break inside a run is
+//! not read by many readers, also by OCCT 7.6 to 8.0.1. Returns the length of the first part,
+//! or 0 if theText does not start with such a run.
+int splitLongRun(TCollection_AsciiString& theText, const int theMax, const bool theIsQuoted)
+{
+  const int aFrom = theIsQuoted ? 2 : 1;
+  if (theText.Length() < aFrom + 3 || theText.Value(aFrom) != '\\'
+      || theText.Value(aFrom + 1) != 'X' || theText.Value(aFrom + 3) != '\\'
+      || (theText.Value(aFrom + 2) != '2' && theText.Value(aFrom + 2) != '4'))
+  {
+    return 0;
+  }
+  const int aWidth = theText.Value(aFrom + 2) == '2' ? 4 : 8; // hexadecimal digits per character
+  int       anEnd  = aFrom + 4;
+  while (anEnd <= theText.Length()
+         && std::isxdigit(static_cast<unsigned char>(theText.Value(anEnd))))
+  {
+    anEnd++;
+  }
+  const int aNbChars = (anEnd - aFrom - 4) / aWidth;
+  if (anEnd + 3 > theText.Length() || theText.Value(anEnd) != '\\'
+      || theText.Value(anEnd + 1) != 'X' || theText.Value(anEnd + 2) != '0'
+      || theText.Value(anEnd + 3) != '\\' || (anEnd - aFrom - 4) % aWidth != 0)
+  {
+    return 0; // not a complete run: leave it as it is
+  }
+  const int aNbFirst = (theMax - aFrom - 3 - 4) / aWidth; // characters before \X0\ on the line
+  if (aNbFirst < 1 || aNbFirst >= aNbChars)
+  {
+    return 0;
+  }
+  const int               aCut  = aFrom + 3 + aNbFirst * aWidth;
+  TCollection_AsciiString aRest = theText.SubString(aCut + 1, theText.Length());
+  theText.Trunc(aCut);
+  theText += aWidth == 4 ? "\\X0\\\\X2\\" : "\\X0\\\\X4\\";
+  theText += aRest;
+  return aCut + 4;
+}
+
+//! Returns true if one of theLines has a byte outside ASCII, that is raw UTF-8.
+bool hasNonAsciiByte(const NCollection_HSequence<occ::handle<TCollection_HAsciiString>>& theLines)
+{
+  for (int aLine = 1; aLine <= theLines.Length(); ++aLine)
+  {
+    for (const char* aByte = theLines.Value(aLine)->ToCString(); *aByte != '\0'; ++aByte)
+    {
+      if (static_cast<unsigned char>(*aByte) >= 0x80)
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+//! Changes the implementation level "2;1" or "3;1" of the FILE_DESCRIPTION written on the lines
+//! theFirst to theLast into "4;1". The level is the last parameter, so it is the last string
+//! of the entity and only ")" , ";" or spaces may follow it.
+void setEdition3Level(NCollection_HSequence<occ::handle<TCollection_HAsciiString>>& theLines,
+                      const int                                                     theFirst,
+                      const int                                                     theLast)
+{
+  for (int aLine = theLast; aLine >= theFirst; --aLine)
+  {
+    const occ::handle<TCollection_HAsciiString>& aText  = theLines.Value(aLine);
+    int                                          aClose = aText->Length();
+    for (; aClose > 0 && aText->Value(aClose) != '\''; --aClose)
+    {
+      const char aChar = aText->Value(aClose);
+      if (aChar != ')' && aChar != ';' && aChar != ' ')
+      {
+        return; // something else follows the last string
+      }
+    }
+    if (aClose == 0)
+    {
+      continue; // only ")" or ";" on this line, the level is on a line above
+    }
+    // the level has three characters, like '2;1'
+    const int anOpen = aClose - 4;
+    if (anOpen >= 1 && aText->Value(anOpen) == '\''
+        && (aText->Value(anOpen + 1) == '2' || aText->Value(anOpen + 1) == '3')
+        && aText->Value(anOpen + 2) == ';' && aText->Value(anOpen + 3) == '1')
+    {
+      aText->SetValue(anOpen + 1, '4');
+    }
+    return;
+  }
+}
+
+//! Appends theValue to theText as theNbDigits upper case hexadecimal digits.
+void appendHex(TCollection_AsciiString& theText, const unsigned int theValue, const int theNbDigits)
+{
+  static const char THE_DIGITS[] = "0123456789ABCDEF";
+  for (int aShift = (theNbDigits - 1) * 4; aShift >= 0; aShift -= 4)
+  {
+    theText += THE_DIGITS[(theValue >> aShift) & 0xF];
+  }
+}
+
+//! Reads the UTF-8 character that starts at theIndex of theText into theCode.
+//! Returns its length in bytes, or 0 if the bytes there are not a valid UTF-8 character
+//! (a lone continuation byte, a cut or overlong sequence, a surrogate or a value above U+10FFFF).
+int readUtf8(const TCollection_AsciiString& theText, const int theIndex, unsigned int& theCode)
+{
+  const unsigned char aLead = static_cast<unsigned char>(theText.Value(theIndex));
+  int                 aLength;
+  unsigned int        aMin;
+  if (aLead >= 0xC2 && aLead <= 0xDF)
+  {
+    aLength = 2;
+    aMin    = 0x80;
+    theCode = aLead & 0x1F;
+  }
+  else if (aLead >= 0xE0 && aLead <= 0xEF)
+  {
+    aLength = 3;
+    aMin    = 0x800;
+    theCode = aLead & 0x0F;
+  }
+  else if (aLead >= 0xF0 && aLead <= 0xF4)
+  {
+    aLength = 4;
+    aMin    = 0x10000;
+    theCode = aLead & 0x07;
+  }
+  else
+  {
+    return 0;
+  }
+  if (theIndex + aLength - 1 > theText.Length())
+  {
+    return 0;
+  }
+  for (int anIndex = theIndex + 1; anIndex < theIndex + aLength; ++anIndex)
+  {
+    if (!isUtf8Continuation(theText.Value(anIndex)))
+    {
+      return 0;
+    }
+    theCode = (theCode << 6) | (static_cast<unsigned char>(theText.Value(anIndex)) & 0x3F);
+  }
+  if (theCode < aMin || theCode > 0x10FFFF || (theCode >= 0xD800 && theCode <= 0xDFFF))
+  {
+    return 0;
+  }
+  return aLength;
+}
+
+//! Writes the characters outside ASCII of theText (made by CleanTextForSend()) with the control
+//! directives of ISO 10303-21 (6.4.3.3): characters of the Basic Multilingual Plane as
+//! \X2\hhhh\X0\, the other characters as \X4\hhhhhhhh\X0\; characters next to each other share
+//! one directive. A byte that is not part of a valid UTF-8 character is written as \X\hh.
+TCollection_AsciiString escapeNonAscii(const TCollection_AsciiString& theText)
+{
+  TCollection_AsciiString aResult;
+  int                     anOpen = 0; // 2 inside \X2\, 4 inside \X4\, 0 outside
+  for (int anIndex = 1; anIndex <= theText.Length();)
+  {
+    const unsigned char aByte = static_cast<unsigned char>(theText.Value(anIndex));
+    if (anOpen != 0 && (aByte == 'N' || aByte == 'T') && anIndex < theText.Length()
+        && (theText.Value(anIndex + 1) == '\\'
+            || static_cast<unsigned char>(theText.Value(anIndex + 1)) >= 0x80))
+    {
+      // "\X0\N\" or "\X0\T\" would be read as a line feed or a tab by OCCT 7.5, which looks for
+      // these two directives anywhere in a string: keep the letter inside the directive instead
+      appendHex(aResult, aByte, anOpen == 2 ? 4 : 8);
+      ++anIndex;
+      continue;
+    }
+    unsigned int aCode   = 0;
+    const int    aLength = aByte < 0x80 ? 1 : readUtf8(theText, anIndex, aCode);
+    const int    aKind   = aByte < 0x80 || aLength == 0 ? 0 : (aCode > 0xFFFF ? 4 : 2);
+    if (anOpen != 0 && anOpen != aKind)
+    {
+      aResult += "\\X0\\";
+      anOpen = 0;
+    }
+    if (aByte < 0x80)
+    {
+      aResult += theText.Value(anIndex);
+    }
+    else if (aLength == 0)
+    {
+      aResult += "\\X\\";
+      appendHex(aResult, aByte, 2);
+    }
+    else
+    {
+      if (anOpen == 0)
+      {
+        aResult += aKind == 2 ? "\\X2\\" : "\\X4\\";
+        anOpen = aKind;
+      }
+      appendHex(aResult, aCode, aKind == 2 ? 4 : 8);
+    }
+    anIndex += aLength > 0 ? aLength : 1;
+  }
+  if (anOpen != 0)
+  {
+    aResult += "\\X0\\";
+  }
+  return aResult;
+}
+} // namespace
+
 //=================================================================================================
 
 StepData_StepWriter::StepData_StepWriter(const occ::handle<StepData_StepModel>& amodel)
@@ -180,6 +515,8 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
 
   Interface_EntityIterator header = themodel->Header();
   thenum                          = 0;
+  int aDescriptionFirst           = 0; // first and last line of FILE_DESCRIPTION
+  int aDescriptionLast            = 0;
   for (header.Start(); header.More(); header.Next())
   {
     const occ::handle<Standard_Transient>& anent = header.Value();
@@ -187,6 +524,7 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
     //   Write Entity via Lib  (similaire a SendEntity)
     occ::handle<StepData_ReadWriteModule> module;
     int                                   CN;
+    bool                                  isDescription = false;
     if (lib.Select(anent, module, CN))
     {
       if (module->IsComplex(CN))
@@ -203,6 +541,11 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
         if (styp.Length() == 0)
         {
           styp = module->StepType(CN);
+        }
+        isDescription = module->StepType(CN) == "FILE_DESCRIPTION";
+        if (isDescription)
+        {
+          aDescriptionFirst = thefile->Length() + 1;
         }
         StartEntity(styp);
       }
@@ -231,6 +574,10 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
       }
     }
     EndEntity();
+    if (isDescription)
+    {
+      aDescriptionLast = thefile->Length();
+    }
   }
   EndSec();
   if (headeronly)
@@ -276,6 +623,13 @@ void StepData_StepWriter::SendModel(const occ::handle<StepData_Protocol>& protoc
 
   EndSec();
   EndFile();
+
+  // Strings with raw UTF-8 need edition 3 of ISO 10303-21 (8.2.2): the implementation levels
+  // "2;1" and "3;1" of the older editions allow characters outside ASCII only as \X2\ and \X4\.
+  if (aDescriptionFirst > 0 && aDescriptionLast >= aDescriptionFirst && hasNonAsciiByte(*thefile))
+  {
+    setEdition3Level(*thefile, aDescriptionFirst, aDescriptionLast);
+  }
 }
 
 //  ....                FILE DIVISION INTO SECTIONS                ....
@@ -934,7 +1288,13 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
   AddParam();
   // Use helper function to clean text while preserving control directives
   TCollection_AsciiString aVal = CleanTextForSend(val);
-  int                     aNn  = aVal.Length();
+  if (!themodel.IsNull()
+      && themodel->InternalParameters.WriteStringEncoding
+           == DESTEP_Parameters::WriteMode_StringEncoding_Escape)
+  {
+    aVal = escapeNonAscii(aVal); // for readers of the older editions of ISO 10303-21
+  }
+  int aNn = aVal.Length();
 
   // Add surrounding quotes
   aVal.Insert(1, '\'');
@@ -971,6 +1331,7 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
     }
     else
     {
+      bool isFirstLine = true; // aVal still starts with the opening apostrophe
       while (aNn > 0)
       {
         if (aNn <= StepLong)
@@ -1004,6 +1365,33 @@ void StepData_StepWriter::Send(const TCollection_AsciiString& val)
             }
           }
         }
+        // do not cut a UTF-8 character, a doubled apostrophe or backslash, or a control directive
+        aStop = safeBreak(aVal, aStop, isFirstLine);
+        // the reader of OCCT 7.5 fails on a line break next to a backslash or an apostrophe when
+        // less than three bytes of the string follow it: then break earlier
+        const char aBefore = aVal.Value(aStop);
+        const char anAfter = aStop + 1 < aNn ? aVal.Value(aStop + 1) : ' '; // not the closing one
+        if (aNn - aStop < 4
+            && (aBefore == '\\' || aBefore == '\'' || anAfter == '\\' || anAfter == '\''))
+        {
+          const int anEarlier = safeBreak(aVal, aNn - 4, isFirstLine);
+          if (anEarlier < aStop)
+          {
+            aStop = anEarlier;
+          }
+        }
+        if (aStop > StepLong)
+        {
+          // the first piece is longer than a line: if it is a \X2\ or \X4\ run, close it and
+          // open it again on the next line instead of writing a longer line
+          const int aSplit = splitLongRun(aVal, StepLong, isFirstLine);
+          if (aSplit > 0)
+          {
+            aStop = aSplit;
+            aNn   = aVal.Length();
+          }
+        }
+        isFirstLine                   = false;
         TCollection_AsciiString aBval = aVal.Split(aStop);
         thefile->Append(new TCollection_HAsciiString(aVal));
         aVal = aBval;
@@ -1347,76 +1735,8 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
     const char anUncar = theText.Value(anI);
 
     // Check if we're at the start of a control directive
-    bool anIsDirective    = false;
-    int  aDirectiveLength = 0;
-
-    if (anUncar == '\\' && anI <= aNb)
-    {
-
-      // Check for \X2\ and \X4\ patterns first (need exactly 4 characters: \X2\)
-      if (anI + 3 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 3) == '\\')
-      {
-        const char aThirdChar = theText.Value(anI + 2);
-
-        // \X2, \X4, \X0 patterns - special control sequences
-        if (aThirdChar == '2' || aThirdChar == '4' || aThirdChar == '0')
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\ (4 chars)
-
-          // For \X2 and \X4, find the terminating \X0 sequence
-          if (aThirdChar == '2' || aThirdChar == '4')
-          {
-            int aJ = anI + 4;
-            while (aJ <= aNb - 3)
-            {
-              if (theText.Value(aJ) == '\\' && theText.Value(aJ + 1) == 'X'
-                  && theText.Value(aJ + 2) == '0' && theText.Value(aJ + 3) == '\\')
-              {
-                aDirectiveLength = (aJ + 4) - anI; // Include the \X0 sequence
-                break;
-              }
-              aJ++;
-            }
-          }
-        }
-      }
-      // Check for \X{HH}\ pattern (need exactly 5 characters: \X{HH}\)
-      else if (anI + 4 <= aNb && theText.Value(anI + 1) == 'X' && theText.Value(anI + 4) == '\\')
-      {
-        const char aThirdChar  = theText.Value(anI + 2);
-        const char aFourthChar = theText.Value(anI + 3);
-
-        // Regular \X{HH}\ pattern - check for two hex characters
-        if (std::isxdigit(aThirdChar) && std::isxdigit(aFourthChar))
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 5; // Control directive with two hex chars
-        }
-      }
-      // Check for \S, \N, \T patterns (need exactly 3 characters: \S\)
-      else if (anI + 2 <= aNb && theText.Value(anI + 2) == '\\')
-      {
-        const char aSecondChar = theText.Value(anI + 1);
-        if (aSecondChar == 'S' || aSecondChar == 'N' || aSecondChar == 'T')
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 3; // Simple directive pattern
-        }
-      }
-      // Check for \P{char}\ patterns (need exactly 4 characters: \P{char}\)
-      else if (anI + 3 <= aNb && theText.Value(anI + 1) == 'P' && theText.Value(anI + 3) == '\\')
-      {
-        const char aSecondChar = theText.Value(anI + 2);
-        if (std::isalpha(aSecondChar))
-        {
-          anIsDirective    = true;
-          aDirectiveLength = 4; // P directive with parameter
-        }
-      }
-    }
-
-    if (anIsDirective)
+    const int aDirectiveLength = directiveLength(theText, anI);
+    if (aDirectiveLength > 0)
     {
       // Copy the entire directive as-is
       for (int aJ = 0; aJ < aDirectiveLength; aJ++)

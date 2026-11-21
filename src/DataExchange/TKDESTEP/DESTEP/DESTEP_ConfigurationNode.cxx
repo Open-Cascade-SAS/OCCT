@@ -183,6 +183,11 @@ bool DESTEP_ConfigurationNode::Load(const occ::handle<DE_ConfigurationContext>& 
   InternalParameters.WriteVertexMode =
     (DESTEP_Parameters::WriteMode_VertexMode)
       theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope);
+  InternalParameters.WriteStringEncoding =
+    (DESTEP_Parameters::WriteMode_StringEncoding)theResource->IntegerVal(
+      "write.string.encoding",
+      InternalParameters.WriteStringEncoding,
+      aScope);
   InternalParameters.WriteSubshapeNames =
     theResource->BooleanVal("write.stepcaf.subshapes.name",
                             InternalParameters.WriteSubshapeNames,
@@ -529,6 +534,13 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
   aResult += "!Default value: 0(\"One Compound\"). Available values: 0(\"One Compound\"), "
              "1(\"Signle Vertex\")\n";
   aResult += aScope + "write.vertex.mode :\t " + InternalParameters.WriteVertexMode + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Defines how characters outside ASCII are written in strings: as raw UTF-8, or "
+             "escaped with the control directives \\X2\\ and \\X4\\ for older readers\n";
+  aResult += "!Default value: 0(\"UTF8\"). Available values: 0(\"UTF8\"), 1(\"Escape\")\n";
+  aResult += aScope + "write.string.encoding :\t " + InternalParameters.WriteStringEncoding + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
