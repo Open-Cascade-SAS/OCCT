@@ -35,11 +35,12 @@ namespace
 
 TopoDS_Wire makeCapsuleWire(const double theX)
 {
-  const gp_Circ aLeft(gp_Ax2(gp_Pnt(theX, 0.0, 0.0), gp::DZ(), gp::DX()), 5.0);
-  const gp_Circ aRight(gp_Ax2(gp_Pnt(theX + 10.0, 0.0, 0.0), gp::DZ(), gp::DX()), 5.0);
+  const gp_Circ           aLeft(gp_Ax2(gp_Pnt(theX, 0.0, 0.0), gp::DZ(), gp::DX()), 5.0);
+  const gp_Circ           aRight(gp_Ax2(gp_Pnt(theX + 10.0, 0.0, 0.0), gp::DZ(), gp::DX()), 5.0);
   BRepBuilderAPI_MakeWire aWire;
   aWire.Add(BRepBuilderAPI_MakeEdge(aLeft, 0.5 * M_PI, 1.5 * M_PI).Edge());
-  aWire.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(theX, -5.0, 0.0), gp_Pnt(theX + 10.0, -5.0, 0.0)).Edge());
+  aWire.Add(
+    BRepBuilderAPI_MakeEdge(gp_Pnt(theX, -5.0, 0.0), gp_Pnt(theX + 10.0, -5.0, 0.0)).Edge());
   aWire.Add(BRepBuilderAPI_MakeEdge(aRight, 1.5 * M_PI, 2.5 * M_PI).Edge());
   aWire.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(theX + 10.0, 5.0, 0.0), gp_Pnt(theX, 5.0, 0.0)).Edge());
   return aWire.Wire();
@@ -49,8 +50,9 @@ TopoDS_Wire makeCapsuleWire(const double theX)
 TEST(BRepOffsetAPI_ThruSectionsTest, RepeatedClosedSectionPreservesGeneratedFaces)
 {
   const TopoDS_Wire aFirst = makeCapsuleWire(0.0);
-  const gp_Circ aCircle(gp_Ax2(gp_Pnt(50.0, 0.0, 15.0), gp::DX(), gp_Dir(0.0, 0.0, -1.0)), 3.0);
-  const TopoDS_Wire aSecond = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aCircle).Edge()).Wire();
+  const gp_Circ     aCircle(gp_Ax2(gp_Pnt(50.0, 0.0, 15.0), gp::DX(), gp_Dir(0.0, 0.0, -1.0)), 3.0);
+  const TopoDS_Wire aSecond =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aCircle).Edge()).Wire();
 
   BRepOffsetAPI_ThruSections aLoft;
   aLoft.SetMaxDegree(5);
