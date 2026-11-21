@@ -32,9 +32,10 @@
 TEST(BRepOffsetAPI_ThruSectionsTest, UnboundedSectionReturnsFailure)
 {
   const TopoDS_Wire aFirst =
-    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0)).Edge())
+    BRepBuilderAPI_MakeWire(
+      BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0)).Edge())
       .Wire();
-  const gp_Lin aLine(gp_Pnt(0.0, 0.0, 10.0), gp::DX());
+  const gp_Lin      aLine(gp_Pnt(0.0, 0.0, 10.0), gp::DX());
   const TopoDS_Edge aFullLine = BRepBuilderAPI_MakeEdge(aLine).Edge();
   const TopoDS_Edge aHalfLine = BRepBuilderAPI_MakeEdge(aLine, 0.0, Precision::Infinite()).Edge();
   for (const TopoDS_Edge& anEdge : std::array<TopoDS_Edge, 2>{aFullLine, aHalfLine})
@@ -57,10 +58,12 @@ TEST(BRepOffsetAPI_ThruSectionsTest, UnboundedSectionReturnsFailure)
 
 TEST(BRepOffsetAPI_ThruSectionsTest, BoundedOpenSectionsBuildFace)
 {
-  const TopoDS_Edge aFirstEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0)).Edge();
-  const TopoDS_Edge aLastEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 10.0), gp_Pnt(10.0, 0.0, 10.0)).Edge();
+  const TopoDS_Edge aFirstEdge =
+    BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(10.0, 0.0, 0.0)).Edge();
+  const TopoDS_Edge aLastEdge =
+    BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 10.0), gp_Pnt(10.0, 0.0, 10.0)).Edge();
   const TopoDS_Wire aFirst = BRepBuilderAPI_MakeWire(aFirstEdge).Wire();
-  const TopoDS_Wire aLast = BRepBuilderAPI_MakeWire(aLastEdge).Wire();
+  const TopoDS_Wire aLast  = BRepBuilderAPI_MakeWire(aLastEdge).Wire();
   for (const bool toCheckCompatibility : std::array<bool, 2>{false, true})
   {
     SCOPED_TRACE(toCheckCompatibility);
