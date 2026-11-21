@@ -111,14 +111,10 @@ static gp_Vec SetLinearForm(const gp_Vec2d& DW,
                             const gp_Vec&   D3UVV)
 {
   gp_Vec V31, V32, V33, V34, V3;
-  V31.SetLinearForm(DW.X(), D1U, D2W.X() * DW.X(), D2U, D2W.X() * DW.Y(), D2UV);
+  V31.SetLinearForm(D3W.X(), D1U, D2W.X() * DW.X(), D2U, D2W.X() * DW.Y(), D2UV);
   V31.SetLinearForm(D3W.Y(), D1V, D2W.Y() * DW.X(), D2UV, D2W.Y() * DW.Y(), D2V, V31);
   V32.SetLinearForm(DW.X() * DW.X() * DW.Y(), D3UUV, DW.X() * DW.Y() * DW.Y(), D3UVV);
-  V32.SetLinearForm(D2W.X() * DW.Y() + DW.X() * D2W.Y(),
-                    D2UV,
-                    DW.X() * DW.Y() * DW.Y(),
-                    D3UVV,
-                    V32);
+  V32.SetLinearForm(D2W.X() * DW.Y() + DW.X() * D2W.Y(), D2UV, V32);
   V33.SetLinearForm(2 * D2W.X() * DW.X(),
                     D2U,
                     DW.X() * DW.X() * DW.X(),
@@ -892,8 +888,7 @@ Adaptor3d_CurveOnSurface::Adaptor3d_CurveOnSurface(const occ::handle<Adaptor2d_C
     : myType(GeomAbs_OtherCurve),
       myIntCont(GeomAbs_CN)
 {
-  Load(S);
-  Load(C);
+  Load(C, S);
 }
 
 //=================================================================================================
@@ -932,10 +927,7 @@ occ::handle<Adaptor3d_Curve> Adaptor3d_CurveOnSurface::ShallowCopy() const
 void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurface = S;
-  if (!myCurve.IsNull())
-  {
-    EvalKPart();
-  }
+  Load(myCurve);
 }
 
 //=================================================================================================
@@ -943,7 +935,13 @@ void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor3d_Surface>& S)
 void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C)
 {
   myCurve = C;
-  if (mySurface.IsNull())
+  // These caches depend on both the pcurve and the surface.
+  myFirstSurf.Nullify();
+  myLastSurf.Nullify();
+  myIntervals.Nullify();
+  myIntCont = GeomAbs_CN;
+  myType    = GeomAbs_OtherCurve;
+  if (myCurve.IsNull() || mySurface.IsNull())
   {
     return;
   }
@@ -968,8 +966,8 @@ void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C)
 void Adaptor3d_CurveOnSurface::Load(const occ::handle<Adaptor2d_Curve2d>& C,
                                     const occ::handle<Adaptor3d_Surface>& S)
 {
+  mySurface = S;
   Load(C);
-  Load(S);
 }
 
 //=================================================================================================

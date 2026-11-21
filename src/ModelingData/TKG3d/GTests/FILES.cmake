@@ -10,6 +10,7 @@ set(OCCT_TKG3d_GTests_FILES
   Geom_CurveEval_Test.cxx
   Geom_Line_Test.cxx
   Geom_OffsetCurve_Test.cxx
+  GeomAdaptor_Test.cxx
   Geom_OffsetSurface_Test.cxx
   Geom_Plane_Test.cxx
   Geom_SurfaceEval_Test.cxx
@@ -47,4 +48,6 @@ set(OCCT_TKG3d_GTests_FILES
   GeomHash_CurveHasher_Test.cxx
   GeomHash_MeshHasher_Test.cxx
   GeomHash_SurfaceHasher_Test.cxx
+  Geom_RectangularTrimmedSurface_Test.cxx
+  Adaptor3d_CurveOnSurface_Test.cxx
 )

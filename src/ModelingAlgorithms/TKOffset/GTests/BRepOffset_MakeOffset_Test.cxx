@@ -13,6 +13,7 @@
 
 #include <gtest/gtest.h>
 
+#include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffset_MakeOffset.hxx>
@@ -41,6 +42,8 @@
 #include <TopExp_Explorer.hxx>
 #include <NCollection_List.hxx>
 
+#include <cmath>
+
 //=================================================================================================
 // Helper function to create a circular wire
 //=================================================================================================
@@ -65,6 +68,26 @@ static TopoDS_Wire MakeCircularWire(const gp_Pnt& theCenter,
   }
 
   return aWireMaker.Wire();
+}
+
+//! Performs a planar circular-wire offset.
+//! @param theDiameter circle diameter
+//! @param theOffset signed offset distance
+//! @return true if the offset operation completed successfully
+static bool IsCircularWireOffsetDone(const double theDiameter, const double theOffset)
+{
+  const TopoDS_Wire aWire =
+    MakeCircularWire(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), theDiameter / 2.0);
+  if (aWire.IsNull())
+  {
+    return false;
+  }
+
+  BRepOffsetAPI_MakeOffset anOffsetMaker;
+  anOffsetMaker.Init(GeomAbs_Intersection);
+  anOffsetMaker.AddWire(aWire);
+  anOffsetMaker.Perform(theOffset);
+  return anOffsetMaker.IsDone();
 }
 
 //=================================================================================================
@@ -1026,4 +1049,51 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToOctagonLoft)
 
   // Octagon is closer to a circle, corners are less sharp
   EXPECT_TRUE(aThickMaker.IsDone()) << "ThickSolid on circle-to-octagon loft failed.";
+}
+
+TEST(BRepOffset_MakeOffsetTest, NegativeTaperOffsetOnSmallCircularWire)
+{
+  constexpr double aPadLength    = 3.0;
+  constexpr double aTaperDegrees = -1.0;
+  const double     anOffset      = std::tan(aTaperDegrees * M_PI / 180.0) * aPadLength;
+
+  bool isDone = false;
+  ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(2.0, anOffset));
+  EXPECT_TRUE(isDone);
+}
+
+TEST(BRepOffset_MakeOffsetTest, NegativeTaperOffsetAboveSmallCircleBoundary)
+{
+  constexpr double aPadLength    = 3.0;
+  constexpr double aTaperDegrees = -1.0;
+  const double     anOffset      = std::tan(aTaperDegrees * M_PI / 180.0) * aPadLength;
+
+  bool isDone = false;
+  ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(2.01, anOffset));
+  EXPECT_TRUE(isDone);
+}
+
+TEST(BRepOffset_MakeOffsetTest, NegativeTaperOffsetBelowSmallCircleBoundary)
+{
+  constexpr double aPadLength    = 3.0;
+  constexpr double aTaperDegrees = -1.0;
+  const double     anOffset      = std::tan(aTaperDegrees * M_PI / 180.0) * aPadLength;
+
+  bool isDone = false;
+  ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(1.0, anOffset));
+  EXPECT_TRUE(isDone);
+}
+
+TEST(BRepOffset_MakeOffsetTest, PositiveOffsetOnSmallCircularWire)
+{
+  bool isDone = false;
+  ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(2.0, 0.05));
+  EXPECT_TRUE(isDone);
+}
+
+TEST(BRepOffset_MakeOffsetTest, CollapsedCircularWireOffsetIsNotDone)
+{
+  bool isDone = true;
+  ASSERT_NO_THROW(isDone = IsCircularWireOffsetDone(2.0, -1.0));
+  EXPECT_FALSE(isDone);
 }

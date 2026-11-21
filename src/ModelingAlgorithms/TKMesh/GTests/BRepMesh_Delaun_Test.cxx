@@ -15,10 +15,19 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepMesh_DataStructureOfDelaun.hxx>
+#include <BRepMesh_Delaun.hxx>
+#include <BRepMesh_Edge.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepMesh_Triangle.hxx>
+#include <BRepMesh_Vertex.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Geom_Plane.hxx>
+#include <IMeshData_Types.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_Shared.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
@@ -29,6 +38,8 @@
 #include <gp_Vec2d.hxx>
 
 #include <gtest/gtest.h>
+
+#include <cmath>
 
 // Test for bug 0032395: BRepMesh_Delaun::isVertexInsidePolygon
 // The method uses winding number algorithm to check if a point is inside a polygon.
@@ -234,4 +245,113 @@ TEST(BRepMesh_DelaunTest, MeshCylinderCurvedFaces)
   }
 
   EXPECT_GT(aTotalTriangles, 0) << "Cylinder should have triangles";
+}
+
+TEST(BRepMesh_DelaunTest, InteriorPointNearLongFrontierIsInserted)
+{
+  for (const double aScale : {.1, 1., 10.})
+  {
+    const occ::handle<BRepMesh_DataStructureOfDelaun> aStructure =
+      new BRepMesh_DataStructureOfDelaun(new NCollection_IncAllocator);
+    aStructure->Data()->SetTolerance(Precision::PConfusion());
+    const int aNodes[3] = {
+      aStructure->AddNode(BRepMesh_Vertex(0., 0., BRepMesh_Frontier)),
+      aStructure->AddNode(BRepMesh_Vertex(aScale, 0., BRepMesh_Frontier)),
+      aStructure->AddNode(BRepMesh_Vertex(.5 * aScale, .25 * aScale, BRepMesh_Frontier))};
+    int  aEdges[3];
+    bool anOrientations[3];
+    for (int anIndex = 0; anIndex < 3; ++anIndex)
+    {
+      const int anEdge = aStructure->AddLink(
+        BRepMesh_Edge(aNodes[anIndex], aNodes[(anIndex + 1) % 3], BRepMesh_Frontier));
+      aEdges[anIndex]         = std::abs(anEdge);
+      anOrientations[anIndex] = anEdge > 0;
+    }
+    const int aTriangle =
+      aStructure->AddElement(BRepMesh_Triangle(aEdges, anOrientations, BRepMesh_Free));
+    BRepMesh_Delaun aMesher(aStructure, 2, 2, true);
+    // The centroid height is one third of the triangle height aScale / 4.
+    const BRepMesh_Vertex aPoint(.5 * aScale, aScale / 12., BRepMesh_Free);
+    double                aTolU, aTolV;
+    aStructure->Data()->GetTolerance(aTolU, aTolV);
+    const double aSqTolerance = aTolU * aTolU + aTolV * aTolV;
+    int          anEdgeOn     = 0;
+    ASSERT_TRUE(aMesher.Contains(aTriangle, aPoint, aSqTolerance, anEdgeOn));
+    EXPECT_EQ(anEdgeOn, 0) << "scale=" << aScale;
+    NCollection_Shared<NCollection_DynamicArray<int>> aVertices;
+    const int                                         aPointId = aStructure->AddNode(aPoint);
+    aVertices.Append(aPointId);
+    aMesher.AddVertices(aVertices);
+    EXPECT_EQ(aStructure->ElementsOfDomain().Size(), 3u) << "scale=" << aScale;
+    int anIncidentTriangles = 0;
+    for (IMeshData::IteratorOfMapOfInteger anIter(aStructure->ElementsOfDomain()); anIter.More();
+         anIter.Next())
+    {
+      int aTriangleNodes[3];
+      aStructure->ElementNodes(aStructure->GetElement(anIter.Key()), aTriangleNodes);
+      for (int aNode : aTriangleNodes)
+        if (aNode == aPointId)
+          ++anIncidentTriangles;
+    }
+    EXPECT_EQ(anIncidentTriangles, 3) << "scale=" << aScale;
+  }
+}
+
+TEST(BRepMesh_DelaunTest, SharedEdgeAndBoundaryInsertionKeepConstraints)
+{
+  for (const int aCase : {0, 1, 2, 3})
+  {
+    const occ::handle<BRepMesh_DataStructureOfDelaun> aStructure =
+      new BRepMesh_DataStructureOfDelaun(new NCollection_IncAllocator);
+    const int aNodes[4] = {aStructure->AddNode(BRepMesh_Vertex(0., 0., BRepMesh_Frontier)),
+                           aStructure->AddNode(BRepMesh_Vertex(1., 0., BRepMesh_Frontier)),
+                           aStructure->AddNode(BRepMesh_Vertex(1., 1., BRepMesh_Frontier)),
+                           aStructure->AddNode(BRepMesh_Vertex(0., 1., BRepMesh_Frontier))};
+    int       anOuter[4];
+    for (int anIndex = 0; anIndex < 4; ++anIndex)
+    {
+      anOuter[anIndex] = aStructure->AddLink(
+        BRepMesh_Edge(aNodes[anIndex], aNodes[(anIndex + 1) % 4], BRepMesh_Frontier));
+    }
+    const int aDiagonal = aStructure->AddLink(
+      BRepMesh_Edge(aNodes[0], aNodes[2], aCase == 3 ? BRepMesh_Fixed : BRepMesh_Free));
+    const int  aTriangle1Edges[3]        = {anOuter[0], anOuter[1], aDiagonal};
+    const bool aTriangle1Orientations[3] = {true, true, false};
+    const int  aTriangle2Edges[3]        = {aDiagonal, anOuter[2], anOuter[3]};
+    const bool aTriangle2Orientations[3] = {true, true, true};
+    aStructure->AddElement(
+      BRepMesh_Triangle(aTriangle1Edges, aTriangle1Orientations, BRepMesh_Free));
+    aStructure->AddElement(
+      BRepMesh_Triangle(aTriangle2Edges, aTriangle2Orientations, BRepMesh_Free));
+    BRepMesh_Delaun aMesher(aStructure, 2, 2, true);
+    const gp_XY     aParameter(.5, aCase == 1 ? 0. : (aCase == 2 ? -.5 : .5));
+    const int       aPoint = aStructure->AddNode(BRepMesh_Vertex(aParameter, 0, BRepMesh_Free));
+    NCollection_Shared<NCollection_DynamicArray<int>> aVertices;
+    aVertices.Append(aPoint);
+    aMesher.AddVertices(aVertices);
+    EXPECT_EQ(aStructure->ElementsOfDomain().Size(), aCase == 0 ? 4u : 2u) << "case=" << aCase;
+    int anIncident = 0;
+    for (IMeshData::IteratorOfMapOfInteger anIter(aStructure->ElementsOfDomain()); anIter.More();
+         anIter.Next())
+    {
+      int aTriangleNodes[3];
+      aStructure->ElementNodes(aStructure->GetElement(anIter.Key()), aTriangleNodes);
+      for (int aNode : aTriangleNodes)
+      {
+        if (aNode == aPoint)
+        {
+          ++anIncident;
+        }
+      }
+    }
+    EXPECT_EQ(anIncident, aCase == 0 ? 4 : 0) << "case=" << aCase;
+    for (const int anEdge : anOuter)
+    {
+      EXPECT_EQ(aStructure->GetLink(anEdge).Movability(), BRepMesh_Frontier);
+    }
+    if (aCase == 3)
+    {
+      EXPECT_EQ(aStructure->GetLink(aDiagonal).Movability(), BRepMesh_Fixed);
+    }
+  }
 }

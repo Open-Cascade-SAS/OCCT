@@ -196,7 +196,7 @@ static bool KPartCircle(
   const double                                                              Alt,
   TopoDS_Shape&                                                             myShape,
   NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>>& myMap,
-  bool&                                                                     myIsDone)
+  bool&                                                                     theIsDone)
 {
   TopoDS_Edge E;
   for (TopExp_Explorer anEdgeIter(mySpine, TopAbs_EDGE); anEdgeIter.More(); anEdgeIter.Next())
@@ -260,8 +260,8 @@ static bool KPartCircle(
       }
       else
       {
-        myIsDone = false;
-        return false;
+        theIsDone = false;
+        return true;
       }
     }
     else
@@ -298,7 +298,7 @@ static bool KPartCircle(
     TopoDS_Edge myEdge = TopoDS::Edge(myShape);
     myShape            = BRepLib_MakeWire(myEdge);
 
-    myIsDone = true;
+    theIsDone = true;
     return true;
   }
 

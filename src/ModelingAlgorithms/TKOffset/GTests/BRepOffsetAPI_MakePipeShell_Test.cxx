@@ -264,3 +264,17 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
   EXPECT_GE(countMatching(aExpLen4), 1)
     << "No wire found with circumference pi*(dia2+2*wall) = " << aExpLen4;
 }
+
+TEST(BRepOffsetAPI_MakePipeShell_Test, NullAuxiliarySpinePreservesMode)
+{
+  const TopoDS_Wire aSpine =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(0, 0, 10)));
+  BRepOffsetAPI_MakePipeShell aPipe(aSpine);
+  EXPECT_THROW(aPipe.SetMode(TopoDS_Wire(), true), Standard_ConstructionError);
+  const TopoDS_Wire aProfile =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0)));
+  aPipe.Add(aProfile);
+  aPipe.Build();
+  ASSERT_TRUE(aPipe.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aPipe.Shape()).IsValid());
+}

@@ -75,6 +75,153 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
 
 namespace
 {
+
+//==================================================================================================
+
+void selectSpan(const int theSide,
+                const int theLocatedFirst,
+                const int theLocatedLast,
+                int&      theFirstSpan,
+                int&      theLastSpan,
+                const int theFirstKnot,
+                const int theLastKnot)
+{
+  if (theLocatedFirst != theLocatedLast) // not a knot
+  {
+    if (theLocatedFirst < theFirstKnot)
+    {
+      theFirstSpan = theFirstKnot;
+      theLastSpan = theFirstKnot + 1;
+    }
+    else if (theLocatedLast > theLastKnot)
+    {
+      theFirstSpan = theLastKnot - 1;
+      theLastSpan = theLastKnot;
+    }
+    else if (theLocatedFirst >= (theLastKnot - 1))
+    {
+      theFirstSpan = theLastKnot - 1;
+      theLastSpan = theLastKnot;
+    }
+    else if (theLocatedLast <= theFirstKnot + 1)
+    {
+      theFirstSpan = theFirstKnot;
+      theLastSpan = theFirstKnot + 1;
+    }
+    else if (theLocatedFirst > theLocatedLast)
+    {
+      theFirstSpan = theLocatedLast - 1;
+      theLastSpan = theLocatedLast;
+    }
+    else
+    {
+      theFirstSpan = theLocatedFirst;
+      theLastSpan = theLocatedLast;
+    }
+  }
+  else
+  {
+    if (theLocatedFirst <= theFirstKnot)
+    {
+      theFirstSpan = theFirstKnot;
+      theLastSpan = theFirstKnot + 1;
+    } // first knot
+    else if (theLocatedLast >= theLastKnot)
+    {
+      theFirstSpan = theLastKnot - 1;
+      theLastSpan = theLastKnot;
+    } // last knot
+    else
+    {
+      if (theSide == -1)
+      {
+        theFirstSpan = theLocatedFirst - 1;
+        theLastSpan = theLocatedLast;
+      }
+      else
+      {
+        theFirstSpan = theLocatedFirst;
+        theLastSpan = theLocatedLast + 1;
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
+void selectTrimSpan(double&                           theParameter,
+                    int&                              theLocatedFirst,
+                    int&                              theLocatedLast,
+                    const int                         theSide,
+                    const int                         theFirstKnot,
+                    const int                         theLastKnot,
+                    const NCollection_Array1<double>& theKnots,
+                    const bool                        theIsPeriodic)
+{
+  // Remap a seam point to the end of the period selected by the trim.
+  if (theIsPeriodic && theLocatedFirst == theLocatedLast
+      && (theLocatedFirst == theFirstKnot || theLocatedFirst == theLastKnot))
+  {
+    if (theSide < 0)
+    {
+      theLocatedFirst = theLocatedLast = theLastKnot;
+      theParameter = theKnots.Value(theLastKnot);
+    }
+    else if (theSide > 0)
+    {
+      theLocatedFirst = theLocatedLast = theFirstKnot;
+      theParameter = theKnots.Value(theFirstKnot);
+    }
+  }
+  selectSpan(theSide,
+             theLocatedFirst,
+             theLocatedLast,
+             theLocatedFirst,
+             theLocatedLast,
+             theFirstKnot,
+             theLastKnot);
+}
+
+//==================================================================================================
+
+bool selectTrimSpans(const Geom_BSplineSurface& theSurface,
+                     double&                    theU,
+                     double&                    theV,
+                     int&                       theUFirstSpan,
+                     int&                       theULastSpan,
+                     int&                       theVFirstSpan,
+                     int&                       theVLastSpan,
+                     const int                  theUSide,
+                     const int                  theVSide)
+{
+  // Select a local side only at the knot, without snapping nearby samples.
+  theSurface.LocateU(theU, 0.0, theUFirstSpan, theULastSpan, false);
+  theSurface.LocateV(theV, 0.0, theVFirstSpan, theVLastSpan, false);
+  const bool isAtKnot = theUFirstSpan == theULastSpan || theVFirstSpan == theVLastSpan;
+  if (isAtKnot)
+  {
+    selectTrimSpan(theU,
+                   theUFirstSpan,
+                   theULastSpan,
+                   theUSide,
+                   theSurface.FirstUKnotIndex(),
+                   theSurface.LastUKnotIndex(),
+                   theSurface.UKnots(),
+                   theSurface.IsUPeriodic());
+    selectTrimSpan(theV,
+                   theVFirstSpan,
+                   theVLastSpan,
+                   theVSide,
+                   theSurface.FirstVKnotIndex(),
+                   theSurface.LastVKnotIndex(),
+                   theSurface.VKnots(),
+                   theSurface.IsVPeriodic());
+  }
+  return isAtKnot;
+}
+
+//==================================================================================================
+
 bool hasEvalRep(const GeomAdaptor_Surface::SurfaceDataVariant& theData)
 {
   if (const GeomAdaptor_Surface::BezierData* aBezierData =
@@ -1190,7 +1337,8 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(const double theU, const double 
       }
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
-      if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+      if ((USide != 0 || VSide != 0)
+          && selectTrimSpans(*aBSpl, u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
       {
         aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, aResult.Point, aResult.D1U, aResult.D1V);
       }
@@ -1365,7 +1513,8 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(const double theU, const double 
       }
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
-      if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+      if ((USide != 0 || VSide != 0)
+          && selectTrimSpans(*aBSpl, u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
       {
         aBSpl->LocalD2(u,
                        v,
@@ -1583,7 +1732,7 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(const double theU, const double 
       }
       else
       {
-        if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+        if (selectTrimSpans(*aBSpl, u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
         {
           aBSpl->LocalD3(u,
                          v,
@@ -1740,7 +1889,7 @@ gp_Vec GeomAdaptor_Surface::EvalDN(const double theU,
       }
       else
       {
-        if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
+        if (selectTrimSpans(*aBSpl, u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
         {
           return aBSpl->LocalDN(u, v, Ideb, Ifin, IVdeb, IVfin, Nu, Nv);
         }
@@ -2288,63 +2437,5 @@ void GeomAdaptor_Surface::Span(const int Side,
                                const int theFKIndx,
                                const int theLKIndx) const
 {
-  if (Ideb != Ifin) // not a knot
-  {
-    if (Ideb < theFKIndx)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    }
-    else if (Ifin > theLKIndx)
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    }
-    else if (Ideb >= (theLKIndx - 1))
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    }
-    else if (Ifin <= theFKIndx + 1)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    }
-    else if (Ideb > Ifin)
-    {
-      OutIdeb = Ifin - 1;
-      OutIfin = Ifin;
-    }
-    else
-    {
-      OutIdeb = Ideb;
-      OutIfin = Ifin;
-    }
-  }
-  else
-  {
-    if (Ideb <= theFKIndx)
-    {
-      OutIdeb = theFKIndx;
-      OutIfin = theFKIndx + 1;
-    } // first knot
-    else if (Ifin >= theLKIndx)
-    {
-      OutIdeb = theLKIndx - 1;
-      OutIfin = theLKIndx;
-    } // last knot
-    else
-    {
-      if (Side == -1)
-      {
-        OutIdeb = Ideb - 1;
-        OutIfin = Ifin;
-      }
-      else
-      {
-        OutIdeb = Ideb;
-        OutIfin = Ifin + 1;
-      }
-    }
-  }
+  selectSpan(Side, Ideb, Ifin, OutIdeb, OutIfin, theFKIndx, theLKIndx);
 }

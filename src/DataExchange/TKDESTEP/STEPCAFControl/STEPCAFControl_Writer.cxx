@@ -59,6 +59,7 @@
 #include <STEPConstruct_ExternRefs.hxx>
 #include <STEPCAFControl_GDTProperty.hxx>
 #include <STEPConstruct_Styles.hxx>
+#include <STEPConstruct_UnitContext.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <StepData_Factors.hxx>
@@ -214,6 +215,8 @@
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <UnitsMethods.hxx>
+
+#include <cmath>
 
 //=======================================================================
 // function : GetLabelName
@@ -2939,7 +2942,10 @@ static StepBasic_Unit GetUnit(const occ::handle<StepRepr_RepresentationContext>&
     }
     if (aCurrentUnit.IsNull())
     {
-      aCurrentUnit = new StepBasic_SiUnitAndPlaneAngleUnit;
+      const occ::handle<StepBasic_SiUnitAndPlaneAngleUnit> aRadian =
+        new StepBasic_SiUnitAndPlaneAngleUnit;
+      aRadian->Init(false, StepBasic_spMilli, StepBasic_sunRadian);
+      aCurrentUnit = aRadian;
     }
   }
   else
@@ -2985,7 +2991,10 @@ static StepBasic_Unit GetUnit(const occ::handle<StepRepr_RepresentationContext>&
     }
     if (aCurrentUnit.IsNull())
     {
-      aCurrentUnit = new StepBasic_SiUnitAndLengthUnit;
+      const occ::handle<StepBasic_SiUnitAndLengthUnit> aMillimeter =
+        new StepBasic_SiUnitAndLengthUnit;
+      aMillimeter->Init(true, StepBasic_spMilli, StepBasic_sunMetre);
+      aCurrentUnit = aMillimeter;
     }
   }
 
@@ -3612,8 +3621,25 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
                  || aDim->IsKind(STANDARD_TYPE(StepShape_AngularSize));
 
   // Unit
-  StepBasic_Unit aUnit = GetUnit(theRC, isAngle);
-  const char*    aMeasureName;
+  const StepBasic_Unit      aUnit = GetUnit(theRC, isAngle);
+  STEPConstruct_UnitContext aUnitContext;
+  const int    aUnitStatus = aUnitContext.ComputeFactors(aUnit.NamedUnit(), theLocalFactors);
+  const double aUnitFactor =
+    isAngle ? aUnitContext.PlaneAngleFactor() : aUnitContext.LengthFactor();
+
+  // XCAF stores angles in degrees and lengths in the document unit.
+  double aValueFactor = 0.0;
+  if (aUnitStatus == 0 && (isAngle ? aUnitContext.PlaneAngleDone() : aUnitContext.LengthDone())
+      && aUnitFactor > 0.0 && std::isfinite(aUnitFactor))
+  {
+    aValueFactor = (isAngle ? M_PI / 180.0 : 1.0) / aUnitFactor;
+  }
+  if (!(aValueFactor > 0.0) || !std::isfinite(aValueFactor))
+  {
+    Message::SendWarning("STEP dimension has an invalid unit factor. Values were not scaled.");
+    aValueFactor = 1.0;
+  }
+  const char* aMeasureName;
   if (isAngle)
   {
     aMeasureName = "POSITIVE_PLANE_ANGLE_MEASURE";
@@ -3642,7 +3668,7 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
   aValues = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, aNbItems);
 
   // Nominal value
-  double aNominal = theObject->GetValue();
+  const double aNominal = theObject->GetValue() * aValueFactor;
   int    aLeftNbDigits, aRightNbDigits;
   theObject->GetNbOfDecimalPlaces(aLeftNbDigits, aRightNbDigits);
   int aNbQualifiers = 0;
@@ -3717,13 +3743,13 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
   if (theObject->IsDimWithRange())
   {
     occ::handle<StepRepr_ReprItemAndMeasureWithUnit> aLowerItem =
-      CreateDimValue(theObject->GetLowerBound(),
+      CreateDimValue(theObject->GetLowerBound() * aValueFactor,
                      aUnit,
                      new TCollection_HAsciiString("lower limit"),
                      aMeasureName,
                      isAngle);
     occ::handle<StepRepr_ReprItemAndMeasureWithUnit> anUpperItem =
-      CreateDimValue(theObject->GetUpperBound(),
+      CreateDimValue(theObject->GetUpperBound() * aValueFactor,
                      aUnit,
                      new TCollection_HAsciiString("upper limit"),
                      aMeasureName,
@@ -3807,11 +3833,9 @@ static void WriteDimValues(const occ::handle<XSControl_WorkSession>&            
   // Plus_Minus_Tolerance
   if (theObject->IsDimWithPlusMinusTolerance())
   {
-    occ::handle<TCollection_HAsciiString> aDummyName = new TCollection_HAsciiString(aMeasureName);
-    aDummyName             = aDummyName->SubString(9, aDummyName->Length()); // delete "POSITIVE_"
-    aMeasureName           = aDummyName->ToCString();
-    double aLowerTolValue  = -theObject->GetLowerTolValue(),
-           anUpperTolValue = theObject->GetUpperTolValue();
+    aMeasureName                 = isAngle ? "PLANE_ANGLE_MEASURE" : "LENGTH_MEASURE";
+    const double aLowerTolValue  = -theObject->GetLowerTolValue() * aValueFactor;
+    const double anUpperTolValue = theObject->GetUpperTolValue() * aValueFactor;
     // Upper
     occ::handle<StepBasic_MeasureWithUnit>    anUpperMWU   = new StepBasic_MeasureWithUnit();
     occ::handle<StepBasic_MeasureValueMember> anUpperValue = new StepBasic_MeasureValueMember();

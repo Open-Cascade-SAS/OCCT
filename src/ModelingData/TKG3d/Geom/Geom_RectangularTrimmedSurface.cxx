@@ -119,6 +119,12 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface(
   const double                     Param2,
   const bool                       UTrim,
   const bool                       Sense)
+    : utrim1(0.0),
+      vtrim1(0.0),
+      utrim2(0.0),
+      vtrim2(0.0),
+      isutrimmed(false),
+      isvtrimmed(false)
 {
   // kill trimmed basis surfaces
   occ::handle<Geom_RectangularTrimmedSurface> T = occ::down_cast<Geom_RectangularTrimmedSurface>(S);

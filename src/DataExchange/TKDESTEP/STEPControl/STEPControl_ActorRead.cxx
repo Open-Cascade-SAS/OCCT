@@ -126,6 +126,10 @@
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <Geom_Plane.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Curve.hxx>
+#include <StepGeom_Surface.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_ActorRead, Transfer_ActorOfTransientProcess)
 
@@ -1462,6 +1466,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
     }
     if (mySRContext.IsNull() || aCRepr->ContextOfItems() != mySRContext->ContextOfItems())
     {
+      aLocalFactors = theLocalFactors;
       PrepareUnits(aCRepr, theTP, aLocalFactors);
       resetUnits = true;
     }
@@ -1487,6 +1492,15 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
         occ::handle<TransferBRep_ShapeBinder> axisbinder = new TransferBRep_ShapeBinder(aPlaneFace);
         theTP->Bind(aStepAxis, axisbinder);
         aB.Add(aComp, aPlaneFace);
+      }
+      else
+      {
+        const occ::handle<Transfer_Binder> aBinder = TransferShape(anItem, theTP, aLocalFactors);
+        const TopoDS_Shape                 aShape  = TransferBRep::ShapeResult(aBinder);
+        if (!aShape.IsNull())
+        {
+          aB.Add(aComp, aShape);
+        }
       }
     }
   }
@@ -1851,6 +1865,25 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
                           aRange);
       found = true;
     }
+    else if (start->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint))
+             || start->IsKind(STANDARD_TYPE(StepGeom_Curve))
+             || start->IsKind(STANDARD_TYPE(StepGeom_Surface)))
+    {
+      // Reuse the geometric-set translator and its original-entity bindings.
+      StepShape_GeometricSetSelect anElement;
+      anElement.SetValue(start);
+      const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> anElements =
+        new NCollection_HArray1<StepShape_GeometricSetSelect>(1, 1);
+      anElements->SetValue(1, anElement);
+      const occ::handle<StepShape_GeometricSet> aSet = new StepShape_GeometricSet;
+      aSet->Init(start->Name(), anElements);
+      myShapeBuilder.Init(aSet, TP, aLocalFactors, this, isManifold, aRange);
+      if (myShapeBuilder.IsDone())
+      {
+        mappedShape = TransferBRep::ShapeResult(TP, start);
+        found       = !mappedShape.IsNull();
+      }
+    }
     else if (start->IsKind(STANDARD_TYPE(StepShape_GeometricSet)))
     {
       myShapeBuilder.Init(GetCasted(StepShape_GeometricSet, start),
@@ -1926,7 +1959,10 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 
   if (found && myShapeBuilder.IsDone())
   {
-    mappedShape = myShapeBuilder.Value();
+    if (mappedShape.IsNull())
+    {
+      mappedShape = myShapeBuilder.Value();
+    }
     // Apply ShapeFix (on manifold shapes only. Non-manifold topology is processed separately:
     // ssv; 13.11.2010)
     if (isManifold && aHasGeom)

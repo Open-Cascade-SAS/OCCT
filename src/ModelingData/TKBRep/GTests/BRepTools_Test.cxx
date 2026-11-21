@@ -12,6 +12,12 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TopTools_LocationSet.hxx>
+#include <TopoDS_Edge.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 #include <BRepGProp.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepTools.hxx>
@@ -139,4 +145,43 @@ TEST(BRepTools_Test, ParallelRead_RepeatedRuns)
       EXPECT_NEAR(aMass, aRefMass, aEps) << "Run " << aRun << ", shape " << i << " mass mismatch";
     }
   }
+}
+
+TEST(BRepToolsTest, OversizedRealTokenRejectsShapeRead)
+{
+  const TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0)).Edge();
+  std::stringstream aWritten;
+  BRepTools::Write(anEdge, aWritten);
+  TCollection_AsciiString       aRecord(aWritten.str().c_str());
+  const TCollection_AsciiString aPrefix("Curves 1\n1 ");
+  const int                     aPosition = aRecord.Search(aPrefix);
+  ASSERT_GE(aPosition, 1);
+  aRecord.Insert(aPosition + aPrefix.Length(), TCollection_AsciiString(512, '0'));
+
+  std::istringstream aStream(aRecord.ToCString());
+  TopoDS_Shape       aRead;
+  EXPECT_NO_THROW(BRepTools::Read(aRead, aStream, BRep_Builder()));
+  EXPECT_TRUE(aStream.fail());
+  EXPECT_TRUE(aRead.IsNull());
+}
+
+TEST(BRepToolsTest, OversizedLocationValueDoesNotAddTransform)
+{
+  TopTools_LocationSet          aLocations;
+  const TCollection_AsciiString aHeader("Locations 1\n1\n");
+  TCollection_AsciiString       aRecord(aHeader);
+  aRecord += TCollection_AsciiString(510, '0');
+  aRecord += "1 0 0 4\n0 1 0 0\n0 0 1 0\n";
+
+  std::istringstream aValid(aRecord.ToCString());
+  aLocations.Read(aValid);
+  ASSERT_FALSE(aValid.fail());
+  ASSERT_FALSE(aLocations.Location(1).IsIdentity());
+  EXPECT_DOUBLE_EQ(aLocations.Location(1).Transformation().TranslationPart().X(), 4.0);
+
+  aRecord.Insert(aHeader.Length() + 1, "0");
+  std::istringstream anOversized(aRecord.ToCString());
+  EXPECT_NO_THROW(aLocations.Read(anOversized));
+  EXPECT_TRUE(anOversized.fail());
+  EXPECT_TRUE(aLocations.Location(1).IsIdentity());
 }

@@ -622,8 +622,8 @@ static double IntersectCurves2d(const TopoDS_Vertex&                       theV,
   }
   //
   // evaluate the length of the smallest edge, so that not to return too large distance
-  double       aLen1                      = MapEdgeLength(*theEData1.Edge, theMapEdgeLen);
-  double       aLen2                      = MapEdgeLength(*theEData1.Edge, theMapEdgeLen);
+  const double aLen1                      = MapEdgeLength(*theEData1.Edge, theMapEdgeLen);
+  const double aLen2                      = MapEdgeLength(*theEData2.Edge, theMapEdgeLen);
   const double MaxEdgePartCoveredByVertex = 0.3;
   double       aMaxThresDist              = std::min(aLen1, aLen2) * MaxEdgePartCoveredByVertex;
   aMaxThresDist *= aMaxThresDist;

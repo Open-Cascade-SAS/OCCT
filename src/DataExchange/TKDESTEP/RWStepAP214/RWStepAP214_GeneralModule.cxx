@@ -21,6 +21,10 @@
 #include <Interface_EntityIterator.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
+#include <StepBasic_LengthMeasureWithUnit.hxx>
+#include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
+#include <StepDimTol_DatumReferenceModifierWithValue.hxx>
+#include <StepDimTol_RunoutZoneOrientation.hxx>
 #include "../RWStepAP203/RWStepAP203_RWCcDesignApproval.pxx"
 #include "../RWStepAP203/RWStepAP203_RWCcDesignCertification.pxx"
 #include "../RWStepAP203/RWStepAP203_RWCcDesignContract.pxx"
@@ -4510,7 +4514,12 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       tool.Share(anent, iter);
     }
     break;
-    // case 681: no shared attributes
+    case 681: {
+      const occ::handle<StepDimTol_RunoutZoneOrientation> anOrientation =
+        occ::down_cast<StepDimTol_RunoutZoneOrientation>(ent);
+      iter.AddItem(anOrientation->Angle());
+    }
+    break;
     case 682: {
       DeclareAndCast(StepDimTol_ToleranceZone, anent, ent);
       RWStepDimTol_RWToleranceZone tool;
@@ -4537,7 +4546,12 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
       tool.Share(anent, iter);
     }
     break;
-    // case 688: no shared attributes
+    case 688: {
+      const occ::handle<StepDimTol_DatumReferenceModifierWithValue> aModifier =
+        occ::down_cast<StepDimTol_DatumReferenceModifierWithValue>(ent);
+      iter.AddItem(aModifier->ModifierValue());
+    }
+    break;
     case 689: {
       DeclareAndCast(StepDimTol_DatumSystem, anent, ent);
       RWStepDimTol_RWDatumSystem tool;

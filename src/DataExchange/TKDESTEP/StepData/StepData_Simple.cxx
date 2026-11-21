@@ -110,30 +110,38 @@ StepData_FieldListN& StepData_Simple::CFields()
 void StepData_Simple::Check(occ::handle<Interface_Check>& /*ach*/) const {
 } // something? see the description
 
-void StepData_Simple::Shared(Interface_EntityIterator& list) const
+void StepData_Simple::Shared(Interface_EntityIterator& theIterator) const
 {
-  int i, nb = thefields.NbFields();
-  for (i = 1; i <= nb; i++)
+  for (int aFieldIndex = 1; aFieldIndex <= thefields.NbFields(); ++aFieldIndex)
   {
-    const StepData_Field& fi = thefields.Field(i);
-    int                   j1, j2, l1, l2;
-    l1 = l2 = 1;
-    if (fi.Arity() >= 1)
+    const StepData_Field& aField   = thefields.Field(aFieldIndex);
+    const int             anArity  = aField.Arity();
+    int                   aLower1  = 1;
+    int                   aLength1 = 1;
+    int                   aLower2  = 1;
+    int                   aLength2 = 1;
+    if (anArity == 1)
     {
-      l1 = fi.Length(1);
+      aLower1  = aField.Lower(1);
+      aLength1 = aField.Length(1);
     }
-    if (fi.Arity() > 1)
+    else if (anArity == 2)
     {
-      l2 = fi.Length(2);
+      aLower1  = aField.Lower(1);
+      aLength1 = aField.Length(1);
+      aLower2  = aField.Lower(2);
+      aLength2 = aField.Length(2);
     }
-    for (j1 = 1; j1 <= l1; j1++)
+
+    for (int anOffset1 = 0; anOffset1 < aLength1; ++anOffset1)
     {
-      for (j2 = 1; j2 <= l2; j2++)
+      for (int anOffset2 = 0; anOffset2 < aLength2; ++anOffset2)
       {
-        occ::handle<Standard_Transient> ent = fi.Entity(j1, j2);
-        if (!ent.IsNull())
+        const occ::handle<Standard_Transient> anEntity =
+          aField.Entity(aLower1 + anOffset1, aLower2 + anOffset2);
+        if (!anEntity.IsNull())
         {
-          list.AddItem(ent);
+          theIterator.AddItem(anEntity);
         }
       }
     }

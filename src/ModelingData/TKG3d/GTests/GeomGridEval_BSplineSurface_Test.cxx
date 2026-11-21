@@ -620,3 +620,26 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_RationalSurface)
     }
   }
 }
+
+TEST(GeomGridEval_BSplineSurfaceTest, CachedGridMatchesScalarAroundInteriorKnot)
+{
+  const occ::handle<Geom_BSplineSurface> aSurface = CreateMultiSpanBSplineSurface();
+  const GeomGridEval_BSplineSurface anEvaluator(aSurface);
+  NCollection_Array1<double> aParameters(1, 5);
+  aParameters(1) = 0.4;
+  aParameters(2) = std::nextafter(0.5, 0.0);
+  aParameters(3) = 0.5;
+  aParameters(4) = std::nextafter(0.5, 1.0);
+  aParameters(5) = 0.6;
+
+  const NCollection_Array2<gp_Pnt> aPoints = anEvaluator.EvaluateGrid(aParameters, aParameters);
+  for (int aUIndex = 1; aUIndex <= aParameters.Length(); ++aUIndex)
+  {
+    for (int aVIndex = 1; aVIndex <= aParameters.Length(); ++aVIndex)
+    {
+      const gp_Pnt anExpected = aSurface->EvalD0(aParameters(aUIndex), aParameters(aVIndex));
+      EXPECT_LE(aPoints(aUIndex, aVIndex).Distance(anExpected), THE_TOLERANCE)
+        << "u index " << aUIndex << ", v index " << aVIndex;
+    }
+  }
+}

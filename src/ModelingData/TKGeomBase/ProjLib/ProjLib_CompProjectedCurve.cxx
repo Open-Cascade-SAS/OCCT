@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <algorithm>
+#include <cmath>
 
 #include <Approx_CurveOnSurface.hxx>
 #include <Extrema_ExtCS.hxx>
@@ -22,9 +23,12 @@
 #include <Extrema_POnCurv.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Mat2d.hxx>
+#include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
@@ -33,6 +37,7 @@
 #include <ProjLib_HCompProjectedCurve.hxx>
 #include <ProjLib_PrjResolve.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_ConstructionError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -48,6 +53,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
 #define FuncTol 1.e-10
 
@@ -135,6 +141,83 @@ inline bool Comparator(const double theA, const double theB)
 
 //=================================================================================================
 
+namespace
+{
+//==================================================================================================
+
+bool projectionDerivative(const gp_Vec& theCurveD1,
+                          const gp_Vec& theSurfaceU,
+                          const gp_Vec& theSurfaceV,
+                          const gp_Vec& theSurfaceUU,
+                          const gp_Vec& theSurfaceVV,
+                          const gp_Vec& theSurfaceUV,
+                          const gp_Vec& theOffset,
+                          double&       theDet,
+                          gp_Vec2d&     theD1)
+{
+  const gp_Vec aNormal = theSurfaceU.Crossed(theSurfaceV);
+  const double aUU     = theOffset.Dot(theSurfaceUU);
+  const double aVV     = theOffset.Dot(theSurfaceVV);
+  const double aUV     = theOffset.Dot(theSurfaceUV);
+  // Expand the Gram determinant to retain a small surface normal.
+  theDet = aNormal.SquareMagnitude() + theSurfaceU.SquareMagnitude() * aVV
+           + theSurfaceV.SquareMagnitude() * aUU - 2.0 * theSurfaceU.Dot(theSurfaceV) * aUV
+           + aUU * aVV - aUV * aUV;
+  if (std::abs(theDet) < gp::Resolution())
+  {
+    return false;
+  }
+  const double aCurveU = theCurveD1.Dot(theSurfaceU);
+  const double aCurveV = theCurveD1.Dot(theSurfaceV);
+  const double aDu = theCurveD1.Crossed(theSurfaceV).Dot(aNormal) + aVV * aCurveU - aUV * aCurveV;
+  const double aDv = theSurfaceU.Crossed(theCurveD1).Dot(aNormal) + aUU * aCurveV - aUV * aCurveU;
+  theD1            = gp_Vec2d(aDu / theDet, aDv / theDet);
+  return true;
+}
+
+//==================================================================================================
+
+bool projectionSecondDerivative(const Geom_Surface::ResD3& theSurface,
+                                const Geom_Curve::ResD2&   theCurve,
+                                gp_Vec2d&                  theD1,
+                                gp_Vec2d&                  theD2)
+{
+  const auto& [S, Su, Sv, Suu, Svv, Suv, Suuu, Svvv, Suuv, Suvv] = theSurface;
+  const auto& [C, C1, C2]                                        = theCurve;
+  const gp_Vec anOffset(C, S);
+  double       aDet;
+  if (!projectionDerivative(C1, Su, Sv, Suu, Svv, Suv, anOffset, aDet, theD1))
+  {
+    return false;
+  }
+
+  const gp_XY    aDu(Su * Su + anOffset * Suu, Su * Sv + anOffset * Suv);
+  const gp_XY    aDv(Sv * Su + anOffset * Suv, Sv * Sv + anOffset * Svv);
+  const gp_Mat2d anInverse(gp_XY(aDv.Y() / aDet, -aDu.Y() / aDet),
+                           gp_XY(-aDv.X() / aDet, aDu.X() / aDet));
+
+  // Differentiate the closest-point equations twice along the curve.
+  const gp_Vec2d aCurveTerm(-C2 * Su, -C2 * Sv);
+  const gp_Vec2d aMixedU(-C1 * Suu, -C1 * Suv);
+  const gp_Vec2d aMixedV(-C1 * Suv, -C1 * Svv);
+  const gp_Vec2d aMixedTerm = 2 * gp_Vec2d(aMixedU * theD1, aMixedV * theD1);
+
+  // The mixed surface derivatives are shared by both equations.
+  const double   aUUV = 2 * Su * Suv + Sv * Suu + anOffset * Suuv;
+  const double   aUVV = Svv * Su + 2 * Sv * Suv + anOffset * Suvv;
+  const gp_Vec2d aRowUU(3 * Su * Suu + anOffset * Suuu, aUUV);
+  const gp_Vec2d aRowUV(aUUV, aUVV);
+  const gp_Vec2d aRowVV(aUVV, 3 * Sv * Svv + anOffset * Svvv);
+  const gp_Vec2d aSurfaceTerm(theD1 * gp_Vec2d(aRowUU * theD1, aRowUV * theD1),
+                              theD1 * gp_Vec2d(aRowUV * theD1, aRowVV * theD1));
+  const gp_Vec2d aSum = aCurveTerm + aMixedTerm + aSurfaceTerm;
+  theD2 = -gp_Vec2d(gp_Vec2d(anInverse.Row(1)) * aSum, gp_Vec2d(anInverse.Row(2)) * aSum);
+  return true;
+}
+} // namespace
+
+//==================================================================================================
+
 static void d1(const double                          t,
                const double                          u,
                const double                          v,
@@ -142,95 +225,41 @@ static void d1(const double                          t,
                const occ::handle<Adaptor3d_Curve>&   Curve,
                const occ::handle<Adaptor3d_Surface>& Surface)
 {
-  gp_Pnt S, C;
-  gp_Vec DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, DC1_t;
-  Surface->D2(u, v, S, DS1_u, DS1_v, DS2_u, DS2_v, DS2_uv);
-  Curve->D1(t, C, DC1_t);
-  gp_Vec Ort(C, S); // Ort = S - C
-
-  gp_Vec2d dE_dt(-DC1_t * DS1_u, -DC1_t * DS1_v);
-  gp_XY    dE_du(DS1_u * DS1_u + Ort * DS2_u, DS1_u * DS1_v + Ort * DS2_uv);
-  gp_XY    dE_dv(DS1_v * DS1_u + Ort * DS2_uv, DS1_v * DS1_v + Ort * DS2_v);
-
-  double det = dE_du.X() * dE_dv.Y() - dE_du.Y() * dE_dv.X();
-  if (fabs(det) < gp::Resolution())
+  const Geom_Surface::ResD2 aSurface = Surface->EvalD2(u, v);
+  const Geom_Curve::ResD1   aCurve   = Curve->EvalD1(t);
+  const gp_Vec              anOffset(aCurve.Point, aSurface.Point);
+  double                    aDet;
+  if (!projectionDerivative(aCurve.D1,
+                            aSurface.D1U,
+                            aSurface.D1V,
+                            aSurface.D2U,
+                            aSurface.D2V,
+                            aSurface.D2UV,
+                            anOffset,
+                            aDet,
+                            V))
   {
     throw Standard_ConstructionError();
   }
-
-  gp_Mat2d M(gp_XY(dE_dv.Y() / det, -dE_du.Y() / det), gp_XY(-dE_dv.X() / det, dE_du.X() / det));
-
-  V = -gp_Vec2d(gp_Vec2d(M.Row(1)) * dE_dt, gp_Vec2d(M.Row(2)) * dE_dt);
 }
 
 //=================================================================================================
 
-static void d2(const double                          t,
-               const double                          u,
-               const double                          v,
-               gp_Vec2d&                             V1,
-               gp_Vec2d&                             V2,
+static void d2(const double                         t,
+               const double                         u,
+               const double                         v,
+               gp_Vec2d&                            V1,
+               gp_Vec2d&                            V2,
                const occ::handle<Adaptor3d_Curve>&   Curve,
                const occ::handle<Adaptor3d_Surface>& Surface)
 {
-  gp_Pnt S, C;
-  gp_Vec DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, DS3_u, DS3_v, DS3_uuv, DS3_uvv, DC1_t, DC2_t;
-  Surface->D3(u, v, S, DS1_u, DS1_v, DS2_u, DS2_v, DS2_uv, DS3_u, DS3_v, DS3_uuv, DS3_uvv);
-  Curve->D2(t, C, DC1_t, DC2_t);
-  gp_Vec Ort(C, S);
-
-  gp_Vec2d dE_dt(-DC1_t * DS1_u, -DC1_t * DS1_v);
-  gp_XY    dE_du(DS1_u * DS1_u + Ort * DS2_u, DS1_u * DS1_v + Ort * DS2_uv);
-  gp_XY    dE_dv(DS1_v * DS1_u + Ort * DS2_uv, DS1_v * DS1_v + Ort * DS2_v);
-
-  double det = dE_du.X() * dE_dv.Y() - dE_du.Y() * dE_dv.X();
-  if (fabs(det) < gp::Resolution())
+  if (!projectionSecondDerivative(Surface->EvalD3(u, v), Curve->EvalD2(t), V1, V2))
   {
     throw Standard_ConstructionError();
   }
-
-  gp_Mat2d M(gp_XY(dE_dv.Y() / det, -dE_du.Y() / det), gp_XY(-dE_dv.X() / det, dE_du.X() / det));
-
-  // First derivative
-  V1 = -gp_Vec2d(gp_Vec2d(M.Row(1)) * dE_dt, gp_Vec2d(M.Row(2)) * dE_dt);
-
-  /* Second derivative */
-
-  // Computation of d2E_dt2 = S1
-  gp_Vec2d d2E_dt(-DC2_t * DS1_u, -DC2_t * DS1_v);
-
-  // Computation of 2*(d2E/dtdX)(dX/dt) = S2
-  gp_Vec2d d2E1_dtdX(-DC1_t * DS2_u, -DC1_t * DS2_uv);
-  gp_Vec2d d2E2_dtdX(-DC1_t * DS2_uv, -DC1_t * DS2_v);
-  gp_Vec2d S2 = 2 * gp_Vec2d(d2E1_dtdX * V1, d2E2_dtdX * V1);
-
-  // Computation of (d2E/dX2)*(dX/dt)2 = S3
-
-  // Row11 = (d2E1/du2, d2E1/dudv)
-  double   tmp;
-  gp_Vec2d Row11(3 * DS1_u * DS2_u + Ort * DS3_u,
-                 tmp = 2 * DS1_u * DS2_uv + DS1_v * DS2_u + Ort * DS3_uuv);
-
-  // Row12 = (d2E1/dudv, d2E1/dv2)
-  gp_Vec2d Row12(tmp, DS2_v * DS1_u + 2 * DS1_v * DS2_uv + Ort * DS3_uvv);
-
-  // Row21 = (d2E2/du2, d2E2/dudv)
-  gp_Vec2d Row21(DS2_u * DS1_v + 2 * DS1_u * DS2_uv + Ort * DS3_uuv,
-                 tmp = 2 * DS2_uv * DS1_v + DS1_u * DS2_v + Ort * DS3_uvv);
-
-  // Row22 = (d2E2/duv, d2E2/dvdv)
-  gp_Vec2d Row22(tmp, 3 * DS1_v * DS2_v + Ort * DS3_v);
-
-  gp_Vec2d S3(V1 * gp_Vec2d(Row11 * V1, Row12 * V1), V1 * gp_Vec2d(Row21 * V1, Row22 * V1));
-
-  gp_Vec2d Sum = d2E_dt + S2 + S3;
-
-  V2 = -gp_Vec2d(gp_Vec2d(M.Row(1)) * Sum, gp_Vec2d(M.Row(2)) * Sum);
 }
 
-//=================================================================================================
-
-//=================================================================================================
+//==================================================================================================
 
 static void d2CurvOnSurf(const double                          t,
                          const double                          u,
@@ -240,61 +269,18 @@ static void d2CurvOnSurf(const double                          t,
                          const occ::handle<Adaptor3d_Curve>&   Curve,
                          const occ::handle<Adaptor3d_Surface>& Surface)
 {
-  gp_Pnt   S, C;
-  gp_Vec2d V12d, V22d;
-  gp_Vec   DS1_u, DS1_v, DS2_u, DS2_uv, DS2_v, DS3_u, DS3_v, DS3_uuv, DS3_uvv, DC1_t, DC2_t;
-  Surface->D3(u, v, S, DS1_u, DS1_v, DS2_u, DS2_v, DS2_uv, DS3_u, DS3_v, DS3_uuv, DS3_uvv);
-  Curve->D2(t, C, DC1_t, DC2_t);
-  gp_Vec Ort(C, S);
-
-  gp_Vec2d dE_dt(-DC1_t * DS1_u, -DC1_t * DS1_v);
-  gp_XY    dE_du(DS1_u * DS1_u + Ort * DS2_u, DS1_u * DS1_v + Ort * DS2_uv);
-  gp_XY    dE_dv(DS1_v * DS1_u + Ort * DS2_uv, DS1_v * DS1_v + Ort * DS2_v);
-
-  double det = dE_du.X() * dE_dv.Y() - dE_du.Y() * dE_dv.X();
-  if (fabs(det) < gp::Resolution())
+  const Geom_Surface::ResD3 aSurface = Surface->EvalD3(u, v);
+  const Geom_Curve::ResD2   aCurve   = Curve->EvalD2(t);
+  gp_Vec2d                  V12d, V22d;
+  if (!projectionSecondDerivative(aSurface, aCurve, V12d, V22d))
   {
     throw Standard_ConstructionError();
   }
-
-  gp_Mat2d M(gp_XY(dE_dv.Y() / det, -dE_du.Y() / det), gp_XY(-dE_dv.X() / det, dE_du.X() / det));
-
-  // First derivative
-  V12d = -gp_Vec2d(gp_Vec2d(M.Row(1)) * dE_dt, gp_Vec2d(M.Row(2)) * dE_dt);
-
-  /* Second derivative */
-
-  // Computation of d2E_dt2 = S1
-  gp_Vec2d d2E_dt(-DC2_t * DS1_u, -DC2_t * DS1_v);
-
-  // Computation of 2*(d2E/dtdX)(dX/dt) = S2
-  gp_Vec2d d2E1_dtdX(-DC1_t * DS2_u, -DC1_t * DS2_uv);
-  gp_Vec2d d2E2_dtdX(-DC1_t * DS2_uv, -DC1_t * DS2_v);
-  gp_Vec2d S2 = 2 * gp_Vec2d(d2E1_dtdX * V12d, d2E2_dtdX * V12d);
-
-  // Computation of (d2E/dX2)*(dX/dt)2 = S3
-
-  // Row11 = (d2E1/du2, d2E1/dudv)
-  double   tmp;
-  gp_Vec2d Row11(3 * DS1_u * DS2_u + Ort * DS3_u,
-                 tmp = 2 * DS1_u * DS2_uv + DS1_v * DS2_u + Ort * DS3_uuv);
-
-  // Row12 = (d2E1/dudv, d2E1/dv2)
-  gp_Vec2d Row12(tmp, DS2_v * DS1_u + 2 * DS1_v * DS2_uv + Ort * DS3_uvv);
-
-  // Row21 = (d2E2/du2, d2E2/dudv)
-  gp_Vec2d Row21(DS2_u * DS1_v + 2 * DS1_u * DS2_uv + Ort * DS3_uuv,
-                 tmp = 2 * DS2_uv * DS1_v + DS1_u * DS2_v + Ort * DS3_uvv);
-
-  // Row22 = (d2E2/duv, d2E2/dvdv)
-  gp_Vec2d Row22(tmp, 3 * DS1_v * DS2_v + Ort * DS3_v);
-
-  gp_Vec2d S3(V12d * gp_Vec2d(Row11 * V12d, Row12 * V12d),
-              V12d * gp_Vec2d(Row21 * V12d, Row22 * V12d));
-
-  gp_Vec2d Sum = d2E_dt + S2 + S3;
-
-  V22d = -gp_Vec2d(gp_Vec2d(M.Row(1)) * Sum, gp_Vec2d(M.Row(2)) * Sum);
+  const gp_Vec& DS1_u  = aSurface.D1U;
+  const gp_Vec& DS1_v  = aSurface.D1V;
+  const gp_Vec& DS2_u  = aSurface.D2U;
+  const gp_Vec& DS2_v  = aSurface.D2V;
+  const gp_Vec& DS2_uv = aSurface.D2UV;
 
   V1 = DS1_u * V12d.X() + DS1_v * V12d.Y();
   V2 = DS2_u * V12d.X() * V12d.X() + DS1_u * V22d.X() + 2 * DS2_uv * V12d.X() * V12d.Y()
@@ -1887,8 +1873,33 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
     }
   }
 
+  const auto aSortedUniqueCrossings =
+    [](NCollection_LinearVector<double>& theCrossings) -> occ::handle<NCollection_HArray1<double>> {
+    if (theCrossings.IsEmpty())
+    {
+      return nullptr;
+    }
+
+    // Surface knots are visited in surface order, which can reverse the curve order.
+    std::sort(theCrossings.begin(), theCrossings.end());
+    size_t aCount = 1;
+    for (size_t anIndex = 1; anIndex < theCrossings.Size(); ++anIndex)
+    {
+      const double aParameter = theCrossings[anIndex];
+      if (aParameter - theCrossings[aCount - 1] >= Precision::PConfusion())
+      {
+        theCrossings[aCount++] = aParameter;
+      }
+    }
+
+    const occ::handle<NCollection_HArray1<double>> aResult = new NCollection_HArray1<double>();
+    aResult->ChangeArray1().Resize(aCount, false);
+    std::copy_n(theCrossings.begin(), aCount, aResult->ChangeArray1().begin());
+    return aResult;
+  };
+
   // processing U-surface discontinuities
-  NCollection_Sequence<double> TUdisc;
+  NCollection_LinearVector<double> aCrossings;
 
   for (k = 2; k <= NbIntSurU; k++)
   {
@@ -1902,11 +1913,11 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 
         if (std::abs(Ul - CutPntsU(k)) <= myTolU)
         {
-          TUdisc.Append(mySequence->Value(i)->Value(j).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j).X());
         }
         else if (std::abs(Ur - CutPntsU(k)) <= myTolU)
         {
-          TUdisc.Append(mySequence->Value(i)->Value(j + 1).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j + 1).X());
         }
         else if ((Ul < CutPntsU(k) && CutPntsU(k) < Ur) || (Ur < CutPntsU(k) && CutPntsU(k) < Ul))
         {
@@ -1940,31 +1951,16 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           //
           if (Solver.IsDone())
           {
-            TUdisc.Append(Solver.Solution().X());
+            aCrossings.Append(Solver.Solution().X());
           }
         }
       }
     }
   }
-  for (i = 2; i <= TUdisc.Length(); i++)
-  {
-    if (TUdisc(i) - TUdisc(i - 1) < Precision::PConfusion())
-    {
-      TUdisc.Remove(i--);
-    }
-  }
+  UArr = aSortedUniqueCrossings(aCrossings);
+  aCrossings.Clear(false);
 
-  if (TUdisc.Length())
-  {
-    UArr = new NCollection_HArray1<double>(1, TUdisc.Length());
-    for (i = 1; i <= UArr->Length(); i++)
-    {
-      UArr->ChangeValue(i) = TUdisc(i);
-    }
-  }
   // processing V-surface discontinuities
-  NCollection_Sequence<double> TVdisc;
-
   for (k = 2; k <= NbIntSurV; k++)
   {
     for (i = 1; i <= myNbCurves; i++)
@@ -1978,11 +1974,11 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
 
         if (std::abs(Vl - CutPntsV(k)) <= myTolV)
         {
-          TVdisc.Append(mySequence->Value(i)->Value(j).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j).X());
         }
         else if (std::abs(Vr - CutPntsV(k)) <= myTolV)
         {
-          TVdisc.Append(mySequence->Value(i)->Value(j + 1).X());
+          aCrossings.Append(mySequence->Value(i)->Value(j + 1).X());
         }
         else if ((Vl < CutPntsV(k) && CutPntsV(k) < Vr) || (Vr < CutPntsV(k) && CutPntsV(k) < Vl))
         {
@@ -2016,29 +2012,14 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
           //
           if (Solver.IsDone())
           {
-            TVdisc.Append(Solver.Solution().X());
+            aCrossings.Append(Solver.Solution().X());
           }
         }
       }
     }
   }
 
-  for (i = 2; i <= TVdisc.Length(); i++)
-  {
-    if (TVdisc(i) - TVdisc(i - 1) < Precision::PConfusion())
-    {
-      TVdisc.Remove(i--);
-    }
-  }
-
-  if (TVdisc.Length())
-  {
-    VArr = new NCollection_HArray1<double>(1, TVdisc.Length());
-    for (i = 1; i <= VArr->Length(); i++)
-    {
-      VArr->ChangeValue(i) = TVdisc(i);
-    }
-  }
+  VArr = aSortedUniqueCrossings(aCrossings);
 
   // fusion
   NCollection_Sequence<double> Fusion;

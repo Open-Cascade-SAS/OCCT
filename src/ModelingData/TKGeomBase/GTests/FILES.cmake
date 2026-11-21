@@ -8,6 +8,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   AdvApp2Var_Network_Test.cxx
   AdvApp2Var_Node_Test.cxx
   AppCont_ContMatrices_Test.cxx
+  Approx_FitAndDivide_Test.cxx
   BndLib_Test.cxx
   GeomBndLib_Curve_Test.cxx
   GeomBndLib_Curve2d_Test.cxx
@@ -40,6 +41,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   Geom2dConvert_CompCurveToBSplineCurve_Test.cxx
   GeomConvert_Test.cxx
+  GeomTools_RealRead_Test.cxx
+  GeomTools_Test.cxx
   GeomLib_CheckCurveOnSurface_Test.cxx
   GProp_PEquation_Test.cxx
   GProp_PGProps_Test.cxx
@@ -47,6 +50,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   IntAna_IntQuadQuad_Test.cxx
   ProjLib_Cone_Test.cxx
   ProjLib_ComputeApproxOnPolarSurface_Test.cxx
+  ProjLib_CompProjectedCurve_Test.cxx
+  ProjLib_ProjectionDerivative_Test.cxx
   gce_MakeCone_Test.cxx
   gce_MakeCirc2d_Test.cxx
   gce_MakeCylinder_Test.cxx
@@ -55,4 +60,9 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomLProp_CLProps2d_Test.cxx
   GeomLProp_CurAndInf2d_Test.cxx
   LProp_CurAndInf_Test.cxx
+  GCPnts_TangentialDeflection_Test.cxx
+  Extrema_ExtCS_Test.cxx
+  Extrema_ExtSS_Test.cxx
+  AppDef_LeastSquare_Test.cxx
+  GeomConvert_ApproxSurface_Test.cxx
 )

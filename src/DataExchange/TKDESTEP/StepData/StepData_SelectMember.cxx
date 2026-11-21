@@ -129,18 +129,7 @@ StepData_Logical StepData_SelectMember::Logical() const
 void StepData_SelectMember::SetLogical(const StepData_Logical val)
 {
   SetKind(KindLogical);
-  if (val == StepData_LFalse)
-  {
-    SetInt(0);
-  }
-  if (val == StepData_LTrue)
-  {
-    SetInt(0);
-  }
-  if (val == StepData_LUnknown)
-  {
-    SetInt(0);
-  }
+  SetInt(static_cast<int>(val));
 }
 
 double StepData_SelectMember::Real() const

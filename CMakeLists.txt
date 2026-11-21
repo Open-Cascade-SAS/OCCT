@@ -116,10 +116,6 @@ if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
     set (BUILD_SHARED_LIBRARY_NAME_POSTFIX "" CACHE STRING "${BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR}" FORCE)
   endif()
 else()
-  message(AUTHOR_WARNING "OCCT is licensed under LGPL 2.1, which has limitations on "
-                         "static linking with proprietary software. "
-                         "OCCT3D offers commercial licensing exceptions to LGPL 2.1. "
-                         "Please use our contact form at https://occt3d.com/")
   unset (BUILD_SHARED_LIBS)
   unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
   if (BUILD_OPT_PROFILE STREQUAL "Production")
@@ -831,6 +827,8 @@ if (BUILD_USE_VCPKG)
   project (OCCT)
 endif()
 
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/OpenCASCADELicense")
+
 if (APPLE)
   # set Apple specific variables
   occt_set_apple_csf_vars()
@@ -1426,8 +1424,8 @@ foreach (OCCT_CONFIGURATION ${CMAKE_CONFIGURATION_TYPES})
   configure_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADECompileDefinitionsAndFlags.cmake.in" "OpenCASCADECompileDefinitionsAndFlags-${OCCT_CONFIGURATION_LOWER}.cmake" @ONLY)
 endforeach()
 # install OpenCASCADE config file with compile definitions and C/C++ flags ONLY for current configuration
-install (CODE "string (TOLOWER \"\${CMAKE_INSTALL_CONFIG_NAME}\" CMAKE_INSTALL_CONFIG_NAME_LOWER)")
-install (CODE "file(INSTALL FILES \"${CMAKE_BINARY_DIR}/OpenCASCADECompileDefinitionsAndFlags-\${CMAKE_INSTALL_CONFIG_NAME_LOWER}.cmake\" DESTINATION \"${INSTALL_DIR}/${INSTALL_DIR_CMAKE}/\" TYPE FILE)")
+install (FILES "${CMAKE_BINARY_DIR}/OpenCASCADECompileDefinitionsAndFlags-$<LOWER_CASE:$<CONFIG>>.cmake"
+         DESTINATION "${INSTALL_DIR_CMAKE}")
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   if (BUILD_MODULE_${OCCT_MODULE})
@@ -1441,6 +1439,7 @@ foreach (OCCT_MODULE ${OCCT_MODULES})
   endif()
 endforeach()
 set (OCCT_MODULES_ENABLED ${OCCT_MODULES_ENABLED_SORTED})
+OCCT_COLLECT_MODULE_DEPENDENCIES (SET_OpenCASCADE_MODULE_DEPENDENCIES)
 
 # Add all targets to the build-tree export set
 export (TARGETS ${OCCT_LIBRARIES} FILE "${CMAKE_BINARY_DIR}/OpenCASCADETargets.cmake")
@@ -1466,12 +1465,20 @@ if (APPLE)
   set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_XLIB})")
 endif()
 
-# Configure and install cmake config file
+# Keep the build-tree configuration separate from the relocatable installed package.
+set (OCCT_CONFIG_INSTALL_TREE FALSE)
 configure_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADEConfig.cmake.in" "OpenCASCADEConfig.cmake" @ONLY)
-install(FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfig.cmake" DESTINATION  "${INSTALL_DIR_CMAKE}")
+
+include(CMakePackageConfigHelpers)
+set (OCCT_CONFIG_INSTALL_TREE TRUE)
+configure_package_config_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADEConfig.cmake.in"
+  "${CMAKE_BINARY_DIR}/cmake_install/OpenCASCADEConfig.cmake"
+  INSTALL_DESTINATION "${INSTALL_DIR_CMAKE}"
+  PATH_VARS INSTALL_DIR_BIN INSTALL_DIR_LIB INSTALL_DIR_SCRIPT INSTALL_DIR_INCLUDE INSTALL_DIR_RESOURCE
+  NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+install (FILES "${CMAKE_BINARY_DIR}/cmake_install/OpenCASCADEConfig.cmake" DESTINATION "${INSTALL_DIR_CMAKE}")
 
 # Configure cmake version file
-include(CMakePackageConfigHelpers)
 write_basic_package_version_file( ${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.cmake
                                   VERSION ${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}
                                   COMPATIBILITY ExactVersion )

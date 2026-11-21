@@ -5,46 +5,41 @@
 # This file is configured by OpenCASCADE.
 #
 
-if(OpenCASCADE_ALREADY_INCLUDED)
-  return()
-endif()
-set(OpenCASCADE_ALREADY_INCLUDED 1)
-
 # The OpenCASCADE version number
 set (OpenCASCADE_MAJOR_VERSION       "@OCC_VERSION_MAJOR@")
 set (OpenCASCADE_MINOR_VERSION       "@OCC_VERSION_MINOR@")
 set (OpenCASCADE_MAINTENANCE_VERSION "@OCC_VERSION_MAINTENANCE@")
 set (OpenCASCADE_DEVELOPMENT_VERSION "@OCC_VERSION_DEVELOPMENT@")
 
-# Compute the installation prefix from this OpenCASCADEConfig.cmake file 
-# location, by going up one level + one level if "cmake" + one level if "lib" + one level if "share".
-# This is made to support different locations of CMake files:
-# - in UNIX style: $INSTALL_DIR/lib/cmake/@OCCT_PROJECT_NAME@-<version>
-# - in Windows style: $INSTALL_DIR/cmake
-# - in vcpkg style: $INSTALL_DIR/share/@OCCT_PROJECT_NAME@
-# - in Android style: $INSTALL_DIR/libs/$CMAKE_ANDROID_ARCH_ABI/cmake/@OCCT_PROJECT_NAME@-<version>
-get_filename_component (OpenCASCADE_INSTALL_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
-get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
-if (OpenCASCADE_INSTALL_PREFIX MATCHES "/cmake$")
-  get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
+if (@OCCT_CONFIG_INSTALL_TREE@)
+  @PACKAGE_INIT@
+  set (OpenCASCADE_INSTALL_PREFIX "${PACKAGE_PREFIX_DIR}")
+  set (OpenCASCADE_BINARY_DIR   "@PACKAGE_INSTALL_DIR_BIN@")
+  set (OpenCASCADE_LIBRARY_DIR  "@PACKAGE_INSTALL_DIR_LIB@")
+  set (OpenCASCADE_SCRIPT_DIR   "@PACKAGE_INSTALL_DIR_SCRIPT@")
+  set (OpenCASCADE_INCLUDE_DIR  "@PACKAGE_INSTALL_DIR_INCLUDE@")
+  set (OpenCASCADE_RESOURCE_DIR "@PACKAGE_INSTALL_DIR_RESOURCE@")
+else()
+  set (OpenCASCADE_INSTALL_PREFIX "@CMAKE_BINARY_DIR@")
+  set (OpenCASCADE_SCRIPT_DIR "@CMAKE_BINARY_DIR@")
+  set (OpenCASCADE_INCLUDE_DIR "@OCCT_BINARY_DIR@/@INSTALL_DIR_INCLUDE@")
+  set (OpenCASCADE_RESOURCE_DIR "@OCCT_ROOT_DIR@/resources")
+  string (TOUPPER "${CMAKE_BUILD_TYPE}" _occt_build_config)
+  if (@SINGLE_GENERATOR@)
+    set (OpenCASCADE_BINARY_DIR  "@CMAKE_RUNTIME_OUTPUT_DIRECTORY@")
+    set (OpenCASCADE_LIBRARY_DIR "@CMAKE_ARCHIVE_OUTPUT_DIRECTORY@")
+  elseif (_occt_build_config STREQUAL "DEBUG")
+    set (OpenCASCADE_BINARY_DIR  "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG@")
+    set (OpenCASCADE_LIBRARY_DIR "@CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG@")
+  elseif (_occt_build_config STREQUAL "RELWITHDEBINFO")
+    set (OpenCASCADE_BINARY_DIR  "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO@")
+    set (OpenCASCADE_LIBRARY_DIR "@CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO@")
+  else()
+    # Multi-config consumers select configuration-specific paths from imported targets.
+    set (OpenCASCADE_BINARY_DIR  "@CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@")
+    set (OpenCASCADE_LIBRARY_DIR "@CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE@")
+  endif()
 endif()
-if (OpenCASCADE_INSTALL_PREFIX MATCHES "/lib(32|64)?$")
-  get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
-endif()
-if (OpenCASCADE_INSTALL_PREFIX MATCHES "/share$")
-  get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
-endif()
-if (OpenCASCADE_INSTALL_PREFIX MATCHES "/libs/${CMAKE_ANDROID_ARCH_ABI}$")
-  get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
-  get_filename_component (OpenCASCADE_INSTALL_PREFIX "${OpenCASCADE_INSTALL_PREFIX}" PATH)
-endif()
-
-# Set OpenCASCADE paths to headers, binaries, libraries, resources, tests, samples, data
-set (OpenCASCADE_BINARY_DIR   "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_BIN@")
-set (OpenCASCADE_LIBRARY_DIR  "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_LIB@")
-set (OpenCASCADE_SCRIPT_DIR   "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_SCRIPT@")
-set (OpenCASCADE_INCLUDE_DIR  "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_INCLUDE@")
-set (OpenCASCADE_RESOURCE_DIR "${OpenCASCADE_INSTALL_PREFIX}/@INSTALL_DIR_RESOURCE@")
 
 # The C and C++ flags added by OpenCASCADE to the cmake-configured flags.
 set (OpenCASCADE_C_FLAGS      "@CMAKE_C_FLAGS@")
@@ -74,25 +69,51 @@ set (OpenCASCADE_WITH_GLES2     @USE_GLES2@)
 @SET_OpenCASCADE_WITH_D3D@
 @SET_OpenCASCADE_WITH_GLX@
 
-# Import OpenCASCADE compile definitions, C and C++ flags for each installed configuration.
-file(GLOB CONFIG_FILES "${CMAKE_CURRENT_LIST_DIR}/OpenCASCADECompileDefinitionsAndFlags-*.cmake")
-foreach(f ${CONFIG_FILES})
-  include(${f})
-endforeach()
-
-if (NOT OpenCASCADE_FIND_COMPONENTS)
-  set (OpenCASCADE_FIND_COMPONENTS ${OpenCASCADE_MODULES})
-endif ()
-
-# Import OpenCASCADE targets.
-foreach(_comp ${OpenCASCADE_FIND_COMPONENTS})
-  if (NOT ";${OpenCASCADE_MODULES};" MATCHES "${_comp}")
-    set(OpenCASCADE_FOUND False)
-    set(OpenCASCADE_NOTFOUND_MESSAGE "Specified unsupported component: ${_comp}")
-    if (NOT OpenCASCADE_FIND_QUIETLY)
-      message (ERROR ": ${OpenCASCADE_NOTFOUND_MESSAGE}")
+# Validate each request before importing targets or applying build flags.
+set (OpenCASCADE_FOUND TRUE)
+unset (OpenCASCADE_NOTFOUND_MESSAGE)
+set (_occt_requested_modules)
+if (OpenCASCADE_FIND_COMPONENTS)
+  foreach (_occt_component IN LISTS OpenCASCADE_FIND_COMPONENTS)
+    list (FIND OpenCASCADE_MODULES "${_occt_component}" _occt_component_index)
+    if (_occt_component_index EQUAL -1)
+      set (OpenCASCADE_${_occt_component}_FOUND FALSE)
+      if (OpenCASCADE_FIND_REQUIRED_${_occt_component})
+        set (OpenCASCADE_FOUND FALSE)
+        string (APPEND OpenCASCADE_NOTFOUND_MESSAGE "Unsupported required component: ${_occt_component}. ")
+      endif()
+    else()
+      set (OpenCASCADE_${_occt_component}_FOUND TRUE)
+      list (APPEND _occt_requested_modules "${_occt_component}")
     endif()
-  else()
-    include("${CMAKE_CURRENT_LIST_DIR}/OpenCASCADE${_comp}Targets.cmake")
-  endif()
-endforeach()
+  endforeach()
+else()
+  set (_occt_requested_modules ${OpenCASCADE_MODULES})
+endif()
+if (NOT OpenCASCADE_FOUND)
+  return()
+endif()
+
+if (NOT OpenCASCADE_ALREADY_INCLUDED)
+  set (OpenCASCADE_ALREADY_INCLUDED 1)
+  file (GLOB _occt_config_files "${CMAKE_CURRENT_LIST_DIR}/OpenCASCADECompileDefinitionsAndFlags-*.cmake")
+  foreach (_occt_file IN LISTS _occt_config_files)
+    include ("${_occt_file}")
+  endforeach()
+endif()
+
+if (@OCCT_CONFIG_INSTALL_TREE@)
+@SET_OpenCASCADE_MODULE_DEPENDENCIES@
+  set (_occt_import_modules ${_occt_requested_modules})
+  foreach (_occt_module IN LISTS _occt_requested_modules)
+    list (APPEND _occt_import_modules ${_occt_dependencies_${_occt_module}})
+  endforeach()
+  foreach (_occt_module IN LISTS OpenCASCADE_MODULES)
+    list (FIND _occt_import_modules "${_occt_module}" _occt_module_index)
+    if (NOT _occt_module_index EQUAL -1)
+      include ("${CMAKE_CURRENT_LIST_DIR}/OpenCASCADE${_occt_module}Targets.cmake")
+    endif()
+  endforeach()
+elseif (_occt_requested_modules)
+  include ("${CMAKE_CURRENT_LIST_DIR}/OpenCASCADETargets.cmake")
+endif()

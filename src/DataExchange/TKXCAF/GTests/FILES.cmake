@@ -3,4 +3,5 @@ set(OCCT_TKXCAF_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKXCAF_GTests_FILES
   XCAFDoc_Test.cxx
+  XCAFDoc_Datum_Test.cxx
 )

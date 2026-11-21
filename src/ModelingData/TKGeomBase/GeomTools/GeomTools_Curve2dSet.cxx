@@ -647,6 +647,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Pnt2d& P)
   double X = 0., Y = 0.;
   GeomTools::GetReal(IS, X);
   GeomTools::GetReal(IS, Y);
+  if (IS.fail())
+  {
+    return IS;
+  }
   P.SetCoord(X, Y);
   return IS;
 }
@@ -658,6 +662,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Dir2d& D)
   double X = 0., Y = 0.;
   GeomTools::GetReal(IS, X);
   GeomTools::GetReal(IS, Y);
+  if (IS.fail())
+  {
+    return IS;
+  }
   D.SetCoord(X, Y);
   return IS;
 }
@@ -682,6 +690,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Cir
   double   R = 0.;
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R);
+  if (IS.fail())
+  {
+    return IS;
+  }
   C = new Geom2d_Circle(gp_Ax22d(P, AX, AY), R);
   return IS;
 }
@@ -696,6 +708,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Ell
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R1);
   GeomTools::GetReal(IS, R2);
+  if (IS.fail())
+  {
+    return IS;
+  }
   E = new Geom2d_Ellipse(gp_Ax22d(P, AX, AY), R1, R2);
   return IS;
 }
@@ -709,6 +725,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Par
   double   R1 = 0.;
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R1);
+  if (IS.fail())
+  {
+    return IS;
+  }
   C = new Geom2d_Parabola(gp_Ax22d(P, AX, AY), R1);
   return IS;
 }
@@ -723,6 +743,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Hyp
   IS >> P >> AX >> AY;
   GeomTools::GetReal(IS, R1);
   GeomTools::GetReal(IS, R2);
+  if (IS.fail())
+  {
+    return IS;
+  }
   H = new Geom2d_Hyperbola(gp_Ax22d(P, AX, AY), R1, R2);
   return IS;
 }
@@ -747,6 +771,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Bez
     if (rational)
     {
       GeomTools::GetReal(IS, weights(i));
+    }
+    if (IS.fail())
+    {
+      return IS;
     }
   }
 
@@ -783,6 +811,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
     {
       GeomTools::GetReal(IS, weights(i));
     }
+    if (IS.fail())
+    {
+      return IS;
+    }
   }
 
   NCollection_Array1<double> knots(1, nbknots);
@@ -792,6 +824,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_BSp
   {
     GeomTools::GetReal(IS, knots(i));
     IS >> mults(i);
+    if (IS.fail())
+    {
+      return IS;
+    }
   }
 
   if (rational)
@@ -814,7 +850,11 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Tri
   GeomTools::GetReal(IS, p1);
   GeomTools::GetReal(IS, p2);
   occ::handle<Geom2d_Curve> BC = GeomTools_Curve2dSet::ReadCurve2d(IS);
-  C                            = new Geom2d_TrimmedCurve(BC, p1, p2);
+  if (IS.fail())
+  {
+    return IS;
+  }
+  C = new Geom2d_TrimmedCurve(BC, p1, p2, true, false);
   return IS;
 }
 
@@ -825,7 +865,11 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom2d_Off
   double p = 0.;
   GeomTools::GetReal(IS, p);
   occ::handle<Geom2d_Curve> BC = GeomTools_Curve2dSet::ReadCurve2d(IS);
-  C                            = new Geom2d_OffsetCurve(BC, p);
+  if (IS.fail())
+  {
+    return IS;
+  }
+  C = new Geom2d_OffsetCurve(BC, p);
   return IS;
 }
 
@@ -839,7 +883,10 @@ occ::handle<Geom2d_Curve> GeomTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS
   try
   {
     OCC_CATCH_SIGNALS
-    IS >> ctype;
+    if (!(IS >> ctype))
+    {
+      return {};
+    }
     switch (ctype)
     {
 
@@ -922,6 +969,10 @@ occ::handle<Geom2d_Curve> GeomTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS
 #endif
     (void)anException;
   }
+  if (IS.fail())
+  {
+    C.Nullify();
+  }
   return C;
 }
 
@@ -929,6 +980,10 @@ occ::handle<Geom2d_Curve> GeomTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS
 
 void GeomTools_Curve2dSet::Read(Standard_IStream& IS, const Message_ProgressRange& theProgress)
 {
+  if (IS.fail())
+  {
+    return;
+  }
   char buffer[255];
   IS >> buffer;
   if (strcmp(buffer, "Curve2ds"))
@@ -943,6 +998,10 @@ void GeomTools_Curve2dSet::Read(Standard_IStream& IS, const Message_ProgressRang
   for (i = 1; i <= nbcurve && aPS.More(); i++, aPS.Next())
   {
     occ::handle<Geom2d_Curve> C = GeomTools_Curve2dSet::ReadCurve2d(IS);
+    if (IS.fail())
+    {
+      return;
+    }
     myMap.Add(C);
   }
 }

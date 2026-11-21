@@ -95,6 +95,7 @@ void RWStepShape_RWMeasureQualification::Share(
   const occ::handle<StepShape_MeasureQualification>& ent,
   Interface_EntityIterator&                          iter) const
 {
+  iter.AddItem(ent->QualifiedMeasure());
   int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)
   {

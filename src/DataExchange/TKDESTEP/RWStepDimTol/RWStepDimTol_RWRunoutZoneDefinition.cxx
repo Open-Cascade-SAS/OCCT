@@ -96,6 +96,7 @@ void RWStepDimTol_RWRunoutZoneDefinition::WriteStep(
     SW.Send(ent->BoundariesValue(i));
   }
   SW.CloseSub();
+  SW.Send(ent->Orientation());
 }
 
 //=================================================================================================
@@ -108,6 +109,7 @@ void RWStepDimTol_RWRunoutZoneDefinition::Share(
   // Inherited fields from ToleranceZoneDefinition
 
   iter.AddItem(ent->Zone());
+  iter.AddItem(ent->Orientation());
 
   int i, nb = ent->NbBoundaries();
   for (i = 1; i <= nb; i++)

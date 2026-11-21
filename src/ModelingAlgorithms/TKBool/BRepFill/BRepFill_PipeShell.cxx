@@ -344,6 +344,10 @@ void BRepFill_PipeShell::Set(const TopoDS_Wire&           AuxiliarySpine,
                              const bool                   CurvilinearEquivalence,
                              const BRepFill_TypeOfContact KeepContact)
 {
+  if (AuxiliarySpine.IsNull())
+  {
+    throw Standard_ConstructionError("PipeShell: null auxiliary spine");
+  }
   // Reorganization of the guide (pb of orientation and origin)
   TopoDS_Wire TheGuide;
   TheGuide     = AuxiliarySpine;
