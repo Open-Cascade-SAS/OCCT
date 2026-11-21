@@ -404,12 +404,10 @@ inline gp_Ax2d gp_Hypr2d::Asymptote1() const
 {
   Standard_ConstructionError_Raise_if(majorRadius <= gp::Resolution(),
                                       "gp_Hypr2d::Asymptote1() - major radius is zero");
-  gp_Dir2d aVdir = pos.XDirection();
-  gp_XY    aCoord1(pos.YDirection().XY());
-  gp_XY    aCoord2 = aCoord1.Multiplied(minorRadius / majorRadius);
-  aCoord1.Add(aCoord2);
-  aVdir.SetXY(aCoord1);
-  return gp_Ax2d(pos.Location(), aVdir);
+  gp_XY aCoord = pos.YDirection().XY();
+  aCoord.Multiply(minorRadius / majorRadius);
+  aCoord.Add(pos.XDirection().XY());
+  return gp_Ax2d(pos.Location(), gp_Dir2d(aCoord));
 }
 
 //=================================================================================================
@@ -418,12 +416,10 @@ inline gp_Ax2d gp_Hypr2d::Asymptote2() const
 {
   Standard_ConstructionError_Raise_if(majorRadius <= gp::Resolution(),
                                       "gp_Hypr2d::Asymptote2() - major radius is zero");
-  gp_Vec2d aVdir = pos.XDirection();
-  gp_XY    aCoord1(pos.YDirection().XY());
-  gp_XY    aCoord2 = aCoord1.Multiplied(-minorRadius / majorRadius);
-  aCoord1.Add(aCoord2);
-  aVdir.SetXY(aCoord1);
-  return gp_Ax2d(pos.Location(), aVdir);
+  gp_XY aCoord = pos.YDirection().XY();
+  aCoord.Multiply(-minorRadius / majorRadius);
+  aCoord.Add(pos.XDirection().XY());
+  return gp_Ax2d(pos.Location(), gp_Dir2d(aCoord));
 }
 
 //=================================================================================================
@@ -443,8 +439,8 @@ inline gp_Ax2d gp_Hypr2d::Directrix2() const
 {
   double anE    = Eccentricity();
   gp_XY  anOrig = pos.XDirection().XY();
-  anOrig.Multiply(Parameter() / anE);
-  anOrig.Add(Focus1().XY());
+  anOrig.Multiply(-majorRadius / anE);
+  anOrig.Add(pos.Location().XY());
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
 }
 
