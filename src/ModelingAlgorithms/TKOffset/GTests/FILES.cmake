@@ -8,4 +8,5 @@ set(OCCT_TKOffset_GTests_FILES
   BRepOffsetAPI_ThruSectionsHistory_Test.cxx
   BRepOffsetAPI_MakePipeShell_Test.cxx
   BRepOffsetAPI_MakeThickSolid_Test.cxx
+  BRepOffsetAPI_ThruSections_Test.cxx
 )
