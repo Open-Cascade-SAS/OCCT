@@ -879,10 +879,10 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
         {
           break;
         }
-        else if (!ex.More())
-        {
-          throw Standard_Failure("TwoCorner : No common face to loop the contour");
-        }
+      }
+      if (!ex.More())
+      {
+        throw Standard_Failure("TwoCorner : No common face to loop the contour");
       }
       occ::handle<GeomFill_Boundary> Bsam, Bdif, Bfac;
       gp_Pnt2d ppopsam = sdsam->Interference(ifaopsam).PCurveOnSurf()->Value(uintpcsam);
