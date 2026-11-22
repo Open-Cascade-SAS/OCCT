@@ -28,10 +28,14 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <Geom_BezierCurve.hxx>
+#include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Line.hxx>
 #include <Geom2d_Line.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -538,6 +542,57 @@ TEST(ShapeUpgrade_UnifySameDomainTest, ClosedInternalWire)
 
   const TopoDS_Shape& aResult = aUnifier.Shape();
   EXPECT_FALSE(aResult.IsNull()) << "UnifySameDomain result should not be null";
+}
+
+TEST(ShapeUpgrade_UnifySameDomainTest, MirroredConicalFacesAreUnified)
+{
+  const gp_Ax3 aRefAxes(gp::XOY());
+  gp_Ax3       aMirroredAxes(gp::Origin(), gp::DZ(), gp_Dir(std::cos(0.5), -std::sin(0.5), 0.0));
+  aMirroredAxes.YReverse();
+
+  const occ::handle<Geom_ConicalSurface> aRefSurface = new Geom_ConicalSurface(aRefAxes, 0.25, 2.0);
+  const occ::handle<Geom_ConicalSurface> aMirroredSurface =
+    new Geom_ConicalSurface(aMirroredAxes, 0.25, 2.0);
+  BRepBuilderAPI_MakeFace aRefFace(aRefSurface,
+                                   2.0 * M_PI - 0.5,
+                                   2.0 * M_PI,
+                                   0.0,
+                                   2.0,
+                                   Precision::Confusion());
+  BRepBuilderAPI_MakeFace aMirroredFace(aMirroredSurface,
+                                        0.0,
+                                        0.5,
+                                        0.0,
+                                        2.0,
+                                        Precision::Confusion());
+  ASSERT_TRUE(aRefFace.IsDone());
+  ASSERT_TRUE(aMirroredFace.IsDone());
+
+  BRepBuilderAPI_Sewing aSewing;
+  aSewing.Add(aRefFace.Face());
+  aSewing.Add(aMirroredFace.Face().Reversed());
+  aSewing.Perform();
+  const TopoDS_Shape& aShell = aSewing.SewedShape();
+  ASSERT_FALSE(aShell.IsNull());
+  ASSERT_EQ(aShell.ShapeType(), TopAbs_SHELL);
+  ASSERT_TRUE(BRepCheck_Analyzer(aShell).IsValid());
+
+  ShapeUpgrade_UnifySameDomain aUnifier(aShell);
+  aUnifier.Build();
+  const TopoDS_Shape& aResult = aUnifier.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFaces;
+  TopExp::MapShapes(aResult, TopAbs_FACE, aFaces);
+  EXPECT_EQ(aFaces.Extent(), 1);
+
+  GProp_GProps aSourceProperties;
+  GProp_GProps aResultProperties;
+  BRepGProp::SurfaceProperties(aShell, aSourceProperties);
+  BRepGProp::SurfaceProperties(aResult, aResultProperties);
+  EXPECT_NEAR(aResultProperties.Mass(),
+              aSourceProperties.Mass(),
+              Precision::Confusion() * aSourceProperties.Mass());
 }
 
 // Test basic UnifySameDomain functionality on a box (no internal edges).
