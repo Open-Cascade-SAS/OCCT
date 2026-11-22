@@ -10,6 +10,9 @@ on:
       - package_802
     tags:
       - V8_0_2
+  pull_request:
+    branches:
+      - '**'
   workflow_dispatch:
 
 permissions:
