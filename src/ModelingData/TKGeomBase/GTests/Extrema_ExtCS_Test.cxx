@@ -96,3 +96,70 @@ TEST(Extrema_ExtCS_Test, Points_NotDone_Throws)
   ASSERT_FALSE(aExt.IsDone());
   EXPECT_THROW(aExt.Points(1, aP1, aP2), StdFail_NotDone);
 }
+
+// A line that crosses a plane inside both ranges has one extremum, the crossing.
+TEST(Extrema_ExtCS_Test, LineCrossingPlaneInsideRanges_ReturnsCrossing)
+{
+  const gp_Dir            aLineDir(1.0, 1.0, 2.0);
+  occ::handle<Geom_Line>  aLine = new Geom_Line(gp_Pnt(1.0, 2.0, -3.0), aLineDir);
+  occ::handle<Geom_Plane> aPlane =
+    new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)));
+
+  GeomAdaptor_Curve   aC(aLine, -10.0, 10.0);
+  GeomAdaptor_Surface aS(aPlane, -10.0, 10.0, -10.0, 10.0);
+
+  Extrema_ExtCS aExt(aC, aS, Precision::PConfusion(), Precision::PConfusion());
+  ASSERT_TRUE(aExt.IsDone());
+  ASSERT_FALSE(aExt.IsParallel());
+  ASSERT_EQ(aExt.NbExt(), 1);
+  EXPECT_NEAR(aExt.SquareDistance(1), 0.0, 1.0e-20);
+
+  Extrema_POnCurv aPC;
+  Extrema_POnSurf aPS;
+  aExt.Points(1, aPC, aPS);
+  EXPECT_NEAR(aPC.Parameter(), 3.0 / aLineDir.Z(), 1.0e-12);
+  EXPECT_NEAR(aPC.Value().Distance(gp_Pnt(2.5, 3.5, 0.0)), 0.0, 1.0e-12);
+  EXPECT_NEAR(aPS.Value().Distance(gp_Pnt(2.5, 3.5, 0.0)), 0.0, 1.0e-12);
+
+  double aU = 0.0, aV = 0.0;
+  aPS.Parameter(aU, aV);
+  EXPECT_NEAR(aU, 2.5, 1.0e-12);
+  EXPECT_NEAR(aV, 3.5, 1.0e-12);
+}
+
+// The crossing lies outside the range of the plane, so it is no extremum of
+// the bounded pair: the nearest points are at a distance.
+TEST(Extrema_ExtCS_Test, LineCrossingPlaneOutsideSurfaceRange_IsNotTheCrossing)
+{
+  occ::handle<Geom_Line>  aLine = new Geom_Line(gp_Pnt(5.0, 0.0, -3.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Plane> aPlane =
+    new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)));
+
+  GeomAdaptor_Curve   aC(aLine, -10.0, 10.0);
+  GeomAdaptor_Surface aS(aPlane, -1.0, 1.0, -1.0, 1.0);
+
+  Extrema_ExtCS aExt(aC, aS, Precision::PConfusion(), Precision::PConfusion());
+  ASSERT_TRUE(aExt.IsDone());
+  for (int anI = 1; anI <= aExt.NbExt(); ++anI)
+  {
+    EXPECT_GT(aExt.SquareDistance(anI), 1.0);
+  }
+}
+
+// The crossing lies outside the range of the line.
+TEST(Extrema_ExtCS_Test, LineCrossingPlaneOutsideCurveRange_IsNotTheCrossing)
+{
+  occ::handle<Geom_Line>  aLine = new Geom_Line(gp_Pnt(0.5, 0.5, -3.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Plane> aPlane =
+    new Geom_Plane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0)));
+
+  GeomAdaptor_Curve   aC(aLine, -10.0, 1.0);
+  GeomAdaptor_Surface aS(aPlane, -1.0, 1.0, -1.0, 1.0);
+
+  Extrema_ExtCS aExt(aC, aS, Precision::PConfusion(), Precision::PConfusion());
+  ASSERT_TRUE(aExt.IsDone());
+  for (int anI = 1; anI <= aExt.NbExt(); ++anI)
+  {
+    EXPECT_GT(aExt.SquareDistance(anI), 1.0);
+  }
+}

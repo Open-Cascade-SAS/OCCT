@@ -36,6 +36,7 @@
 #include <Extrema_POnSurf.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -150,6 +151,30 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C, const double Uinf, const d
           if (myExtElCS.IsParallel())
           {
             break;
+          }
+          {
+            // A line that crosses the plane inside both ranges has its one
+            // minimum there, at distance zero, so no search is needed.
+            const gp_Lin aLin  = C.Line();
+            const gp_Pln aPln  = myS->Plane();
+            const gp_XYZ aNorm = aPln.Axis().Direction().XYZ();
+            const double aDen  = aNorm.Dot(aLin.Direction().XYZ());
+            if (std::abs(aDen) > Precision::Angular())
+            {
+              const double aT = aNorm.Dot(aPln.Location().XYZ() - aLin.Location().XYZ()) / aDen;
+              if (aT >= myucinf && aT <= myucsup)
+              {
+                const gp_Pnt aP = ElCLib::Value(aT, aLin);
+                double       aU, aV;
+                ElSLib::Parameters(aPln, aP, aU, aV);
+                if (aU >= myuinf && aU <= myusup && aV >= myvinf && aV <= myvsup
+                    && AddSolution(C, aT, aU, aV, aP, aP, 0.0))
+                {
+                  myDone = true;
+                  return;
+                }
+              }
+            }
           }
           [[fallthrough]];
 
