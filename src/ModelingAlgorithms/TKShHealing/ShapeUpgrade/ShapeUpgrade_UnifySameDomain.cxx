@@ -858,90 +858,87 @@ static void ReconstructMissedSeam(const NCollection_Sequence<TopoDS_Shape>& theR
                                   TopoDS_Edge&                              theSeamEdge,
                                   gp_Pnt2d&                                 theNextPoint)
 {
-  // Find seam edge between removed edges
   theSeamEdge.Nullify();
-  for (int i = 1; i <= theRemovedEdges.Length(); i++)
+  for (const TopoDS_Shape& aRemovedEdge : theRemovedEdges)
   {
-    TopoDS_Edge anEdge = TopoDS::Edge(theRemovedEdges(i));
-    if (anEdge.IsSame(theCurEdge))
-    {
-      continue;
-    }
-    double                    Param1, Param2;
-    occ::handle<Geom2d_Curve> aPC = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-    if (aPC.IsNull())
+    TopoDS_Edge anEdge = TopoDS::Edge(aRemovedEdge);
+    if (anEdge.IsSame(theCurEdge) || !BRep_Tool::IsClosed(anEdge, theFrefFace))
     {
       continue;
     }
 
     TopoDS_Vertex aFirstVertex, aLastVertex;
     TopExp::Vertices(anEdge, aFirstVertex, aLastVertex, true);
-
-    if ((aFirstVertex.IsSame(theCurVertex) || aLastVertex.IsSame(theCurVertex))
-        && BRep_Tool::IsClosed(anEdge, theFrefFace))
+    if (!aFirstVertex.IsSame(theCurVertex))
     {
-      // Problem with mirrored cylinder BEGIN
-      if (!aFirstVertex.IsSame(theCurVertex))
+      if (!aLastVertex.IsSame(theCurVertex))
+      {
+        continue;
+      }
+      // Reversing a seam also selects its other pcurve.
+      anEdge.Reverse();
+    }
+    const bool isClosedAtVertex = aFirstVertex.IsSame(aLastVertex);
+
+    double                    aFirstParam, aLastParam;
+    occ::handle<Geom2d_Curve> aPC =
+      BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+    if (aPC.IsNull())
+    {
+      continue;
+    }
+
+    double   aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? aFirstParam : aLastParam;
+    gp_Pnt2d aPoint = aPC->EvalD0(aParam);
+    double   aUdiff = std::abs(aPoint.X() - theCurPoint.X());
+    double   aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
+    if ((theUperiod != 0. && aUdiff > theUperiod / 2)
+        || (theVperiod != 0. && aVdiff > theVperiod / 2))
+    {
+      if (isClosedAtVertex || (theUperiod != 0. && theVperiod != 0.))
       {
         anEdge.Reverse();
-        aPC = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-        TopExp::Vertices(anEdge, aFirstVertex, aLastVertex, true);
       }
-      // Problem with mirrored cylinder END
-      double   aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? Param1 : Param2;
-      gp_Pnt2d aPoint = aPC->Value(aParam);
-      double   aUdiff = std::abs(aPoint.X() - theCurPoint.X());
-      double   aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
-      if ((theUperiod != 0. && aUdiff > theUperiod / 2)
-          || (theVperiod != 0. && aVdiff > theVperiod / 2))
+      else
       {
-        if (aLastVertex.IsSame(theCurVertex) || (theUperiod != 0. && theVperiod != 0.))
+        const TopAbs_Orientation anOri = anEdge.Orientation();
+        anEdge.Orientation(TopAbs_FORWARD);
+        occ::handle<Geom2d_Curve> aPC1 =
+          BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+        anEdge.Reverse();
+        occ::handle<Geom2d_Curve> aPC2 =
+          BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+        if (aPC1.IsNull() || aPC2.IsNull())
         {
-          anEdge.Reverse();
+          continue;
         }
-        else
-        {
-          TopAbs_Orientation anOri = anEdge.Orientation();
-          anEdge.Orientation(TopAbs_FORWARD);
-          occ::handle<Geom2d_Curve> aPC1 =
-            BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-          anEdge.Reverse();
-          occ::handle<Geom2d_Curve> aPC2 =
-            BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-          anEdge.Reverse(); // again FORWARD
-          TopLoc_Location                  aLoc;
-          BRep_Builder                     aBB;
-          double                           aTol  = BRep_Tool::Tolerance(anEdge);
-          const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFrefFace, aLoc);
-          aBB.UpdateEdge(anEdge, aPC2, aPC1, aSurf, aLoc, aTol);
-          anEdge.Orientation(anOri);
-        }
-        aPC    = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-        aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? Param1 : Param2;
-        aPoint = aPC->Value(aParam);
-        aUdiff = std::abs(aPoint.X() - theCurPoint.X());
-        aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
+        anEdge.Reverse(); // again FORWARD
+        TopLoc_Location                  aLoc;
+        BRep_Builder                     aBB;
+        double                           aTol  = BRep_Tool::Tolerance(anEdge);
+        const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFrefFace, aLoc);
+        aBB.UpdateEdge(anEdge, aPC2, aPC1, aSurf, aLoc, aTol);
+        anEdge.Orientation(anOri);
       }
-      if ((theUperiod == 0. || aUdiff < theUperiod / 2)
-          && (theVperiod == 0. || aVdiff < theVperiod / 2))
+      aPC = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+      if (aPC.IsNull())
       {
-        aFirstVertex = TopExp::FirstVertex(anEdge, true);
-        if (aFirstVertex.IsSame(theCurVertex))
-        {
-          theSeamEdge = anEdge;
-          break;
-        }
+        continue;
       }
+      aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? aFirstParam : aLastParam;
+      aPoint = aPC->EvalD0(aParam);
+      aUdiff = std::abs(aPoint.X() - theCurPoint.X());
+      aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
     }
-  }
-
-  if (!theSeamEdge.IsNull())
-  {
-    double                    Param1, Param2;
-    occ::handle<Geom2d_Curve> aPC =
-      BRep_Tool::CurveOnSurface(theSeamEdge, theFrefFace, Param1, Param2);
-    double aParam = (theSeamEdge.Orientation() == TopAbs_FORWARD) ? Param2 : Param1;
-    theNextPoint  = aPC->Value(aParam);
+    if ((theUperiod == 0. || aUdiff < theUperiod / 2)
+        && (theVperiod == 0. || aVdiff < theVperiod / 2)
+        && TopExp::FirstVertex(anEdge, true).IsSame(theCurVertex))
+    {
+      const double anEndParam = anEdge.Orientation() == TopAbs_FORWARD ? aLastParam : aFirstParam;
+      theNextPoint            = aPC->EvalD0(anEndParam);
+      theSeamEdge             = anEdge;
+      return;
+    }
   }
 }
 

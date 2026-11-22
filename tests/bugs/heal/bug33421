@@ -1,7 +1,3 @@
-puts "TODO CR33439 ALL: Error :  is WRONG because number of EDGE entities in shape"
-puts "TODO CR33439 ALL: Error :  is WRONG because number of WIRE entities in shape"
-puts "TODO CR33439 ALL: Error :  is WRONG because number of FACE entities in shape"
-
 puts "========================================="
 puts "0033421: Modeling Algorithms - ShapeUpgrade_UnifySameDomain fails"
 puts "========================================="
