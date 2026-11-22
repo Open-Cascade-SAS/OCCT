@@ -42,6 +42,7 @@
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
+#include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -49,8 +50,12 @@
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -60,6 +65,8 @@
 #include <TopoDS_Wire.hxx>
 
 #include <gtest/gtest.h>
+
+#include <cmath>
 
 // Test OCC26407: BRepMesh_Delaun must not fail on a planar polygon with frontier edges.
 // The key check is that GetStatusFlags() == 0 (success) after meshing.
@@ -589,15 +596,13 @@ TEST(BRepMesh_IncrementalMeshTest, LocalizedSplinePeaksRespectDeflection)
   }
 }
 
-// Regression test for issue #572: a conical face must be meshed when its seam pcurves are
-// infinite lines whose direction is tilted by rounding error.
 TEST(BRepMesh_IncrementalMeshTest, ConeWithTiltedSeamPCurves_IsTriangulated)
 {
   const double                           aVMin = -25.0 * std::sqrt(2.0);
   const occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp::XOY(), M_PI / 4.0, 36.4);
-  const gp_Pnt aTopPnt    = aCone->Value(0.0, 0.0);
-  const gp_Pnt aBottomPnt = aCone->Value(0.0, aVMin);
+  const gp_Pnt aTopPnt    = aCone->EvalD0(0.0, 0.0);
+  const gp_Pnt aBottomPnt = aCone->EvalD0(0.0, aVMin);
 
   int aReferenceTriangles = 0;
   for (const double aTilt : {0.0, 2.0e-16, -2.0e-16})
@@ -641,19 +646,35 @@ TEST(BRepMesh_IncrementalMeshTest, ConeWithTiltedSeamPCurves_IsTriangulated)
     aBuilder.Add(aWire, aSeamEdge.Reversed());
     aBuilder.Add(aFace, aWire);
 
-    BRepMesh_IncrementalMesh aMesher(aFace, 0.01);
-    ASSERT_TRUE(aMesher.IsDone());
-    EXPECT_EQ(aMesher.GetStatusFlags(), IMeshData_NoError);
-
-    TopLoc_Location                       aLocation;
-    const occ::handle<Poly_Triangulation> aTriangulation =
-      BRep_Tool::Triangulation(aFace, aLocation);
-    ASSERT_FALSE(aTriangulation.IsNull());
-    if (aTilt == 0.0)
+    for (const TopAbs_Orientation anOrientation : {TopAbs_FORWARD, TopAbs_REVERSED})
     {
-      aReferenceTriangles = aTriangulation->NbTriangles();
-      EXPECT_GT(aReferenceTriangles, 0);
+      SCOPED_TRACE(anOrientation);
+      aFace.Orientation(anOrientation);
+      BRepMesh_IncrementalMesh aMesher(aFace, 0.01);
+      ASSERT_TRUE(aMesher.IsDone());
+      EXPECT_EQ(aMesher.GetStatusFlags(), IMeshData_NoError);
+
+      TopLoc_Location                       aLocation;
+      const occ::handle<Poly_Triangulation> aTriangulation =
+        BRep_Tool::Triangulation(aFace, aLocation);
+      ASSERT_FALSE(aTriangulation.IsNull());
+      if (aTilt == 0.0 && anOrientation == TopAbs_FORWARD)
+      {
+        aReferenceTriangles = aTriangulation->NbTriangles();
+        ASSERT_GT(aReferenceTriangles, 0);
+      }
+      EXPECT_EQ(aTriangulation->NbTriangles(), aReferenceTriangles);
+      ASSERT_TRUE(aTriangulation->HasUVNodes());
+      for (int aNodeIndex = 1; aNodeIndex <= aTriangulation->NbNodes(); ++aNodeIndex)
+      {
+        const gp_Pnt2d aUV           = aTriangulation->UVNode(aNodeIndex);
+        const gp_Pnt   aSurfacePoint = aCone->EvalD0(aUV.X(), aUV.Y());
+        const gp_Pnt   aMeshPoint    = aTriangulation->Node(aNodeIndex).Transformed(aLocation);
+        EXPECT_LE(aMeshPoint.Distance(aSurfacePoint), Precision::Confusion()) << aNodeIndex;
+      }
+
+      // Both orientations share the face and edge mesh data.
+      BRepTools::Clean(aFace);
     }
-    EXPECT_EQ(aTriangulation->NbTriangles(), aReferenceTriangles);
   }
 }
