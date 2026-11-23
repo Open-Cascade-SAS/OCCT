@@ -25,13 +25,17 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Line.hxx>
 #include <Geom2d_Line.hxx>
+#include <gp_Ax2.hxx>
+#include <gp.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
@@ -39,6 +43,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <GProp_GProps.hxx>
@@ -669,6 +674,44 @@ TEST(ShapeUpgrade_UnifySameDomainTest, MissingSourcePCurveDuringTransformation)
   const TopoDS_Shape& aResult = aUnifier.Shape();
   ASSERT_FALSE(aResult.IsNull());
   EXPECT_EQ(countFaces(aResult), 2);
+}
+
+TEST(ShapeUpgrade_UnifySameDomainTest, MirroredCylinderSeam_IsReconstructed)
+{
+  constexpr double         aRadius = 10.0;
+  constexpr double         aHeight = 10.0;
+  BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight);
+  aCylinder.Build();
+  ASSERT_TRUE(aCylinder.IsDone());
+
+  gp_Trsf aMirror;
+  aMirror.SetMirror(gp_Ax2(gp_Pnt(0.0, 0.0, aHeight), gp::DZ()));
+  BRepBuilderAPI_Transform aMirroredCylinder(aCylinder.Shape(), aMirror);
+  ASSERT_TRUE(aMirroredCylinder.IsDone());
+  BRepAlgoAPI_Fuse aFuse(aCylinder.Shape(), aMirroredCylinder.Shape());
+  ASSERT_TRUE(aFuse.IsDone());
+  ASSERT_FALSE(aFuse.Shape().IsNull());
+  ASSERT_TRUE(BRepCheck_Analyzer(aFuse.Shape()).IsValid());
+
+  ShapeUpgrade_UnifySameDomain aUnifier(aFuse.Shape());
+  aUnifier.Build();
+  const TopoDS_Shape& aResult = aUnifier.Shape();
+  ASSERT_FALSE(aResult.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSubShapes;
+  TopExp::MapShapes(aResult, TopAbs_FACE, aSubShapes);
+  EXPECT_EQ(aSubShapes.Extent(), 3);
+  aSubShapes.Clear();
+  TopExp::MapShapes(aResult, TopAbs_EDGE, aSubShapes);
+  EXPECT_EQ(aSubShapes.Extent(), 3);
+  aSubShapes.Clear();
+  TopExp::MapShapes(aResult, TopAbs_VERTEX, aSubShapes);
+  EXPECT_EQ(aSubShapes.Extent(), 2);
+
+  GProp_GProps aProperties;
+  BRepGProp::VolumeProperties(aResult, aProperties);
+  EXPECT_NEAR(aProperties.Mass(), 2.0 * M_PI * aRadius * aRadius * aHeight, 1.0e-8);
 }
 
 // Migrated from tests/bugs/heal/bug29382_3.  Preserve all DRAW validations:
