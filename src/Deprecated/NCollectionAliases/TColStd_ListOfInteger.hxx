@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "TColStd_ListOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TColStd_ListOfInteger is deprecated, use NCollection_List<int> directly")
-typedef NCollection_List<int> TColStd_ListOfInteger;
+Standard_DEPRECATED("TColStd_ListOfInteger is deprecated, use NCollection_List<int> directly")
+typedef NCollection_List<int>           TColStd_ListOfInteger;
 Standard_DEPRECATED(
   "TColStd_ListIteratorOfListOfInteger is deprecated, use NCollection_List<int>::Iterator directly")
 typedef NCollection_List<int>::Iterator TColStd_ListIteratorOfListOfInteger;

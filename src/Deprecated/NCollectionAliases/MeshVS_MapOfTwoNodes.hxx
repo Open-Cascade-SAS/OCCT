@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "MeshVS_MapOfTwoNodes.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "MeshVS_MapOfTwoNodes is deprecated, use NCollection_Map<MeshVS_TwoNodes> directly")
-typedef NCollection_Map<MeshVS_TwoNodes> MeshVS_MapOfTwoNodes;
+typedef NCollection_Map<MeshVS_TwoNodes>           MeshVS_MapOfTwoNodes;
 Standard_DEPRECATED("MeshVS_MapIteratorOfMapOfTwoNodes is deprecated, use "
                     "NCollection_Map<MeshVS_TwoNodes>::Iterator directly")
 typedef NCollection_Map<MeshVS_TwoNodes>::Iterator MeshVS_MapIteratorOfMapOfTwoNodes;

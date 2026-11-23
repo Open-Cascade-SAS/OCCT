@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("ChFiDS_SecArray1.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<ChFiDS_CircSection> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "ChFiDS_SecArray1 is deprecated, use NCollection_Array1<ChFiDS_CircSection> directly")
 typedef NCollection_Array1<ChFiDS_CircSection> ChFiDS_SecArray1;
 

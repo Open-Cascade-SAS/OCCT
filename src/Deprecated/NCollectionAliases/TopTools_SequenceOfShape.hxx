@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TopTools_SequenceOfShape.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<TopoDS_Shape> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TopTools_SequenceOfShape is deprecated, use NCollection_Sequence<TopoDS_Shape> directly")
 typedef NCollection_Sequence<TopoDS_Shape> TopTools_SequenceOfShape;
 

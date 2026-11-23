@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StdStorage_SequenceOfRoots.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<opencascade::handle<StdStorage_Root>> directly.")
 
-  Standard_DEPRECATED("StdStorage_SequenceOfRoots is deprecated, use "
+Standard_DEPRECATED("StdStorage_SequenceOfRoots is deprecated, use "
                       "NCollection_Sequence<opencascade::handle<StdStorage_Root>> directly")
 typedef NCollection_Sequence<opencascade::handle<StdStorage_Root>> StdStorage_SequenceOfRoots;
 

@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "Contap_SequenceOfSegmentOfTheSearch.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<Contap_TheSegmentOfTheSearch> directly.")
 
-  Standard_DEPRECATED("Contap_SequenceOfSegmentOfTheSearch is deprecated, use "
+Standard_DEPRECATED("Contap_SequenceOfSegmentOfTheSearch is deprecated, use "
                       "NCollection_Sequence<Contap_TheSegmentOfTheSearch> directly")
 typedef NCollection_Sequence<Contap_TheSegmentOfTheSearch> Contap_SequenceOfSegmentOfTheSearch;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Hatch_SequenceOfParameter.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<Hatch_Parameter> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Hatch_SequenceOfParameter is deprecated, use NCollection_Sequence<Hatch_Parameter> directly")
 typedef NCollection_Sequence<Hatch_Parameter> Hatch_SequenceOfParameter;
 

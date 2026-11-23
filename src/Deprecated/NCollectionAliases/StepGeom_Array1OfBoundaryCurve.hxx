@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepGeom_Array1OfBoundaryCurve.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepGeom_BoundaryCurve>> directly.")
 
-  Standard_DEPRECATED("StepGeom_Array1OfBoundaryCurve is deprecated, use "
-                      "NCollection_Array1<opencascade::handle<StepGeom_BoundaryCurve>> directly")
+Standard_DEPRECATED("StepGeom_Array1OfBoundaryCurve is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<StepGeom_BoundaryCurve>> directly")
 typedef NCollection_Array1<opencascade::handle<StepGeom_BoundaryCurve>>
   StepGeom_Array1OfBoundaryCurve;
 

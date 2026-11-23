@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TFunction_DataMapOfLabelListOfLabel.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TFunction_DataMapOfLabelListOfLabel is deprecated, use "
+Standard_DEPRECATED("TFunction_DataMapOfLabelListOfLabel is deprecated, use "
                       "NCollection_DataMap<TDF_Label, TDF_LabelList> directly")
 typedef NCollection_DataMap<TDF_Label, TDF_LabelList> TFunction_DataMapOfLabelListOfLabel;
 Standard_DEPRECATED("TFunction_DataMapIteratorOfDataMapOfLabelListOfLabel is deprecated, use "

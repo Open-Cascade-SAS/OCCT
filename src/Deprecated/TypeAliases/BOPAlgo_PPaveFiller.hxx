@@ -27,7 +27,7 @@ class BOPAlgo_PaveFiller;
 Standard_HEADER_DEPRECATED("BOPAlgo_PPaveFiller.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("BOPAlgo_PPaveFiller is deprecated, use the underlying type directly")
+Standard_DEPRECATED("BOPAlgo_PPaveFiller is deprecated, use the underlying type directly")
 typedef BOPAlgo_PaveFiller* BOPAlgo_PPaveFiller;
 
 #endif // _BOPAlgo_PPaveFiller_HeaderFile

@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "BOPDS_MapOfPave.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("BOPDS_MapOfPave is deprecated, use NCollection_Map<BOPDS_Pave> directly")
-typedef NCollection_Map<BOPDS_Pave> BOPDS_MapOfPave;
+Standard_DEPRECATED("BOPDS_MapOfPave is deprecated, use NCollection_Map<BOPDS_Pave> directly")
+typedef NCollection_Map<BOPDS_Pave>           BOPDS_MapOfPave;
 Standard_DEPRECATED(
   "BOPDS_MapIteratorOfMapOfPave is deprecated, use NCollection_Map<BOPDS_Pave>::Iterator directly")
 typedef NCollection_Map<BOPDS_Pave>::Iterator BOPDS_MapIteratorOfMapOfPave;

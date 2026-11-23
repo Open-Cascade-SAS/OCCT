@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("TopTools_DataMapOfShapeListOfInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "TopTools_DataMapOfShapeListOfInteger is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "TColStd_ListOfInteger, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "TopTools_DataMapOfShapeListOfInteger is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "TColStd_ListOfInteger, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TColStd_ListOfInteger, TopTools_ShapeMapHasher>
   TopTools_DataMapOfShapeListOfInteger;
 Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfShapeListOfInteger is deprecated, use "

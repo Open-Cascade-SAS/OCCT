@@ -29,9 +29,9 @@
 Standard_HEADER_DEPRECATED(
   "TObj_Container.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "TObj_DataMapOfNameLabel is deprecated, use "
-    "NCollection_DataMap<opencascade::handle<TCollection_HExtendedString>, TDF_Label> directly")
+Standard_DEPRECATED(
+  "TObj_DataMapOfNameLabel is deprecated, use "
+  "NCollection_DataMap<opencascade::handle<TCollection_HExtendedString>, TDF_Label> directly")
 typedef NCollection_DataMap<opencascade::handle<TCollection_HExtendedString>, TDF_Label>
   TObj_DataMapOfNameLabel;
 Standard_DEPRECATED("TObj_DataMapOfObjectHSequenceOcafObjects is deprecated, use "

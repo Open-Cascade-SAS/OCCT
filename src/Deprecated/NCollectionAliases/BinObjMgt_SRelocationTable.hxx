@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "BinObjMgt_SRelocationTable.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedMap<opencascade::handle<Standard_Transient>> directly.")
 
-  Standard_DEPRECATED("BinObjMgt_SRelocationTable is deprecated, use "
+Standard_DEPRECATED("BinObjMgt_SRelocationTable is deprecated, use "
                       "NCollection_IndexedMap<opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_IndexedMap<opencascade::handle<Standard_Transient>> BinObjMgt_SRelocationTable;
 

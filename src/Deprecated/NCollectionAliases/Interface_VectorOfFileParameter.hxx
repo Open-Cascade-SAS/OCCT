@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Interface_VectorOfFileParameter.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_DynamicArray<Interface_FileParameter> directly.")
 
-  Standard_DEPRECATED("Interface_VectorOfFileParameter is deprecated, use "
+Standard_DEPRECATED("Interface_VectorOfFileParameter is deprecated, use "
                       "NCollection_DynamicArray<Interface_FileParameter> directly")
 typedef NCollection_DynamicArray<Interface_FileParameter> Interface_VectorOfFileParameter;
 

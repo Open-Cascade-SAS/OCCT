@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("XCAFPrs_IndexedDataMapOfShapeStyle.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "XCAFPrs_IndexedDataMapOfShapeStyle is deprecated, use "
-    "NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "XCAFPrs_IndexedDataMapOfShapeStyle is deprecated, use "
+  "NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>
   XCAFPrs_IndexedDataMapOfShapeStyle;
 Standard_DEPRECATED("XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle is deprecated, use "

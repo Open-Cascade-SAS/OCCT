@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("MAT_DataMapOfIntegerBasicElt.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("MAT_DataMapOfIntegerBasicElt is deprecated, use NCollection_DataMap<int, "
+Standard_DEPRECATED("MAT_DataMapOfIntegerBasicElt is deprecated, use NCollection_DataMap<int, "
                       "opencascade::handle<MAT_BasicElt>> directly")
 typedef NCollection_DataMap<int, opencascade::handle<MAT_BasicElt>> MAT_DataMapOfIntegerBasicElt;
 Standard_DEPRECATED(

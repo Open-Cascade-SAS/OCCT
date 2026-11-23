@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_Array1OfBoxCharacteristicSelect.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepVisual_BoxCharacteristicSelect> directly.")
 
-  Standard_DEPRECATED("StepVisual_Array1OfBoxCharacteristicSelect is deprecated, use "
-                      "NCollection_Array1<StepVisual_BoxCharacteristicSelect> directly")
+Standard_DEPRECATED("StepVisual_Array1OfBoxCharacteristicSelect is deprecated, use "
+                    "NCollection_Array1<StepVisual_BoxCharacteristicSelect> directly")
 typedef NCollection_Array1<StepVisual_BoxCharacteristicSelect>
   StepVisual_Array1OfBoxCharacteristicSelect;
 

@@ -29,8 +29,8 @@ class GeomLib_DenominatorMultiplier;
 Standard_HEADER_DEPRECATED("GeomLib_DenominatorMultiplierPtr.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED(
-    "GeomLib_DenominatorMultiplierPtr is deprecated, use the underlying type directly")
+Standard_DEPRECATED(
+  "GeomLib_DenominatorMultiplierPtr is deprecated, use the underlying type directly")
 typedef GeomLib_DenominatorMultiplier* GeomLib_DenominatorMultiplierPtr;
 
 #endif // _GeomLib_DenominatorMultiplierPtr_HeaderFile

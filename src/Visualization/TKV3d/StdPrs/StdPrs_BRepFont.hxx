@@ -198,7 +198,10 @@ public:
   //! Explicit GlyphOptions and TextOptions override this setting.
   //! @param[in] theToConcatenate true to build one C0 B-spline edge per contour
   Standard_DEPRECATED("Use ToConcatenateContours in GlyphOptions or TextOptions")
-  void SetCompositeCurveMode(bool theToConcatenate) { myToConcatenateContours = theToConcatenate; }
+  void SetCompositeCurveMode(bool theToConcatenate)
+  {
+    myToConcatenateContours = theToConcatenate;
+  }
 
   //! Change horizontal outline scaling and clear cached geometry.
   //! @param[in] theScaleFactor positive finite X scale

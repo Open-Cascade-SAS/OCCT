@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColgp_Array1OfPnt2d.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<gp_Pnt2d> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColgp_Array1OfPnt2d is deprecated, use NCollection_Array1<gp_Pnt2d> directly")
 typedef NCollection_Array1<gp_Pnt2d> TColgp_Array1OfPnt2d;
 

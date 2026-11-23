@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "TNaming_ListOfNamedShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TNaming_ListOfNamedShape is deprecated, use "
+Standard_DEPRECATED("TNaming_ListOfNamedShape is deprecated, use "
                       "NCollection_List<opencascade::handle<TNaming_NamedShape>> directly")
 typedef NCollection_List<opencascade::handle<TNaming_NamedShape>> TNaming_ListOfNamedShape;
 Standard_DEPRECATED("TNaming_ListIteratorOfListOfNamedShape is deprecated, use "

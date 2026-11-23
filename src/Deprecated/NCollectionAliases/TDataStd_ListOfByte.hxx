@@ -25,8 +25,8 @@
 Standard_HEADER_DEPRECATED(
   "TDataStd_ListOfByte.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDataStd_ListOfByte is deprecated, use NCollection_List<uint8_t> directly")
-typedef NCollection_List<uint8_t> TDataStd_ListOfByte;
+Standard_DEPRECATED("TDataStd_ListOfByte is deprecated, use NCollection_List<uint8_t> directly")
+typedef NCollection_List<uint8_t>           TDataStd_ListOfByte;
 Standard_DEPRECATED("TDataStd_ListIteratorOfListOfByte is deprecated, use "
                     "NCollection_List<uint8_t>::Iterator directly")
 typedef NCollection_List<uint8_t>::Iterator TDataStd_ListIteratorOfListOfByte;

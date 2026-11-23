@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_HArray1OfDirectionCountSelect.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<StepVisual_DirectionCountSelect> directly.")
 
-  Standard_DEPRECATED("StepVisual_HArray1OfDirectionCountSelect is deprecated, use "
-                      "NCollection_HArray1<StepVisual_DirectionCountSelect> directly")
+Standard_DEPRECATED("StepVisual_HArray1OfDirectionCountSelect is deprecated, use "
+                    "NCollection_HArray1<StepVisual_DirectionCountSelect> directly")
 typedef NCollection_HArray1<StepVisual_DirectionCountSelect>
   StepVisual_HArray1OfDirectionCountSelect;
 

@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "TColStd_MapOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TColStd_MapOfInteger is deprecated, use NCollection_Map<int> directly")
-typedef NCollection_Map<int> TColStd_MapOfInteger;
+Standard_DEPRECATED("TColStd_MapOfInteger is deprecated, use NCollection_Map<int> directly")
+typedef NCollection_Map<int>           TColStd_MapOfInteger;
 Standard_DEPRECATED(
   "TColStd_MapIteratorOfMapOfInteger is deprecated, use NCollection_Map<int>::Iterator directly")
 typedef NCollection_Map<int>::Iterator TColStd_MapIteratorOfMapOfInteger;

@@ -34,11 +34,14 @@ SortIncludes: false
 UseTab: Never
 #
 # OCCT specific settings
+Macros:
+  - 'Standard_DEPRECATED(x)=[[deprecated(x)]]'
 StatementMacros:
   - Standard_FALLTHROUGH
   - OCC_CATCH_SIGNALS
   - DEFINE_STANDARD_RTTIEXT
   - Draw_Drawable3D_FACTORY
   - Standard_DEPRECATED
+  - Standard_HEADER_DEPRECATED
 TypenameMacros:
   - Handle

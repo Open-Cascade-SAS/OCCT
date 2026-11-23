@@ -26,8 +26,8 @@
 Standard_HEADER_DEPRECATED(
   "TDF_LabelList.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDF_LabelList is deprecated, use NCollection_List<TDF_Label> directly")
-typedef NCollection_List<TDF_Label> TDF_LabelList;
+Standard_DEPRECATED("TDF_LabelList is deprecated, use NCollection_List<TDF_Label> directly")
+typedef NCollection_List<TDF_Label>           TDF_LabelList;
 Standard_DEPRECATED(
   "TDF_ListIteratorOfLabelList is deprecated, use NCollection_List<TDF_Label>::Iterator directly")
 typedef NCollection_List<TDF_Label>::Iterator TDF_ListIteratorOfLabelList;

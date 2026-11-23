@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo.hxx 
                            "since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, "
                            "TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo is deprecated, use "
-                      "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, "
-                      "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo is deprecated, use "
+                    "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, "
+                    "TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape,
                                    TopOpeBRepBuild_VertexInfo,
                                    TopTools_ShapeMapHasher>

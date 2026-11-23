@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("Storage_PType.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_IndexedDataMap<TCollection_AsciiString, int> directly.")
 
-  Standard_DEPRECATED("Storage_PType is deprecated, use "
+Standard_DEPRECATED("Storage_PType is deprecated, use "
                       "NCollection_IndexedDataMap<TCollection_AsciiString, int> directly")
 typedef NCollection_IndexedDataMap<TCollection_AsciiString, int> Storage_PType;
 

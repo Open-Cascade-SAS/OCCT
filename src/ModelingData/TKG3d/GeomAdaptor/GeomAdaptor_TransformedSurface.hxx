@@ -104,7 +104,10 @@ public:
   //! Returns the underlying GeomAdaptor_Surface.
   Standard_DEPRECATED(
     "Use AdaptorSurfaceOriginal() instead to get the original surface without transformation")
-  const GeomAdaptor_Surface& Surface() const { return mySurf; }
+  const GeomAdaptor_Surface& Surface() const
+  {
+    return mySurf;
+  }
 
   //! Returns the underlying original GeomAdaptor_Surface without transformation applied.
   const GeomAdaptor_Surface& AdaptorSurfaceOriginal() const { return mySurf; }
@@ -121,7 +124,10 @@ public:
 
   //! Returns the underlying Geom_Surface.
   Standard_DEPRECATED("Use GeomSurfaceOriginal() or GeomSurfaceTransformed() instead")
-  const occ::handle<Geom_Surface>& GeomSurface() const { return GeomSurfaceOriginal(); }
+  const occ::handle<Geom_Surface>& GeomSurface() const
+  {
+    return GeomSurfaceOriginal();
+  }
 
   // Parameter range methods - delegate to underlying surface
   double FirstUParameter() const override { return mySurf.FirstUParameter(); }

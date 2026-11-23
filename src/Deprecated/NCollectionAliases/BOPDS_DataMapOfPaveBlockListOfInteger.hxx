@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED("BOPDS_DataMapOfPaveBlockListOfInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "BOPDS_DataMapOfPaveBlockListOfInteger is deprecated, use "
-    "NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, TColStd_ListOfInteger> directly")
+Standard_DEPRECATED(
+  "BOPDS_DataMapOfPaveBlockListOfInteger is deprecated, use "
+  "NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, TColStd_ListOfInteger> directly")
 typedef NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, TColStd_ListOfInteger>
   BOPDS_DataMapOfPaveBlockListOfInteger;
 Standard_DEPRECATED("BOPDS_DataMapIteratorOfDataMapOfPaveBlockListOfInteger is deprecated, use "

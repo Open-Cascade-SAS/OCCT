@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "FEmTool_ListOfVectors.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("FEmTool_ListOfVectors is deprecated, use "
+Standard_DEPRECATED("FEmTool_ListOfVectors is deprecated, use "
                       "NCollection_List<opencascade::handle<TColStd_HArray1OfReal>> directly")
 typedef NCollection_List<opencascade::handle<TColStd_HArray1OfReal>> FEmTool_ListOfVectors;
 Standard_DEPRECATED(

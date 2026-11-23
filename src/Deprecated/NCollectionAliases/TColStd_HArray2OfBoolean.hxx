@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HArray2OfBoolean.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray2<bool> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColStd_HArray2OfBoolean is deprecated, use NCollection_HArray2<bool> directly")
 typedef NCollection_HArray2<bool> TColStd_HArray2OfBoolean;
 

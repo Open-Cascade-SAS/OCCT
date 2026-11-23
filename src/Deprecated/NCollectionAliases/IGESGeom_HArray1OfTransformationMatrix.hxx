@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "IGESGeom_HArray1OfTransformationMatrix.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESGeom_TransformationMatrix>> directly.")
 
-  Standard_DEPRECATED(
-    "IGESGeom_HArray1OfTransformationMatrix is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<IGESGeom_TransformationMatrix>> directly")
+Standard_DEPRECATED(
+  "IGESGeom_HArray1OfTransformationMatrix is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<IGESGeom_TransformationMatrix>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESGeom_TransformationMatrix>>
   IGESGeom_HArray1OfTransformationMatrix;
 

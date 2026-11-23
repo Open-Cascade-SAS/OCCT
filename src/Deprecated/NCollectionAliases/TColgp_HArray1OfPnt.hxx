@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColgp_HArray1OfPnt.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<gp_Pnt> directly.")
 
-  Standard_DEPRECATED("TColgp_HArray1OfPnt is deprecated, use NCollection_HArray1<gp_Pnt> directly")
+Standard_DEPRECATED("TColgp_HArray1OfPnt is deprecated, use NCollection_HArray1<gp_Pnt> directly")
 typedef NCollection_HArray1<gp_Pnt> TColgp_HArray1OfPnt;
 
 #endif // _TColgp_HArray1OfPnt_hxx

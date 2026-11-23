@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "StepShape_HArray1OfFaceBound.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepShape_FaceBound>> directly.")
 
-  Standard_DEPRECATED("StepShape_HArray1OfFaceBound is deprecated, use "
+Standard_DEPRECATED("StepShape_HArray1OfFaceBound is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<StepShape_FaceBound>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepShape_FaceBound>> StepShape_HArray1OfFaceBound;
 

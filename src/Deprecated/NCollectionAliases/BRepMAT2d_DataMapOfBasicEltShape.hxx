@@ -27,9 +27,8 @@
 Standard_HEADER_DEPRECATED("BRepMAT2d_DataMapOfBasicEltShape.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "BRepMAT2d_DataMapOfBasicEltShape is deprecated, use "
-    "NCollection_DataMap<opencascade::handle<MAT_BasicElt>, TopoDS_Shape> directly")
+Standard_DEPRECATED("BRepMAT2d_DataMapOfBasicEltShape is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<MAT_BasicElt>, TopoDS_Shape> directly")
 typedef NCollection_DataMap<opencascade::handle<MAT_BasicElt>, TopoDS_Shape>
   BRepMAT2d_DataMapOfBasicEltShape;
 Standard_DEPRECATED(

@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerVector.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "MeshVS_DataMapOfIntegerVector is deprecated, use NCollection_DataMap<int, gp_Vec> directly")
-typedef NCollection_DataMap<int, gp_Vec> MeshVS_DataMapOfIntegerVector;
+typedef NCollection_DataMap<int, gp_Vec>           MeshVS_DataMapOfIntegerVector;
 Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerVector is deprecated, use "
                     "NCollection_DataMap<int, gp_Vec>::Iterator directly")
 typedef NCollection_DataMap<int, gp_Vec>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerVector;

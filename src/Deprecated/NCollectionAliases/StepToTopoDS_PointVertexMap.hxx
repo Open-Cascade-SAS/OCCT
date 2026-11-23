@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED(
   "StepToTopoDS_PointVertexMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "StepToTopoDS_PointVertexMap is deprecated, use "
-    "NCollection_DataMap<opencascade::handle<StepGeom_CartesianPoint>, TopoDS_Vertex> directly")
+Standard_DEPRECATED(
+  "StepToTopoDS_PointVertexMap is deprecated, use "
+  "NCollection_DataMap<opencascade::handle<StepGeom_CartesianPoint>, TopoDS_Vertex> directly")
 typedef NCollection_DataMap<opencascade::handle<StepGeom_CartesianPoint>, TopoDS_Vertex>
   StepToTopoDS_PointVertexMap;
 Standard_DEPRECATED("StepToTopoDS_DataMapIteratorOfPointVertexMap is deprecated, use "

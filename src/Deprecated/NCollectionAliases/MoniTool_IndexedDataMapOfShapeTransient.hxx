@@ -30,12 +30,11 @@ Standard_HEADER_DEPRECATED(
   "NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, "
   "TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED("MoniTool_IndexedDataMapOfShapeTransient is deprecated, use "
+Standard_DEPRECATED("MoniTool_IndexedDataMapOfShapeTransient is deprecated, use "
                       "NCollection_IndexedDataMap<TopoDS_Shape, "
                       "opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape,
                                    opencascade::handle<Standard_Transient>,
-                                   TopTools_ShapeMapHasher>
-  MoniTool_IndexedDataMapOfShapeTransient;
+                                   TopTools_ShapeMapHasher> MoniTool_IndexedDataMapOfShapeTransient;
 
 #endif // _MoniTool_IndexedDataMapOfShapeTransient_hxx

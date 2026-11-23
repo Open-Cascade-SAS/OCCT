@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_DataMapOfIntegerListOfInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TColStd_DataMapOfIntegerListOfInteger is deprecated, use "
+Standard_DEPRECATED("TColStd_DataMapOfIntegerListOfInteger is deprecated, use "
                       "NCollection_DataMap<int, TColStd_ListOfInteger> directly")
 typedef NCollection_DataMap<int, TColStd_ListOfInteger> TColStd_DataMapOfIntegerListOfInteger;
 Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger is deprecated, use "

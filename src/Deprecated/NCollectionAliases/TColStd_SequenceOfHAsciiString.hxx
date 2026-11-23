@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "TColStd_SequenceOfHAsciiString.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TCollection_HAsciiString>> directly.")
 
-  Standard_DEPRECATED(
-    "TColStd_SequenceOfHAsciiString is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<TCollection_HAsciiString>> directly")
+Standard_DEPRECATED("TColStd_SequenceOfHAsciiString is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<TCollection_HAsciiString>> directly")
 typedef NCollection_Sequence<opencascade::handle<TCollection_HAsciiString>>
   TColStd_SequenceOfHAsciiString;
 

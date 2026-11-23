@@ -25,7 +25,7 @@
 Standard_HEADER_DEPRECATED("TColStd_SequenceOfAddress.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<void*> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColStd_SequenceOfAddress is deprecated, use NCollection_Sequence<void*> directly")
 typedef NCollection_Sequence<void*> TColStd_SequenceOfAddress;
 

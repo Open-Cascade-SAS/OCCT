@@ -25,7 +25,7 @@
 Standard_HEADER_DEPRECATED("TColStd_IndexedMapOfReal.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_IndexedMap<double> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColStd_IndexedMapOfReal is deprecated, use NCollection_IndexedMap<double> directly")
 typedef NCollection_IndexedMap<double> TColStd_IndexedMapOfReal;
 

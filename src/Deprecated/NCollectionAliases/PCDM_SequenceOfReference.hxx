@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("PCDM_SequenceOfReference.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<PCDM_Reference> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "PCDM_SequenceOfReference is deprecated, use NCollection_Sequence<PCDM_Reference> directly")
 typedef NCollection_Sequence<PCDM_Reference> PCDM_SequenceOfReference;
 

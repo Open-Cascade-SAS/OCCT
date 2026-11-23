@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TopTools_DataMapOfIntegerShape.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("TopTools_DataMapOfIntegerShape is deprecated, use NCollection_DataMap<int, "
+Standard_DEPRECATED("TopTools_DataMapOfIntegerShape is deprecated, use NCollection_DataMap<int, "
                       "TopoDS_Shape> directly")
 typedef NCollection_DataMap<int, TopoDS_Shape> TopTools_DataMapOfIntegerShape;
 Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfIntegerShape is deprecated, use "

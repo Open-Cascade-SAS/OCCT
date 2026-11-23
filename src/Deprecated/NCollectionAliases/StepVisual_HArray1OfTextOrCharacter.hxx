@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("StepVisual_HArray1OfTextOrCharacter.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection_HArray1<StepVisual_TextOrCharacter> directly.")
 
-  Standard_DEPRECATED("StepVisual_HArray1OfTextOrCharacter is deprecated, use "
+Standard_DEPRECATED("StepVisual_HArray1OfTextOrCharacter is deprecated, use "
                       "NCollection_HArray1<StepVisual_TextOrCharacter> directly")
 typedef NCollection_HArray1<StepVisual_TextOrCharacter> StepVisual_HArray1OfTextOrCharacter;
 

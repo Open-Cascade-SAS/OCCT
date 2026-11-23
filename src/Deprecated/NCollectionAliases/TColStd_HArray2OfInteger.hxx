@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HArray2OfInteger.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray2<int> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColStd_HArray2OfInteger is deprecated, use NCollection_HArray2<int> directly")
 typedef NCollection_HArray2<int> TColStd_HArray2OfInteger;
 

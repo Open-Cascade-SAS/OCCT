@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "TDF_DeltaList.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TDF_DeltaList is deprecated, use NCollection_List<opencascade::handle<TDF_Delta>> directly")
-typedef NCollection_List<opencascade::handle<TDF_Delta>> TDF_DeltaList;
+typedef NCollection_List<opencascade::handle<TDF_Delta>>           TDF_DeltaList;
 Standard_DEPRECATED("TDF_ListIteratorOfDeltaList is deprecated, use "
                     "NCollection_List<opencascade::handle<TDF_Delta>>::Iterator directly")
 typedef NCollection_List<opencascade::handle<TDF_Delta>>::Iterator TDF_ListIteratorOfDeltaList;

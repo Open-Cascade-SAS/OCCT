@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
   "opencascade::handle<Transfer_Binder>> directly.")
 
-  Standard_DEPRECATED("Transfer_TransferMapOfProcessForTransient is deprecated, use "
-                      "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
-                      "opencascade::handle<Transfer_Binder>> directly")
+Standard_DEPRECATED("Transfer_TransferMapOfProcessForTransient is deprecated, use "
+                    "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
+                    "opencascade::handle<Transfer_Binder>> directly")
 typedef NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>,
                                    opencascade::handle<Transfer_Binder>>
   Transfer_TransferMapOfProcessForTransient;

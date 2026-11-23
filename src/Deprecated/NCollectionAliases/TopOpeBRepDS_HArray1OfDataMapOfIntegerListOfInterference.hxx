@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference.hxx is deprecated since OCCT 8.0.0. "
   "Use NCollection_HArray1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly.")
 
-  Standard_DEPRECATED(
-    "TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference is deprecated, use "
-    "NCollection_HArray1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly")
+Standard_DEPRECATED("TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference is deprecated, use "
+                    "NCollection_HArray1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly")
 typedef NCollection_HArray1<TopOpeBRepDS_DataMapOfIntegerListOfInterference>
   TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference;
 

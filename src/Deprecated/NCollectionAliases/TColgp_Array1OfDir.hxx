@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "TColgp_Array1OfDir.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Dir> directly.")
 
-  Standard_DEPRECATED("TColgp_Array1OfDir is deprecated, use NCollection_Array1<gp_Dir> directly")
+Standard_DEPRECATED("TColgp_Array1OfDir is deprecated, use NCollection_Array1<gp_Dir> directly")
 typedef NCollection_Array1<gp_Dir> TColgp_Array1OfDir;
 
 #endif // _TColgp_Array1OfDir_hxx

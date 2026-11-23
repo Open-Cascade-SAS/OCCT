@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("HatchGen_Domains.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<HatchGen_Domain> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "HatchGen_Domains is deprecated, use NCollection_Sequence<HatchGen_Domain> directly")
 typedef NCollection_Sequence<HatchGen_Domain> HatchGen_Domains;
 

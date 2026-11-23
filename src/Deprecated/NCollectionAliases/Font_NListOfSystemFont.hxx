@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Font_NListOfSystemFont.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_List<opencascade::handle<Font_SystemFont>> directly.")
 
-  Standard_DEPRECATED("Font_NListOfSystemFont is deprecated, use "
+Standard_DEPRECATED("Font_NListOfSystemFont is deprecated, use "
                       "NCollection_List<opencascade::handle<Font_SystemFont>> directly")
 typedef NCollection_List<opencascade::handle<Font_SystemFont>> Font_NListOfSystemFont;
 

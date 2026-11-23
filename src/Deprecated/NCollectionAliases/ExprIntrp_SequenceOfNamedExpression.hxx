@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "ExprIntrp_SequenceOfNamedExpression.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly.")
 
-  Standard_DEPRECATED("ExprIntrp_SequenceOfNamedExpression is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly")
+Standard_DEPRECATED("ExprIntrp_SequenceOfNamedExpression is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly")
 typedef NCollection_Sequence<opencascade::handle<Expr_NamedExpression>>
   ExprIntrp_SequenceOfNamedExpression;
 

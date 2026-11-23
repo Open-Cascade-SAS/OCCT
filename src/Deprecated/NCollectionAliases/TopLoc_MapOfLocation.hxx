@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "TopLoc_MapOfLocation.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TopLoc_MapOfLocation is deprecated, use NCollection_Map<TopLoc_Location> directly")
-typedef NCollection_Map<TopLoc_Location> TopLoc_MapOfLocation;
+typedef NCollection_Map<TopLoc_Location>           TopLoc_MapOfLocation;
 Standard_DEPRECATED("TopLoc_MapIteratorOfMapOfLocation is deprecated, use "
                     "NCollection_Map<TopLoc_Location>::Iterator directly")
 typedef NCollection_Map<TopLoc_Location>::Iterator TopLoc_MapIteratorOfMapOfLocation;

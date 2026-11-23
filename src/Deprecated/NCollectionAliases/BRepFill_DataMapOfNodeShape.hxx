@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED(
   "BRepFill_DataMapOfNodeShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("BRepFill_DataMapOfNodeShape is deprecated, use "
-                      "NCollection_DataMap<opencascade::handle<MAT_Node>, TopoDS_Shape> directly")
+Standard_DEPRECATED("BRepFill_DataMapOfNodeShape is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<MAT_Node>, TopoDS_Shape> directly")
 typedef NCollection_DataMap<opencascade::handle<MAT_Node>, TopoDS_Shape>
   BRepFill_DataMapOfNodeShape;
 Standard_DEPRECATED(

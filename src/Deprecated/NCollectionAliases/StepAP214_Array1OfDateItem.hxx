@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepAP214_Array1OfDateItem.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<StepAP214_DateItem> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "StepAP214_Array1OfDateItem is deprecated, use NCollection_Array1<StepAP214_DateItem> directly")
 typedef NCollection_Array1<StepAP214_DateItem> StepAP214_Array1OfDateItem;
 

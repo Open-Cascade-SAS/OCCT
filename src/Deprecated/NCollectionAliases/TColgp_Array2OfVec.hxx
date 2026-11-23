@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "TColgp_Array2OfVec.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array2<gp_Vec> directly.")
 
-  Standard_DEPRECATED("TColgp_Array2OfVec is deprecated, use NCollection_Array2<gp_Vec> directly")
+Standard_DEPRECATED("TColgp_Array2OfVec is deprecated, use NCollection_Array2<gp_Vec> directly")
 typedef NCollection_Array2<gp_Vec> TColgp_Array2OfVec;
 
 #endif // _TColgp_Array2OfVec_hxx

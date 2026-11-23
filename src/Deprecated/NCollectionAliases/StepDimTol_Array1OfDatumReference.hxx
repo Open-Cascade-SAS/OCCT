@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepDimTol_Array1OfDatumReference.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepDimTol_DatumReference>> directly.")
 
-  Standard_DEPRECATED("StepDimTol_Array1OfDatumReference is deprecated, use "
-                      "NCollection_Array1<opencascade::handle<StepDimTol_DatumReference>> directly")
+Standard_DEPRECATED("StepDimTol_Array1OfDatumReference is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<StepDimTol_DatumReference>> directly")
 typedef NCollection_Array1<opencascade::handle<StepDimTol_DatumReference>>
   StepDimTol_Array1OfDatumReference;
 

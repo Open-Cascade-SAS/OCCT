@@ -6566,7 +6566,7 @@ Fast_failed1:
       b = multadd(b, 10, 0 MTb);
     }
 
-  /* Round off last digit */
+    /* Round off last digit */
 
   #ifdef Honor_FLT_ROUNDS
   if (mode > 1)

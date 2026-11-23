@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColgp_HSequenceOfXY.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HSequence<gp_XY> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColgp_HSequenceOfXY is deprecated, use NCollection_HSequence<gp_XY> directly")
 typedef NCollection_HSequence<gp_XY> TColgp_HSequenceOfXY;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfShapeInfo.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<BOPDS_ShapeInfo> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BOPDS_VectorOfShapeInfo is deprecated, use NCollection_DynamicArray<BOPDS_ShapeInfo> directly")
 typedef NCollection_DynamicArray<BOPDS_ShapeInfo> BOPDS_VectorOfShapeInfo;
 

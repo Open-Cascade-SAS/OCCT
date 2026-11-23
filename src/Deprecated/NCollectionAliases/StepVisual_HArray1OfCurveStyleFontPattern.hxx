@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepVisual_HArray1OfCurveStyleFontPattern.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly.")
 
-  Standard_DEPRECATED(
-    "StepVisual_HArray1OfCurveStyleFontPattern is deprecated, use "
-    "NCollection_HArray1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly")
+Standard_DEPRECATED(
+  "StepVisual_HArray1OfCurveStyleFontPattern is deprecated, use "
+  "NCollection_HArray1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepVisual_CurveStyleFontPattern>>
   StepVisual_HArray1OfCurveStyleFontPattern;
 

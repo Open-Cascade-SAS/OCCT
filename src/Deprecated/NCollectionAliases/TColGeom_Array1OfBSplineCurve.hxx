@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColGeom_Array1OfBSplineCurve.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<opencascade::handle<Geom_BSplineCurve>> directly.")
 
-  Standard_DEPRECATED("TColGeom_Array1OfBSplineCurve is deprecated, use "
+Standard_DEPRECATED("TColGeom_Array1OfBSplineCurve is deprecated, use "
                       "NCollection_Array1<opencascade::handle<Geom_BSplineCurve>> directly")
 typedef NCollection_Array1<opencascade::handle<Geom_BSplineCurve>> TColGeom_Array1OfBSplineCurve;
 

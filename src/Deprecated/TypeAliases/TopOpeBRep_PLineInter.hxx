@@ -29,7 +29,7 @@ class TopOpeBRep_LineInter;
 Standard_HEADER_DEPRECATED("TopOpeBRep_PLineInter.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TopOpeBRep_PLineInter is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TopOpeBRep_PLineInter is deprecated, use the underlying type directly")
 typedef TopOpeBRep_LineInter* TopOpeBRep_PLineInter;
 
 #endif // _TopOpeBRep_PLineInter_HeaderFile

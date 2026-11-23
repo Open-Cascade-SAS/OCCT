@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "ChFiDS_ListOfHElSpine.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("ChFiDS_ListOfHElSpine is deprecated, use "
+Standard_DEPRECATED("ChFiDS_ListOfHElSpine is deprecated, use "
                       "NCollection_List<opencascade::handle<ChFiDS_ElSpine>> directly")
 typedef NCollection_List<opencascade::handle<ChFiDS_ElSpine>> ChFiDS_ListOfHElSpine;
 Standard_DEPRECATED("ChFiDS_ListIteratorOfListOfHElSpine is deprecated, use "

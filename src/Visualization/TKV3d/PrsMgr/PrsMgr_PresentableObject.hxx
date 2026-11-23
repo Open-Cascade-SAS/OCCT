@@ -570,7 +570,7 @@ public: //! @name simplified presentation properties API
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 public: //! @name deprecated methods
-  //! gives the list of modes which are flagged "to be updated".
+        //! gives the list of modes which are flagged "to be updated".
   Standard_DEPRECATED("This method is deprecated - UpdatePresentations() should be called instead")
   Standard_EXPORT void ToBeUpdated(NCollection_List<int>& ListOfMode) const;
 

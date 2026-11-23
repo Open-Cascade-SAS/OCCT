@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "StepAP214_Array1OfAutoDesignGroupedItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepAP214_AutoDesignGroupedItem> directly.")
 
-  Standard_DEPRECATED("StepAP214_Array1OfAutoDesignGroupedItem is deprecated, use "
+Standard_DEPRECATED("StepAP214_Array1OfAutoDesignGroupedItem is deprecated, use "
                       "NCollection_Array1<StepAP214_AutoDesignGroupedItem> directly")
 typedef NCollection_Array1<StepAP214_AutoDesignGroupedItem> StepAP214_Array1OfAutoDesignGroupedItem;
 

@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "TDF_LabelDoubleMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TDF_LabelDoubleMap is deprecated, use NCollection_DoubleMap<TDF_Label, TDF_Label> directly")
-typedef NCollection_DoubleMap<TDF_Label, TDF_Label> TDF_LabelDoubleMap;
+typedef NCollection_DoubleMap<TDF_Label, TDF_Label>           TDF_LabelDoubleMap;
 Standard_DEPRECATED("TDF_DoubleMapIteratorOfLabelDoubleMap is deprecated, use "
                     "NCollection_DoubleMap<TDF_Label, TDF_Label>::Iterator directly")
 typedef NCollection_DoubleMap<TDF_Label, TDF_Label>::Iterator TDF_DoubleMapIteratorOfLabelDoubleMap;

@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("StdStorage_MapOfTypes.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_IndexedDataMap<TCollection_AsciiString, int> directly.")
 
-  Standard_DEPRECATED("StdStorage_MapOfTypes is deprecated, use "
+Standard_DEPRECATED("StdStorage_MapOfTypes is deprecated, use "
                       "NCollection_IndexedDataMap<TCollection_AsciiString, int> directly")
 typedef NCollection_IndexedDataMap<TCollection_AsciiString, int> StdStorage_MapOfTypes;
 

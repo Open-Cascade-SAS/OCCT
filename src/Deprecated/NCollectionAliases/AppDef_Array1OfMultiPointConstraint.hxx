@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("AppDef_Array1OfMultiPointConstraint.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection_Array1<AppDef_MultiPointConstraint> directly.")
 
-  Standard_DEPRECATED("AppDef_Array1OfMultiPointConstraint is deprecated, use "
+Standard_DEPRECATED("AppDef_Array1OfMultiPointConstraint is deprecated, use "
                       "NCollection_Array1<AppDef_MultiPointConstraint> directly")
 typedef NCollection_Array1<AppDef_MultiPointConstraint> AppDef_Array1OfMultiPointConstraint;
 

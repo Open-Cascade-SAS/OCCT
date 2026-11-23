@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "StepRepr_Array1OfShapeAspect.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepRepr_ShapeAspect>> directly.")
 
-  Standard_DEPRECATED("StepRepr_Array1OfShapeAspect is deprecated, use "
+Standard_DEPRECATED("StepRepr_Array1OfShapeAspect is deprecated, use "
                       "NCollection_Array1<opencascade::handle<StepRepr_ShapeAspect>> directly")
 typedef NCollection_Array1<opencascade::handle<StepRepr_ShapeAspect>> StepRepr_Array1OfShapeAspect;
 

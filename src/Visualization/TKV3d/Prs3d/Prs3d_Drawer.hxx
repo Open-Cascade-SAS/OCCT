@@ -889,19 +889,34 @@ public:
 
 public: //! @name deprecated methods
   Standard_DEPRECATED("SetDeviationAngle() should be used instead")
-  void SetHLRAngle(const double theAngle) { SetDeviationAngle(theAngle); }
+  void SetHLRAngle(const double theAngle)
+  {
+    SetDeviationAngle(theAngle);
+  }
 
   Standard_DEPRECATED("DeviationAngle() should be used instead")
-  double HLRAngle() const { return DeviationAngle(); }
+  double HLRAngle() const
+  {
+    return DeviationAngle();
+  }
 
   Standard_DEPRECATED("SetDeviationAngle() should be used instead")
-  void SetHLRAngle() { SetDeviationAngle(); }
+  void SetHLRAngle()
+  {
+    SetDeviationAngle();
+  }
 
   Standard_DEPRECATED("HasOwnDeviationAngle() should be used instead")
-  bool HasOwnHLRDeviationAngle() const { return HasOwnDeviationAngle(); }
+  bool HasOwnHLRDeviationAngle() const
+  {
+    return HasOwnDeviationAngle();
+  }
 
   Standard_DEPRECATED("PreviousDeviationAngle() should be used instead")
-  double PreviousHLRDeviationAngle() const { return PreviousDeviationAngle(); }
+  double PreviousHLRDeviationAngle() const
+  {
+    return PreviousDeviationAngle();
+  }
 
 protected:
   occ::handle<Prs3d_Drawer> myLink;

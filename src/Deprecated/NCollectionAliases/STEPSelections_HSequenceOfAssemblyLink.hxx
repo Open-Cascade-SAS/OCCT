@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "STEPSelections_HSequenceOfAssemblyLink.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HSequence<opencascade::handle<STEPSelections_AssemblyLink>> directly.")
 
-  Standard_DEPRECATED(
-    "STEPSelections_HSequenceOfAssemblyLink is deprecated, use "
-    "NCollection_HSequence<opencascade::handle<STEPSelections_AssemblyLink>> directly")
+Standard_DEPRECATED(
+  "STEPSelections_HSequenceOfAssemblyLink is deprecated, use "
+  "NCollection_HSequence<opencascade::handle<STEPSelections_AssemblyLink>> directly")
 typedef NCollection_HSequence<opencascade::handle<STEPSelections_AssemblyLink>>
   STEPSelections_HSequenceOfAssemblyLink;
 

@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED(
   "StdStorage_MapOfRoots.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "StdStorage_MapOfRoots is deprecated, use NCollection_IndexedDataMap<TCollection_AsciiString, "
-    "opencascade::handle<StdStorage_Root>> directly")
+Standard_DEPRECATED(
+  "StdStorage_MapOfRoots is deprecated, use NCollection_IndexedDataMap<TCollection_AsciiString, "
+  "opencascade::handle<StdStorage_Root>> directly")
 typedef NCollection_IndexedDataMap<TCollection_AsciiString, opencascade::handle<StdStorage_Root>>
   StdStorage_MapOfRoots;
 Standard_DEPRECATED("StdStorage_DataMapIteratorOfMapOfRoots is deprecated, use "

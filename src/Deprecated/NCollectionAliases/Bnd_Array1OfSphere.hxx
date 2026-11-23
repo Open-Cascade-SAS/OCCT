@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Bnd_Array1OfSphere.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<Bnd_Sphere> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Bnd_Array1OfSphere is deprecated, use NCollection_Array1<Bnd_Sphere> directly")
 typedef NCollection_Array1<Bnd_Sphere> Bnd_Array1OfSphere;
 

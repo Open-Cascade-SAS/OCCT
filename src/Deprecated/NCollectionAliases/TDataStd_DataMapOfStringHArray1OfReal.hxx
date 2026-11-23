@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringHArray1OfReal.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDataStd_DataMapOfStringHArray1OfReal is deprecated, use "
-                      "NCollection_DataMap<TCollection_ExtendedString, "
-                      "opencascade::handle<TColStd_HArray1OfReal>> directly")
+Standard_DEPRECATED("TDataStd_DataMapOfStringHArray1OfReal is deprecated, use "
+                    "NCollection_DataMap<TCollection_ExtendedString, "
+                    "opencascade::handle<TColStd_HArray1OfReal>> directly")
 typedef NCollection_DataMap<TCollection_ExtendedString, opencascade::handle<TColStd_HArray1OfReal>>
   TDataStd_DataMapOfStringHArray1OfReal;
 Standard_DEPRECATED("TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal is deprecated, use "

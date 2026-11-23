@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "IGESDraw_HArray1OfViewKindEntity.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<IGESData_ViewKindEntity>> directly.")
 
-  Standard_DEPRECATED("IGESDraw_HArray1OfViewKindEntity is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<IGESData_ViewKindEntity>> directly")
+Standard_DEPRECATED("IGESDraw_HArray1OfViewKindEntity is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<IGESData_ViewKindEntity>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESData_ViewKindEntity>>
   IGESDraw_HArray1OfViewKindEntity;
 

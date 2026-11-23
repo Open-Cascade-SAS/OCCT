@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TopOpeBRepBuild_ListOfShapeListOfShape.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TopOpeBRepBuild_ListOfShapeListOfShape is deprecated, use "
+Standard_DEPRECATED("TopOpeBRepBuild_ListOfShapeListOfShape is deprecated, use "
                       "NCollection_List<TopOpeBRepBuild_ShapeListOfShape> directly")
 typedef NCollection_List<TopOpeBRepBuild_ShapeListOfShape> TopOpeBRepBuild_ListOfShapeListOfShape;
 Standard_DEPRECATED("TopOpeBRepBuild_ListIteratorOfListOfShapeListOfShape is deprecated, use "

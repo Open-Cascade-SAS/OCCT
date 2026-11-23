@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED(
   "XCAFDoc_DataMapOfShapeLabel.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "XCAFDoc_DataMapOfShapeLabel is deprecated, use NCollection_DataMap<TopoDS_Shape, TDF_Label, "
-    "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "XCAFDoc_DataMapOfShapeLabel is deprecated, use NCollection_DataMap<TopoDS_Shape, TDF_Label, "
+  "TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>
   XCAFDoc_DataMapOfShapeLabel;
 Standard_DEPRECATED(

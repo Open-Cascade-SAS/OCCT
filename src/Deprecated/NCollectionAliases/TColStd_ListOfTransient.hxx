@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "TColStd_ListOfTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TColStd_ListOfTransient is deprecated, use "
+Standard_DEPRECATED("TColStd_ListOfTransient is deprecated, use "
                       "NCollection_List<opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_List<opencascade::handle<Standard_Transient>> TColStd_ListOfTransient;
 Standard_DEPRECATED("TColStd_ListIteratorOfListOfTransient is deprecated, use "

@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepBasic_Array1OfDerivedUnitElement.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepBasic_DerivedUnitElement>> directly.")
 
-  Standard_DEPRECATED(
-    "StepBasic_Array1OfDerivedUnitElement is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepBasic_DerivedUnitElement>> directly")
+Standard_DEPRECATED(
+  "StepBasic_Array1OfDerivedUnitElement is deprecated, use "
+  "NCollection_Array1<opencascade::handle<StepBasic_DerivedUnitElement>> directly")
 typedef NCollection_Array1<opencascade::handle<StepBasic_DerivedUnitElement>>
   StepBasic_Array1OfDerivedUnitElement;
 

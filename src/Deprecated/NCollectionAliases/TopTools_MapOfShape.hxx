@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "TopTools_MapOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TopTools_MapOfShape is deprecated, use NCollection_Map<TopoDS_Shape, "
+Standard_DEPRECATED("TopTools_MapOfShape is deprecated, use NCollection_Map<TopoDS_Shape, "
                       "TopTools_ShapeMapHasher> directly")
 typedef NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> TopTools_MapOfShape;
 Standard_DEPRECATED("TopTools_MapIteratorOfMapOfShape is deprecated, use "

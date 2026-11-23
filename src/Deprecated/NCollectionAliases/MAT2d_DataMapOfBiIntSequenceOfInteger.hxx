@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED("MAT2d_DataMapOfBiIntSequenceOfInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("MAT2d_DataMapOfBiIntSequenceOfInteger is deprecated, use "
-                      "NCollection_DataMap<MAT2d_BiInt, TColStd_SequenceOfInteger> directly")
+Standard_DEPRECATED("MAT2d_DataMapOfBiIntSequenceOfInteger is deprecated, use "
+                    "NCollection_DataMap<MAT2d_BiInt, TColStd_SequenceOfInteger> directly")
 typedef NCollection_DataMap<MAT2d_BiInt, TColStd_SequenceOfInteger>
   MAT2d_DataMapOfBiIntSequenceOfInteger;
 Standard_DEPRECATED(

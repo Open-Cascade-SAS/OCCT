@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "TColGeom2d_HSequenceOfBoundedCurve.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HSequence<opencascade::handle<Geom2d_BoundedCurve>> directly.")
 
-  Standard_DEPRECATED("TColGeom2d_HSequenceOfBoundedCurve is deprecated, use "
-                      "NCollection_HSequence<opencascade::handle<Geom2d_BoundedCurve>> directly")
+Standard_DEPRECATED("TColGeom2d_HSequenceOfBoundedCurve is deprecated, use "
+                    "NCollection_HSequence<opencascade::handle<Geom2d_BoundedCurve>> directly")
 typedef NCollection_HSequence<opencascade::handle<Geom2d_BoundedCurve>>
   TColGeom2d_HSequenceOfBoundedCurve;
 

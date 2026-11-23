@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepFEA_Array1OfCurveElementInterval.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepFEA_CurveElementInterval>> directly.")
 
-  Standard_DEPRECATED(
-    "StepFEA_Array1OfCurveElementInterval is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepFEA_CurveElementInterval>> directly")
+Standard_DEPRECATED(
+  "StepFEA_Array1OfCurveElementInterval is deprecated, use "
+  "NCollection_Array1<opencascade::handle<StepFEA_CurveElementInterval>> directly")
 typedef NCollection_Array1<opencascade::handle<StepFEA_CurveElementInterval>>
   StepFEA_Array1OfCurveElementInterval;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("AppParCurves_Array1OfMultiPoint.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Array1<AppParCurves_MultiPoint> directly.")
 
-  Standard_DEPRECATED("AppParCurves_Array1OfMultiPoint is deprecated, use "
+Standard_DEPRECATED("AppParCurves_Array1OfMultiPoint is deprecated, use "
                       "NCollection_Array1<AppParCurves_MultiPoint> directly")
 typedef NCollection_Array1<AppParCurves_MultiPoint> AppParCurves_Array1OfMultiPoint;
 

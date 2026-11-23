@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("BOPDS_DataMapOfShapeCoupleOfPaveBlocks.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "BOPDS_DataMapOfShapeCoupleOfPaveBlocks is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "BOPDS_DataMapOfShapeCoupleOfPaveBlocks is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
   BOPDS_DataMapOfShapeCoupleOfPaveBlocks;
 Standard_DEPRECATED("BOPDS_DataMapIteratorOfDataMapOfShapeCoupleOfPaveBlocks is deprecated, use "

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("AIS_NListOfEntityOwner.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_List<opencascade::handle<SelectMgr_EntityOwner>> directly.")
 
-  Standard_DEPRECATED("AIS_NListOfEntityOwner is deprecated, use "
+Standard_DEPRECATED("AIS_NListOfEntityOwner is deprecated, use "
                       "NCollection_List<opencascade::handle<SelectMgr_EntityOwner>> directly")
 typedef NCollection_List<opencascade::handle<SelectMgr_EntityOwner>> AIS_NListOfEntityOwner;
 

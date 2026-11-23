@@ -1,5 +1,5 @@
 name: 'Clang-Format Code Check'
-description: 'Check code formatting of changed files using clang-format'
+description: 'Check code formatting of all tracked source files using clang-format'
 inputs:
   base-ref:
     description: 'Base reference to compare changes against'
@@ -22,16 +22,26 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Install clang-format
+      shell: pwsh
+      env:
+        CLANG_FORMAT_VERSION: ${{ inputs.clang-format-version }}
+      run: |
+        $installDir = Join-Path $env:RUNNER_TEMP 'clang-format'
+        python3 -m pip install --only-binary=:all: --no-deps --target $installDir "clang-format==$env:CLANG_FORMAT_VERSION"
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Join-Path $installDir 'clang_format/data/bin' >> $env:GITHUB_PATH
+
     - name: Check clang-format version
       shell: pwsh
+      env:
+        CLANG_FORMAT_VERSION: ${{ inputs.clang-format-version }}
       run: |
         $version = clang-format --version
         Write-Output "Detected clang-format version: $version"
-        $version | Select-String "${{ inputs.clang-format-version }}" >$null
-        if ($LASTEXITCODE -ne 0) {
-          echo "::error::Wrong clang-format version. Expected ${{ inputs.clang-format-version }}"
-          Write-Output "Error: Version mismatch - expected ${{ inputs.clang-format-version }}"
-          exit 1
+        $expected = [regex]::Escape($env:CLANG_FORMAT_VERSION)
+        if ($LASTEXITCODE -ne 0 -or $version -notmatch "\bversion $expected(?=\s|$)") {
+          throw "Expected clang-format $env:CLANG_FORMAT_VERSION"
         }
 
     - name: Get changed files
@@ -53,13 +63,22 @@ runs:
       run: |
         python3 .github/actions/scripts/validate-license.py --file-list changed_files.txt --fix
 
-    - name: Check formatting
-      if: steps.changed-files.outputs.has_files == 'true'
+    - name: Check formatting across the codebase
       shell: pwsh
       run: |
-        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
-        $files | ForEach-Object -ThrottleLimit 8 -Parallel {
-          clang-format -i -style=file $_
+        $files = @(git ls-files | Where-Object { $_ -match '${{ inputs.file-pattern }}' })
+        $batchSize = [int][Math]::Ceiling($files.Count / 8)
+        $batches = @(for ($start = 0; $start -lt $files.Count; $start += $batchSize) {
+          $end = [Math]::Min($start + $batchSize, $files.Count) - 1
+          $list = Join-Path $env:RUNNER_TEMP "clang-format-$start.txt"
+          [IO.File]::WriteAllText($list, ($files[$start..$end] -join "`n"))
+          $list
+        })
+        $exitCodes = @($batches | ForEach-Object -ThrottleLimit 8 -Parallel {
+          (Start-Process clang-format "-i -style=file --files=`"$_`"" -NoNewWindow -Wait -PassThru).ExitCode
+        })
+        if ($exitCodes.Count -ne $batches.Count -or ($exitCodes -ne 0)) {
+          throw 'clang-format failed'
         }
 
     - name: Clean up duplicate includes
@@ -77,23 +96,8 @@ runs:
           clang-format -i -style=file $_
         }
 
-    - name: Remove empty lines after Standard_DEPRECATED
-      if: steps.changed-files.outputs.has_files == 'true'
-      shell: pwsh
-      run: |
-        $files = Get-Content "changed_files.txt" | Where-Object { Test-Path $_ }
-        $files | ForEach-Object {
-          $content = Get-Content $_ -Raw
-          $pattern = '(Standard_DEPRECATED\s*\(\s*"[^"]*"(?:\s*"[^"]*")*\s*\)\n)\n+'
-          $newContent = $content -replace $pattern, '$1'
-          if ($content -ne $newContent) {
-            Set-Content -Path $_ -Value $newContent -NoNewline
-          }
-        }
-
     - name: Check git status
       id: git-check
-      if: steps.changed-files.outputs.has_files == 'true'
       shell: pwsh
       run: |
         git diff > format.patch

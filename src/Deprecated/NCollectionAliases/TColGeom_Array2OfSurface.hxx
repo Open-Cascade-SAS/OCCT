@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TColGeom_Array2OfSurface.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array2<opencascade::handle<Geom_Surface>> directly.")
 
-  Standard_DEPRECATED("TColGeom_Array2OfSurface is deprecated, use "
+Standard_DEPRECATED("TColGeom_Array2OfSurface is deprecated, use "
                       "NCollection_Array2<opencascade::handle<Geom_Surface>> directly")
 typedef NCollection_Array2<opencascade::handle<Geom_Surface>> TColGeom_Array2OfSurface;
 

@@ -42,7 +42,8 @@
 //=============================================================================
 // Creation d' une line de prostep a partir d' une Lin de gp
 //=============================================================================
-GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin& L, const StepData_Factors& theLocalFactors){
+GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin& L, const StepData_Factors& theLocalFactors)
+{
 #define Vec_gen gp_Vec
 #include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
@@ -52,8 +53,8 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin& L, const StepData_Factors
 // Creation d' une line de prostep a partir d' une Lin2d de gp
 //=============================================================================
 
-GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin2d&         L,
-                                         const StepData_Factors& theLocalFactors){
+GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin2d& L, const StepData_Factors& theLocalFactors)
+{
 #define Vec_gen gp_Vec2d
 #include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen

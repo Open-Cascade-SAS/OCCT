@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "GeomFill_HArray1OfSectionLaw.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<GeomFill_SectionLaw>> directly.")
 
-  Standard_DEPRECATED("GeomFill_HArray1OfSectionLaw is deprecated, use "
+Standard_DEPRECATED("GeomFill_HArray1OfSectionLaw is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<GeomFill_SectionLaw>> directly")
 typedef NCollection_HArray1<opencascade::handle<GeomFill_SectionLaw>> GeomFill_HArray1OfSectionLaw;
 

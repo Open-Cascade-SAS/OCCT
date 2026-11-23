@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "Convert_SequenceOfArray1OfPoles2d.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly.")
 
-  Standard_DEPRECATED("Convert_SequenceOfArray1OfPoles2d is deprecated, use "
-                      "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly")
+Standard_DEPRECATED("Convert_SequenceOfArray1OfPoles2d is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly")
 typedef NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>>
   Convert_SequenceOfArray1OfPoles2d;
 

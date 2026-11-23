@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepRepr_Array1OfRepresentationItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly.")
 
-  Standard_DEPRECATED(
-    "StepRepr_Array1OfRepresentationItem is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly")
+Standard_DEPRECATED("StepRepr_Array1OfRepresentationItem is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly")
 typedef NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>>
   StepRepr_Array1OfRepresentationItem;
 

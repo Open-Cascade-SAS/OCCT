@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Extrema_Array2OfPOnCurv2d.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array2<Extrema_POnCurv2d> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Extrema_Array2OfPOnCurv2d is deprecated, use NCollection_Array2<Extrema_POnCurv2d> directly")
 typedef NCollection_Array2<Extrema_POnCurv2d> Extrema_Array2OfPOnCurv2d;
 

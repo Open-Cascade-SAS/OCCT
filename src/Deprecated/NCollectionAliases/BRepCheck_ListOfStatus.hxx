@@ -27,12 +27,12 @@
 Standard_HEADER_DEPRECATED(
   "BRepCheck_ListOfStatus.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "BRepCheck_ListOfStatus is deprecated, use NCollection_List<BRepCheck_Status> directly")
-typedef NCollection_List<BRepCheck_Status> BRepCheck_ListOfStatus;
+typedef NCollection_List<BRepCheck_Status>           BRepCheck_ListOfStatus;
 Standard_DEPRECATED(
   "BRepCheck_HListOfStatus is deprecated, use NCollection_Shared<BRepCheck_ListOfStatus> directly")
-typedef NCollection_Shared<BRepCheck_ListOfStatus> BRepCheck_HListOfStatus;
+typedef NCollection_Shared<BRepCheck_ListOfStatus>   BRepCheck_HListOfStatus;
 Standard_DEPRECATED("BRepCheck_ListIteratorOfListOfStatus is deprecated, use "
                     "NCollection_List<BRepCheck_Status>::Iterator directly")
 typedef NCollection_List<BRepCheck_Status>::Iterator BRepCheck_ListIteratorOfListOfStatus;

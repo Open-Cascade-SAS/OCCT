@@ -29,7 +29,7 @@ class TopOpeBRepBuild_GTopo;
 Standard_HEADER_DEPRECATED("TopOpeBRepBuild_PGTopo.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TopOpeBRepBuild_PGTopo is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TopOpeBRepBuild_PGTopo is deprecated, use the underlying type directly")
 typedef TopOpeBRepBuild_GTopo* TopOpeBRepBuild_PGTopo;
 
 #endif // _TopOpeBRepBuild_PGTopo_HeaderFile

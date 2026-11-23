@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "Storage_HPArray.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<Standard_Persistent>> directly.")
 
-  Standard_DEPRECATED("Storage_HPArray is deprecated, use "
+Standard_DEPRECATED("Storage_HPArray is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<Standard_Persistent>> directly")
 typedef NCollection_HArray1<opencascade::handle<Standard_Persistent>> Storage_HPArray;
 

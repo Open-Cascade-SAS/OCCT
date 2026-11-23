@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("AppParCurves_SequenceOfMultiCurve.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Sequence<AppParCurves_MultiCurve> directly.")
 
-  Standard_DEPRECATED("AppParCurves_SequenceOfMultiCurve is deprecated, use "
+Standard_DEPRECATED("AppParCurves_SequenceOfMultiCurve is deprecated, use "
                       "NCollection_Sequence<AppParCurves_MultiCurve> directly")
 typedef NCollection_Sequence<AppParCurves_MultiCurve> AppParCurves_SequenceOfMultiCurve;
 

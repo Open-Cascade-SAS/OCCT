@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "StepElement_HSequenceOfSurfaceElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HSequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly.")
 
-  Standard_DEPRECATED(
-    "StepElement_HSequenceOfSurfaceElementPurposeMember is deprecated, use "
-    "NCollection_HSequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly")
+Standard_DEPRECATED(
+  "StepElement_HSequenceOfSurfaceElementPurposeMember is deprecated, use "
+  "NCollection_HSequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly")
 typedef NCollection_HSequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>>
   StepElement_HSequenceOfSurfaceElementPurposeMember;
 

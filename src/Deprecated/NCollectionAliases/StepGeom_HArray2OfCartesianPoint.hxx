@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepGeom_HArray2OfCartesianPoint.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray2<opencascade::handle<StepGeom_CartesianPoint>> directly.")
 
-  Standard_DEPRECATED("StepGeom_HArray2OfCartesianPoint is deprecated, use "
-                      "NCollection_HArray2<opencascade::handle<StepGeom_CartesianPoint>> directly")
+Standard_DEPRECATED("StepGeom_HArray2OfCartesianPoint is deprecated, use "
+                    "NCollection_HArray2<opencascade::handle<StepGeom_CartesianPoint>> directly")
 typedef NCollection_HArray2<opencascade::handle<StepGeom_CartesianPoint>>
   StepGeom_HArray2OfCartesianPoint;
 

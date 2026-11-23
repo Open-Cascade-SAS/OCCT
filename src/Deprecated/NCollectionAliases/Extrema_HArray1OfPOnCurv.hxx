@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Extrema_HArray1OfPOnCurv.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<Extrema_POnCurv> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Extrema_HArray1OfPOnCurv is deprecated, use NCollection_HArray1<Extrema_POnCurv> directly")
 typedef NCollection_HArray1<Extrema_POnCurv> Extrema_HArray1OfPOnCurv;
 

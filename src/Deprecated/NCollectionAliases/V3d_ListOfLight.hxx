@@ -25,9 +25,9 @@
 Standard_HEADER_DEPRECATED(
   "V3d_ListOfLight.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("V3d_ListOfLight is deprecated, use "
+Standard_DEPRECATED("V3d_ListOfLight is deprecated, use "
                       "NCollection_List<opencascade::handle<Graphic3d_CLight>> directly")
-typedef NCollection_List<opencascade::handle<Graphic3d_CLight>> V3d_ListOfLight;
+typedef NCollection_List<opencascade::handle<Graphic3d_CLight>>           V3d_ListOfLight;
 Standard_DEPRECATED("V3d_ListOfLightIterator is deprecated, use "
                     "NCollection_List<opencascade::handle<Graphic3d_CLight>>::Iterator directly")
 typedef NCollection_List<opencascade::handle<Graphic3d_CLight>>::Iterator V3d_ListOfLightIterator;

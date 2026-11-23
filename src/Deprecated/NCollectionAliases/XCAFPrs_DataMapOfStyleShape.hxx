@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "XCAFPrs_DataMapOfStyleShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("XCAFPrs_DataMapOfStyleShape is deprecated, use "
+Standard_DEPRECATED("XCAFPrs_DataMapOfStyleShape is deprecated, use "
                       "NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape> directly")
 typedef NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape> XCAFPrs_DataMapOfStyleShape;
 Standard_DEPRECATED("XCAFPrs_DataMapIteratorOfDataMapOfStyleShape is deprecated, use "

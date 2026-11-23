@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED(
   "TDocStd_LabelIDMapDataMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TDocStd_LabelIDMapDataMap is deprecated, use NCollection_DataMap<TDF_Label, "
+Standard_DEPRECATED("TDocStd_LabelIDMapDataMap is deprecated, use NCollection_DataMap<TDF_Label, "
                       "TDF_IDMap> directly")
 typedef NCollection_DataMap<TDF_Label, TDF_IDMap> TDocStd_LabelIDMapDataMap;
 Standard_DEPRECATED("TDocStd_DataMapIteratorOfLabelIDMapDataMap is deprecated, use "

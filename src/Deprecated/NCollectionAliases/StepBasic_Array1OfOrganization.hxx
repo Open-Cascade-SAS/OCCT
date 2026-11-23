@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepBasic_Array1OfOrganization.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepBasic_Organization>> directly.")
 
-  Standard_DEPRECATED("StepBasic_Array1OfOrganization is deprecated, use "
-                      "NCollection_Array1<opencascade::handle<StepBasic_Organization>> directly")
+Standard_DEPRECATED("StepBasic_Array1OfOrganization is deprecated, use "
+                    "NCollection_Array1<opencascade::handle<StepBasic_Organization>> directly")
 typedef NCollection_Array1<opencascade::handle<StepBasic_Organization>>
   StepBasic_Array1OfOrganization;
 

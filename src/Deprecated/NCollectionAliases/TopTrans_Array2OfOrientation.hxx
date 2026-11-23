@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TopTrans_Array2OfOrientation.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array2<TopAbs_Orientation> directly.")
 
-  Standard_DEPRECATED("TopTrans_Array2OfOrientation is deprecated, use "
+Standard_DEPRECATED("TopTrans_Array2OfOrientation is deprecated, use "
                       "NCollection_Array2<TopAbs_Orientation> directly")
 typedef NCollection_Array2<TopAbs_Orientation> TopTrans_Array2OfOrientation;
 

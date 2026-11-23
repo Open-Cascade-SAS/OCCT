@@ -29,7 +29,7 @@ class BRepClass3d_SolidClassifier;
 Standard_HEADER_DEPRECATED("TopOpeBRepTool_PSoClassif.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("TopOpeBRepTool_PSoClassif is deprecated, use the underlying type directly")
+Standard_DEPRECATED("TopOpeBRepTool_PSoClassif is deprecated, use the underlying type directly")
 typedef BRepClass3d_SolidClassifier* TopOpeBRepTool_PSoClassif;
 
 #endif // _TopOpeBRepTool_PSoClassif_HeaderFile

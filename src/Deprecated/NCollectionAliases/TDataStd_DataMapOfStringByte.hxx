@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringByte.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED("TDataStd_DataMapOfStringByte is deprecated, use "
+Standard_DEPRECATED("TDataStd_DataMapOfStringByte is deprecated, use "
                       "NCollection_DataMap<TCollection_ExtendedString, uint8_t> directly")
 typedef NCollection_DataMap<TCollection_ExtendedString, uint8_t> TDataStd_DataMapOfStringByte;
 Standard_DEPRECATED("TDataStd_DataMapIteratorOfDataMapOfStringByte is deprecated, use "

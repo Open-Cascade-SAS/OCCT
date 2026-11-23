@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "Geom2dHatch_MapOfElements.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("Geom2dHatch_MapOfElements is deprecated, use NCollection_DataMap<int, "
+Standard_DEPRECATED("Geom2dHatch_MapOfElements is deprecated, use NCollection_DataMap<int, "
                       "Geom2dHatch_Element> directly")
 typedef NCollection_DataMap<int, Geom2dHatch_Element> Geom2dHatch_MapOfElements;
 Standard_DEPRECATED("Geom2dHatch_DataMapIteratorOfMapOfElements is deprecated, use "

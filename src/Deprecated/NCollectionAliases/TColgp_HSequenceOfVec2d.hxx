@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColgp_HSequenceOfVec2d.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HSequence<gp_Vec2d> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "TColgp_HSequenceOfVec2d is deprecated, use NCollection_HSequence<gp_Vec2d> directly")
 typedef NCollection_HSequence<gp_Vec2d> TColgp_HSequenceOfVec2d;
 

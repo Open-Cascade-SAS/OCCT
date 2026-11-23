@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntSurf_SequenceOfCouple.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntSurf_Couple> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "IntSurf_SequenceOfCouple is deprecated, use NCollection_Sequence<IntSurf_Couple> directly")
 typedef NCollection_Sequence<IntSurf_Couple> IntSurf_SequenceOfCouple;
 

@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_HArray1OfTransient.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<Standard_Transient>> directly.")
 
-  Standard_DEPRECATED("TColStd_HArray1OfTransient is deprecated, use "
+Standard_DEPRECATED("TColStd_HArray1OfTransient is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_HArray1<opencascade::handle<Standard_Transient>> TColStd_HArray1OfTransient;
 

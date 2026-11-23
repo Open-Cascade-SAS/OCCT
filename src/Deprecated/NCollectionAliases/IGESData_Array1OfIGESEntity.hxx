@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IGESData_Array1OfIGESEntity.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<opencascade::handle<IGESData_IGESEntity>> directly.")
 
-  Standard_DEPRECATED("IGESData_Array1OfIGESEntity is deprecated, use "
+Standard_DEPRECATED("IGESData_Array1OfIGESEntity is deprecated, use "
                       "NCollection_Array1<opencascade::handle<IGESData_IGESEntity>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESData_IGESEntity>> IGESData_Array1OfIGESEntity;
 

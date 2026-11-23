@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepAP203_Array1OfPersonOrganizationItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepAP203_PersonOrganizationItem> directly.")
 
-  Standard_DEPRECATED("StepAP203_Array1OfPersonOrganizationItem is deprecated, use "
-                      "NCollection_Array1<StepAP203_PersonOrganizationItem> directly")
+Standard_DEPRECATED("StepAP203_Array1OfPersonOrganizationItem is deprecated, use "
+                    "NCollection_Array1<StepAP203_PersonOrganizationItem> directly")
 typedef NCollection_Array1<StepAP203_PersonOrganizationItem>
   StepAP203_Array1OfPersonOrganizationItem;
 

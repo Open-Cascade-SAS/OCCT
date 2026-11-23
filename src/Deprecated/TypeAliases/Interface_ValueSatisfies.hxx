@@ -25,7 +25,7 @@
 Standard_HEADER_DEPRECATED("Interface_ValueSatisfies.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("Interface_ValueSatisfies is deprecated, use the underlying type directly")
+Standard_DEPRECATED("Interface_ValueSatisfies is deprecated, use the underlying type directly")
 typedef bool (*Interface_ValueSatisfies)(const occ::handle<TCollection_HAsciiString>& val);
 
 #endif

@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "GeomFill_HArray1OfLocationLaw.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<opencascade::handle<GeomFill_LocationLaw>> directly.")
 
-  Standard_DEPRECATED("GeomFill_HArray1OfLocationLaw is deprecated, use "
-                      "NCollection_HArray1<opencascade::handle<GeomFill_LocationLaw>> directly")
+Standard_DEPRECATED("GeomFill_HArray1OfLocationLaw is deprecated, use "
+                    "NCollection_HArray1<opencascade::handle<GeomFill_LocationLaw>> directly")
 typedef NCollection_HArray1<opencascade::handle<GeomFill_LocationLaw>>
   GeomFill_HArray1OfLocationLaw;
 

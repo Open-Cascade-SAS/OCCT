@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepElement_HArray1OfVolumeElementPurpose.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<StepElement_VolumeElementPurpose> directly.")
 
-  Standard_DEPRECATED("StepElement_HArray1OfVolumeElementPurpose is deprecated, use "
-                      "NCollection_HArray1<StepElement_VolumeElementPurpose> directly")
+Standard_DEPRECATED("StepElement_HArray1OfVolumeElementPurpose is deprecated, use "
+                    "NCollection_HArray1<StepElement_VolumeElementPurpose> directly")
 typedef NCollection_HArray1<StepElement_VolumeElementPurpose>
   StepElement_HArray1OfVolumeElementPurpose;
 

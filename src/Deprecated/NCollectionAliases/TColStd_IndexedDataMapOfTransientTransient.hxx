@@ -29,9 +29,9 @@ Standard_HEADER_DEPRECATED(
   "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
   "opencascade::handle<Standard_Transient>> directly.")
 
-  Standard_DEPRECATED("TColStd_IndexedDataMapOfTransientTransient is deprecated, use "
-                      "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
-                      "opencascade::handle<Standard_Transient>> directly")
+Standard_DEPRECATED("TColStd_IndexedDataMapOfTransientTransient is deprecated, use "
+                    "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
+                    "opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>,
                                    opencascade::handle<Standard_Transient>>
   TColStd_IndexedDataMapOfTransientTransient;

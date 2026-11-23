@@ -27,9 +27,9 @@
 Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfPDExternFile.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("STEPCAFControl_DataMapOfPDExternFile is deprecated, use "
-                      "NCollection_DataMap<opencascade::handle<StepBasic_ProductDefinition>, "
-                      "opencascade::handle<STEPCAFControl_ExternFile>> directly")
+Standard_DEPRECATED("STEPCAFControl_DataMapOfPDExternFile is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<StepBasic_ProductDefinition>, "
+                    "opencascade::handle<STEPCAFControl_ExternFile>> directly")
 typedef NCollection_DataMap<opencascade::handle<StepBasic_ProductDefinition>,
                             opencascade::handle<STEPCAFControl_ExternFile>>
   STEPCAFControl_DataMapOfPDExternFile;

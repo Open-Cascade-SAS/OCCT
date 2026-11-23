@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("BOPDS_VectorOfListOfPaveBlock.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_DynamicArray<BOPDS_ListOfPaveBlock> directly.")
 
-  Standard_DEPRECATED("BOPDS_VectorOfListOfPaveBlock is deprecated, use "
+Standard_DEPRECATED("BOPDS_VectorOfListOfPaveBlock is deprecated, use "
                       "NCollection_DynamicArray<BOPDS_ListOfPaveBlock> directly")
 typedef NCollection_DynamicArray<BOPDS_ListOfPaveBlock> BOPDS_VectorOfListOfPaveBlock;
 

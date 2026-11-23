@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("FEmTool_SeqOfLinConstr.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<FEmTool_ListOfVectors> directly.")
 
-  Standard_DEPRECATED("FEmTool_SeqOfLinConstr is deprecated, use "
+Standard_DEPRECATED("FEmTool_SeqOfLinConstr is deprecated, use "
                       "NCollection_Sequence<FEmTool_ListOfVectors> directly")
 typedef NCollection_Sequence<FEmTool_ListOfVectors> FEmTool_SeqOfLinConstr;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Poly_Array1OfTriangle.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Array1<Poly_Triangle> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "Poly_Array1OfTriangle is deprecated, use NCollection_Array1<Poly_Triangle> directly")
 typedef NCollection_Array1<Poly_Triangle> Poly_Array1OfTriangle;
 

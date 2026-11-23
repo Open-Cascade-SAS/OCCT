@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntSurf_SequenceOfPntOn2S.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntSurf_PntOn2S> directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "IntSurf_SequenceOfPntOn2S is deprecated, use NCollection_Sequence<IntSurf_PntOn2S> directly")
 typedef NCollection_Sequence<IntSurf_PntOn2S> IntSurf_SequenceOfPntOn2S;
 

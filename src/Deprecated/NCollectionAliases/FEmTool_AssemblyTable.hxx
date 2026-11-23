@@ -28,7 +28,7 @@ Standard_HEADER_DEPRECATED(
   "FEmTool_AssemblyTable.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly.")
 
-  Standard_DEPRECATED("FEmTool_AssemblyTable is deprecated, use "
+Standard_DEPRECATED("FEmTool_AssemblyTable is deprecated, use "
                       "NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly")
 typedef NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> FEmTool_AssemblyTable;
 

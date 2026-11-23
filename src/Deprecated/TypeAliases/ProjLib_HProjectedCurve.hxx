@@ -30,7 +30,7 @@
 Standard_HEADER_DEPRECATED("ProjLib_HProjectedCurve.hxx is deprecated since OCCT 8.1.0. "
                            "Use the underlying type directly instead.")
 
-  Standard_DEPRECATED("ProjLib_HProjectedCurve is deprecated, use the underlying type directly")
+Standard_DEPRECATED("ProjLib_HProjectedCurve is deprecated, use the underlying type directly")
 typedef ProjLib_ProjectedCurve ProjLib_HProjectedCurve;
 
 #endif // _ProjLib_HProjectedCurve_HeaderFile

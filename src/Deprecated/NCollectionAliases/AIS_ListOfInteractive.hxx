@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED(
   "AIS_ListOfInteractive.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("AIS_ListOfInteractive is deprecated, use "
+Standard_DEPRECATED("AIS_ListOfInteractive is deprecated, use "
                       "NCollection_List<opencascade::handle<AIS_InteractiveObject>> directly")
 typedef NCollection_List<opencascade::handle<AIS_InteractiveObject>> AIS_ListOfInteractive;
 Standard_DEPRECATED(

@@ -28,9 +28,9 @@
 Standard_HEADER_DEPRECATED("DNaming_DataMapOfShapeOfName.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "DNaming_DataMapOfShapeOfName is deprecated, use NCollection_DataMap<TopoDS_Shape, "
-    "TCollection_AsciiString, TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED(
+  "DNaming_DataMapOfShapeOfName is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "TCollection_AsciiString, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>
   DNaming_DataMapOfShapeOfName;
 Standard_DEPRECATED("DNaming_DataMapIteratorOfDataMapOfShapeOfName is deprecated, use "

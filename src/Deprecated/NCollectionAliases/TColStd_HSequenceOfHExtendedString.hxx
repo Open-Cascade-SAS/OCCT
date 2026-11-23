@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "TColStd_HSequenceOfHExtendedString.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly.")
 
-  Standard_DEPRECATED(
-    "TColStd_HSequenceOfHExtendedString is deprecated, use "
-    "NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly")
+Standard_DEPRECATED(
+  "TColStd_HSequenceOfHExtendedString is deprecated, use "
+  "NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly")
 typedef NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>>
   TColStd_HSequenceOfHExtendedString;
 

@@ -27,7 +27,7 @@ Standard_HEADER_DEPRECATED(
   "IGESDefs_Array1OfTabularData.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<IGESDefs_TabularData>> directly.")
 
-  Standard_DEPRECATED("IGESDefs_Array1OfTabularData is deprecated, use "
+Standard_DEPRECATED("IGESDefs_Array1OfTabularData is deprecated, use "
                       "NCollection_Array1<opencascade::handle<IGESDefs_TabularData>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESDefs_TabularData>> IGESDefs_Array1OfTabularData;
 

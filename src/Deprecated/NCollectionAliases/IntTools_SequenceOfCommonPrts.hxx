@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntTools_SequenceOfCommonPrts.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntTools_CommonPrt> directly.")
 
-  Standard_DEPRECATED("IntTools_SequenceOfCommonPrts is deprecated, use "
+Standard_DEPRECATED("IntTools_SequenceOfCommonPrts is deprecated, use "
                       "NCollection_Sequence<IntTools_CommonPrt> directly")
 typedef NCollection_Sequence<IntTools_CommonPrt> IntTools_SequenceOfCommonPrts;
 

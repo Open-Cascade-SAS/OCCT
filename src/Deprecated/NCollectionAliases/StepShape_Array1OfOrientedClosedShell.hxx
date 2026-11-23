@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "StepShape_Array1OfOrientedClosedShell.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<opencascade::handle<StepShape_OrientedClosedShell>> directly.")
 
-  Standard_DEPRECATED(
-    "StepShape_Array1OfOrientedClosedShell is deprecated, use "
-    "NCollection_Array1<opencascade::handle<StepShape_OrientedClosedShell>> directly")
+Standard_DEPRECATED(
+  "StepShape_Array1OfOrientedClosedShell is deprecated, use "
+  "NCollection_Array1<opencascade::handle<StepShape_OrientedClosedShell>> directly")
 typedef NCollection_Array1<opencascade::handle<StepShape_OrientedClosedShell>>
   StepShape_Array1OfOrientedClosedShell;
 

@@ -27,10 +27,10 @@
 Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfSDRExternFile.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
-    "STEPCAFControl_DataMapOfSDRExternFile is deprecated, use "
-    "NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, "
-    "opencascade::handle<STEPCAFControl_ExternFile>> directly")
+Standard_DEPRECATED(
+  "STEPCAFControl_DataMapOfSDRExternFile is deprecated, use "
+  "NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, "
+  "opencascade::handle<STEPCAFControl_ExternFile>> directly")
 typedef NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>,
                             opencascade::handle<STEPCAFControl_ExternFile>>
   STEPCAFControl_DataMapOfSDRExternFile;

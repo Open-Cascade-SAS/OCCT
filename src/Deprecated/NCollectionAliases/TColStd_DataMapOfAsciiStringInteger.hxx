@@ -27,7 +27,7 @@
 Standard_HEADER_DEPRECATED("TColStd_DataMapOfAsciiStringInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("TColStd_DataMapOfAsciiStringInteger is deprecated, use "
+Standard_DEPRECATED("TColStd_DataMapOfAsciiStringInteger is deprecated, use "
                       "NCollection_DataMap<TCollection_AsciiString, int> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, int> TColStd_DataMapOfAsciiStringInteger;
 Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger is deprecated, use "

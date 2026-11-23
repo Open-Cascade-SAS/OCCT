@@ -27,8 +27,8 @@ Standard_HEADER_DEPRECATED(
   "StepAP214_Array1OfAutoDesignReferencingItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Array1<StepAP214_AutoDesignReferencingItem> directly.")
 
-  Standard_DEPRECATED("StepAP214_Array1OfAutoDesignReferencingItem is deprecated, use "
-                      "NCollection_Array1<StepAP214_AutoDesignReferencingItem> directly")
+Standard_DEPRECATED("StepAP214_Array1OfAutoDesignReferencingItem is deprecated, use "
+                    "NCollection_Array1<StepAP214_AutoDesignReferencingItem> directly")
 typedef NCollection_Array1<StepAP214_AutoDesignReferencingItem>
   StepAP214_Array1OfAutoDesignReferencingItem;
 

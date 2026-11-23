@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepAP203_HArray1OfStartRequestItem.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection_HArray1<StepAP203_StartRequestItem> directly.")
 
-  Standard_DEPRECATED("StepAP203_HArray1OfStartRequestItem is deprecated, use "
+Standard_DEPRECATED("StepAP203_HArray1OfStartRequestItem is deprecated, use "
                       "NCollection_HArray1<StepAP203_StartRequestItem> directly")
 typedef NCollection_HArray1<StepAP203_StartRequestItem> StepAP203_HArray1OfStartRequestItem;
 

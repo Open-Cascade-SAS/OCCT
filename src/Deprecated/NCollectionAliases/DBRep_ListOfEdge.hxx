@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "DBRep_ListOfEdge.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("DBRep_ListOfEdge is deprecated, use "
+Standard_DEPRECATED("DBRep_ListOfEdge is deprecated, use "
                       "NCollection_List<opencascade::handle<DBRep_Edge>> directly")
-typedef NCollection_List<opencascade::handle<DBRep_Edge>> DBRep_ListOfEdge;
+typedef NCollection_List<opencascade::handle<DBRep_Edge>>           DBRep_ListOfEdge;
 Standard_DEPRECATED("DBRep_ListIteratorOfListOfEdge is deprecated, use "
                     "NCollection_List<opencascade::handle<DBRep_Edge>>::Iterator directly")
 typedef NCollection_List<opencascade::handle<DBRep_Edge>>::Iterator DBRep_ListIteratorOfListOfEdge;

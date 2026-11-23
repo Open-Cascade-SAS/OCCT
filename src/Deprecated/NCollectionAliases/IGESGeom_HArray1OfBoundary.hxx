@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IGESGeom_HArray1OfBoundary.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<opencascade::handle<IGESGeom_Boundary>> directly.")
 
-  Standard_DEPRECATED("IGESGeom_HArray1OfBoundary is deprecated, use "
+Standard_DEPRECATED("IGESGeom_HArray1OfBoundary is deprecated, use "
                       "NCollection_HArray1<opencascade::handle<IGESGeom_Boundary>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESGeom_Boundary>> IGESGeom_HArray1OfBoundary;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("Interface_Array1OfFileParameter.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Array1<Interface_FileParameter> directly.")
 
-  Standard_DEPRECATED("Interface_Array1OfFileParameter is deprecated, use "
+Standard_DEPRECATED("Interface_Array1OfFileParameter is deprecated, use "
                       "NCollection_Array1<Interface_FileParameter> directly")
 typedef NCollection_Array1<Interface_FileParameter> Interface_Array1OfFileParameter;
 

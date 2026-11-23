@@ -28,8 +28,8 @@ Standard_HEADER_DEPRECATED(
   "StepShape_HArray1OfShapeDimensionRepresentationItem.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem> directly.")
 
-  Standard_DEPRECATED("StepShape_HArray1OfShapeDimensionRepresentationItem is deprecated, use "
-                      "NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem> directly")
+Standard_DEPRECATED("StepShape_HArray1OfShapeDimensionRepresentationItem is deprecated, use "
+                    "NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem> directly")
 typedef NCollection_HArray1<StepShape_ShapeDimensionRepresentationItem>
   StepShape_HArray1OfShapeDimensionRepresentationItem;
 

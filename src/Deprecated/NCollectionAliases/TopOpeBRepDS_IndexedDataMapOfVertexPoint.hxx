@@ -30,9 +30,9 @@ Standard_HEADER_DEPRECATED(
   "TopOpeBRepDS_IndexedDataMapOfVertexPoint.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher> directly.")
 
-  Standard_DEPRECATED("TopOpeBRepDS_IndexedDataMapOfVertexPoint is deprecated, use "
-                      "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, "
-                      "TopTools_ShapeMapHasher> directly")
+Standard_DEPRECATED("TopOpeBRepDS_IndexedDataMapOfVertexPoint is deprecated, use "
+                    "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, "
+                    "TopTools_ShapeMapHasher> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_Point, TopTools_ShapeMapHasher>
   TopOpeBRepDS_IndexedDataMapOfVertexPoint;
 

@@ -156,10 +156,13 @@ public:
 
   //! Perform formatting on the buffered text.
   //! Should not be called more than once after initialization!
-  Standard_EXPORT void Format();
+  Standard_EXPORT void           Format();
 
   Standard_DEPRECATED("BottomLeft should be used instead")
-  const NCollection_Vec2<float>& TopLeft(const int theIndex) const { return BottomLeft(theIndex); }
+  const NCollection_Vec2<float>& TopLeft(const int theIndex) const
+  {
+    return BottomLeft(theIndex);
+  }
 
   //! Returns specific glyph rectangle.
   const NCollection_Vec2<float>& BottomLeft(const int theIndex) const

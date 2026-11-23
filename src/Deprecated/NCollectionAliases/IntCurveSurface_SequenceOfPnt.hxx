@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("IntCurveSurface_SequenceOfPnt.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_Sequence<IntCurveSurface_IntersectionPoint> directly.")
 
-  Standard_DEPRECATED("IntCurveSurface_SequenceOfPnt is deprecated, use "
+Standard_DEPRECATED("IntCurveSurface_SequenceOfPnt is deprecated, use "
                       "NCollection_Sequence<IntCurveSurface_IntersectionPoint> directly")
 typedef NCollection_Sequence<IntCurveSurface_IntersectionPoint> IntCurveSurface_SequenceOfPnt;
 

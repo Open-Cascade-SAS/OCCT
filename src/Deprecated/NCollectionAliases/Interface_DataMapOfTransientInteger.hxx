@@ -27,8 +27,8 @@
 Standard_HEADER_DEPRECATED("Interface_DataMapOfTransientInteger.hxx is deprecated since OCCT "
                            "8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED("Interface_DataMapOfTransientInteger is deprecated, use "
-                      "NCollection_DataMap<opencascade::handle<Standard_Transient>, int> directly")
+Standard_DEPRECATED("Interface_DataMapOfTransientInteger is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<Standard_Transient>, int> directly")
 typedef NCollection_DataMap<opencascade::handle<Standard_Transient>, int>
   Interface_DataMapOfTransientInteger;
 Standard_DEPRECATED(

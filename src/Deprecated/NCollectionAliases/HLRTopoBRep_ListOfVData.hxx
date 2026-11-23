@@ -26,9 +26,9 @@
 Standard_HEADER_DEPRECATED(
   "HLRTopoBRep_ListOfVData.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-  Standard_DEPRECATED(
+Standard_DEPRECATED(
     "HLRTopoBRep_ListOfVData is deprecated, use NCollection_List<HLRTopoBRep_VData> directly")
-typedef NCollection_List<HLRTopoBRep_VData> HLRTopoBRep_ListOfVData;
+typedef NCollection_List<HLRTopoBRep_VData>           HLRTopoBRep_ListOfVData;
 Standard_DEPRECATED("HLRTopoBRep_ListIteratorOfListOfVData is deprecated, use "
                     "NCollection_List<HLRTopoBRep_VData>::Iterator directly")
 typedef NCollection_List<HLRTopoBRep_VData>::Iterator HLRTopoBRep_ListIteratorOfListOfVData;

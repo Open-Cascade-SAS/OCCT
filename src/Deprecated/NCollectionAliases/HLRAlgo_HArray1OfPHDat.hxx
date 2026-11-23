@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("HLRAlgo_HArray1OfPHDat.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<HLRAlgo_PolyHidingData> directly.")
 
-  Standard_DEPRECATED("HLRAlgo_HArray1OfPHDat is deprecated, use "
+Standard_DEPRECATED("HLRAlgo_HArray1OfPHDat is deprecated, use "
                       "NCollection_HArray1<HLRAlgo_PolyHidingData> directly")
 typedef NCollection_HArray1<HLRAlgo_PolyHidingData> HLRAlgo_HArray1OfPHDat;
 

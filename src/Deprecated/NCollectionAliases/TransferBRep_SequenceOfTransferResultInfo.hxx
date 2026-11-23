@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "TransferBRep_SequenceOfTransferResultInfo.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly.")
 
-  Standard_DEPRECATED(
-    "TransferBRep_SequenceOfTransferResultInfo is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly")
+Standard_DEPRECATED(
+  "TransferBRep_SequenceOfTransferResultInfo is deprecated, use "
+  "NCollection_Sequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly")
 typedef NCollection_Sequence<opencascade::handle<TransferBRep_TransferResultInfo>>
   TransferBRep_SequenceOfTransferResultInfo;
 

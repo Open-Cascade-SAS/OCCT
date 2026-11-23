@@ -28,9 +28,8 @@ Standard_HEADER_DEPRECATED(
   "TDocStd_SequenceOfApplicationDelta.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly.")
 
-  Standard_DEPRECATED(
-    "TDocStd_SequenceOfApplicationDelta is deprecated, use "
-    "NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly")
+Standard_DEPRECATED("TDocStd_SequenceOfApplicationDelta is deprecated, use "
+                    "NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly")
 typedef NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>>
   TDocStd_SequenceOfApplicationDelta;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("TopTools_HArray1OfListOfShape.hxx is deprecated since OCCT 8.0.0. Use "
                            "NCollection_HArray1<TopTools_ListOfShape> directly.")
 
-  Standard_DEPRECATED("TopTools_HArray1OfListOfShape is deprecated, use "
+Standard_DEPRECATED("TopTools_HArray1OfListOfShape is deprecated, use "
                       "NCollection_HArray1<TopTools_ListOfShape> directly")
 typedef NCollection_HArray1<TopTools_ListOfShape> TopTools_HArray1OfListOfShape;
 

@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepGeom_HArray1OfTrimmingSelect.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_HArray1<StepGeom_TrimmingSelect> directly.")
 
-  Standard_DEPRECATED("StepGeom_HArray1OfTrimmingSelect is deprecated, use "
+Standard_DEPRECATED("StepGeom_HArray1OfTrimmingSelect is deprecated, use "
                       "NCollection_HArray1<StepGeom_TrimmingSelect> directly")
 typedef NCollection_HArray1<StepGeom_TrimmingSelect> StepGeom_HArray1OfTrimmingSelect;
 

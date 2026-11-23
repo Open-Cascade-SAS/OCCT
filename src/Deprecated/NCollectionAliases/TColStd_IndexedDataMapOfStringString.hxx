@@ -28,9 +28,9 @@ Standard_HEADER_DEPRECATED(
   "TColStd_IndexedDataMapOfStringString.hxx is deprecated since OCCT 8.0.0. Use "
   "NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> directly.")
 
-  Standard_DEPRECATED(
-    "TColStd_IndexedDataMapOfStringString is deprecated, use "
-    "NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> directly")
+Standard_DEPRECATED(
+  "TColStd_IndexedDataMapOfStringString is deprecated, use "
+  "NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> directly")
 typedef NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>
   TColStd_IndexedDataMapOfStringString;
 

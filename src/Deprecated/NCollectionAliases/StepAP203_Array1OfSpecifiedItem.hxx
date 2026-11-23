@@ -26,7 +26,7 @@
 Standard_HEADER_DEPRECATED("StepAP203_Array1OfSpecifiedItem.hxx is deprecated since OCCT 8.0.0. "
                            "Use NCollection_Array1<StepAP203_SpecifiedItem> directly.")
 
-  Standard_DEPRECATED("StepAP203_Array1OfSpecifiedItem is deprecated, use "
+Standard_DEPRECATED("StepAP203_Array1OfSpecifiedItem is deprecated, use "
                       "NCollection_Array1<StepAP203_SpecifiedItem> directly")
 typedef NCollection_Array1<StepAP203_SpecifiedItem> StepAP203_Array1OfSpecifiedItem;
 
