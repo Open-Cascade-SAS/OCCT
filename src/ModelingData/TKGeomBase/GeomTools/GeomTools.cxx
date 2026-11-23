@@ -31,6 +31,10 @@
 #include <GeomTools_CurveSet.hxx>
 #include <GeomTools_SurfaceSet.hxx>
 #include <GeomTools_UndefinedTypeHandler.hxx>
+#include <Standard_MemoryUtils.hxx>
+
+#include <locale>
+#include <memory>
 
 static occ::handle<GeomTools_UndefinedTypeHandler> theActiveHandler =
   new GeomTools_UndefinedTypeHandler;
@@ -106,14 +110,52 @@ void GeomTools::GetReal(Standard_IStream& IS, double& theValue)
   {
     return;
   }
-  // According IEEE-754 Specification and standard stream parameters
-  // the most optimal buffer length not less then 25
+  // An IEEE-754 double in scientific notation with 17 significant digits
+  // needs at most 25 characters including the null terminator; 32 covers this usual case.
   constexpr size_t THE_BUFFER_SIZE = 32;
   char             aBuffer[THE_BUFFER_SIZE];
-
-  aBuffer[0]                = '\0';
-  std::streamsize anOldWide = IS.width(THE_BUFFER_SIZE - 1);
+  aBuffer[0] = aBuffer[THE_BUFFER_SIZE - 3] = '\0';
+  const std::streamsize anOldWidth          = IS.width(THE_BUFFER_SIZE - 1);
   IS >> aBuffer;
-  IS.width(anOldWide);
+  IS.width(anOldWidth);
+  // Continue only if the token fills the short buffer and has a non-space suffix.
+  int aNextCharacter = std::char_traits<char>::eof();
+  if (aBuffer[THE_BUFFER_SIZE - 3] != '\0' && IS.good()
+      && (aNextCharacter = IS.peek()) != std::char_traits<char>::eof()
+      && !std::isspace(static_cast<char>(aNextCharacter), IS.getloc()))
+  {
+    constexpr size_t THE_MAX_BUFFER_SIZE = 512;
+    constexpr size_t THE_PREFIX_LENGTH   = THE_BUFFER_SIZE - 2;
+    constexpr size_t THE_SUFFIX_WIDTH    = THE_MAX_BUFFER_SIZE - THE_PREFIX_LENGTH;
+
+    // Keep the array bound for formatted extraction in C++20.
+    struct RealBuffer
+    {
+      char Data[THE_MAX_BUFFER_SIZE];
+    };
+
+    const std::unique_ptr<RealBuffer> aStorage = opencascade::make_unique<RealBuffer>();
+    char (&aToken)[THE_MAX_BUFFER_SIZE]        = aStorage->Data;
+    IS.width(THE_SUFFIX_WIDTH);
+    IS >> aToken;
+    IS.width(anOldWidth);
+
+    // A full fallback buffer is accepted only at the end of the token.
+    if (IS.fail()
+        || (aToken[THE_SUFFIX_WIDTH - 2] != '\0' && IS.good()
+            && (aNextCharacter = IS.peek()) != std::char_traits<char>::eof()
+            && !std::isspace(static_cast<char>(aNextCharacter), IS.getloc())))
+    {
+      IS.setstate(std::ios_base::failbit);
+      return;
+    }
+    // Open space for the prefix after reading the suffix into the fixed array.
+    std::char_traits<char>::move(aToken + THE_PREFIX_LENGTH,
+                                 aToken,
+                                 std::char_traits<char>::length(aToken) + 1);
+    std::char_traits<char>::copy(aToken, aBuffer, THE_PREFIX_LENGTH);
+    theValue = Strtod(aToken, nullptr);
+    return;
+  }
   theValue = Strtod(aBuffer, nullptr);
 }

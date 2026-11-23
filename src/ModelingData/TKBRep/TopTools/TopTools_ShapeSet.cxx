@@ -717,6 +717,12 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
 
   myLocations.Read(IS, aPS.Next(10));
 
+  if (IS.fail())
+  {
+    IS.imbue(anOldLocale);
+    return;
+  }
+
   if (aPS.UserBreak())
   {
     std::cout << "Interrupted by the user" << '\n';
@@ -729,6 +735,12 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   // read the geometry
   //-----------------------------------------
   ReadGeometry(IS, aPS.Next(75));
+
+  if (IS.fail())
+  {
+    IS.imbue(anOldLocale);
+    return;
+  }
 
   if (aPS.UserBreak())
   {
@@ -764,6 +776,11 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
 
     TopAbs_ShapeEnum T = ReadShapeEnum(IS);
     ReadGeometry(T, IS, S);
+    if (IS.fail())
+    {
+      IS.imbue(anOldLocale);
+      return;
+    }
 
     // Set the flags
     IS >> buffer;

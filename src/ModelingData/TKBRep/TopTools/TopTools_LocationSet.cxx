@@ -231,7 +231,7 @@ void TopTools_LocationSet::Write(Standard_OStream&            OS,
 
 //=================================================================================================
 
-static void ReadTrsf(gp_Trsf& T, Standard_IStream& IS)
+static bool ReadTrsf(gp_Trsf& T, Standard_IStream& IS)
 {
   double V1[3], V2[3], V3[3];
   double V[3];
@@ -251,7 +251,12 @@ static void ReadTrsf(gp_Trsf& T, Standard_IStream& IS)
   GeomTools::GetReal(IS, V3[2]);
   GeomTools::GetReal(IS, V[2]);
 
+  if (IS.fail())
+  {
+    return false;
+  }
   T.SetValues(V1[0], V1[1], V1[2], V[0], V2[0], V2[1], V2[2], V[1], V3[0], V3[1], V3[2], V[2]);
+  return true;
 }
 
 //=================================================================================================
@@ -285,7 +290,10 @@ void TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRang
 
     if (typLoc == 1)
     {
-      ReadTrsf(T, IS);
+      if (!ReadTrsf(T, IS))
+      {
+        return;
+      }
       L = T;
     }
 
