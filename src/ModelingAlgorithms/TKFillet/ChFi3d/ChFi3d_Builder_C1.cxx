@@ -447,6 +447,22 @@ static void ChFi3d_ExtendSurface(occ::handle<Geom_Surface>& S, int& prol)
 }
 
 //=======================================================================
+// function : ChFi3d_IsExtendable
+// purpose  : return true if ChFi3d_ExtendSurface can extend the surface of <F>
+//=======================================================================
+
+static bool ChFi3d_IsExtendable(const TopoDS_Face& F)
+{
+  if (F.IsNull())
+  {
+    return false;
+  }
+  const occ::handle<Geom_Surface> S = BRep_Tool::Surface(F);
+  return S->IsKind(STANDARD_TYPE(Geom_BSplineSurface))
+         || S->IsKind(STANDARD_TYPE(Geom_BezierSurface));
+}
+
+//=======================================================================
 // function : ComputeCurve2d
 // purpose  : calculate the 2d of the curve Ct on face Face
 //=======================================================================
@@ -2780,6 +2796,12 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
       double                         Utrim, Vtrim;
       Utrim = Ctrim->BasisCurve()->FirstParameter();
       Vtrim = Ctrim->BasisCurve()->LastParameter();
+      // A face of a BSpline or Bezier surface ends where the edge ends. A crossing on
+      // the infinite basis of a line edge, beyond that end, is not on the face, so the
+      // search keeps to the edge, as it does for a BSpline edge, and a crossing beyond
+      // the end goes to the extension of the faces below.
+      const bool isEdgeRange = (Precision::IsInfinite(Utrim) || Precision::IsInfinite(Vtrim))
+                               && (ChFi3d_IsExtendable(F) || ChFi3d_IsExtendable(Face[nb]));
       if (Ctrim->IsPeriodic())
       {
         if (Ubid > Ctrim->Period())
@@ -2793,7 +2815,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
           Vbid = (Utrim + Vtrim) / 2;
         }
       }
-      else
+      else if (!isEdgeRange)
       {
         Ubid = Utrim;
         Vbid = Vtrim;
@@ -2849,7 +2871,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
       {
         occ::handle<Geom_BSplineCurve> cd  = occ::down_cast<Geom_BSplineCurve>(C);
         occ::handle<Geom_BezierCurve>  cd1 = occ::down_cast<Geom_BezierCurve>(C);
-        if (!cd.IsNull() || !cd1.IsNull())
+        if (!cd.IsNull() || !cd1.IsNull() || isEdgeRange)
         {
           BRep_Builder BRE;
           Sface = BRep_Tool::Surface(Face[nb]);
