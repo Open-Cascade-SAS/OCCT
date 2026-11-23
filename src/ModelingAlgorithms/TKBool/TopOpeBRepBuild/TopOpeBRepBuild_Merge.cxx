@@ -160,16 +160,15 @@ static void CorrectEdgeOrientation(TopoDS_Shape& aWire)
 static void CorrectUnclosedWire(TopoDS_Shape& aWire)
 {
   //  std::cout << "-------CorrectUnclosedWire" << std::endl;
-  BRep_Builder    BB;
-  TopoDS_Iterator tdi(aWire, false, false);
-  for (; tdi.More(); tdi.Next())
+  BRep_Builder BB;
+  for (TopoDS_Iterator anIter(aWire, false, false); anIter.More();)
   {
-    const TopoDS_Shape& ed  = tdi.Value();
-    int                 nbv = ed.NbChildren();
-    if (nbv <= 1)
+    const TopoDS_Shape anEdge = anIter.Value();
+    // Move past the child before Remove releases its list node.
+    anIter.Next();
+    if (anEdge.NbChildren() <= 1)
     {
-      //      std::cout << "Remove bad edge" << std::endl;
-      BB.Remove(aWire, ed);
+      BB.Remove(aWire, anEdge);
     }
   }
 

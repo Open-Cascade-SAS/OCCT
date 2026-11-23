@@ -32,8 +32,12 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_Ellipse.hxx>
@@ -1307,6 +1311,128 @@ TEST(BRepOffset_MakeOffsetTest, ArcOffset_SplitSplineConeKeepsSeamAtFirstFace)
       }
       EXPECT_EQ(aNbSpheres, 1);
       EXPECT_EQ(aNbFaces, 3);
+    }
+  }
+}
+
+//==================================================================================================
+
+namespace
+{
+//==================================================================================================
+
+void makeOffsetOfSingleEdge(const occ::handle<Geom_Curve>& theCurve,
+                            const gp_Pln&                  thePlane,
+                            const double                   theFirst,
+                            const double                   theLast,
+                            const bool                     theIsReversed,
+                            const double                   theOffset,
+                            TopoDS_Shape&                  theResult)
+{
+  BRepBuilderAPI_MakeEdge anEdgeMaker(theCurve, theFirst, theLast);
+  ASSERT_TRUE(anEdgeMaker.IsDone());
+
+  TopoDS_Edge anEdge = anEdgeMaker.Edge();
+  if (theIsReversed)
+  {
+    anEdge.Reverse();
+  }
+  BRepBuilderAPI_MakeWire aWireMaker(anEdge);
+  ASSERT_TRUE(aWireMaker.IsDone());
+  BRepBuilderAPI_MakeFace aFaceMaker(thePlane, aWireMaker.Wire());
+  ASSERT_TRUE(aFaceMaker.IsDone());
+
+  BRepOffsetAPI_MakeOffset anOffsetMaker(aFaceMaker.Face(), GeomAbs_Arc, true);
+  anOffsetMaker.Perform(theOffset);
+  ASSERT_TRUE(anOffsetMaker.IsDone());
+  theResult = anOffsetMaker.Shape();
+  ASSERT_FALSE(theResult.IsNull());
+  EXPECT_TRUE(BRepCheck_Analyzer(theResult).IsValid());
+}
+} // namespace
+
+TEST(BRepOffset_MakeOffsetTest, CircularOffset_UsesRequestedSide)
+{
+  constexpr double               anArcFirst    = 1.2 * M_PI;
+  constexpr double               anArcLast     = 1.8 * M_PI;
+  constexpr double               aSourceRadius = 30.0;
+  const occ::handle<Geom_Circle> aCurve =
+    new Geom_Circle(gp_Ax2(gp::Origin(), gp::DZ()), aSourceRadius);
+
+  for (const bool isPlaneReversed : {false, true})
+  {
+    const gp_Pln aPlane(gp::Origin(), isPlaneReversed ? gp::DZ().Reversed() : gp::DZ());
+    for (const bool isArc : {true, false})
+    {
+      const double aFirst = isArc ? anArcFirst : aCurve->FirstParameter();
+      const double aLast  = isArc ? anArcLast : aCurve->LastParameter();
+      for (const bool isEdgeReversed : {false, true})
+      {
+        for (const double anOffset : {14.0, -14.0})
+        {
+          SCOPED_TRACE(::testing::Message()
+                       << "plane reversed " << isPlaneReversed << ", arc " << isArc
+                       << ", edge reversed " << isEdgeReversed << ", offset " << anOffset);
+          TopoDS_Shape aResult;
+          ASSERT_NO_FATAL_FAILURE(makeOffsetOfSingleEdge(aCurve,
+                                                         aPlane,
+                                                         aFirst,
+                                                         aLast,
+                                                         isEdgeReversed,
+                                                         anOffset,
+                                                         aResult));
+          TopExp_Explorer anExplorer(aResult, TopAbs_EDGE);
+          ASSERT_TRUE(anExplorer.More());
+          const TopoDS_Edge aResultEdge = TopoDS::Edge(anExplorer.Current());
+          anExplorer.Next();
+          EXPECT_FALSE(anExplorer.More());
+          const BRepAdaptor_Curve aResultCurve(aResultEdge);
+          ASSERT_EQ(aResultCurve.GetType(), GeomAbs_Circle);
+
+          const double aRadiusChange =
+            isArc && (isPlaneReversed != isEdgeReversed) ? -anOffset : anOffset;
+          const gp_Circ aResultCircle = aResultCurve.Circle();
+          EXPECT_NEAR(aResultCircle.Radius(),
+                      aSourceRadius + aRadiusChange,
+                      Precision::Confusion());
+          EXPECT_LE(aResultCircle.Location().Distance(gp::Origin()), Precision::Confusion());
+          EXPECT_NEAR(aResultCurve.LastParameter() - aResultCurve.FirstParameter(),
+                      aLast - aFirst,
+                      Precision::PConfusion());
+          EXPECT_EQ(BRep_Tool::IsClosed(aResultEdge), !isArc);
+        }
+      }
+    }
+  }
+}
+
+TEST(BRepOffset_MakeOffsetTest, EllipticOffset_UsesRequestedSide)
+{
+  constexpr double                anArcFirst = 1.2 * M_PI;
+  constexpr double                anArcLast  = 1.8 * M_PI;
+  const occ::handle<Geom_Ellipse> aCurve =
+    new Geom_Ellipse(gp_Ax2(gp::Origin(), gp::DZ()), 40.0, 30.0);
+  const gp_Pln aPlane(gp::XOY());
+  for (const bool isArc : {true, false})
+  {
+    const double aFirst = isArc ? anArcFirst : aCurve->FirstParameter();
+    const double aLast  = isArc ? anArcLast : aCurve->LastParameter();
+    for (const bool isEdgeReversed : {false, true})
+    {
+      for (const double anOffset : {14.0, -14.0})
+      {
+        SCOPED_TRACE(::testing::Message() << "arc " << isArc << ", edge reversed " << isEdgeReversed
+                                          << ", offset " << anOffset);
+        TopoDS_Shape aResult;
+        ASSERT_NO_FATAL_FAILURE(
+          makeOffsetOfSingleEdge(aCurve, aPlane, aFirst, aLast, isEdgeReversed, anOffset, aResult));
+        const bool   isOutward = (anOffset > 0.0) != (isArc && isEdgeReversed);
+        const double anExpectedLength =
+          isArc ? (isOutward ? 93.539 : 48.6671) : (isOutward ? 309.0 : 133.07);
+        GProp_GProps aProperties;
+        BRepGProp::LinearProperties(aResult, aProperties);
+        EXPECT_NEAR(aProperties.Mass(), anExpectedLength, 0.001);
+      }
     }
   }
 }

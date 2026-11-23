@@ -682,6 +682,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Pnt& P)
   GeomTools::GetReal(IS, X);
   GeomTools::GetReal(IS, Y);
   GeomTools::GetReal(IS, Z);
+  if (IS.fail())
+  {
+    return IS;
+  }
   P.SetCoord(X, Y, Z);
   return IS;
 }
@@ -694,6 +698,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Dir& D)
   GeomTools::GetReal(IS, X);
   GeomTools::GetReal(IS, Y);
   GeomTools::GetReal(IS, Z);
+  if (IS.fail())
+  {
+    return IS;
+  }
   D.SetCoord(X, Y, Z);
   return IS;
 }
@@ -718,6 +726,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Circl
   double R = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R);
+  if (IS.fail())
+  {
+    return IS;
+  }
   C = new Geom_Circle(gp_Ax2(P, A, AX), R);
   return IS;
 }
@@ -732,6 +744,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Ellip
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
   GeomTools::GetReal(IS, R2);
+  if (IS.fail())
+  {
+    return IS;
+  }
   E = new Geom_Ellipse(gp_Ax2(P, A, AX), R1, R2);
   return IS;
 }
@@ -745,6 +761,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Parab
   double R1 = 0.;
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
+  if (IS.fail())
+  {
+    return IS;
+  }
   C = new Geom_Parabola(gp_Ax2(P, A, AX), R1);
   return IS;
 }
@@ -759,6 +779,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Hyper
   IS >> P >> A >> AX >> AY;
   GeomTools::GetReal(IS, R1);
   GeomTools::GetReal(IS, R2);
+  if (IS.fail())
+  {
+    return IS;
+  }
   H = new Geom_Hyperbola(gp_Ax2(P, A, AX), R1, R2);
   return IS;
 }
@@ -783,6 +807,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
     if (rational)
     {
       GeomTools::GetReal(IS, weights(i));
+    }
+    if (IS.fail())
+    {
+      return IS;
     }
   }
 
@@ -820,6 +848,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
     {
       GeomTools::GetReal(IS, weights(i));
     }
+    if (IS.fail())
+    {
+      return IS;
+    }
   }
 
   NCollection_Array1<double> knots(1, nbknots);
@@ -829,6 +861,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   {
     GeomTools::GetReal(IS, knots(i));
     IS >> mults(i);
+    if (IS.fail())
+    {
+      return IS;
+    }
   }
 
   if (rational)
@@ -851,7 +887,11 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Trimm
   GeomTools::GetReal(IS, p1);
   GeomTools::GetReal(IS, p2);
   occ::handle<Geom_Curve> BC = GeomTools_CurveSet::ReadCurve(IS);
-  C                          = new Geom_TrimmedCurve(BC, p1, p2);
+  if (IS.fail())
+  {
+    return IS;
+  }
+  C = new Geom_TrimmedCurve(BC, p1, p2);
   return IS;
 }
 
@@ -861,10 +901,18 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Offse
 {
   double p = 0.;
   GeomTools::GetReal(IS, p);
+  if (IS.fail())
+  {
+    return IS;
+  }
   gp_Dir D(gp_Dir::D::X);
   IS >> D;
   occ::handle<Geom_Curve> BC = GeomTools_CurveSet::ReadCurve(IS);
-  C                          = new Geom_OffsetCurve(BC, p, D);
+  if (IS.fail())
+  {
+    return IS;
+  }
+  C = new Geom_OffsetCurve(BC, p, D);
   return IS;
 }
 
@@ -878,7 +926,10 @@ occ::handle<Geom_Curve> GeomTools_CurveSet::ReadCurve(Standard_IStream& IS)
   try
   {
     OCC_CATCH_SIGNALS
-    IS >> ctype;
+    if (!(IS >> ctype))
+    {
+      return {};
+    }
     switch (ctype)
     {
 
@@ -960,6 +1011,10 @@ occ::handle<Geom_Curve> GeomTools_CurveSet::ReadCurve(Standard_IStream& IS)
 #endif
     (void)anException;
   }
+  if (IS.fail())
+  {
+    C.Nullify();
+  }
   return C;
 }
 
@@ -967,6 +1022,10 @@ occ::handle<Geom_Curve> GeomTools_CurveSet::ReadCurve(Standard_IStream& IS)
 
 void GeomTools_CurveSet::Read(Standard_IStream& IS, const Message_ProgressRange& theProgress)
 {
+  if (IS.fail())
+  {
+    return;
+  }
   char buffer[255];
   IS >> buffer;
   if (strcmp(buffer, "Curves"))
@@ -981,6 +1040,10 @@ void GeomTools_CurveSet::Read(Standard_IStream& IS, const Message_ProgressRange&
   for (i = 1; i <= nbcurve && aPS.More(); i++, aPS.Next())
   {
     occ::handle<Geom_Curve> C = GeomTools_CurveSet::ReadCurve(IS);
+    if (IS.fail())
+    {
+      return;
+    }
     myMap.Add(C);
   }
 }
