@@ -99,7 +99,7 @@ public:
     if (aConstantDistance.has_value())
     {
       myResult.Status                 = ExtremaPC2d::Status::InfiniteSolutions;
-      myResult.InfiniteSquareDistance = aConstantDistance.value();
+      myResult.InfiniteSquareDistance = aConstantDistance.value_or(0.0);
       return myResult;
     }
 
@@ -347,8 +347,8 @@ private:
       const double    aWeight    = theCurve->Weight(aPoleIndex);
       const gp_Pnt2d& aPole      = theCurve->Pole(aPoleIndex);
       aWeights[anIndex]          = aWeight;
-      aQx[anIndex]               = aWeight * (aPole.X() - thePoint.X());
-      aQy[anIndex]               = aWeight * (aPole.Y() - thePoint.Y());
+      aQx[anIndex]               = static_cast<long double>(aWeight) * (aPole.X() - thePoint.X());
+      aQy[anIndex]               = static_cast<long double>(aWeight) * (aPole.Y() - thePoint.Y());
     }
 
     const size_t                            aDoubleDegree = 2 * aDegree;

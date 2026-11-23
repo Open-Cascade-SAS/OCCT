@@ -25,7 +25,8 @@ set (BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR
 "Append the postfix to names of output libraries")
 
 set (BUILD_SOVERSION_NUMBERS_DESCR
-"Version numbers to put into SONAME: 0 - for empty, 1 - for major, 2 - for major.minor, 3 - for major.minor.maintenance")
+"Number of version components in shared library names and SONAME: 0 - for none,
+1 - for major, 2 - for major.minor, 3 - for major.minor.maintenance")
 
 set (BUILD_RELEASE_DISABLE_EXCEPTIONS_DESCR
 "Disables exceptions like Standard_OutOfRange in Release builds.

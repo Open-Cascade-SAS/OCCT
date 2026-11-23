@@ -6,5 +6,4 @@ set(OCCT_AppBlend_FILES
   AppBlend_Approx.hxx
   AppBlend_AppSurf.gxx
   AppBlend_AppSurf.lxx
-  AppBlend_Debug.cxx
 )

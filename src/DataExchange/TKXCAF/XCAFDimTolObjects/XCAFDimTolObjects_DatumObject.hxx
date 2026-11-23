@@ -187,26 +187,27 @@ public:
 private:
   occ::handle<TCollection_HAsciiString>                    myName;
   NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> myModifiers;
-  XCAFDimTolObjects_DatumModifWithValue                    myModifierWithValue;
-  double                                                   myValueOfModifier;
-  TopoDS_Shape                                             myDatumTarget;
-  int                                                      myPosition;
-  bool                                                     myIsDTarget;
-  bool                                                     myIsValidDT;
-  XCAFDimTolObjects_DatumTargetType                        myDTargetType;
-  double                                                   myLength;
-  double                                                   myWidth;
-  int                                                      myDatumTargetNumber;
-  gp_Ax2                                                   myAxis;
-  gp_Ax2                                                   myPlane;
-  gp_Pnt                                                   myPnt;
-  gp_Pnt                                                   myPntText;
-  bool                                                     myHasPlane;
-  bool                                                     myHasPnt;
-  bool                                                     myHasPntText;
-  TopoDS_Shape                                             myPresentation;
-  occ::handle<TCollection_HAsciiString>                    mySemanticName;
-  occ::handle<TCollection_HAsciiString>                    myPresentationName;
+  XCAFDimTolObjects_DatumModifWithValue                    myModifierWithValue =
+    XCAFDimTolObjects_DatumModifWithValue_None;
+  double                                myValueOfModifier = 0.0;
+  TopoDS_Shape                          myDatumTarget;
+  int                                   myPosition    = 0;
+  bool                                  myIsDTarget   = false;
+  bool                                  myIsValidDT   = false;
+  XCAFDimTolObjects_DatumTargetType     myDTargetType = XCAFDimTolObjects_DatumTargetType_Point;
+  double                                myLength      = 0.0;
+  double                                myWidth       = 0.0;
+  int                                   myDatumTargetNumber = 0;
+  gp_Ax2                                myAxis;
+  gp_Ax2                                myPlane;
+  gp_Pnt                                myPnt;
+  gp_Pnt                                myPntText;
+  bool                                  myHasPlane   = false;
+  bool                                  myHasPnt     = false;
+  bool                                  myHasPntText = false;
+  TopoDS_Shape                          myPresentation;
+  occ::handle<TCollection_HAsciiString> mySemanticName;
+  occ::handle<TCollection_HAsciiString> myPresentationName;
 };
 
 #endif // _XCAFDimTolObjects_DatumObject_HeaderFile

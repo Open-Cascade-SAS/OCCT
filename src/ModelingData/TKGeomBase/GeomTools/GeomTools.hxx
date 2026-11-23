@@ -73,8 +73,11 @@ public:
 
   Standard_EXPORT static occ::handle<GeomTools_UndefinedTypeHandler> GetUndefinedTypeHandler();
 
-  //! Reads the double value from the stream. Zero is read
-  //! in case of error
+  //! Reads a whitespace-delimited double from the stream.
+  //! Sets the value to zero if extraction fails.
+  //! @param[in,out] IS input stream
+  //! @param[out] theValue converted value
+  //! Sets the stream failbit and leaves the value zero if the number is too long.
   Standard_EXPORT static void GetReal(Standard_IStream& IS, double& theValue);
 };
 

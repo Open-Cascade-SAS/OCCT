@@ -232,7 +232,7 @@ inline CroutResult Crout(const math_Matrix& theA, double theTolerance = 1.0e-15)
     }
   }
 
-  aResult.D = math_Vector(aN);
+  aResult.D.emplace(aN);
   for (size_t i = 0; i < aN; ++i)
   {
     (*aResult.D)[i] = aDiag[i];

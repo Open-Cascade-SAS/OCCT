@@ -18,24 +18,25 @@
 
 #include <Standard.hxx>
 
+#include <BinLDrivers_DocumentSection.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Map.hxx>
 #include <NCollection_DynamicArray.hxx>
-#include <BinLDrivers_DocumentSection.hxx>
+#include <NCollection_FlatDataMap.hxx>
+#include <NCollection_FlatMap.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <Standard_IStream.hxx>
-#include <Storage_Position.hxx>
 #include <Storage_Data.hxx>
+#include <Storage_Position.hxx>
+#include <TDF_Label.hxx>
+
+#include <utility>
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
 class TCollection_ExtendedString;
 class CDM_Document;
 class CDM_Application;
-class TDF_Label;
-class BinLDrivers_DocumentSection;
 
 class BinLDrivers_DocumentRetrievalDriver : public PCDM_RetrievalDriver
 {
@@ -117,10 +118,25 @@ protected:
   occ::handle<Message_Messenger>   myMsgDriver;
 
 private:
+  using LabelLocation = std::pair<std::streampos, TDF_Label>;
+
+  int readAttribute(Standard_IStream&                     theIS,
+                    const TDF_Label&                      theLabel,
+                    const occ::handle<PCDM_ReaderFilter>& theFilter);
+
+  int resolveUnresolvedLinks(Standard_IStream&                     theIS,
+                             const occ::handle<PCDM_ReaderFilter>& theFilter,
+                             const Message_ProgressRange&          theRange);
+
+  bool isAttributeLoaded(const int theId) const;
+
+private:
   BinObjMgt_Persistent                                  myPAtt;
-  NCollection_Map<int>                                  myMapUnsupported;
+  NCollection_FlatMap<int>                              myMapUnsupported;
   NCollection_DynamicArray<BinLDrivers_DocumentSection> mySections;
-  NCollection_Map<int>                                  myUnresolvedLinks;
+  NCollection_FlatMap<int>                              myUnresolvedLinks;
+  NCollection_FlatDataMap<int, LabelLocation>           myTreeNodeLocations;
+  int                                                   myTreeNodeTypeId = 0;
 };
 
 #endif // _BinLDrivers_DocumentRetrievalDriver_HeaderFile

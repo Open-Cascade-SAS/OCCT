@@ -69,7 +69,7 @@ TEST(BRepFont_PlanarRegionTest, CubicBoundsHandleConstantCoordinate)
 
 TEST(BRepFont_PlanarRegionTest, BoundsRemainConservativeWhenCoefficientsOverflow)
 {
-  const double                       aLimit = std::numeric_limits<double>::max();
+  constexpr double                   aLimit = std::numeric_limits<double>::max();
   const BRepFont_PlanarRegion::Curve aCurve(
     Font_GlyphOutline::Segment::Quadratic(gp_XY(aLimit, 0.0),
                                           gp_XY(-aLimit, 1.0),

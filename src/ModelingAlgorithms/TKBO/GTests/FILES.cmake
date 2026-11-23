@@ -3,6 +3,7 @@ set(OCCT_TKBO_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKBO_GTests_FILES
   BOPAlgo_CellsBuilder_Test.cxx
+  BOPAlgo_CheckerSI_Test.cxx
   BOPAlgo_OpenSolid_Test.cxx
   BRepTools_History_Test.cxx
   BRepAlgoAPI_BuilderAlgo_Test.cxx

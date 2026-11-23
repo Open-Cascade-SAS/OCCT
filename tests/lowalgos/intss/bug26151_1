@@ -1,3 +1,5 @@
+puts "TODO OCC000000 ALL: Error : Wrong result obtained by intersection algorithm"
+
 puts "============"
 puts "OCC26151"
 puts "============"

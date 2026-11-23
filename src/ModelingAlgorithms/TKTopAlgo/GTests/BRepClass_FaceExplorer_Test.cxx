@@ -19,8 +19,13 @@
 #include <BRepClass_FClassifier.hxx>
 #include <BRepClass_FaceExplorer.hxx>
 #include <BRepClass_Intersector.hxx>
+#include <BRepPrim_Cylinder.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_Plane.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -44,6 +49,49 @@
 #include <gp_Vec2d.hxx>
 
 #include <gtest/gtest.h>
+
+//==================================================================================================
+
+TEST(BRepClass_IntersectorTest, RepeatedOnEdgeChecksReplacePreviousPoints)
+{
+  const occ::handle<Geom_Plane> aSurface = new Geom_Plane(gp_Pln(gp::XOY()));
+  BRepBuilderAPI_MakeFace       aFaceMaker(aSurface, 0.0, 1.0, 0.0, 1.0, Precision::Confusion());
+  ASSERT_TRUE(aFaceMaker.IsDone());
+  const occ::handle<Geom2d_Line> aCurve = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  BRepBuilderAPI_MakeEdge        anEdgeMaker(aCurve, aSurface, 0.0, 1.0);
+  ASSERT_TRUE(anEdgeMaker.IsDone());
+  const BRepClass_Edge anEdge(anEdgeMaker.Edge(), aFaceMaker.Face());
+
+  BRepClass_Intersector anIntersector;
+  anIntersector.Perform(gp_Lin2d(gp_Pnt2d(0.5, -0.5), gp_Dir2d(0.0, 1.0)),
+                        1.0,
+                        Precision::Confusion(),
+                        anEdge);
+  ASSERT_TRUE(anIntersector.IsDone());
+  ASSERT_EQ(anIntersector.NbPoints(), 1);
+  EXPECT_NEAR(anIntersector.Point(1).ParamOnFirst(), 0.5, Precision::PConfusion());
+
+  constexpr double aParameters[] = {0.25, 0.75, 0.5};
+  for (const double aParameter : aParameters)
+  {
+    anIntersector.Perform(gp_Lin2d(gp_Pnt2d(aParameter, 0.0), gp_Dir2d(0.0, 1.0)),
+                          1.0,
+                          Precision::Confusion(),
+                          anEdge);
+    ASSERT_TRUE(anIntersector.IsDone());
+    ASSERT_EQ(anIntersector.NbPoints(), 1);
+    EXPECT_EQ(anIntersector.NbSegments(), 0);
+    EXPECT_NEAR(anIntersector.Point(1).ParamOnSecond(), aParameter, Precision::PConfusion());
+  }
+
+  anIntersector.Perform(gp_Lin2d(gp_Pnt2d(2.0, -0.5), gp_Dir2d(0.0, 1.0)),
+                        1.0,
+                        Precision::Confusion(),
+                        anEdge);
+  ASSERT_TRUE(anIntersector.IsDone());
+  EXPECT_EQ(anIntersector.NbPoints(), 0);
+  EXPECT_EQ(anIntersector.NbSegments(), 0);
+}
 
 namespace
 {
@@ -232,6 +280,37 @@ TEST(BRepClassFaceExplorerTest, ReversedWire_NextEdgesMatchReference)
   ASSERT_TRUE(aFaceBuilder.IsDone());
 
   expectNextEdgesMatchReference(aFaceBuilder.Face());
+}
+
+TEST(BRepClassFaceExplorerTest, DiskBoundaryVertex_IsOn)
+{
+  constexpr double         aRadius = 100.0;
+  BRepPrimAPI_MakeCylinder aCylinder(aRadius, 300.0);
+  aCylinder.Build();
+  ASSERT_TRUE(aCylinder.IsDone());
+  const TopoDS_Face& aDisk = aCylinder.Cylinder().BottomFace();
+  ASSERT_FALSE(aDisk.IsNull());
+
+  for (const bool toUseBndBox : {false, true})
+  {
+    SCOPED_TRACE(toUseBndBox);
+    EXPECT_EQ(classify(aDisk, gp_Pnt2d(aRadius, 0.0), toUseBndBox), TopAbs_ON);
+    EXPECT_EQ(classify(aDisk, gp_Pnt2d(0.0, aRadius), toUseBndBox), TopAbs_ON);
+    EXPECT_EQ(classify(aDisk, gp_Pnt2d(aRadius - 0.001, 0.0), toUseBndBox), TopAbs_IN);
+    EXPECT_EQ(classify(aDisk, gp_Pnt2d(aRadius + 0.001, 0.0), toUseBndBox), TopAbs_OUT);
+  }
+
+  const gp_Pnt2d         aVertex(aRadius, 0.0);
+  BRepClass_FaceExplorer anExplorer(aDisk);
+  gp_Lin2d               aLine;
+  double                 aLength = 0.0;
+  ASSERT_TRUE(anExplorer.Segment(aVertex, aLine, aLength));
+  EXPECT_DOUBLE_EQ(aLength, 0.0);
+  const gp_Dir2d aFirstDirection = aLine.Direction();
+  if (anExplorer.OtherSegment(aVertex, aLine, aLength))
+  {
+    EXPECT_FALSE(aLine.Direction().IsEqual(aFirstDirection, Precision::Angular()));
+  }
 }
 
 TEST(BRepClassFaceExplorerTest, SingleClosedEdge_HasNoNextEdge)

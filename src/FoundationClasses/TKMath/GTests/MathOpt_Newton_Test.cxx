@@ -774,3 +774,205 @@ TEST(MathOpt_NewtonTest, QuadraticConvergence)
   EXPECT_LE(aResult.NbIterations, 2);
   EXPECT_NEAR(*aResult.Value, 0.0, 1.0e-10);
 }
+
+namespace
+{
+struct MathOpt_TestScaledQuartic
+{
+  double Scale; //!< Objective scale.
+
+  bool Value(const math_Vector& theX, double& theValue);
+
+  bool Gradient(const math_Vector& theX, math_Vector& theGradient);
+
+  bool Hessian(const math_Vector& theX, math_Matrix& theHessian);
+};
+
+//==================================================================================================
+
+bool MathOpt_TestScaledQuartic::Value(const math_Vector& theX, double& theValue)
+{
+  const double aResidual = theX.At(0) * theX.At(0) - 2.0;
+  theValue               = Scale * aResidual * aResidual;
+  return true;
+}
+
+//==================================================================================================
+
+bool MathOpt_TestScaledQuartic::Gradient(const math_Vector& theX, math_Vector& theGradient)
+{
+  const double aX         = theX.At(0);
+  theGradient.ChangeAt(0) = Scale * (4.0 * aX * (aX * aX - 2.0));
+  return true;
+}
+
+//==================================================================================================
+
+bool MathOpt_TestScaledQuartic::Hessian(const math_Vector& theX, math_Matrix& theHessian)
+{
+  theHessian.ChangeAt(0, 0) = Scale * (12.0 * theX.At(0) * theX.At(0) - 8.0);
+  return true;
+}
+} // namespace
+
+TEST(MathOpt_NewtonTest, ObjectiveScaleDoesNotChangeConvergence)
+{
+  const math_Vector aStart(size_t{1}, 1.0);
+  const math_Vector aLower(size_t{1}, 0.5), anUpper(size_t{1}, 2.0);
+  for (const double aScale : {1.e-200, 1.e-16, 1.0, 1.e16, 1.e200})
+  {
+    for (const bool isBounded : {false, true})
+    {
+      SCOPED_TRACE(aScale);
+      SCOPED_TRACE(isBounded);
+      MathOpt_TestScaledQuartic   aFunction{aScale};
+      const MathOpt::VectorResult aResult =
+        isBounded ? MathOpt::NewtonBounded(aFunction, aStart, aLower, anUpper)
+                  : MathOpt::Newton(aFunction, aStart);
+      ASSERT_TRUE(aResult.IsDone());
+      ASSERT_TRUE(aResult.Solution);
+      EXPECT_NEAR(aResult.Solution->At(0), std::sqrt(2.0), 1.e-9);
+      EXPECT_GT(aResult.NbIterations, 0u);
+    }
+  }
+}
+
+TEST(MathOpt_NewtonTest, SmallLinearObjectiveReachesActiveBound)
+{
+  struct Linear
+  {
+    bool Value(const math_Vector& theX, double& theValue)
+    {
+      theValue = -1.e-200 * theX.At(0);
+      return true;
+    }
+
+    bool Gradient(const math_Vector&, math_Vector& theGradient)
+    {
+      theGradient.ChangeAt(0) = -1.e-200;
+      return true;
+    }
+
+    bool Hessian(const math_Vector&, math_Matrix& theHessian)
+    {
+      theHessian.ChangeAt(0, 0) = 0.0;
+      return true;
+    }
+  } aFunction;
+
+  const math_Vector           aStart(size_t{1}, 0.5);
+  const math_Vector           aLower(size_t{1}, 0.0), anUpper(size_t{1}, 1.0);
+  const MathOpt::VectorResult aResult = MathOpt::NewtonBounded(aFunction, aStart, aLower, anUpper);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_DOUBLE_EQ(aResult.Solution->At(0), 1.0);
+}
+
+TEST(MathOpt_NewtonTest, IndefiniteHessianRegularizationIsScaleIndependent)
+{
+  const math_Vector aStart(size_t{1}, 0.1);
+  const math_Vector aLower(size_t{1}, 0.0), anUpper(size_t{1}, 2.0);
+  for (const double aScale : {1.e-200, 1.0, 1.e200})
+  {
+    for (const bool isBounded : {false, true})
+    {
+      SCOPED_TRACE(aScale);
+      SCOPED_TRACE(isBounded);
+      MathOpt_TestScaledQuartic   aFunction{aScale};
+      const MathOpt::VectorResult aResult =
+        isBounded ? MathOpt::NewtonBounded(aFunction, aStart, aLower, anUpper)
+                  : MathOpt::Newton(aFunction, aStart);
+      ASSERT_TRUE(aResult.IsDone());
+      EXPECT_NEAR(aResult.Solution->At(0), std::sqrt(2.0), 1.e-8);
+    }
+  }
+}
+
+TEST(MathOpt_NewtonTest, CoupledHessianIsScaleIndependent)
+{
+  struct ScaledBooth : BoothFunc
+  {
+    double Scale = 1.0;
+
+    bool Value(const math_Vector& theX, double& theValue)
+    {
+      BoothFunc::Value(theX, theValue);
+      theValue *= Scale;
+      return true;
+    }
+
+    bool Gradient(const math_Vector& theX, math_Vector& theGradient)
+    {
+      BoothFunc::Gradient(theX, theGradient);
+      for (size_t i = 0; i < 2; ++i)
+        theGradient.ChangeAt(i) *= Scale;
+      return true;
+    }
+
+    bool Hessian(const math_Vector& theX, math_Matrix& theHessian)
+    {
+      BoothFunc::Hessian(theX, theHessian);
+      for (size_t i = 0; i < 2; ++i)
+        for (size_t j = 0; j < 2; ++j)
+          theHessian.ChangeAt(i, j) *= Scale;
+      return true;
+    }
+  } aFunction;
+
+  const math_Vector aStart(size_t{2}, 0.0);
+  const math_Vector aLower(size_t{2}, -5.0), anUpper(size_t{2}, 5.0);
+  for (const double aScale : {1.e-200, 1.0, 1.e200})
+  {
+    for (const bool isBounded : {false, true})
+    {
+      SCOPED_TRACE(aScale);
+      SCOPED_TRACE(isBounded);
+      aFunction.Scale = aScale;
+      const MathOpt::VectorResult aResult =
+        isBounded ? MathOpt::NewtonBounded(aFunction, aStart, aLower, anUpper)
+                  : MathOpt::Newton(aFunction, aStart);
+      ASSERT_TRUE(aResult.IsDone());
+      EXPECT_NEAR(aResult.Solution->At(0), 1.0, 1.e-8);
+      EXPECT_NEAR(aResult.Solution->At(1), 3.0, 1.e-8);
+    }
+  }
+}
+
+TEST(MathOpt_NewtonTest, BoundedAcceptedPointIsNotEvaluatedTwice)
+{
+  struct CountedQuadratic : QuadraticFunc
+  {
+    size_t Calls = 0;
+
+    bool Value(const math_Vector& theX, double& theValue)
+    {
+      ++Calls;
+      return QuadraticFunc::Value(theX, theValue);
+    }
+  } aFunction;
+
+  const math_Vector           aStart(size_t{2}, 0.0);
+  const math_Vector           aLower(size_t{2}, -5.0), anUpper(size_t{2}, 5.0);
+  const MathOpt::VectorResult aResult = MathOpt::NewtonBounded(aFunction, aStart, aLower, anUpper);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbIterations, 1u);
+  EXPECT_EQ(aFunction.Calls, size_t{2});
+}
+
+TEST(MathOpt_NewtonTest, NumericalDerivativesRetainObjectiveScaleHandling)
+{
+  const math_Vector           aStart(size_t{1}, 1.0);
+  const MathOpt::NewtonConfig aConfig(1.e-6);
+  for (const double aScale : {1.e-100, 1.0, 1.e100})
+  {
+    SCOPED_TRACE(aScale);
+    MathOpt_TestScaledQuartic   aFunction{aScale};
+    const MathOpt::VectorResult aHessianResult =
+      MathOpt::NewtonNumericalHessian(aFunction, aStart, 1.e-6, aConfig);
+    ASSERT_TRUE(aHessianResult.IsDone());
+    EXPECT_NEAR(aHessianResult.Solution->At(0), std::sqrt(2.0), 1.e-6);
+    const MathOpt::VectorResult aNumericalResult =
+      MathOpt::NewtonNumerical(aFunction, aStart, 1.e-8, 1.e-6, aConfig);
+    ASSERT_TRUE(aNumericalResult.IsDone());
+    EXPECT_NEAR(aNumericalResult.Solution->At(0), std::sqrt(2.0), 1.e-6);
+  }
+}

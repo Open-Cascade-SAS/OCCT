@@ -19,7 +19,7 @@
 #include <Font_TextFormatter.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
-#include <NCollection_String.hxx>
+#include <TCollection_UtfString.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -44,10 +44,10 @@ public:
   ~Graphic3d_Text() override = default;
 
   //! Returns text value.
-  const NCollection_String& Text() const { return myText; }
+  const TCollection_UtfString<char>& Text() const { return myText; }
 
   //! Sets text value.
-  void SetText(const NCollection_String& theText) { myText = theText; }
+  void SetText(const TCollection_UtfString<char>& theText) { myText = theText; }
 
   //! Sets text value.
   void SetText(const TCollection_AsciiString& theText) { myText = theText.ToCString(); }
@@ -116,8 +116,8 @@ public:
 protected:
   occ::handle<Font_TextFormatter> myFormatter; //!< text formatter
 
-  NCollection_String myText;        //!< text value
-  gp_Ax2             myOrientation; //!< Text orientation in 3D space.
+  TCollection_UtfString<char> myText;        //!< text value
+  gp_Ax2                      myOrientation; //!< Text orientation in 3D space.
 
   float                             myHeight; //!< height of text
   Graphic3d_HorizontalTextAlignment myHAlign; //!< horizontal alignment

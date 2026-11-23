@@ -15,6 +15,7 @@
 #ifndef _RWGltf_GltfJsonParser_HeaderFile
 #define _RWGltf_GltfJsonParser_HeaderFile
 
+#include <DE_Provider.hxx>
 #include <Message_Gravity.hxx>
 #include <Message_ProgressScope.hxx>
 #include <RWGltf_GltfPrimArrayData.hxx>
@@ -27,9 +28,14 @@
 #include <RWMesh_NodeAttributes.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Buffer.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
+
+#include <iosfwd>
+#include <string_view>
 
 // workaround name collisions with XLib
 #ifdef None
@@ -146,8 +152,16 @@ public:
   //! Return face list for loading triangulation.
   NCollection_DynamicArray<TopoDS_Face>& FaceList() { return myFaceList; }
 
-  //! Set inpit stream.
-  void SetStream(std::shared_ptr<std::istream>& theStream) { myStream = theStream; }
+  //! Set the main input stream.
+  //! @param[in] theStream input stream; must remain valid during Parse()
+  void SetStream(std::istream& theStream) { myStream = &theStream; }
+
+  //! Set streams for external buffers and images instead of files.
+  //! @param[in] theStreams caller-owned list; must remain valid during Parse()
+  void SetResourceStreams(const DE_Provider::ReadStreamList& theStreams)
+  {
+    myResourceStreams = &theStreams;
+  }
 
 protected:
 #ifdef HAVE_RAPIDJSON
@@ -472,6 +486,13 @@ private:
   Standard_EXPORT bool fillMeshData(
     const occ::handle<RWGltf_GltfLatePrimitiveArray>& theMeshData) const;
 
+  //! Resolve a URI and cache its companion buffer.
+  occ::handle<NCollection_Buffer> loadResourceBuffer(std::string_view theUri);
+
+  //! Decode and cache an embedded buffer by glTF identifier.
+  occ::handle<NCollection_Buffer> loadDecodedBuffer(const TCollection_AsciiString& theName,
+                                                    std::string_view               theData);
+
   //! Load the binary body of a caller-owned GLB stream into memory.
   Standard_EXPORT bool loadStreamBuffer();
 
@@ -495,7 +516,10 @@ protected:
   NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>*
     myMetadata; //!< file metadata
 
-  mutable std::shared_ptr<std::istream> myStream; //!< input stream
+  std::istream*                      myStream = nullptr; //!< Borrowed main stream during parsing.
+  const DE_Provider::ReadStreamList* myResourceStreams =
+    nullptr;                     //!< Borrowed named companion streams.
+  bool myResourceFailed = false; //!< Required stream resource could not be read.
 
   NCollection_DataMap<TCollection_AsciiString, occ::handle<RWGltf_MaterialMetallicRoughness>>
     myMaterialsPbr;
@@ -507,6 +531,8 @@ protected:
   NCollection_DataMap<TCollection_AsciiString, bool>                            myProbedFiles;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_Buffer>> myDecodedBuffers;
   occ::handle<NCollection_Buffer>                                               myStreamBuffer;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_Buffer>>
+    myResourceBuffers; //!< Owned bytes shared by mesh and texture references.
   NCollection_DynamicArray<TopoDS_Face> myFaceList; //!< face list for loading triangulation
 
   TCollection_AsciiString myFilePath;         //!< file path

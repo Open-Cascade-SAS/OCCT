@@ -33,11 +33,6 @@
 #include <NCollection_HArray1.hxx>
 #include <AppDef_Variational.hxx>
 
-static bool scal = 1;
-
-Standard_EXPORT bool AppBlend_GetContextSplineApprox();
-Standard_EXPORT bool AppBlend_GetContextApproxWithNoTgt();
-
 //  modified by EAP (Edward AGAPOV) Fri Jan 4 2002, bug OCC9
 //  --- keep pipe parametrized like path
 
@@ -235,9 +230,6 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
 
   withderiv = F.Section(Lin->Point(1), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
 
-  if (AppBlend_GetContextApproxWithNoTgt())
-    withderiv = false;
-
   for (j = 1; j <= NbPoles2d; j++)
   {
     tabAppP2d(j) = tabP2d(j);
@@ -295,9 +287,6 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
     else
     {
       withderiv = F.Section(Lin->Point(i), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
-      if (AppBlend_GetContextApproxWithNoTgt())
-        withderiv = false;
-
       for (j = 1; j <= NbPoles2d; j++)
       {
         tabAppP2d(j) = tabP2d(j);
@@ -333,9 +322,6 @@ void AppBlend_AppSurf::InternalPerform(const occ::handle<TheLine>& Lin,
   }
 
   withderiv = F.Section(Lin->Point(NbPoint), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
-  if (AppBlend_GetContextApproxWithNoTgt())
-    withderiv = false;
-
   for (j = 1; j <= NbPoles2d; j++)
   {
     tabAppP2d(j) = tabP2d(j);
@@ -755,22 +741,6 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
       Y2d(j) *= -DY2d(j);
     }
   }
-  if (!scal)
-  {
-    DX = 1.;
-    X  = 0.;
-    DY = 1.;
-    Y  = 0.;
-    DZ = 1.;
-    Z  = 0.;
-    for (j = 1; j <= NbPoles2d; j++)
-    {
-      DX2d(j) = 1.;
-      X2d(j)  = 0.;
-      DY2d(j) = 1.;
-      Y2d(j)  = 0.;
-    }
-  }
   //  modified by eap Thu Jan  3 14:45:22 2002 ___BEGIN___
   // Keep "inter-troncons" parameters, not only first and last
   //  double Ufirst=0,Ulast=0;
@@ -841,9 +811,6 @@ void AppBlend_AppSurf::Perform(const occ::handle<TheLine>& Lin,
       int    iLin = StPoint + i - 1;
       double x, y, z;
       withderiv = F.Section(Lin->Point(iLin), tabAppP, tabAppV, tabP2d, tabV2d, tabW, tabDW);
-      if (AppBlend_GetContextApproxWithNoTgt())
-        withderiv = false;
-
       for (j = 1; j <= NbPoles2d; j++)
       {
         tabP2d(j).Coord(x, y);

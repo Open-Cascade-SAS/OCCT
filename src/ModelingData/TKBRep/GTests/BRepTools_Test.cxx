@@ -35,6 +35,7 @@
 #include <NCollection_Map.hxx>
 #include <OSD_Parallel.hxx>
 #include <Poly_Triangulation.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
@@ -48,6 +49,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopTools_LocationSet.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Ax1.hxx>
@@ -56,6 +58,9 @@
 #include <gp_Vec.hxx>
 #include <Geom_Circle.hxx>
 #include <gp_Ax2.hxx>
+#include <Poly_Triangle.hxx>
+#include <Precision.hxx>
+#include <TopLoc_Location.hxx>
 
 #include <gtest/gtest.h>
 
@@ -264,6 +269,110 @@ void ExpectBoxUvBounds(const TopoDS_Face& theFace)
   EXPECT_NEAR(aVMax, 1500.0, 1.e-10);
 }
 
+//==================================================================================================
+
+static void ExpectSamePrincipalProperties(const GProp_GProps& theExact,
+                                          const GProp_GProps& theTriangulated)
+{
+  EXPECT_NEAR(theExact.Mass(), theTriangulated.Mass(), 1.0e-7);
+
+  GProp_PrincipalProps anExactPrincipal       = theExact.PrincipalProperties();
+  GProp_PrincipalProps aTriangulatedPrincipal = theTriangulated.PrincipalProperties();
+  double               anExactIx              = 0.0;
+  double               anExactIy              = 0.0;
+  double               anExactIz              = 0.0;
+  double               aTriangulatedIx        = 0.0;
+  double               aTriangulatedIy        = 0.0;
+  double               aTriangulatedIz        = 0.0;
+  anExactPrincipal.Moments(anExactIx, anExactIy, anExactIz);
+  aTriangulatedPrincipal.Moments(aTriangulatedIx, aTriangulatedIy, aTriangulatedIz);
+  EXPECT_NEAR(anExactIx, aTriangulatedIx, 1.0e-7);
+  EXPECT_NEAR(anExactIy, aTriangulatedIy, 1.0e-7);
+  EXPECT_NEAR(anExactIz, aTriangulatedIz, 1.0e-7);
+}
+
+static void CompareExactAndTriangulatedProperties(const TopoDS_Shape& theShape,
+                                                  const int           thePropertyType)
+{
+  GProp_GProps anExactProperties;
+  GProp_GProps aTriangulatedProperties;
+  switch (thePropertyType)
+  {
+    case 0:
+      BRepGProp::LinearProperties(theShape, anExactProperties, false, false);
+      BRepGProp::LinearProperties(theShape, aTriangulatedProperties, false, true);
+      break;
+    case 1:
+      BRepGProp::SurfaceProperties(theShape, anExactProperties, false, false);
+      BRepGProp::SurfaceProperties(theShape, aTriangulatedProperties, false, true);
+      break;
+    default:
+      BRepGProp::VolumeProperties(theShape, anExactProperties, false, false, false);
+      BRepGProp::VolumeProperties(theShape, aTriangulatedProperties, false, false, true);
+      break;
+  }
+  ExpectSamePrincipalProperties(anExactProperties, aTriangulatedProperties);
+}
+
+//==================================================================================================
+
+void checkSharedEdgeTriangulationsPreserveFaceNormals(const bool theIsBinary)
+{
+  const TopoDS_Shape       aBox = BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape();
+  BRepMesh_IncrementalMesh aMesher(aBox, 0.01);
+  ASSERT_TRUE(aMesher.IsDone());
+  for (TopExp_Explorer aFaces(aBox, TopAbs_FACE); aFaces.More(); aFaces.Next())
+  {
+    TopLoc_Location                       aLocation;
+    const occ::handle<Poly_Triangulation> aMesh =
+      BRep_Tool::Triangulation(TopoDS::Face(aFaces.Current()), aLocation);
+    ASSERT_FALSE(aMesh.IsNull());
+    aMesh->AddNormals();
+    for (int aNodeIndex = 1; aNodeIndex <= aMesh->NbNodes(); ++aNodeIndex)
+    {
+      aMesh->SetNormal(aNodeIndex, gp_Dir(1.0, 2.0, 3.0));
+    }
+  }
+
+  // A shared edge records both adjacent triangulations before the second face is visited.
+  for (const bool toWriteNormals : {false, true})
+  {
+    std::stringstream aStream(std::ios::in | std::ios::out | std::ios::binary);
+    TopoDS_Shape      aRestored;
+    if (theIsBinary)
+    {
+      BinTools::Write(aBox, aStream, true, toWriteNormals, BinTools_FormatVersion_CURRENT);
+      aStream.seekg(0);
+      BinTools::Read(aRestored, aStream);
+    }
+    else
+    {
+      BRepTools::Write(aBox, aStream, true, toWriteNormals, TopTools_FormatVersion_CURRENT);
+      aStream.seekg(0);
+      BRepTools::Read(aRestored, aStream, BRep_Builder());
+    }
+    ASSERT_FALSE(aRestored.IsNull());
+    int aFaceCount = 0;
+    for (TopExp_Explorer aFaces(aRestored, TopAbs_FACE); aFaces.More(); aFaces.Next())
+    {
+      ++aFaceCount;
+      TopLoc_Location                       aLocation;
+      const occ::handle<Poly_Triangulation> aMesh =
+        BRep_Tool::Triangulation(TopoDS::Face(aFaces.Current()), aLocation);
+      ASSERT_FALSE(aMesh.IsNull());
+      EXPECT_EQ(aMesh->HasNormals(), toWriteNormals) << theIsBinary << ": face " << aFaceCount;
+      if (toWriteNormals && aMesh->HasNormals())
+      {
+        for (int aNodeIndex = 1; aNodeIndex <= aMesh->NbNodes(); ++aNodeIndex)
+        {
+          EXPECT_GT(aMesh->Normal(aNodeIndex).Dot(gp_Dir(1.0, 2.0, 3.0)),
+                    1.0 - Precision::Confusion());
+        }
+      }
+    }
+    EXPECT_EQ(aFaceCount, 6);
+  }
+}
 } // namespace
 
 // Parallel BRep reading must produce shapes with identical volume properties.
@@ -507,52 +616,6 @@ TEST(BRepTools_Test, ModDataBug_20616_EmptyShapeSaveRestore)
   }
 }
 
-namespace
-{
-static void ExpectSamePrincipalProperties(const GProp_GProps& theExact,
-                                          const GProp_GProps& theTriangulated)
-{
-  EXPECT_NEAR(theExact.Mass(), theTriangulated.Mass(), 1.0e-7);
-
-  GProp_PrincipalProps anExactPrincipal       = theExact.PrincipalProperties();
-  GProp_PrincipalProps aTriangulatedPrincipal = theTriangulated.PrincipalProperties();
-  double               anExactIx              = 0.0;
-  double               anExactIy              = 0.0;
-  double               anExactIz              = 0.0;
-  double               aTriangulatedIx        = 0.0;
-  double               aTriangulatedIy        = 0.0;
-  double               aTriangulatedIz        = 0.0;
-  anExactPrincipal.Moments(anExactIx, anExactIy, anExactIz);
-  aTriangulatedPrincipal.Moments(aTriangulatedIx, aTriangulatedIy, aTriangulatedIz);
-  EXPECT_NEAR(anExactIx, aTriangulatedIx, 1.0e-7);
-  EXPECT_NEAR(anExactIy, aTriangulatedIy, 1.0e-7);
-  EXPECT_NEAR(anExactIz, aTriangulatedIz, 1.0e-7);
-}
-
-static void CompareExactAndTriangulatedProperties(const TopoDS_Shape& theShape,
-                                                  const int           thePropertyType)
-{
-  GProp_GProps anExactProperties;
-  GProp_GProps aTriangulatedProperties;
-  switch (thePropertyType)
-  {
-    case 0:
-      BRepGProp::LinearProperties(theShape, anExactProperties, false, false);
-      BRepGProp::LinearProperties(theShape, aTriangulatedProperties, false, true);
-      break;
-    case 1:
-      BRepGProp::SurfaceProperties(theShape, anExactProperties, false, false);
-      BRepGProp::SurfaceProperties(theShape, aTriangulatedProperties, false, true);
-      break;
-    default:
-      BRepGProp::VolumeProperties(theShape, anExactProperties, false, false, false);
-      BRepGProp::VolumeProperties(theShape, aTriangulatedProperties, false, false, true);
-      break;
-  }
-  ExpectSamePrincipalProperties(anExactProperties, aTriangulatedProperties);
-}
-} // namespace
-
 // bugs/modalg_7/bug29734: global properties computed from planar face
 // triangulations must agree with the exact-geometry calculations.
 TEST(BRepTools_Test, ModalgBug_29734_ExactAndTriangulatedProperties)
@@ -672,4 +735,96 @@ TEST(BRepTools_Test, ModalgBug_24404_BoxFaceUVBounds)
     MakeCircleFace(gp_Pnt(1177.73545803307, 1500.0, 1406.03245550006), aNormal, 150.768085993996));
   ASSERT_FALSE(aFace.IsNull());
   ExpectBoxUvBounds(aFace);
+}
+
+//==================================================================================================
+
+TEST(BRepTools_Test, SharedEdgeTriangulationsPreserveFaceNormalsAscii)
+{
+  checkSharedEdgeTriangulationsPreserveFaceNormals(false);
+}
+
+//==================================================================================================
+
+TEST(BRepTools_Test, SharedEdgeTriangulationsPreserveFaceNormalsBinary)
+{
+  checkSharedEdgeTriangulationsPreserveFaceNormals(true);
+}
+
+//==================================================================================================
+
+TEST(BRepTools_Test, NullSurfaceFacePreservesToleranceAndRestriction)
+{
+  BRep_Builder aBuilder;
+  for (const bool hasTriangulation : {false, true})
+  {
+    SCOPED_TRACE(hasTriangulation);
+    TopoDS_Face aFace;
+    aBuilder.MakeFace(aFace);
+    aBuilder.UpdateFace(aFace, 0.123);
+    aBuilder.NaturalRestriction(aFace, true);
+    if (hasTriangulation)
+    {
+      const occ::handle<Poly_Triangulation> aMesh = new Poly_Triangulation(3, 1, false);
+      aMesh->SetNode(1, gp_Pnt(0.0, 0.0, 0.0));
+      aMesh->SetNode(2, gp_Pnt(1.0, 0.0, 0.0));
+      aMesh->SetNode(3, gp_Pnt(0.0, 1.0, 0.0));
+      aMesh->SetTriangle(1, Poly_Triangle(1, 2, 3));
+      aBuilder.UpdateFace(aFace, aMesh);
+    }
+
+    std::stringstream aStream;
+    BRepTools::Write(aFace, aStream, true, true, TopTools_FormatVersion_CURRENT);
+    ASSERT_TRUE(aStream.good());
+    aStream.seekg(0);
+    TopoDS_Shape aRestored;
+    BRepTools::Read(aRestored, aStream, aBuilder);
+    ASSERT_FALSE(aRestored.IsNull());
+    ASSERT_EQ(aRestored.ShapeType(), TopAbs_FACE);
+    const TopoDS_Face aRestoredFace = TopoDS::Face(aRestored);
+    EXPECT_TRUE(BRep_Tool::Surface(aRestoredFace).IsNull());
+    EXPECT_DOUBLE_EQ(BRep_Tool::Tolerance(aRestoredFace), 0.123);
+    EXPECT_TRUE(BRep_Tool::NaturalRestriction(aRestoredFace));
+    TopLoc_Location aLocation;
+    EXPECT_EQ(BRep_Tool::Triangulation(aRestoredFace, aLocation).IsNull(), !hasTriangulation);
+  }
+}
+
+TEST(BRepToolsTest, OversizedRealTokenRejectsShapeRead)
+{
+  const TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0)).Edge();
+  std::stringstream aWritten;
+  BRepTools::Write(anEdge, aWritten);
+  TCollection_AsciiString       aRecord(aWritten.str().c_str());
+  const TCollection_AsciiString aPrefix("Curves 1\n1 ");
+  const int                     aPosition = aRecord.Search(aPrefix);
+  ASSERT_GE(aPosition, 1);
+  aRecord.Insert(aPosition + aPrefix.Length(), TCollection_AsciiString(512, '0'));
+
+  std::istringstream aStream(aRecord.ToCString());
+  TopoDS_Shape       aRead;
+  EXPECT_NO_THROW(BRepTools::Read(aRead, aStream, BRep_Builder()));
+  EXPECT_TRUE(aStream.fail());
+  EXPECT_TRUE(aRead.IsNull());
+}
+
+TEST(BRepToolsTest, OversizedLocationValueDoesNotAddTransform)
+{
+  TopTools_LocationSet          aLocations;
+  const TCollection_AsciiString aHeader("Locations 1\n1\n");
+  TCollection_AsciiString       aRecord(aHeader);
+  aRecord += TCollection_AsciiString(510, '0');
+  aRecord += "1 0 0 4\n0 1 0 0\n0 0 1 0\n";
+
+  std::istringstream aValid(aRecord.ToCString());
+  aLocations.Read(aValid);
+  ASSERT_FALSE(aValid.fail());
+  ASSERT_FALSE(aLocations.Location(1).IsIdentity());
+  EXPECT_DOUBLE_EQ(aLocations.Location(1).Transformation().TranslationPart().X(), 4.0);
+
+  aRecord.Insert(aHeader.Length() + 1, "0");
+  std::istringstream anOversized(aRecord.ToCString());
+  EXPECT_NO_THROW(aLocations.Read(anOversized));
+  EXPECT_TRUE(anOversized.fail());
+  EXPECT_TRUE(aLocations.Location(1).IsIdentity());
 }

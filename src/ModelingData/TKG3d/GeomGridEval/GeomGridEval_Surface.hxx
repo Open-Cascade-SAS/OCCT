@@ -181,6 +181,8 @@ private:
   //! Apply transformation to grid of vectors.
   void applyTransformation(NCollection_Array2<gp_Vec>& theGrid) const;
 
+  occ::handle<Adaptor3d_Surface>
+                         myOwnedAdaptor; //!< Keeps geometry-based fallback evaluation alive.
   EvaluatorVariant       myEvaluator;
   GeomAbs_SurfaceType    mySurfaceType;
   std::optional<gp_Trsf> myTrsf; //!< Optional transformation for BRepAdaptor surfaces

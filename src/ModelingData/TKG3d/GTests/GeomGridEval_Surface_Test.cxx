@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
+#include <GeomEval_RepSurfaceDesc.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -39,6 +39,8 @@
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+
+#include <gtest/gtest.h>
 
 #include <cmath>
 
@@ -875,6 +877,124 @@ TEST(GeomGridEval_SurfaceTest, UnifiedDerivativeD3)
       EXPECT_NEAR((aGrid.Value(iU, iV).D3V - aD3V).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3UUV - aD3UUV).Magnitude(), 0.0, THE_TOLERANCE);
       EXPECT_NEAR((aGrid.Value(iU, iV).D3UVV - aD3UVV).Magnitude(), 0.0, THE_TOLERANCE);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomGridEval_TorusTest, NearHornPreservesSectionRadiusAtEveryDerivativeOrder)
+{
+  const double aRadius        = 1.1;
+  const double aV             = M_PI - 2.0e-8;
+  const double aSectionRadius = std::fma(aRadius, std::cos(aV), aRadius);
+  ASSERT_GT(aSectionRadius, 0.0);
+  const occ::handle<Geom_ToroidalSurface> aSurface =
+    new Geom_ToroidalSurface(gp_Ax3(), aRadius, aRadius);
+  const GeomGridEval_Torus   anEvaluator(aSurface);
+  NCollection_Array1<double> aUParameters(-2, -2);
+  NCollection_Array1<double> aVParameters(3, 3);
+  aUParameters.ChangeAt(0) = 0.0;
+  aVParameters.ChangeAt(0) = aV;
+
+  const NCollection_Array2<gp_Pnt> aD0 = anEvaluator.EvaluateGrid(aUParameters, aVParameters);
+  const NCollection_Array2<GeomGridEval::SurfD1> aD1 =
+    anEvaluator.EvaluateGridD1(aUParameters, aVParameters);
+  const NCollection_Array2<GeomGridEval::SurfD2> aD2 =
+    anEvaluator.EvaluateGridD2(aUParameters, aVParameters);
+  const NCollection_Array2<GeomGridEval::SurfD3> aD3 =
+    anEvaluator.EvaluateGridD3(aUParameters, aVParameters);
+  const NCollection_Array2<gp_Vec> aDN =
+    anEvaluator.EvaluateGridDN(aUParameters, aVParameters, 1, 0);
+
+  EXPECT_DOUBLE_EQ(aD0.At(0).X(), aSectionRadius);
+  for (const auto* aPoint : {&aD1.At(0).Point, &aD2.At(0).Point, &aD3.At(0).Point})
+  {
+    EXPECT_DOUBLE_EQ(aPoint->X(), aSectionRadius);
+  }
+  for (const auto* aDU : {&aD1.At(0).D1U, &aD2.At(0).D1U, &aD3.At(0).D1U, &aDN.At(0)})
+  {
+    EXPECT_DOUBLE_EQ(aDU->Y(), aSectionRadius);
+  }
+  EXPECT_DOUBLE_EQ(aD2.At(0).D2U.X(), -aSectionRadius);
+  EXPECT_DOUBLE_EQ(aD3.At(0).D3U.Y(), -aSectionRadius);
+}
+
+//==================================================================================================
+
+TEST(GeomGridEval_SurfaceTest, AlternateSplineEvaluationMatchesNativeEvaluation)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  for (int u = 1; u <= 2; ++u)
+  {
+    for (int v = 1; v <= 2; ++v)
+    {
+      aPoles.SetValue(u, v, gp_Pnt(u - 1, v - 1, 0));
+    }
+  }
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots.SetValue(1, 0);
+  aKnots.SetValue(2, 1);
+  NCollection_Array1<int> aMults(1, 2);
+  aMults.Init(2);
+  NCollection_Array1<double> anU(3, 4), aV(-2, -1);
+  anU.SetValue(3, .2);
+  anU.SetValue(4, .8);
+  aV.SetValue(-2, .3);
+  aV.SetValue(-1, .7);
+  for (const bool isSpline : {false, true})
+  {
+    const occ::handle<GeomEval_RepSurfaceDesc::Full> aDescriptor =
+      new GeomEval_RepSurfaceDesc::Full();
+    aDescriptor->Representation = new Geom_Plane(gp_Pln(gp_Pnt(100, 20, 5), gp::DZ()));
+    occ::handle<Geom_Surface> aGeometry;
+    if (isSpline)
+    {
+      const occ::handle<Geom_BSplineSurface> aSpline =
+        new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 1, 1);
+      aSpline->SetEvalRepresentation(aDescriptor);
+      aGeometry = aSpline;
+    }
+    else
+    {
+      const occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
+      aBezier->SetEvalRepresentation(aDescriptor);
+      aGeometry = aBezier;
+    }
+    const GeomAdaptor_Surface anAdaptor(aGeometry, 0, 1, 0, 1, 1.e-8, 2.e-8);
+    GeomGridEval_Surface      aFromGeometry(aGeometry), aFromAdaptor(anAdaptor);
+    for (const GeomGridEval_Surface* anEvaluator : {&aFromGeometry, &aFromAdaptor})
+    {
+      const NCollection_Array2<gp_Pnt>               aPoints = anEvaluator->EvaluateGrid(anU, aV);
+      const NCollection_Array2<GeomGridEval::SurfD1> aDerivatives =
+        anEvaluator->EvaluateGridD1(anU, aV);
+      for (size_t u = 0; u < 2; ++u)
+      {
+        for (size_t v = 0; v < 2; ++v)
+        {
+          const Geom_Surface::ResD1 aExpected = anAdaptor.EvalD1(anU.At(u), aV.At(v));
+          EXPECT_LE(aPoints.At(u, v).Distance(aExpected.Point), 1.e-12);
+          EXPECT_LE(aDerivatives.At(u, v).Point.Distance(aExpected.Point), 1.e-12);
+          EXPECT_LE((aDerivatives.At(u, v).D1U - aExpected.D1U).Magnitude(), 1.e-12);
+          EXPECT_LE((aDerivatives.At(u, v).D1V - aExpected.D1V).Magnitude(), 1.e-12);
+        }
+      }
+    }
+    gp_Trsf aPlacement;
+    aPlacement.SetTranslation(gp_Vec(7, 11, 13));
+    const GeomAdaptor_TransformedSurface aPlaced(aGeometry, 0, 1, 0, 1, aPlacement, 1.e-8, 2.e-8);
+    GeomGridEval_Surface                 aFromPlaced(aPlaced);
+    const NCollection_Array2<GeomGridEval::SurfD1> aPlacedValues =
+      aFromPlaced.EvaluateGridD1(anU, aV);
+    for (size_t u = 0; u < 2; ++u)
+    {
+      for (size_t v = 0; v < 2; ++v)
+      {
+        const Geom_Surface::ResD1 aExpected = aPlaced.EvalD1(anU.At(u), aV.At(v));
+        EXPECT_LE(aPlacedValues.At(u, v).Point.Distance(aExpected.Point), 1.e-12);
+        EXPECT_LE((aPlacedValues.At(u, v).D1U - aExpected.D1U).Magnitude(), 1.e-12);
+        EXPECT_LE((aPlacedValues.At(u, v).D1V - aExpected.D1V).Magnitude(), 1.e-12);
+      }
     }
   }
 }

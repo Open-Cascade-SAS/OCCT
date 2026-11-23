@@ -216,8 +216,8 @@ TEST(MathPoly_QuadraticTest, AdjacentDiscriminantsRemainDistinct)
 
 TEST(MathPoly_QuadraticTest, RejectsNonFiniteCoefficients)
 {
-  const double aNan       = std::numeric_limits<double>::quiet_NaN();
-  const double anInfinity = std::numeric_limits<double>::infinity();
+  constexpr double aNan       = std::numeric_limits<double>::quiet_NaN();
+  constexpr double anInfinity = std::numeric_limits<double>::infinity();
   EXPECT_EQ(MathPoly::Quadratic(aNan, 1.0, 1.0).Status, MathUtils::Status::InvalidInput);
   EXPECT_EQ(MathPoly::Quadratic(1.0, anInfinity, 1.0).Status, MathUtils::Status::InvalidInput);
 }

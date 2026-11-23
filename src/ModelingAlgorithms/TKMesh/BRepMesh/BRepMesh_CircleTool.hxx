@@ -25,6 +25,7 @@
 #include <Standard_Boolean.hxx>
 #include <IMeshData_Types.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 class gp_Circ2d;
 
@@ -50,7 +51,7 @@ public:
 
   //! Sets new size for cell filter.
   //! @param theSize cell size to be set for X and Y dimensions.
-  void SetCellSize(const double theSize) { myCellFilter.Reset(theSize, myAllocator); }
+  void SetCellSize(const double theSize) { SetCellSize(theSize, theSize); }
 
   //! Sets new size for cell filter.
   //! @param theSizeX cell size to be set for X dimension.
@@ -59,6 +60,7 @@ public:
   {
     double                     aCellSizeC[2] = {theSizeX, theSizeY};
     NCollection_Array1<double> aCellSize(aCellSizeC[0], 1, 2);
+    myAllocator = new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
     myCellFilter.Reset(aCellSize, myAllocator);
   }
 

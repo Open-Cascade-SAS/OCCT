@@ -81,6 +81,7 @@ public:
   //! Set value of hang checking flag
   //! if this flag = true, possible hang of algorithm is checked
   //! and algorithm is forced to stop.
+  //! When disabled, subdivision stops at the segment limit or floating-point resolution.
   //! By default hang checking is used.
   Standard_EXPORT void SetHangChecking(const bool theHangChecking);
 

@@ -28,7 +28,7 @@ When you upgrade the code by an automatic script, make sure to carefully review 
 
 @section upgrade_pre_7_1 Upgrades pre-7.1.0
 
-Detailed upgrade notes for OCCT versions 6.5.0 through 7.0.0 are available in the versioned documentation archives, e.g. https://dev.opencascade.org/doc/occt-7.0.0/overview/html/index.html. Refer to the [OCCT GitHub releases](https://github.com/Open-Cascade-SAS/OCCT/releases) for per-version change logs.
+For OCCT versions 6.5.0 through 7.0.0, consult the documentation sources in the corresponding [Git tags](https://github.com/Open-Cascade-SAS/OCCT/tags). Refer to the [OCCT GitHub releases](https://github.com/Open-Cascade-SAS/OCCT/releases) for per-version change logs.
 
 
 @section upgrade_occt710 Upgrade to OCCT 7.1.0
@@ -1440,18 +1440,18 @@ The most recommended manager is `JeMalloc`. To use it with a plugin system, like
 The entire code base has been formatted with `clang-format` 18.1.8 (Windows) using settings available in the root of the repository.
 Most custom patches on top of previous releases will likely have merge conflicts.
 When encountering merge conflicts, it is recommended to use `clang-format` to format the code.
-To maintain patches, it is recommended to merge them into the main repository as part of a contribution. See [Get Involved](https://dev.opencascade.org/get_involved) and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
+To maintain patches, it is recommended to merge them into the main repository as part of a contribution. See @ref contribution "Contribution" and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
 
 @subsection upgrade_790_migration Migration to GitHub
 
 The OCCT repository has been migrated to GitHub. The new repository is available at [GitHub](https://github.com/Open-Cascade-SAS/OCCT).
 The old repository will be available for some time, but it is recommended to use the new repository for all new changes.
-Contribution to the new repository is available through the GitHub interface - see [Get Involved](https://dev.opencascade.org/get_involved) and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
+Contribution to the new repository is available through the GitHub interface - see @ref contribution "Contribution" and [Contribution Guide](https://github.com/Open-Cascade-SAS/OCCT/discussions/36).
 
 @subsection upgrade_790_configuration GenProj no longer supported
 
 The `GenProj` tool is no longer supported. It is recommended to use CMake for building OCCT.
-In case of problems, please refer to the [CMake Guide](https://dev.opencascade.org/doc/overview/html/build_upgrade__building_occt.html).
+In case of problems, please refer to the @ref build_upgrade__building_occt "Build OCCT".
 
 @subsection upgrade_790_modeling_scale_exception Disabling exception for transformation with scale
 
@@ -1737,17 +1737,6 @@ A new `GeomBndLib` package provides geometry-aware bounding boxes for all standa
 
 The new `ExtremaPC` package provides point-to-curve extrema computation with per-geometry specialized evaluators (`ExtremaPC_Line`, `ExtremaPC_Circle`, `ExtremaPC_Ellipse`, `ExtremaPC_Hyperbola`, `ExtremaPC_BezierCurve`, `ExtremaPC_BSplineCurve`, `ExtremaPC_OffsetCurve`) and an `ExtremaPC_Curve` aggregator dispatcher.
 
-@subsection upgrade_800_brepgraph BRepGraph- graph-based BRep representation
-
-OCCT 8.0.0 introduces a new graph-based representation of topology and BRep geometry as an alternative to the linked `TopoDS_Shape` data structure. The foundation is split across two layers:
-
-- `BRepGraph` (public)- typed `BRepGraph_NodeId` identifiers, multiple Views (`TopoView`, `RefsView`, `CacheView`, `BuilderView`), bidirectional parent/child explorers (`BRepGraph_ChildExplorer`, `BRepGraph_ParentExplorer`, `BRepGraph_WireExplorer`), iterators (`BRepGraph_DefsIterator`, `BRepGraph_RefsIterator`, `BRepGraph_RelatedIterator`, `BRepGraph_CacheKindIterator`, `BRepGraph_LayerIterator`), extensible Layer/Cache system, mutation guards (`BRepGraph_MutGuard`), history tracking (`BRepGraph_History`), deduplication (`BRepGraph_Deduplicate`), compaction (`BRepGraph_Compact`), deep copy (`BRepGraph_Copy`), and validation (`BRepGraph_Validate`).
-- `BRepGraphInc` (internal)- incidence-table storage with `BRepGraphInc_Populate` (`TopoDS_Shape` -> graph) and `BRepGraphInc_Reconstruct` (graph -> `TopoDS_Shape`) roundtrip conversion.
-
-`BRepGraph_Tool` is the centralized geometry-access API (analogue of `BRep_Tool`). `BRepGraph_Builder` allows programmatic graph construction without an input `TopoDS_Shape`.
-
-The graph representation is additive in 8.0.0- existing `TopoDS_Shape` code continues to work unchanged. Application code that wants to opt in can use `BRepGraphInc_Populate` and `BRepGraphInc_Reconstruct` to convert in either direction.
-
 @subsection upgrade_800_topods TopoDS_TShape redesign
 
 The `TopoDS_TShape` hierarchy has been reworked at the state and dispatch layer:
@@ -1945,25 +1934,34 @@ Deprecated (still compiles with warnings):
 
 @subsection upgrade_810_brepfont BRep font and text conversion
 
-BRep font construction is provided by the `BRepFont` package in the `TKV3d` toolkit.
-`StdPrs_BRepTextBuilder`, `Font_BRepTextBuilder`, and `Font_BRepFont` have been removed. For direct
-TopoDS conversion, use `StdPrs_BRepFont::RenderText()` or `StdPrs_BRepFont::RenderGlyph()`.
-Lower-level code can regularize a `Font_GlyphOutline` with `BRepFont_Regularizer` and pass the result
-to `BRepFont_Builder`.
+Use `StdPrs_BRepFont` to create TopoDS glyph and text shapes. The construction algorithms are
+provided by the `BRepFont` package in `TKV3d`.
 
-For TopoDS output, contour concatenation is selected per call through `ToConcatenateContours` in
-the corresponding `GlyphOptions` or `TextOptions`. The persistent
-`StdPrs_BRepFont::SetCompositeCurveMode()` setting has been removed. Font outlines carrying the
-FreeType overlap flag are emitted as separate faces; no Boolean union is performed.
+| Deprecated interface | Recommended replacement |
+| --- | --- |
+| `Font_BRepFont` | `StdPrs_BRepFont` |
+| `Font_BRepTextBuilder::Perform()`, `StdPrs_BRepTextBuilder::Perform()` | `StdPrs_BRepFont::RenderText()` |
+| `Font_FTFontParams` | Aggregate `Font_FTFont::Params` |
+| `StdPrs_BRepFont::SetCompositeCurveMode()` | Set `ToConcatenateContours` in `GlyphOptions` or `TextOptions` per call |
+| `StdPrs_BRepFont::FTFont()` | Use font setters, such as `SetSingleStrokeFont()`, or a separate `Font_FTFont` for low-level operations |
+| `Font_FTFont::renderGlyphOutline()` | `LoadGlyphOutline()`: owned outline in design units, instead of a borrowed outline in pixel units |
 
-`Font_FTFontParams` has been replaced by the aggregate `Font_FTFont::Params` structure. Use
-`Font_FontMgr::SetUseUnicodeSubsetFallback()` to change the process-wide Unicode fallback setting;
-`Font_FontMgr::ToUseUnicodeSubsetFallback()` now returns the current value rather than a writable
-reference.
+These interfaces remain available for compatibility. The composite-curve setting applies only
+to calls without explicit options. Protected dimension helpers also retain deprecated overloads;
+use the new overloads with a font and text plan to reuse prepared layout.
 
-The `StdPrs_BRepFont::FTFont()` accessor has been removed. Use
-`StdPrs_BRepFont::SetSingleStrokeFont()` to select single-stroke construction, or use `Font_FTFont`
-directly for other low-level font operations.
+**Threading:** rendering synchronizes shared font and glyph-cache state internally.
+Configuration changes and access through the deprecated `FTFont()` handle require caller
+synchronization. `FTFont()` first detaches the backend from other cached wrappers. Backend
+reinitialization refreshes model-space metrics on the next wrapper operation. `Mutex()` is a
+caller lock for multi-call operations; font methods do not acquire it internally. Completed
+text plans retain their regions and layout after font changes or release.
 
-`StdPrs_BRepFont::RenderText()` skips glyphs that cannot be rendered and returns the remaining text
-geometry.
+**Fallback setting:** replace assignments to `Font_FontMgr::ToUseUnicodeSubsetFallback()` with
+`Font_FontMgr::SetUseUnicodeSubsetFallback()`. The getter now returns a value.
+
+**Output:** `RenderText()` skips glyphs that cannot be rendered and returns the remaining geometry.
+Outlines with the FreeType overlap flag produce separate faces without a Boolean union.
+`Font_FTFont::GlyphImage()` returns tightly packed, top-down alpha coverage for bitmap glyphs.
+For custom conversion, pass a `Font_GlyphOutline` through `BRepFont_Regularizer`, then use
+`BRepFont_Builder`.

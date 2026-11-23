@@ -11,8 +11,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Pln.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
@@ -27,11 +36,12 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <cmath>
-
 #include <gtest/gtest.h>
+
+#include <cmath>
 
 namespace
 {
@@ -364,4 +374,94 @@ TEST(GeomAdaptor_TransformedCurveTest, ShallowCopy)
   gp_Pnt aPnt1 = aCurve.Value(3.0);
   gp_Pnt aPnt2 = aCopy->Value(3.0);
   EXPECT_NEAR(aPnt1.Distance(aPnt2), 0.0, THE_TOLERANCE);
+}
+
+//=================================================================================================
+
+TEST(GeomAdaptor_TransformedCurveTest, ResolutionUsesTransformedDistance)
+{
+  const occ::handle<Geom_Curve> aLine = new Geom_Line(gp_Pnt(), gp_Dir(1, 0, 0));
+  for (const double aScale : {0.25, 1.0, 4.0, -2.0})
+  {
+    SCOPED_TRACE(aScale);
+    gp_Trsf aTrsf;
+    aTrsf.SetScale(gp_Pnt(1, -2, 3), aScale);
+    const GeomAdaptor_TransformedCurve aCurve(aLine, aTrsf);
+    const double                       aTolerance = 0.01;
+    EXPECT_NEAR(aCurve.EvalD0(0).Distance(aCurve.EvalD0(aCurve.Resolution(aTolerance))),
+                aTolerance,
+                1.e-10);
+  }
+}
+
+//=================================================================================================
+
+TEST(GeomAdaptor_TransformedCurveTest, CurveOnSurfaceResolutionUsesTransformedDistance)
+{
+  const occ::handle<GeomAdaptor_Surface> aSurface =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pln()));
+  const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+    new Geom2dAdaptor_Curve(new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)));
+  const occ::handle<Adaptor3d_CurveOnSurface> aBasis =
+    new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+  GeomAdaptor_TransformedCurve aCurve;
+  aCurve.LoadCurveOnSurface(aBasis);
+  for (const double aScale : {0.25, 1.0, 4.0, -2.0})
+  {
+    SCOPED_TRACE(aScale);
+    gp_Trsf aTrsf;
+    aTrsf.SetScale(gp_Pnt(1, -2, 3), aScale);
+    aCurve.SetTrsf(aTrsf);
+    const double aTolerance = 0.01;
+    EXPECT_NEAR(aCurve.EvalD0(0).Distance(aCurve.EvalD0(aCurve.Resolution(aTolerance))),
+                aTolerance,
+                THE_TOLERANCE);
+  }
+}
+
+//==================================================================================================
+
+TEST(GeomAdaptor_TransformedCurveTest, Load3DCurveReplacesCurveOnSurfaceMode)
+{
+  const occ::handle<GeomAdaptor_Surface> aSurface =
+    new GeomAdaptor_Surface(new Geom_Plane(gp_Pln()));
+  const occ::handle<Geom2dAdaptor_Curve> aPCurve =
+    new Geom2dAdaptor_Curve(new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1, 0)), -2, 2);
+  const occ::handle<Adaptor3d_CurveOnSurface> aBasis =
+    new Adaptor3d_CurveOnSurface(aPCurve, aSurface);
+  const occ::handle<Geom_Line> aLine      = new Geom_Line(gp_Pnt(0, 7, 2), gp_Dir(0, 1, 0));
+  const gp_Trsf                aPlacement = CreateTranslation(10, 20, 30);
+  for (const bool isBounded : {false, true})
+  {
+    SCOPED_TRACE(isBounded);
+    GeomAdaptor_TransformedCurve aCurve;
+    aCurve.SetTrsf(aPlacement);
+    aCurve.LoadCurveOnSurface(aBasis);
+    ASSERT_TRUE(aCurve.IsCurveOnSurface());
+    EXPECT_NEAR(aCurve.EvalD0(1).Distance(gp_Pnt(11, 20, 30)), 0, THE_TOLERANCE);
+    if (isBounded)
+    {
+      aCurve.Load(aLine, 3, 5);
+    }
+    else
+    {
+      aCurve.Load(aLine);
+    }
+    EXPECT_TRUE(aCurve.Is3DCurve());
+    EXPECT_FALSE(aCurve.IsCurveOnSurface());
+    EXPECT_EQ(aCurve.GeomCurve().get(), aLine.get());
+    EXPECT_EQ(aCurve.FirstParameter(), isBounded ? 3 : aLine->FirstParameter());
+    EXPECT_EQ(aCurve.LastParameter(), isBounded ? 5 : aLine->LastParameter());
+    const auto [aPoint, aD1] = aCurve.EvalD1(4);
+    EXPECT_NEAR(aPoint.Distance(gp_Pnt(10, 31, 32)), 0, THE_TOLERANCE);
+    EXPECT_NEAR((aD1 - gp_Vec(0, 1, 0)).Magnitude(), 0, THE_TOLERANCE);
+    const occ::handle<GeomAdaptor_TransformedCurve> aCopy =
+      occ::down_cast<GeomAdaptor_TransformedCurve>(aCurve.ShallowCopy());
+    ASSERT_FALSE(aCopy.IsNull());
+    EXPECT_TRUE(aCopy->Is3DCurve());
+    EXPECT_NEAR(aCopy->EvalD0(4).Distance(gp_Pnt(10, 31, 32)), 0, THE_TOLERANCE);
+    aCurve.LoadCurveOnSurface(aBasis);
+    EXPECT_TRUE(aCurve.IsCurveOnSurface());
+    EXPECT_NEAR(aCurve.EvalD0(1).Distance(gp_Pnt(11, 20, 30)), 0, THE_TOLERANCE);
+  }
 }

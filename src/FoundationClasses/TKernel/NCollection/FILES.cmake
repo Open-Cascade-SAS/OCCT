@@ -22,6 +22,7 @@ set(OCCT_NCollection_FILES
   NCollection_BaseMap.hxx
   NCollection_BaseSequence.cxx
   NCollection_BaseSequence.hxx
+  NCollection_BitDynamicArray.hxx
   NCollection_Buffer.hxx
   NCollection_CellFilter.hxx
   NCollection_LinearVector.hxx
@@ -60,6 +61,9 @@ set(OCCT_NCollection_FILES
   NCollection_OccAllocator.hxx
   NCollection_OrderedDataMap.hxx
   NCollection_OrderedMap.hxx
+  NCollection_PagedArray.hxx
+  NCollection_PagedDataMap.hxx
+  NCollection_PersistentRadixMap.hxx
   NCollection_PackedMap.hxx
   NCollection_PackedMapAlgo.hxx
   NCollection_Primes.cxx
@@ -74,10 +78,7 @@ set(OCCT_NCollection_FILES
   NCollection_UBTree.hxx
   NCollection_UBTreeFiller.hxx
   NCollection_UtfIterator.hxx
-  NCollection_UtfIterator.lxx
   NCollection_UtfString.hxx
-  NCollection_UtfString.lxx
-  NCollection_UtfString.cxx
   NCollection_Vec2.hxx
   NCollection_Vec3.hxx
   NCollection_Vec4.hxx

@@ -10,13 +10,13 @@ stepread [locate_data_file bug30921.stp] a *
 tpcompound result
 
 checkprops result -s 288180 
-puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_39"
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_33"
 checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 2858
- EDGE      : 4331
+ VERTEX    : 2857
+ EDGE      : 4332
  WIRE      : 1758
  FACE      : 1514
  SHELL     : 21

@@ -102,6 +102,12 @@ public:
                                    double&      TranslationV);
 
 private:
+  gp_Pnt2d myComputedParOnS1;    //!< Refined UV on the first surface for the primary cache entry.
+  gp_Pnt2d myComputedParOnS2;    //!< Refined UV on the second surface for the primary cache entry.
+  gp_Pnt2d myComputedParOnS1bis; //!< Refined UV on the first surface for the secondary cache entry.
+  gp_Pnt2d
+       myComputedParOnS2bis; //!< Refined UV on the second surface for the secondary cache entry.
+  bool myCachedUseSolver = true; //!< Solver mode shared by the two cache entries.
   gp_Pnt2d                                              MyParOnS1;
   gp_Pnt2d                                              MyParOnS2;
   gp_Pnt                                                MyPnt;

@@ -19,6 +19,20 @@
 
 #include <gtest/gtest.h>
 
+TEST(gp_Ax3_Test, StoredAxesPreserveComponentsAndHandedness)
+{
+  gp_Ax3 aFrame(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 1.0, 1.0), gp_Dir(1.0, 1.0, 0.0));
+  aFrame.YReverse();
+  const gp_Ax3 aRestored = gp_Ax3::FromUnitAxes(aFrame.Location(),
+                                                aFrame.Direction(),
+                                                aFrame.XDirection(),
+                                                aFrame.YDirection());
+  EXPECT_EQ(aRestored.Direction().Y(), aFrame.Direction().Y());
+  EXPECT_EQ(aRestored.XDirection().X(), aFrame.XDirection().X());
+  EXPECT_EQ(aRestored.YDirection().Z(), aFrame.YDirection().Z());
+  EXPECT_EQ(aRestored.Direct(), aFrame.Direct());
+}
+
 TEST(gp_Ax3_Test, OCC29406_SetDirectionPreservesOrientation)
 {
   // Test Main (Z) direction

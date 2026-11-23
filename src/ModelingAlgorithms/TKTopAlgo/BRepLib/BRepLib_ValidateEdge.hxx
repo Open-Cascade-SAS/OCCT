@@ -53,16 +53,11 @@ public:
     myControlPointsNumber = theControlPointsNumber;
   }
 
-  //! Sets limit to compute a distance in the Process() function. If the distance greater than
-  //! theToleranceForChecking the Process() function stopped. Use this in case checking of
-  //! tolerance for best performcnce. Has no effect in case using exact method.
-  void SetExitIfToleranceExceeded(double theToleranceForChecking);
+  //! Enables early exit above the given tolerance for either computation method.
+  //! @param[in] theToleranceForChecking tolerance to test
+  Standard_EXPORT void SetExitIfToleranceExceeded(double theToleranceForChecking);
 
-  //! Computes the max distance for the 3d curve <myReferenceCurve>
-  //! and curve on surface <myOtherCurve>. If the SetExitIfToleranceExceeded()
-  //!  function was called before <myCalculatedDistance> contains first
-  //! greater than SetExitIfToleranceExceeded() parameter value. In case
-  //! using exact method always computes real max distance.
+  //! Computes the maximum distance, or an evaluated distance above the configured exit limit.
   Standard_EXPORT void Process();
 
   //! Returns true if the distance has been found for all points
