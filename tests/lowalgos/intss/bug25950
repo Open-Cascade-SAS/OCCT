@@ -5,11 +5,6 @@ puts ""
 
 cpulimit 200
 
-puts "TODO 0025950 ALL: Error: 0 vertices are expected but 2 are found."
-puts "TODO 0025950 ALL: Error : The length of result shape is 18.853"
-
-set aGoodNbCurves 3
-
 foreach a [directory res*] {unset $a}
 
 restore [locate_data_file bug25950_b1.brep] b1
@@ -44,7 +39,7 @@ if {${ind} >= 0} {
 
 bclearobjects
 bcleartools
-compound IntEdges
+compound result
 
 set CurvesList {}
 
@@ -59,30 +54,50 @@ while { $AllowRepeat != 0 } {
     lappend CurvesList res_$ic
     mkedge ee res_$ic
     baddobjects ee
+    add ee result
     incr ic
   }
 }
 
 set ic [expr $ic - 1]
 
-if { $ic != $aGoodNbCurves } {
-  puts "Error: $aGoodNbCurves curves is expected but $ic ones are found"
+if {$ic == 0} {
+  puts "Error: No intersection curves"
 } else {
   CheckIntersectionResult s1 s2 $CurvesList 100 7.0e-5 2.0e-4
   CheckOverlapIntCurves $CurvesList
   if {$ic > 1} {
     bfillds
-    bbuild result    
-  } elseif {$ic > 0} {
-    mkedge result res_1
+    bbuild result
   }
-  
-  # Check gaps between intersection curves
+
+  # The sphere and ellipsoid meet along x=0, y*y+z*z=9.
+  set aMaxLocusError 0.0
+  foreach aCurve $CurvesList {
+    bounds $aCurve aFirst aLast
+    for {set i 0} {$i <= 100} {incr i} {
+      cvalue $aCurve [expr {([dval aFirst]*(100-$i)+[dval aLast]*$i)/100.0}] x y z
+      set aMaxLocusError [expr {max($aMaxLocusError, abs([dval x]), abs(hypot([dval y],[dval z])-3.0))}]
+    }
+  }
+  checkreal "Intersection locus deviation" $aMaxLocusError 0.0 2.0e-4 0.0
+
+  set aMaxCoverageError 0.0
+  for {set i 0} {$i < 100} {incr i} {
+    set anAngle [expr {2.0*acos(-1.0)*$i/100.0}]
+    vertex aSample 0.0 [expr {3.0*cos($anAngle)}] [expr {3.0*sin($anAngle)}]
+    unset -nocomplain aDistance_val
+    distmini aDistance aSample result
+    set aMaxCoverageError [expr {max($aMaxCoverageError,[dval aDistance_val])}]
+  }
+  puts "Maximum circle coverage distance: $aMaxCoverageError"
+  if {$aMaxCoverageError > 2.0e-4} {
+    puts "Error: Intersection does not cover the circle"
+  }
+
   checksection result -r 0
   checkmaxtol result -min_tol 2.0e-7
-
-  checknbshapes result -edge 3 -vertex 4
-  checkprops result -l 37.721
+  checkprops result -l [expr {6.0*acos(-1.0)}]
 }
 
 checkview -display result -2d -path ${imagedir}/${test_image}_3d.png

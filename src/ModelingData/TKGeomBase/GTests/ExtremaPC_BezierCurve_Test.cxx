@@ -14,9 +14,14 @@
 #include <gtest/gtest.h>
 
 #include <ExtremaPC_BezierCurve.hxx>
+#include <ExtremaPC_GridEvaluator.hxx>
+#include <ExtremaPC2d_BezierCurve.hxx>
 
 #include <Geom_BezierCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 
 #include <cmath>
@@ -226,7 +231,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_SymmetricArc)
 
   // Should find extremum at t=0.5
   bool aFoundMiddle = false;
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     double aU = aResult[i].Parameter;
     if (std::abs(aU - 0.5) < 0.01)
@@ -252,7 +257,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_PointBelowApex)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBezier->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 
@@ -273,7 +278,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuadraticBezier_AsymmetricArc)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBezier->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnCurve), THE_TOL);
@@ -297,7 +302,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_SCurve)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBezier->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 }
@@ -316,7 +321,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_LoopedCurve)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // With a loop, may find multiple extrema - verify all are on curve
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     gp_Pnt aPtOnCurve = aBezier->Value(aResult[i].Parameter);
     EXPECT_NEAR(aResult[i].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
@@ -336,7 +341,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_MultipleExtrema)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify all extrema are on the curve
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     gp_Pnt aPtOnCurve = aBezier->Value(aResult[i].Parameter);
     EXPECT_NEAR(aResult[i].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
@@ -363,7 +368,7 @@ TEST_F(ExtremaPC_BezierCurveTest, QuarticBezier_WavyCurve)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify all extrema are on the curve
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     gp_Pnt aPtOnCurve = aBezier->Value(aResult[i].Parameter);
     EXPECT_NEAR(aResult[i].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
@@ -402,12 +407,8 @@ TEST_F(ExtremaPC_BezierCurveTest, RationalQuadratic_CircularArc)
   ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
-  EXPECT_GE(aResult.NbExt(), 1);
-
-  // All points on a circular arc should be equidistant from center (radius = 1)
-  double aMinDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(aMinDist, 1.0, 0.01);
+  ASSERT_TRUE(aResult.IsInfinite());
+  EXPECT_NEAR(aResult.InfiniteSquareDistance, 1.0, 0.01);
 }
 
 TEST_F(ExtremaPC_BezierCurveTest, RationalQuadratic_HighWeight)
@@ -423,7 +424,7 @@ TEST_F(ExtremaPC_BezierCurveTest, RationalQuadratic_HighWeight)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBezier->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnCurve), THE_TOL);
@@ -446,7 +447,7 @@ TEST_F(ExtremaPC_BezierCurveTest, CubicBezier_3D_HelixLike)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve and distance is consistent
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBezier->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, aPoint.SquareDistance(aPtOnCurve), THE_TOL);
@@ -498,7 +499,7 @@ TEST_F(ExtremaPC_BezierCurveTest, BoundedRange_ExtremumAtBound)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // All extrema should be within the bounded range [0, 0.3]
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     double aU = aResult[i].Parameter;
     EXPECT_GE(aU, -0.001);
@@ -520,12 +521,58 @@ TEST_F(ExtremaPC_BezierCurveTest, DegenerateBezier_AllPolesSame)
   ExtremaPC_BezierCurve    anEval(aBezier);
   const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
-  EXPECT_GE(aResult.NbExt(), 1);
+  ASSERT_TRUE(aResult.IsInfinite());
+  EXPECT_NEAR(aResult.InfiniteSquareDistance, 1.0, THE_TOL);
+}
 
-  // Distance should be 1 (squared)
-  double aMinDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(aMinDist, 1.0, THE_TOL);
+TEST_F(ExtremaPC_BezierCurveTest, SingletonDomain_ReturnsSolePoint)
+{
+  occ::handle<Geom_BezierCurve> aBezier =
+    createQuadraticBezier(gp_Pnt(0, 0, 0), gp_Pnt(1, 2, 0), gp_Pnt(3, 0, 0));
+  constexpr double aParameter = 0.4;
+
+  ExtremaPC_BezierCurve    anEval(aBezier, ExtremaPC::Domain1D{aParameter, aParameter});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(5, 5, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[0].Parameter, aParameter, THE_TOL);
+  EXPECT_TRUE(aResult[0].IsMinimum);
+  EXPECT_TRUE(aResult[0].IsMaximum);
+}
+
+TEST_F(ExtremaPC_BezierCurveTest, RepeatedEndpointPole_DoesNotFailNumerically)
+{
+  occ::handle<Geom_BezierCurve> aBezier =
+    createCubicBezier(gp_Pnt(0, 0, 0), gp_Pnt(0, 0, 0), gp_Pnt(2, 1, 0), gp_Pnt(3, 0, 0));
+
+  ExtremaPC_BezierCurve    anEval(aBezier);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(0, 0, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_GT(aResult.NbExt(), 0);
+  EXPECT_NEAR(aResult.MinSquareDistance(), 0.0, THE_TOL);
+}
+
+TEST_F(ExtremaPC_BezierCurveTest, ClosedCurve_SeamHasSingleRepresentative)
+{
+  occ::handle<Geom_BezierCurve> aBezier =
+    createCubicBezier(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0), gp_Pnt(1, -1, 0), gp_Pnt(1, 0, 0));
+
+  ExtremaPC_BezierCurve    anEval(aBezier);
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(gp_Pnt(2, 0, 0), THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  int aNbSeamRepresentatives = 0;
+  for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
+  {
+    if (std::abs(aResult[anIndex].Parameter - aBezier->FirstParameter()) <= THE_TOL
+        || std::abs(aResult[anIndex].Parameter - aBezier->LastParameter()) <= THE_TOL)
+    {
+      ++aNbSeamRepresentatives;
+    }
+  }
+  EXPECT_EQ(aNbSeamRepresentatives, 1);
 }
 
 TEST_F(ExtremaPC_BezierCurveTest, PointFarFromCurve)
@@ -541,7 +588,7 @@ TEST_F(ExtremaPC_BezierCurveTest, PointFarFromCurve)
   EXPECT_GE(aResult.NbExt(), 1);
 
   // Verify closest point is on the curve
-  int    aMinIdx    = aResult.MinIndex();
+  size_t aMinIdx    = aResult.MinIndex();
   gp_Pnt aPtOnCurve = aBezier->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 
@@ -587,7 +634,7 @@ TEST_F(ExtremaPC_BezierCurveTest, VerifyExtremumCondition)
   int aSatisfiedCount = 0;
 
   // Verify that (C(u) - P) . C'(u) ~= 0 at interior extrema
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     double aU = aResult[i].Parameter;
 
@@ -632,7 +679,7 @@ TEST_F(ExtremaPC_BezierCurveTest, ConsistentDistanceCalculation)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
 
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     double aSqDist  = aResult[i].SquareDistance;
     double aU       = aResult[i].Parameter;
@@ -641,4 +688,85 @@ TEST_F(ExtremaPC_BezierCurveTest, ConsistentDistanceCalculation)
     double aExpectedSqDist = aPoint.SquareDistance(aCurvePt);
     EXPECT_NEAR(aSqDist, aExpectedSqDist, THE_TOL);
   }
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_BezierCurveTest, PlanarDelegation_PreservesOffPlaneExtrema)
+{
+  NCollection_Array1<gp_Pnt>   aPoles3d(1, 4);
+  NCollection_Array1<gp_Pnt2d> aPoles2d(1, 4);
+  for (size_t anIndex = 0; anIndex < aPoles3d.Size(); ++anIndex)
+  {
+    const size_t anOrdinal     = anIndex + 1;
+    const double anX           = static_cast<double>(anIndex);
+    const double anY           = anOrdinal == 2 ? 3.0 : (anOrdinal == 3 ? -1.0 : 0.0);
+    aPoles3d.ChangeAt(anIndex) = gp_Pnt(anX, anY, 2.0);
+    aPoles2d.ChangeAt(anIndex) = gp_Pnt2d(anX, anY);
+  }
+  occ::handle<Geom_BezierCurve>   aCurve3d = new Geom_BezierCurve(aPoles3d);
+  occ::handle<Geom2d_BezierCurve> aCurve2d = new Geom2d_BezierCurve(aPoles2d);
+  ExtremaPC_BezierCurve           anEvaluator3d(aCurve3d);
+  ExtremaPC2d_BezierCurve         anEvaluator2d(aCurve2d);
+  const ExtremaPC::Result&        aResult3d = anEvaluator3d.Perform(gp_Pnt(1.3, 1.0, 7.0), THE_TOL);
+  const ExtremaPC2d::Result&      aResult2d = anEvaluator2d.Perform(gp_Pnt2d(1.3, 1.0), THE_TOL);
+  ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
+  for (size_t anIndex = 0; anIndex < aResult3d.NbExt(); ++anIndex)
+  {
+    EXPECT_NEAR(aResult3d[anIndex].Parameter, aResult2d[anIndex].Parameter, THE_TOL);
+    EXPECT_NEAR(aResult3d[anIndex].SquareDistance,
+                aResult2d[anIndex].SquareDistance + 25.0,
+                THE_TOL);
+  }
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_BezierCurveTest, PlanarDelegation_ReprojectsMutationPerCall)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles(1)                            = gp_Pnt(0.0, 0.0, 1.0);
+  aPoles(2)                            = gp_Pnt(2.0, 3.0, 1.0);
+  aPoles(3)                            = gp_Pnt(4.0, 0.0, 1.0);
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+  ExtremaPC_BezierCurve         anEvaluator(aCurve);
+  const ExtremaPC::Result&      aBefore = anEvaluator.Perform(gp_Pnt(2.0, 2.0, 4.0), THE_TOL);
+  ASSERT_TRUE(aBefore.IsDone());
+  const double aBeforeParameter = aBefore[aBefore.MinIndex()].Parameter;
+
+  aCurve->SetPole(2, gp_Pnt(3.5, -4.0, 1.0));
+  const ExtremaPC::Result& anAfter = anEvaluator.Perform(gp_Pnt(2.0, 2.0, 4.0), THE_TOL);
+  ASSERT_TRUE(anAfter.IsDone());
+  ASSERT_GE(anAfter.NbExt(), 1);
+  EXPECT_GT(std::abs(anAfter[anAfter.MinIndex()].Parameter - aBeforeParameter), 1.0e-3);
+  EXPECT_NEAR(anAfter[anAfter.MinIndex()].Point.Distance(
+                aCurve->Value(anAfter[anAfter.MinIndex()].Parameter)),
+              0.0,
+              1.0e-12);
+}
+
+TEST_F(ExtremaPC_BezierCurveTest, SmallNonConstantCurveIsNotPromotedToInfinite)
+{
+  constexpr int              THE_NB_POLES = 12;
+  constexpr double           aLength      = 1.0e-3;
+  NCollection_Array1<gp_Pnt> aPoles(1, THE_NB_POLES);
+  for (size_t anIndex = 0; anIndex < aPoles.Size(); ++anIndex)
+  {
+    const double aRatio      = static_cast<double>(anIndex) / (aPoles.Size() - 1);
+    aPoles.ChangeAt(anIndex) = gp_Pnt(aRatio * aLength, 0.0, 0.0);
+  }
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+  GeomAdaptor_Curve             anAdaptor(aCurve);
+  ExtremaPC_GridEvaluator       anEvaluator;
+  anEvaluator.SetParams(ExtremaPC_GridEvaluator::BuildUniformParams(0.0, 1.0, 8));
+
+  const ExtremaPC::Result& aResult = anEvaluator.Perform(anAdaptor,
+                                                         gp_Pnt(0.5 * aLength, 1.0, 0.0),
+                                                         {0.0, 1.0},
+                                                         1.0e-10,
+                                                         ExtremaPC::SearchMode::MinMax);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_FALSE(aResult.IsInfinite());
+  ASSERT_GE(aResult.NbExt(), 1);
+  EXPECT_NEAR(aResult[aResult.MinIndex()].Parameter, 0.5, 1.0e-7);
 }

@@ -12,10 +12,6 @@ set(OCCT_ExprIntrp_FILES
   ExprIntrp_Generator.hxx
   ExprIntrp_GenExp.cxx
   ExprIntrp_GenExp.hxx
-  ExprIntrp_GenFct.cxx
-  ExprIntrp_GenFct.hxx
-  ExprIntrp_GenRel.cxx
-  ExprIntrp_GenRel.hxx
 
   ExprIntrp_SyntaxError.hxx
   ExprIntrp_yaccanal.hxx

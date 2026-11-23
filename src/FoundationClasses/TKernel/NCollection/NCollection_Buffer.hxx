@@ -19,11 +19,24 @@
 #include <Standard_Dump.hxx>
 #include <Standard_Transient.hxx>
 
+#include <cstddef>
+#include <cstdint>
+
 //! Low-level buffer object.
 class NCollection_Buffer : public Standard_Transient
 {
 
 public:
+  using value_type      = uint8_t;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using pointer         = uint8_t*;
+  using const_pointer   = const uint8_t*;
+  using reference       = uint8_t&;
+  using const_reference = const uint8_t&;
+  using iterator        = pointer;
+  using const_iterator  = const_pointer;
+
   //! Default constructor.
   //! When theData is NULL but theSize is not 0 than buffer of specified size will be allocated.
   //! @param theAlloc memory allocator
@@ -58,6 +71,18 @@ public:
 
   //! @return true if buffer is not allocated
   bool IsEmpty() const noexcept { return myData == nullptr; }
+
+  iterator begin() noexcept { return myData; }
+
+  const_iterator begin() const noexcept { return myData; }
+
+  const_iterator cbegin() const noexcept { return myData; }
+
+  iterator end() noexcept { return mySize == 0 ? myData : myData + mySize; }
+
+  const_iterator end() const noexcept { return mySize == 0 ? myData : myData + mySize; }
+
+  const_iterator cend() const noexcept { return mySize == 0 ? myData : myData + mySize; }
 
   //! Return buffer length in bytes.
   size_t Size() const noexcept { return mySize; }

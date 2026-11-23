@@ -93,11 +93,11 @@ public:
 
   bool Value(const math_Vector& theX, double& theF)
   {
-    if (theX(1) < myUMin || theX(1) > myUMax)
+    if (theX.At(0) < myUMin || theX.At(0) > myUMax)
     {
       return false;
     }
-    gp_Pnt aP = myCurve.Value(theX(1));
+    gp_Pnt aP = myCurve.Value(theX.At(0));
     theF      = mySign * aP.Coord(myCoordIdx);
     return true;
   }
@@ -171,11 +171,11 @@ public:
 
   bool Value(const math_Vector& theX, double& theF)
   {
-    if (theX(1) < myUMin || theX(1) > myUMax)
+    if (theX.At(0) < myUMin || theX.At(0) > myUMax)
     {
       return false;
     }
-    const gp_Pnt2d aP = myCurve.Value(theX(1));
+    const gp_Pnt2d aP = myCurve.Value(theX.At(0));
     theF              = mySign * aP.Coord(myCoordIdx);
     return true;
   }
@@ -212,18 +212,18 @@ public:
         mySign(theSign),
         myPenalty(0.)
   {
-    math_Vector aX(1, 2);
-    aX(1) = theUMin;
-    aX(2) = (theVMin + theVMax) / 2.;
+    math_Vector aX(size_t{2});
+    aX.ChangeAt(0) = theUMin;
+    aX.ChangeAt(1) = (theVMin + theVMax) / 2.;
     double aF1, aF2;
     Value(aX, aF1);
-    aX(1) = theUMax;
+    aX.ChangeAt(0) = theUMax;
     Value(aX, aF2);
-    double aDU = std::abs((aF2 - aF1) / (theUMax - theUMin));
-    aX(1)      = (theUMin + theUMax) / 2.;
-    aX(2)      = theVMin;
+    double aDU     = std::abs((aF2 - aF1) / (theUMax - theUMin));
+    aX.ChangeAt(0) = (theUMin + theUMax) / 2.;
+    aX.ChangeAt(1) = theVMin;
     Value(aX, aF1);
-    aX(2) = theVMax;
+    aX.ChangeAt(1) = theVMax;
     Value(aX, aF2);
     double aDV = std::abs((aF2 - aF1) / (theVMax - theVMin));
     myPenalty  = 10. * std::max(aDU, aDV);
@@ -232,41 +232,42 @@ public:
 
   bool Value(const math_Vector& theX, double& theF)
   {
-    if (theX(1) >= myUMin && theX(1) <= myUMax && theX(2) >= myVMin && theX(2) <= myVMax)
+    if (theX.At(0) >= myUMin && theX.At(0) <= myUMax && theX.At(1) >= myVMin
+        && theX.At(1) <= myVMax)
     {
-      gp_Pnt aP = mySurf.Value(theX(1), theX(2));
+      gp_Pnt aP = mySurf.Value(theX.At(0), theX.At(1));
       theF      = mySign * aP.Coord(myCoordIdx);
     }
     else
     {
       double aUPen = 0., aVPen = 0., u0, v0;
-      if (theX(1) < myUMin)
+      if (theX.At(0) < myUMin)
       {
-        aUPen = myPenalty * (myUMin - theX(1));
+        aUPen = myPenalty * (myUMin - theX.At(0));
         u0    = myUMin;
       }
-      else if (theX(1) > myUMax)
+      else if (theX.At(0) > myUMax)
       {
-        aUPen = myPenalty * (theX(1) - myUMax);
+        aUPen = myPenalty * (theX.At(0) - myUMax);
         u0    = myUMax;
       }
       else
       {
-        u0 = theX(1);
+        u0 = theX.At(0);
       }
-      if (theX(2) < myVMin)
+      if (theX.At(1) < myVMin)
       {
-        aVPen = myPenalty * (myVMin - theX(2));
+        aVPen = myPenalty * (myVMin - theX.At(1));
         v0    = myVMin;
       }
-      else if (theX(2) > myVMax)
+      else if (theX.At(1) > myVMax)
       {
-        aVPen = myPenalty * (theX(2) - myVMax);
+        aVPen = myPenalty * (theX.At(1) - myVMax);
         v0    = myVMax;
       }
       else
       {
-        v0 = theX(2);
+        v0 = theX.At(1);
       }
       gp_Pnt aP = mySurf.Value(u0, v0);
       theF      = mySign * aP.Coord(myCoordIdx) + aUPen + aVPen;
@@ -337,25 +338,23 @@ inline double AdjustExtrCurve(const Adaptor3d_Curve& theCurve,
   }
 
   int         aNbParticles = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
-  math_Vector aLowBorder(1, 1);
-  math_Vector aUppBorder(1, 1);
-  aLowBorder(1) = theUMin;
-  aUppBorder(1) = theUMax;
+  math_Vector aLowBorder(size_t{1}, theUMin);
+  math_Vector aUppBorder(size_t{1}, theUMax);
 
   CurveCoordMVarFunc    aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
   MathOpt::PSOConfig    aPsoCfg(aNbParticles);
   MathOpt::VectorResult aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
 
-  math_Vector aT(1, 1);
+  math_Vector aT(size_t{1});
   if (aPsoRes.Status == MathOpt::Status::OK || aPsoRes.Status == MathOpt::Status::MaxIterations)
   {
     if (aPsoRes.Solution.has_value())
     {
-      aT(1) = aPsoRes.Solution.value()(1);
+      aT.ChangeAt(0) = aPsoRes.Solution->At(0);
     }
     else
     {
-      aT(1) = (theUMin + theUMax) / 2.0;
+      aT.ChangeAt(0) = (theUMin + theUMax) / 2.0;
     }
     if (aPsoRes.Value.has_value())
     {
@@ -364,14 +363,14 @@ inline double AdjustExtrCurve(const Adaptor3d_Curve& theCurve,
   }
   else
   {
-    aT(1) = (theUMin + theUMax) / 2.0;
+    aT.ChangeAt(0) = (theUMin + theUMax) / 2.0;
   }
 
   CurveCoordFunc        aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
   double                aStep    = std::min(0.1 * Du, (theUMax - theUMin) / (aNbParticles + 1));
   MathOpt::ScalarResult anOptLoc = MathOpt::Brent(aFunc1,
-                                                  std::max(aT(1) - aStep, theUMin),
-                                                  std::min(aT(1) + aStep, theUMax),
+                                                  std::max(aT.At(0) - aStep, theUMin),
+                                                  std::min(aT.At(0) + aStep, theUMax),
                                                   aBrentCfg);
 
   if (anOptLoc.Status == MathOpt::Status::OK || anOptLoc.Status == MathOpt::Status::MaxIterations)
@@ -379,9 +378,8 @@ inline double AdjustExtrCurve(const Adaptor3d_Curve& theCurve,
     if (anOptLoc.Value.has_value())
     {
       extr = anOptLoc.Value.value();
-      // Only blend it with PSO result if both were valid
       if (aPsoRes.Value.has_value() && aPsoRes.Solution.has_value()
-          && aT(1) == aPsoRes.Solution.value()(1))
+          && aT.At(0) == aPsoRes.Solution->At(0))
       {
         extr = std::min(extr, aPsoRes.Value.value());
       }
@@ -437,25 +435,23 @@ inline double AdjustExtrCurve2d(const Adaptor2d_Curve2d& theCurve,
   }
 
   const int   aNbParticles = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
-  math_Vector aLowBorder(1, 1);
-  math_Vector aUppBorder(1, 1);
-  aLowBorder(1) = theUMin;
-  aUppBorder(1) = theUMax;
+  math_Vector aLowBorder(size_t{1}, theUMin);
+  math_Vector aUppBorder(size_t{1}, theUMax);
 
   Curve2dCoordMVarFunc  aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
   MathOpt::PSOConfig    aPsoCfg(aNbParticles);
   MathOpt::VectorResult aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
 
-  math_Vector aT(1, 1);
+  math_Vector aT(size_t{1});
   if (aPsoRes.Status == MathOpt::Status::OK || aPsoRes.Status == MathOpt::Status::MaxIterations)
   {
     if (aPsoRes.Solution.has_value())
     {
-      aT(1) = aPsoRes.Solution.value()(1);
+      aT.ChangeAt(0) = aPsoRes.Solution->At(0);
     }
     else
     {
-      aT(1) = (theUMin + theUMax) / 2.0;
+      aT.ChangeAt(0) = (theUMin + theUMax) / 2.0;
     }
     if (aPsoRes.Value.has_value())
     {
@@ -464,14 +460,14 @@ inline double AdjustExtrCurve2d(const Adaptor2d_Curve2d& theCurve,
   }
   else
   {
-    aT(1) = (theUMin + theUMax) / 2.0;
+    aT.ChangeAt(0) = (theUMin + theUMax) / 2.0;
   }
 
   const double          aStep = std::min(0.1 * Du, (theUMax - theUMin) / (aNbParticles + 1));
   Curve2dCoordFunc      aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
   MathOpt::ScalarResult anOptLoc = MathOpt::Brent(aFunc1,
-                                                  std::max(aT(1) - aStep, theUMin),
-                                                  std::min(aT(1) + aStep, theUMax),
+                                                  std::max(aT.At(0) - aStep, theUMin),
+                                                  std::min(aT.At(0) + aStep, theUMax),
                                                   aBrentCfg);
 
   if (anOptLoc.Status == MathOpt::Status::OK || anOptLoc.Status == MathOpt::Status::MaxIterations)
@@ -480,7 +476,7 @@ inline double AdjustExtrCurve2d(const Adaptor2d_Curve2d& theCurve,
     {
       extr = anOptLoc.Value.value();
       if (aPsoRes.Value.has_value() && aPsoRes.Solution.has_value()
-          && aT(1) == aPsoRes.Solution.value()(1))
+          && aT.At(0) == aPsoRes.Solution->At(0))
       {
         extr = std::min(extr, aPsoRes.Value.value());
       }
@@ -522,12 +518,12 @@ inline double AdjustExtrSurf(const Adaptor3d_Surface& theSurf,
   double Du = (theSurf.LastUParameter() - theSurf.FirstUParameter());
   double Dv = (theSurf.LastVParameter() - theSurf.FirstVParameter());
 
-  math_Vector aLowBorder(1, 2);
-  math_Vector aUppBorder(1, 2);
-  aLowBorder(1) = theUMin;
-  aUppBorder(1) = theUMax;
-  aLowBorder(2) = theVMin;
-  aUppBorder(2) = theVMax;
+  math_Vector aLowBorder(size_t{2});
+  math_Vector aUppBorder(size_t{2});
+  aLowBorder.ChangeAt(0) = theUMin;
+  aUppBorder.ChangeAt(0) = theUMax;
+  aLowBorder.ChangeAt(1) = theVMin;
+  aUppBorder.ChangeAt(1) = theVMax;
 
   int aNbU         = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
   int aNbV         = std::max(8, RealToInt(32 * (theVMax - theVMin) / Dv));
@@ -537,17 +533,18 @@ inline double AdjustExtrSurf(const Adaptor3d_Surface& theSurf,
   MathOpt::PSOConfig    aPsoCfg(aNbParticles);
   MathOpt::VectorResult aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
 
-  math_Vector aT(1, 2);
+  math_Vector aT(size_t{2});
   if (aPsoRes.Status == MathOpt::Status::OK || aPsoRes.Status == MathOpt::Status::MaxIterations)
   {
     if (aPsoRes.Solution.has_value())
     {
-      aT = aPsoRes.Solution.value();
+      aT.ChangeAt(0) = aPsoRes.Solution->At(0);
+      aT.ChangeAt(1) = aPsoRes.Solution->At(1);
     }
     else
     {
-      aT(1) = (theUMin + theUMax) / 2.0;
-      aT(2) = (theVMin + theVMax) / 2.0;
+      aT.ChangeAt(0) = (theUMin + theUMax) / 2.0;
+      aT.ChangeAt(1) = (theVMin + theVMax) / 2.0;
     }
     if (aPsoRes.Value.has_value())
     {
@@ -556,13 +553,13 @@ inline double AdjustExtrSurf(const Adaptor3d_Surface& theSurf,
   }
   else
   {
-    aT(1) = (theUMin + theUMax) / 2.0;
-    aT(2) = (theVMin + theVMax) / 2.0;
+    aT.ChangeAt(0) = (theUMin + theUMax) / 2.0;
+    aT.ChangeAt(1) = (theVMin + theVMax) / 2.0;
   }
 
-  math_Matrix aDir(1, 2, 1, 2, 0.0);
-  aDir(1, 1) = 1.;
-  aDir(2, 2) = 1.;
+  math_Matrix aDir(size_t{2}, size_t{2}, 0.0);
+  aDir.ChangeAt(0, 0) = 1.;
+  aDir.ChangeAt(1, 1) = 1.;
 
   MathOpt::Config aPowellCfg;
   aPowellCfg.XTolerance    = relTol;

@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TNaming_PtrRefShape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TDF_Attribute.hxx>
@@ -32,6 +31,7 @@ class TDF_DeltaOnAddition;
 class TDF_DeltaOnRemoval;
 class TDF_RelocationTable;
 class TDF_DataSet;
+class TNaming_RefShape;
 
 //! Global attribute located under root label to store all
 //! the shapes handled by the framework
@@ -46,7 +46,7 @@ public:
 
   ~TNaming_UsedShapes() override { Destroy(); }
 
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& Map();
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher>& Map();
 
   //! Returns the ID of the attribute.
   const Standard_GUID& ID() const override;
@@ -112,7 +112,7 @@ public:
 private:
   Standard_EXPORT TNaming_UsedShapes();
 
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher> myMap;
+  NCollection_DataMap<TopoDS_Shape, TNaming_RefShape*, TopTools_ShapeMapHasher> myMap;
 };
 
 #include <TNaming_UsedShapes.lxx>

@@ -15,20 +15,41 @@
 #include <Standard_Integer.hxx>
 
 #include <gtest/gtest.h>
+
 #include <algorithm>
+#include <limits>
 #include <random>
 #include <vector>
 
 TEST(NCollection_Array1Test, DefaultConstructor)
 {
-  // Default constructor should not compile as it's explicitly deleted
-  // NCollection_Array1<int> anArray;
-  // Instead we need to use the parameterized constructor
-  NCollection_Array1<int> anArray(1, 10);
+  NCollection_Array1<int> anArray;
 
-  EXPECT_EQ(10, anArray.Length());
+  EXPECT_EQ(0, anArray.Length());
+  EXPECT_TRUE(anArray.IsEmpty());
   EXPECT_EQ(1, anArray.Lower());
-  EXPECT_EQ(10, anArray.Upper());
+  EXPECT_EQ(0, anArray.Upper());
+}
+
+TEST(NCollection_Array1Test, EmptyRangesAndDefaultIterators)
+{
+  NCollection_Array1<int> anArray;
+
+  EXPECT_EQ(anArray.begin(), anArray.end());
+  EXPECT_EQ(anArray.cbegin(), anArray.cend());
+
+  int aCount = 0;
+  for (const int aValue : anArray)
+  {
+    (void)aValue;
+    ++aCount;
+  }
+  EXPECT_EQ(0, aCount);
+
+  NCollection_Array1<int>::Iterator      anIterator;
+  NCollection_Array1<int>::ConstIterator aConstIterator;
+  EXPECT_FALSE(anIterator.More());
+  EXPECT_FALSE(aConstIterator.More());
 }
 
 TEST(NCollection_Array1Test, ConstructorWithBounds)
@@ -422,6 +443,14 @@ TEST(NCollection_Array1Test, STLIteration)
     EXPECT_EQ(index * 10, val);
     index++;
   }
+
+  const NCollection_Array1<int>& aConstArray = anArray;
+  EXPECT_EQ(aConstArray.begin(), aConstArray.cbegin());
+  EXPECT_EQ(aConstArray.end(), aConstArray.cend());
+
+  const auto aFound = std::find(aConstArray.cbegin(), aConstArray.cend(), 30);
+  ASSERT_NE(aConstArray.cend(), aFound);
+  EXPECT_EQ(30, *aFound);
 }
 
 TEST(NCollection_Array1Test, Resize)
@@ -822,4 +851,16 @@ TEST(NCollection_Array1Test, SizeConstructor_MoveSemantics)
   EXPECT_EQ(3, anDst.At(2));
   EXPECT_EQ(0u, anSrc.Size());
   EXPECT_TRUE(anSrc.IsEmpty());
+}
+
+//==================================================================================================
+
+TEST(NCollection_ArrayRangeTest, InclusiveIntegerBounds)
+{
+  const int aMin = std::numeric_limits<int>::min();
+  const int aMax = std::numeric_limits<int>::max();
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(aMin, aMin + 2), size_t(3));
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(aMax - 2, aMax), size_t(3));
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(-2, 2), size_t(5));
+  EXPECT_EQ(NCollection_Array1<int>::RangeSize(5, 4), size_t(0));
 }

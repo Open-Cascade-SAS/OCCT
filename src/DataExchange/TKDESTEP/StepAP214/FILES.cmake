@@ -55,8 +55,6 @@ set(OCCT_StepAP214_FILES
   StepAP214_AutoDesignNominalDateAssignment.hxx
   StepAP214_AutoDesignOrganizationAssignment.cxx
   StepAP214_AutoDesignOrganizationAssignment.hxx
-  StepAP214_AutoDesignOrganizationItem.cxx
-  StepAP214_AutoDesignOrganizationItem.hxx
   StepAP214_AutoDesignPersonAndOrganizationAssignment.cxx
   StepAP214_AutoDesignPersonAndOrganizationAssignment.hxx
   StepAP214_AutoDesignPresentedItem.cxx

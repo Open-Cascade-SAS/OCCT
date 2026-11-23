@@ -4,7 +4,6 @@ set(OCCT_PCDM_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_PCDM_FILES
   PCDM.cxx
   PCDM.hxx
-  PCDM_BaseDriverPointer.hxx
   PCDM_Document.cxx
   PCDM_Document.hxx
   PCDM_DOMHeaderParser.cxx

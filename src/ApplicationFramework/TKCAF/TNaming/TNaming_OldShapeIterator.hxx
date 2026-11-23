@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TNaming_PtrNode.hxx>
 #include <Standard_Integer.hxx>
 class Standard_NoMoreObject;
 class Standard_NoSuchObject;
@@ -29,6 +28,7 @@ class TNaming_Tool;
 class TNaming_Localizer;
 class TNaming_Naming;
 class TopoDS_Shape;
+class TNaming_Node;
 class TNaming_UsedShapes;
 class TDF_Label;
 class TNaming_Iterator;
@@ -78,8 +78,8 @@ private:
   Standard_EXPORT TNaming_OldShapeIterator(const TopoDS_Shape&                    aShape,
                                            const occ::handle<TNaming_UsedShapes>& Shapes);
 
-  TNaming_PtrNode myNode;
-  int             myTrans;
+  TNaming_Node* myNode;
+  int           myTrans;
 };
 
 #include <TNaming_OldShapeIterator.lxx>

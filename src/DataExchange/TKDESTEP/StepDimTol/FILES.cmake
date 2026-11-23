@@ -65,16 +65,26 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_GeoTolAndGeoTolWthDatRef.hxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.cxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.cxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMod.hxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthModAndUneqDisGeoTol.hxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.cxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.cxx
   StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx
   StepDimTol_GeoTolAndGeoTolWthMaxTol.cxx
   StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthMaxTolAndUneqDisGeoTol.hxx
   StepDimTol_GeoTolAndGeoTolWthMod.cxx
   StepDimTol_GeoTolAndGeoTolWthMod.hxx
+  StepDimTol_GeoTolAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndUneqDisGeoTol.hxx
+  StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.cxx
+  StepDimTol_GeoTolAndGeoTolWthModAndUneqDisGeoTol.hxx
 
   StepDimTol_LimitCondition.hxx
   StepDimTol_LineProfileTolerance.cxx
@@ -99,8 +109,6 @@ set(OCCT_StepDimTol_FILES
   StepDimTol_RunoutZoneDefinition.hxx
   StepDimTol_RunoutZoneOrientation.cxx
   StepDimTol_RunoutZoneOrientation.hxx
-  StepDimTol_ShapeToleranceSelect.cxx
-  StepDimTol_ShapeToleranceSelect.hxx
   StepDimTol_SimpleDatumReferenceModifier.hxx
   StepDimTol_SimpleDatumReferenceModifierMember.cxx
   StepDimTol_SimpleDatumReferenceModifierMember.hxx

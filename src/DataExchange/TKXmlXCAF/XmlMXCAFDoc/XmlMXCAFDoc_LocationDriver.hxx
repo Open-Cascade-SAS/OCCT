@@ -19,7 +19,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TopTools_LocationSetPtr.hxx>
 #include <XmlMDF_ADriver.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
@@ -28,6 +27,7 @@ class Message_Messenger;
 class TDF_Attribute;
 class XmlObjMgt_Persistent;
 class TopLoc_Location;
+class TopTools_LocationSet;
 
 //! Attribute Driver.
 class XmlMXCAFDoc_LocationDriver : public XmlMDF_ADriver
@@ -57,12 +57,12 @@ public:
                                  TopLoc_Location&            theLoc,
                                  XmlObjMgt_RRelocationTable& theMap) const;
 
-  void SetSharedLocations(const TopTools_LocationSetPtr& theLocations);
+  void SetSharedLocations(TopTools_LocationSet* const& theLocations);
 
   DEFINE_STANDARD_RTTIEXT(XmlMXCAFDoc_LocationDriver, XmlMDF_ADriver)
 
 private:
-  TopTools_LocationSetPtr myLocations;
+  TopTools_LocationSet* myLocations;
 };
 
 #include <XmlMXCAFDoc_LocationDriver.lxx>

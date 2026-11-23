@@ -76,7 +76,7 @@ public:
   //! Creates of an indefinite hyperbola.
   constexpr gp_Hypr() noexcept
       : majorRadius(RealLast()),
-        minorRadius(RealFirst())
+        minorRadius(RealLast())
   {
   }
 

@@ -2,8 +2,6 @@
 set(OCCT_RWObj_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_RWObj_FILES
-  RWObj.cxx
-  RWObj.hxx
   RWObj_CafReader.cxx
   RWObj_CafReader.hxx
   RWObj_CafWriter.cxx

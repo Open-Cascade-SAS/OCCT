@@ -21,11 +21,8 @@ set(OCCT_LDOM_FILES
   LDOM_DeclareSequence.hxx
   LDOM_Document.cxx
   LDOM_Document.hxx
-  LDOM_DocumentType.hxx
   LDOM_Element.cxx
   LDOM_Element.hxx
-  LDOM_LDOMImplementation.cxx
-  LDOM_LDOMImplementation.hxx
   LDOM_MemManager.cxx
   LDOM_MemManager.hxx
   LDOM_Node.cxx

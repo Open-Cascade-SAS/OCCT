@@ -14,6 +14,7 @@
 #include <Geom2dGcc_Circ2d3Tan.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 #include <Geom2dGcc.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <gp_Circ2d.hxx>
@@ -21,8 +22,20 @@
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <Precision.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <gtest/gtest.h>
+
+namespace
+{
+double circleLength(const gp_Circ2d& theCircle)
+{
+  const occ::handle<Geom2d_Circle> aCurve = new Geom2d_Circle(theCircle);
+  Geom2dAdaptor_Curve              anAdaptor(aCurve);
+  return GCPnts_AbscissaPoint::Length(anAdaptor);
+}
+
+} // namespace
 
 // Test fixture for Geom2dGcc_Circ2d3Tan testing
 class Geom2dGcc_Circ2d3TanTest : public ::testing::Test
@@ -154,6 +167,94 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_RegressionCase)
   }
 }
 
+// Migrated from tests/lowalgos/2dgcc/buc60622_1.  The original DRAW case
+// checked that this degenerate configuration can be passed to cirtang without
+// raising an exception.
+TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_1_DegenerateThreeCircleCase)
+{
+  const Geom2dGcc_QualifiedCurve aQual1 = createQualifiedCircle(2900.0, 800.0, 500.0);
+  const Geom2dGcc_QualifiedCurve aQual2 = createQualifiedCircle(2900.0, 900.0, 400.0);
+  const Geom2dGcc_QualifiedCurve aQual3 = createQualifiedCircle(2900.0, 1000.0, 300.0);
+
+  EXPECT_NO_THROW({ Geom2dGcc_Circ2d3Tan aSolver(aQual1, aQual2, aQual3, myTolerance, 0, 0, 0); });
+}
+
+// Migrated from tests/lowalgos/2dgcc/buc60622_2.  Keep the three explicit
+// solution-length checks in addition to the general regression validation.
+TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_2_AllKnownSolutionLengths)
+{
+  const Geom2dGcc_QualifiedCurve aQual1 = createQualifiedCircle(500.0, 1800.0, 500.0);
+  const Geom2dGcc_QualifiedCurve aQual2 = createQualifiedCircle(500.0, 1900.0, 400.0);
+  const Geom2dGcc_QualifiedCurve aQual3 = createQualifiedCircle(700.0, 1900.0, 200.0);
+  Geom2dGcc_Circ2d3Tan           aSolver(aQual1, aQual2, aQual3, myTolerance, 0, 0, 0);
+
+  ASSERT_TRUE(aSolver.IsDone());
+  ASSERT_EQ(aSolver.NbSolutions(), 3);
+
+  const double anExpectedLengths[] = {2513.2741228703289, 837.75804095727631, 279.2526803190928};
+  for (int anIndex = 1; anIndex <= aSolver.NbSolutions(); ++anIndex)
+  {
+    EXPECT_NEAR(circleLength(aSolver.ThisSolution(anIndex)),
+                anExpectedLengths[anIndex - 1],
+                anExpectedLengths[anIndex - 1] * 1.e-8);
+  }
+}
+
+// Migrated from tests/lowalgos/2dgcc/buc60622_3.  The original DRAW test
+// checks the lengths of all five returned tangent circles.
+TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60622_3_AllTangentCircleLengths)
+{
+  const Geom2dGcc_QualifiedCurve aQual1 = createQualifiedCircle(625.0, 3000.0, 125.0);
+  const Geom2dGcc_QualifiedCurve aQual2 = createQualifiedCircle(375.0, 3000.0, 125.0);
+  const Geom2dGcc_QualifiedCurve aQual3 = createQualifiedCircle(500.0, 3000.0, 250.0);
+  Geom2dGcc_Circ2d3Tan           aSolver(aQual1, aQual2, aQual3, myTolerance, 0, 0, 0);
+
+  ASSERT_TRUE(aSolver.IsDone());
+  ASSERT_EQ(aSolver.NbSolutions(), 5);
+
+  const double anExpectedLengths[] = {1570.7963267948965,
+                                      785.39816339744868,
+                                      785.39816339744823,
+                                      523.59877559829806,
+                                      523.59877559829806};
+  for (int anIndex = 1; anIndex <= aSolver.NbSolutions(); ++anIndex)
+  {
+    const gp_Circ2d aSolution = aSolver.ThisSolution(anIndex);
+    EXPECT_NEAR(circleLength(aSolution),
+                anExpectedLengths[anIndex - 1],
+                anExpectedLengths[anIndex - 1] * 1.e-8);
+  }
+}
+
+// Migrated from tests/lowalgos/2dgcc/buc60618.  This preserves the eight
+// solution-length checks that guard the solver's solution filtering.
+TEST_F(Geom2dGcc_Circ2d3TanTest, BUC60618_FilteringKeepsAllSolutions)
+{
+  const Geom2dGcc_QualifiedCurve aQual1 = createQualifiedCircle(0.0, 0.0, 100.0);
+  const Geom2dGcc_QualifiedCurve aQual2 = createQualifiedCircle(500.0, -400.0, 300.0);
+  const Geom2dGcc_QualifiedCurve aQual3 = createQualifiedCircle(300.0, 200.0, 200.0);
+  Geom2dGcc_Circ2d3Tan           aSolver(aQual1, aQual2, aQual3, myTolerance, 0, 0, 0);
+
+  ASSERT_TRUE(aSolver.IsDone());
+  ASSERT_EQ(aSolver.NbSolutions(), 8);
+
+  const double anExpectedLengths[] = {3568.9587306060739,
+                                      9964.7111736227271,
+                                      2082.9371204466097,
+                                      32696.069757517998,
+                                      1681.9298517645602,
+                                      3097.3731840080009,
+                                      1545.2428620020787,
+                                      772.26646380656518};
+  for (int anIndex = 1; anIndex <= aSolver.NbSolutions(); ++anIndex)
+  {
+    const gp_Circ2d aSolution = aSolver.ThisSolution(anIndex);
+    EXPECT_NEAR(circleLength(aSolution),
+                anExpectedLengths[anIndex - 1],
+                anExpectedLengths[anIndex - 1] * 1.e-8);
+  }
+}
+
 // Test with different tolerance values to demonstrate the filtering issue
 TEST_F(Geom2dGcc_Circ2d3TanTest, ToleranceImpact_Analysis)
 {
@@ -163,17 +264,17 @@ TEST_F(Geom2dGcc_Circ2d3TanTest, ToleranceImpact_Analysis)
   Geom2dGcc_QualifiedCurve aQual3 = createQualifiedCircle(700.0, 1900.0, 200.0);
 
   // Test with different tolerance values to ensure stability
-  std::vector<double> aTestTolerances = {
-    Precision::Confusion(), // Default ~1e-15
-    1e-12,                  // Slightly larger
-    1e-10,                  // Moderate
-    1e-8                    // Large
-  };
+  NCollection_Array1<double> aTestTolerances(1, 4);
+  aTestTolerances(1) = Precision::Confusion(); // Default ~1e-15
+  aTestTolerances(2) = 1e-12;                  // Slightly larger
+  aTestTolerances(3) = 1e-10;                  // Moderate
+  aTestTolerances(4) = 1e-8;                   // Large
 
   int aDefaultSolCount = 0;
 
-  for (double aTol : aTestTolerances)
+  for (int anIndex = aTestTolerances.Lower(); anIndex <= aTestTolerances.Upper(); ++anIndex)
   {
+    const double         aTol = aTestTolerances(anIndex);
     Geom2dGcc_Circ2d3Tan aSolver(aQual1, aQual2, aQual3, aTol, 0, 0, 0);
 
     EXPECT_TRUE(aSolver.IsDone()) << "Algorithm should succeed with tolerance " << aTol;

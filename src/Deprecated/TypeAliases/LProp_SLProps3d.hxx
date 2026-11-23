@@ -1,0 +1,36 @@
+// Created on: 2002-08-02
+// Created by: Alexander KARTOMIN  (akm)
+// Copyright (c) 2002-2014 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+//! @file LProp_SLProps3d.hxx
+//! @brief Deprecated typedef for backward compatibility.
+//! @deprecated This header is deprecated since OCCT 8.1.0.
+//!             Use the underlying type directly instead.
+
+#ifndef _LProp_SLProps3d_HeaderFile
+#define _LProp_SLProps3d_HeaderFile
+
+#include <Standard_Macro.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <GeomLProp_SLProps.hxx>
+
+//! Alias for surface local properties using Adaptor3d_Surface interface.
+
+Standard_HEADER_DEPRECATED("LProp_SLProps3d.hxx is deprecated since OCCT 8.1.0. "
+                           "Use the underlying type directly instead.")
+
+  Standard_DEPRECATED("LProp_SLProps3d is deprecated, use the underlying type directly")
+typedef GeomLProp_SLPropsBase<occ::handle<Adaptor3d_Surface>> LProp_SLProps3d;
+
+#endif // _LProp_SLProps3d_HeaderFile

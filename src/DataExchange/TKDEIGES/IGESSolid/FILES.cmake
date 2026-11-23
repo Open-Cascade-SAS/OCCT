@@ -104,8 +104,6 @@ set(OCCT_IGESSolid_FILES
   IGESSolid_ToolTorus.hxx
   IGESSolid_ToolVertexList.cxx
   IGESSolid_ToolVertexList.hxx
-  IGESSolid_TopoBuilder.cxx
-  IGESSolid_TopoBuilder.hxx
   IGESSolid_ToroidalSurface.cxx
   IGESSolid_ToroidalSurface.hxx
   IGESSolid_Torus.cxx

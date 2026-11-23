@@ -16,6 +16,7 @@
 
 #include <math_Vector.hxx>
 #include <MathUtils_Core.hxx>
+#include <MathUtils_Types.hxx>
 
 #include <cmath>
 
@@ -23,13 +24,17 @@
 namespace MathUtils
 {
 
+//! Historical default bound for exact line-search step magnitude.
+inline constexpr double THE_EXACT_LINE_SEARCH_ALPHA_MAX = 10.0;
+
 //! Result of line search operation.
 struct LineSearchResult
 {
-  bool   IsValid = false; //!< True if line search succeeded
-  double Alpha   = 0.0;   //!< Step size found
-  double FNew    = 0.0;   //!< Function value at new point
-  int    NbEvals = 0;     //!< Number of function evaluations
+  MathUtils::Status Status  = MathUtils::Status::NotConverged; //!< Detailed outcome
+  bool              IsValid = false; //!< True only when the documented conditions hold
+  double            Alpha   = 0.0;   //!< Step size for FNew, including on partial failure
+  double            FNew = std::numeric_limits<double>::quiet_NaN(); //!< Value at Alpha if finite
+  size_t            NbEvals = 0; //!< Number of callback evaluations
 };
 
 //! Backtracking line search with Armijo condition.
@@ -61,72 +66,97 @@ LineSearchResult ArmijoBacktrack(Function&          theFunc,
                                  double             theAlphaInit = 1.0,
                                  double             theC1        = 1.0e-4,
                                  double             theRho       = 0.5,
-                                 int                theMaxIter   = 50)
+                                 uint32_t           theMaxIter   = 50)
 {
   LineSearchResult aResult;
   aResult.Alpha   = theAlphaInit;
   aResult.NbEvals = 0;
 
-  const int aLower = theX.Lower();
-  const int aUpper = theX.Upper();
+  if (theDir.Size() != theX.Size() || theGrad.Size() != theX.Size() || !std::isfinite(theFx)
+      || !std::isfinite(theAlphaInit) || theAlphaInit <= 0.0 || !std::isfinite(theC1)
+      || theC1 <= 0.0 || theC1 >= 1.0 || !std::isfinite(theRho) || theRho <= 0.0 || theRho >= 1.0
+      || theMaxIter <= 0)
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
 
   // Compute directional derivative: grad(f) . d
   double aDirDeriv = 0.0;
-  for (int i = aLower; i <= aUpper; ++i)
+  for (size_t i = 0; i < theX.Size(); ++i)
   {
-    aDirDeriv += theGrad(i) * theDir(i);
+    const double aGrad = theGrad.At(i);
+    const double aDir  = theDir.At(i);
+    if (!std::isfinite(theX.At(i)) || !std::isfinite(aGrad) || !std::isfinite(aDir))
+    {
+      aResult.Status = MathUtils::Status::InvalidInput;
+      return aResult;
+    }
+    aDirDeriv += aGrad * aDir;
   }
 
   // Ensure descent direction
-  if (aDirDeriv >= 0.0)
+  if (!std::isfinite(aDirDeriv) || aDirDeriv >= 0.0)
   {
     // Not a descent direction, return failure
-    aResult.IsValid = false;
+    aResult.Status = std::isfinite(aDirDeriv) ? MathUtils::Status::NonDescentDirection
+                                              : MathUtils::Status::NumericalError;
     return aResult;
   }
 
   // Temporary vector for new point
-  math_Vector aXNew(aLower, aUpper);
+  math_Vector aXNew(theX.Size());
 
-  for (int k = 0; k < theMaxIter; ++k)
+  for (uint32_t k = 0; k < theMaxIter; ++k)
   {
     // Compute new point: x + alpha*d
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      aXNew(i) = theX(i) + aResult.Alpha * theDir(i);
+      aXNew.ChangeAt(i) = theX.At(i) + aResult.Alpha * theDir.At(i);
+      if (!std::isfinite(aXNew.At(i)))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return aResult;
+      }
     }
 
     // Evaluate function at new point
     double aFNew = 0.0;
     if (!theFunc.Value(aXNew, aFNew))
     {
-      // Function evaluation failed, reduce step
-      aResult.Alpha *= theRho;
       ++aResult.NbEvals;
-      continue;
+      aResult.Status = MathUtils::Status::CallbackError;
+      return aResult;
     }
     ++aResult.NbEvals;
+    aResult.FNew = aFNew;
+    if (!std::isfinite(aFNew))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
 
     // Check Armijo condition: f(x + alpha*d) <= f(x) + c1*alpha*phi'(0)
     if (aFNew <= theFx + theC1 * aResult.Alpha * aDirDeriv)
     {
       aResult.IsValid = true;
+      aResult.Status  = MathUtils::Status::OK;
       aResult.FNew    = aFNew;
       return aResult;
     }
 
-    // Reduce step size
-    aResult.Alpha *= theRho;
+    const double aNextAlpha = aResult.Alpha * theRho;
 
     // Check for too small step
-    if (aResult.Alpha < THE_EPSILON)
+    if (aNextAlpha < THE_EPSILON || k + 1 == theMaxIter)
     {
       break;
     }
+    aResult.Alpha = aNextAlpha;
   }
 
   // Failed to satisfy Armijo condition
-  aResult.IsValid = false;
+  aResult.Status = MathUtils::Status::MaxIterations;
   return aResult;
 }
 
@@ -159,179 +189,195 @@ LineSearchResult WolfeSearch(Function&          theFunc,
                              double             theAlphaInit = 1.0,
                              double             theC1        = 1.0e-4,
                              double             theC2        = 0.9,
-                             int                theMaxIter   = 20)
+                             uint32_t           theMaxIter   = 20)
 {
   LineSearchResult aResult;
-  aResult.NbEvals = 0;
-
-  const int aLower = theX.Lower();
-  const int aUpper = theX.Upper();
-
-  // Compute initial directional derivative
-  double aPhi0Prime = 0.0;
-  for (int i = aLower; i <= aUpper; ++i)
+  if (theDir.Size() != theX.Size() || theGrad.Size() != theX.Size() || !std::isfinite(theFx)
+      || !std::isfinite(theAlphaInit) || theAlphaInit <= 0.0 || !std::isfinite(theC1)
+      || !std::isfinite(theC2) || theC1 <= 0.0 || theC1 >= theC2 || theC2 >= 1.0 || theMaxIter <= 0)
   {
-    aPhi0Prime += theGrad(i) * theDir(i);
-  }
-
-  if (aPhi0Prime >= 0.0)
-  {
-    aResult.IsValid = false;
+    aResult.Status = MathUtils::Status::InvalidInput;
     return aResult;
   }
 
-  math_Vector aXNew(aLower, aUpper);
-  math_Vector aGradNew(aLower, aUpper);
-
-  double aAlphaLo = 0.0;
-  double aAlphaHi = theAlphaInit * 2.0;
-  double aAlpha   = theAlphaInit;
-
-  double aPhiLo = theFx;
-
-  // Phase 1: Bracket finding
-  for (int k = 0; k < theMaxIter; ++k)
+  double aPhi0Prime = 0.0;
+  for (size_t i = 0; i < theX.Size(); ++i)
   {
-    // Evaluate at current alpha
-    for (int i = aLower; i <= aUpper; ++i)
+    const double aDir  = theDir.At(i);
+    const double aGrad = theGrad.At(i);
+    if (!std::isfinite(theX.At(i)) || !std::isfinite(aDir) || !std::isfinite(aGrad))
     {
-      aXNew(i) = theX(i) + aAlpha * theDir(i);
-    }
-
-    double aPhi = 0.0;
-    if (!theFunc.Value(aXNew, aPhi))
-    {
-      // Shrink interval
-      aAlphaHi = aAlpha;
-      aAlpha   = 0.5 * (aAlphaLo + aAlphaHi);
-      ++aResult.NbEvals;
-      continue;
-    }
-    ++aResult.NbEvals;
-
-    // Check Armijo
-    if (aPhi > theFx + theC1 * aAlpha * aPhi0Prime || (k > 0 && aPhi >= aPhiLo))
-    {
-      // Found bracket [alpha_lo, alpha]
-      aAlphaHi = aAlpha;
-      break;
-    }
-
-    // Evaluate gradient at new point
-    if (!theFunc.Gradient(aXNew, aGradNew))
-    {
-      aResult.IsValid = false;
+      aResult.Status = MathUtils::Status::InvalidInput;
       return aResult;
     }
-
-    double aPhiPrime = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
-    {
-      aPhiPrime += aGradNew(i) * theDir(i);
-    }
-
-    // Check curvature condition
-    if (std::abs(aPhiPrime) <= -theC2 * aPhi0Prime)
-    {
-      aResult.IsValid = true;
-      aResult.Alpha   = aAlpha;
-      aResult.FNew    = aPhi;
-      return aResult;
-    }
-
-    if (aPhiPrime >= 0.0)
-    {
-      // Found bracket [alpha, alpha_lo]
-      aAlphaHi = aAlphaLo;
-      aAlphaLo = aAlpha;
-      aPhiLo   = aPhi;
-      break;
-    }
-
-    // Increase alpha
-    aAlphaLo = aAlpha;
-    aPhiLo   = aPhi;
-    aAlpha   = 0.5 * (aAlpha + aAlphaHi);
+    aPhi0Prime += aGrad * aDir;
+  }
+  if (!std::isfinite(aPhi0Prime) || aPhi0Prime >= 0.0)
+  {
+    aResult.Status = std::isfinite(aPhi0Prime) ? MathUtils::Status::NonDescentDirection
+                                               : MathUtils::Status::NumericalError;
+    return aResult;
   }
 
-  // Phase 2: Zoom
-  for (int k = 0; k < theMaxIter; ++k)
-  {
-    // Bisection
-    aAlpha = 0.5 * (aAlphaLo + aAlphaHi);
-
-    for (int i = aLower; i <= aUpper; ++i)
+  math_Vector aXNew(theX.Size());
+  math_Vector aGradNew(theGrad.Size());
+  auto        anEvaluateValue = [&](double theAlpha, double& thePhi) {
+    for (size_t i = 0; i < theX.Size(); ++i)
     {
-      aXNew(i) = theX(i) + aAlpha * theDir(i);
-    }
-
-    double aPhi = 0.0;
-    if (!theFunc.Value(aXNew, aPhi))
-    {
-      aAlphaHi = aAlpha;
-      ++aResult.NbEvals;
-      continue;
+      aXNew.ChangeAt(i) = theX.At(i) + theAlpha * theDir.At(i);
+      if (!std::isfinite(aXNew.At(i)))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return false;
+      }
     }
     ++aResult.NbEvals;
+    if (!theFunc.Value(aXNew, thePhi))
+    {
+      aResult.Status = MathUtils::Status::CallbackError;
+      return false;
+    }
+    aResult.Alpha = theAlpha;
+    aResult.FNew  = thePhi;
+    if (!std::isfinite(thePhi))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return false;
+    }
+    return true;
+  };
+  auto anEvaluateDerivative = [&](double& theDerivative) {
+    ++aResult.NbEvals;
+    if (!theFunc.Gradient(aXNew, aGradNew))
+    {
+      aResult.Status = MathUtils::Status::CallbackError;
+      return false;
+    }
+    theDerivative = 0.0;
+    for (size_t i = 0; i < theX.Size(); ++i)
+    {
+      const double aGrad = aGradNew.At(i);
+      if (!std::isfinite(aGrad))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return false;
+      }
+      theDerivative += aGrad * theDir.At(i);
+    }
+    if (!std::isfinite(theDerivative))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return false;
+    }
+    return true;
+  };
 
+  double aAlphaPrev = 0.0;
+  double aPhiPrev   = theFx;
+  double aAlpha     = theAlphaInit;
+  double aAlphaLo   = 0.0;
+  double aAlphaHi   = 0.0;
+  double aPhiLo     = theFx;
+  bool   hasBracket = false;
+
+  for (uint32_t anIter = 0; anIter < theMaxIter; ++anIter)
+  {
+    double aPhi = 0.0;
+    if (!anEvaluateValue(aAlpha, aPhi))
+    {
+      return aResult;
+    }
+    if (aPhi > theFx + theC1 * aAlpha * aPhi0Prime || (anIter > 0 && aPhi >= aPhiPrev))
+    {
+      aAlphaLo   = aAlphaPrev;
+      aPhiLo     = aPhiPrev;
+      aAlphaHi   = aAlpha;
+      hasBracket = true;
+      break;
+    }
+    double aPhiPrime = 0.0;
+    if (!anEvaluateDerivative(aPhiPrime))
+    {
+      return aResult;
+    }
+    if (std::abs(aPhiPrime) <= -theC2 * aPhi0Prime)
+    {
+      aResult.Status  = MathUtils::Status::OK;
+      aResult.IsValid = true;
+      return aResult;
+    }
+    if (aPhiPrime >= 0.0)
+    {
+      aAlphaLo   = aAlpha;
+      aPhiLo     = aPhi;
+      aAlphaHi   = aAlphaPrev;
+      hasBracket = true;
+      break;
+    }
+    aAlphaPrev = aAlpha;
+    aPhiPrev   = aPhi;
+    aAlpha *= 2.0;
+    if (!std::isfinite(aAlpha))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+  }
+  if (!hasBracket)
+  {
+    aResult.Status = MathUtils::Status::MaxIterations;
+    return aResult;
+  }
+
+  for (uint32_t anIter = 0; anIter < theMaxIter; ++anIter)
+  {
+    aAlpha = 0.5 * aAlphaLo + 0.5 * aAlphaHi;
+    if (aAlpha == aAlphaLo || aAlpha == aAlphaHi)
+    {
+      aResult.Status = MathUtils::Status::NotConverged;
+      return aResult;
+    }
+    double aPhi = 0.0;
+    if (!anEvaluateValue(aAlpha, aPhi))
+    {
+      return aResult;
+    }
     if (aPhi > theFx + theC1 * aAlpha * aPhi0Prime || aPhi >= aPhiLo)
     {
       aAlphaHi = aAlpha;
+      continue;
     }
-    else
+    double aPhiPrime = 0.0;
+    if (!anEvaluateDerivative(aPhiPrime))
     {
-      if (!theFunc.Gradient(aXNew, aGradNew))
-      {
-        break;
-      }
-
-      double aPhiPrime = 0.0;
-      for (int i = aLower; i <= aUpper; ++i)
-      {
-        aPhiPrime += aGradNew(i) * theDir(i);
-      }
-
-      if (std::abs(aPhiPrime) <= -theC2 * aPhi0Prime)
-      {
-        aResult.IsValid = true;
-        aResult.Alpha   = aAlpha;
-        aResult.FNew    = aPhi;
-        return aResult;
-      }
-
-      if (aPhiPrime * (aAlphaHi - aAlphaLo) >= 0.0)
-      {
-        aAlphaHi = aAlphaLo;
-      }
-
-      aAlphaLo = aAlpha;
-      aPhiLo   = aPhi;
+      return aResult;
     }
-
-    // Check for convergence
-    if (std::abs(aAlphaHi - aAlphaLo) < THE_EPSILON)
+    if (std::abs(aPhiPrime) <= -theC2 * aPhi0Prime)
     {
-      break;
+      aResult.Status  = MathUtils::Status::OK;
+      aResult.IsValid = true;
+      return aResult;
     }
+    if (aPhiPrime * (aAlphaHi - aAlphaLo) >= 0.0)
+    {
+      aAlphaHi = aAlphaLo;
+    }
+    aAlphaLo = aAlpha;
+    aPhiLo   = aPhi;
   }
-
-  // Return best found
-  aResult.IsValid = true;
-  aResult.Alpha   = aAlpha;
-  aResult.FNew    = aPhiLo;
+  aResult.Status = MathUtils::Status::MaxIterations;
   return aResult;
 }
 
-//! Exact line search using Brent's method.
-//! Minimizes f(x + alpha*d) over alpha in [-alpha_max, alpha_max].
-//! First brackets the minimum by exploring both directions.
+//! Exact line search using Brent's method over a bounded step interval.
+//! Minimizes f(x + alpha*d) for alpha in [-theAlphaMax, theAlphaMax].
 //! More expensive than inexact line search but can be more robust.
 //!
 //! @tparam Function type with Value(const math_Vector&, double&) method
 //! @param theFunc objective function
 //! @param theX current point
 //! @param theDir search direction
-//! @param theAlphaMax maximum step size (searches in both directions)
+//! @param theAlphaMax maximum absolute step size
 //! @param theTolerance convergence tolerance
 //! @param theMaxIter maximum iterations
 //! @return line search result
@@ -339,40 +385,79 @@ template <typename Function>
 LineSearchResult ExactLineSearch(Function&          theFunc,
                                  const math_Vector& theX,
                                  const math_Vector& theDir,
-                                 double             theAlphaMax  = 10.0,
+                                 double             theAlphaMax  = THE_EXACT_LINE_SEARCH_ALPHA_MAX,
                                  double             theTolerance = 1.0e-6,
-                                 int                theMaxIter   = 100)
+                                 uint32_t           theMaxIter   = 100)
 {
   LineSearchResult aResult;
   aResult.NbEvals = 0;
 
-  const int aLower = theX.Lower();
-  const int aUpper = theX.Upper();
-
-  math_Vector aXNew(aLower, aUpper);
-
-  // Lambda to evaluate phi(alpha) = f(x + alpha*d)
-  auto aEvalPhi = [&](double theAlpha, double& thePhi) -> bool {
-    for (int i = aLower; i <= aUpper; ++i)
+  if (theDir.Size() != theX.Size() || !std::isfinite(theAlphaMax) || theAlphaMax <= 0.0
+      || !std::isfinite(theTolerance) || theTolerance <= 0.0 || theMaxIter <= 0)
+  {
+    aResult.Status = MathUtils::Status::InvalidInput;
+    return aResult;
+  }
+  for (size_t i = 0; i < theX.Size(); ++i)
+  {
+    if (!std::isfinite(theX.At(i)) || !std::isfinite(theDir.At(i)))
     {
-      aXNew(i) = theX(i) + theAlpha * theDir(i);
+      aResult.Status = MathUtils::Status::InvalidInput;
+      return aResult;
+    }
+  }
+
+  math_Vector aXNew(theX.Size());
+
+  double aBestAlpha = 0.0;
+  double aBestF     = std::numeric_limits<double>::quiet_NaN();
+
+  // Evaluate phi(alpha) = f(x + alpha*d), retaining the best successful evaluation.
+  auto aEvalPhi = [&](double theAlpha, double& thePhi) -> bool {
+    if (!std::isfinite(theAlpha))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return false;
+    }
+    for (size_t i = 0; i < theX.Size(); ++i)
+    {
+      aXNew.ChangeAt(i) = theX.At(i) + theAlpha * theDir.At(i);
+      if (!std::isfinite(aXNew.At(i)))
+      {
+        aResult.Status = MathUtils::Status::NumericalError;
+        return false;
+      }
     }
     ++aResult.NbEvals;
-    return theFunc.Value(aXNew, thePhi);
+    if (!theFunc.Value(aXNew, thePhi))
+    {
+      aResult.Status = MathUtils::Status::CallbackError;
+      return false;
+    }
+    if (!std::isfinite(thePhi))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return false;
+    }
+    if (!std::isfinite(aBestF) || thePhi < aBestF)
+    {
+      aBestAlpha    = theAlpha;
+      aBestF        = thePhi;
+      aResult.Alpha = aBestAlpha;
+      aResult.FNew  = aBestF;
+    }
+    return true;
   };
 
-  // Brent's method for 1D minimization
-  // Search in [-theAlphaMax, theAlphaMax] to handle both directions
   double aA = -theAlphaMax;
   double aB = theAlphaMax;
-  double aX = 0.0; // Start at the current point
+  double aX = 0.0;
   double aW = aX;
   double aV = aX;
 
   double aFx = 0.0;
   if (!aEvalPhi(aX, aFx))
   {
-    aResult.IsValid = false;
     return aResult;
   }
   double aFw = aFx;
@@ -381,16 +466,22 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
   double aD = 0.0;
   double aE = 0.0;
 
-  for (int anIter = 0; anIter < theMaxIter; ++anIter)
+  for (uint32_t anIter = 0; anIter < theMaxIter; ++anIter)
   {
-    const double aXm   = 0.5 * (aA + aB);
+    const double aXm   = 0.5 * aA + 0.5 * aB;
     const double aTol1 = theTolerance * std::abs(aX) + THE_ZERO_TOL / 10.0;
     const double aTol2 = 2.0 * aTol1;
+    if (!std::isfinite(aTol1) || !std::isfinite(aTol2))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
 
     // Check convergence
     if (std::abs(aX - aXm) <= (aTol2 - 0.5 * (aB - aA)))
     {
       aResult.IsValid = true;
+      aResult.Status  = MathUtils::Status::OK;
       aResult.Alpha   = aX;
       aResult.FNew    = aFx;
       return aResult;
@@ -419,7 +510,8 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
       const double aETmp = aE;
       aE                 = aD;
 
-      if (std::abs(aP) < std::abs(0.5 * aQ * aETmp) && aP > aQ * (aA - aX) && aP < aQ * (aB - aX))
+      if (std::isfinite(aP) && std::isfinite(aQ) && std::abs(aP) < std::abs(0.5 * aQ * aETmp)
+          && aP > aQ * (aA - aX) && aP < aQ * (aB - aX))
       {
         aD = aP / aQ;
         aU = aX + aD;
@@ -446,12 +538,16 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
       aU = aX + SignTransfer(aTol1, aD);
     }
 
+    if (!std::isfinite(aU))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+
     double aFu = 0.0;
     if (!aEvalPhi(aU, aFu))
     {
       aResult.IsValid = false;
-      aResult.Alpha   = aX;
-      aResult.FNew    = aFx;
       return aResult;
     }
 
@@ -500,9 +596,7 @@ LineSearchResult ExactLineSearch(Function&          theFunc,
     }
   }
 
-  aResult.IsValid = true;
-  aResult.Alpha   = aX;
-  aResult.FNew    = aFx;
+  aResult.Status = MathUtils::Status::MaxIterations;
   return aResult;
 }
 
@@ -548,7 +642,7 @@ inline double QuadraticInterpolation(double thePhi0,
 //! Brent's method for 1D minimization along a single coordinate axis.
 //! Operates in-place on one coordinate of thePoint, avoiding vector allocations.
 //! Unlike ExactLineSearch which works with arbitrary direction vectors and allocates
-//! internal temporaries, this function modifies only thePoint(theDimIdx) during the
+//! internal temporaries, this function modifies only thePoint.ChangeAt(theDimIdx) during the
 //! search and restores it if no improvement is found.
 //!
 //! @tparam Function type with Value(const math_Vector&, double&) method
@@ -566,15 +660,26 @@ inline double QuadraticInterpolation(double thePhi0,
 template <typename Function>
 bool BrentAlongCoordinate(Function&    theFunc,
                           math_Vector& thePoint,
-                          int          theDimIdx,
+                          size_t       theDimIdx,
                           double       theLoBound,
                           double       theUpBound,
                           double&      theFx,
                           double       theTolerance,
-                          int          theMaxIter,
-                          int&         theEvalCount)
+                          uint32_t     theMaxIter,
+                          size_t&      theEvalCount)
 {
-  const double aOrigCoord = thePoint(theDimIdx);
+  if (theDimIdx >= thePoint.Size() || !std::isfinite(theLoBound) || !std::isfinite(theUpBound)
+      || theLoBound > theUpBound || !std::isfinite(theTolerance) || theTolerance <= 0.0
+      || theMaxIter <= 0)
+  {
+    return false;
+  }
+  const double aOrigCoord = thePoint.At(theDimIdx);
+  if (!std::isfinite(aOrigCoord) || aOrigCoord < theLoBound || aOrigCoord > theUpBound
+      || !std::isfinite(theFx))
+  {
+    return false;
+  }
 
   // Search interval [aA, aB] in coordinate space (not alpha space)
   double aA = theLoBound;
@@ -590,7 +695,7 @@ bool BrentAlongCoordinate(Function&    theFunc,
   double aD = 0.0;
   double aE = 0.0;
 
-  for (int anIter = 0; anIter < theMaxIter; ++anIter)
+  for (uint32_t anIter = 0; anIter < theMaxIter; ++anIter)
   {
     const double aXm   = 0.5 * (aA + aB);
     const double aTol1 = theTolerance * std::abs(aX) + THE_ZERO_TOL / 10.0;
@@ -653,12 +758,12 @@ bool BrentAlongCoordinate(Function&    theFunc,
     }
 
     // Evaluate: only modify the single coordinate
-    thePoint(theDimIdx) = aU;
-    double aFu          = 0.0;
-    if (!theFunc.Value(thePoint, aFu))
+    thePoint.ChangeAt(theDimIdx) = aU;
+    double aFu                   = 0.0;
+    if (!theFunc.Value(thePoint, aFu) || !std::isfinite(aFu))
     {
       // Restore and abort
-      thePoint(theDimIdx) = aOrigCoord;
+      thePoint.ChangeAt(theDimIdx) = aOrigCoord;
       return false;
     }
     ++theEvalCount;
@@ -709,13 +814,13 @@ bool BrentAlongCoordinate(Function&    theFunc,
   // Accept if improved
   if (aFx < theFx)
   {
-    thePoint(theDimIdx) = aX;
-    theFx               = aFx;
+    thePoint.ChangeAt(theDimIdx) = aX;
+    theFx                        = aFx;
     return true;
   }
 
   // Restore original coordinate
-  thePoint(theDimIdx) = aOrigCoord;
+  thePoint.ChangeAt(theDimIdx) = aOrigCoord;
   return false;
 }
 

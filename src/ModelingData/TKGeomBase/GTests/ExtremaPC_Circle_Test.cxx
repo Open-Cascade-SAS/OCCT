@@ -14,10 +14,14 @@
 #include <gtest/gtest.h>
 
 #include <ExtremaPC_Circle.hxx>
+#include <ExtremaPC2d_Circle.hxx>
 
 #include <gp_Ax2.hxx>
+#include <gp_Ax22d.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 
 #include <cmath>
 
@@ -59,6 +63,56 @@ TEST_F(ExtremaPC_CircleTest, PointOutside_OnXAxis)
   EXPECT_NEAR(std::sqrt(aResult[aMaxIdx].SquareDistance), 30.0, THE_TOL);
   EXPECT_FALSE(aResult[aMaxIdx].IsMinimum);
   EXPECT_NEAR(aResult[aMaxIdx].Parameter, THE_PI, THE_TOL);
+}
+
+TEST_F(ExtremaPC_CircleTest, ShiftedFullPeriod_UniqueRepresentatives)
+{
+  gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  gp_Pnt  aPoint(20.0, 0.0, 0.0);
+
+  constexpr double         aUMin = 7.0;
+  ExtremaPC_Circle         anEval(aCircle, ExtremaPC::Domain1D{aUMin, aUMin + THE_2PI});
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 2);
+  for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
+  {
+    EXPECT_GE(aResult[anIndex].Parameter, aUMin);
+    EXPECT_LE(aResult[anIndex].Parameter, aUMin + THE_2PI);
+  }
+}
+
+TEST_F(ExtremaPC_CircleTest, LargeTolerance_PreservesOppositeExtrema)
+{
+  gp_Circ          aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  ExtremaPC_Circle anEval(aCircle, ExtremaPC::Domain1D{0.0, THE_2PI});
+
+  const ExtremaPC::Result& aResult = anEval.Perform(gp_Pnt(2, 0, 0), 4.0);
+
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_EQ(aResult.NbExt(), 2);
+  EXPECT_NEAR(aResult.MinSquareDistance(), 1.0, THE_TOL);
+  EXPECT_NEAR(aResult.MaxSquareDistance(), 9.0, THE_TOL);
+}
+
+TEST_F(ExtremaPC_CircleTest, MoreThanOnePeriod_RetainsConstrainedEndpoint)
+{
+  constexpr double aDomainEnd = THE_2PI + 0.1;
+  gp_Circ          aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  ExtremaPC_Circle anEval(aCircle, ExtremaPC::Domain1D{0.0, aDomainEnd});
+  const gp_Pnt     aPoint = ElCLib::Value(aDomainEnd, aCircle);
+
+  const ExtremaPC::Result& aResult = anEval.PerformWithEndpoints(aPoint, THE_TOL);
+
+  ASSERT_TRUE(aResult.IsDone());
+  bool hasUpperEndpoint = false;
+  for (size_t anIndex = 0; anIndex < aResult.NbExt(); ++anIndex)
+  {
+    hasUpperEndpoint =
+      hasUpperEndpoint || std::abs(aResult[anIndex].Parameter - aDomainEnd) <= THE_TOL;
+  }
+  EXPECT_TRUE(hasUpperEndpoint);
 }
 
 TEST_F(ExtremaPC_CircleTest, PointOutside_OnYAxis)
@@ -314,7 +368,7 @@ TEST_F(ExtremaPC_CircleTest, PartialArc_ExtremaOutsideRange)
   // The natural extrema (at 0 and PI) - 0 is outside, PI is inside
   // Should find extremum at PI and possibly endpoints
   bool aFoundPi = false;
-  for (int i = 0; i < aResult.NbExt(); ++i)
+  for (size_t i = 0; i < aResult.NbExt(); ++i)
   {
     if (std::abs(aResult[i].Parameter - THE_PI) < 0.1)
     {
@@ -456,4 +510,33 @@ TEST_F(ExtremaPC_CircleTest, PointOnCircle_AtPi)
   // Minimum distance = 0 (point is on circle)
   EXPECT_NEAR(aResult[aMinIdx].SquareDistance, 0.0, THE_TOL);
   EXPECT_NEAR(aResult[aMinIdx].Parameter, THE_PI, THE_TOL);
+}
+
+TEST_F(ExtremaPC_CircleTest, NonFiniteQueryIsRejected)
+{
+  ExtremaPC_Circle anEvaluator(gp_Circ(gp_Ax2(gp_Pnt(), gp_Dir(0.0, 0.0, 1.0)), 10.0));
+  const gp_Pnt     aQuery(Precision::Infinite(), 0.0, 0.0);
+  EXPECT_EQ(anEvaluator.Perform(aQuery, THE_TOL).Status, ExtremaPC::Status::InvalidInput);
+  EXPECT_EQ(anEvaluator.PerformWithEndpoints(aQuery, THE_TOL).Status,
+            ExtremaPC::Status::InvalidInput);
+}
+
+//=================================================================================================
+
+TEST_F(ExtremaPC_CircleTest, PlanarDelegation_PreservesParameterAndHeight)
+{
+  ExtremaPC_Circle anEvaluator3d(
+    gp_Circ(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 4.0));
+  ExtremaPC2d_Circle anEvaluator2d(
+    gp_Circ2d(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), true), 4.0));
+  const ExtremaPC::Result&   aResult3d = anEvaluator3d.Perform(gp_Pnt(8.0, 3.0, 6.0), THE_TOL);
+  const ExtremaPC2d::Result& aResult2d = anEvaluator2d.Perform(gp_Pnt2d(8.0, 3.0), THE_TOL);
+  ASSERT_EQ(aResult3d.NbExt(), aResult2d.NbExt());
+  for (size_t anIndex = 0; anIndex < aResult3d.NbExt(); ++anIndex)
+  {
+    EXPECT_NEAR(aResult3d[anIndex].Parameter, aResult2d[anIndex].Parameter, THE_TOL);
+    EXPECT_NEAR(aResult3d[anIndex].SquareDistance,
+                aResult2d[anIndex].SquareDistance + 36.0,
+                THE_TOL);
+  }
 }

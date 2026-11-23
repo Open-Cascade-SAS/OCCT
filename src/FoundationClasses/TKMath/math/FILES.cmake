@@ -61,9 +61,6 @@ set(OCCT_math_FILES
   math_GaussLeastSquare.cxx
   math_GaussLeastSquare.hxx
   math_GaussLeastSquare.lxx
-  math_GaussMultipleIntegration.cxx
-  math_GaussMultipleIntegration.hxx
-  math_GaussMultipleIntegration.lxx
   math_GaussSetIntegration.cxx
   math_GaussSetIntegration.hxx
   math_GaussSetIntegration.lxx

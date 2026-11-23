@@ -22,27 +22,26 @@
 #include <Standard_Handle.hxx>
 
 #include <TopAbs_Orientation.hxx>
-#include <TopOpeBRep_PFacesIntersector.hxx>
-#include <TopOpeBRepDS_PDataStructure.hxx>
 #include <Standard_Integer.hxx>
-#include <TopOpeBRep_PLineInter.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopOpeBRep_PointClassifier.hxx>
-#include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopAbs_State.hxx>
 class TopOpeBRepDS_HDataStructure;
-class TopOpeBRep_FFDumper;
+class TopOpeBRepDS_DataStructure;
+class TopOpeBRep_FacesIntersector;
 class TopoDS_Shape;
 class TopOpeBRep_VPointInter;
 class TopOpeBRep_VPointInterClassifier;
 class TopOpeBRep_VPointInterIterator;
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Point;
+class TopOpeBRep_LineInter;
 class gp_Pnt;
+class TopOpeBRepTool_ShapeClassifier;
 
 //! Fills a DataStructure from TopOpeBRepDS with the result
 //! of Face/Face intersection described by FacesIntersector from TopOpeBRep.
@@ -67,10 +66,10 @@ public:
   Standard_EXPORT TopOpeBRep_PointClassifier& ChangePointClassifier();
 
   //! return field myPShapeClassifier.
-  Standard_EXPORT TopOpeBRepTool_PShapeClassifier PShapeClassifier() const;
+  Standard_EXPORT TopOpeBRepTool_ShapeClassifier* PShapeClassifier() const;
 
   //! set field myPShapeClassifier.
-  Standard_EXPORT void SetPShapeClassifier(const TopOpeBRepTool_PShapeClassifier& PSC);
+  Standard_EXPORT void SetPShapeClassifier(TopOpeBRepTool_ShapeClassifier* const& PSC);
 
   Standard_EXPORT void LoadLine(TopOpeBRep_LineInter& L);
 
@@ -213,11 +212,11 @@ public:
 
   Standard_EXPORT const TopOpeBRepDS_Transition& FaceFaceTransition(const int I) const;
 
-  Standard_EXPORT TopOpeBRep_PFacesIntersector PFacesIntersectorDummy() const;
+  Standard_EXPORT TopOpeBRep_FacesIntersector* PFacesIntersectorDummy() const;
 
-  Standard_EXPORT TopOpeBRepDS_PDataStructure PDataStructureDummy() const;
+  Standard_EXPORT TopOpeBRepDS_DataStructure* PDataStructureDummy() const;
 
-  Standard_EXPORT TopOpeBRep_PLineInter PLineInterDummy() const;
+  Standard_EXPORT TopOpeBRep_LineInter* PLineInterDummy() const;
 
   Standard_EXPORT void SetTraceIndex(const int exF1, const int exF2);
 
@@ -229,8 +228,8 @@ public:
 
   //! Returns <True> if <L> shares a same geometric domain with
   //! at least one of the section edges of <ERL>.
-  Standard_EXPORT static bool LSameDomainERL(const TopOpeBRep_LineInter&           L,
-                                             const NCollection_List<TopoDS_Shape>& ERL);
+  Standard_EXPORT bool LSameDomainERL(const TopOpeBRep_LineInter&           L,
+                                      const NCollection_List<TopoDS_Shape>& ERL) const;
 
   //! Computes the transition <T> of the VPoint <iVP> on the edge
   //! of <SI12>. Returns <False> if the status is unknown.
@@ -287,11 +286,11 @@ private:
   TopoDS_Face                              myF2;
   TopAbs_Orientation                       myF1ori;
   TopAbs_Orientation                       myF2ori;
-  TopOpeBRep_PFacesIntersector             myFacesIntersector;
+  TopOpeBRep_FacesIntersector*             myFacesIntersector;
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
-  TopOpeBRepDS_PDataStructure              myDS;
+  TopOpeBRepDS_DataStructure*              myDS;
   int                                      myFFfirstDSP;
-  TopOpeBRep_PLineInter                    myLine;
+  TopOpeBRep_LineInter*                    myLine;
   bool                                     myLineOK;
   bool                                     myLineINL;
   TopOpeBRepDS_Transition                  myLineTonF1;
@@ -299,16 +298,19 @@ private:
   bool                                     myLineIsonEdge;
   NCollection_List<TopoDS_Shape>           myERL;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                           myDataforDegenEd;
+    myDataforDegenEd;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+                                                           myMapOfTreatedVertexListOfEdge;
+  TopOpeBRep_LineInter*                                    myCurrentLine;
+  int                                                      myLastVPind;
   bool                                                     myLastVPison0;
   int                                                      mykeptVPnbr;
   int                                                      myDSCIndex;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> myDSCIL;
   TopOpeBRep_PointClassifier                               myPointClassifier;
-  TopOpeBRepTool_PShapeClassifier                          myPShapeClassifier;
+  TopOpeBRepTool_ShapeClassifier*                          myPShapeClassifier;
   int                                                      myexF1;
   int                                                      myexF2;
-  occ::handle<TopOpeBRep_FFDumper>                         myHFFD;
 };
 
 #endif // _TopOpeBRep_FacesFiller_HeaderFile

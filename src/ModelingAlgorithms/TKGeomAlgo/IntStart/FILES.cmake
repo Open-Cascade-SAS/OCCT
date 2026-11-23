@@ -6,6 +6,4 @@ set(OCCT_IntStart_FILES
   IntStart_SearchInside.lxx
   IntStart_SearchOnBoundaries.gxx
   IntStart_SearchOnBoundaries.lxx
-  IntStart_SITopolTool.cxx
-  IntStart_SITopolTool.hxx
 )

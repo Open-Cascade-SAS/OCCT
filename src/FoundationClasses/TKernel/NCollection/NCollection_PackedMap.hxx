@@ -21,8 +21,11 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Primes.hxx>
 
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <iterator>
+#include <limits>
 #include <type_traits>
 
 //! @brief Optimized Map for integer values of various integral types.
@@ -30,9 +33,9 @@
 //! This template class provides a memory-efficient storage for sets of integers.
 //! Each block of BitsPerBlock (32 or 64) consecutive integers is stored compactly
 //! using bit manipulation. The block size is automatically selected based on
-//! the integer type: 32 bits for int/unsigned, 64 bits for int64_t/size_t.
+//! the integer type: 32 bits for int/unsigned, 64 bits for size_t-sized types.
 //!
-//! @tparam IntType The integral type to store (int, unsigned int, int64_t, size_t, etc.)
+//! @tparam IntType The integral type to store (int, unsigned int, size_t, etc.)
 template <typename IntType>
 class NCollection_PackedMap
 {
@@ -48,8 +51,16 @@ public:
   //! The block type for storing packed bits
   using BlockType = typename std::conditional<Is64Bit, uint64_t, uint32_t>::type;
 
-  //! The index type for addressing blocks
+  //! The type for addressing packed key blocks.
   using IndexType = typename std::conditional<sizeof(IntType) <= 4, uint32_t, uint64_t>::type;
+
+  using value_type      = IntType;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using reference       = const IntType&;
+  using const_reference = const IntType&;
+  using pointer         = const IntType*;
+  using const_pointer   = const IntType*;
 
   //! Number of bits per block
   static constexpr int BitsPerBlock = Is64Bit ? 64 : 32;
@@ -172,13 +183,18 @@ private:
     BlockType      myData;
   };
 
-public:
-  //! Iterator of class NCollection_PackedMap.
-  class Iterator
+  //! Iterator implementation over packed bit fields.
+  template <bool IsConstant>
+  class BasicIterator
   {
   public:
-    //! Empty Constructor.
-    Iterator()
+    using iterator_category = std::input_iterator_tag;
+    using value_type        = IntType;
+    using difference_type   = std::ptrdiff_t;
+    using pointer           = const IntType*;
+    using reference         = const IntType&;
+
+    BasicIterator() noexcept
         : myBuckets(nullptr),
           myNode(nullptr),
           myNbBuckets(0),
@@ -188,69 +204,111 @@ public:
     {
     }
 
-    //! Constructor.
-    Iterator(const NCollection_PackedMap& theMap)
+    explicit BasicIterator(const NCollection_PackedMap& theMap) noexcept
         : myBuckets(theMap.myData1),
           myNode(nullptr),
-          myNbBuckets(theMap.myData1 != nullptr ? theMap.myNbBuckets : 0),
+          myNbBuckets(theMap.myData1 == nullptr ? 0 : theMap.myNbBuckets),
           myBucket(0),
-          myIntMask(~BlockType(0))
+          myIntMask(~BlockType(0)),
+          myKey(0)
     {
       findFirst();
-      myKey = myNode != nullptr ? NCollection_PackedMap::findNext(myNode, myIntMask) : 0;
+      if (myNode != nullptr)
+      {
+        myKey = NCollection_PackedMap::findNext(myNode, myIntMask);
+      }
     }
 
-    //! Re-initialize with the same or another Map instance.
-    void Initialize(const NCollection_PackedMap& theMap)
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    BasicIterator(const BasicIterator<false>& theOther) noexcept
+        : myBuckets(theOther.myBuckets),
+          myNode(theOther.myNode),
+          myNbBuckets(theOther.myNbBuckets),
+          myBucket(theOther.myBucket),
+          myIntMask(theOther.myIntMask),
+          myKey(theOther.myKey)
     {
-      myBuckets   = theMap.myData1;
-      myBucket    = 0;
-      myNode      = nullptr;
-      myNbBuckets = theMap.myData1 != nullptr ? theMap.myNbBuckets : 0;
-      findFirst();
-
-      myIntMask = ~BlockType(0);
-      myKey     = myNode != nullptr ? findNext(myNode, myIntMask) : 0;
     }
 
-    //! Restart the iteration
-    void Reset()
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    BasicIterator& operator=(const BasicIterator<false>& theOther) noexcept
     {
-      myBucket = 0;
-      myNode   = nullptr;
-      findFirst();
-
-      myIntMask = ~BlockType(0);
-      myKey     = myNode != nullptr ? findNext(myNode, myIntMask) : 0;
+      myBuckets   = theOther.myBuckets;
+      myNode      = theOther.myNode;
+      myNbBuckets = theOther.myNbBuckets;
+      myBucket    = theOther.myBucket;
+      myIntMask   = theOther.myIntMask;
+      myKey       = theOther.myKey;
+      return *this;
     }
 
-    //! Query the iterated key.
-    IntType Key() const
-    {
-      Standard_NoSuchObject_Raise_if((myIntMask == ~BlockType(0)),
-                                     "NCollection_PackedMap::Iterator::Key");
-      return myKey;
-    }
+    reference operator*() const noexcept { return myKey; }
 
-    //! Return TRUE if iterator points to the node.
-    bool More() const { return myNode != nullptr; }
+    pointer operator->() const noexcept { return &myKey; }
 
-    //! Increment the iterator
-    void Next()
+    const IntType& Key() const noexcept { return myKey; }
+
+    const IntType& Value() const noexcept { return myKey; }
+
+    bool More() const noexcept { return myNode != nullptr; }
+
+    BasicIterator& operator++()
     {
-      for (; myNode != nullptr; next())
+      while (myNode != nullptr)
       {
         myKey = NCollection_PackedMap::findNext(myNode, myIntMask);
         if (myIntMask != ~BlockType(0))
         {
-          break;
+          return *this;
         }
+        nextNode();
+      }
+      return *this;
+    }
+
+    BasicIterator operator++(int)
+    {
+      BasicIterator anOld(*this);
+      ++(*this);
+      return anOld;
+    }
+
+    void Reset() noexcept
+    {
+      myBucket  = 0;
+      myNode    = nullptr;
+      myIntMask = ~BlockType(0);
+      myKey     = 0;
+      findFirst();
+      if (myNode != nullptr)
+      {
+        myKey = NCollection_PackedMap::findNext(myNode, myIntMask);
       }
     }
 
+    template <bool theOtherIsConstant>
+    bool operator==(const BasicIterator<theOtherIsConstant>& theOther) const noexcept
+    {
+      if (!More() || !theOther.More())
+      {
+        return More() == theOther.More();
+      }
+      return myBuckets == theOther.myBuckets && myNode == theOther.myNode
+             && myBucket == theOther.myBucket && myIntMask == theOther.myIntMask
+             && myKey == theOther.myKey;
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator!=(const BasicIterator<theOtherIsConstant>& theOther) const noexcept
+    {
+      return !(*this == theOther);
+    }
+
   private:
-    //! Find the first non-empty bucket starting from myBucket.
-    void findFirst()
+    template <bool>
+    friend class BasicIterator;
+
+    void findFirst() noexcept
     {
       if (myBuckets == nullptr)
       {
@@ -266,13 +324,8 @@ public:
       }
     }
 
-    //! Advance to the next node (may cross bucket boundaries).
-    void next()
+    void nextNode() noexcept
     {
-      if (myBuckets == nullptr)
-      {
-        return;
-      }
       if (myNode != nullptr)
       {
         myNode = myNode->Next();
@@ -282,7 +335,7 @@ public:
         }
       }
       ++myBucket;
-      while (myBucket <= myNbBuckets)
+      while (myBuckets != nullptr && myBucket <= myNbBuckets)
       {
         myNode = myBuckets[myBucket];
         if (myNode != nullptr)
@@ -293,21 +346,76 @@ public:
       }
     }
 
-  private:
-    PackedMapNode** myBuckets;
-    PackedMapNode*  myNode;
-    size_t          myNbBuckets;
-    size_t          myBucket;
-
-    BlockType myIntMask; //!< all bits set above the iterated position
-    IntType   myKey;     //!< Currently iterated key
+    PackedMapNode* const* myBuckets;
+    PackedMapNode*        myNode;
+    size_t                myNbBuckets;
+    size_t                myBucket;
+    BlockType             myIntMask;
+    IntType               myKey;
   };
+
+public:
+  using iterator       = BasicIterator<false>;
+  using const_iterator = BasicIterator<true>;
+
+public:
+  //! Legacy OCCT cursor backed by the standard iterator state.
+  class Iterator : public const_iterator
+  {
+  public:
+    Iterator() noexcept = default;
+
+    explicit Iterator(const NCollection_PackedMap& theMap) noexcept
+        : const_iterator(theMap)
+    {
+    }
+
+    void Initialize(const NCollection_PackedMap& theMap) noexcept { *this = Iterator(theMap); }
+
+    void Reset() noexcept { const_iterator::Reset(); }
+
+    const IntType& Key() const
+    {
+      Standard_NoSuchObject_Raise_if(!More(), "NCollection_PackedMap::Iterator::Key");
+      return const_iterator::Key();
+    }
+
+    const IntType& Value() const { return Key(); }
+
+    bool More() const noexcept { return const_iterator::More(); }
+
+    bool IsEqual(const Iterator& theOther) const noexcept
+    {
+      return const_iterator::operator==(static_cast<const const_iterator&>(theOther));
+    }
+
+    void Next() noexcept { ++(*this); }
+  };
+
+public:
+  //! Returns an iterator pointing to the first element in the map.
+  iterator begin() noexcept { return iterator(*this); }
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator begin() const noexcept { return const_iterator(*this); }
+
+  //! Returns an iterator referring to the past-the-end element in the map.
+  iterator end() noexcept { return iterator(); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator end() const noexcept { return const_iterator(); }
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator cbegin() const noexcept { return const_iterator(*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator cend() const noexcept { return const_iterator(); }
 
 public:
   //! Constructor
   NCollection_PackedMap(const size_t theNbBuckets = 1)
       : myData1(nullptr),
-        myNbBuckets(theNbBuckets),
+        myNbBuckets(theNbBuckets == 0 ? 1 : theNbBuckets),
         myNbPackedMapNodes(0),
         myExtent(0)
   {
@@ -408,9 +516,11 @@ public:
       aNewBuck = myNbBuckets;
     }
 
-    PackedMapNode** aNewData = reinterpret_cast<PackedMapNode**>(
-      Standard::AllocateOptimal((aNewBuck + 1) * sizeof(PackedMapNode*)));
-    memset(aNewData, 0, (aNewBuck + 1) * sizeof(PackedMapNode*));
+    const size_t    aBucketCount = aNewBuck + 1;
+    const size_t    aBucketBytes = aBucketCount * sizeof(PackedMapNode*);
+    PackedMapNode** aNewData =
+      reinterpret_cast<PackedMapNode**>(Standard::AllocateOptimal(aBucketBytes));
+    memset(aNewData, 0, aBucketBytes);
     if (myData1 != nullptr)
     {
       PackedMapNode** anOldData = myData1;
@@ -470,7 +580,7 @@ public:
   //! @return true if the key was added, false if it already existed
   bool Add(const IntType theKey)
   {
-    if (Resizable())
+    if (resizable())
     {
       ReSize(myNbPackedMapNodes);
     }
@@ -703,7 +813,7 @@ public:
 
 protected:
   //! Returns TRUE if resizing the map should be considered.
-  bool Resizable() const { return IsEmpty() || (myNbPackedMapNodes > myNbBuckets); }
+  bool resizable() const { return IsEmpty() || (myNbPackedMapNodes > myNbBuckets); }
 
   //! Return an integer index for specified key.
   static IndexType packedKeyIndex(IntType theKey)

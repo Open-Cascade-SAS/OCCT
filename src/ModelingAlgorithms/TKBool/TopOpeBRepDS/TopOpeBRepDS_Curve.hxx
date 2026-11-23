@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Edge.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;
 class TopOpeBRepDS_Interference;
@@ -111,6 +112,28 @@ public:
 
   Standard_EXPORT void ChangeDSIndex(const int I);
 
+  //! Associates this intersection curve with an existing full edge.
+  //! The topology builder uses the edge instead of constructing a duplicate.
+  //! @param[in] theEdge existing edge representing this curve
+  //! @param[in] theIsReversed true if edge parameters run opposite to this curve
+  Standard_EXPORT void SetExistingEdge(const TopoDS_Edge& theEdge,
+                                       const bool         theIsReversed = false);
+
+  Standard_EXPORT const TopoDS_Edge& ExistingEdge() const;
+
+  //! Returns true when the existing edge has the opposite parameter direction to this curve.
+  Standard_EXPORT bool IsExistingEdgeReversed() const;
+
+  //! Sets another intersection curve that represents the same complete boundary.
+  Standard_EXPORT void SetEquivalentCurve(const int  theCurveIndex,
+                                          const bool theIsReversed = false);
+
+  //! Returns the index of an equivalent intersection curve, or zero if there is none.
+  Standard_EXPORT int EquivalentCurve() const;
+
+  //! Returns true when this curve has the opposite parameter direction to its equivalent curve.
+  Standard_EXPORT bool IsEquivalentCurveReversed() const;
+
 private:
   occ::handle<Geom_Curve>                myCurve;
   double                                 myFirst;
@@ -125,6 +148,10 @@ private:
   bool                                   myKeep;
   int                                    myMother;
   int                                    myDSIndex;
+  TopoDS_Edge                            myExistingEdge;
+  bool                                   myIsExistingEdgeReversed    = false;
+  int                                    myEquivalentCurve           = 0;
+  bool                                   myIsEquivalentCurveReversed = false;
 };
 
 #endif // _TopOpeBRepDS_Curve_HeaderFile

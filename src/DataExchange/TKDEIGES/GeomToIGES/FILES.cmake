@@ -10,6 +10,4 @@ set(OCCT_GeomToIGES_FILES
   GeomToIGES_GeomPoint.hxx
   GeomToIGES_GeomSurface.cxx
   GeomToIGES_GeomSurface.hxx
-  GeomToIGES_GeomVector.cxx
-  GeomToIGES_GeomVector.hxx
 )

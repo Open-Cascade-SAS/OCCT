@@ -55,7 +55,6 @@
 #include <TopOpeBRepDS_FaceEdgeInterference.hxx>
 #include <TopOpeBRepDS_InterferenceIterator.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_PDataStructure.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepDS_Config.hxx>
@@ -80,7 +79,6 @@
 #define MDSii TopOpeBRepDS_InterferenceIterator
 #define MDShds occ::handle<TopOpeBRepDS_HDataStructure>
 #define MDSds TopOpeBRepDS_DataStructure
-#define MDSpds TopOpeBRepDS_PDataStructure
 #define MDSk TopOpeBRepDS_Kind
 #define MDSc TopOpeBRepDS_Config
 #define MDSt TopOpeBRepDS_Transition

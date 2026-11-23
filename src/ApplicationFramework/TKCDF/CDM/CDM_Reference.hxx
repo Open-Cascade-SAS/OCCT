@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <CDM_DocumentPointer.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class CDM_Document;
@@ -89,7 +88,7 @@ private:
   Standard_EXPORT bool IsStored() const;
 
   occ::handle<CDM_Document>    myToDocument;
-  CDM_DocumentPointer          myFromDocument;
+  CDM_Document*                myFromDocument;
   int                          myReferenceIdentifier;
   occ::handle<CDM_Application> myApplication;
   occ::handle<CDM_MetaData>    myMetaData;

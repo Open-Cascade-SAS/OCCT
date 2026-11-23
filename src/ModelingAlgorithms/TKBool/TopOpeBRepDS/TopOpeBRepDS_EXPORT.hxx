@@ -175,7 +175,7 @@ Standard_EXPORT int  FUN_ds_hasI2d(
    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       LI2d);
 Standard_EXPORT void FUN_ds_PointToVertex(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS);
-Standard_EXPORT bool FUN_ds_hasFEI(const TopOpeBRepDS_PDataStructure& pDS2d,
+Standard_EXPORT bool FUN_ds_hasFEI(TopOpeBRepDS_DataStructure* const& pDS2d,
                                    const TopoDS_Shape&                F,
                                    const int                          GI,
                                    const int                          ITRA);

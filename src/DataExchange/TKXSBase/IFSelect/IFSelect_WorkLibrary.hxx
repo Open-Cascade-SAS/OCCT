@@ -57,12 +57,13 @@ public:
                                        occ::handle<Interface_InterfaceModel>& model,
                                        const occ::handle<Interface_Protocol>& protocol) const = 0;
 
-  //! Interface to read a data from the specified stream.
-  //! @param model is the resulting Model, which has to be created by this method.
-  //!        In case of error, model must be returned Null
-  //! Return value is a status: 0 - OK, 1 - read failure, -1 - stream failure.
-  //!
-  //! Default implementation returns 1 (error).
+  //! Reads data from the specified stream.
+  //! @param[in] theName logical stream name
+  //! @param[in,out] theIStream source stream
+  //! @param[out] model resulting model; must be null in case of error
+  //! @param[in] protocol protocol used to read the model
+  //! @return 0 on success, 1 on read failure, or -1 on stream failure
+  //! The default implementation returns 1.
   Standard_EXPORT virtual int ReadStream(const char* const                      theName,
                                          std::istream&                          theIStream,
                                          occ::handle<Interface_InterfaceModel>& model,
@@ -134,6 +135,13 @@ public:
   Standard_EXPORT const char* DumpHelp(const int level) const;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_WorkLibrary, Standard_Transient)
+
+  //! Writes data to a stream.
+  //! @param[in,out] theContext writing context carrying the model, protocol, and modifiers
+  //! @param[in,out] theOStream destination stream
+  //! @return true on success; the default implementation returns false
+  Standard_EXPORT virtual bool WriteStream(IFSelect_ContextWrite& theContext,
+                                           Standard_OStream&      theOStream) const;
 
 protected:
   //! Required to initialise fields

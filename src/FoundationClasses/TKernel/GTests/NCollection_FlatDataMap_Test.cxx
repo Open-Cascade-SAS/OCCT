@@ -15,6 +15,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <set>
 
 //=================================================================================================
@@ -264,6 +265,24 @@ TEST_F(NCollection_FlatDataMapTest, IteratorAccess)
   EXPECT_TRUE(foundValues.find("One") != foundValues.end());
   EXPECT_TRUE(foundValues.find("Two") != foundValues.end());
   EXPECT_TRUE(foundValues.find("Three") != foundValues.end());
+}
+
+TEST_F(NCollection_FlatDataMapTest, STLIterators)
+{
+  NCollection_FlatDataMap<int, int> aMap;
+  aMap.Bind(1, 10);
+  aMap.Bind(2, 20);
+  aMap.Bind(3, 30);
+
+  for (int& aValue : aMap)
+  {
+    aValue /= 10;
+  }
+
+  const NCollection_FlatDataMap<int, int>& aConstMap = aMap;
+  const auto anIt = std::find(aConstMap.cbegin(), aConstMap.cend(), 2);
+  ASSERT_NE(aConstMap.cend(), anIt);
+  EXPECT_EQ(2, *anIt);
 }
 
 TEST_F(NCollection_FlatDataMapTest, LargeDataSet)
@@ -726,4 +745,26 @@ TEST_F(NCollection_FlatDataMapTest, ItemsIteratorEquality)
   auto anIt3 = aView.begin();
   ++anIt3;
   EXPECT_EQ(anIt2, anIt3);
+}
+
+TEST_F(NCollection_FlatDataMapTest, SlotStorageAccountingMatchesReserveAndRelease)
+{
+  using Map = NCollection_FlatDataMap<int, TCollection_AsciiString>;
+  for (const size_t aCount : {0u, 1u, 6u, 7u, 13u, 100u})
+  {
+    Map aMap;
+    EXPECT_EQ(aMap.AllocatedBytes(), 0u);
+    aMap.Reserve(aCount);
+    EXPECT_EQ(aMap.AllocatedBytes(), Map::ReservedBytes(aCount));
+    const size_t aReserved = aMap.AllocatedBytes();
+    for (size_t anItemIndex = 0; anItemIndex < aCount; ++anItemIndex)
+    {
+      aMap.Bind(int(anItemIndex), TCollection_AsciiString(int(anItemIndex)));
+    }
+    EXPECT_EQ(aMap.AllocatedBytes(), aReserved);
+    aMap.Clear();
+    EXPECT_EQ(aMap.AllocatedBytes(), aReserved);
+    aMap.Clear(true);
+    EXPECT_EQ(aMap.AllocatedBytes(), 0u);
+  }
 }

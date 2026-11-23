@@ -115,10 +115,6 @@ public:
   //! hide the Shape <S1> by the shape <S2>.
   Standard_EXPORT void Hide(const int I, const int J);
 
-  Standard_EXPORT void Debug(const bool deb);
-
-  Standard_EXPORT bool Debug() const;
-
   Standard_EXPORT occ::handle<HLRBRep_Data> DataStructure() const;
 
   DEFINE_STANDARD_RTTIEXT(HLRBRep_InternalAlgo, Standard_Transient)
@@ -133,7 +129,6 @@ private:
   HLRAlgo_Projector                                                               myProj;
   NCollection_Sequence<HLRBRep_ShapeBounds>                                       myShapes;
   NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher> myMapOfShapeTool;
-  bool                                                                            myDebug;
 };
 
 #endif // _HLRBRep_InternalAlgo_HeaderFile

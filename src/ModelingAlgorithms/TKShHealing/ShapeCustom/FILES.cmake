@@ -11,8 +11,6 @@ set(OCCT_ShapeCustom_FILES
   ShapeCustom_ConvertToBSpline.hxx
   ShapeCustom_ConvertToRevolution.cxx
   ShapeCustom_ConvertToRevolution.hxx
-  ShapeCustom_Curve.cxx
-  ShapeCustom_Curve.hxx
   ShapeCustom_Curve2d.cxx
   ShapeCustom_Curve2d.hxx
   ShapeCustom_DirectModification.cxx

@@ -32,17 +32,18 @@ class TopoDS_Vertex;
 class gp_Pnt;
 class Geom2d_Curve;
 
-//! Defines a modification of the geometry by a GTrsf
-//! from gp. All methods return True and transform the
-//! geometry.
+//! Defines a modification of geometry and polygonal representations by a gp_GTrsf.
 class BRepTools_GTrsfModification : public BRepTools_Modification
 {
 
 public:
   Standard_EXPORT BRepTools_GTrsfModification(const gp_GTrsf& T);
 
-  //! Gives an access on the GTrsf.
-  Standard_EXPORT gp_GTrsf& GTrsf();
+  //! Sets the general transformation.
+  Standard_EXPORT void SetGTrsf(const gp_GTrsf& theGTrsf);
+
+  //! Returns the general transformation.
+  const gp_GTrsf& GTrsf() const { return myGTrsf; }
 
   //! Returns true if the face <F> has been
   //! modified. In this case, <S> is the new geometric
@@ -53,8 +54,7 @@ public:
   //! reversed). <RevFace> has to be set to
   //! true if the orientation of the modified
   //! face changes in the shells which contain it.
-  //! Here, <RevFace> will return true if the
-  //! - gp_Trsf is negative.
+  //! Here, <RevFace> will return true if the gp_GTrsf is negative.
   Standard_EXPORT bool NewSurface(const TopoDS_Face&         F,
                                   occ::handle<Geom_Surface>& S,
                                   TopLoc_Location&           L,

@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <TopOpeBRep_PPntOn2S.hxx>
+class IntSurf_PntOn2S;
 class gp_Pnt2d;
 class gp_Pnt;
 
@@ -45,10 +45,10 @@ public:
 
   Standard_EXPORT const gp_Pnt& Value() const;
 
-  Standard_EXPORT TopOpeBRep_PPntOn2S PPntOn2SDummy() const;
+  Standard_EXPORT IntSurf_PntOn2S* PPntOn2SDummy() const;
 
 private:
-  TopOpeBRep_PPntOn2S myPP2S;
+  IntSurf_PntOn2S* myPP2S;
 };
 
 #endif // _TopOpeBRep_WPointInter_HeaderFile

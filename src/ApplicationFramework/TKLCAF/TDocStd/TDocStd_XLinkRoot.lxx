@@ -19,12 +19,12 @@
 // Version	Date		Purpose
 //		0.0	Sep 16 1997	Creation
 
-inline void TDocStd_XLinkRoot::First(const TDocStd_XLinkPtr& anXLinkPtr)
+inline void TDocStd_XLinkRoot::First(TDocStd_XLink* const& anXLinkPtr)
 {
   myFirst = anXLinkPtr;
 }
 
-inline TDocStd_XLinkPtr TDocStd_XLinkRoot::First() const
+inline TDocStd_XLink* TDocStd_XLinkRoot::First() const
 {
   return myFirst;
 }

@@ -1,5 +1,3 @@
-// Created on: 1998-06-03
-// Created by: data exchange team
 // Copyright (c) 1998-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
@@ -22,40 +20,39 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_ShapeMapHasher.hxx>
-#include <NCollection_IndexedMap.hxx>
-#include <Standard_Integer.hxx>
+#include <NCollection_OrderedMap.hxx>
+
+#include <cstddef>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;
 
-//! This class provides a tool for applying sewing algorithm from
-//! BRepBuilderAPI: it takes a shape, calls sewing for each shell,
-//! and then replaces sewed shells with use of ShapeBuild_ReShape
+//! Applies sewing independently to every shell of a shape.
+//! Sewed shells are substituted through ShapeBuild_ReShape, and rebuilt solids are oriented so
+//! that the infinite point lies outside.
 class ShapeUpgrade_ShellSewing
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates a ShellSewing, empty
+  //! Constructs an empty shell-sewing tool.
   Standard_EXPORT ShapeUpgrade_ShellSewing();
 
-  //! Builds a new shape from a former one, by calling Sewing from
-  //! BRepBuilderAPI. Rebuilt solids are oriented to be "not infinite"
-  //!
-  //! If <tol> is not given (i.e. value 0. by default), it is
-  //! computed as the mean tolerance recorded in <shape>
-  //!
-  //! If no shell has been sewed, this method returns the input
-  //! shape
-  Standard_EXPORT TopoDS_Shape ApplySewing(const TopoDS_Shape& shape, const double tol = 0.0);
+  //! Sews every shell in the shape and substitutes the sewing results into a rebuilt shape.
+  //! A non-positive tolerance is replaced by the mean tolerance of the input shape.
+  //! @param[in] theShape shape whose shells are to be sewed
+  //! @param[in] theTolerance sewing tolerance, or a non-positive value to compute it automatically
+  //! @return rebuilt shape, or a null shape when no shell can be sewed
+  Standard_EXPORT TopoDS_Shape ApplySewing(const TopoDS_Shape& theShape,
+                                           const double        theTolerance = 0.0);
 
 private:
-  Standard_EXPORT void Init(const TopoDS_Shape& shape);
+  Standard_EXPORT void Init(const TopoDS_Shape& theShape);
 
-  Standard_EXPORT int Prepare(const double tol);
+  Standard_EXPORT size_t Prepare(const double theTolerance);
 
-  Standard_EXPORT TopoDS_Shape Apply(const TopoDS_Shape& shape, const double tol);
+  Standard_EXPORT TopoDS_Shape Apply(const TopoDS_Shape& theShape, const double theTolerance);
 
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myShells;
+  NCollection_OrderedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myShells;
   occ::handle<ShapeBuild_ReShape>                               myReShape;
 };
 

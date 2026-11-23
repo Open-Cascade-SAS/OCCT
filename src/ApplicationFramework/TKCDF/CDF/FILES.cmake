@@ -12,14 +12,10 @@ set(OCCT_CDF_FILES
   CDF_FWOSDriver.hxx
   CDF_MetaDataDriver.cxx
   CDF_MetaDataDriver.hxx
-  CDF_MetaDataDriverFactory.cxx
-  CDF_MetaDataDriverFactory.hxx
   CDF_Store.cxx
   CDF_Store.hxx
   CDF_StoreList.cxx
   CDF_StoreList.hxx
   CDF_StoreSetNameStatus.hxx
-  CDF_SubComponentStatus.hxx
-  CDF_TryStoreStatus.hxx
   CDF_TypeOfActivation.hxx
 )

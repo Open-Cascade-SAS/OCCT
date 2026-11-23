@@ -146,8 +146,6 @@ set(OCCT_StepShape_FILES
   StepShape_PrecisionQualifier.hxx
   StepShape_QualifiedRepresentationItem.cxx
   StepShape_QualifiedRepresentationItem.hxx
-  StepShape_ReversibleTopologyItem.cxx
-  StepShape_ReversibleTopologyItem.hxx
   StepShape_RevolvedAreaSolid.cxx
   StepShape_RevolvedAreaSolid.hxx
   StepShape_RevolvedFaceSolid.cxx
@@ -184,8 +182,6 @@ set(OCCT_StepShape_FILES
   StepShape_Subedge.hxx
   StepShape_Subface.cxx
   StepShape_Subface.hxx
-  StepShape_SurfaceModel.cxx
-  StepShape_SurfaceModel.hxx
   StepShape_SweptAreaSolid.cxx
   StepShape_SweptAreaSolid.hxx
   StepShape_SweptFaceSolid.cxx

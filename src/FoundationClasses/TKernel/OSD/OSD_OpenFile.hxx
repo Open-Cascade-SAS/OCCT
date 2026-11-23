@@ -23,7 +23,7 @@
 
   #include <fstream>
   #include <TCollection_ExtendedString.hxx>
-  #include <NCollection_UtfString.hxx>
+  #include <TCollection_UtfString.hxx>
 
   #if defined(_WIN32) && defined(__GLIBCXX__)
     #include <ext/stdio_filebuf.h> // __gnu_cxx::stdio_filebuf
@@ -79,7 +79,7 @@ inline bool OSD_OpenStream(::std::filebuf&                   theFileBuf,
     #endif
   #else
   // conversion to UTF-8 for linux
-  NCollection_UtfString<char> aString(theName.ToExtString());
+  TCollection_UtfString<char> aString(theName.ToExtString());
   return theFileBuf.open(aString.ToCString(), theMode) != nullptr;
   #endif
 }
@@ -112,7 +112,7 @@ inline void OSD_OpenStream(T&                                theStream,
     #endif
   #else
   // conversion in UTF-8 for linux
-  NCollection_UtfString<char> aString(theName.ToExtString());
+  TCollection_UtfString<char> aString(theName.ToExtString());
   theStream.open(aString.ToCString(), theMode);
   #endif
 }

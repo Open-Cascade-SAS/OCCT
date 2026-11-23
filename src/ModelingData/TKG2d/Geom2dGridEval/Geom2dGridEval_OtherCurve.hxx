@@ -24,7 +24,7 @@
 
 //! @brief Fallback evaluator for unknown 2D curve types.
 //!
-//! Uses Adaptor2d_Curve2d::D0 for point-by-point evaluation.
+//! Uses Adaptor2d_Curve2d::EvalD0 for point-by-point evaluation.
 //! This is the slowest evaluator but handles any 2D curve type.
 //!
 //! @note The curve adaptor reference must remain valid during the lifetime

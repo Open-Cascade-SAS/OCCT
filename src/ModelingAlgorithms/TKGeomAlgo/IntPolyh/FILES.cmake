@@ -18,7 +18,6 @@ set(OCCT_IntPolyh_FILES
 
   IntPolyh_MaillageAffinage.cxx
   IntPolyh_MaillageAffinage.hxx
-  IntPolyh_PMaillageAffinage.hxx
   IntPolyh_Point.cxx
   IntPolyh_Point.hxx
   IntPolyh_SectionLine.cxx

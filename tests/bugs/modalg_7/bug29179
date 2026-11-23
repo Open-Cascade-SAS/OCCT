@@ -1,3 +1,6 @@
+puts "TODO OCC000000 ALL: Faulty shapes in variables"
+puts "TODO OCC000000 ALL: Error: bopargcheck has found some faulties"
+
 puts "========"
 puts "OCC29179"
 puts "========"

@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_CellFilter.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <gtest/gtest.h>
 #include <vector>
@@ -157,6 +158,27 @@ TEST(NCollection_CellFilterTest, AddInspect2D_Range)
   EXPECT_EQ(2u, anInspector.Found().size());
 }
 
+TEST(NCollection_CellFilterTest, ReversedRangesAreIgnored)
+{
+  NCollection_CellFilter<TestInspector2D> aFilter(1.0);
+  aFilter.Add(1, TestPoint2D(1.5, 1.5));
+
+  const TestPoint2D aMin(1.5, 1.5);
+  const TestPoint2D aMax(0.5, 0.5);
+
+  aFilter.Add(2, aMin, aMax);
+
+  TestInspector2D anInspector;
+  aFilter.Inspect(aMin, aMax, anInspector);
+  EXPECT_TRUE(anInspector.Found().empty());
+
+  aFilter.Remove(1, aMin, aMax);
+  TestInspector2D aPointInspector;
+  aFilter.Inspect(TestPoint2D(1.5, 1.5), aPointInspector);
+  ASSERT_EQ(1u, aPointInspector.Found().size());
+  EXPECT_EQ(1, aPointInspector.Found()[0]);
+}
+
 TEST(NCollection_CellFilterTest, Remove2D)
 {
   NCollection_CellFilter<TestInspector2D> aFilter(1.0);
@@ -239,6 +261,22 @@ TEST(NCollection_CellFilterTest, Reset)
   TestInspector2D anInspector;
   aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector);
   EXPECT_TRUE(anInspector.Found().empty());
+  for (const int aLower : {0, 1, -2})
+  {
+    SCOPED_TRACE(aLower);
+    NCollection_Array1<double> aCellSizes(aLower, aLower + TestInspector2D::Dimension - 1);
+    aCellSizes.Init(0.25);
+    aFilter.Reset(aCellSizes);
+    aFilter.Add(10, TestPoint2D(0.5, 0.5));
+    aFilter.Reset(2.0);
+    anInspector.Reset();
+    aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector);
+    EXPECT_TRUE(anInspector.Found().empty());
+    aFilter.Add(20, TestPoint2D(1.5, 1.5));
+    aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector);
+    ASSERT_EQ(1u, anInspector.Found().size());
+    EXPECT_EQ(20, anInspector.Found()[0]);
+  }
 }
 
 TEST(NCollection_CellFilterTest, InspectWithPurge)

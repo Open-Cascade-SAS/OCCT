@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <CDM_DocumentPointer.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
@@ -122,7 +121,7 @@ private:
 
 private:
   bool                       myIsRetrieved;
-  CDM_DocumentPointer        myDocument;
+  CDM_Document*              myDocument;
   TCollection_ExtendedString myFolder;
   TCollection_ExtendedString myName;
   TCollection_ExtendedString myVersion;

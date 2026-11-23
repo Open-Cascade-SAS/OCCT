@@ -20,6 +20,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRep_Builder.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -31,13 +32,34 @@
 #include <NCollection_Array1.hxx>
 #include <BRep_Tool.hxx>
 #include <TopLoc_Location.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Application.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
 #include <sstream>
+#include <string>
 #include <gtest/gtest.h>
+
+namespace
+{
+static int CountTriangles(const TopoDS_Shape& theShape)
+{
+  int aCount = 0;
+  for (TopExp_Explorer anExplorer(theShape, TopAbs_FACE); anExplorer.More(); anExplorer.Next())
+  {
+    TopLoc_Location                       aLocation;
+    const occ::handle<Poly_Triangulation> aTriangulation =
+      BRep_Tool::Triangulation(TopoDS::Face(anExplorer.Current()), aLocation);
+    if (!aTriangulation.IsNull())
+    {
+      aCount += aTriangulation->NbTriangles();
+    }
+  }
+  return aCount;
+}
+} // namespace
 
 class DESTL_ProviderTest : public ::testing::Test
 {
@@ -251,6 +273,114 @@ TEST_F(DESTL_ProviderTest, DE_WrapperIntegration)
   }
 }
 
+// de_wrapper/stl/A1: direct STL write followed by wrapper stream read.
+TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A1_ShapeRoundTrip)
+{
+  std::ostringstream           aOutput;
+  DE_Provider::WriteStreamList aWriteStreams;
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("source.stl", aOutput));
+  ASSERT_TRUE(myProvider->Write(aWriteStreams, myTriangularFace));
+
+  std::istringstream          aInput(aOutput.str());
+  DE_Provider::ReadStreamList aReadStreams;
+  aReadStreams.Append(DE_Provider::ReadStreamNode("source.stl", aInput));
+  DE_Wrapper aWrapper;
+  ASSERT_TRUE(aWrapper.Bind(new DESTL_ConfigurationNode()));
+
+  TopoDS_Shape aReadShape;
+  ASSERT_TRUE(aWrapper.Read(aReadStreams, aReadShape));
+  EXPECT_EQ(CountShapeElements(aReadShape, TopAbs_FACE), 1);
+  EXPECT_EQ(CountTriangles(aReadShape), 2);
+}
+
+// de_wrapper/stl/A2: wrapper document write followed by direct STL read.
+TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A2_DocumentWrite)
+{
+  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aDocument;
+  anApplication->NewDocument("BinXCAF", aDocument);
+  ASSERT_FALSE(aDocument.IsNull());
+  XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->AddShape(myTriangularFace);
+
+  occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
+  aNode->InternalParameters.WriteAscii       = true;
+  DE_Wrapper aWrapper;
+  ASSERT_TRUE(aWrapper.Bind(aNode));
+
+  std::ostringstream           aOutput;
+  DE_Provider::WriteStreamList aWriteStreams;
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("document.stl", aOutput));
+  ASSERT_TRUE(aWrapper.Write(aWriteStreams, aDocument));
+  ASSERT_FALSE(aOutput.str().empty());
+
+  std::istringstream          aInput(aOutput.str());
+  DE_Provider::ReadStreamList aReadStreams;
+  aReadStreams.Append(DE_Provider::ReadStreamNode("document.stl", aInput));
+  occ::handle<DESTL_Provider> aProvider = new DESTL_Provider(new DESTL_ConfigurationNode());
+  TopoDS_Shape                aReadShape;
+  ASSERT_TRUE(aProvider->Read(aReadStreams, aReadShape));
+  EXPECT_EQ(CountShapeElements(aReadShape, TopAbs_FACE), 1);
+}
+
+// de_wrapper/stl/A3: wrapper shape write followed by wrapper document read.
+TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A3_DocumentRead)
+{
+  occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
+  aNode->InternalParameters.WriteAscii       = true;
+  DE_Wrapper aWrapper;
+  ASSERT_TRUE(aWrapper.Bind(aNode));
+
+  std::ostringstream           aOutput;
+  DE_Provider::WriteStreamList aWriteStreams;
+  aWriteStreams.Append(DE_Provider::WriteStreamNode("shape.stl", aOutput));
+  ASSERT_TRUE(aWrapper.Write(aWriteStreams, myTriangularFace));
+
+  std::istringstream          aInput(aOutput.str());
+  DE_Provider::ReadStreamList aReadStreams;
+  aReadStreams.Append(DE_Provider::ReadStreamNode("shape.stl", aInput));
+  occ::handle<TDocStd_Application> anApplication = new TDocStd_Application();
+  occ::handle<TDocStd_Document>    aDocument;
+  anApplication->NewDocument("BinXCAF", aDocument);
+  ASSERT_TRUE(aWrapper.Read(aReadStreams, aDocument));
+
+  NCollection_Sequence<TDF_Label> aLabels;
+  XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->GetFreeShapes(aLabels);
+  ASSERT_EQ(aLabels.Length(), 1);
+  EXPECT_GT(CountShapeElements(
+              XCAFDoc_DocumentTool::ShapeTool(aDocument->Main())->GetShape(aLabels.First()),
+              TopAbs_FACE),
+            0);
+}
+
+// de_wrapper/stl/A4: wrapper shape stream read/write/read round trip.
+TEST_F(DESTL_ProviderTest, DEWrapper_Stl_A4_ShapeRoundTrip)
+{
+  std::ostringstream           aSourceOutput;
+  DE_Provider::WriteStreamList aSourceWriteStreams;
+  aSourceWriteStreams.Append(DE_Provider::WriteStreamNode("source.stl", aSourceOutput));
+  ASSERT_TRUE(myProvider->Write(aSourceWriteStreams, myTriangularFace));
+
+  DE_Wrapper aWrapper;
+  ASSERT_TRUE(aWrapper.Bind(new DESTL_ConfigurationNode()));
+  std::istringstream          aSourceInput(aSourceOutput.str());
+  DE_Provider::ReadStreamList aSourceReadStreams;
+  aSourceReadStreams.Append(DE_Provider::ReadStreamNode("source.stl", aSourceInput));
+  TopoDS_Shape aReadShape;
+  ASSERT_TRUE(aWrapper.Read(aSourceReadStreams, aReadShape));
+
+  std::ostringstream           aRoundTripOutput;
+  DE_Provider::WriteStreamList aRoundTripWriteStreams;
+  aRoundTripWriteStreams.Append(DE_Provider::WriteStreamNode("roundtrip.stl", aRoundTripOutput));
+  ASSERT_TRUE(aWrapper.Write(aRoundTripWriteStreams, aReadShape));
+
+  std::istringstream          aRoundTripInput(aRoundTripOutput.str());
+  DE_Provider::ReadStreamList aRoundTripReadStreams;
+  aRoundTripReadStreams.Append(DE_Provider::ReadStreamNode("roundtrip.stl", aRoundTripInput));
+  TopoDS_Shape aRoundTripShape;
+  ASSERT_TRUE(aWrapper.Read(aRoundTripReadStreams, aRoundTripShape));
+  EXPECT_GT(CountShapeElements(aRoundTripShape, TopAbs_FACE), 0);
+}
+
 // Test error conditions and edge cases with null document validation
 TEST_F(DESTL_ProviderTest, ErrorHandling)
 {
@@ -416,29 +546,33 @@ TEST_F(DESTL_ProviderTest, DE_WrapperFileExtensions)
   EXPECT_TRUE(aWrapper.Bind(aNode));
 
   // Test different STL extensions
-  std::vector<std::string> aExtensions = {"test.stl", "test.STL", "mesh.stl"};
+  NCollection_Array1<TCollection_AsciiString> aExtensions(1, 3);
+  aExtensions.SetValue(1, "test.stl");
+  aExtensions.SetValue(2, "test.STL");
+  aExtensions.SetValue(3, "mesh.stl");
 
-  for (const auto& anExt : aExtensions)
+  for (int anIndex = aExtensions.Lower(); anIndex <= aExtensions.Upper(); ++anIndex)
   {
-    std::ostringstream           anOStream;
-    DE_Provider::WriteStreamList aWriteStreams;
-    aWriteStreams.Append(DE_Provider::WriteStreamNode(anExt.c_str(), anOStream));
+    const TCollection_AsciiString& anExt = aExtensions.Value(anIndex);
+    std::ostringstream             anOStream;
+    DE_Provider::WriteStreamList   aWriteStreams;
+    aWriteStreams.Append(DE_Provider::WriteStreamNode(anExt, anOStream));
 
     EXPECT_TRUE(aWrapper.Write(aWriteStreams, myTriangularFace))
-      << "Failed to write with extension: " << anExt;
+      << "Failed to write with extension: " << anExt.ToCString();
 
     std::string aContent = anOStream.str();
-    EXPECT_FALSE(aContent.empty()) << "Empty content for extension: " << anExt;
+    EXPECT_FALSE(aContent.empty()) << "Empty content for extension: " << anExt.ToCString();
 
     // Test read back
     std::istringstream          anIStream(aContent);
     DE_Provider::ReadStreamList aReadStreams;
-    aReadStreams.Append(DE_Provider::ReadStreamNode(anExt.c_str(), anIStream));
+    aReadStreams.Append(DE_Provider::ReadStreamNode(anExt, anIStream));
 
     TopoDS_Shape aReadShape;
     EXPECT_TRUE(aWrapper.Read(aReadStreams, aReadShape))
-      << "Failed to read with extension: " << anExt;
-    EXPECT_FALSE(aReadShape.IsNull()) << "Null shape read with extension: " << anExt;
+      << "Failed to read with extension: " << anExt.ToCString();
+    EXPECT_FALSE(aReadShape.IsNull()) << "Null shape read with extension: " << anExt.ToCString();
   }
 }
 

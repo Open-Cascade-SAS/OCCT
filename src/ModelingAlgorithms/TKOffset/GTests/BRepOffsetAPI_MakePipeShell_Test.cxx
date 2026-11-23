@@ -18,9 +18,14 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
+#include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepFill_Pipe.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <limits>
 #include <GC_MakeArcOfCircle.hxx>
 #include <Geom_Plane.hxx>
 #include <GProp_GProps.hxx>
@@ -30,8 +35,11 @@
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Vec.hxx>
 #include <Law_Linear.hxx>
 #include <Precision.hxx>
+#include <Standard_Failure.hxx>
 #include <Standard_Handle.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -263,4 +271,117 @@ TEST(BRepOffsetAPI_MakePipeShellTest, Bug332_BentTubeWithScalingLaw)
     << "Expected 2 wires with circumference pi*50 = " << aExpLen2;
   EXPECT_GE(countMatching(aExpLen4), 1)
     << "No wire found with circumference pi*(dia2+2*wall) = " << aExpLen4;
+}
+
+// pipe/bugs/bug24909_2: the original DRAW test is an explicit TODO because
+// buildsweep throws "Not Done" for this closed-spine configuration.
+TEST(BRepOffsetAPI_MakePipeShellTest, Bug24909_2_ClosedCircularSpine)
+{
+  // The source DRAW test is explicitly incomplete: this configuration may fail with
+  // NotDone or be accepted by the sweep implementation depending on the platform.
+  const gp_Circ     aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 40.0);
+  const TopoDS_Wire aBaseWire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aCircle)).Wire();
+
+  gp_Trsf aRotate;
+  aRotate.SetRotation(gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0)), M_PI / 2.0);
+  const TopoDS_Wire aRotatedWire =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aBaseWire, aRotate, false).Shape());
+
+  gp_Trsf aTranslateUp;
+  aTranslateUp.SetTranslation(gp_Vec(0.0, 0.0, 75.0));
+  const TopoDS_Wire aSketch =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aRotatedWire, aTranslateUp, false).Shape());
+
+  gp_Trsf aTranslateDown;
+  aTranslateDown.SetTranslation(gp_Vec(0.0, 0.0, -75.0));
+  const TopoDS_Wire aSketch001 =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aRotatedWire, aTranslateDown, false).Shape());
+
+  gp_Trsf aTranslateSpine;
+  aTranslateSpine.SetTranslation(gp_Vec(50.0, 0.0, 0.0));
+  const TopoDS_Wire aSketch002 =
+    TopoDS::Wire(BRepBuilderAPI_Transform(aBaseWire, aTranslateSpine, false).Shape());
+
+  BRepOffsetAPI_MakePipeShell aSweep(aSketch002);
+  aSweep.SetMode(false); // setsweep -CF
+  aSweep.Add(aSketch001);
+  aSweep.Add(aSketch);
+
+  try
+  {
+    aSweep.Build();
+  }
+  catch (const Standard_Failure&)
+  {
+    GTEST_SKIP() << "TODO OCC24909: the historical closed-spine sweep still reports NotDone.";
+  }
+
+  if (!aSweep.IsDone())
+  {
+    GTEST_SKIP() << "TODO OCC24909: the closed-spine sweep did not complete on this platform.";
+  }
+
+  EXPECT_EQ(aSweep.GetStatus(), BRepBuilderAPI_PipeDone);
+  EXPECT_FALSE(aSweep.Shape().IsNull());
+}
+
+TEST(BRepOffsetAPI_MakePipeTest, ExistingConstructorsAndExplicitTolerance)
+{
+  const TopoDS_Wire aSpine =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(0, 0, 10)).Edge())
+      .Wire();
+  const TopoDS_Wire aWire =
+    BRepBuilderAPI_MakeWire(
+      BRepBuilderAPI_MakeEdge(gp_Circ(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0)).Edge())
+      .Wire();
+  const TopoDS_Face aProfile = BRepBuilderAPI_MakeFace(aWire).Face();
+  BRepFill_Pipe     aDefault(aSpine, aProfile);
+  BRepFill_Pipe     anExisting(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, false);
+  BRepFill_Pipe     anExplicit(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, false, 1.0e-6);
+  BRepOffsetAPI_MakePipe anExistingAPI(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false);
+  BRepOffsetAPI_MakePipe anExplicitAPI(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, 1.0e-6);
+  for (const TopoDS_Shape& aShape : {aDefault.Shape(),
+                                     anExisting.Shape(),
+                                     anExplicit.Shape(),
+                                     anExistingAPI.Shape(),
+                                     anExplicitAPI.Shape()})
+  {
+    ASSERT_FALSE(aShape.IsNull());
+    EXPECT_TRUE(BRepCheck_Analyzer(aShape).IsValid());
+    GProp_GProps aProps;
+    BRepGProp::VolumeProperties(aShape, aProps);
+    EXPECT_NEAR(aProps.Mass(), 10.0 * M_PI, 1.0e-6);
+  }
+}
+
+TEST(BRepOffsetAPI_MakePipeTest, RejectsInvalidTolerance)
+{
+  const TopoDS_Wire  aSpine;
+  const TopoDS_Shape aProfile;
+  for (const double aTolerance : {0.0,
+                                  -1.0,
+                                  std::numeric_limits<double>::quiet_NaN(),
+                                  std::numeric_limits<double>::infinity()})
+  {
+    EXPECT_THROW(
+      (BRepFill_Pipe(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, false, aTolerance)),
+      Standard_ConstructionError);
+    EXPECT_THROW(
+      (BRepOffsetAPI_MakePipe(aSpine, aProfile, GeomFill_IsCorrectedFrenet, false, aTolerance)),
+      Standard_ConstructionError);
+  }
+}
+
+TEST(BRepOffsetAPI_MakePipeShell_Test, NullAuxiliarySpinePreservesMode)
+{
+  const TopoDS_Wire aSpine =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(0, 0, 10)));
+  BRepOffsetAPI_MakePipeShell aPipe(aSpine);
+  EXPECT_THROW(aPipe.SetMode(TopoDS_Wire(), true), Standard_ConstructionError);
+  const TopoDS_Wire aProfile =
+    BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0)));
+  aPipe.Add(aProfile);
+  aPipe.Build();
+  ASSERT_TRUE(aPipe.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aPipe.Shape()).IsValid());
 }

@@ -10,8 +10,6 @@ set(OCCT_Resource_FILES
   Resource_FormatType.hxx
   Resource_GB2312.pxx
   Resource_GBK.pxx
-  Resource_LexicalCompare.cxx
-  Resource_LexicalCompare.hxx
   Resource_Manager.cxx
   Resource_Manager.hxx
   Resource_NoSuchResource.hxx

@@ -2,18 +2,26 @@
 set(OCCT_TKGeomAlgo_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKGeomAlgo_GTests_FILES
+  IntImpParGen_Test.cxx
+  IntPatch_SurfFunction_Test.cxx
+  IntPatch_Walking_Test.cxx
   Geom2dAPI_InterCurveCurve_Test.cxx
+  Geom2dInt_GInter_Test.cxx
+  Geom2dAPI_ExtremaCurveCurve_Test.cxx
   Geom2dAPI_Interpolate_Test.cxx
   Geom2dAPI_PointsToBSpline_Test.cxx
   GeomFill_BSplineCurves_Test.cxx
   GeomFill_NSections_Test.cxx
+  GeomFill_Profiler_Test.cxx
   Geom2dHatch_Elements_Test.cxx
   Geom2dHatch_Intersector_Test.cxx
   GeomAPI_PointsToBSplineSurface_Test.cxx
   GeomAPI_PointsToBSpline_Test.cxx
   Geom2dGcc_Circ2d2TanRad_Test.cxx
   Geom2dGcc_Circ2d3Tan_Test.cxx
+  GccAna_Circ2d3Tan_Test.cxx
   Geom2dGcc_Lin2d2Tan_Test.cxx
+  GeomFill_CoonsAlgPatch_Test.cxx
   GeomFill_CorrectedFrenet_Test.cxx
   GeomFill_Gordon_Test.cxx
   GeomFill_GuideTrihedronAC_Test.cxx
@@ -24,14 +32,26 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   IntCurveSurface_ThePolyhedronOfHInter_Test.cxx
   IntCurveSurface_ThePolygonOfHInter_Test.cxx
   Intf_Tool_Test.cxx
+  Intf_InterferencePolygon2d_Test.cxx
   IntPatch_Polyhedron_Test.cxx
   IntPatch_PolyhedronBVH_Test.cxx
   IntPolyh_Intersection_Test.cxx
   IntPolyh_Point_Test.cxx
   IntSurf_LineOn2S_Test.cxx
   IntSurf_Quadric_Test.cxx
+  GeomInt_LineTool_Test.cxx
+  GeomInt_IntSS_Test.cxx
   GeomAPI_IntSS_Test.cxx
+  GeomAPI_IntCS_Test.cxx
+  GeomAPI_ExtremaCurveSurface_Test.cxx
+  GeomAPI_ExtremaSurfaceSurface_Test.cxx
   GeomAPI_ProjectPointOnSurf_Test.cxx
   Geom2dConvert_BSplineCurveToBezierCurve_Test.cxx
   TopTrans_SurfaceTransition_Test.cxx
+  GeomFill_SectionGenerator_Test.cxx
+  LocalAnalysis_SurfaceContinuity_Test.cxx
+  ApproxInt_ImpPrmSvSurfaces_Test.cxx
+  Law_Linear_Test.cxx
+  Law_BSpFunc_Test.cxx
+  GeomAPI_Test.cxx
 )

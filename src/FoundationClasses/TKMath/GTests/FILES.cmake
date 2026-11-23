@@ -2,6 +2,7 @@
 set(OCCT_TKMath_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKMath_GTests_FILES
+  MathSys_Newton_Test.cxx
   Bnd_B2_Test.cxx
   Bnd_B3_Test.cxx
   Bnd_BoundSortBox_Test.cxx
@@ -18,9 +19,12 @@ set(OCCT_TKMath_GTests_FILES
   BVH_Box_Test.cxx
   BVH_BuildQueue_Test.cxx
   BVH_LinearBuilder_Test.cxx
+  BVH_DistanceField_Test.cxx
+  BVH_PairDistance_Test.cxx
   BVH_QuickSorter_Test.cxx
   BVH_RadixSorter_Test.cxx
   BVH_Ray_Test.cxx
+  BVH_ShapeSelect_Test.cxx
   BVH_SpatialMedianBuilder_Test.cxx
   BVH_SweepPlaneBuilder_Test.cxx
   BVH_Tools_Test.cxx
@@ -46,6 +50,7 @@ set(OCCT_TKMath_GTests_FILES
   gp_Dir_Test.cxx
   gp_Dir2d_Test.cxx
   gp_GTrsf_Test.cxx
+  gp_Hypr_Test.cxx
   gp_Lin_Test.cxx
   gp_Mat_Test.cxx
   gp_Pln_Test.cxx
@@ -95,6 +100,8 @@ set(OCCT_TKMath_GTests_FILES
   MathPoly_Test.cxx
   MathPoly_Comparison_Test.cxx
   MathPoly_Laguerre_Test.cxx
+  # Poly tests
+  Poly_ArrayOfNodes_Test.cxx
   # MathLin tests
   MathLin_Test.cxx
   MathLin_EigenSearch_Test.cxx
@@ -126,4 +133,7 @@ set(OCCT_TKMath_GTests_FILES
   PLib_Test.cxx
   PLib_JacobiPolynomial_Test.cxx
   PLib_HermitJacobi_Test.cxx
+  ElSLib_Test.cxx
+  MathUtils_Domain_Test.cxx
+  MathSys_LinearAlgebra_Test.cxx
 )

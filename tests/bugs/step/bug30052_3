@@ -6,5 +6,5 @@ stepread [locate_data_file TM711MF160X150R2DHA.STP] a *
 renamevar a_1 result
 
 checkshape result
-checkmaxtol result -ref 0.051677
+checkmaxtol result -ref 0.049595282348979974
 checkview -display result -2d -path ${imagedir}/${test_image}.png

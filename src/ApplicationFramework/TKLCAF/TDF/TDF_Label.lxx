@@ -42,7 +42,7 @@ inline TDF_Label::TDF_Label()
 {
 }
 
-inline TDF_Label::TDF_Label(const TDF_LabelNodePtr& aNode)
+inline TDF_Label::TDF_Label(TDF_LabelNode* const& aNode)
     : myLabelNode(aNode)
 {
 }

@@ -1,5 +1,4 @@
-// Created on: 2013-09-16
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -17,7 +16,7 @@
 
 #include <StdPrs_BRepFont.hxx>
 
-//! Alias for porting from old name.
-typedef StdPrs_BRepFont Font_BRepFont;
+//! Compatibility name for StdPrs_BRepFont.
+using Font_BRepFont Standard_DEPRECATED_STD("Use StdPrs_BRepFont") = StdPrs_BRepFont;
 
-#endif // _Font_BRepFont_H__
+#endif // Font_BRepFont_HeaderFile

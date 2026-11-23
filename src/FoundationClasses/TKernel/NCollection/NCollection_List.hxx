@@ -16,12 +16,14 @@
 #ifndef NCollection_List_HeaderFile
 #define NCollection_List_HeaderFile
 
-#include <NCollection_TListIterator.hxx>
-#include <NCollection_StlIterator.hxx>
+#include <NCollection_BaseList.hxx>
+#include <NCollection_TListNode.hxx>
 
 #include <Standard_NoSuchObject.hxx>
 
+#include <cstddef>
 #include <initializer_list>
+#include <type_traits>
 
 /**
  * Purpose:      Simple list to link  items together keeping the first
@@ -34,35 +36,81 @@ class NCollection_List : public NCollection_BaseList
 public:
   //! STL-compliant typedef for value type
   typedef TheItemType value_type;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using pointer         = TheItemType*;
+  using const_pointer   = const TheItemType*;
+  using reference       = TheItemType&;
+  using const_reference = const TheItemType&;
 
 public:
-  typedef NCollection_TListNode<TheItemType>     ListNode;
-  typedef NCollection_TListIterator<TheItemType> Iterator;
+  typedef NCollection_TListNode<TheItemType> ListNode;
+  using iterator       = NCollection_BaseList::BasicIterator<ListNode, TheItemType, false>;
+  using const_iterator = NCollection_BaseList::BasicIterator<ListNode, TheItemType, true>;
 
-  //! Shorthand for a regular iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, false> iterator;
+  //! Legacy OCCT cursor backed by the standard iterator state.
+  class Iterator : public iterator
+  {
+  public:
+    Iterator() noexcept = default;
 
-  //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheItemType, true>
-    const_iterator;
+    explicit Iterator(NCollection_List& theList) noexcept
+        : iterator(theList)
+    {
+    }
+
+    Iterator(const NCollection_List& theList) noexcept
+        : iterator(const_cast<NCollection_List&>(theList))
+    {
+    }
+
+    //! Legacy conversion preserving the historical mutable cursor API.
+    Iterator(const const_iterator& theOther) noexcept
+        : iterator()
+    {
+      this->myCurrent  = theOther.myCurrent;
+      this->myPrevious = theOther.myPrevious;
+    }
+
+    //! Legacy assignment preserving the historical mutable cursor API.
+    Iterator& operator=(const const_iterator& theOther) noexcept
+    {
+      this->myCurrent  = theOther.myCurrent;
+      this->myPrevious = theOther.myPrevious;
+      return *this;
+    }
+
+    void Init(NCollection_List& theList) noexcept { *this = Iterator(theList); }
+
+    void Init(const NCollection_List& theList) noexcept { *this = Iterator(theList); }
+
+    void Initialize(NCollection_List& theList) noexcept { Init(theList); }
+
+    void Initialize(const NCollection_List& theList) noexcept { Init(theList); }
+
+    bool IsEqual(const Iterator& theOther) const noexcept
+    {
+      return iterator::operator==(static_cast<const iterator&>(theOther));
+    }
+  };
 
   //! Returns an iterator pointing to the first element in the list.
-  iterator begin() noexcept { return Iterator(*this); }
+  iterator begin() noexcept { return iterator(*this); }
 
   //! Returns an iterator referring to the past-the-end element in the list.
-  iterator end() noexcept { return Iterator(); }
+  iterator end() noexcept { return iterator(); }
 
   //! Returns a const iterator pointing to the first element in the list.
-  const_iterator begin() const noexcept { return Iterator(*this); }
+  const_iterator begin() const noexcept { return const_iterator(*this); }
 
   //! Returns a const iterator referring to the past-the-end element in the list.
-  const_iterator end() const noexcept { return Iterator(); }
+  const_iterator end() const noexcept { return const_iterator(); }
 
   //! Returns a const iterator pointing to the first element in the list.
-  const_iterator cbegin() const noexcept { return Iterator(*this); }
+  const_iterator cbegin() const noexcept { return begin(); }
 
   //! Returns a const iterator referring to the past-the-end element in the list.
-  const_iterator cend() const noexcept { return Iterator(); }
+  const_iterator cend() const noexcept { return const_iterator(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
@@ -83,7 +131,7 @@ public:
   NCollection_List(const NCollection_List& theOther)
       : NCollection_BaseList(theOther.myAllocator)
   {
-    appendList(theOther.PFirst());
+    appendList(theOther.pFirst());
   }
 
   //! Move constructor
@@ -118,7 +166,7 @@ public:
     if (this != &theOther)
     {
       Clear();
-      appendList(theOther.PFirst());
+      appendList(theOther.pFirst());
     }
     return *this;
   }
@@ -145,7 +193,7 @@ public:
   //! Clear this list
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
   {
-    PClear(ListNode::delNode);
+    pClear(ListNode::delNode);
     if (!theAllocator.IsNull())
       this->myAllocator = theAllocator;
   }
@@ -154,44 +202,44 @@ public:
   const TheItemType& First() const
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::First");
-    return ((const ListNode*)PFirst())->Value();
+    return ((const ListNode*)pFirst())->Value();
   }
 
   //! First item (non-const)
   TheItemType& First()
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::First");
-    return ((ListNode*)PFirst())->ChangeValue();
+    return ((ListNode*)pFirst())->ChangeValue();
   }
 
   //! Last item
   const TheItemType& Last() const
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::Last");
-    return ((const ListNode*)PLast())->Value();
+    return ((const ListNode*)pLast())->Value();
   }
 
   //! Last item (non-const)
   TheItemType& Last()
   {
     Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_List::Last");
-    return ((ListNode*)PLast())->ChangeValue();
+    return ((ListNode*)pLast())->ChangeValue();
   }
 
   //! Append one item at the end
   TheItemType& Append(const TheItemType& theItem)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(theItem);
-    PAppend(pNew);
-    return ((ListNode*)PLast())->ChangeValue();
+    pAppend(pNew);
+    return ((ListNode*)pLast())->ChangeValue();
   }
 
   //! Append one item at the end
   TheItemType& Append(TheItemType&& theItem)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
-    PAppend(pNew);
-    return ((ListNode*)PLast())->ChangeValue();
+    pAppend(pNew);
+    return ((ListNode*)pLast())->ChangeValue();
   }
 
   //! Append one item at the end and output iterator
@@ -199,7 +247,7 @@ public:
   void Append(const TheItemType& theItem, Iterator& theIter)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(theItem);
-    PAppend(pNew, theIter);
+    pAppend(pNew, theIter);
   }
 
   //! Append one item at the end and output iterator
@@ -207,7 +255,7 @@ public:
   void Append(TheItemType&& theItem, Iterator& theIter)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
-    PAppend(pNew, theIter);
+    pAppend(pNew, theIter);
   }
 
   //! Append another list at the end.
@@ -220,7 +268,7 @@ public:
     {
       // Then we take the list and glue it to our end -
       // deallocation will bring no problem
-      PAppend(theOther);
+      pAppend(theOther);
     }
     else
     {
@@ -234,16 +282,16 @@ public:
   TheItemType& Prepend(const TheItemType& theItem)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(theItem);
-    PPrepend(pNew);
-    return ((ListNode*)PFirst())->ChangeValue();
+    pPrepend(pNew);
+    return ((ListNode*)pFirst())->ChangeValue();
   }
 
   //! Prepend one item at the beginning
   TheItemType& Prepend(TheItemType&& theItem)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
-    PPrepend(pNew);
-    return ((ListNode*)PFirst())->ChangeValue();
+    pPrepend(pNew);
+    return ((ListNode*)pFirst())->ChangeValue();
   }
 
   //! Prepend another list at the beginning
@@ -255,23 +303,23 @@ public:
     {
       // Then we take the list and glue it to our head -
       // deallocation will bring no problem
-      PPrepend(theOther);
+      pPrepend(theOther);
     }
     else
     {
       // No - this list has different memory scope
       Iterator it(*this);
-      prependList(theOther.PFirst(), it);
+      prependList(theOther.pFirst(), it);
       theOther.Clear();
     }
   }
 
   //! RemoveFirst item
-  void RemoveFirst() { PRemoveFirst(ListNode::delNode); }
+  void RemoveFirst() { pRemoveFirst(ListNode::delNode); }
 
   //! Remove item pointed by iterator theIter;
   //! theIter is then set to the next item
-  void Remove(Iterator& theIter) { PRemove(theIter, ListNode::delNode); }
+  void Remove(Iterator& theIter) { pRemove(theIter, ListNode::delNode); }
 
   //! Remove the first occurrence of the object.
   template <typename TheValueType> // instantiate this method on first call only for types defining
@@ -293,7 +341,7 @@ public:
   TheItemType& InsertBefore(const TheItemType& theItem, Iterator& theIter)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(theItem);
-    PInsertBefore(pNew, theIter);
+    pInsertBefore(pNew, theIter);
     return pNew->ChangeValue();
   }
 
@@ -301,7 +349,7 @@ public:
   TheItemType& InsertBefore(TheItemType&& theItem, Iterator& theIter)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
-    PInsertBefore(pNew, theIter);
+    pInsertBefore(pNew, theIter);
     return pNew->ChangeValue();
   }
 
@@ -315,7 +363,7 @@ public:
     {
       // Then we take the list and glue it to our head -
       // deallocation will bring no problem
-      PInsertBefore(theOther, theIter);
+      pInsertBefore(theOther, theIter);
     }
     else
     {
@@ -329,7 +377,7 @@ public:
   TheItemType& InsertAfter(const TheItemType& theItem, Iterator& theIter)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(theItem);
-    PInsertAfter(pNew, theIter);
+    pInsertAfter(pNew, theIter);
     return pNew->ChangeValue();
   }
 
@@ -337,7 +385,7 @@ public:
   TheItemType& InsertAfter(TheItemType&& theItem, Iterator& theIter)
   {
     ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
-    PInsertAfter(pNew, theIter);
+    pInsertAfter(pNew, theIter);
     return pNew->ChangeValue();
   }
 
@@ -353,7 +401,7 @@ public:
     {
       // Then we take the list and glue it to our head -
       // deallocation will bring no problem
-      PInsertAfter(theOther, theIter);
+      pInsertAfter(theOther, theIter);
     }
     else
     {
@@ -361,7 +409,7 @@ public:
       Iterator anIter;
       anIter.myPrevious = theIter.myCurrent;
       anIter.myCurrent  = theIter.myCurrent->Next();
-      prependList(theOther.PFirst(), anIter);
+      prependList(theOther.pFirst(), anIter);
       theOther.Clear();
     }
   }
@@ -374,8 +422,8 @@ public:
   {
     ListNode* pNew =
       new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
-    PAppend(pNew);
-    return ((ListNode*)PLast())->ChangeValue();
+    pAppend(pNew);
+    return ((ListNode*)pLast())->ChangeValue();
   }
 
   //! Emplace one item at the beginning, constructing it in-place
@@ -386,8 +434,8 @@ public:
   {
     ListNode* pNew =
       new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
-    PPrepend(pNew);
-    return ((ListNode*)PFirst())->ChangeValue();
+    pPrepend(pNew);
+    return ((ListNode*)pFirst())->ChangeValue();
   }
 
   //! Emplace one item before the iterator position, constructing it in-place
@@ -399,7 +447,7 @@ public:
   {
     ListNode* pNew =
       new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
-    PInsertBefore(pNew, theIter);
+    pInsertBefore(pNew, theIter);
     return pNew->ChangeValue();
   }
 
@@ -412,18 +460,18 @@ public:
   {
     ListNode* pNew =
       new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
-    PInsertAfter(pNew, theIter);
+    pInsertAfter(pNew, theIter);
     return pNew->ChangeValue();
   }
 
   //! Reverse the list
-  void Reverse() noexcept { PReverse(); }
+  void Reverse() noexcept { pReverse(); }
 
   //! Exchange the content of two lists without re-allocations.
   //! Swaps all internal state including allocators, ensuring correct
   //! deallocation. Existing iterators remain valid but will point to
   //! the other list's elements.
-  void Exchange(NCollection_List& theOther) noexcept { PExchange(theOther); }
+  void Exchange(NCollection_List& theOther) noexcept { pExchange(theOther); }
 
   //! Return true if object is stored in the list.
   template <typename TheValueType> // instantiate this method on first call only for types defining
@@ -441,7 +489,7 @@ public:
   }
 
   //! Destructor - clears the List
-  ~NCollection_List() override { Clear(); }
+  ~NCollection_List() { Clear(); }
 
 private:
   // ----------- PRIVATE METHODS -----------
@@ -453,7 +501,7 @@ private:
     {
       NCollection_ListNode* pNew =
         new (this->myAllocator) ListNode(((const ListNode*)(pCur))->Value());
-      PAppend(pNew);
+      pAppend(pNew);
       pCur = pCur->Next();
     }
   }
@@ -465,7 +513,7 @@ private:
     {
       NCollection_ListNode* pNew =
         new (this->myAllocator) ListNode(((const ListNode*)(pCur))->Value());
-      PInsertBefore(pNew, theIter);
+      pInsertBefore(pNew, theIter);
       pCur = pCur->Next();
     }
   }

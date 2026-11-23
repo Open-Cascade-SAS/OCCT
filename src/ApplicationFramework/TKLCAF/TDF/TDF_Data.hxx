@@ -19,7 +19,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_HAllocator.hxx>
@@ -29,6 +28,7 @@
 #include <NCollection_DataMap.hxx>
 class TDF_Delta;
 class TDF_Label;
+class TDF_LabelNode;
 
 //! This class is used to manipulate a complete independent,
 //! self sufficient data structure and its services:
@@ -195,7 +195,7 @@ private:
                                         const occ::handle<TDF_Delta>& aDelta,
                                         const bool                    withDelta);
 
-  TDF_LabelNodePtr                                        myRoot;
+  TDF_LabelNode*                                          myRoot;
   int                                                     myTransaction;
   int                                                     myNbTouchedAtt;
   bool                                                    myNotUndoMode;

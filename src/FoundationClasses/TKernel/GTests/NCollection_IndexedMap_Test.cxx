@@ -268,7 +268,7 @@ TEST(NCollection_IndexedMapTest, Clear)
   EXPECT_EQ(aMap.Extent(), 3);
 
   // Clear the map
-  aMap.Clear();
+  aMap.Clear(true);
 
   EXPECT_TRUE(aMap.IsEmpty());
   EXPECT_EQ(aMap.Extent(), 0);

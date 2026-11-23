@@ -20,6 +20,10 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DefineAlloc.hxx>
 
+#include <cstddef>
+#include <iterator>
+#include <type_traits>
+
 // **************************************** Class SeqNode ********************
 
 class NCollection_SeqNode
@@ -93,10 +97,222 @@ public:
         myPrevious = myCurrent->Previous();
     }
 
+    NCollection_SeqNode* CurrentNode() const noexcept { return myCurrent; }
+
+    NCollection_SeqNode* PreviousNode() const noexcept { return myPrevious; }
+
   protected:
     NCollection_SeqNode* myCurrent;  //!< Pointer to the current node
     NCollection_SeqNode* myPrevious; //!< Pointer to the previous node
     friend class NCollection_BaseSequence;
+    template <class, class, bool>
+    friend class BasicIterator;
+  };
+
+protected:
+  //! STL-style iterator state shared by concrete sequence containers.
+  template <class TheNode, class TheItemType, bool IsConstant>
+  class BasicIterator : public Iterator
+  {
+  public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type        = TheItemType;
+    using difference_type   = std::ptrdiff_t;
+    using pointer   = typename std::conditional<IsConstant, const TheItemType*, TheItemType*>::type;
+    using reference = typename std::conditional<IsConstant, const TheItemType&, TheItemType&>::type;
+    using node_pointer =
+      typename std::conditional<IsConstant, const NCollection_SeqNode*, NCollection_SeqNode*>::type;
+
+    BasicIterator() noexcept = default;
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    explicit BasicIterator(NCollection_BaseSequence& theSequence,
+                           const bool                isStart = true) noexcept
+        : Iterator(theSequence, isStart)
+    {
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    explicit BasicIterator(const NCollection_BaseSequence& theSequence,
+                           const bool                      isStart = true) noexcept
+        : Iterator(theSequence, isStart)
+    {
+    }
+
+    BasicIterator(const BasicIterator&) noexcept            = default;
+    BasicIterator& operator=(const BasicIterator&) noexcept = default;
+
+    //! Compatibility conversion for code that historically used mutable sequence iterators
+    //! with a const sequence. Prefer const_iterator in new code.
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    BasicIterator(const BasicIterator<TheNode, TheItemType, true>& theOther) noexcept
+        : Iterator()
+    {
+      theOther.CopyTo(*this);
+    }
+
+    //! Compatibility assignment for the historical mutable iterator API.
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    BasicIterator& operator=(const BasicIterator<TheNode, TheItemType, true>& theOther) noexcept
+    {
+      theOther.CopyTo(*this);
+      return *this;
+    }
+
+    explicit BasicIterator(const Iterator& theOther) noexcept
+        : Iterator(theOther)
+    {
+    }
+
+    void CopyTo(Iterator& theOther) const noexcept
+    {
+      theOther.myCurrent  = this->myCurrent;
+      theOther.myPrevious = this->myPrevious;
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    BasicIterator(const BasicIterator<TheNode, TheItemType, false>& theOther) noexcept
+        : Iterator()
+    {
+      this->myCurrent  = theOther.MutableNode();
+      this->myPrevious = theOther.MutablePreviousNode();
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    BasicIterator& operator=(const BasicIterator<TheNode, TheItemType, false>& theOther) noexcept
+    {
+      this->myCurrent  = theOther.MutableNode();
+      this->myPrevious = theOther.MutablePreviousNode();
+      return *this;
+    }
+
+    reference operator*() const noexcept
+    {
+      if constexpr (IsConstant)
+      {
+        return static_cast<const TheNode*>(this->myCurrent)->Value();
+      }
+      else
+      {
+        return static_cast<TheNode*>(this->myCurrent)->ChangeValue();
+      }
+    }
+
+    pointer operator->() const noexcept { return &operator*(); }
+
+    const TheItemType& Value() const noexcept
+    {
+      return static_cast<const TheNode*>(this->myCurrent)->Value();
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    TheItemType& ChangeValue() const noexcept
+    {
+      return static_cast<TheNode*>(this->myCurrent)->ChangeValue();
+    }
+
+    bool More() const noexcept { return this->myCurrent != nullptr; }
+
+    BasicIterator& operator++() noexcept
+    {
+      if (this->myCurrent != nullptr)
+      {
+        this->myPrevious = this->myCurrent;
+        this->myCurrent  = this->myCurrent->Next();
+      }
+      return *this;
+    }
+
+    BasicIterator operator++(int) noexcept
+    {
+      BasicIterator anOld(*this);
+      ++(*this);
+      return anOld;
+    }
+
+    BasicIterator& operator--() noexcept
+    {
+      Iterator::Previous();
+      return *this;
+    }
+
+    BasicIterator operator--(int) noexcept
+    {
+      BasicIterator anOld(*this);
+      --(*this);
+      return anOld;
+    }
+
+    void Next() noexcept { ++(*this); }
+
+    void Previous() noexcept { Iterator::Previous(); }
+
+    node_pointer Node() const noexcept { return static_cast<node_pointer>(this->myCurrent); }
+
+    const NCollection_SeqNode* CurrentNode() const noexcept { return this->myCurrent; }
+
+    const NCollection_SeqNode* PreviousNode() const noexcept { return this->myPrevious; }
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    NCollection_SeqNode* MutableNode() const noexcept
+    {
+      return this->myCurrent;
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    NCollection_SeqNode* MutablePreviousNode() const noexcept
+    {
+      return this->myPrevious;
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    void Init(NCollection_BaseSequence& theSequence, const bool isStart = true) noexcept
+    {
+      Iterator::Init(theSequence, isStart);
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<!B, int>::type = 0>
+    void Initialize(NCollection_BaseSequence& theSequence, const bool isStart = true) noexcept
+    {
+      Init(theSequence, isStart);
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    void Init(const NCollection_BaseSequence& theSequence, const bool isStart = true) noexcept
+    {
+      Iterator::Init(theSequence, isStart);
+    }
+
+    template <bool B = IsConstant, typename std::enable_if<B, int>::type = 0>
+    void Initialize(const NCollection_BaseSequence& theSequence, const bool isStart = true) noexcept
+    {
+      Init(theSequence, isStart);
+    }
+
+    template <bool theOtherIsConstant>
+    bool IsEqual(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
+    {
+      return this->myCurrent == theOther.CurrentNode();
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator==(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
+    {
+      return this->myCurrent == theOther.CurrentNode();
+    }
+
+    template <bool theOtherIsConstant>
+    bool operator!=(
+      const BasicIterator<TheNode, TheItemType, theOtherIsConstant>& theOther) const noexcept
+    {
+      return !(*this == theOther);
+    }
+
+  private:
+    template <class, class, bool>
+    friend class BasicIterator;
   };
 
 public:
@@ -130,21 +346,83 @@ protected:
   //! Destructor
   virtual ~NCollection_BaseSequence() = default;
 
-  Standard_EXPORT void ClearSeq(NCollection_DelSeqNode fDel);
-  Standard_EXPORT void PAppend(NCollection_SeqNode*);
-  Standard_EXPORT void PAppend(NCollection_BaseSequence& S);
-  Standard_EXPORT void PPrepend(NCollection_SeqNode*);
-  Standard_EXPORT void PPrepend(NCollection_BaseSequence& S);
-  Standard_EXPORT void PInsertAfter(Iterator& thePosition, NCollection_SeqNode*);
-  Standard_EXPORT void PInsertAfter(const size_t Index, NCollection_SeqNode*);
-  Standard_EXPORT void PInsertAfter(const size_t Index, NCollection_BaseSequence& S);
-  Standard_EXPORT void PSplit(const size_t Index, NCollection_BaseSequence& Sub);
-  Standard_EXPORT void RemoveSeq(Iterator& thePosition, NCollection_DelSeqNode fDel);
-  Standard_EXPORT void RemoveSeq(const size_t Index, NCollection_DelSeqNode fDel);
-  Standard_EXPORT void RemoveSeq(const size_t From, const size_t To, NCollection_DelSeqNode fDel);
-  Standard_EXPORT void PReverse() noexcept;
-  Standard_EXPORT void PExchange(const size_t I, const size_t J);
-  Standard_EXPORT NCollection_SeqNode* Find(const size_t) const noexcept;
+  Standard_EXPORT void clearSeq(NCollection_DelSeqNode fDel);
+
+  void ClearSeq(NCollection_DelSeqNode fDel) { clearSeq(fDel); }
+
+  Standard_EXPORT void pAppend(NCollection_SeqNode*);
+
+  void PAppend(NCollection_SeqNode* theNode) { pAppend(theNode); }
+
+  Standard_EXPORT void pAppend(NCollection_BaseSequence& S);
+
+  void PAppend(NCollection_BaseSequence& theSequence) { pAppend(theSequence); }
+
+  Standard_EXPORT void pPrepend(NCollection_SeqNode*);
+
+  void PPrepend(NCollection_SeqNode* theNode) { pPrepend(theNode); }
+
+  Standard_EXPORT void pPrepend(NCollection_BaseSequence& S);
+
+  void PPrepend(NCollection_BaseSequence& theSequence) { pPrepend(theSequence); }
+
+  Standard_EXPORT void pInsertAfter(Iterator& thePosition, NCollection_SeqNode*);
+
+  void PInsertAfter(Iterator& thePosition, NCollection_SeqNode* theNode)
+  {
+    pInsertAfter(thePosition, theNode);
+  }
+
+  Standard_EXPORT void pInsertAfter(const size_t Index, NCollection_SeqNode*);
+
+  void PInsertAfter(const size_t theIndex, NCollection_SeqNode* theNode)
+  {
+    pInsertAfter(theIndex, theNode);
+  }
+
+  Standard_EXPORT void pInsertAfter(const size_t Index, NCollection_BaseSequence& S);
+
+  void PInsertAfter(const size_t theIndex, NCollection_BaseSequence& theSequence)
+  {
+    pInsertAfter(theIndex, theSequence);
+  }
+
+  Standard_EXPORT void pSplit(const size_t Index, NCollection_BaseSequence& Sub);
+
+  void PSplit(const size_t theIndex, NCollection_BaseSequence& theSubSequence)
+  {
+    pSplit(theIndex, theSubSequence);
+  }
+
+  Standard_EXPORT void removeSeq(Iterator& thePosition, NCollection_DelSeqNode fDel);
+
+  void RemoveSeq(Iterator& thePosition, NCollection_DelSeqNode fDel)
+  {
+    removeSeq(thePosition, fDel);
+  }
+
+  Standard_EXPORT void removeSeq(const size_t Index, NCollection_DelSeqNode fDel);
+
+  void RemoveSeq(const size_t theIndex, NCollection_DelSeqNode fDel) { removeSeq(theIndex, fDel); }
+
+  Standard_EXPORT void removeSeq(const size_t From, const size_t To, NCollection_DelSeqNode fDel);
+
+  void RemoveSeq(const size_t theFrom, const size_t theTo, NCollection_DelSeqNode fDel)
+  {
+    removeSeq(theFrom, theTo, fDel);
+  }
+
+  Standard_EXPORT void pReverse() noexcept;
+
+  void PReverse() noexcept { pReverse(); }
+
+  Standard_EXPORT void pExchange(const size_t I, const size_t J);
+
+  void PExchange(const size_t theFirst, const size_t theSecond) { pExchange(theFirst, theSecond); }
+
+  Standard_EXPORT NCollection_SeqNode* find(const size_t) const noexcept;
+
+  NCollection_SeqNode* Find(const size_t theIndex) const noexcept { return find(theIndex); }
 
 protected:
   // Fields PROTECTED
@@ -161,7 +439,7 @@ private:
   //
   NCollection_BaseSequence(const NCollection_BaseSequence& Other) = delete;
 
-  void Nullify() noexcept
+  void nullify() noexcept
   {
     myFirstItem = myLastItem = myCurrentItem = nullptr;
     myCurrentIndex = mySize = 0;

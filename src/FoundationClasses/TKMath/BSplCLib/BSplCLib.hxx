@@ -436,15 +436,16 @@ public:
                                          const int Order,
                                          double&   Poles);
 
-  //! Performs the Bohm Algorithm at parameter <U>. This
-  //! algorithm computes the value and all the derivatives
-  //! up to order N (N <= Degree).
+  //! Evaluates the value and derivatives at U from the local B-spline basis.
+  //! @param[in] U parameter on the local knot span
+  //! @param[in] Degree polynomial degree
+  //! @param[in] N highest derivative order; orders above Degree are ignored
+  //! @param[in] Knots first element of the local flat knot array of 2 * Degree values
+  //! @param[in] Dimension number of coordinates per pole
+  //! @param[in,out] Poles first element of (Degree + 1) * Dimension coordinates;
+  //! replaced by the point followed by derivatives up to min(N, Degree)
+  //! @throws Standard_DomainError if the local knot span cannot be evaluated
   //!
-  //! <Poles> is the original array of poles.
-  //!
-  //! The result in <Poles> is the value and the
-  //! derivatives. Poles[0] is the value, Poles[Degree]
-  //! is the last derivative.
   Standard_EXPORT static void Bohm(const double U,
                                    const int    Degree,
                                    const int    N,

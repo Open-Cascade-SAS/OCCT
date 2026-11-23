@@ -63,8 +63,6 @@ set(OCCT_StepGeom_FILES
   StepGeom_Curve.hxx
   StepGeom_CurveBoundedSurface.cxx
   StepGeom_CurveBoundedSurface.hxx
-  StepGeom_CurveOnSurface.cxx
-  StepGeom_CurveOnSurface.hxx
   StepGeom_CurveReplica.cxx
   StepGeom_CurveReplica.hxx
   StepGeom_CylindricalSurface.cxx
@@ -190,6 +188,4 @@ set(OCCT_StepGeom_FILES
   StepGeom_UniformSurfaceAndRationalBSplineSurface.hxx
   StepGeom_Vector.cxx
   StepGeom_Vector.hxx
-  StepGeom_VectorOrDirection.cxx
-  StepGeom_VectorOrDirection.hxx
 )

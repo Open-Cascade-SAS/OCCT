@@ -19,9 +19,11 @@
 #include <MathUtils_Core.hxx>
 #include <MathUtils_LineSearch.hxx>
 #include <MathUtils_Deriv.hxx>
+#include <MathOpt_Utils.hxx>
 
-#include <NCollection_DynamicArray.hxx>
+#include <NCollection_LinearVector.hxx>
 
+#include <algorithm>
 #include <cmath>
 
 namespace MathOpt
@@ -29,30 +31,25 @@ namespace MathOpt
 using namespace MathUtils;
 
 //! BFGS (Broyden-Fletcher-Goldfarb-Shanno) quasi-Newton method.
-//! One of the most effective algorithms for smooth unconstrained optimization.
 //!
 //! Algorithm:
 //! 1. Start with initial Hessian approximation H (usually identity)
 //! 2. Compute search direction p = -H * gradient
-//! 3. Perform line search to find step size alpha satisfying Wolfe conditions
+//! 3. Perform an Armijo backtracking line search to find a decreasing step
 //! 4. Update x = x + alpha * p
 //! 5. Update Hessian approximation using BFGS formula
 //! 6. Repeat until convergence
 //!
-//! The BFGS update maintains positive definiteness of H if started with
-//! a positive definite matrix and using proper line search.
-//!
-//! Advantages:
-//! - Superlinear convergence near minimum
-//! - Self-correcting Hessian approximation
-//! - No need to compute actual Hessian
+//! The inverse Hessian update is applied only when the measured curvature
+//! s^T*y is positive; otherwise the current approximation is retained.
 //!
 //! @tparam Function type with:
 //!   - Value(const math_Vector&, double&) for function value
 //!   - Gradient(const math_Vector&, math_Vector&) for gradient
 //! @param theFunc function object with value and gradient
 //! @param theStartingPoint initial guess
-//! @param theConfig solver configuration
+//! @param theConfig solver configuration; FTolerance bounds the gradient norm, while
+//! RelativeTolerance scales the initial gradient norm when a step reaches XTolerance
 //! @return result containing minimum location and value
 template <typename Function>
 VectorResult BFGS(Function&          theFunc,
@@ -61,38 +58,43 @@ VectorResult BFGS(Function&          theFunc,
 {
   VectorResult aResult;
 
-  const int aLower = theStartingPoint.Lower();
-  const int aUpper = theStartingPoint.Upper();
-  const int aN     = aUpper - aLower + 1;
+  const size_t aN = theStartingPoint.Size();
+
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsFinite(theStartingPoint))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
   // Current point and function value
-  math_Vector aX(aLower, aUpper);
-  aX = theStartingPoint;
-
-  double aFx = 0.0;
-  if (!theFunc.Value(aX, aFx))
+  math_Vector aX(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aResult.Status = Status::NumericalError;
+    aX.ChangeAt(i) = theStartingPoint.At(i);
+  }
+
+  double       aFx          = 0.0;
+  const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
+  if (aValueStatus != Status::OK)
+  {
+    aResult.Status = aValueStatus;
     return aResult;
   }
 
   // Gradient at current point
-  math_Vector aGrad(aLower, aUpper);
-  if (!theFunc.Gradient(aX, aGrad))
+  math_Vector  aGrad(aN);
+  const Status aGradientStatus = Utils::GradientStatus(theFunc, aX, aGrad);
+  if (aGradientStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aGradientStatus;
     return aResult;
   }
 
   // Check if already at minimum (gradient near zero)
-  double aGradNorm = 0.0;
-  for (int i = aLower; i <= aUpper; ++i)
-  {
-    aGradNorm += MathUtils::Sqr(aGrad(i));
-  }
-  aGradNorm = std::sqrt(aGradNorm);
+  double       aGradNorm         = Utils::Norm(aGrad);
+  const double anInitialGradNorm = aGradNorm;
 
-  if (aGradNorm < theConfig.FTolerance)
+  if (aGradNorm <= theConfig.FTolerance)
   {
     aResult.Status   = Status::OK;
     aResult.Solution = aX;
@@ -102,51 +104,51 @@ VectorResult BFGS(Function&          theFunc,
   }
 
   // Initialize inverse Hessian approximation to identity
-  math_Matrix aH(1, aN, 1, aN, 0.0);
-  for (int i = 1; i <= aN; ++i)
+  math_Matrix aH(aN, aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aH(i, i) = 1.0;
+    aH.ChangeAt(i, i) = 1.0;
   }
 
   // Working vectors
-  math_Vector aDir(aLower, aUpper);     // Search direction
-  math_Vector aXNew(aLower, aUpper);    // New point
-  math_Vector aGradNew(aLower, aUpper); // New gradient
-  math_Vector aS(1, aN);                // Step: x_new - x
-  math_Vector aY(1, aN);                // Gradient difference: grad_new - grad
+  math_Vector aDir(aN);     // Search direction
+  math_Vector aXNew(aN);    // New point
+  math_Vector aGradNew(aN); // New gradient
+  math_Vector aS(aN);       // Step: x_new - x
+  math_Vector aY(aN);       // Gradient difference: grad_new - grad
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
     // Compute search direction: p = -H * grad
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
       double aSum = 0.0;
-      for (int j = 1; j <= aN; ++j)
+      for (size_t j = 0; j < aN; ++j)
       {
-        aSum += aH(i, j) * aGrad(aLower + j - 1);
+        aSum += aH.At(i, j) * aGrad.At(j);
       }
-      aDir(aLower + i - 1) = -aSum;
+      aDir.ChangeAt(i) = -aSum;
     }
 
-    // Line search with Wolfe conditions
     MathUtils::LineSearchResult aLineResult =
-      MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+      Utils::Backtrack(theFunc, aX, aDir, aGrad, aFx, 1.0, theConfig.StepMin);
 
-    if (!aLineResult.IsValid || aLineResult.Alpha < MathUtils::THE_EPSILON)
+    if (!aLineResult.IsValid)
     {
+      const MathUtils::LineSearchResult anInitialLineResult = aLineResult;
       // Line search failed, try steepest descent direction
-      for (int i = aLower; i <= aUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        aDir(i) = -aGrad(i);
+        aDir.ChangeAt(i) = -aGrad.At(i);
       }
-      aLineResult = MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+      aLineResult = Utils::Backtrack(theFunc, aX, aDir, aGrad, aFx, 1.0, theConfig.StepMin);
 
       if (!aLineResult.IsValid)
       {
         // Both BFGS and steepest descent failed
-        aResult.Status   = Status::NotConverged;
+        aResult.Status   = Utils::LineSearchFailureStatus(anInitialLineResult, aLineResult);
         aResult.Solution = aX;
         aResult.Value    = aFx;
         aResult.Gradient = aGrad;
@@ -154,45 +156,42 @@ VectorResult BFGS(Function&          theFunc,
       }
 
       // Reset Hessian to identity after steepest descent step
-      for (int i = 1; i <= aN; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        for (int j = 1; j <= aN; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
-          aH(i, j) = (i == j) ? 1.0 : 0.0;
+          aH.ChangeAt(i, j) = (i == j) ? 1.0 : 0.0;
         }
       }
     }
 
     // Compute new point
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aXNew(i) = aX(i) + aLineResult.Alpha * aDir(i);
+      aXNew.ChangeAt(i) = aX.At(i) + aLineResult.Alpha * aDir.At(i);
     }
 
     // Compute s = x_new - x
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aS(i) = aXNew(aLower + i - 1) - aX(aLower + i - 1);
+      aS.ChangeAt(i) = aXNew.At(i) - aX.At(i);
     }
 
     // Evaluate gradient at new point
-    if (!theFunc.Gradient(aXNew, aGradNew))
+    const Status aNewGradientStatus = Utils::GradientStatus(theFunc, aXNew, aGradNew);
+    if (aNewGradientStatus != Status::OK)
     {
-      aResult.Status   = Status::NumericalError;
+      aResult.Status   = aNewGradientStatus;
       aResult.Solution = aX;
       aResult.Value    = aFx;
+      aResult.Gradient = aGrad;
       return aResult;
     }
 
     // Check gradient convergence
-    aGradNorm = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
-    {
-      aGradNorm += MathUtils::Sqr(aGradNew(i));
-    }
-    aGradNorm = std::sqrt(aGradNorm);
+    aGradNorm = Utils::Norm(aGradNew);
 
-    if (aGradNorm < theConfig.FTolerance)
+    if (aGradNorm <= theConfig.FTolerance)
     {
       aResult.Status   = Status::OK;
       aResult.Solution = aXNew;
@@ -203,13 +202,15 @@ VectorResult BFGS(Function&          theFunc,
 
     // Check X convergence
     double aMaxDiff = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew(i) - aX(i)));
+      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew.At(i) - aX.At(i)));
     }
-    if (aMaxDiff < theConfig.XTolerance)
+    if (aMaxDiff <= theConfig.XTolerance)
     {
-      aResult.Status   = Status::OK;
+      const double aGradientTolerance =
+        theConfig.FTolerance + theConfig.RelativeTolerance * anInitialGradNorm;
+      aResult.Status   = aGradNorm <= aGradientTolerance ? Status::OK : Status::NotConverged;
       aResult.Solution = aXNew;
       aResult.Value    = aLineResult.FNew;
       aResult.Gradient = aGradNew;
@@ -217,16 +218,16 @@ VectorResult BFGS(Function&          theFunc,
     }
 
     // Compute y = grad_new - grad
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aY(i) = aGradNew(aLower + i - 1) - aGrad(aLower + i - 1);
+      aY.ChangeAt(i) = aGradNew.At(i) - aGrad.At(i);
     }
 
     // Compute s^T * y (curvature condition)
     double aSY = 0.0;
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aSY += aS(i) * aY(i);
+      aSY += aS.At(i) * aY.At(i);
     }
 
     // Skip update if curvature condition is not satisfied
@@ -237,32 +238,32 @@ VectorResult BFGS(Function&          theFunc,
       const double aRho = 1.0 / aSY;
 
       // Compute H * y
-      math_Vector aHy(1, aN, 0.0);
-      for (int i = 1; i <= aN; ++i)
+      math_Vector aHy(aN, 0.0);
+      for (size_t i = 0; i < aN; ++i)
       {
-        for (int j = 1; j <= aN; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
-          aHy(i) += aH(i, j) * aY(j);
+          aHy.ChangeAt(i) += aH.At(i, j) * aY.At(j);
         }
       }
 
       // Compute y^T * H * y
       double aYHy = 0.0;
-      for (int i = 1; i <= aN; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        aYHy += aY(i) * aHy(i);
+        aYHy += aY.At(i) * aHy.At(i);
       }
 
       // Update H using the formula:
       // H_new = H - (Hy*s^T + s*y^T*H)/(s^T*y) + (1 + y^T*H*y/(s^T*y)) * s*s^T/(s^T*y)
       const double aFactor = 1.0 + aRho * aYHy;
 
-      for (int i = 1; i <= aN; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        for (int j = 1; j <= aN; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
-          aH(i, j) =
-            aH(i, j) - aRho * (aHy(i) * aS(j) + aS(i) * aHy(j)) + aFactor * aRho * aS(i) * aS(j);
+          aH.ChangeAt(i, j) = aH.At(i, j) - aRho * (aHy.At(i) * aS.At(j) + aS.At(i) * aHy.At(j))
+                              + aFactor * aRho * aS.At(i) * aS.At(j);
         }
       }
     }
@@ -297,6 +298,13 @@ VectorResult BFGSNumerical(Function&          theFunc,
                            double             theGradStep = 1.0e-8,
                            const Config&      theConfig   = Config())
 {
+  if (!std::isfinite(theGradStep) || theGradStep <= 0.0)
+  {
+    VectorResult aResult;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
   // Wrapper that adds numerical gradient
   class FuncWithGradient
   {
@@ -337,62 +345,66 @@ VectorResult BFGSNumerical(Function&          theFunc,
 template <typename Function>
 VectorResult LBFGS(Function&          theFunc,
                    const math_Vector& theStartingPoint,
-                   int                theMemorySize = 10,
+                   size_t             theMemorySize = 10,
                    const Config&      theConfig     = Config())
 {
   VectorResult aResult;
 
-  const int aLower = theStartingPoint.Lower();
-  const int aUpper = theStartingPoint.Upper();
-  const int aN     = aUpper - aLower + 1;
-  const int aM     = theMemorySize;
+  const size_t aN = theStartingPoint.Size();
+  const size_t aM = theMemorySize;
 
-  math_Vector aX(aLower, aUpper);
-  aX = theStartingPoint;
-
-  double aFx = 0.0;
-  if (!theFunc.Value(aX, aFx))
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsFinite(theStartingPoint) || aM == 0)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  math_Vector aGrad(aLower, aUpper);
-  if (!theFunc.Gradient(aX, aGrad))
+  math_Vector aX(aN);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aResult.Status = Status::NumericalError;
+    aX.ChangeAt(i) = theStartingPoint.At(i);
+  }
+
+  double       aFx          = 0.0;
+  const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
+  if (aValueStatus != Status::OK)
+  {
+    aResult.Status = aValueStatus;
     return aResult;
   }
 
-  // Storage for {s, y} pairs (circular buffer)
-  NCollection_DynamicArray<math_Vector> aSVec;
-  NCollection_DynamicArray<math_Vector> aYVec;
-  math_Vector                           aRhoVec(0, aM - 1, 0.0);
-  for (int i = 0; i < aM; ++i)
+  math_Vector  aGrad(aN);
+  const Status aGradientStatus = Utils::GradientStatus(theFunc, aX, aGrad);
+  if (aGradientStatus != Status::OK)
   {
-    aSVec.Append(math_Vector(1, aN));
-    aYVec.Append(math_Vector(1, aN));
+    aResult.Status = aGradientStatus;
+    return aResult;
   }
-  int aHead  = 0; // Index of oldest entry
-  int aCount = 0; // Number of stored pairs
 
-  math_Vector aDir(aLower, aUpper);
-  math_Vector aXNew(aLower, aUpper);
-  math_Vector aGradNew(aLower, aUpper);
-  math_Vector aQ(1, aN);
-  math_Vector aAlphaVec(0, aM - 1);
+  const size_t aHistorySize = aM * aN;
+  if (aHistorySize / aN != aM)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  NCollection_LinearVector<double> aSData(aHistorySize, 0.0);
+  NCollection_LinearVector<double> aYData(aHistorySize, 0.0);
+  NCollection_LinearVector<double> aRhoVec(aM, 0.0);
+  size_t                           aHead  = 0; // Index of oldest entry
+  size_t                           aCount = 0; // Number of stored pairs
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  math_Vector                      aDir(aN);
+  math_Vector                      aXNew(aN);
+  math_Vector                      aGradNew(aN);
+  math_Vector                      aQ(aN);
+  NCollection_LinearVector<double> aAlphaVec(aM, 0.0);
+
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
     // Check gradient convergence
-    double aGradNorm = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
-    {
-      aGradNorm += MathUtils::Sqr(aGrad(i));
-    }
-    if (std::sqrt(aGradNorm) < theConfig.FTolerance)
+    if (Utils::Norm(aGrad) < theConfig.FTolerance)
     {
       aResult.Status   = Status::OK;
       aResult.Solution = aX;
@@ -403,19 +415,21 @@ VectorResult LBFGS(Function&          theFunc,
 
     // L-BFGS two-loop recursion to compute search direction
     // q = gradient
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aQ(i) = aGrad(aLower + i - 1);
+      aQ.ChangeAt(i) = aGrad.At(i);
     }
 
     // First loop (backward)
-    for (int k = aCount - 1; k >= 0; --k)
+    for (size_t k = aCount; k-- > 0;)
     {
-      const int aIdx  = (aHead + k) % aM;
-      aAlphaVec(aIdx) = aRhoVec(aIdx) * MathUtils::DotProduct(aSVec.Value(aIdx), aQ);
-      for (int i = 1; i <= aN; ++i)
+      const size_t aIdx = (aHead + k) % aM;
+      math_Vector  aS(&aSData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      math_Vector  aY(&aYData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      aAlphaVec.ChangeValue(aIdx) = aRhoVec.Value(aIdx) * MathUtils::DotProduct(aS, aQ);
+      for (size_t i = 0; i < aN; ++i)
       {
-        aQ(i) -= aAlphaVec(aIdx) * aYVec.Value(aIdx)(i);
+        aQ.ChangeAt(i) -= aAlphaVec.Value(aIdx) * aY.At(i);
       }
     }
 
@@ -423,56 +437,61 @@ VectorResult LBFGS(Function&          theFunc,
     double aGamma = 1.0;
     if (aCount > 0)
     {
-      const int aLastIdx = (aHead + aCount - 1) % aM;
-      double    aYY      = MathUtils::DotProduct(aYVec.Value(aLastIdx), aYVec.Value(aLastIdx));
+      const size_t aLastIdx = (aHead + aCount - 1) % aM;
+      math_Vector  aY(&aYData.ChangeValue(aLastIdx * aN), 0, static_cast<int>(aN) - 1);
+      const double aYY = MathUtils::DotProduct(aY, aY);
       if (aYY > MathUtils::THE_ZERO_TOL)
       {
-        aGamma = 1.0 / (aRhoVec(aLastIdx) * aYY);
+        aGamma = 1.0 / (aRhoVec.Value(aLastIdx) * aYY);
       }
     }
 
     // r = H0 * q = gamma * q
-    math_Vector aR(1, aN);
-    for (int i = 1; i <= aN; ++i)
+    math_Vector aR(aN);
+    for (size_t i = 0; i < aN; ++i)
     {
-      aR(i) = aGamma * aQ(i);
+      aR.ChangeAt(i) = aGamma * aQ.At(i);
     }
 
     // Second loop (forward)
-    for (int k = 0; k < aCount; ++k)
+    for (size_t k = 0; k < aCount; ++k)
     {
-      const int    aIdx  = (aHead + k) % aM;
-      const double aBeta = aRhoVec(aIdx) * MathUtils::DotProduct(aYVec.Value(aIdx), aR);
-      for (int i = 1; i <= aN; ++i)
+      const size_t aIdx = (aHead + k) % aM;
+      math_Vector  aS(&aSData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      math_Vector  aY(&aYData.ChangeValue(aIdx * aN), 0, static_cast<int>(aN) - 1);
+      const double aBeta = aRhoVec.Value(aIdx) * MathUtils::DotProduct(aY, aR);
+      for (size_t i = 0; i < aN; ++i)
       {
-        aR(i) += (aAlphaVec(aIdx) - aBeta) * aSVec.Value(aIdx)(i);
+        aR.ChangeAt(i) += (aAlphaVec.Value(aIdx) - aBeta) * aS.At(i);
       }
     }
 
     // Search direction: p = -r
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aDir(i) = -aR(i - aLower + 1);
+      aDir.ChangeAt(i) = -aR.At(i);
     }
 
     // Line search
     MathUtils::LineSearchResult aLineResult =
-      MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+      Utils::Backtrack(theFunc, aX, aDir, aGrad, aFx, 1.0, theConfig.StepMin);
 
     if (!aLineResult.IsValid)
     {
+      const MathUtils::LineSearchResult anInitialLineResult = aLineResult;
       // Fall back to steepest descent
-      for (int i = aLower; i <= aUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        aDir(i) = -aGrad(i);
+        aDir.ChangeAt(i) = -aGrad.At(i);
       }
-      aLineResult = MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, 1.0, 1.0e-4, 0.5, 50);
+      aLineResult = Utils::Backtrack(theFunc, aX, aDir, aGrad, aFx, 1.0, theConfig.StepMin);
 
       if (!aLineResult.IsValid)
       {
-        aResult.Status   = Status::NotConverged;
+        aResult.Status   = Utils::LineSearchFailureStatus(anInitialLineResult, aLineResult);
         aResult.Solution = aX;
         aResult.Value    = aFx;
+        aResult.Gradient = aGrad;
         return aResult;
       }
       // Reset history after steepest descent
@@ -480,24 +499,30 @@ VectorResult LBFGS(Function&          theFunc,
     }
 
     // Compute new point
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aXNew(i) = aX(i) + aLineResult.Alpha * aDir(i);
+      aXNew.ChangeAt(i) = aX.At(i) + aLineResult.Alpha * aDir.At(i);
     }
 
     // Check X convergence
     double aMaxDiff = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew(i) - aX(i)));
+      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew.At(i) - aX.At(i)));
     }
     if (aMaxDiff < theConfig.XTolerance)
     {
-      if (!theFunc.Gradient(aXNew, aGradNew))
+      const Status aNewGradientStatus = Utils::GradientStatus(theFunc, aXNew, aGradNew);
+      if (aNewGradientStatus != Status::OK)
       {
-        aGradNew = aGrad;
+        aResult.Status   = aNewGradientStatus;
+        aResult.Solution = aX;
+        aResult.Value    = aFx;
+        aResult.Gradient = aGrad;
+        return aResult;
       }
-      aResult.Status   = Status::OK;
+      aResult.Status =
+        Utils::Norm(aGradNew) < theConfig.FTolerance ? Status::OK : Status::NotConverged;
       aResult.Solution = aXNew;
       aResult.Value    = aLineResult.FNew;
       aResult.Gradient = aGradNew;
@@ -505,26 +530,30 @@ VectorResult LBFGS(Function&          theFunc,
     }
 
     // Evaluate gradient at new point
-    if (!theFunc.Gradient(aXNew, aGradNew))
+    const Status aNewGradientStatus = Utils::GradientStatus(theFunc, aXNew, aGradNew);
+    if (aNewGradientStatus != Status::OK)
     {
-      aResult.Status   = Status::NumericalError;
+      aResult.Status   = aNewGradientStatus;
       aResult.Solution = aX;
       aResult.Value    = aFx;
+      aResult.Gradient = aGrad;
       return aResult;
     }
 
     // Store new {s, y} pair
-    const int aNewIdx = (aHead + aCount) % aM;
-    for (int i = 1; i <= aN; ++i)
+    const size_t aNewIdx = (aHead + aCount) % aM;
+    math_Vector  aS(&aSData.ChangeValue(aNewIdx * aN), 0, static_cast<int>(aN) - 1);
+    math_Vector  aY(&aYData.ChangeValue(aNewIdx * aN), 0, static_cast<int>(aN) - 1);
+    for (size_t i = 0; i < aN; ++i)
     {
-      aSVec.ChangeValue(aNewIdx)(i) = aXNew(aLower + i - 1) - aX(aLower + i - 1);
-      aYVec.ChangeValue(aNewIdx)(i) = aGradNew(aLower + i - 1) - aGrad(aLower + i - 1);
+      aS.ChangeAt(i) = aXNew.At(i) - aX.At(i);
+      aY.ChangeAt(i) = aGradNew.At(i) - aGrad.At(i);
     }
 
-    double aSY = MathUtils::DotProduct(aSVec.Value(aNewIdx), aYVec.Value(aNewIdx));
+    double aSY = MathUtils::DotProduct(aS, aY);
     if (aSY > MathUtils::THE_ZERO_TOL)
     {
-      aRhoVec(aNewIdx) = 1.0 / aSY;
+      aRhoVec.ChangeValue(aNewIdx) = 1.0 / aSY;
       if (aCount < aM)
       {
         ++aCount;
@@ -571,12 +600,11 @@ VectorResult BFGSBounded(Function&          theFunc,
 {
   VectorResult aResult;
 
-  const int aLower = theStartingPoint.Lower();
-  const int aUpper = theStartingPoint.Upper();
-  const int aN     = aUpper - aLower + 1;
+  const size_t aN = theStartingPoint.Size();
 
   // Check dimensions
-  if (theLowerBounds.Length() != aN || theUpperBounds.Length() != aN)
+  if (!Utils::IsValidConfig(theConfig) || !Utils::IsFinite(theStartingPoint)
+      || theLowerBounds.Size() != aN || !Utils::IsValidBounds(theLowerBounds, theUpperBounds))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
@@ -584,68 +612,81 @@ VectorResult BFGSBounded(Function&          theFunc,
 
   // Lambda to clamp a point to bounds
   auto ClampToBounds = [&](math_Vector& theX) {
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      const int aBndIdx = theLowerBounds.Lower() + (i - aLower);
-      if (theX(i) < theLowerBounds(aBndIdx))
+      if (theX.At(i) < theLowerBounds.At(i))
       {
-        theX(i) = theLowerBounds(aBndIdx);
+        theX.ChangeAt(i) = theLowerBounds.At(i);
       }
-      if (theX(i) > theUpperBounds(aBndIdx))
+      if (theX.At(i) > theUpperBounds.At(i))
       {
-        theX(i) = theUpperBounds(aBndIdx);
+        theX.ChangeAt(i) = theUpperBounds.At(i);
       }
     }
   };
 
   // Lambda to project gradient (zero components at active bounds)
   auto ProjectGradient = [&](const math_Vector& theX, math_Vector& theGrad) {
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      const int    aBndIdx = theLowerBounds.Lower() + (i - aLower);
-      const double aTol    = MathUtils::THE_EPSILON * std::max(1.0, std::abs(theX(i)));
+      const double aTol = MathUtils::THE_EPSILON * std::max(1.0, std::abs(theX.At(i)));
 
       // At lower bound and gradient points downward -> zero gradient
-      if (theX(i) - theLowerBounds(aBndIdx) < aTol && theGrad(i) > 0.0)
+      if (theX.At(i) - theLowerBounds.At(i) < aTol && theGrad.At(i) > 0.0)
       {
-        theGrad(i) = 0.0;
+        theGrad.ChangeAt(i) = 0.0;
       }
       // At upper bound and gradient points upward -> zero gradient
-      if (theUpperBounds(aBndIdx) - theX(i) < aTol && theGrad(i) < 0.0)
+      if (theUpperBounds.At(i) - theX.At(i) < aTol && theGrad.At(i) < 0.0)
       {
-        theGrad(i) = 0.0;
+        theGrad.ChangeAt(i) = 0.0;
       }
     }
   };
 
+  // Remove Hessian-coupled direction components that point out of an active bound.
+  auto ProjectDirection = [&](const math_Vector& theX, math_Vector& theDir) {
+    for (size_t i = 0; i < aN; ++i)
+    {
+      const double aTol = MathUtils::THE_EPSILON * std::max(1.0, std::abs(theX.At(i)));
+      if ((theX.At(i) - theLowerBounds.At(i) < aTol && theDir.At(i) < 0.0)
+          || (theUpperBounds.At(i) - theX.At(i) < aTol && theDir.At(i) > 0.0))
+      {
+        theDir.ChangeAt(i) = 0.0;
+      }
+    }
+  };
+
+  Utils::BoundedFunction<Function> aBoundedFunc(theFunc, theLowerBounds, theUpperBounds);
+
   // Current point and function value
-  math_Vector aX(aLower, aUpper);
-  aX = theStartingPoint;
+  math_Vector aX(aN);
+  for (size_t i = 0; i < aN; ++i)
+  {
+    aX.ChangeAt(i) = theStartingPoint.At(i);
+  }
   ClampToBounds(aX);
 
-  double aFx = 0.0;
-  if (!theFunc.Value(aX, aFx))
+  double       aFx          = 0.0;
+  const Status aValueStatus = Utils::ValueStatus(theFunc, aX, aFx);
+  if (aValueStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aValueStatus;
     return aResult;
   }
 
   // Gradient at current point
-  math_Vector aGrad(aLower, aUpper);
-  if (!theFunc.Gradient(aX, aGrad))
+  math_Vector  aGrad(aN);
+  const Status aGradientStatus = Utils::GradientStatus(theFunc, aX, aGrad);
+  if (aGradientStatus != Status::OK)
   {
-    aResult.Status = Status::NumericalError;
+    aResult.Status = aGradientStatus;
     return aResult;
   }
   ProjectGradient(aX, aGrad);
 
   // Check if already at minimum
-  double aGradNorm = 0.0;
-  for (int i = aLower; i <= aUpper; ++i)
-  {
-    aGradNorm += MathUtils::Sqr(aGrad(i));
-  }
-  aGradNorm = std::sqrt(aGradNorm);
+  double aGradNorm = Utils::Norm(aGrad);
 
   if (aGradNorm < theConfig.FTolerance)
   {
@@ -657,86 +698,90 @@ VectorResult BFGSBounded(Function&          theFunc,
   }
 
   // Initialize inverse Hessian approximation to identity
-  math_Matrix aH(1, aN, 1, aN, 0.0);
-  for (int i = 1; i <= aN; ++i)
+  math_Matrix aH(aN, aN, 0.0);
+  for (size_t i = 0; i < aN; ++i)
   {
-    aH(i, i) = 1.0;
+    aH.ChangeAt(i, i) = 1.0;
   }
 
   // Working vectors
-  math_Vector aDir(aLower, aUpper);
-  math_Vector aXNew(aLower, aUpper);
-  math_Vector aGradNew(aLower, aUpper);
-  math_Vector aS(1, aN);
-  math_Vector aY(1, aN);
+  math_Vector aDir(aN);
+  math_Vector aXNew(aN);
+  math_Vector aGradNew(aN);
+  math_Vector aS(aN);
+  math_Vector aY(aN);
 
-  for (int anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
+  for (uint32_t anIter = 0; anIter < theConfig.MaxIterations; ++anIter)
   {
     aResult.NbIterations = anIter + 1;
 
     // Compute search direction: p = -H * grad
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
       double aSum = 0.0;
-      for (int j = 1; j <= aN; ++j)
+      for (size_t j = 0; j < aN; ++j)
       {
-        aSum += aH(i, j) * aGrad(aLower + j - 1);
+        aSum += aH.At(i, j) * aGrad.At(j);
       }
-      aDir(aLower + i - 1) = -aSum;
+      aDir.ChangeAt(i) = -aSum;
     }
+    ProjectDirection(aX, aDir);
 
     // Line search with bounds-aware step
     double aAlphaMax = 1.0;
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      const int aBndIdx = theLowerBounds.Lower() + (i - aLower);
-      if (aDir(i) < -MathUtils::THE_EPSILON)
+      if (aDir.At(i) < -MathUtils::THE_EPSILON)
       {
         // Moving toward lower bound
-        double aMaxStep = (theLowerBounds(aBndIdx) - aX(i)) / aDir(i);
-        aAlphaMax       = std::min(aAlphaMax, aMaxStep);
+        const double aMaxStep = (theLowerBounds.At(i) - aX.At(i)) / aDir.At(i);
+        aAlphaMax             = std::min(aAlphaMax, aMaxStep);
       }
-      else if (aDir(i) > MathUtils::THE_EPSILON)
+      else if (aDir.At(i) > MathUtils::THE_EPSILON)
       {
         // Moving toward upper bound
-        double aMaxStep = (theUpperBounds(aBndIdx) - aX(i)) / aDir(i);
-        aAlphaMax       = std::min(aAlphaMax, aMaxStep);
+        const double aMaxStep = (theUpperBounds.At(i) - aX.At(i)) / aDir.At(i);
+        aAlphaMax             = std::min(aAlphaMax, aMaxStep);
       }
     }
-    aAlphaMax = std::max(aAlphaMax, MathUtils::THE_EPSILON);
-
-    MathUtils::LineSearchResult aLineResult =
-      MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, aAlphaMax, 1.0e-4, 0.5, 50);
-
-    if (!aLineResult.IsValid || aLineResult.Alpha < MathUtils::THE_EPSILON)
+    MathUtils::LineSearchResult aLineResult;
+    if (aAlphaMax > 0.0)
     {
+      aLineResult =
+        Utils::Backtrack(aBoundedFunc, aX, aDir, aGrad, aFx, aAlphaMax, theConfig.StepMin);
+    }
+
+    if (!aLineResult.IsValid)
+    {
+      const MathUtils::LineSearchResult anInitialLineResult = aLineResult;
       // Fall back to projected steepest descent
-      for (int i = aLower; i <= aUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        aDir(i) = -aGrad(i);
+        aDir.ChangeAt(i) = -aGrad.At(i);
       }
+      ProjectDirection(aX, aDir);
       // Recompute alpha max for steepest descent
       aAlphaMax = 1.0;
-      for (int i = aLower; i <= aUpper; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        const int aBndIdx = theLowerBounds.Lower() + (i - aLower);
-        if (aDir(i) < -MathUtils::THE_EPSILON)
+        if (aDir.At(i) < -MathUtils::THE_EPSILON)
         {
-          aAlphaMax = std::min(aAlphaMax, (theLowerBounds(aBndIdx) - aX(i)) / aDir(i));
+          aAlphaMax = std::min(aAlphaMax, (theLowerBounds.At(i) - aX.At(i)) / aDir.At(i));
         }
-        else if (aDir(i) > MathUtils::THE_EPSILON)
+        else if (aDir.At(i) > MathUtils::THE_EPSILON)
         {
-          aAlphaMax = std::min(aAlphaMax, (theUpperBounds(aBndIdx) - aX(i)) / aDir(i));
+          aAlphaMax = std::min(aAlphaMax, (theUpperBounds.At(i) - aX.At(i)) / aDir.At(i));
         }
       }
-      aAlphaMax = std::max(aAlphaMax, MathUtils::THE_EPSILON);
-
-      aLineResult =
-        MathUtils::ArmijoBacktrack(theFunc, aX, aDir, aGrad, aFx, aAlphaMax, 1.0e-4, 0.5, 50);
+      if (aAlphaMax > 0.0)
+      {
+        aLineResult =
+          Utils::Backtrack(aBoundedFunc, aX, aDir, aGrad, aFx, aAlphaMax, theConfig.StepMin);
+      }
 
       if (!aLineResult.IsValid)
       {
-        aResult.Status   = Status::NotConverged;
+        aResult.Status   = Utils::LineSearchFailureStatus(anInitialLineResult, aLineResult);
         aResult.Solution = aX;
         aResult.Value    = aFx;
         aResult.Gradient = aGrad;
@@ -744,54 +789,53 @@ VectorResult BFGSBounded(Function&          theFunc,
       }
 
       // Reset Hessian
-      for (int i = 1; i <= aN; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        for (int j = 1; j <= aN; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
-          aH(i, j) = (i == j) ? 1.0 : 0.0;
+          aH.ChangeAt(i, j) = (i == j) ? 1.0 : 0.0;
         }
       }
     }
 
     // Compute and clamp new point
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aXNew(i) = aX(i) + aLineResult.Alpha * aDir(i);
+      aXNew.ChangeAt(i) = aX.At(i) + aLineResult.Alpha * aDir.At(i);
     }
     ClampToBounds(aXNew);
 
     // Compute s = x_new - x
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aS(i) = aXNew(aLower + i - 1) - aX(aLower + i - 1);
+      aS.ChangeAt(i) = aXNew.At(i) - aX.At(i);
     }
 
     // Evaluate at new point
-    double aFxNew = 0.0;
-    if (!theFunc.Value(aXNew, aFxNew))
+    double       aFxNew          = 0.0;
+    const Status aNewValueStatus = Utils::ValueStatus(theFunc, aXNew, aFxNew);
+    if (aNewValueStatus != Status::OK)
     {
-      aResult.Status   = Status::NumericalError;
+      aResult.Status   = aNewValueStatus;
       aResult.Solution = aX;
       aResult.Value    = aFx;
+      aResult.Gradient = aGrad;
       return aResult;
     }
 
-    if (!theFunc.Gradient(aXNew, aGradNew))
+    const Status aNewGradientStatus = Utils::GradientStatus(theFunc, aXNew, aGradNew);
+    if (aNewGradientStatus != Status::OK)
     {
-      aResult.Status   = Status::NumericalError;
+      aResult.Status   = aNewGradientStatus;
       aResult.Solution = aX;
       aResult.Value    = aFx;
+      aResult.Gradient = aGrad;
       return aResult;
     }
     ProjectGradient(aXNew, aGradNew);
 
     // Check gradient convergence
-    aGradNorm = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
-    {
-      aGradNorm += MathUtils::Sqr(aGradNew(i));
-    }
-    aGradNorm = std::sqrt(aGradNorm);
+    aGradNorm = Utils::Norm(aGradNew);
 
     if (aGradNorm < theConfig.FTolerance)
     {
@@ -804,13 +848,13 @@ VectorResult BFGSBounded(Function&          theFunc,
 
     // Check X convergence
     double aMaxDiff = 0.0;
-    for (int i = aLower; i <= aUpper; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew(i) - aX(i)));
+      aMaxDiff = std::max(aMaxDiff, std::abs(aXNew.At(i) - aX.At(i)));
     }
     if (aMaxDiff < theConfig.XTolerance)
     {
-      aResult.Status   = Status::OK;
+      aResult.Status   = Status::NotConverged;
       aResult.Solution = aXNew;
       aResult.Value    = aFxNew;
       aResult.Gradient = aGradNew;
@@ -818,44 +862,44 @@ VectorResult BFGSBounded(Function&          theFunc,
     }
 
     // Compute y = grad_new - grad
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aY(i) = aGradNew(aLower + i - 1) - aGrad(aLower + i - 1);
+      aY.ChangeAt(i) = aGradNew.At(i) - aGrad.At(i);
     }
 
     // Curvature condition
     double aSY = 0.0;
-    for (int i = 1; i <= aN; ++i)
+    for (size_t i = 0; i < aN; ++i)
     {
-      aSY += aS(i) * aY(i);
+      aSY += aS.At(i) * aY.At(i);
     }
 
     if (aSY > MathUtils::THE_ZERO_TOL)
     {
       const double aRho = 1.0 / aSY;
 
-      math_Vector aHy(1, aN, 0.0);
-      for (int i = 1; i <= aN; ++i)
+      math_Vector aHy(aN, 0.0);
+      for (size_t i = 0; i < aN; ++i)
       {
-        for (int j = 1; j <= aN; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
-          aHy(i) += aH(i, j) * aY(j);
+          aHy.ChangeAt(i) += aH.At(i, j) * aY.At(j);
         }
       }
 
       double aYHy = 0.0;
-      for (int i = 1; i <= aN; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        aYHy += aY(i) * aHy(i);
+        aYHy += aY.At(i) * aHy.At(i);
       }
 
       const double aFactor = 1.0 + aRho * aYHy;
-      for (int i = 1; i <= aN; ++i)
+      for (size_t i = 0; i < aN; ++i)
       {
-        for (int j = 1; j <= aN; ++j)
+        for (size_t j = 0; j < aN; ++j)
         {
-          aH(i, j) =
-            aH(i, j) - aRho * (aHy(i) * aS(j) + aS(i) * aHy(j)) + aFactor * aRho * aS(i) * aS(j);
+          aH.ChangeAt(i, j) = aH.At(i, j) - aRho * (aHy.At(i) * aS.At(j) + aS.At(i) * aHy.At(j))
+                              + aFactor * aRho * aS.At(i) * aS.At(j);
         }
       }
     }

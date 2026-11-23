@@ -20,8 +20,8 @@ Open ${bDoc} Doc
 # Fill the document by another box
 box b 1 1 1
 SetShape Doc 0:2 b
- 
-# Configure XProgress 
+
+# Configure XProgress
 XProgress +t
 
 # Save

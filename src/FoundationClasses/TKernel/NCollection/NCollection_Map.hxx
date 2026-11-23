@@ -19,12 +19,13 @@
 #include <NCollection_MapAlgo.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_DefaultHasher.hxx>
-#include <NCollection_StlIterator.hxx>
 #include <NCollection_TListNode.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 
+#include <cstddef>
 #include <functional>
+#include <iterator>
 #include <optional>
 #include <type_traits>
 #include <utility>
@@ -63,7 +64,14 @@ class NCollection_Map : public NCollection_BaseMap
 public:
   //! STL-compliant typedef for key type
   typedef TheKeyType key_type;
+  typedef TheKeyType value_type;
   typedef Hasher     hasher;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using reference       = const TheKeyType&;
+  using const_reference = const TheKeyType&;
+  using pointer         = const TheKeyType*;
+  using const_pointer   = const TheKeyType*;
 
 public:
   //!   Adaptation of the TListNode to the map notations
@@ -91,85 +99,107 @@ public:
 
     //! Key
     const TheKeyType& Key() noexcept { return this->Value(); }
+
+    const TheKeyType& Key() const noexcept { return this->Value(); }
   };
 
 public:
+  using iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_Map, MapNode, TheKeyType, TheKeyType, true, false>;
+  using const_iterator = NCollection_BaseMap::
+    BasicIterator<NCollection_Map, MapNode, TheKeyType, TheKeyType, true, true>;
+
   //!   Implementation of the Iterator interface.
-  class Iterator : public NCollection_BaseMap::Iterator
+  class Iterator : public const_iterator
   {
+  private:
+    using base_iterator = const_iterator;
+
   public:
     //! Empty constructor
-    Iterator()
-        : NCollection_BaseMap::Iterator()
-    {
-    }
+    Iterator() noexcept = default;
 
     //! Constructor
-    Iterator(const NCollection_Map& theMap)
-        : NCollection_BaseMap::Iterator(theMap)
+    Iterator(const NCollection_Map& theMap) noexcept
+        : base_iterator(theMap),
+          myMap(&theMap)
     {
     }
 
     //! Query if the end of collection is reached by iterator
-    bool More() const noexcept { return PMore(); }
+    bool More() const noexcept { return !base_iterator::operator==(base_iterator()); }
 
     //! Make a step along the collection
-    void Next() noexcept { PNext(); }
+    void Next() noexcept { ++(*this); }
+
+    //! Initialize
+    void Initialize(const NCollection_Map& theMap) noexcept { *this = Iterator(theMap); }
+
+    //! Reset
+    void Reset() noexcept { *this = myMap != nullptr ? Iterator(*myMap) : Iterator(); }
+
+    //! Performs comparison of two iterators.
+    bool IsEqual(const Iterator& theOther) const noexcept
+    {
+      return base_iterator::operator==(static_cast<const base_iterator&>(theOther));
+    }
 
     //! Value inquiry
     const TheKeyType& Value() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_Map::Iterator::Value");
-      return ((MapNode*)myNode)->Value();
+      return base_iterator::operator*();
     }
 
     //! Key
     const TheKeyType& Key() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_Map::Iterator::Key");
-      return ((MapNode*)myNode)->Value();
+      return base_iterator::operator*();
     }
+
+  private:
+    const NCollection_Map* myMap = nullptr;
   };
 
-  //! Shorthand for a constant iterator type.
-  typedef NCollection_StlIterator<std::forward_iterator_tag, Iterator, TheKeyType, true>
-    const_iterator;
-
-  //! Shorthand for iterator type (same as const_iterator for key-only maps).
-  typedef const_iterator iterator;
-
   //! Returns an iterator pointing to the first element in the map.
-  iterator begin() const noexcept { return Iterator(*this); }
-
-  //! Returns an iterator referring to the past-the-end element in the map.
-  iterator end() const noexcept { return Iterator(); }
+  iterator begin() noexcept { return iterator(*this); }
 
   //! Returns a const iterator pointing to the first element in the map.
-  const_iterator cbegin() const noexcept { return Iterator(*this); }
+  const_iterator begin() const noexcept { return const_iterator(*this); }
+
+  //! Returns an iterator referring to the past-the-end element in the map.
+  iterator end() noexcept { return iterator(); }
 
   //! Returns a const iterator referring to the past-the-end element in the map.
-  const_iterator cend() const noexcept { return Iterator(); }
+  const_iterator end() const noexcept { return const_iterator(); }
+
+  //! Returns a const iterator pointing to the first element in the map.
+  const_iterator cbegin() const noexcept { return const_iterator(*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the map.
+  const_iterator cend() const noexcept { return const_iterator(); }
 
 public:
   // ---------- PUBLIC METHODS ------------
 
   //! Empty constructor.
   NCollection_Map()
-      : NCollection_BaseMap(1, true, occ::handle<NCollection_BaseAllocator>())
+      : NCollection_BaseMap(1, occ::handle<NCollection_BaseAllocator>())
   {
   }
 
   //! Constructor
   explicit NCollection_Map(const size_t                                  theNbBuckets,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_BaseMap(theNbBuckets, true, theAllocator)
+      : NCollection_BaseMap(theNbBuckets, theAllocator)
   {
   }
 
   //! Constructor (legacy int-taking).
   explicit NCollection_Map(const int                                     theNbBuckets,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_Map(NCollection_BaseMap::NbBucketsFromInt(theNbBuckets), theAllocator)
+      : NCollection_Map(NCollection_BaseMap::nbBucketsFromInt(theNbBuckets), theAllocator)
   {
   }
 
@@ -180,7 +210,7 @@ public:
   explicit NCollection_Map(const Hasher&                                 theHasher,
                            const size_t                                  theNbBuckets = 1,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_BaseMap(theNbBuckets, true, theAllocator),
+      : NCollection_BaseMap(theNbBuckets, theAllocator),
         myHasher(theHasher)
   {
   }
@@ -190,7 +220,7 @@ public:
                            const int                                     theNbBuckets,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_Map(theHasher,
-                        NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                        NCollection_BaseMap::nbBucketsFromInt(theNbBuckets),
                         theAllocator)
   {
   }
@@ -202,7 +232,7 @@ public:
   explicit NCollection_Map(Hasher&&                                      theHasher,
                            const size_t                                  theNbBuckets = 1,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
-      : NCollection_BaseMap(theNbBuckets, true, theAllocator),
+      : NCollection_BaseMap(theNbBuckets, theAllocator),
         myHasher(std::move(theHasher))
   {
   }
@@ -212,14 +242,14 @@ public:
                            const int                                     theNbBuckets,
                            const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_Map(std::move(theHasher),
-                        NCollection_BaseMap::NbBucketsFromInt(theNbBuckets),
+                        NCollection_BaseMap::nbBucketsFromInt(theNbBuckets),
                         theAllocator)
   {
   }
 
   //! Copy constructor
   NCollection_Map(const NCollection_Map& theOther)
-      : NCollection_BaseMap(theOther.NbBuckets(), true, theOther.myAllocator),
+      : NCollection_BaseMap(theOther.NbBuckets(), theOther.myAllocator),
         myHasher(theOther.myHasher)
   {
     const int anExt = theOther.Extent();
@@ -231,18 +261,21 @@ public:
   }
 
   //! Move constructor
-  NCollection_Map(NCollection_Map&& theOther) noexcept
-      : NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther)),
+  NCollection_Map(NCollection_Map&& theOther) noexcept(
+    std::is_nothrow_move_constructible<Hasher>::value)
+      : NCollection_BaseMap(theOther.NbBuckets(), theOther.myAllocator),
         myHasher(std::move(theOther.myHasher))
   {
+    exchangeMapsData(theOther);
   }
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_Map& theOther) noexcept
+  void Exchange(NCollection_Map& theOther) noexcept(noexcept(std::swap(std::declval<Hasher&>(),
+                                                                       std::declval<Hasher&>())))
   {
-    this->exchangeMapsData(theOther);
     std::swap(myHasher, theOther.myHasher);
+    this->exchangeMapsData(theOther);
   }
 
   //! Returns const reference to the hasher.
@@ -271,10 +304,12 @@ public:
   NCollection_Map& operator=(const NCollection_Map& theOther) { return Assign(theOther); }
 
   //! Move operator
-  NCollection_Map& operator=(NCollection_Map&& theOther) noexcept
+  NCollection_Map& operator=(NCollection_Map&& theOther) noexcept(
+    noexcept(std::swap(std::declval<Hasher&>(), std::declval<Hasher&>())))
   {
     if (this == &theOther)
       return *this;
+    std::swap(myHasher, theOther.myHasher);
     exchangeMapsData(theOther);
     return *this;
   }
@@ -283,9 +318,8 @@ public:
   void ReSize(const size_t N)
   {
     NCollection_ListNode** newdata = nullptr;
-    NCollection_ListNode** dummy   = nullptr;
     size_t                 newBuck;
-    if (BeginResize(N, newBuck, newdata, dummy))
+    if (beginResize(N, newBuck, newdata))
     {
       if (myData1)
       {
@@ -298,7 +332,7 @@ public:
             p = olddata[i];
             while (p)
             {
-              const size_t k = HashCode(p->Key(), newBuck);
+              const size_t k = hashCode(p->Key(), newBuck);
               q              = (MapNode*)p->Next();
               p->Next()      = newdata[k];
               newdata[k]     = p;
@@ -307,7 +341,7 @@ public:
           }
         }
       }
-      EndResize(N, newBuck, newdata, dummy);
+      endResize(N, newBuck, newdata);
     }
   }
 
@@ -393,14 +427,14 @@ public:
     if (IsEmpty())
       return false;
     MapNode**    data = (MapNode**)myData1;
-    const size_t k    = HashCode(K, NbBuckets());
+    const size_t k    = hashCode(K, NbBuckets());
     MapNode*     p    = data[k];
     MapNode*     q    = nullptr;
     while (p)
     {
-      if (IsEqual(p->Key(), K))
+      if (isEqual(p->Key(), K))
       {
-        Decrement();
+        decrement();
         if (q)
           q->Next() = p->Next();
         else
@@ -417,7 +451,7 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const bool doReleaseMemory = false) { Destroy(MapNode::delNode, doReleaseMemory); }
+  void Clear(const bool doReleaseMemory = false) { destroy(MapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)
@@ -428,7 +462,7 @@ public:
   }
 
   //! Destructor
-  ~NCollection_Map() override { Clear(true); }
+  ~NCollection_Map() { Clear(true); }
 
 public:
   //! Checks if two maps contain exactly the same keys.
@@ -555,12 +589,12 @@ protected:
   //! @return true if key is found
   bool lookup(const TheKeyType& theKey, MapNode*& theNode, size_t& theHash) const
   {
-    theHash = HashCode(theKey, NbBuckets());
+    theHash = hashCode(theKey, NbBuckets());
     if (IsEmpty())
       return false; // Not found
     for (theNode = (MapNode*)myData1[theHash]; theNode; theNode = (MapNode*)theNode->Next())
     {
-      if (IsEqual(theNode->Key(), theKey))
+      if (isEqual(theNode->Key(), theKey))
         return true;
     }
     return false; // Not found
@@ -574,10 +608,10 @@ protected:
   {
     if (IsEmpty())
       return false; // Not found
-    for (theNode = (MapNode*)myData1[HashCode(theKey, NbBuckets())]; theNode;
+    for (theNode = (MapNode*)myData1[hashCode(theKey, NbBuckets())]; theNode;
          theNode = (MapNode*)theNode->Next())
     {
-      if (IsEqual(theNode->Key(), theKey))
+      if (isEqual(theNode->Key(), theKey))
       {
         return true;
       }
@@ -585,12 +619,12 @@ protected:
     return false; // Not found
   }
 
-  bool IsEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
+  bool isEqual(const TheKeyType& theKey1, const TheKeyType& theKey2) const
   {
     return myHasher(theKey1, theKey2);
   }
 
-  size_t HashCode(const TheKeyType& theKey, const size_t theUpperBound) const
+  size_t hashCode(const TheKeyType& theKey, const size_t theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
   }
@@ -604,7 +638,7 @@ protected:
   auto addImpl(K&& theKey, std::bool_constant<ReturnRef>)
     -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
   {
-    if (Resizable())
+    if (resizable())
       ReSize(Extent());
     MapNode* aNode;
     size_t   aHash;
@@ -617,7 +651,7 @@ protected:
     }
     MapNode** data = (MapNode**)myData1;
     data[aHash]    = new (this->myAllocator) MapNode(std::forward<K>(theKey), data[aHash]);
-    Increment();
+    increment();
     if constexpr (ReturnRef)
       return data[aHash]->Key();
     else
@@ -633,7 +667,7 @@ protected:
   auto emplaceImpl(std::bool_constant<IsTry>, std::bool_constant<ReturnRef>, Args&&... theArgs)
     -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
   {
-    if (Resizable())
+    if (resizable())
       ReSize(Extent());
     // First construct the key to compute hash and check for existence
     TheKeyType aTempKey(std::forward<Args>(theArgs)...);
@@ -654,7 +688,7 @@ protected:
     }
     MapNode** data = (MapNode**)myData1;
     data[aHash]    = new (this->myAllocator) MapNode(std::move(aTempKey), data[aHash]);
-    Increment();
+    increment();
     if constexpr (ReturnRef)
       return data[aHash]->Key();
     else

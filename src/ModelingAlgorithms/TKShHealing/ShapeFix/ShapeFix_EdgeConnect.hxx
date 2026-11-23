@@ -1,5 +1,3 @@
-// Created on: 1999-05-11
-// Created by: Sergei ZERTCHANINOV
 // Copyright (c) 1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
@@ -23,39 +21,43 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_FlatDataMap.hxx>
 #include <NCollection_List.hxx>
 class TopoDS_Edge;
 class TopoDS_Shape;
 
-//! Rebuilds edges to connect with new vertices, was moved from ShapeBuild.
-//! Makes vertices to be shared to connect edges,
-//! updates positions and tolerances for shared vertices.
-//! Accepts edges bounded by two vertices each.
+//! Rebuilds edge connectivity by replacing coincident end vertices with shared vertices.
+//! The connected edges must each be bounded by two vertices.
 class ShapeFix_EdgeConnect
 {
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Constructs an empty edge-connectivity tool.
   Standard_EXPORT ShapeFix_EdgeConnect();
 
-  //! Adds information on connectivity between start vertex
-  //! of second edge and end vertex of first edge,
-  //! taking edges orientation into account
-  Standard_EXPORT void Add(const TopoDS_Edge& aFirst, const TopoDS_Edge& aSecond);
+  //! Registers a connection between the oriented last vertex of the first edge and the oriented
+  //! first vertex of the second edge.
+  //! @param[in] theFirstEdge first edge in the connection
+  //! @param[in] theSecondEdge second edge in the connection
+  Standard_EXPORT void Add(const TopoDS_Edge& theFirstEdge, const TopoDS_Edge& theSecondEdge);
 
-  //! Adds connectivity information for the whole shape.
-  //! Note: edges in wires must be well ordered
-  //! Note: flag Closed should be set for closed wires
-  Standard_EXPORT void Add(const TopoDS_Shape& aShape);
+  //! Registers consecutive edge connections for every wire in the shape.
+  //! Edges in each wire must be ordered. A closed wire must have its Closed flag set so that the
+  //! last edge is also connected to the first edge.
+  //! @param[in] theShape shape containing the wires to process
+  Standard_EXPORT void Add(const TopoDS_Shape& theShape);
 
-  //! Builds shared vertices, updates their positions and tolerances
+  //! Builds the registered connections and clears the registration data.
+  //! Each shared vertex is placed at the center of the bounding box of the connected curve ends;
+  //! its tolerance is updated to contain all those ends.
   Standard_EXPORT void Build();
 
-  //! Clears internal data structure
+  //! Clears all registered connections without modifying the edges.
   Standard_EXPORT void Clear();
 
 private:
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVertices;
+  NCollection_FlatDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVertices;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     myLists;
 };

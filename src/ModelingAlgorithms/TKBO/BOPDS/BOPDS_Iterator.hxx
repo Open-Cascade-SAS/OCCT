@@ -23,7 +23,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <BOPDS_PDS.hxx>
 #include <NCollection_DynamicArray.hxx>
 #include <BOPDS_Pair.hxx>
 #include <BOPTools_BoxTree.hxx>
@@ -31,6 +30,7 @@
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class IntTools_Context;
+class BOPDS_DS;
 
 //! The class BOPDS_Iterator is
 //! 1.to compute intersections between BRep sub-shapes
@@ -53,7 +53,7 @@ public:
 
   //! Modifier
   //! Sets the data structure <pDS> to process
-  Standard_EXPORT void SetDS(const BOPDS_PDS& pDS);
+  Standard_EXPORT void SetDS(BOPDS_DS* const& pDS);
 
   //! Selector
   //! Returns the data structure
@@ -118,7 +118,7 @@ protected:                                            //! @name Fields
   occ::handle<NCollection_BaseAllocator> myAllocator; //!< Allocator
   int                                    myLength;    //!< Length of the intersection vector of
                                                       //! particular intersection type
-  BOPDS_PDS myDS;                                     //!< Data Structure
+  BOPDS_DS* myDS;                                     //!< Data Structure
   NCollection_DynamicArray<NCollection_DynamicArray<BOPDS_Pair>>
                                                  myLists; //!< Pairs with interfering bounding boxes
   NCollection_DynamicArray<BOPDS_Pair>::Iterator myIterator; //!< Iterator on each interfering type

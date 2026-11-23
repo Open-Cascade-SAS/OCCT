@@ -1,3 +1,5 @@
+puts "TODO OCC32332 ALL: Error: bad tolerance of result"
+
 puts "=========================================================="
 puts "OCC32332: Incorrect result of ShapeUpgrade_UnifySameDomain"
 puts "=========================================================="

@@ -6,7 +6,6 @@ set(OCCT_FSD_FILES
   FSD_Base64.hxx
   FSD_BinaryFile.cxx
   FSD_BinaryFile.hxx
-  FSD_BStream.hxx
   FSD_CmpFile.cxx
   FSD_CmpFile.hxx
   FSD_File.cxx

@@ -18,7 +18,6 @@
 #include <functional>
 
 #include <Standard_HashUtils.hxx>
-#include <NCollection_DefineHasher.hxx>
 
 /**
  * Purpose:     The  DefaultHasher  is a  Hasher  that is used by

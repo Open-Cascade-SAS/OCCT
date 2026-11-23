@@ -4,10 +4,6 @@ set(OCCT_MoniTool_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_MoniTool_FILES
   MoniTool_AttrList.cxx
   MoniTool_AttrList.hxx
-  MoniTool_CaseData.cxx
-  MoniTool_CaseData.hxx
-  MoniTool_DataInfo.cxx
-  MoniTool_DataInfo.hxx
 
   MoniTool_Element.cxx
   MoniTool_Element.hxx
@@ -18,19 +14,13 @@ set(OCCT_MoniTool_FILES
   MoniTool_RealVal.cxx
   MoniTool_RealVal.hxx
 
-  MoniTool_SignShape.cxx
-  MoniTool_SignShape.hxx
   MoniTool_SignText.cxx
   MoniTool_SignText.hxx
-  MoniTool_Stat.cxx
-  MoniTool_Stat.hxx
   MoniTool_Timer.cxx
   MoniTool_Timer.hxx
   MoniTool_Timer.lxx
   MoniTool_TimerSentry.hxx
   MoniTool_TimerSentry.lxx
-  MoniTool_TransientElem.cxx
-  MoniTool_TransientElem.hxx
   MoniTool_TypedValue.cxx
   MoniTool_TypedValue.hxx
   MoniTool_ValueInterpret.hxx

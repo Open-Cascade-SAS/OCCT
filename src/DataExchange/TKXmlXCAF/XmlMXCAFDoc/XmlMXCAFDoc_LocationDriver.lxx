@@ -16,7 +16,7 @@
 //=================================================================================================
 
 inline void XmlMXCAFDoc_LocationDriver::SetSharedLocations(
-  const TopTools_LocationSetPtr& theLocations)
+  TopTools_LocationSet* const& theLocations)
 {
   if (myLocations != theLocations)
   {

@@ -242,6 +242,7 @@ void IntCurve_ExactIntersectionPoint::MathPerform()
 {
   math_FunctionSetRoot Fct(FctDist, ToleranceVector, 60);
   Fct.Perform(FctDist, StartingPoint, BInfVector, BSupVector);
+  anErrorOccurred = !Fct.IsDone();
 
   if (Fct.IsDone())
   {
@@ -258,8 +259,7 @@ void IntCurve_ExactIntersectionPoint::MathPerform()
   }
   else
   {
-    anErrorOccurred = true;
-    nbroots         = 0;
+    nbroots = 0;
   }
 }
 

@@ -157,7 +157,7 @@ TEST(BRepAlgoAPI_FuseTest, RevolvedFaceAndSphere)
   ASSERT_FALSE(aResult.IsNull());
 
   GProp_GProps aSProps;
-  BRepGProp::SurfaceProperties(aResult, aSProps);
+  BRepGProp::SurfaceProperties(aResult, aSProps, 1.e-5);
   EXPECT_NEAR(aSProps.Mass(), 272935.0, 272.935); // 0.1% tolerance
 
   BRepCheck_Analyzer aChecker(aResult);

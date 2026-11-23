@@ -47,7 +47,18 @@ else()
       DOWNLOAD_EXTRACT_TIMESTAMP true
     )
 
+    # Google Test selects its own exception model. Keep OCCT's asynchronous
+    # exception flag out of the dependency's inherited flags.
+    if(MSVC)
+      set(OCCT_GTEST_SAVED_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+      string(REGEX REPLACE "(^|[ \t])[-/]EHa([ \t]|$)" "\\1\\2"
+             CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    endif()
     FetchContent_MakeAvailable(googletest)
+    if(MSVC)
+      set(CMAKE_CXX_FLAGS "${OCCT_GTEST_SAVED_CXX_FLAGS}")
+      unset(OCCT_GTEST_SAVED_CXX_FLAGS)
+    endif()
 
     # Set proper grouping for the targets in solution explorer
     if(TARGET gtest)

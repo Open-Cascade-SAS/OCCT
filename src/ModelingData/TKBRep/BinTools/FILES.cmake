@@ -13,7 +13,6 @@ set(OCCT_BinTools_FILES
   BinTools_IStream.hxx
   BinTools_LocationSet.cxx
   BinTools_LocationSet.hxx
-  BinTools_LocationSetPtr.hxx
   BinTools_ShapeSet.cxx
   BinTools_ShapeSet.hxx
   BinTools_ShapeSetBase.cxx

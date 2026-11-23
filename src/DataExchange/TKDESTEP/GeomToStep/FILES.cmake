@@ -54,9 +54,6 @@ set(OCCT_GeomToStep_FILES
   GeomToStep_MakeParabola.hxx
   GeomToStep_MakePlane.cxx
   GeomToStep_MakePlane.hxx
-  GeomToStep_MakePolyline.cxx
-  GeomToStep_MakePolyline.hxx
-  GeomToStep_MakePolyline_gen.pxx
   GeomToStep_MakeRectangularTrimmedSurface.cxx
   GeomToStep_MakeRectangularTrimmedSurface.hxx
   GeomToStep_MakeSphericalSurface.cxx

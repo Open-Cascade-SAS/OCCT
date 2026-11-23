@@ -4,11 +4,8 @@ set(OCCT_Blend_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_Blend_FILES
   Blend_AppFunction.cxx
   Blend_AppFunction.hxx
-  Blend_CSFunction.cxx
-  Blend_CSFunction.hxx
   Blend_CurvPointFuncInv.cxx
   Blend_CurvPointFuncInv.hxx
-  Blend_Debug.cxx
   Blend_DecrochStatus.hxx
   Blend_FuncInv.cxx
   Blend_FuncInv.hxx

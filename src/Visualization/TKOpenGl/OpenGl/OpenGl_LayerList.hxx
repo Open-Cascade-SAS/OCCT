@@ -186,7 +186,7 @@ protected:
 
   private:
     NCollection_Array1<const OpenGl_Layer*> myStackSpace;
-    iterator                                myBackPtr;
+    iterator                                myBackPtr{};
   };
 
   //! Render transparent objects using blending operator.

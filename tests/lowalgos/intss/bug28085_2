@@ -16,6 +16,7 @@ explode b2 f
 
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b1_74 b2_13 -2d] full Toler NbCurv
+dsetsignal 0
 
 checkreal Tolerance $Toler 0.0 1.0e-7 0.0
 

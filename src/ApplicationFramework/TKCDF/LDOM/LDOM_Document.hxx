@@ -83,7 +83,6 @@ public:
   Standard_EXPORT LDOM_Document& operator=(const LDOM_NullPtr*);
 
 private:
-  friend class LDOM_LDOMImplementation;
   friend class LDOMString;
   friend class LDOM_Node;
   // ---------- PRIVATE FIELDS ----------

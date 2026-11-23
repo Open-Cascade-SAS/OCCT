@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepTool_Plos.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopAbs_State.hxx>
@@ -39,9 +38,8 @@ public:
 
   Standard_EXPORT TopOpeBRepTool_ShapeClassifier();
 
-  //! SRef is the reference shape.
-  //! StateShapeShape(S) calls will classify S with SRef.
-  Standard_EXPORT TopOpeBRepTool_ShapeClassifier(const TopoDS_Shape& SRef);
+  //! Creates a classifier using theReference as the reference shape.
+  Standard_EXPORT TopOpeBRepTool_ShapeClassifier(const TopoDS_Shape& theReference);
 
   //! reset all internal data (SolidClassifier included)
   Standard_EXPORT void ClearAll();
@@ -131,7 +129,7 @@ private:
   TopoDS_Shape                                                  myS;
   TopoDS_Shape                                                  myRef;
   TopoDS_Shape                                                  myAvS;
-  TopOpeBRepTool_Plos                                           myPAvLS;
+  NCollection_List<TopoDS_Shape>*                               myPAvLS;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapAvS;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mymre;
   int                                                           mymren;

@@ -163,11 +163,8 @@ public:
     my8b6  = uid.my8b6;
   }
 
-  constexpr Standard_GUID& operator=(const Standard_GUID& uid) noexcept
-  {
-    Assign(uid);
-    return *this;
-  }
+  //! Assign another GUID by value.
+  constexpr Standard_GUID& operator=(const Standard_GUID& uid) noexcept = default;
 
   //! Assigns uid to this GUID.
   constexpr void Assign(const Standard_UUID& uid) noexcept

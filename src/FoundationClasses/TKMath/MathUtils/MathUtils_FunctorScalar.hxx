@@ -150,12 +150,12 @@ public:
   //! Constructor from initializer list.
   //! @param theCoeffs coefficients in ascending power order
   Polynomial(std::initializer_list<double> theCoeffs)
-      : myCoeffs(0, static_cast<int>(theCoeffs.size()) - 1)
+      : myCoeffs(theCoeffs.size())
   {
-    int anIdx = 0;
+    size_t anIdx = 0;
     for (double aCoeff : theCoeffs)
     {
-      myCoeffs(anIdx++) = aCoeff;
+      myCoeffs.ChangeAt(anIdx++) = aCoeff;
     }
   }
 
@@ -172,20 +172,19 @@ public:
   //! @return true (always succeeds for polynomials)
   bool Value(double theX, double& theY) const
   {
-    if (myCoeffs.Length() <= 0)
+    if (!std::isfinite(theX) || myCoeffs.Size() == 0)
     {
-      theY = 0.0;
-      return true;
+      return false;
     }
 
     // Horner's method: p(x) = a[0] + x*(a[1] + x*(a[2] + ...))
-    const int aLast = myCoeffs.Upper();
-    theY            = myCoeffs(aLast);
-    for (int i = aLast - 1; i >= myCoeffs.Lower(); --i)
+    const int aDegree = static_cast<int>(myCoeffs.Size()) - 1;
+    theY              = myCoeffs.At(static_cast<size_t>(aDegree));
+    for (int i = aDegree - 1; i >= 0; --i)
     {
-      theY = theY * theX + myCoeffs(i);
+      theY = theY * theX + myCoeffs.At(static_cast<size_t>(i));
     }
-    return true;
+    return std::isfinite(theY);
   }
 
   //! Evaluates polynomial and its derivative at theX.
@@ -195,45 +194,41 @@ public:
   //! @return true (always succeeds for polynomials)
   bool Values(double theX, double& theY, double& theDY) const
   {
-    if (myCoeffs.Length() <= 0)
+    if (!std::isfinite(theX) || myCoeffs.Size() == 0)
     {
-      theY  = 0.0;
-      theDY = 0.0;
-      return true;
+      return false;
     }
 
-    const int n = myCoeffs.Length();
+    const size_t n = myCoeffs.Size();
     if (n == 1)
     {
-      theY  = myCoeffs(myCoeffs.Lower());
+      theY  = myCoeffs.At(0);
       theDY = 0.0;
-      return true;
+      return std::isfinite(theY);
     }
 
     // Horner's method for value and derivative simultaneously
-    const int aLower = myCoeffs.Lower();
-    const int aLast  = myCoeffs.Upper();
-    theY             = myCoeffs(aLast);
-    theDY            = 0.0;
-    for (int i = aLast - 1; i >= aLower; --i)
+    const int aDegree = static_cast<int>(n) - 1;
+    theY              = myCoeffs.At(static_cast<size_t>(aDegree));
+    theDY             = 0.0;
+    for (int i = aDegree - 1; i >= 0; --i)
     {
       theDY = theDY * theX + theY;
-      theY  = theY * theX + myCoeffs(i);
+      theY  = theY * theX + myCoeffs.At(static_cast<size_t>(i));
     }
-    return true;
+    return std::isfinite(theY) && std::isfinite(theDY);
   }
 
   //! Returns the degree of the polynomial.
   //! @return polynomial degree (number of coefficients - 1)
-  int Degree() const { return myCoeffs.Length() <= 0 ? 0 : myCoeffs.Length() - 1; }
+  int Degree() const { return myCoeffs.Size() == 0 ? 0 : static_cast<int>(myCoeffs.Size()) - 1; }
 
   //! Returns coefficient by index.
   //! @param theIndex coefficient index (0 = constant term)
   //! @return coefficient value
-  double Coefficient(int theIndex) const
+  double Coefficient(size_t theIndex) const
   {
-    const int aIdx = myCoeffs.Lower() + theIndex;
-    return (aIdx >= myCoeffs.Lower() && aIdx <= myCoeffs.Upper()) ? myCoeffs(aIdx) : 0.0;
+    return theIndex < myCoeffs.Size() ? myCoeffs.At(theIndex) : 0.0;
   }
 
 private:
@@ -264,18 +259,18 @@ public:
   //! @param theNum numerator coefficients
   //! @param theDenom denominator coefficients
   Rational(std::initializer_list<double> theNum, std::initializer_list<double> theDenom)
-      : myNum(0, static_cast<int>(theNum.size()) - 1),
-        myDenom(0, static_cast<int>(theDenom.size()) - 1)
+      : myNum(theNum.size()),
+        myDenom(theDenom.size())
   {
-    int anIdx = 0;
+    size_t anIdx = 0;
     for (double aCoeff : theNum)
     {
-      myNum(anIdx++) = aCoeff;
+      myNum.ChangeAt(anIdx++) = aCoeff;
     }
     anIdx = 0;
     for (double aCoeff : theDenom)
     {
-      myDenom(anIdx++) = aCoeff;
+      myDenom.ChangeAt(anIdx++) = aCoeff;
     }
   }
 
@@ -289,35 +284,35 @@ public:
     double aDenom = 0.0;
 
     // Evaluate numerator using Horner's method
-    if (myNum.Length() > 0)
+    if (myNum.Size() > 0)
     {
-      const int aLast = myNum.Upper();
-      aNum            = myNum(aLast);
-      for (int i = aLast - 1; i >= myNum.Lower(); --i)
+      const int aDegree = static_cast<int>(myNum.Size()) - 1;
+      aNum              = myNum.At(static_cast<size_t>(aDegree));
+      for (int i = aDegree - 1; i >= 0; --i)
       {
-        aNum = aNum * theX + myNum(i);
+        aNum = aNum * theX + myNum.At(static_cast<size_t>(i));
       }
     }
 
     // Evaluate denominator using Horner's method
-    if (myDenom.Length() > 0)
+    if (myDenom.Size() > 0)
     {
-      const int aLast = myDenom.Upper();
-      aDenom          = myDenom(aLast);
-      for (int i = aLast - 1; i >= myDenom.Lower(); --i)
+      const int aDegree = static_cast<int>(myDenom.Size()) - 1;
+      aDenom            = myDenom.At(static_cast<size_t>(aDegree));
+      for (int i = aDegree - 1; i >= 0; --i)
       {
-        aDenom = aDenom * theX + myDenom(i);
+        aDenom = aDenom * theX + myDenom.At(static_cast<size_t>(i));
       }
     }
 
     // Check for division by zero
-    if (std::abs(aDenom) < 1e-15)
+    if (!std::isfinite(theX) || !std::isfinite(aNum) || !std::isfinite(aDenom) || aDenom == 0.0)
     {
       return false;
     }
 
     theY = aNum / aDenom;
-    return true;
+    return std::isfinite(theY);
   }
 
 private:
@@ -568,12 +563,12 @@ public:
     {
       return false;
     }
-    if (std::abs(aG) < 1e-15)
+    if (!std::isfinite(aF) || !std::isfinite(aG) || aG == 0.0)
     {
       return false;
     }
     theY = aF / aG;
-    return true;
+    return std::isfinite(theY);
   }
 
 private:
@@ -956,12 +951,13 @@ public:
   //! @return false if x < 0 and exponent is non-integer
   bool Value(double theX, double& theY) const
   {
-    if (theX < 0.0 && myExponent != std::floor(myExponent))
+    if (!std::isfinite(theX) || !std::isfinite(myExponent) || !std::isfinite(myScale)
+        || !std::isfinite(myOffset) || (theX < 0.0 && myExponent != std::floor(myExponent)))
     {
       return false;
     }
     theY = myScale * std::pow(theX, myExponent) + myOffset;
-    return true;
+    return std::isfinite(theY);
   }
 
   //! Evaluates power function and derivative.
@@ -971,21 +967,32 @@ public:
   //! @return false if x < 0 and exponent is non-integer
   bool Values(double theX, double& theY, double& theDY) const
   {
-    if (theX < 0.0 && myExponent != std::floor(myExponent))
+    if (!std::isfinite(theX) || !std::isfinite(myExponent) || !std::isfinite(myScale)
+        || !std::isfinite(myOffset) || (theX < 0.0 && myExponent != std::floor(myExponent)))
     {
       return false;
     }
+    if (myExponent == 0.0)
+    {
+      theY  = myScale + myOffset;
+      theDY = 0.0;
+      return std::isfinite(theY);
+    }
     const double aPow = std::pow(theX, myExponent);
     theY              = myScale * aPow + myOffset;
-    if (std::abs(theX) < 1e-15)
+    if (theX == 0.0)
     {
+      if (myExponent < 1.0)
+      {
+        return false;
+      }
       theDY = (myExponent == 1.0) ? myScale : 0.0;
     }
     else
     {
       theDY = myScale * myExponent * aPow / theX;
     }
-    return true;
+    return std::isfinite(theY) && std::isfinite(theDY);
   }
 
 private:
@@ -1015,13 +1022,14 @@ public:
   //! @return false if sigma is zero
   bool Value(double theX, double& theY) const
   {
-    if (std::abs(mySigma) < 1e-15)
+    if (!std::isfinite(theX) || !std::isfinite(myAmplitude) || !std::isfinite(myMean)
+        || !std::isfinite(mySigma) || mySigma == 0.0)
     {
       return false;
     }
     const double aZ = (theX - myMean) / mySigma;
     theY            = myAmplitude * std::exp(-0.5 * aZ * aZ);
-    return true;
+    return std::isfinite(theY);
   }
 
   //! Evaluates Gaussian function and derivative.
@@ -1031,7 +1039,8 @@ public:
   //! @return false if sigma is zero
   bool Values(double theX, double& theY, double& theDY) const
   {
-    if (std::abs(mySigma) < 1e-15)
+    if (!std::isfinite(theX) || !std::isfinite(myAmplitude) || !std::isfinite(myMean)
+        || !std::isfinite(mySigma) || mySigma == 0.0)
     {
       return false;
     }
@@ -1039,7 +1048,7 @@ public:
     const double aExp = std::exp(-0.5 * aZ * aZ);
     theY              = myAmplitude * aExp;
     theDY             = -myAmplitude * aZ * aExp / mySigma;
-    return true;
+    return std::isfinite(theY) && std::isfinite(theDY);
   }
 
 private:

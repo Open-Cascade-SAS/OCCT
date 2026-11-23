@@ -336,12 +336,14 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
   file(APPEND ${DOXYGEN_CONFIG_FILE} "PROJECT_NUMBER = ${OCC_VERSION_STRING_EXT}\n")
   file(APPEND ${DOXYGEN_CONFIG_FILE} "OUTPUT_DIRECTORY = ${OUTPUT_DIR}\n")
 
-  # Ensure client-side search is configured correctly
   file(APPEND ${DOXYGEN_CONFIG_FILE} "\n# Search engine settings\n")
-  file(APPEND ${DOXYGEN_CONFIG_FILE} "SEARCHENGINE = YES\n")
-  file(APPEND ${DOXYGEN_CONFIG_FILE} "SERVER_BASED_SEARCH = NO\n")
-  file(APPEND ${DOXYGEN_CONFIG_FILE} "EXTERNAL_SEARCH = NO\n")
-  file(APPEND ${DOXYGEN_CONFIG_FILE} "SEARCHDATA_FILE = searchdata.xml\n")
+  if(BUILD_DOC_Search)
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "SEARCHENGINE = YES\n")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "SERVER_BASED_SEARCH = NO\n")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "EXTERNAL_SEARCH = NO\n")
+  else()
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "SEARCHENGINE = NO\n")
+  endif()
 
   # Additional parameters based on the document type
   if(DOC_TYPE STREQUAL "OVERVIEW")
@@ -464,6 +466,13 @@ function(OCCT_DOC_CONFIGURE_DOXYGEN OUTPUT_DIR CONFIG_FILE DOC_TYPE)
     file(APPEND ${DOXYGEN_CONFIG_FILE} "DOTFILE_DIRS = ${OUTPUT_DIR}/html\n")
   endif()
 
+  if(NOT "${BUILD_DOC_DotNumThreads}" STREQUAL "")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "DOT_NUM_THREADS = ${BUILD_DOC_DotNumThreads}\n")
+  endif()
+  if(NOT "${BUILD_DOC_DotBatchSize}" STREQUAL "")
+    file(APPEND ${DOXYGEN_CONFIG_FILE} "DOT_BATCH_SIZE = ${BUILD_DOC_DotBatchSize}\n")
+  endif()
+
   # Confirm file creation
   if(EXISTS ${DOXYGEN_CONFIG_FILE})
     message(STATUS "Successfully created Doxygen configuration file at: ${DOXYGEN_CONFIG_FILE}")
@@ -475,7 +484,7 @@ endfunction()
 # Function to check if required tools are available
 function(OCCT_DOC_CHECK_TOOLS)
   # Find Doxygen
-  find_package(Doxygen QUIET)
+  find_package(Doxygen ${DOXYGEN_MINIMUM_VERSION} QUIET)
   if(NOT DOXYGEN_FOUND)
     message(WARNING "Doxygen not found. Documentation will not be generated.")
     set(OCCT_DOC_TOOLS_AVAILABLE FALSE PARENT_SCOPE)

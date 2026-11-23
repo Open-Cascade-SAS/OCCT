@@ -348,6 +348,8 @@ public:
 
   //! Reads a Shape from <File>, returns it in <Sh>.
   //! <B> is used to build the shape.
+  //! @return false if the file cannot be opened, contains no shapes,
+  //! or an input stream failure occurs.
   Standard_EXPORT static bool Read(
     TopoDS_Shape&                Sh,
     const char* const            File,

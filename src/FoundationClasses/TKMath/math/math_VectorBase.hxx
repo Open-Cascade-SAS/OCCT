@@ -26,7 +26,8 @@
 
 #include <math_Matrix.hxx>
 
-#include <array>
+#include <new>
+#include <type_traits>
 #include <utility>
 
 //! This class implements the real vector abstract data type.
@@ -62,7 +63,16 @@ class math_VectorBase
 {
   static const int THE_BUFFER_SIZE = 32;
 
+  static_assert(std::is_arithmetic<TheItemType>::value,
+                "math_VectorBase requires an arithmetic item type");
+
 public:
+  //! Constructs a non-initialized zero-based vector of theSize elements.
+  inline explicit math_VectorBase(size_t theSize);
+
+  //! Constructs a zero-based vector of theSize elements initialized to theInitialValue.
+  inline explicit math_VectorBase(size_t theSize, TheItemType theInitialValue);
+
   //! Memory allocation
   DEFINE_STANDARD_ALLOC;
   DEFINE_NCOLLECTION_ALLOC;
@@ -98,6 +108,9 @@ public:
 
   //! Returns the length of a vector
   inline int Length() const { return Array.Length(); }
+
+  //! Returns the number of elements.
+  inline size_t Size() const noexcept { return Array.Size(); }
 
   //! Returns the lower index of the vector
   inline int Lower() const { return Array.Lower(); }
@@ -246,6 +259,16 @@ public:
 
   TheItemType& operator()(const int theNum) { return Value(theNum); }
 
+  //! Accesses an element by zero-based offset.
+  const TheItemType& At(size_t theIndex) const { return Array.At(theIndex); }
+
+  //! Accesses an element by zero-based offset in read-write mode.
+  TheItemType& ChangeAt(size_t theIndex) { return Array.ChangeAt(theIndex); }
+
+  const TheItemType& operator[](size_t theIndex) const { return At(theIndex); }
+
+  TheItemType& operator[](size_t theIndex) { return ChangeAt(theIndex); }
+
   //! Initialises a vector by copying "theOther".
   //! An exception is raised if the Lengths are different.
   inline math_VectorBase& Initialized(const math_VectorBase& theOther);
@@ -326,8 +349,29 @@ protected:
   inline void SetLower(const int theLower);
 
 private:
-  std::array<TheItemType, THE_BUFFER_SIZE> myBuffer;
-  NCollection_Array1<TheItemType>          Array;
+  struct BufferStorage
+  {
+    struct Empty
+    {
+    };
+
+    union {
+      alignas(TheItemType) char myData[sizeof(TheItemType) * THE_BUFFER_SIZE];
+      Empty myEmpty;
+    };
+
+    BufferStorage() noexcept
+        : myEmpty()
+    {
+      // Default-initialize the arithmetic elements without zero-initializing them.
+      ::new (static_cast<void*>(myData)) TheItemType[THE_BUFFER_SIZE];
+    }
+  };
+
+  TheItemType* bufferData() noexcept { return reinterpret_cast<TheItemType*>(myBuffer.myData); }
+
+  BufferStorage                   myBuffer;
+  NCollection_Array1<TheItemType> Array;
 };
 
 #include <math_VectorBase.lxx>

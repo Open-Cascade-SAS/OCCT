@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename bug28345_30338.stp
-set ref_size 41611
+set ref_size 49404
 set check_metadata 1
 set ref_metadata {Property for [0:1:1:1]:
 H_CIP : 55.545955351400004

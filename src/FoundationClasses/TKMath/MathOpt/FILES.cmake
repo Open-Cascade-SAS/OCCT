@@ -3,6 +3,7 @@ set(OCCT_MathOpt_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_MathOpt_FILES
   MathOpt_Brent.hxx
+  MathOpt_Utils.hxx
   MathOpt_Powell.hxx
   MathOpt_BFGS.hxx
   MathOpt_FRPR.hxx

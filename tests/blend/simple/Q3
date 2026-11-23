@@ -1,7 +1,7 @@
-puts "TODO OCC22817 All: TEST INCOMPLETE"
+puts "TODO OCC22817 All: Faulty shapes in variables faulty_1 to faulty_2"
 restore [locate_data_file CFI_4_e1_ffr.rle] s
 tscale s 0 0 0 SCALE
 explode s E
 blend result s 1*SCALE s_5
 
-checkprops result -s 0
+checkprops result -s 1.5089e+08

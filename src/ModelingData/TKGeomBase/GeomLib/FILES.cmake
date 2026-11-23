@@ -15,7 +15,6 @@ set(OCCT_GeomLib_FILES
   GeomLib_CheckBSplineCurve.lxx
   GeomLib_DenominatorMultiplier.cxx
   GeomLib_DenominatorMultiplier.hxx
-  GeomLib_DenominatorMultiplierPtr.hxx
   GeomLib_Interpolate.cxx
   GeomLib_Interpolate.hxx
   GeomLib_Interpolate.lxx

@@ -835,6 +835,17 @@ public:
   Standard_EXPORT IFSelect_ReturnStatus SendAll(const char* const filename,
                                                 const bool        computegraph = false);
 
+  //! Sends the starting Model into one stream, without splitting,
+  //! managing remaining data or anything else.
+  //! @param[out] theOStream destination stream
+  //! @param[in] theName optional logical name used for messages and stored session state
+  //! @param[in] computegraph whether to recompute the graph before writing
+  //! @return Done on success, Void if no data is available, Error if the work library is undefined
+  //!         or checks report errors, and Fail if writing fails or raises an exception
+  Standard_EXPORT IFSelect_ReturnStatus SendAll(Standard_OStream& theOStream,
+                                                const char* const theName      = "",
+                                                const bool        computegraph = false);
+
   //! Sends a part of the starting Model into one file, without
   //! splitting. But remaining data are managed.
   //! <computegraph> true commands the Graph to be recomputed before
@@ -855,6 +866,13 @@ public:
   //! Remark : It is a simple, one-file writing, other operations are
   //! available (such as splitting ...) which calls SendAll
   Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* const filename);
+
+  //! Writes the current Interface Model globally to a stream.
+  //! @param[out] theOStream destination stream
+  //! @param[in] theName optional logical stream name
+  //! @return execution status as described by the stream overload of SendAll()
+  Standard_EXPORT IFSelect_ReturnStatus WriteStream(Standard_OStream& theOStream,
+                                                    const char* const theName = "");
 
   //! Writes a sub-part of the current Interface Model to a File,
   //! as defined by a Selection <sel>, recomputes the Graph, and

@@ -15,6 +15,7 @@
 #define _MathUtils_Domain_HeaderFile
 
 #include <cmath>
+#include <limits>
 
 //! @file MathUtils_Domain.hxx
 //! @brief Parameter domain types for curves and surfaces.
@@ -54,8 +55,17 @@ struct Domain1D
   //! Returns the length of the domain.
   constexpr double Length() const { return Max - Min; }
 
+  //! Return true for finite, ordered bounds.
+  bool IsValid() const { return std::isfinite(Min) && std::isfinite(Max) && Min <= Max; }
+
   //! Returns the midpoint of the domain.
-  constexpr double Mid() const { return (Min + Max) * 0.5; }
+  constexpr double Mid() const
+  {
+    constexpr double aHalfMax = std::numeric_limits<double>::max() * 0.5;
+    return Min >= -aHalfMax && Min <= aHalfMax && Max >= -aHalfMax && Max <= aHalfMax
+             ? (Min + Max) * 0.5
+             : Min * 0.5 + Max * 0.5;
+  }
 
   //! Check if value is within domain.
   //! @param theU parameter value to check
@@ -63,7 +73,8 @@ struct Domain1D
   //! @return true if theU is in [Min - theTol, Max + theTol]
   bool Contains(double theU, double theTol = 0.0) const
   {
-    return theU >= Min - theTol && theU <= Max + theTol;
+    return IsValid() && std::isfinite(theU) && std::isfinite(theTol) && theTol >= 0.0
+           && theU >= Min - theTol && theU <= Max + theTol;
   }
 
   //! Clamp value to domain bounds.
@@ -89,7 +100,15 @@ struct Domain1D
   //! Interpolate within domain.
   //! @param theT interpolation parameter in [0, 1]
   //! @return Min + theT * Length()
-  constexpr double Lerp(double theT) const { return Min + theT * (Max - Min); }
+  constexpr double Lerp(double theT) const
+  {
+    if ((Min <= 0.0 && Max >= 0.0) || (Min >= 0.0 && Max <= 0.0))
+    {
+      return (1.0 - theT) * Min + theT * Max;
+    }
+    const double aLength = Max - Min;
+    return theT <= 0.5 ? Min + theT * aLength : Max - (1.0 - theT) * aLength;
+  }
 
   //! Normalize parameter to [0, 1] range.
   //! @param theU parameter value
@@ -105,7 +124,8 @@ struct Domain1D
   //! @return true if both Min and Max are within finite range
   bool IsFinite(double theInfLimit = 1.0e100) const
   {
-    return Min > -theInfLimit && Max < theInfLimit;
+    return IsValid() && std::isfinite(theInfLimit) && theInfLimit > 0.0 && Min > -theInfLimit
+           && Max < theInfLimit;
   }
 
   //! Check if this domain equals another within tolerance.
@@ -174,11 +194,14 @@ struct Domain2D
   //! Returns V length.
   constexpr double VLength() const { return VMax - VMin; }
 
+  //! Return true for finite, ordered U and V bounds.
+  bool IsValid() const { return U().IsValid() && V().IsValid(); }
+
   //! Returns U midpoint.
-  constexpr double UMid() const { return (UMin + UMax) * 0.5; }
+  constexpr double UMid() const { return U().Mid(); }
 
   //! Returns V midpoint.
-  constexpr double VMid() const { return (VMin + VMax) * 0.5; }
+  constexpr double VMid() const { return V().Mid(); }
 
   //! Check if UV point is within domain.
   //! @param theU U parameter
@@ -187,8 +210,9 @@ struct Domain2D
   //! @return true if (theU, theV) is in domain
   bool Contains(double theU, double theV, double theTol = 0.0) const
   {
-    return theU >= UMin - theTol && theU <= UMax + theTol && theV >= VMin - theTol
-           && theV <= VMax + theTol;
+    return IsValid() && std::isfinite(theU) && std::isfinite(theV) && std::isfinite(theTol)
+           && theTol >= 0.0 && theU >= UMin - theTol && theU <= UMax + theTol
+           && theV >= VMin - theTol && theV <= VMax + theTol;
   }
 
   //! Clamp UV to domain bounds.
@@ -228,7 +252,7 @@ struct Domain2D
   //! @param theInfLimit threshold for "infinity" (default 1e100)
   bool IsFinite(double theInfLimit = 1.0e100) const
   {
-    return UMin > -theInfLimit && UMax < theInfLimit && VMin > -theInfLimit && VMax < theInfLimit;
+    return IsValid() && U().IsFinite(theInfLimit) && V().IsFinite(theInfLimit);
   }
 };
 

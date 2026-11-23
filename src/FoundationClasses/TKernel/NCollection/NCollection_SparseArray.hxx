@@ -47,6 +47,19 @@ template <class TheItemType>
 class NCollection_SparseArray : public NCollection_SparseArrayBase
 {
 public:
+  using value_type      = TheItemType;
+  using size_type       = size_t;
+  using difference_type = std::ptrdiff_t;
+  using pointer         = TheItemType*;
+  using const_pointer   = const TheItemType*;
+  using reference       = TheItemType&;
+  using const_reference = const TheItemType&;
+  using iterator =
+    NCollection_SparseArrayBase::BasicIterator<NCollection_SparseArray, TheItemType, false>;
+  using const_iterator =
+    NCollection_SparseArrayBase::BasicIterator<NCollection_SparseArray, TheItemType, true>;
+
+public:
   //! Constructor; accepts size of blocks
   explicit NCollection_SparseArray(size_t theIncrement) noexcept
       : NCollection_SparseArrayBase(sizeof(TheItemType), theIncrement, destroyItemImpl)
@@ -137,60 +150,105 @@ public:
 public:
   // Iterator interface
 
+  //! Returns an iterator pointing to the first defined item.
+  iterator begin() noexcept { return iterator(*this); }
+
+  //! Returns a const iterator pointing to the first defined item.
+  const_iterator begin() const noexcept { return const_iterator(*this); }
+
+  //! Returns an iterator referring to the past-the-end item.
+  iterator end() noexcept { return iterator(*this, Capacity()); }
+
+  //! Returns a const iterator referring to the past-the-end item.
+  const_iterator end() const noexcept { return const_iterator(*this, Capacity()); }
+
+  //! Returns a const iterator pointing to the first defined item.
+  const_iterator cbegin() const noexcept { return const_iterator(*this); }
+
+  //! Returns a const iterator referring to the past-the-end item.
+  const_iterator cend() const noexcept { return const_iterator(*this, Capacity()); }
+
   /**
    * Implementation of type-specific const Iterator class
    */
-  class ConstIterator : public NCollection_SparseArrayBase::Iterator
+  class ConstIterator : public const_iterator
   {
   public:
     //! Empty constructor - for later Init
     ConstIterator() noexcept = default;
 
     //! Constructor with initialisation
-    ConstIterator(const NCollection_SparseArray& theVector)
-        : NCollection_SparseArrayBase::Iterator(&theVector)
+    ConstIterator(const NCollection_SparseArray& theVector) noexcept
+        : const_iterator(theVector)
     {
     }
 
     //! Initialisation
-    void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
+    void Init(const NCollection_SparseArray& theVector) noexcept
+    {
+      *this = ConstIterator(theVector);
+    }
+
+    //! Restart iterations on the same array
+    void Restart() noexcept { const_iterator::Restart(); }
+
+    //! Returns True if current item is available
+    bool More() const noexcept { return const_iterator::More(); }
+
+    //! Advances to the next item
+    void Next() noexcept { ++(*this); }
 
     //! Constant value access
-    const TheItemType& Value() const { return *(const TheItemType*)this->value(); }
+    const TheItemType& Value() const { return **this; }
 
     //! Constant value access operator
-    const TheItemType& operator()() const { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()() const { return **this; }
 
     //! Access current index with 'a-la map' interface
-    size_t Key() const noexcept { return Index(); }
+    size_t Key() const noexcept { return const_iterator::Key(); }
   };
 
   /**
    * Implementation of type-specific non-const Iterator class
    */
-  class Iterator : public ConstIterator
+  class Iterator : public iterator
   {
   public:
     //! Empty constructor - for later Init
     Iterator() noexcept = default;
 
     //! Constructor with initialisation
-    Iterator(NCollection_SparseArray& theVector)
-        : ConstIterator(theVector)
+    Iterator(NCollection_SparseArray& theVector) noexcept
+        : iterator(theVector)
     {
     }
 
     //! Initialisation
-    void Init(const NCollection_SparseArray& theVector) { this->init(&theVector); }
+    void Init(NCollection_SparseArray& theVector) noexcept { *this = Iterator(theVector); }
+
+    //! Restart iterations on the same array
+    void Restart() noexcept { iterator::Restart(); }
+
+    //! Returns True if current item is available
+    bool More() const noexcept { return iterator::More(); }
+
+    //! Advances to the next item
+    void Next() noexcept { ++(*this); }
+
+    //! Access current index with 'a-la map' interface
+    size_t Key() const noexcept { return iterator::Key(); }
+
+    //! Constant value access
+    const TheItemType& Value() const { return **this; }
 
     //! Value access
-    TheItemType& ChangeValue() { return *(TheItemType*)this->value(); }
+    TheItemType& ChangeValue() { return **this; }
 
     //! Value access operator
-    TheItemType& operator()() { return *(TheItemType*)this->value(); }
+    TheItemType& operator()() { return **this; }
 
     //! Const access operator - the same as in parent class
-    const TheItemType& operator()() const { return *(const TheItemType*)this->value(); }
+    const TheItemType& operator()() const { return **this; }
   };
 
 private:

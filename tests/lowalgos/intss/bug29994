@@ -45,14 +45,17 @@ if { $ic == 1 } {
   puts "OK: good number of curves!"
   checklength res_1 -l 0.70541045554962345 -eps 1.0e-3
 } else {
-  puts "Error: Incorrect number of curves in intersection result!"
+  if {$ic != 2} {
+    puts "Error: Incorrect number of curves in intersection result!"
+  }
   bfillds
   bbuild result
   
   # Check gaps between edges in result
   checksection result -r 2
   checkmaxtol result -min_tol 2.0e-7
-  checknbshapes result -edge 1 -vertex 2
+  checknbshapes result -edge 2 -vertex 3
+  checkprops result -l 0.70541045554962345 -eps 1.0e-3
 }
 
 smallview
