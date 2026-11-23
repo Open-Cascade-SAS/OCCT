@@ -2800,9 +2800,8 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
       // the infinite basis of a line edge, beyond that end, is not on the face, so the
       // search keeps to the edge, as it does for a BSpline edge, and a crossing beyond
       // the end goes to the extension of the faces below.
-      const bool isEdgeRange =
-        (Precision::IsInfinite(Utrim) || Precision::IsInfinite(Vtrim))
-        && (ChFi3d_IsExtendable(F) || ChFi3d_IsExtendable(Face[nb]));
+      const bool isEdgeRange = (Precision::IsInfinite(Utrim) || Precision::IsInfinite(Vtrim))
+                               && (ChFi3d_IsExtendable(F) || ChFi3d_IsExtendable(Face[nb]));
       if (Ctrim->IsPeriodic())
       {
         if (Ubid > Ctrim->Period())
