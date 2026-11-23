@@ -55,6 +55,7 @@
 #include <IntAna_IntConicQuad.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <math_DirectPolynomialRoots.hxx>
+#include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
@@ -62,6 +63,9 @@
 #include <ProjLib.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
+
+#include <algorithm>
+#include <limits>
 
 #ifdef DEBUGLINES
   #include <Geom2d_Line.hxx>
@@ -144,6 +148,20 @@ AxeOperator::AxeOperator(const gp_Ax1& A1,
   gp_Dir V2 = Axe2.Direction();
   gp_Pnt P1 = Axe1.Location();
   gp_Pnt P2 = Axe2.Location();
+  // Two axes that are one axis in exact arithmetic come out a few units in the
+  // last place apart once their locations are computed, and that is more than
+  // a fixed 1.e-14 as soon as a location is a few tens away from the origin
+  // across the axis. So a distance within the rounding of those coordinates is
+  // no distance. The allowance stays far below Precision::Confusion(), so axes
+  // that a tolerance can tell apart stay two axes.
+  const auto anAcross = [&V1](const gp_Pnt& thePnt) {
+    const gp_XYZ aPnt = thePnt.XYZ();
+    return (aPnt - V1.XYZ() * aPnt.Dot(V1.XYZ())).Modulus();
+  };
+  const double aRounding =
+    64. * std::numeric_limits<double>::epsilon() * std::max(anAcross(P1), anAcross(P2));
+  myEPSILON_DISTANCE =
+    std::max(myEPSILON_DISTANCE, std::min(aRounding, 1.e-3 * Precision::Confusion()));
   //
   RefineDir(V1);
   RefineDir(V2);

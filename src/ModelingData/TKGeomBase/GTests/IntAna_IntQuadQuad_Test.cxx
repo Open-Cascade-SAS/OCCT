@@ -21,12 +21,16 @@
 #include <gp_Pln.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Ax2d.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt2d.hxx>
 
 #include <gtest/gtest.h>
+
+#include <algorithm>
+#include <cmath>
 
 class IntAna_IntQuadQuad_Test : public ::testing::Test
 {
@@ -275,6 +279,87 @@ TEST_F(IntAna_IntQuadQuad_Test, CylinderCylinderSkewExternallyTangent_HasPoint)
   const gp_Pnt aP = anInter.Point(1);
   EXPECT_NEAR(gp_Lin(aCyl1.Axis()).Distance(aP), aR1, 1.0e-7);
   EXPECT_NEAR(gp_Lin(aCyl2.Axis()).Distance(aP), aR2, 1.0e-7);
+}
+
+// A cylinder and a cone on one axis, far enough from the origin that the two
+// axis locations differ in their last bits, as they do once each is computed.
+// The intersection is the pair of circles, not a quartic.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderConeCoaxialWithRoundedLocations_HasCircles)
+{
+  const gp_Dir aZDir(gp_Dir::D::Z);
+  const gp_Dir aYDir(gp_Dir::D::Y);
+  const gp_Ax3 aCylAxis(gp_Pnt(-59.0, 59.0, -2.6), aZDir, aYDir);
+  const gp_Ax3 aConeAxis(gp_Pnt(std::nextafter(-59.0, 0.0), std::nextafter(59.0, 0.0), 2.5),
+                         aZDir,
+                         aYDir);
+
+  const gp_Cylinder aCyl(aCylAxis, 3.75);
+  const gp_Cone     aCone(aConeAxis, M_PI / 4.0, 1.85);
+
+  ASSERT_GT(gp_Lin(aCyl.Axis()).Distance(aCone.Location()), 1.0e-14);
+
+  IntAna_QuadQuadGeo anInter(aCyl, aCone, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  ASSERT_EQ(anInter.TypeInter(), IntAna_Circle);
+  ASSERT_EQ(anInter.NbSolutions(), 2);
+
+  // The cone has the cylinder's radius 1.9 above and 5.6 below its reference plane.
+  const double aZ1 = anInter.Circle(1).Location().Z();
+  const double aZ2 = anInter.Circle(2).Location().Z();
+  EXPECT_NEAR(std::max(aZ1, aZ2), 4.4, 1.0e-12);
+  EXPECT_NEAR(std::min(aZ1, aZ2), -3.1, 1.0e-12);
+  for (int anIndex = 1; anIndex <= 2; ++anIndex)
+  {
+    EXPECT_NEAR(anInter.Circle(anIndex).Radius(), 3.75, 1.0e-12);
+  }
+}
+
+// Axes that are apart by more than the rounding of their coordinates stay two axes.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderConeAxesApart_HasNoGeometricSolution)
+{
+  const gp_Dir aZDir(gp_Dir::D::Z);
+  const gp_Dir aYDir(gp_Dir::D::Y);
+  const gp_Ax3 aCylAxis(gp_Pnt(-59.0, 59.0, -2.6), aZDir, aYDir);
+  const gp_Ax3 aConeAxis(gp_Pnt(-59.0 + 1.0e-9, 59.0, 2.5), aZDir, aYDir);
+
+  const gp_Cylinder aCyl(aCylAxis, 3.75);
+  const gp_Cone     aCone(aConeAxis, M_PI / 4.0, 1.85);
+
+  IntAna_QuadQuadGeo anInter(aCyl, aCone, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  EXPECT_EQ(anInter.TypeInter(), IntAna_NoGeometricSolution);
+}
+
+// The allowance follows the coordinates across the axis, not along it: far
+// along one axis, a cylinder and a sphere 1.e-5 apart are not coaxial, and
+// their intersection is not empty.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderSphereFarAlongAxis_StayApart)
+{
+  const gp_Dir      aZDir(gp_Dir::D::Z);
+  const gp_Dir      anXDir(gp_Dir::D::X);
+  const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0.0, 0.0, 1.0e9), aZDir, anXDir), 1.0);
+  const gp_Sphere   aSphere(gp_Ax3(gp_Pnt(1.0e-5, 0.0, 1.0e9), aZDir, anXDir), 0.999995);
+
+  IntAna_QuadQuadGeo anInter(aCyl, aSphere, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  EXPECT_NE(anInter.TypeInter(), IntAna_Empty);
+}
+
+// Far across the axis the allowance has a bound well below the tolerance.
+TEST_F(IntAna_IntQuadQuad_Test, CylinderConeAxesApartFarFromOrigin_HasNoGeometricSolution)
+{
+  const gp_Dir      aZDir(gp_Dir::D::Z);
+  const gp_Dir      aYDir(gp_Dir::D::Y);
+  const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(1.0e9, 0.0, 0.0), aZDir, aYDir), 3.75);
+  const gp_Cone     aCone(gp_Ax3(gp_Pnt(1.0e9 + 1.0e-6, 0.0, 2.5), aZDir, aYDir), M_PI / 4.0, 1.85);
+
+  IntAna_QuadQuadGeo anInter(aCyl, aCone, 1.0e-7);
+
+  ASSERT_TRUE(anInter.IsDone());
+  EXPECT_EQ(anInter.TypeInter(), IntAna_NoGeometricSolution);
 }
 
 // Migrated from tests/bugs/moddata_3/bug23939. Internally tangent circles
