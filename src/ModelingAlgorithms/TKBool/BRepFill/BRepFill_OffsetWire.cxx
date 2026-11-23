@@ -238,34 +238,24 @@ static bool KPartCircle(
   if ((C->IsKind(STANDARD_TYPE(Geom_Circle)) && BRep_Tool::IsClosed(E)) || // closed circle
       IsOpenResult)
   {
-    double anOffset = myOffset;
+    const double anOffset = E.Orientation() == TopAbs_FORWARD ? -myOffset : myOffset;
 
     occ::handle<Geom2d_Curve>        aPCurve = BRep_Tool::CurveOnSurface(E, mySpine, f, l);
     occ::handle<Geom2dAdaptor_Curve> AHC     = new Geom2dAdaptor_Curve(aPCurve, f, l);
     occ::handle<Geom2d_Curve>        OC;
     if (AHC->GetType() == GeomAbs_Line)
     {
-      if (E.Orientation() == TopAbs_FORWARD)
-      {
-        anOffset *= -1;
-      }
       Adaptor2d_OffsetCurve Off(AHC, anOffset);
       OC = new Geom2d_Line(Off.Line());
     }
     else if (AHC->GetType() == GeomAbs_Circle)
     {
-      if (E.Orientation() == TopAbs_FORWARD)
+      const gp_Circ2d aCircle = AHC->Circle();
+      // A positive curve offset increases the radius only for a direct circle.
+      const double aRadius = aCircle.Radius() + (aCircle.IsDirect() ? anOffset : -anOffset);
+      if (aRadius > 0.0)
       {
-        anOffset *= -1;
-      }
-      if (!BRep_Tool::IsClosed(E))
-      {
-        anOffset *= -1;
-      }
-      gp_Circ2d theCirc = AHC->Circle();
-      if (anOffset > 0. || std::abs(anOffset) < theCirc.Radius())
-      {
-        OC = new Geom2d_Circle(theCirc.Position(), theCirc.Radius() + anOffset);
+        OC = new Geom2d_Circle(aCircle.Position(), aRadius);
       }
       else
       {
@@ -275,10 +265,6 @@ static bool KPartCircle(
     }
     else
     {
-      if (E.Orientation() == TopAbs_FORWARD)
-      {
-        anOffset *= -1;
-      }
       occ::handle<Geom2d_TrimmedCurve> G2dT = new Geom2d_TrimmedCurve(aPCurve, f, l);
       OC                                    = new Geom2d_OffsetCurve(G2dT, anOffset);
     }
