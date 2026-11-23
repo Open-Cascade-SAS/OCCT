@@ -7,6 +7,7 @@ set(OCCT_TKV3d_GTests_FILES
   BRepFont_PlanarRegion_Test.cxx
   BRepFont_Regularizer_Test.cxx
   Select3D_SensitivePrimitiveArray_Test.cxx
-  StdPrs_BRepFont_Test.cxx
   SelectMgr_SelectableObject_Test.cxx
+  StdPrs_BRepFont_Test.cxx
+  StdSelect_BRepSelectionTool_Test.cxx
 )
