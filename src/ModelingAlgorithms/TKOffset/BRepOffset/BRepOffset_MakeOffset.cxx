@@ -320,6 +320,8 @@ static double ComputeMaxDist(const gp_Pln&                  thePlane,
 
 static void CorrectSolid(TopoDS_Solid& theSol, NCollection_List<TopoDS_Shape>& theSolList);
 
+static bool SplitInvalidSolid(TopoDS_Solid& theSol, TopoDS_Compound& theComp);
+
 //---------------------------------------------------------------------
 
 static TopAbs_Orientation OrientationOfEdgeInFace(const TopoDS_Edge& theEdge,
@@ -1153,6 +1155,14 @@ void BRepOffset_MakeOffset::MakeThickSolid(const Message_ProgressRange& theRange
     }
     Res.Closed(true);
     myOffsetShape = Res;
+
+    // When the faces left after removing the caps are in several pieces, so may the result be.
+    TopoDS_Compound aComp;
+    B.MakeCompound(aComp);
+    if (SplitInvalidSolid(Res, aComp))
+    {
+      myOffsetShape = aComp;
+    }
 
     // Test of Validity of the result of thick Solid
     // more face than the initial solid.
@@ -2791,28 +2801,8 @@ void BRepOffset_MakeOffset::CorrectConicalFaces()
         }
       }
     }
-    int  nbs       = Sol.NbChildren();
-    bool SolIsNull = (nbs == 0);
     // Checking solid
-    if (nbs > 1)
-    {
-      BRepCheck_Analyzer aCheck(Sol, false);
-      if (!aCheck.IsValid())
-      {
-        NCollection_List<TopoDS_Shape> aSolList;
-        CorrectSolid(Sol, aSolList);
-        if (!aSolList.IsEmpty())
-        {
-          BB.Add(NC, Sol);
-          NCollection_List<TopoDS_Shape>::Iterator aSLIt(aSolList);
-          for (; aSLIt.More(); aSLIt.Next())
-          {
-            BB.Add(NC, aSLIt.Value());
-          }
-          SolIsNull = true;
-        }
-      }
-    }
+    bool SolIsNull = (Sol.NbChildren() == 0) || SplitInvalidSolid(Sol, NC);
     //
     bool NCIsNull = (NC.NbChildren() == 0);
     if ((!SolIsNull) && (!NCIsNull))
@@ -3773,29 +3763,9 @@ void BRepOffset_MakeOffset::MakeSolid(const Message_ProgressRange& theRange)
       }
     }
   }
-  int  nbs       = Sol.NbChildren();
-  bool SolIsNull = (nbs == 0);
   // Checking solid
-  if (nbs > 1)
-  {
-    BRepCheck_Analyzer aCheck(Sol, false);
-    if (!aCheck.IsValid())
-    {
-      NCollection_List<TopoDS_Shape> aSolList;
-      CorrectSolid(Sol, aSolList);
-      if (!aSolList.IsEmpty())
-      {
-        B.Add(NC, Sol);
-        NCollection_List<TopoDS_Shape>::Iterator aSLIt(aSolList);
-        for (; aSLIt.More(); aSLIt.Next())
-        {
-          B.Add(NC, aSLIt.Value());
-        }
-        SolIsNull = true;
-      }
-    }
-  }
-  bool NCIsNull = (NC.NbChildren() == 0);
+  bool SolIsNull = (Sol.NbChildren() == 0) || SplitInvalidSolid(Sol, NC);
+  bool NCIsNull  = (NC.NbChildren() == 0);
   if ((!SolIsNull) && (!NCIsNull))
   {
     B.Add(NC, Sol);
@@ -4296,6 +4266,32 @@ void CorrectSolid(TopoDS_Solid& theSol, NCollection_List<TopoDS_Shape>& theSolLi
 }
 
 //=======================================================================
+// function : SplitInvalidSolid
+// purpose  : If theSol has several shells and is invalid, splits it with
+//           CorrectSolid and adds the solids to theComp.
+//=======================================================================
+bool SplitInvalidSolid(TopoDS_Solid& theSol, TopoDS_Compound& theComp)
+{
+  if (theSol.NbChildren() < 2 || BRepCheck_Analyzer(theSol, false).IsValid())
+  {
+    return false;
+  }
+  NCollection_List<TopoDS_Shape> aSolList;
+  CorrectSolid(theSol, aSolList);
+  if (aSolList.IsEmpty())
+  {
+    return false;
+  }
+  BRep_Builder aBB;
+  aBB.Add(theComp, theSol);
+  for (const TopoDS_Shape& aSol : aSolList)
+  {
+    aBB.Add(theComp, aSol);
+  }
+  return true;
+}
+
+//=======================================================================
 // function : CheckInputData
 // purpose  : Check input data for possibility of offset perform.
 //=======================================================================
@@ -4329,8 +4325,17 @@ bool BRepOffset_MakeOffset::CheckInputData(const Message_ProgressRange& theRange
     }
   }
 
-  // Connectivity of input shape.
-  if (!IsConnectedShell(myFaceComp))
+  // Connectivity of input shape, with the removed faces: without them, the rest
+  // may be in several pieces (a solid with through holes, top and bottom removed).
+  BRep_Builder    aBB;
+  TopoDS_Compound aFaceComp;
+  aBB.MakeCompound(aFaceComp);
+  aBB.Add(aFaceComp, myFaceComp);
+  for (int i = 1; i <= myFaces.Extent(); ++i)
+  {
+    aBB.Add(aFaceComp, myFaces(i));
+  }
+  if (!IsConnectedShell(aFaceComp))
   {
     myError = BRepOffset_NotConnectedShell;
     return false;
