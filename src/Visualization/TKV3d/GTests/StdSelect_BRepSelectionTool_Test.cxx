@@ -46,18 +46,18 @@ TEST(StdSelect_BRepSelectionToolTest, Mirrored_Cylinder_From_Extrusion)
   const double radius = 10.0;
   const double height = 30.0;
 
-  gp_Circ circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), radius);
-  TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(circle);
-  TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge);
-  gp_Pln plane(gp::XOY());
-  TopoDS_Face face = BRepBuilderAPI_MakeFace(plane, wire);
-  gp_Vec prismVec(0.0, 0.0, height);
+  gp_Circ      circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), radius);
+  TopoDS_Edge  edge = BRepBuilderAPI_MakeEdge(circle);
+  TopoDS_Wire  wire = BRepBuilderAPI_MakeWire(edge);
+  gp_Pln       plane(gp::XOY());
+  TopoDS_Face  face = BRepBuilderAPI_MakeFace(plane, wire);
+  gp_Vec       prismVec(0.0, 0.0, height);
   TopoDS_Shape prism = BRepPrimAPI_MakePrism(face, prismVec);
-  gp_Trsf mirrorTrsf;
+  gp_Trsf      mirrorTrsf;
   mirrorTrsf.SetMirror(gp::XOY());
   TopoDS_Shape mirroredPrism = BRepBuilderAPI_Transform(prism, mirrorTrsf).Shape();
 
-  occ::handle<AIS_Shape>                anObject = new AIS_Shape(mirroredPrism);
+  occ::handle<AIS_Shape>                anObject  = new AIS_Shape(mirroredPrism);
   occ::handle<SelectMgr_ViewerSelector> aSelector = new SelectMgr_ViewerSelector;
   SelectMgr_SelectionManager            aManager(aSelector);
   aManager.Load(anObject);
@@ -67,10 +67,12 @@ TEST(StdSelect_BRepSelectionToolTest, Mirrored_Cylinder_From_Extrusion)
   ASSERT_FALSE(aSelection.IsNull());
   ASSERT_FALSE(aSelection->IsEmpty());
 
-  const NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>& anEntities = aSelection->Entities();
+  const NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>& anEntities =
+    aSelection->Entities();
   ASSERT_TRUE(anEntities.Size() == 1);
 
-  NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(anEntities);
+  NCollection_DynamicArray<occ::handle<SelectMgr_SensitiveEntity>>::Iterator anEntityIter(
+    anEntities);
   ASSERT_TRUE(anEntityIter.More());
 
   const occ::handle<SelectMgr_SensitiveEntity>& anEnt = anEntityIter.Value();
@@ -81,7 +83,8 @@ TEST(StdSelect_BRepSelectionToolTest, Mirrored_Cylinder_From_Extrusion)
 
   ASSERT_TRUE(anEnt3D->IsKind(STANDARD_TYPE(Select3D_SensitiveCylinder)));
 
-  occ::handle<Select3D_SensitiveCylinder> aCyl = occ::down_cast<Select3D_SensitiveCylinder>(anEnt3D);
+  occ::handle<Select3D_SensitiveCylinder> aCyl =
+    occ::down_cast<Select3D_SensitiveCylinder>(anEnt3D);
   ASSERT_FALSE(aCyl.IsNull());
 
   gp_Pnt aCG = aCyl->CenterOfGeometry();

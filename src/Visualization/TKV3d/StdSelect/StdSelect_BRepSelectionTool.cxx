@@ -1137,8 +1137,8 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
             .Transformed(*aGeomPlanesLoc[0])
             .Distance(aGeomPlanes[1]->Location().Transformed(*aGeomPlanesLoc[1]));
 
-        gp_Trsf aTrsf;
-        gp_Ax3  aPos = aCyl.Position();
+        gp_Trsf       aTrsf;
+        gp_Ax3        aPos = aCyl.Position();
         gp_Pnt        p1   = aPos.Location();
         const gp_Dir& d1   = aPos.Direction();
         double        u1, u2, v1, v2;
