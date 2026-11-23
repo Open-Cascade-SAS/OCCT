@@ -78,7 +78,7 @@ void GeomTools_Curve2dSet::Clear()
 
 int GeomTools_Curve2dSet::Add(const occ::handle<Geom2d_Curve>& S)
 {
-  return myMap.Add(S);
+  return (S.IsNull()) ? 0 : myMap.Add(S);
 }
 
 //=================================================================================================
@@ -97,7 +97,7 @@ occ::handle<Geom2d_Curve> GeomTools_Curve2dSet::Curve2d(const int I) const
 
 int GeomTools_Curve2dSet::Index(const occ::handle<Geom2d_Curve>& S) const
 {
-  return myMap.FindIndex(S);
+  return (S.IsNull()) ? 0 : myMap.FindIndex(S);
 }
 
 //=================================================================================================
