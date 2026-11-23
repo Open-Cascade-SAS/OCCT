@@ -370,7 +370,8 @@ int Extrema_ExtCC::NbExt() const
 
 void Extrema_ExtCC::Points(const int N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const
 {
-  if (N < 1 || N > NbExt())
+  // A parallel pair has a distance but no point pair, so NbExt() can exceed the point count.
+  if (N < 1 || 2 * N > mypoints.Length())
   {
     throw Standard_OutOfRange();
   }
