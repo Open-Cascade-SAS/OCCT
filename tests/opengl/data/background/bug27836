@@ -19,6 +19,10 @@ vfit
 
 vviewparams -scale 6.66 -eye 48 43 -210 -at 50 45 -95
 
-if { [vreadpixel 100 300 -rgb -name] != "GRAY75" } { puts "Error: gradient background is not displayed" }
+# Readback rounding may differ by one 8-bit level between renderers.
+set color [vreadpixel 100 300 -srgb]
+foreach actual $color expected {180 186 204} channel {red green blue} {
+  checkreal "Gradient background $channel" $actual [expr {$expected / 255.0}] [expr {1.0 / 255.0}] 0.0
+}
 
 vdump $imagedir/${casename}.png

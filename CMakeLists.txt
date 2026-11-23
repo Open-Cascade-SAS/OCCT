@@ -116,10 +116,6 @@ if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
     set (BUILD_SHARED_LIBRARY_NAME_POSTFIX "" CACHE STRING "${BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR}" FORCE)
   endif()
 else()
-  message(AUTHOR_WARNING "OCCT is licensed under LGPL 2.1, which has limitations on "
-                         "static linking with proprietary software. "
-                         "OCCT3D offers commercial licensing exceptions to LGPL 2.1. "
-                         "Please use our contact form at https://occt3d.com/")
   unset (BUILD_SHARED_LIBS)
   unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
   if (BUILD_OPT_PROFILE STREQUAL "Production")
@@ -147,19 +143,18 @@ set_property (GLOBAL PROPERTY OCC_VERSION_MAJOR ${OCC_VERSION_MAJOR})
 set_property (GLOBAL PROPERTY OCC_VERSION_MINOR ${OCC_VERSION_MINOR})
 set_property (GLOBAL PROPERTY OCC_VERSION_MAINTENANCE ${OCC_VERSION_MAINTENANCE})
 
-# set soversion variable determining compatibility version on platforms with symlinks
-# 0 - for empty, 1 - for major, 2 - for major.minor, 3 - for major.minor.maintenance
-if (NOT BUILD_SOVERSION_NUMBERS)
-  set (BUILD_SOVERSION_NUMBERS "0" CACHE STRING "${BUILD_SOVERSION_NUMBERS_DESCR}" FORCE)
-  SET_PROPERTY(CACHE BUILD_SOVERSION_NUMBERS PROPERTY STRINGS 0 1 2 3)
-
+# set the number of version components in shared library names and SONAME
+# 0 - for none, 1 - for major, 2 - for major.minor, 3 - for major.minor.maintenance
+if ("${BUILD_SOVERSION_NUMBERS}" STREQUAL "")
   # update default state of soversion on different platforms
   if (WIN32 OR ANDROID OR EMSCRIPTEN)
-    set (BUILD_SOVERSION_NUMBERS 0)
+    set (BUILD_SOVERSION_NUMBERS "0")
   else()
-    set (BUILD_SOVERSION_NUMBERS 2)
+    set (BUILD_SOVERSION_NUMBERS "2")
   endif()
 endif()
+set (BUILD_SOVERSION_NUMBERS "${BUILD_SOVERSION_NUMBERS}" CACHE STRING "${BUILD_SOVERSION_NUMBERS_DESCR}" FORCE)
+set_property (CACHE BUILD_SOVERSION_NUMBERS PROPERTY STRINGS 0 1 2 3)
 
 set (INSTALL_TEST_CASES OFF CACHE BOOL "${INSTALL_TEST_CASES_DESCR}")
 
@@ -233,6 +228,18 @@ if (NOT DEFINED BUILD_DOC_RefMan)
   set (BUILD_DOC_RefMan OFF CACHE BOOL "${BUILD_DOC_RefMan_DESCR}")
 endif()
 
+if (NOT DEFINED BUILD_DOC_DotNumThreads)
+  set (BUILD_DOC_DotNumThreads "" CACHE STRING "${BUILD_DOC_DotNumThreads_DESCR}")
+endif()
+
+if (NOT DEFINED BUILD_DOC_DotBatchSize)
+  set (BUILD_DOC_DotBatchSize "" CACHE STRING "${BUILD_DOC_DotBatchSize_DESCR}")
+endif()
+
+if (NOT DEFINED BUILD_DOC_Search)
+  set (BUILD_DOC_Search ON CACHE BOOL "${BUILD_DOC_Search_DESCR}")
+endif()
+
 if (NOT DEFINED INSTALL_DOC_RefMan)
   set (INSTALL_DOC_RefMan OFF CACHE BOOL "${INSTALL_DOC_RefMan_DESCR}")
 endif()
@@ -265,7 +272,7 @@ endif()
 
 # Define layout boolean variables for optimization
 set(LAYOUT_IS_WINDOWS FALSE)
-set(LAYOUT_IS_UNIX FALSE) 
+set(LAYOUT_IS_UNIX FALSE)
 set(LAYOUT_IS_VCPKG FALSE)
 
 if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Windows")
@@ -831,6 +838,8 @@ if (BUILD_USE_VCPKG)
   project (OCCT)
 endif()
 
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/OpenCASCADELicense")
+
 if (APPLE)
   # set Apple specific variables
   occt_set_apple_csf_vars()
@@ -1104,8 +1113,10 @@ COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}"
 # Create and install Standard_Version.hxx
 CONFIGURE_AND_INSTALL_VERSION_HEADER()
 
-# Install deprecated NCollection alias headers for backward compatibility
-install(DIRECTORY src/Deprecated/NCollectionAliases/
+# Install deprecated alias headers for backward compatibility. These headers are intentionally
+# excluded from toolkit manifests and are therefore available only in installed OCCT packages.
+include("${CMAKE_CURRENT_SOURCE_DIR}/src/Deprecated/PACKAGES.cmake")
+install(DIRECTORY ${OCCT_DEPRECATED_HEADER_DIRECTORIES}
         DESTINATION "${INSTALL_DIR_INCLUDE}")
 
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
@@ -1205,7 +1216,7 @@ if (LAYOUT_IS_VCPKG)
     export CSF_OCCTTestsPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/tests\"
     export CSF_OCCTDocPath=\"\${CASCONTENTROOT}/share/${OCCT_PROJECT_NAME}/doc\"")
   endif()
-  
+
   # For vcpkg, we handle all paths in the bin/lib paths logic above
   set (OCCT_CUSTOM_ADDITIONAL_PATHS "")
 else()
@@ -1343,12 +1354,12 @@ if (BUILD_GTEST)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_gtest")
   # Initialize GTest environment and create the target first
   OCCT_INIT_GTEST()
-  
+
   # Collect test files from all active toolkits and add them to the target
   foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
     OCCT_COLLECT_TOOLKIT_TESTS(${BUILD_TOOLKIT})
   endforeach()
-  
+
   # Set environment variables for all tests
   OCCT_SET_GTEST_ENVIRONMENT()
 endif()
@@ -1426,8 +1437,8 @@ foreach (OCCT_CONFIGURATION ${CMAKE_CONFIGURATION_TYPES})
   configure_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADECompileDefinitionsAndFlags.cmake.in" "OpenCASCADECompileDefinitionsAndFlags-${OCCT_CONFIGURATION_LOWER}.cmake" @ONLY)
 endforeach()
 # install OpenCASCADE config file with compile definitions and C/C++ flags ONLY for current configuration
-install (CODE "string (TOLOWER \"\${CMAKE_INSTALL_CONFIG_NAME}\" CMAKE_INSTALL_CONFIG_NAME_LOWER)")
-install (CODE "file(INSTALL FILES \"${CMAKE_BINARY_DIR}/OpenCASCADECompileDefinitionsAndFlags-\${CMAKE_INSTALL_CONFIG_NAME_LOWER}.cmake\" DESTINATION \"${INSTALL_DIR}/${INSTALL_DIR_CMAKE}/\" TYPE FILE)")
+install (FILES "${CMAKE_BINARY_DIR}/OpenCASCADECompileDefinitionsAndFlags-$<LOWER_CASE:$<CONFIG>>.cmake"
+         DESTINATION "${INSTALL_DIR_CMAKE}")
 
 foreach (OCCT_MODULE ${OCCT_MODULES})
   if (BUILD_MODULE_${OCCT_MODULE})
@@ -1466,12 +1477,35 @@ if (APPLE)
   set (SET_OpenCASCADE_WITH_GLX "set (OpenCASCADE_WITH_GLX       ${USE_XLIB})")
 endif()
 
-# Configure and install cmake config file
+# The installed configuration uses paths relative to its installation prefix.
+include(CMakePackageConfigHelpers)
+set (OCCT_CONFIG_BUILD_TREE FALSE)
+set (SET_OpenCASCADE_BUILD_TREE_PATHS)
+configure_package_config_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADEConfig.cmake.in"
+  "${CMAKE_BINARY_DIR}/cmake_install/OpenCASCADEConfig.cmake"
+  INSTALL_DESTINATION "${INSTALL_DIR_CMAKE}"
+  PATH_VARS INSTALL_DIR_BIN INSTALL_DIR_LIB INSTALL_DIR_SCRIPT INSTALL_DIR_INCLUDE INSTALL_DIR_RESOURCE
+  NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+install(FILES "${CMAKE_BINARY_DIR}/cmake_install/OpenCASCADEConfig.cmake" DESTINATION "${INSTALL_DIR_CMAKE}")
+
+# The build-tree configuration uses the actual build and source directories.
+set (OCCT_CONFIG_BUILD_TREE TRUE)
+set (OCCT_CONFIG_BINARY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+set (OCCT_CONFIG_LIBRARY_DIR "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}")
+if (NOT OCCT_CONFIG_BINARY_DIR)
+  set (OCCT_CONFIG_BINARY_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}")
+  set (OCCT_CONFIG_LIBRARY_DIR "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}")
+endif()
+set (SET_OpenCASCADE_BUILD_TREE_PATHS
+"set (OpenCASCADE_INSTALL_PREFIX \"${CMAKE_BINARY_DIR}\")
+set (OpenCASCADE_BINARY_DIR \"${OCCT_CONFIG_BINARY_DIR}\")
+set (OpenCASCADE_LIBRARY_DIR \"${OCCT_CONFIG_LIBRARY_DIR}\")
+set (OpenCASCADE_SCRIPT_DIR \"${CMAKE_BINARY_DIR}\")
+set (OpenCASCADE_INCLUDE_DIR \"${OCCT_BINARY_DIR}/${INSTALL_DIR_INCLUDE}\")
+set (OpenCASCADE_RESOURCE_DIR \"${OCCT_ROOT_DIR}/resources\")")
 configure_file("${OCCT_ROOT_DIR}/adm/templates/OpenCASCADEConfig.cmake.in" "OpenCASCADEConfig.cmake" @ONLY)
-install(FILES "${CMAKE_BINARY_DIR}/OpenCASCADEConfig.cmake" DESTINATION  "${INSTALL_DIR_CMAKE}")
 
 # Configure cmake version file
-include(CMakePackageConfigHelpers)
 write_basic_package_version_file( ${CMAKE_BINARY_DIR}/OpenCASCADEConfigVersion.cmake
                                   VERSION ${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}
                                   COMPATIBILITY ExactVersion )

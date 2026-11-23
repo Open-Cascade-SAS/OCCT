@@ -59,11 +59,6 @@ class Geom2dInt_GInter;
 Standard_EXPORT bool ChFi3d_ComputeHatchingDomains(Geom2dHatch_Hatcher& theHatcher,
                                                    const int            theHatchingIndex);
 
-#ifdef OCCT_DEBUG
-  #include <OSD_Chronometer.hxx>
-extern OSD_Chronometer simul, elspine, chemine;
-#endif
-
 double ChFi3d_InPeriod(const double U, const double UFirst, const double ULast, const double Eps);
 
 void ChFi3d_Boite(const gp_Pnt2d& p1,
@@ -245,7 +240,7 @@ occ::handle<Geom2d_Curve> ChFi3d_BuildPCurve(const occ::handle<Adaptor3d_Surface
                                              const gp_Vec2d&                       v2,
                                              const bool redresse = false);
 
-bool ChFi3d_CheckSameParameter(const occ::handle<Adaptor3d_Curve>&   C3d,
+bool ChFi3d_CheckSameParameter(const Adaptor3d_Curve&                C3d,
                                occ::handle<Geom2d_Curve>&            Pcurv,
                                const occ::handle<Adaptor3d_Surface>& S,
                                const double                          tol3d,
@@ -533,6 +528,11 @@ void ChFi3d_ChercheBordsLibres(const ChFiDS_Map&    myVEMap,
 int ChFi3d_NbNotDegeneratedEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap);
 int ChFi3d_NumberOfEdges(const TopoDS_Vertex& Vtx, const ChFiDS_Map& VEMap);
 
+//! Counts non-degenerate incident edges without construction G2 continuity.
+//! @param[in] Vtx vertex to inspect
+//! @param[in] VEMap vertex-to-edge adjacency map
+//! @param[in] EFmap edge-to-face adjacency map
+//! @return sharp edge count
 int ChFi3d_NumberOfSharpEdges(const TopoDS_Vertex& Vtx,
                               const ChFiDS_Map&    VEMap,
                               const ChFiDS_Map&    EFmap);

@@ -6,7 +6,8 @@ set(OCCT_ShapeFix_FILES
   ShapeFix.hxx
   ShapeFix_ComposeShell.cxx
   ShapeFix_ComposeShell.hxx
-
+  ShapeFix_EdgeConnect.cxx
+  ShapeFix_EdgeConnect.hxx
   ShapeFix_Edge.cxx
   ShapeFix_Edge.hxx
   ShapeFix_EdgeProjAux.cxx
@@ -14,6 +15,8 @@ set(OCCT_ShapeFix_FILES
   ShapeFix_Face.cxx
   ShapeFix_Face.hxx
   ShapeFix_Face.lxx
+  ShapeFix_FaceConnect.cxx
+  ShapeFix_FaceConnect.hxx
   ShapeFix_FixSmallFace.cxx
   ShapeFix_FixSmallFace.hxx
   ShapeFix_FixSmallSolid.cxx

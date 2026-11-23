@@ -15,9 +15,6 @@
 #include <XmlXCAFDrivers.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <NCollection_Sequence.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Path.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <Precision.hxx>
@@ -76,25 +73,6 @@ static const char* FormatName(const StorageFormat theFormat)
   return theFormat == StorageFormat::Xml ? "XmlXCAF" : "BinXCAF";
 }
 
-static const char* FileExtension(const StorageFormat theFormat)
-{
-  return theFormat == StorageFormat::Xml ? "xml" : "xbf";
-}
-
-static TCollection_ExtendedString MakeTemporaryFile(OSD_Directory&      theDirectory,
-                                                    const char*         theName,
-                                                    const StorageFormat theFormat,
-                                                    OSD_Path&           thePath)
-{
-  theDirectory.Path(thePath);
-  thePath.SetName(theName);
-  thePath.SetExtension(TCollection_AsciiString(".") + FileExtension(theFormat));
-
-  TCollection_AsciiString aSystemName;
-  thePath.SystemName(aSystemName);
-  return TCollection_ExtendedString(aSystemName, true);
-}
-
 static TDF_Label Label_0_1_1_1(const occ::handle<TDocStd_Document>& theDocument)
 {
   TDF_Label aLabel = theDocument->Main();
@@ -105,25 +83,18 @@ static TDF_Label Label_0_1_1_1(const occ::handle<TDocStd_Document>& theDocument)
 
 static occ::handle<TDocStd_Document> SaveAndOpen(
   const occ::handle<TDocStd_Application>& theApplication,
-  const occ::handle<TDocStd_Document>&    theDocument,
-  const TCollection_ExtendedString&       theFileName,
-  const OSD_Path&                         theFilePath)
+  const occ::handle<TDocStd_Document>&    theDocument)
 {
-  EXPECT_EQ(theApplication->SaveAs(theDocument, theFileName), PCDM_SS_OK);
-
-  OSD_File aFile(theFilePath);
-  EXPECT_TRUE(aFile.Exists());
+  std::stringstream aStream;
+  EXPECT_EQ(theApplication->SaveAs(theDocument, aStream), PCDM_SS_OK);
+  EXPECT_FALSE(aStream.str().empty());
 
   theApplication->Close(theDocument);
 
+  aStream.seekg(0);
   occ::handle<TDocStd_Document> aRestoredDocument;
-  EXPECT_EQ(theApplication->Open(theFileName, aRestoredDocument), PCDM_RS_OK);
+  EXPECT_EQ(theApplication->Open(aStream, aRestoredDocument), PCDM_RS_OK);
   EXPECT_FALSE(aRestoredDocument.IsNull());
-
-  if (aFile.Exists())
-  {
-    aFile.Remove();
-  }
   return aRestoredDocument;
 }
 
@@ -131,17 +102,8 @@ static occ::handle<TDocStd_Document> SaveAndOpenStream(
   const occ::handle<TDocStd_Application>& theApplication,
   const occ::handle<TDocStd_Document>&    theDocument)
 {
-  std::stringstream aStream;
   theDocument->NewCommand();
-  EXPECT_EQ(theApplication->SaveAs(theDocument, aStream), PCDM_SS_OK);
-  EXPECT_FALSE(aStream.str().empty());
-
-  theApplication->Close(theDocument);
-  aStream.seekg(0);
-  occ::handle<TDocStd_Document> aRestoredDocument;
-  EXPECT_EQ(theApplication->Open(aStream, aRestoredDocument), PCDM_RS_OK);
-  EXPECT_FALSE(aRestoredDocument.IsNull());
-  return aRestoredDocument;
+  return SaveAndOpen(theApplication, theDocument);
 }
 
 static occ::handle<TDocStd_Document> NewDocument(
@@ -156,10 +118,6 @@ static occ::handle<TDocStd_Document> NewDocument(
 
 static void TestArea(const StorageFormat theFormat)
 {
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aFilePath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory, "draw_xcaf_area", theFormat, aFilePath);
   occ::handle<TDocStd_Application> anApplication = NewApplication(theFormat);
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(theFormat, anApplication);
   const TDF_Label                  aLabel        = Label_0_1_1_1(aDocument);
@@ -169,8 +127,7 @@ static void TestArea(const StorageFormat theFormat)
   ASSERT_FALSE(XCAFDoc_Area::Set(aLabel, aExpected).IsNull());
   aDocument->NewCommand();
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication, aDocument, aFileName, aFilePath);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
 
   double aValue = 0.0;
@@ -180,10 +137,6 @@ static void TestArea(const StorageFormat theFormat)
 
 static void TestColor(const StorageFormat theFormat)
 {
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aFilePath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory, "draw_xcaf_color", theFormat, aFilePath);
   occ::handle<TDocStd_Application> anApplication = NewApplication(theFormat);
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(theFormat, anApplication);
   const Quantity_ColorRGBA         anExpected(0.3f, 0.3f, 0.3f, 1.0f);
@@ -199,8 +152,7 @@ static void TestColor(const StorageFormat theFormat)
   TCollection_AsciiString aColorEntry;
   TDF_Tool::Entry(aLabel, aColorEntry);
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication, aDocument, aFileName, aFilePath);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
 
   TDF_Label          aRestoredLabel;
@@ -215,10 +167,6 @@ static void TestColor(const StorageFormat theFormat)
 
 static void TestCentroid(const StorageFormat theFormat)
 {
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aFilePath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory, "draw_xcaf_centroid", theFormat, aFilePath);
   occ::handle<TDocStd_Application> anApplication = NewApplication(theFormat);
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(theFormat, anApplication);
   const TDF_Label                  aLabel        = Label_0_1_1_1(aDocument);
@@ -228,8 +176,7 @@ static void TestCentroid(const StorageFormat theFormat)
   ASSERT_FALSE(XCAFDoc_Centroid::Set(aLabel, anExpected).IsNull());
   aDocument->NewCommand();
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication, aDocument, aFileName, aFilePath);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
 
   gp_Pnt aValue;
@@ -239,10 +186,6 @@ static void TestCentroid(const StorageFormat theFormat)
 
 static void TestName(const StorageFormat theFormat)
 {
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aFilePath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory, "draw_xcaf_name", theFormat, aFilePath);
   occ::handle<TDocStd_Application> anApplication = NewApplication(theFormat);
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(theFormat, anApplication);
   const TDF_Label                  aLabel        = Label_0_1_1_1(aDocument);
@@ -252,8 +195,7 @@ static void TestName(const StorageFormat theFormat)
   ASSERT_FALSE(TDataStd_Name::Set(aLabel, anExpected).IsNull());
   aDocument->NewCommand();
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication, aDocument, aFileName, aFilePath);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_Name> aName;
@@ -263,10 +205,6 @@ static void TestName(const StorageFormat theFormat)
 
 static void TestLayers(const StorageFormat theFormat)
 {
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aFilePath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory, "draw_xcaf_layers", theFormat, aFilePath);
   occ::handle<TDocStd_Application> anApplication = NewApplication(theFormat);
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(theFormat, anApplication);
   occ::handle<XCAFDoc_ShapeTool>   aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
@@ -285,8 +223,7 @@ static void TestLayers(const StorageFormat theFormat)
   TDF_Tool::Entry(aShapeLabel, aShapeEntry);
   TDF_Tool::Entry(aLayerLabel, aLayerEntry);
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication, aDocument, aFileName, aFilePath);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
 
   TDF_Label aRestoredShape;
@@ -310,10 +247,6 @@ static void TestLayers(const StorageFormat theFormat)
 
 static void TestLocation(const StorageFormat theFormat)
 {
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aFilePath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory, "draw_xcaf_location", theFormat, aFilePath);
   occ::handle<TDocStd_Application> anApplication = NewApplication(theFormat);
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(theFormat, anApplication);
   occ::handle<XCAFDoc_ShapeTool>   aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
@@ -334,8 +267,7 @@ static void TestLocation(const StorageFormat theFormat)
   TDF_Tool::Entry(anAssembly, anAssemblyEntry);
   TDF_Tool::Entry(aComponent, aComponentEntry);
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication, aDocument, aFileName, aFilePath);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
 
   TDF_Label aRestoredAssembly;
@@ -359,10 +291,6 @@ static void TestLocation(const StorageFormat theFormat)
 
 static void TestVolume(const StorageFormat theFormat)
 {
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aFilePath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory, "draw_xcaf_volume", theFormat, aFilePath);
   occ::handle<TDocStd_Application> anApplication = NewApplication(theFormat);
   occ::handle<TDocStd_Document>    aDocument     = NewDocument(theFormat, anApplication);
   const TDF_Label                  aLabel        = Label_0_1_1_1(aDocument);
@@ -372,8 +300,7 @@ static void TestVolume(const StorageFormat theFormat)
   ASSERT_FALSE(XCAFDoc_Volume::Set(aLabel, anExpected).IsNull());
   aDocument->NewCommand();
 
-  occ::handle<TDocStd_Document> aRestored =
-    SaveAndOpen(anApplication, aDocument, aFileName, aFilePath);
+  occ::handle<TDocStd_Document> aRestored = SaveAndOpen(anApplication, aDocument);
   ASSERT_FALSE(aRestored.IsNull());
 
   double aValue = 0.0;

@@ -30,7 +30,7 @@ public:
   //
   Standard_EXPORT int mcrdelt_(int* iunit, int* isize, void* t, intptr_t* iofset, int* iercod);
 
-  Standard_EXPORT static int mcrfill_(int* size, void* tin, void* tout);
+  Standard_EXPORT static int mcrfill_(int* size, const void* tin, void* tout);
 
   Standard_EXPORT int mcrrqst_(int* iunit, int* isize, void* t, intptr_t* iofset, int* iercod);
   Standard_EXPORT static int mnfndeb_();

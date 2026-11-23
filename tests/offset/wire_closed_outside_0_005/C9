@@ -1,11 +1,10 @@
-puts "TODO OCC23748 ALL: Error : The offset cannot be built."
-puts "TODO OCC23748 ALL: Error: The command cannot be built"
-puts "TODO OCC23748 ALL: Error: Offset is not done."
+puts "TODO OCC23748 ALL: Error : big tolerance of shape result"
+puts "TODO OCC23748 ALL: Faulty shapes in variables faulty_1 to faulty_2"
 
 restore [locate_data_file offset_wire_040.brep] s
 
-set length 0
-set nbsh_v 0
-set nbsh_e 0
-set nbsh_w 0
+set length 10375.6
+set nbsh_v 364
+set nbsh_e 364
+set nbsh_w 1
 

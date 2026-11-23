@@ -23,9 +23,6 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <Bnd_Box.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Path.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <Precision.hxx>
@@ -87,8 +84,6 @@
 
 #include <gtest/gtest.h>
 
-#include <clocale>
-#include <cstring>
 #include <sstream>
 #include <string>
 
@@ -134,43 +129,6 @@ static TDF_Label AttributeLabel(const occ::handle<TDocStd_Document>& theDocument
   return theDocument->GetData()->Root().FindChild(2, true);
 }
 
-static TCollection_ExtendedString MakeTemporaryFile(OSD_Directory& theDirectory,
-                                                    const char*    theName,
-                                                    OSD_Path&      thePath)
-{
-  theDirectory.Path(thePath);
-  thePath.SetName(theName);
-  thePath.SetExtension(".xml");
-
-  TCollection_AsciiString aSystemName;
-  thePath.SystemName(aSystemName);
-  return TCollection_ExtendedString(aSystemName, true);
-}
-
-static occ::handle<TDocStd_Document> SaveAndOpen(
-  const occ::handle<TDocStd_Application>& theApplication,
-  const occ::handle<TDocStd_Document>&    theDocument,
-  const TCollection_ExtendedString&       theFileName,
-  const OSD_Path&                         theFilePath)
-{
-  EXPECT_EQ(theApplication->SaveAs(theDocument, theFileName), PCDM_SS_OK);
-
-  OSD_File aFile(theFilePath);
-  EXPECT_TRUE(aFile.Exists());
-
-  theApplication->Close(theDocument);
-
-  occ::handle<TDocStd_Document> aRestoredDocument;
-  EXPECT_EQ(theApplication->Open(theFileName, aRestoredDocument), PCDM_RS_OK);
-  EXPECT_FALSE(aRestoredDocument.IsNull());
-
-  if (aFile.Exists())
-  {
-    aFile.Remove();
-  }
-  return aRestoredDocument;
-}
-
 static occ::handle<TDocStd_Document> NewDocument(
   const occ::handle<TDocStd_Application>& theApplication)
 {
@@ -184,16 +142,18 @@ static occ::handle<TDocStd_Document> NewDocument(
   return aDocument;
 }
 
+static occ::handle<TDocStd_Document> SaveAndOpenStream(
+  const occ::handle<TDocStd_Application>& theApplication,
+  const occ::handle<TDocStd_Document>&    theDocument);
+
 static occ::handle<TDocStd_Document> SaveNewDocument(
   const occ::handle<TDocStd_Application>& theApplication,
   const occ::handle<TDocStd_Document>&    theDocument,
-  const char*                             theName,
-  OSD_Directory&                          theDirectory,
-  OSD_Path&                               thePath)
+  const char*                             theName)
 {
-  const TCollection_ExtendedString aFileName = MakeTemporaryFile(theDirectory, theName, thePath);
+  SCOPED_TRACE(theName);
   theDocument->NewCommand();
-  return SaveAndOpen(theApplication, theDocument, aFileName, thePath);
+  return SaveAndOpenStream(theApplication, theDocument);
 }
 
 static occ::handle<TDocStd_Document> SaveAndOpenStream(
@@ -548,10 +508,8 @@ TEST(XmlOcaf_Storage_Test, A1_Integer)
   const TDF_Label aLabel = AttributeLabel(aDocument);
   ASSERT_FALSE(TDataStd_Integer::Set(aLabel, 100).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_integer", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_integer");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_Integer> anInteger;
@@ -568,10 +526,8 @@ TEST(XmlOcaf_Storage_Test, A2_Real)
   const TDF_Label aLabel = AttributeLabel(aDocument);
   ASSERT_FALSE(TDataStd_Real::Set(aLabel, 100.0).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_real", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_real");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_Real> aReal;
@@ -591,10 +547,8 @@ TEST(XmlOcaf_Storage_Test, A3_RealArray)
   anArray->SetValue(1, 3.0);
   anArray->SetValue(2, 4.0);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_real_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_real_array");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_RealArray> aRestoredArray;
@@ -617,10 +571,8 @@ TEST(XmlOcaf_Storage_Test, A4_IntegerArray)
   anArray->SetValue(1, 3);
   anArray->SetValue(2, 4);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_integer_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_integer_array");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_IntegerArray> aRestoredArray;
@@ -641,10 +593,8 @@ TEST(XmlOcaf_Storage_Test, A5_Name)
   const TCollection_ExtendedString anExpected("New Attribute");
   ASSERT_FALSE(TDataStd_Name::Set(AttributeLabel(aDocument), anExpected).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_name", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_name");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_Name> aName;
@@ -691,10 +641,8 @@ TEST(XmlOcaf_Storage_Test, A6_Comment)
   const TCollection_ExtendedString anExpected("New Attribute");
   ASSERT_FALSE(TDataStd_Comment::Set(AttributeLabel(aDocument), anExpected).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_comment", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_comment");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_Comment> aComment;
@@ -711,10 +659,8 @@ TEST(XmlOcaf_Storage_Test, A7_Point)
   const gp_Pnt anExpected(10.0, 20.0, 30.0);
   ASSERT_FALSE(TDataXtd_Point::Set(AttributeLabel(aDocument), anExpected).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_point", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_point");
   ASSERT_FALSE(aRestored.IsNull());
 
   gp_Pnt aPoint;
@@ -731,10 +677,8 @@ TEST(XmlOcaf_Storage_Test, A8_Axis)
   const gp_Lin anExpected(gp_Pnt(10.0, 20.0, 30.0), gp_Dir(100.0, 200.0, 300.0));
   ASSERT_FALSE(TDataXtd_Axis::Set(AttributeLabel(aDocument), anExpected).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_axis", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_axis");
   ASSERT_FALSE(aRestored.IsNull());
 
   gp_Lin aLine;
@@ -752,10 +696,8 @@ TEST(XmlOcaf_Storage_Test, A9_Plane)
   const gp_Pln anExpected(gp_Pnt(10.0, 20.0, 30.0), gp_Dir(-1.0, 0.0, 0.0));
   ASSERT_FALSE(TDataXtd_Plane::Set(AttributeLabel(aDocument), anExpected).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_plane", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_plane");
   ASSERT_FALSE(aRestored.IsNull());
 
   gp_Pln aPlane;
@@ -774,10 +716,8 @@ TEST(XmlOcaf_Storage_Test, B1_UserAttribute)
   const Standard_GUID aGuid("c73bd075-22ee-11d2-acde-080009dc4422");
   ASSERT_FALSE(TDataStd_UAttribute::Set(AttributeLabel(aDocument), aGuid).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_user_attribute", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_user_attribute");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_UAttribute> anAttribute;
@@ -797,10 +737,8 @@ TEST(XmlOcaf_Storage_Test, B2_TwoUserAttributes)
   ASSERT_FALSE(TDataStd_UAttribute::Set(aLabel, aGuid1).IsNull());
   ASSERT_FALSE(TDataStd_UAttribute::Set(aLabel, aGuid2).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_two_user_attributes", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_two_user_attributes");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_UAttribute> anAttribute1;
@@ -819,10 +757,8 @@ TEST(XmlOcaf_Storage_Test, B3_NamedShape)
   const TDF_Label aLabel = AttributeLabel(aDocument);
   SetShape(aLabel, BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), gp_Pnt(110.0, 220.0, 330.0)));
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_named_shape", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_named_shape");
   ASSERT_FALSE(aRestored.IsNull());
   ExpectBoxBounds(ShapeOf(AttributeLabel(aRestored)), 10.0, 20.0, 30.0, 110.0, 220.0, 330.0);
 }
@@ -859,10 +795,8 @@ TEST(XmlOcaf_Storage_Test, B4_ReferenceChain)
     TDF_Reference::Set(aLabels.Value(anIndex), aLabels.Value(anIndex == 1 ? 8 : anIndex - 1));
   }
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_reference_chain", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_reference_chain");
   ASSERT_FALSE(aRestored.IsNull());
 
   for (int anIndex = 1; anIndex <= 8; ++anIndex)
@@ -892,13 +826,8 @@ TEST(XmlOcaf_Storage_Test, B5_NamedShapeAfterTransaction)
   aDocument->NewCommand();
   SetShape(aLabel, BRepPrimAPI_MakeBox(gp_Pnt(10.0, 20.0, 30.0), gp_Pnt(110.0, 220.0, 330.0)));
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
-  occ::handle<TDocStd_Document> aRestored = SaveNewDocument(anApplication,
-                                                            aDocument,
-                                                            "draw_ocaf_named_shape_transaction",
-                                                            aDirectory,
-                                                            aPath);
+  occ::handle<TDocStd_Document> aRestored =
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_named_shape_transaction");
   ASSERT_FALSE(aRestored.IsNull());
   ExpectBoxBounds(ShapeOf(AttributeLabel(aRestored)), 10.0, 20.0, 30.0, 110.0, 220.0, 330.0);
 }
@@ -914,10 +843,8 @@ TEST(XmlOcaf_Storage_Test, B8_TagSource)
   const TDF_Label aChild = TDF_TagSource::NewChild(aLabel);
   ASSERT_FALSE(TDataStd_Name::Set(aChild, TCollection_ExtendedString("Label11")).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_tag_source", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_tag_source");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDF_TagSource> aTagSource;
@@ -935,10 +862,8 @@ TEST(XmlOcaf_Storage_Test, B9_Directory)
   ASSERT_FALSE(TDataStd_Directory::New(aLabel).IsNull());
   ASSERT_FALSE(TDataStd_Name::Set(aLabel, TCollection_ExtendedString("Label1")).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_directory", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_directory");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_Directory> aRestoredDirectory;
@@ -967,10 +892,8 @@ TEST(XmlOcaf_Storage_Test, C1_TreeNodeChildren)
   ASSERT_TRUE(aRootNode->Append(aChildNode2));
   ASSERT_TRUE(aRootNode->Append(aChildNode3));
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_tree_nodes", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_tree_nodes");
   ASSERT_FALSE(aRestored.IsNull());
 
   occ::handle<TDataStd_TreeNode> aRestoredRoot = TDataStd_TreeNode::Set(AttributeLabel(aRestored));
@@ -1017,10 +940,8 @@ TEST(XmlOcaf_Storage_Test, C8_Relation)
   TDF_Tool::Entry(aVariableLabel2, aVariableEntries.ChangeValue(2));
   TDF_Tool::Entry(aVariableLabel3, aVariableEntries.ChangeValue(3));
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_relation", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_relation");
   ASSERT_FALSE(aRestored.IsNull());
 
   TDF_Label aRestoredRelationLabel;
@@ -1054,10 +975,8 @@ TEST(XmlOcaf_Storage_Test, C9_Variable)
   aVariable->Constant(true);
   aVariable->Unit("kg/m3");
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_variable", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_variable");
   ASSERT_FALSE(aRestored.IsNull());
 
   TDF_Label aRestoredLabel;
@@ -1082,10 +1001,8 @@ TEST(XmlOcaf_Storage_Test, C6_Function)
 
   TCollection_AsciiString aLabelEntry;
   TDF_Tool::Entry(aLabel, aLabelEntry);
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_function", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_function");
   ASSERT_FALSE(aRestored.IsNull());
 
   TDF_Label aRestoredLabel;
@@ -1114,10 +1031,8 @@ TEST(XmlOcaf_Storage_Test, D1_SpecialNames)
     ASSERT_FALSE(TDataStd_Name::Set(aLabel, TCollection_ExtendedString(aNames[anIndex])).IsNull());
   }
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_special_names", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_special_names");
   ASSERT_FALSE(aRestored.IsNull());
   for (int anIndex = 0; anIndex < 6; ++anIndex)
   {
@@ -1139,10 +1054,8 @@ TEST(XmlOcaf_Storage_Test, D4_SingleIntegerArray)
   ASSERT_FALSE(anArray.IsNull());
   anArray->SetValue(1, 3);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_single_integer_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_single_integer_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_IntegerArray> aRestoredArray;
   ASSERT_TRUE(
@@ -1163,10 +1076,8 @@ TEST(XmlOcaf_Storage_Test, D5_SingleRealArray)
   ASSERT_FALSE(anArray.IsNull());
   anArray->SetValue(1, 3.0);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_single_real_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_single_real_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_RealArray> aRestoredArray;
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_RealArray::GetID(), aRestoredArray));
@@ -1184,10 +1095,8 @@ TEST(XmlOcaf_Storage_Test, D6_LeadingZeroName)
   ASSERT_FALSE(
     TDataStd_Name::Set(AttributeLabel(aDocument), TCollection_ExtendedString("00")).IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_ocaf_leading_zero_name", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_ocaf_leading_zero_name");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_Name> aName;
   ASSERT_TRUE(AttributeLabel(aRestored).FindAttribute(TDataStd_Name::GetID(), aName));
@@ -1210,10 +1119,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_C6_RealArrayPersistence)
   aGuidArray->SetValue(2, 4.0);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_real_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_real_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_RealArray> aRestoredArray;
   occ::handle<TDataStd_RealArray> aRestoredGuidArray;
@@ -1240,10 +1147,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_D7_IntegerArrayPersistence)
   aGuidArray->SetValue(2, 4);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_integer_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_integer_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_IntegerArray> aRestoredArray;
   occ::handle<TDataStd_IntegerArray> aRestoredGuidArray;
@@ -1272,10 +1177,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_M7_ExtendedStringArrayPersistence)
   aGuidArray->SetValue(2, TCollection_ExtendedString("zzzzzzz"));
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_extended_string_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_extended_string_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ExtStringArray> aRestoredArray;
   occ::handle<TDataStd_ExtStringArray> aRestoredGuidArray;
@@ -1312,10 +1215,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_O7_BooleanArrayPersistence)
   aGuidArray->SetValue(2, true);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_boolean_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_boolean_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_BooleanArray> aRestoredArray;
   occ::handle<TDataStd_BooleanArray> aRestoredGuidArray;
@@ -1342,10 +1243,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_P7_ByteArrayPersistence)
   aGuidArray->SetValue(2, 12);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_byte_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_byte_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ByteArray> aRestoredArray;
   occ::handle<TDataStd_ByteArray> aRestoredGuidArray;
@@ -1376,10 +1275,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_Q7_ReferenceArrayPersistence)
   aGuidArray->SetValue(2, aReference2);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_reference_array", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_reference_array");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ReferenceArray> aRestoredArray;
   occ::handle<TDataStd_ReferenceArray> aRestoredGuidArray;
@@ -1406,10 +1303,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_R7_RealListPersistence)
   aGuidList->Append(4.0);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_real_list", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_real_list");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_RealList> aRestoredList;
   occ::handle<TDataStd_RealList> aRestoredGuidList;
@@ -1435,10 +1330,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_S7_IntegerListPersistence)
   aGuidList->Append(44);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_integer_list", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_integer_list");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_IntegerList> aRestoredList;
   occ::handle<TDataStd_IntegerList> aRestoredGuidList;
@@ -1465,10 +1358,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_T7_ExtendedStringListPersistence)
   aGuidList->Append(TCollection_ExtendedString("yyyyy"));
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_extended_string_list", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_extended_string_list");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ExtStringList> aRestoredList;
   occ::handle<TDataStd_ExtStringList> aRestoredGuidList;
@@ -1499,10 +1390,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_U7_BooleanListPersistence)
   aGuidList->Append(true);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_boolean_list", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_boolean_list");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_BooleanList> aRestoredList;
   occ::handle<TDataStd_BooleanList> aRestoredGuidList;
@@ -1533,10 +1422,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_V7_ReferenceListPersistence)
   aGuidList->Append(aReference2);
   RestoreAttributesAfterUndo(aDocument, aLabel);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_reference_list", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_reference_list");
   ASSERT_FALSE(aRestored.IsNull());
   occ::handle<TDataStd_ReferenceList> aRestoredList;
   occ::handle<TDataStd_ReferenceList> aRestoredGuidList;
@@ -1575,10 +1462,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_M4_ExtendedStringArrayEdgeCases)
   ASSERT_TRUE(aNode1->Append(aNode2));
   ASSERT_TRUE(aNode1->Append(aNode3));
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_extended_array_edges", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_extended_array_edges");
   ASSERT_FALSE(aRestored.IsNull());
   const TDF_Label aRestoredLabel1 = aRestored->GetData()->Root().FindChild(1, false);
   const TDF_Label aRestoredLabel2 = aRestored->GetData()->Root().FindChild(2, false);
@@ -1646,10 +1531,8 @@ TEST(XmlOcaf_Storage_Test, CafBasic_F5_EmptyAttributes)
   ASSERT_TRUE(aDocument->Redo());
   EXPECT_EQ(NbAttributes(aLabel), 8);
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_empty_attributes", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_empty_attributes");
   ASSERT_FALSE(aRestored.IsNull());
   EXPECT_EQ(NbAttributes(AttributeLabel(aRestored)), 8);
   EXPECT_TRUE(HasAttributeType(AttributeLabel(aRestored), STANDARD_TYPE(TDataXtd_Axis)));
@@ -1674,47 +1557,27 @@ TEST(XmlOcaf_Storage_Test, CafBasic_Y2_SaveEmptyLabels)
   TDataStd_Integer::Set(aValueLabel, 321);
   TDataStd_Real::Set(aValueLabel, 871.33);
 
-  OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path      aPathWithEmpty;
-  aDirectory.Path(aPathWithEmpty);
-  aPathWithEmpty.SetName("draw_caf_empty_labels");
-  aPathWithEmpty.SetExtension(".xml");
-  TCollection_AsciiString aSystemNameWithEmpty;
-  aPathWithEmpty.SystemName(aSystemNameWithEmpty);
-  const TCollection_ExtendedString aFileWithEmpty(aSystemNameWithEmpty, true);
+  std::stringstream aStreamWithEmpty;
   aDocument->SetEmptyLabelsSavingMode(true);
-  ASSERT_EQ(anApplication->SaveAs(aDocument, aFileWithEmpty), PCDM_SS_OK);
+  ASSERT_EQ(anApplication->SaveAs(aDocument, aStreamWithEmpty), PCDM_SS_OK);
+  ASSERT_FALSE(aStreamWithEmpty.str().empty());
 
-  OSD_Path aPathWithoutEmpty;
-  aDirectory.Path(aPathWithoutEmpty);
-  aPathWithoutEmpty.SetName("draw_caf_nonempty_labels");
-  aPathWithoutEmpty.SetExtension(".xml");
-  TCollection_AsciiString aSystemNameWithoutEmpty;
-  aPathWithoutEmpty.SystemName(aSystemNameWithoutEmpty);
-  const TCollection_ExtendedString aFileWithoutEmpty(aSystemNameWithoutEmpty, true);
+  std::stringstream aStreamWithoutEmpty;
   aDocument->SetEmptyLabelsSavingMode(false);
-  ASSERT_EQ(anApplication->SaveAs(aDocument, aFileWithoutEmpty), PCDM_SS_OK);
+  ASSERT_EQ(anApplication->SaveAs(aDocument, aStreamWithoutEmpty), PCDM_SS_OK);
+  ASSERT_FALSE(aStreamWithoutEmpty.str().empty());
   anApplication->Close(aDocument);
 
+  aStreamWithEmpty.seekg(0);
+  aStreamWithoutEmpty.seekg(0);
   occ::handle<TDocStd_Document> aRestoredWithEmpty;
   occ::handle<TDocStd_Document> aRestoredWithoutEmpty;
-  ASSERT_EQ(anApplication->Open(aFileWithEmpty, aRestoredWithEmpty), PCDM_RS_OK);
-  ASSERT_EQ(anApplication->Open(aFileWithoutEmpty, aRestoredWithoutEmpty), PCDM_RS_OK);
+  ASSERT_EQ(anApplication->Open(aStreamWithEmpty, aRestoredWithEmpty), PCDM_RS_OK);
+  ASSERT_EQ(anApplication->Open(aStreamWithoutEmpty, aRestoredWithoutEmpty), PCDM_RS_OK);
   ASSERT_FALSE(aRestoredWithEmpty.IsNull());
   ASSERT_FALSE(aRestoredWithoutEmpty.IsNull());
   EXPECT_EQ(aRestoredWithEmpty->GetData()->Root().FindChild(1, false).NbChildren(), 3);
   EXPECT_EQ(aRestoredWithoutEmpty->GetData()->Root().FindChild(1, false).NbChildren(), 1);
-
-  OSD_File aFile1(aPathWithEmpty);
-  OSD_File aFile2(aPathWithoutEmpty);
-  if (aFile1.Exists())
-  {
-    aFile1.Remove();
-  }
-  if (aFile2.Exists())
-  {
-    aFile2.Remove();
-  }
 }
 
 // caf/basic/N2: triangulation attributes preserve payload, transactions, and XML storage.
@@ -1731,23 +1594,16 @@ TEST(XmlOcaf_Storage_Test, CafBasic_N2_TriangulationStorage)
   ASSERT_FALSE(TDataXtd_Triangulation::Set(aLabel, aFirstMesh).IsNull());
   aDocument->CommitCommand();
 
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aPath1;
-  OSD_Path                         aPath2;
-  const TCollection_ExtendedString aFileName1 =
-    MakeTemporaryFile(aDirectory, "draw_caf_triangulation_first", aPath1);
-  const TCollection_ExtendedString aFileName2 =
-    MakeTemporaryFile(aDirectory, "draw_caf_triangulation_second", aPath2);
-  ASSERT_EQ(anApplication->SaveAs(aDocument, aFileName1), PCDM_SS_OK);
-  OSD_File aFile1(aPath1);
-  ASSERT_TRUE(aFile1.Exists());
+  std::stringstream aFirstStream;
+  ASSERT_EQ(anApplication->SaveAs(aDocument, aFirstStream), PCDM_SS_OK);
+  ASSERT_FALSE(aFirstStream.str().empty());
 
   aDocument->NewCommand();
   ASSERT_FALSE(TDataXtd_Triangulation::Set(aLabel, aSecondMesh).IsNull());
   aDocument->CommitCommand();
-  ASSERT_EQ(anApplication->SaveAs(aDocument, aFileName2), PCDM_SS_OK);
-  OSD_File aFile2(aPath2);
-  ASSERT_TRUE(aFile2.Exists());
+  std::stringstream aSecondStream;
+  ASSERT_EQ(anApplication->SaveAs(aDocument, aSecondStream), PCDM_SS_OK);
+  ASSERT_FALSE(aSecondStream.str().empty());
 
   ASSERT_TRUE(aDocument->Undo());
   ExpectTriangulation(aLabel, aFirstMesh);
@@ -1755,25 +1611,18 @@ TEST(XmlOcaf_Storage_Test, CafBasic_N2_TriangulationStorage)
   ExpectTriangulation(aLabel, aSecondMesh);
 
   anApplication->Close(aDocument);
+  aFirstStream.seekg(0);
+  aSecondStream.seekg(0);
   occ::handle<TDocStd_Document> aRestoredFirst;
   occ::handle<TDocStd_Document> aRestoredSecond;
-  ASSERT_EQ(anApplication->Open(aFileName1, aRestoredFirst), PCDM_RS_OK);
-  ASSERT_EQ(anApplication->Open(aFileName2, aRestoredSecond), PCDM_RS_OK);
+  ASSERT_EQ(anApplication->Open(aFirstStream, aRestoredFirst), PCDM_RS_OK);
+  ASSERT_EQ(anApplication->Open(aSecondStream, aRestoredSecond), PCDM_RS_OK);
   ASSERT_FALSE(aRestoredFirst.IsNull());
   ASSERT_FALSE(aRestoredSecond.IsNull());
   ExpectTriangulation(aRestoredFirst->GetData()->Root().FindChild(1, false), aFirstMesh);
   ExpectTriangulation(aRestoredSecond->GetData()->Root().FindChild(1, false), aSecondMesh);
   anApplication->Close(aRestoredFirst);
   anApplication->Close(aRestoredSecond);
-
-  if (aFile1.Exists())
-  {
-    aFile1.Remove();
-  }
-  if (aFile2.Exists())
-  {
-    aFile2.Remove();
-  }
 }
 
 // caf/bugs/D1: XML preserves a mixed set of large and collection attributes.
@@ -1858,10 +1707,8 @@ TEST(XmlOcaf_Storage_Test, CafBug_D1_MixedAttributeStorage)
     aRealList->Append(aValue);
   }
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
   occ::handle<TDocStd_Document> aRestored =
-    SaveNewDocument(anApplication, aDocument, "draw_caf_bug23850", aDirectory, aPath);
+    SaveNewDocument(anApplication, aDocument, "draw_caf_bug23850");
   ASSERT_FALSE(aRestored.IsNull());
   const TDF_Label aRestoredLabel = aRestored->GetData()->Root().FindChild(1, false);
 
@@ -2247,110 +2094,4 @@ TEST(XmlOcaf_Storage_Test, FClassesBug_24931_LargeShapeStream)
   EXPECT_NEAR(aRestoredXMax, aSourceXMax, 1.0e-6);
   EXPECT_NEAR(aRestoredYMax, aSourceYMax, 1.0e-6);
   EXPECT_NEAR(aRestoredZMax, aSourceZMax, 1.0e-6);
-}
-
-// bugs/caf/bug1919: XML stream retrieval must keep real values independent of
-// the numeric locale. The DRAW source is explicitly TODO OCC12345: the
-// localized comma input is currently read as 123 instead of 123.456. Keep the
-// port disabled until the underlying locale handling is fixed.
-TEST(XmlOcaf_Storage_Test, DISABLED_CafBug_1919_LocaleRoundTrip)
-{
-  occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication);
-  ASSERT_FALSE(aDocument.IsNull());
-
-  const TDF_Label               anEnglishLabel = aDocument->GetData()->Root().FindChild(10, true);
-  const TDF_Label               anItalianLabel = aDocument->GetData()->Root().FindChild(20, true);
-  const TCollection_AsciiString anOldLocale((const char*)setlocale(LC_ALL, nullptr));
-  aDocument->NewCommand();
-
-  setlocale(LC_ALL, "");
-  const char* anEnglishLocale = setlocale(LC_NUMERIC, "en_US");
-  const bool  hasEnglishLocale =
-    anEnglishLocale != nullptr && std::strcmp(anEnglishLocale, "en_US") == 0;
-  const char* anItalianLocale = setlocale(LC_NUMERIC, "it");
-  const bool  hasItalianLocale =
-    anItalianLocale != nullptr && std::strcmp(anItalianLocale, "it") == 0;
-  if (!hasEnglishLocale || !hasItalianLocale)
-  {
-    setlocale(LC_ALL, anOldLocale.ToCString());
-    GTEST_SKIP() << "Required DRAW locales en_US and it are unavailable";
-  }
-
-  setlocale(LC_ALL, "");
-  const char* anEnglishLocaleAfterReset = setlocale(LC_NUMERIC, "en_US");
-  const bool  isEnglishLocaleAfterReset =
-    anEnglishLocaleAfterReset != nullptr && std::strcmp(anEnglishLocaleAfterReset, "en_US") == 0;
-  const TCollection_AsciiString anEnglishInput("123.456");
-  const bool                    isEnglishInput = anEnglishInput.IsRealValue();
-  const double                  anEnglishValue = anEnglishInput.RealValue();
-  occ::handle<TDataStd_Real>    anEnglishReal  = TDataStd_Real::Set(anEnglishLabel, anEnglishValue);
-
-  setlocale(LC_ALL, "");
-  setlocale(LC_NUMERIC, "it");
-  const TCollection_AsciiString anItalianInput("123,456");
-  const bool                    isItalianInput = anItalianInput.IsRealValue();
-  const double                  anItalianValue = anItalianInput.RealValue();
-  occ::handle<TDataStd_Real>    anItalianReal  = TDataStd_Real::Set(anItalianLabel, anItalianValue);
-
-  const bool   hasCurrentEnglish    = !anEnglishReal.IsNull();
-  const bool   hasCurrentItalian    = !anItalianReal.IsNull();
-  const double aCurrentEnglishValue = hasCurrentEnglish ? anEnglishReal->Get() : 0.0;
-  const double aCurrentItalianValue = hasCurrentItalian ? anItalianReal->Get() : 0.0;
-
-  std::stringstream      aStream;
-  const PCDM_StoreStatus aStoreStatus      = anApplication->SaveAs(aDocument, aStream);
-  const bool             hasSerializedData = !aStream.str().empty();
-  anApplication->Close(aDocument);
-
-  setlocale(LC_ALL, "");
-  const char* anEnglishLocaleBeforeRead = setlocale(LC_NUMERIC, "en_US");
-  const bool  isEnglishLocaleBeforeRead =
-    anEnglishLocaleBeforeRead != nullptr && std::strcmp(anEnglishLocaleBeforeRead, "en_US") == 0;
-  aStream.seekg(0);
-  occ::handle<TDocStd_Document> aRestored;
-  const PCDM_ReaderStatus       aReadStatus = anApplication->Open(aStream, aRestored);
-
-  double aRestoredEnglishValue = 0.0;
-  double aRestoredItalianValue = 0.0;
-  bool   hasRestoredEnglish    = false;
-  bool   hasRestoredItalian    = false;
-  if (!aRestored.IsNull())
-  {
-    occ::handle<TDataStd_Real> anEnglishReal;
-    occ::handle<TDataStd_Real> anItalianReal;
-    hasRestoredEnglish =
-      aRestored->GetData()->Root().FindChild(10, false).FindAttribute(TDataStd_Real::GetID(),
-                                                                      anEnglishReal);
-    hasRestoredItalian =
-      aRestored->GetData()->Root().FindChild(20, false).FindAttribute(TDataStd_Real::GetID(),
-                                                                      anItalianReal);
-    if (hasRestoredEnglish)
-    {
-      aRestoredEnglishValue = anEnglishReal->Get();
-    }
-    if (hasRestoredItalian)
-    {
-      aRestoredItalianValue = anItalianReal->Get();
-    }
-  }
-  setlocale(LC_ALL, anOldLocale.ToCString());
-
-  EXPECT_TRUE(isEnglishInput);
-  EXPECT_TRUE(isItalianInput);
-  EXPECT_TRUE(isEnglishLocaleAfterReset);
-  EXPECT_TRUE(hasCurrentEnglish);
-  EXPECT_TRUE(hasCurrentItalian);
-  EXPECT_DOUBLE_EQ(anEnglishValue, 123.456);
-  EXPECT_DOUBLE_EQ(anItalianValue, 123.456);
-  EXPECT_DOUBLE_EQ(aCurrentEnglishValue, 123.456);
-  EXPECT_DOUBLE_EQ(aCurrentItalianValue, 123.456);
-  EXPECT_EQ(aStoreStatus, PCDM_SS_OK);
-  EXPECT_TRUE(hasSerializedData);
-  EXPECT_TRUE(isEnglishLocaleBeforeRead);
-  EXPECT_EQ(aReadStatus, PCDM_RS_OK);
-  EXPECT_TRUE(hasRestoredEnglish);
-  EXPECT_TRUE(hasRestoredItalian);
-  EXPECT_DOUBLE_EQ(aRestoredEnglishValue, 123.456);
-  EXPECT_DOUBLE_EQ(aRestoredItalianValue, 123.456);
 }

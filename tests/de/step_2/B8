@@ -3,11 +3,11 @@ set filename PRO8843.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 11  ( 32 )  Summary  = 11  ( 32 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 10  ( 31 )  Summary  = 10  ( 31 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 25  ( 25 )  Shell    = 45  ( 45 )  Face     = 198  ( 198 ) 
 STATSHAPE   : Solid    = 25  ( 25 )  Shell    = 45  ( 45 )  Face     = 198  ( 198 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =  0.02054327471  (  0.02934181398 )  AvgTol   =  0.000584176674  (   0.00139221264 )
+TOLERANCE   : MaxTol   =  0.07884620448  (  0.07884620448 )  AvgTol   =  0.001098388086  (  0.001827952093 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 67  ( 67 )  N2Labels = 0  ( 0 )   TotalLabels = 70  ( 70 )   NameLabels = 5  ( 5 )   ColorLabels = 45  ( 45 )   LayerLabels = 45  ( 45 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

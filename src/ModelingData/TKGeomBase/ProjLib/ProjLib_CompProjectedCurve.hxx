@@ -134,29 +134,28 @@ public:
   //! input surface
   Standard_EXPORT bool IsVIso(const int Index, double& V) const;
 
-  //! Computes the point of parameter U on the curve.
-  Standard_EXPORT gp_Pnt2d Value(const double U) const override;
+  //! Evaluates a point of the composite projected curve.
+  //! @param[in] theU curve parameter
+  //! @return projected point in the surface parameter space
+  [[nodiscard]] Standard_EXPORT gp_Pnt2d EvalD0(const double theU) const final;
 
-  //! Computes the point of parameter U on the curve.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
+  //! Evaluates a point and first derivative of the composite projected curve.
+  //! @param[in] theU curve parameter
+  //! @return projected point and first derivative
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD1 EvalD1(const double theU) const final;
 
-  //! Computes the point of parameter U on the curve with its
-  //! first derivative.
-  //! Raised if the continuity of the current interval
-  //! is not C1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const override;
+  //! Evaluates a point and first two derivatives of the composite projected curve.
+  //! @param[in] theU curve parameter
+  //! @return projected point and derivatives through the second order
+  [[nodiscard]] Standard_EXPORT Geom2d_Curve::ResD2 EvalD2(const double theU) const final;
 
-  //! Returns the point P of parameter U, the first and second
-  //! derivatives V1 and V2.
-  //! Raised if the continuity of the current interval
-  //! is not C2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
-
-  //! The returned vector gives the value of the derivative for the
-  //! order of derivation N.
-  //! Raised if N < 1.
-  //! Raised if N > 2.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  //! Evaluates a derivative of the composite projected curve.
+  //! @param[in] theU curve parameter
+  //! @param[in] theN derivative order; only first and second orders are supported
+  //! @return derivative vector of order theN
+  //! @throws Standard_OutOfRange if theN is less than one
+  //! @throws Standard_NotImplemented if theN is greater than two
+  [[nodiscard]] Standard_EXPORT gp_Vec2d EvalDN(const double theU, const int theN) const final;
 
   //! Returns the first parameter of the curve C
   //! which has a projection on S.

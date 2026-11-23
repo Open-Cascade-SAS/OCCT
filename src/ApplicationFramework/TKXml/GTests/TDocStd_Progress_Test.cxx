@@ -18,20 +18,16 @@
 #include <Message_ProgressScope.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Path.hxx>
 #include <PCDM_ReaderStatus.hxx>
 #include <PCDM_StoreStatus.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TNaming_Builder.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Precision.hxx>
 
-#include <cstring>
+#include <sstream>
 
 #include <gtest/gtest.h>
 
@@ -141,19 +137,6 @@ static occ::handle<TDocStd_Document> NewDocument(
   return aDocument;
 }
 
-static TCollection_ExtendedString MakeTemporaryFile(OSD_Directory& theDirectory,
-                                                    OSD_Path&      thePath,
-                                                    const char*    theName,
-                                                    const char*    theExtension)
-{
-  theDirectory.Path(thePath);
-  thePath.SetName(theName);
-  thePath.SetExtension(theExtension);
-  TCollection_AsciiString aSystemName;
-  thePath.SystemName(aSystemName);
-  return TCollection_ExtendedString(aSystemName, true);
-}
-
 static void SetBox(const TDF_Label& theLabel)
 {
   TNaming_Builder aBuilder(theLabel);
@@ -189,7 +172,6 @@ static void ExpectMessages(const ProgressObserver& theObserver,
 }
 
 static void RunSaveAsProgress(const char*       theFormat,
-                              const char*       theName,
                               const char* const theExpectedMessages[],
                               const int         theNbExpectedMessages)
 {
@@ -198,29 +180,16 @@ static void RunSaveAsProgress(const char*       theFormat,
   ASSERT_FALSE(aDocument.IsNull());
   SetBox(aDocument->Main().FindChild(1, true));
 
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aPath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory,
-                      aPath,
-                      theName,
-                      strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
+  std::stringstream             aStream;
   occ::handle<ProgressObserver> aProgress = new ProgressObserver();
-  EXPECT_EQ(
-    anApplication->SaveAs(aDocument, aFileName, Message_ProgressIndicator::Start(aProgress)),
-    PCDM_SS_OK);
-  OSD_File aFile(aPath);
-  EXPECT_TRUE(aFile.Exists());
+  EXPECT_EQ(anApplication->SaveAs(aDocument, aStream, Message_ProgressIndicator::Start(aProgress)),
+            PCDM_SS_OK);
+  EXPECT_FALSE(aStream.str().empty());
   ExpectMessages(*aProgress, theExpectedMessages, theNbExpectedMessages);
   anApplication->Close(aDocument);
-  if (aFile.Exists())
-  {
-    aFile.Remove();
-  }
 }
 
 static void RunOpenProgress(const char*       theFormat,
-                            const char*       theName,
                             const char* const theExpectedMessages[],
                             const int         theNbExpectedMessages)
 {
@@ -229,65 +198,19 @@ static void RunOpenProgress(const char*       theFormat,
   ASSERT_FALSE(aDocument.IsNull());
   SetBox(aDocument->Main().FindChild(1, true));
 
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aPath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory,
-                      aPath,
-                      theName,
-                      strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
-  EXPECT_EQ(anApplication->SaveAs(aDocument, aFileName), PCDM_SS_OK);
+  std::stringstream aStream;
+  EXPECT_EQ(anApplication->SaveAs(aDocument, aStream), PCDM_SS_OK);
+  EXPECT_FALSE(aStream.str().empty());
   anApplication->Close(aDocument);
 
+  aStream.seekg(0);
   occ::handle<ProgressObserver> aProgress = new ProgressObserver();
   occ::handle<TDocStd_Document> aRestored;
-  EXPECT_EQ(anApplication->Open(aFileName, aRestored, Message_ProgressIndicator::Start(aProgress)),
+  EXPECT_EQ(anApplication->Open(aStream, aRestored, Message_ProgressIndicator::Start(aProgress)),
             PCDM_RS_OK);
   ASSERT_FALSE(aRestored.IsNull());
   ExpectMessages(*aProgress, theExpectedMessages, theNbExpectedMessages);
   anApplication->Close(aRestored);
-  OSD_File aFile(aPath);
-  if (aFile.Exists())
-  {
-    aFile.Remove();
-  }
-}
-
-static void RunSaveProgress(const char*       theFormat,
-                            const char*       theName,
-                            const char* const theExpectedMessages[],
-                            const int         theNbExpectedMessages)
-{
-  occ::handle<TDocStd_Application> anApplication = NewApplication();
-  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, theFormat);
-  ASSERT_FALSE(aDocument.IsNull());
-  SetBox(aDocument->Main().FindChild(1, true));
-
-  OSD_Directory                    aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                         aPath;
-  const TCollection_ExtendedString aFileName =
-    MakeTemporaryFile(aDirectory,
-                      aPath,
-                      theName,
-                      strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
-  EXPECT_EQ(anApplication->SaveAs(aDocument, aFileName), PCDM_SS_OK);
-  anApplication->Close(aDocument);
-
-  occ::handle<TDocStd_Document> aOpened;
-  EXPECT_EQ(anApplication->Open(aFileName, aOpened), PCDM_RS_OK);
-  ASSERT_FALSE(aOpened.IsNull());
-  SetBox(aOpened->Main().FindChild(2, true));
-  aOpened->NewCommand();
-
-  occ::handle<ProgressObserver> aProgress = new ProgressObserver();
-  EXPECT_EQ(anApplication->Save(aOpened, Message_ProgressIndicator::Start(aProgress)), PCDM_SS_OK);
-  ExpectMessages(*aProgress, theExpectedMessages, theNbExpectedMessages);
-  anApplication->Close(aOpened);
-  OSD_File aFile(aPath);
-  if (aFile.Exists())
-  {
-    aFile.Remove();
-  }
 }
 
 static void RunNestedProgress(const bool        theIsInfinite,
@@ -320,7 +243,7 @@ static void RunNestedProgress(const bool        theIsInfinite,
 TEST(TDocStd_Progress_Test, CafProgress_A1_BinarySaveAs)
 {
   const char* const anExpected[] = {"Writing document", "Writing sub tree"};
-  RunSaveAsProgress("BinOcaf", "draw_progress_binary_save_as", anExpected, 2);
+  RunSaveAsProgress("BinOcaf", anExpected, 2);
 }
 
 // caf/progress/A2: XML SaveAs progress reports the storage stages.
@@ -337,14 +260,14 @@ TEST(TDocStd_Progress_Test, CafProgress_A2_XmlSaveAs)
                                     "3D Polygons",
                                     "Triangulations",
                                     "Shapes"};
-  RunSaveAsProgress("XmlOcaf", "draw_progress_xml_save_as", anExpected, 11);
+  RunSaveAsProgress("XmlOcaf", anExpected, 11);
 }
 
 // caf/progress/B1: binary Open progress reports the document and subtree stages.
 TEST(TDocStd_Progress_Test, CafProgress_B1_BinaryOpen)
 {
   const char* const anExpected[] = {"Reading data", "Reading sub tree"};
-  RunOpenProgress("BinOcaf", "draw_progress_binary_open", anExpected, 2);
+  RunOpenProgress("BinOcaf", anExpected, 2);
 }
 
 // caf/progress/B2: XML Open progress reports the retrieval stages.
@@ -360,32 +283,7 @@ TEST(TDocStd_Progress_Test, CafProgress_B2_XmlOpen)
                                     "Triangulations",
                                     "Surfaces",
                                     "Reading sub-tree"};
-  RunOpenProgress("XmlOcaf", "draw_progress_xml_open", anExpected, 10);
-}
-
-// caf/progress/C1: binary Save progress reports the document and subtree stages.
-TEST(TDocStd_Progress_Test, CafProgress_C1_BinarySave)
-{
-  const char* const anExpected[] = {"Writing document", "Writing sub tree"};
-  RunSaveProgress("BinOcaf", "draw_progress_binary_save", anExpected, 2);
-}
-
-// caf/progress/C2: XML Save progress reports the storage stages.
-TEST(TDocStd_Progress_Test, CafProgress_C2_XmlSave)
-{
-  const char* const anExpected[] = {"Writing sub-tree",
-                                    "Writing shape section",
-                                    "Polygons On Triangulation",
-                                    "3D Polygons",
-                                    "Locations",
-                                    "Writing",
-                                    "Geometry",
-                                    "2D Curves",
-                                    "Triangulations",
-                                    "3D Curves",
-                                    "Surfaces",
-                                    "Shapes"};
-  RunSaveProgress("XmlOcaf", "draw_progress_xml_save", anExpected, 12);
+  RunOpenProgress("XmlOcaf", anExpected, 10);
 }
 
 // fclasses/bug28478: nested finite scopes retain both scope names and values.

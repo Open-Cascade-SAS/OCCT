@@ -13,22 +13,32 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
+#include <algorithm>
+#include <cmath>
+#include <gp_XY.hxx>
+
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 
 #include <GC_MakeSegment.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <GeomConvert.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Ellipse.hxx>
+#include <Geom_OffsetCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
+#include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
@@ -39,6 +49,44 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
+#include <gp_Pnt2d.hxx>
+
+TEST(ShapeAnalysis_SurfaceTest, ConvergedHintAtSingularityKeepsParameters)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  aPoles.SetValue(1, 1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(2, 1, gp_Pnt(0.0, 0.0, 0.0));
+  aPoles.SetValue(1, 2, gp_Pnt(1.0, 0.0, 1.0));
+  aPoles.SetValue(2, 2, gp_Pnt(0.0, 1.0, 1.0));
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots.SetValue(1, 0.0);
+  aKnots.SetValue(2, 1.0);
+  NCollection_Array1<int> aMultiplicities(1, 2);
+  aMultiplicities.Init(2);
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMultiplicities, aMultiplicities, 1, 1);
+  ShapeAnalysis_Surface anAnalysis(aSurface);
+  for (const double aU : {0.0, 0.375, 1.0})
+  {
+    SCOPED_TRACE(aU);
+    const gp_Pnt2d aHint(aU, 0.0);
+    const gp_Pnt   aPoint  = aSurface->EvalD0(aHint.X(), aHint.Y());
+    const gp_Pnt2d aResult = anAnalysis.NextValueOfUV(aHint, aPoint, Precision::Confusion());
+    EXPECT_DOUBLE_EQ(aResult.X(), aHint.X());
+    EXPECT_DOUBLE_EQ(aResult.Y(), aHint.Y());
+    EXPECT_LE(aPoint.Distance(aSurface->EvalD0(aResult.X(), aResult.Y())), Precision::Confusion());
+  }
+  const double   aTolerance = Precision::Confusion();
+  const gp_Pnt2d aHint(0.375, 0.0);
+  const gp_Pnt   aClosePoint(0.0, 0.0, 0.5 * aTolerance);
+  const gp_Pnt2d aCloseResult = anAnalysis.NextValueOfUV(aHint, aClosePoint, aTolerance);
+  EXPECT_DOUBLE_EQ(aCloseResult.X(), aHint.X());
+  EXPECT_DOUBLE_EQ(aCloseResult.Y(), aHint.Y());
+  const gp_Pnt   aDistantPoint  = aSurface->EvalD0(aHint.X(), 0.25);
+  const gp_Pnt2d aDistantResult = anAnalysis.NextValueOfUV(aHint, aDistantPoint, aTolerance);
+  EXPECT_LE(aDistantPoint.Distance(aSurface->EvalD0(aDistantResult.X(), aDistantResult.Y())),
+            aTolerance);
+}
 
 //=================================================================================================
 // Test fixture for ShapeConstruct_ProjectCurveOnSurface
@@ -667,6 +715,126 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, MultipleProjections_J1)
   }
 }
 
+//==================================================================================================
+
+TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, StraightProjectionKeepsNonlinearParameters)
+{
+  constexpr double                           aRadius    = 100.0;
+  constexpr double                           aTolerance = 0.096;
+  const occ::handle<Geom_CylindricalSurface> aSurface =
+    new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles.ChangeAt(0)                             = gp_Pnt(aRadius, 0.0, 0.0);
+  aPoles.ChangeAt(1)                             = gp_Pnt(aRadius, 0.0, 2.0 / 3.0);
+  aPoles.ChangeAt(2)                             = gp_Pnt(aRadius, 0.0, 1.0 / 3.0);
+  aPoles.ChangeAt(3)                             = gp_Pnt(aRadius, 0.0, 1.0);
+  const double                     aKnotValues[] = {0.0, 1.0};
+  const NCollection_Array1<double> aKnots(aKnotValues[0], 1, 2);
+  NCollection_Array1<int>          aMults(1, 2);
+  aMults.Init(4);
+  const occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  myProjector->Init(aSurface, aTolerance);
+  occ::handle<Geom2d_Curve> aPCurve;
+  ASSERT_TRUE(myProjector->Perform(aCurve, 0.0, 1.0, aPCurve));
+  ASSERT_FALSE(aPCurve.IsNull());
+  // The parameter error t * (1 - t) * (1 - 2 * t) has two interior extrema.
+  for (const double aParameter : {(3.0 - std::sqrt(3.0)) / 6.0, (3.0 + std::sqrt(3.0)) / 6.0})
+  {
+    const gp_Pnt2d aUV = aPCurve->EvalD0(aParameter);
+    EXPECT_LE(aCurve->EvalD0(aParameter).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())), aTolerance);
+  }
+}
+
+TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, SurfaceParameterBreakPreservesProjection)
+{
+  const double                     aKnotValues[]       = {0.0, 0.5, 1.0};
+  const int                        aMultValues[]       = {2, 1, 2};
+  const double                     aLinearKnotValues[] = {0.0, 1.0};
+  const int                        aLinearMultValues[] = {2, 2};
+  const NCollection_Array1<double> aKnots(aKnotValues[0], 1, 3);
+  const NCollection_Array1<int>    aMults(aMultValues[0], 1, 3);
+  const NCollection_Array1<double> aLinearKnots(aLinearKnotValues[0], 1, 2);
+  const NCollection_Array1<int>    aLinearMults(aLinearMultValues[0], 1, 2);
+  for (const bool isU : {false, true})
+  {
+    for (const double aCorner : {0.01, 0.5, 0.99})
+    {
+      for (const double anOffset : {0.0, 0.01})
+      {
+        SCOPED_TRACE(isU);
+        SCOPED_TRACE(aCorner);
+        SCOPED_TRACE(anOffset);
+        const double               aValues[] = {0.0, aCorner, 1.0};
+        NCollection_Array2<gp_Pnt> aPoles(1, isU ? 3 : 2, 1, isU ? 2 : 3);
+        for (size_t anIndex = 0; anIndex < 3; ++anIndex)
+        {
+          for (size_t aLinearIndex = 0; aLinearIndex < 2; ++aLinearIndex)
+          {
+            aPoles.ChangeAt(isU ? anIndex : aLinearIndex, isU ? aLinearIndex : anIndex) =
+              gp_Pnt(isU ? aValues[anIndex] : double(aLinearIndex),
+                     isU ? double(aLinearIndex) : aValues[anIndex],
+                     0.0);
+          }
+        }
+        const occ::handle<Geom_BSplineSurface> aSurface =
+          new Geom_BSplineSurface(aPoles,
+                                  isU ? aKnots : aLinearKnots,
+                                  isU ? aLinearKnots : aKnots,
+                                  isU ? aMults : aLinearMults,
+                                  isU ? aLinearMults : aMults,
+                                  1,
+                                  1);
+        for (const bool isReversed : {false, true})
+        {
+          SCOPED_TRACE(isReversed);
+          const double aStart = isReversed ? 1.0 : 0.0;
+          const double anEnd  = isReversed ? 0.0 : 1.0;
+          for (const bool isOutside : {false, true})
+          {
+            SCOPED_TRACE(isOutside);
+            const double                         aFreePosition          = isOutside ? 1.1 : 0.5;
+            const double                         aProjectedFreePosition = isOutside ? 1.0 : 0.5;
+            const occ::handle<Geom_TrimmedCurve> aCurve =
+              GC_MakeSegment(
+                gp_Pnt(isU ? aStart : aFreePosition, isU ? aFreePosition : aStart, anOffset),
+                gp_Pnt(isU ? anEnd : aFreePosition, isU ? aFreePosition : anEnd, anOffset))
+                .Value();
+            for (const bool isTrimmed : {false, true})
+            {
+              SCOPED_TRACE(isTrimmed);
+              const double aFirst = isTrimmed ? 0.005 : 0.0;
+              const double aLast  = isTrimmed ? 0.995 : 1.0;
+              const double aBreak = isReversed ? 1.0 - aCorner : aCorner;
+              myProjector->Init(aSurface, myTolerance);
+              occ::handle<Geom2d_Curve> aPCurve;
+              ASSERT_TRUE(myProjector->Perform(aCurve, aFirst, aLast, aPCurve));
+              ASSERT_FALSE(aPCurve.IsNull());
+              ShapeAnalysis_Surface aReference(aSurface);
+              for (const double aParameter :
+                   {0.5 * (aFirst + aBreak), aBreak, 0.5 * (aBreak + aLast)})
+              {
+                SCOPED_TRACE(aParameter);
+                const double   aPosition = isReversed ? 1.0 - aParameter : aParameter;
+                const gp_Pnt2d aUV       = aPCurve->EvalD0(aParameter);
+                gp_Pnt         anExpected(isU ? aPosition : aProjectedFreePosition,
+                                  isU ? aProjectedFreePosition : aPosition,
+                                  0.0);
+                if (isOutside)
+                {
+                  const gp_Pnt2d aProjectedUV =
+                    aReference.ValueOfUV(aCurve->EvalD0(aParameter), myTolerance);
+                  anExpected = aSurface->EvalD0(aProjectedUV.X(), aProjectedUV.Y());
+                }
+                EXPECT_LE(anExpected.Distance(aSurface->EvalD0(aUV.X(), aUV.Y())), myTolerance);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 // Test: Surface reinitialization between projections
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, SurfaceReinitialization_J2)
 {
@@ -996,4 +1164,414 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, Bug27569_HighMultiplicityBSplin
   // for curves with degenerate sections (repeated poles)
   EXPECT_TRUE(aResult) << "Projection should succeed for B-spline with degenerate section";
   EXPECT_FALSE(aPCurve.IsNull()) << "PCurve should be created";
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, PeriodicBoundaryWithSingularEndpoints)
+{
+  const std::array<gp_XY, 10> aRing     = {gp_XY(1.0, 0.0),
+                                           gp_XY(1.0, 0.25),
+                                           gp_XY(0.75, 0.75),
+                                           gp_XY(0.0, 1.1),
+                                           gp_XY(-0.75, 0.75),
+                                           gp_XY(-1.0, 0.0),
+                                           gp_XY(-0.75, -0.75),
+                                           gp_XY(0.0, -1.1),
+                                           gp_XY(0.75, -0.75),
+                                           gp_XY(1.0, -0.25)};
+  const std::array<gp_XY, 7>  aMeridian = {gp_XY(0.0, -50.0),
+                                           gp_XY(12.0, -50.0),
+                                           gp_XY(36.0, -40.0),
+                                           gp_XY(54.0, 0.0),
+                                           gp_XY(36.0, 40.0),
+                                           gp_XY(12.0, 50.0),
+                                           gp_XY(0.0, 50.0)};
+  NCollection_Array2<gp_Pnt>  aPoles(1, 10, 1, 7);
+  for (size_t aU = 0; aU < aRing.size(); ++aU)
+  {
+    for (size_t aV = 0; aV < aMeridian.size(); ++aV)
+    {
+      aPoles.ChangeAt(aU, aV) = gp_Pnt(aRing[aU].X() * aMeridian[aV].X(),
+                                       aRing[aU].Y() * aMeridian[aV].X(),
+                                       aMeridian[aV].Y());
+    }
+  }
+  NCollection_Array1<double> aUKnots(1, 9);
+  NCollection_Array1<int>    aUMults(1, 9);
+  aUMults.Init(1);
+  aUMults.ChangeAt(0) = aUMults.ChangeAt(aUMults.Size() - 1) = 3;
+  for (size_t aU = 0; aU < aUKnots.Size(); ++aU)
+  {
+    aUKnots.ChangeAt(aU) = 2.0 + aU;
+  }
+  NCollection_Array1<double> aVKnots(1, 5);
+  NCollection_Array1<int>    aVMults(1, 5);
+  aVMults.Init(1);
+  aVMults.ChangeAt(0) = aVMults.ChangeAt(aVMults.Size() - 1) = 4;
+  for (size_t aV = 0; aV < aVKnots.Size(); ++aV)
+  {
+    aVKnots.ChangeAt(aV) = 2.0 + aV;
+  }
+  const occ::handle<Geom_BSplineSurface> aSurface =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3, true, false);
+  for (const bool toExchange : {false, true})
+  {
+    if (toExchange)
+    {
+      aSurface->ExchangeUV();
+    }
+    for (const double aBoundary : {2.0, 10.0})
+    {
+      for (const bool toReverse : {false, true})
+      {
+        SCOPED_TRACE(toExchange);
+        SCOPED_TRACE(aBoundary);
+        SCOPED_TRACE(toReverse);
+        const occ::handle<Geom_Curve> aCurve =
+          toExchange ? aSurface->VIso(aBoundary) : aSurface->UIso(aBoundary);
+        if (toReverse)
+        {
+          aCurve->Reverse();
+        }
+        ShapeConstruct_ProjectCurveOnSurface aProjector;
+        aProjector.Init(aSurface, 0.1);
+        occ::handle<Geom2d_Curve> aPCurve;
+        ASSERT_TRUE(aProjector.Perform(aCurve, 2.0, 6.0, aPCurve));
+        ASSERT_FALSE(aPCurve.IsNull());
+        for (int aSample = 0; aSample <= 32; ++aSample)
+        {
+          const double   aParam = 2.0 + 4.0 * aSample / 32.0;
+          const gp_Pnt2d aUV    = aPCurve->EvalD0(aParam);
+          EXPECT_LE(aCurve->EvalD0(aParam).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())),
+                    Precision::Confusion());
+        }
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, NormalOffsetKeepsStraightProjection)
+{
+  constexpr double                           aRadius = 10.0;
+  const occ::handle<Geom_CylindricalSurface> aSurface =
+    new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  NCollection_Array1<double> aKnots(size_t{2});
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 10.0;
+  NCollection_Array1<int> aMults(size_t{2});
+  aMults.Init(2);
+  for (const double aGap : {0.0, -0.1, 0.1})
+  {
+    SCOPED_TRACE(aGap);
+    NCollection_Array1<gp_Pnt> aPoles(size_t{2});
+    aPoles.ChangeAt(0)                          = gp_Pnt(aRadius + aGap, 0.0, 0.0);
+    aPoles.ChangeAt(1)                          = gp_Pnt(aRadius + aGap, 0.0, 10.0);
+    const occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+    ShapeConstruct_ProjectCurveOnSurface aProjector;
+    aProjector.Init(aSurface, Precision::Confusion());
+    occ::handle<Geom2d_Curve> aPCurve;
+    ASSERT_TRUE(aProjector.Perform(aCurve, 0.0, 10.0, aPCurve));
+    ASSERT_FALSE(aPCurve.IsNull());
+    EXPECT_FALSE(occ::down_cast<Geom2d_Line>(aPCurve).IsNull());
+    for (const double aParameter : {0.0, 2.5, 5.0, 10.0})
+    {
+      const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+      const gp_Pnt   aProjected = aSurface->EvalD0(aUV.X(), aUV.Y());
+      EXPECT_NEAR(aProjected.X(), aRadius, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Y(), 0.0, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Z(), aParameter, Precision::Confusion());
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, NormalOffsetKeepsNonlinearParameters)
+{
+  constexpr double                           aRadius    = 10.0;
+  constexpr double                           aTolerance = 0.096;
+  const occ::handle<Geom_CylindricalSurface> aSurface =
+    new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  NCollection_Array1<double> aKnots(size_t{2});
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(1) = 1.0;
+  NCollection_Array1<int> aMults(size_t{2});
+  aMults.Init(4);
+  for (const double aGap : {-1.0, 1.0})
+  {
+    SCOPED_TRACE(aGap);
+    NCollection_Array1<gp_Pnt> aPoles(size_t{4});
+    aPoles.ChangeAt(0)                          = gp_Pnt(aRadius + aGap, 0.0, 0.0);
+    aPoles.ChangeAt(1)                          = gp_Pnt(aRadius + aGap, 0.0, 2.0 / 3.0);
+    aPoles.ChangeAt(2)                          = gp_Pnt(aRadius + aGap, 0.0, 1.0 / 3.0);
+    aPoles.ChangeAt(3)                          = gp_Pnt(aRadius + aGap, 0.0, 1.0);
+    const occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+    ShapeConstruct_ProjectCurveOnSurface aProjector;
+    aProjector.Init(aSurface, aTolerance);
+    occ::handle<Geom2d_Curve> aPCurve;
+    ASSERT_TRUE(aProjector.Perform(aCurve, 0.0, 1.0, aPCurve));
+    ASSERT_FALSE(aPCurve.IsNull());
+    for (const double aParameter : {(3.0 - std::sqrt(3.0)) / 6.0, (3.0 + std::sqrt(3.0)) / 6.0})
+    {
+      const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+      const gp_Pnt   aProjected = aSurface->EvalD0(aUV.X(), aUV.Y());
+      EXPECT_NEAR(aProjected.X(), aRadius, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Y(), 0.0, Precision::Confusion());
+      EXPECT_NEAR(aProjected.Z(), aCurve->EvalD0(aParameter).Z(), aTolerance);
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, PiecewiseLinearCurveKeepsKnotParameters)
+{
+  constexpr double                           aRadius     = 100.0;
+  constexpr double                           anAngleStep = 0.02;
+  constexpr double                           aTolerance  = 0.01;
+  const occ::handle<Geom_CylindricalSurface> aSurface =
+    new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  const int                     aMultValues[] = {2, 1, 2};
+  const NCollection_Array1<int> aMults(aMultValues[0], 1, 3);
+  NCollection_Array1<double>    aKnots(1, 3);
+  aKnots.ChangeAt(0) = 0.0;
+  aKnots.ChangeAt(2) = 1.0;
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  for (const double aStartAngle : {0.0, 2.0 * M_PI - anAngleStep})
+  {
+    for (size_t i = 0; i < aPoles.Size(); ++i)
+    {
+      const double anAngle = aStartAngle + static_cast<double>(i) * anAngleStep;
+      aPoles.ChangeAt(i)   = gp_Pnt(aRadius * std::cos(anAngle), aRadius * std::sin(anAngle), 0.0);
+    }
+    for (const double aKnot : {0.1, 0.9})
+    {
+      aKnots.ChangeAt(1) = aKnot;
+      const occ::handle<Geom_BSplineCurve> aCurve =
+        new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+      for (const bool isTrimmed : {false, true})
+      {
+        SCOPED_TRACE(::testing::Message() << aStartAngle << ' ' << aKnot << ' ' << isTrimmed);
+        const double aFirst = isTrimmed ? 0.05 : 0.0;
+        const double aLast  = isTrimmed ? 0.95 : 1.0;
+        myProjector->Init(aSurface, aTolerance);
+        occ::handle<Geom2d_Curve> aPCurve;
+        ASSERT_TRUE(myProjector->Perform(aCurve, aFirst, aLast, aPCurve));
+        ASSERT_FALSE(aPCurve.IsNull());
+        EXPECT_DOUBLE_EQ(aPCurve->FirstParameter(), aFirst);
+        EXPECT_DOUBLE_EQ(aPCurve->LastParameter(), aLast);
+        const gp_Pnt2d aKnotUV = aPCurve->EvalD0(aKnot);
+        EXPECT_LE(aCurve->EvalD0(aKnot).Distance(aSurface->EvalD0(aKnotUV.X(), aKnotUV.Y())),
+                  Precision::Confusion());
+        constexpr int aNbSamples = 100;
+        for (int i = 0; i <= aNbSamples; ++i)
+        {
+          const double aParameter = aFirst + (aLast - aFirst) * static_cast<double>(i) / aNbSamples;
+          const gp_Pnt2d aUV      = aPCurve->EvalD0(aParameter);
+          EXPECT_LE(aCurve->EvalD0(aParameter).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())),
+                    aTolerance);
+        }
+      }
+    }
+  }
+
+  const double                     aPeriodicKnotValues[] = {0.0, 0.1, 0.9, 1.0};
+  const NCollection_Array1<double> aPeriodicKnots(aPeriodicKnotValues[0], 1, 4);
+  NCollection_Array1<int>          aPeriodicMults(1, 4);
+  aPeriodicMults.Init(1);
+  const occ::handle<Geom_BSplineCurve> aPeriodicCurve =
+    new Geom_BSplineCurve(aPoles, aPeriodicKnots, aPeriodicMults, 1, true);
+  // The longest chord spans two angular steps.
+  const double aPeriodicTolerance = 2.0 * aRadius * (1.0 - std::cos(anAngleStep));
+  for (const double aFirst : {0.0, 0.8})
+  {
+    const double aLast = aFirst == 0.0 ? 1.0 : 1.2;
+    SCOPED_TRACE(aFirst);
+    myProjector->Init(aSurface, aPeriodicTolerance);
+    occ::handle<Geom2d_Curve> aPCurve;
+    ASSERT_TRUE(myProjector->Perform(aPeriodicCurve, aFirst, aLast, aPCurve));
+    ASSERT_FALSE(aPCurve.IsNull());
+    EXPECT_DOUBLE_EQ(aPCurve->FirstParameter(), aFirst);
+    EXPECT_DOUBLE_EQ(aPCurve->LastParameter(), aLast);
+    constexpr int aNbSamples = 100;
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double   aParameter = aFirst + (aLast - aFirst) * static_cast<double>(i) / aNbSamples;
+      const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+      EXPECT_LE(aPeriodicCurve->EvalD0(aParameter).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())),
+                aPeriodicTolerance);
+    }
+  }
+
+  NCollection_Array1<gp_Pnt> anOffsetPoles(1, 4);
+  for (size_t i = 0; i < anOffsetPoles.Size(); ++i)
+  {
+    const double anAngle = static_cast<double>(i) * anAngleStep;
+    anOffsetPoles.ChangeAt(i) =
+      gp_Pnt(aRadius * std::cos(anAngle), aRadius * std::sin(anAngle), 0.0);
+  }
+  aKnots.ChangeAt(1)                                          = 0.1;
+  const int                            aQuadraticMultValues[] = {3, 1, 3};
+  const NCollection_Array1<int>        aQuadraticMults(aQuadraticMultValues[0], 1, 3);
+  const occ::handle<Geom_BSplineCurve> aBasis =
+    new Geom_BSplineCurve(anOffsetPoles, aKnots, aQuadraticMults, 2);
+  constexpr double              anOffset      = 1.0;
+  const occ::handle<Geom_Curve> anOffsetCurve = new Geom_OffsetCurve(aBasis, anOffset, gp::DZ());
+  const occ::handle<Geom_CylindricalSurface> anOffsetSurface =
+    new Geom_CylindricalSurface(gp_Ax3(), aRadius + anOffset);
+  // A quadratic span stays within the control polygon's angular extent.
+  const double anOffsetTolerance = 2.0 * (aRadius + anOffset) * (1.0 - std::cos(anAngleStep));
+  myProjector->Init(anOffsetSurface, anOffsetTolerance);
+  occ::handle<Geom2d_Curve> anOffsetPCurve;
+  ASSERT_TRUE(myProjector->Perform(anOffsetCurve, 0.0, 1.0, anOffsetPCurve));
+  ASSERT_FALSE(anOffsetPCurve.IsNull());
+  for (int i = 0; i <= 100; ++i)
+  {
+    const double   aParameter = static_cast<double>(i) / 100.0;
+    const gp_Pnt2d aUV        = anOffsetPCurve->EvalD0(aParameter);
+    EXPECT_LE(anOffsetCurve->EvalD0(aParameter).Distance(anOffsetSurface->EvalD0(aUV.X(), aUV.Y())),
+              anOffsetTolerance);
+  }
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, AffineProjectionAcrossSurfaceJoins)
+{
+  const double                     aUKnotValues[] = {0.0, 0.37, 1.0};
+  const double                     aVKnotValues[] = {0.0, 0.6, 1.0};
+  const double                     aUPositions[]  = {0.0, 0.2, 1.0};
+  const double                     aVPositions[]  = {0.0, 0.4, 1.0};
+  const int                        aMultValues[]  = {2, 1, 2};
+  const NCollection_Array1<double> aUKnots(aUKnotValues[0], 1, 3);
+  const NCollection_Array1<double> aVKnots(aVKnotValues[0], 1, 3);
+  const NCollection_Array1<int>    aMults(aMultValues[0], 1, 3);
+  constexpr double                 aSkew      = 0.3;
+  constexpr double                 aTolerance = 1.0e-5;
+  for (const bool toExchange : {false, true})
+  {
+    NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+    for (size_t aU = 0; aU < 3; ++aU)
+    {
+      for (size_t aV = 0; aV < 3; ++aV)
+      {
+        aPoles.ChangeAt(aU, aV) =
+          gp_Pnt(aUPositions[aU] + aSkew * aVPositions[aV], aVPositions[aV], 0.0);
+      }
+    }
+    const occ::handle<Geom_BSplineSurface> aSurface =
+      new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aMults, aMults, 1, 1);
+    if (toExchange)
+    {
+      aSurface->ExchangeUV();
+    }
+    for (const bool toReverse : {false, true})
+    {
+      for (const double aGap : {0.0, 0.1 * aTolerance})
+      {
+        SCOPED_TRACE(toExchange);
+        SCOPED_TRACE(toReverse);
+        SCOPED_TRACE(aGap);
+        GC_MakeSegment aSegment(gp_Pnt(0.1 + aSkew * 0.2, 0.2, aGap),
+                                gp_Pnt(0.9 + aSkew * 0.8, 0.8, aGap));
+        ASSERT_TRUE(aSegment.IsDone());
+        const occ::handle<Geom_TrimmedCurve> aCurve = aSegment.Value();
+        if (toReverse)
+        {
+          aCurve->Reverse();
+        }
+        const double aFirst = aCurve->FirstParameter(), aLast = aCurve->LastParameter();
+        ShapeConstruct_ProjectCurveOnSurface aProjector;
+        aProjector.Init(aSurface, aTolerance);
+        occ::handle<Geom2d_Curve> aPCurve;
+        ASSERT_TRUE(aProjector.Perform(aCurve, aFirst, aLast, aPCurve));
+        ASSERT_FALSE(aPCurve.IsNull());
+        for (const double aJoinFraction : {(0.2 - 0.1) / 0.8, (0.4 - 0.2) / 0.6})
+        {
+          const double   aFraction  = toReverse ? 1.0 - aJoinFraction : aJoinFraction;
+          const double   aParameter = aFirst + (aLast - aFirst) * aFraction;
+          const gp_Pnt   aPoint     = aCurve->EvalD0(aParameter);
+          const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+          EXPECT_LE(
+            gp_Pnt(aPoint.X(), aPoint.Y(), 0.0).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())),
+            Precision::Confusion());
+        }
+        for (int aSample = 0; aSample <= 100; ++aSample)
+        {
+          const double   aParameter = aFirst + (aLast - aFirst) * aSample / 100.0;
+          const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+          EXPECT_LE(aCurve->EvalD0(aParameter).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())),
+                    aTolerance);
+        }
+      }
+    }
+  }
+}
+
+//==================================================================================================
+
+TEST(ShapeConstruct_ProjectCurveOnSurfaceBoundaryTest, OpenSurfacePoleKeepsProjectionBranch)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  const double               aX[] = {-20.0, 0.0, 20.0};
+  const double               aY[] = {0.0, -20.0, 0.0};
+  for (size_t i = 0; i < 3; ++i)
+  {
+    aPoles.ChangeAt(i, 0) = gp_Pnt(aX[i], aY[i], 0.0);
+    aPoles.ChangeAt(i, 1) = gp_Pnt(aX[i], aY[i], -20.0);
+    aPoles.ChangeAt(i, 2) = gp_Pnt(0.0, 0.0, -20.0);
+  }
+  const double                     aKnotValues[] = {0.0, 1.0};
+  const int                        aMultValues[] = {3, 3};
+  const NCollection_Array1<double> aKnots(aKnotValues[0], 1, 2);
+  const NCollection_Array1<int>    aMults(aMultValues[0], 1, 2);
+  NCollection_Array1<gp_Pnt>       aCurvePoles(1, 3);
+  aCurvePoles.ChangeAt(0) = gp_Pnt(0.0, 0.0, -20.0);
+  aCurvePoles.ChangeAt(1) = gp_Pnt(10.0, 0.00005, -20.0);
+  aCurvePoles.ChangeAt(2) = gp_Pnt(15.0, 0.0001, -15.0);
+  const occ::handle<Geom_BSplineCurve> aBasis =
+    GeomConvert::CurveToBSplineCurve(new Geom_BezierCurve(aCurvePoles));
+  aBasis->InsertKnot(0.02, 1, Precision::PConfusion());
+  aBasis->InsertKnot(0.1, 1, Precision::PConfusion());
+  constexpr double aTolerance = 1.0;
+  for (const bool toExchange : {false, true})
+  {
+    SCOPED_TRACE(toExchange);
+    const occ::handle<Geom_BSplineSurface> aSurface =
+      new Geom_BSplineSurface(aPoles, aKnots, aKnots, aMults, aMults, 2, 2);
+    if (toExchange)
+    {
+      aSurface->ExchangeUV();
+    }
+    ASSERT_FALSE(aSurface->IsUClosed());
+    ASSERT_FALSE(aSurface->IsVClosed());
+    for (const bool toReverse : {false, true})
+    {
+      SCOPED_TRACE(toReverse);
+      const occ::handle<Geom_Curve> aCurve = occ::down_cast<Geom_Curve>(aBasis->Copy());
+      if (toReverse)
+      {
+        aCurve->Reverse();
+      }
+      ShapeConstruct_ProjectCurveOnSurface aProjector;
+      aProjector.Init(aSurface, aTolerance);
+      occ::handle<Geom2d_Curve> aPCurve;
+      const double              aFirst = aCurve->FirstParameter(), aLast = aCurve->LastParameter();
+      ASSERT_TRUE(aProjector.Perform(aCurve, aFirst, aLast, aPCurve));
+      ASSERT_FALSE(aPCurve.IsNull());
+      double aMaximum = 0.0;
+      for (int i = 0; i <= 300; ++i)
+      {
+        const double   aParameter = aFirst + (aLast - aFirst) * double(i) / 300.0;
+        const gp_Pnt2d aUV        = aPCurve->EvalD0(aParameter);
+        aMaximum =
+          std::max(aMaximum,
+                   aCurve->EvalD0(aParameter).Distance(aSurface->EvalD0(aUV.X(), aUV.Y())));
+      }
+      EXPECT_LE(aMaximum, aTolerance);
+    }
+  }
 }

@@ -73,6 +73,7 @@ public:
   //! Reads the curve from the stream. The curve is
   //! assumed to have been written with the Write
   //! method.
+  //! Stored trim parameters are restored without periodic normalization.
   Standard_EXPORT static Standard_IStream& ReadCurve2d(Standard_IStream&          IS,
                                                        occ::handle<Geom2d_Curve>& C);
 

@@ -26,9 +26,6 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_File.hxx>
-#include <OSD_Path.hxx>
 #include <OSD.hxx>
 #include <OSD_Thread.hxx>
 #include <PCDM_ReaderFilter.hxx>
@@ -106,6 +103,10 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <TopLoc_Location.hxx>
+#include <XCAFDoc.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_Location.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 
 #include <cmath>
 #include <cstring>
@@ -155,30 +156,18 @@ static occ::handle<TDocStd_Document> SaveAndOpen(
     return SaveAndOpenStream(theApplication, theDocument);
   }
 
-  OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path      aPath;
-  aDirectory.Path(aPath);
-  aPath.SetName(theTestName);
-  aPath.SetExtension(strcmp(theFormat, "BinOcaf") == 0 ? ".cbf" : ".xml");
-
-  TCollection_AsciiString aSystemName;
-  aPath.SystemName(aSystemName);
-  const TCollection_ExtendedString aFileName(aSystemName, true);
-
+  SCOPED_TRACE(theTestName);
+  EXPECT_EQ(theDocument->StorageFormat(), TCollection_ExtendedString(theFormat));
+  std::stringstream aStream;
   theDocument->NewCommand();
-  EXPECT_EQ(theApplication->SaveAs(theDocument, aFileName), PCDM_SS_OK);
-  OSD_File aFile(aPath);
-  EXPECT_TRUE(aFile.Exists());
+  EXPECT_EQ(theApplication->SaveAs(theDocument, aStream), PCDM_SS_OK);
+  EXPECT_FALSE(aStream.str().empty());
 
   theApplication->Close(theDocument);
+  aStream.seekg(0);
   occ::handle<TDocStd_Document> aRestored;
-  EXPECT_EQ(theApplication->Open(aFileName, aRestored), PCDM_RS_OK);
+  EXPECT_EQ(theApplication->Open(aStream, aRestored), PCDM_RS_OK);
   EXPECT_FALSE(aRestored.IsNull());
-
-  if (aFile.Exists())
-  {
-    aFile.Remove();
-  }
   return aRestored;
 }
 
@@ -227,6 +216,122 @@ static PCDM_ReaderStatus OpenDocumentStream(const occ::handle<TDocStd_Applicatio
   theStream.clear();
   theStream.seekg(0);
   return theApplication->Open(theStream, theDocument, theFilter);
+}
+
+// bugs/caf/bug33855: partial XBF retrieval resolves a complete chain of TreeNode references.
+TEST(TDocStd_Storage_Test, Cbf_CafBug33855_DeepTreeNodeReferencesAfterPartialRead)
+{
+  occ::handle<TDocStd_Application> anApplication = NewApplication();
+  occ::handle<TDocStd_Document>    aDocument     = NewDocument(anApplication, "BinOcaf");
+  ASSERT_FALSE(aDocument.IsNull());
+
+  const int aChainStarts[] = {1, 5};
+  for (const int aStartTag : aChainStarts)
+  {
+    occ::handle<TDataStd_TreeNode> aParentNode;
+    for (size_t anOffset = 0; anOffset < 4; ++anOffset)
+    {
+      const int                      aTag   = aStartTag + static_cast<int>(anOffset);
+      const TDF_Label                aLabel = aDocument->Main().FindChild(aTag, true);
+      occ::handle<TDataStd_TreeNode> aNode  = TDataStd_TreeNode::Set(aLabel);
+      ASSERT_FALSE(aNode.IsNull());
+      if (!aParentNode.IsNull())
+      {
+        ASSERT_TRUE(aParentNode->Append(aNode));
+      }
+      aParentNode = aNode;
+    }
+  }
+
+  std::stringstream aStream;
+  SaveDocumentStream(anApplication, aDocument, aStream);
+  anApplication->Close(aDocument);
+
+  occ::handle<PCDM_ReaderFilter> aFilter = new PCDM_ReaderFilter;
+  aFilter->AddPath("0:1:4");
+  aFilter->AddPath("0:1:8");
+  occ::handle<TDocStd_Document> aRestored;
+  ASSERT_EQ(OpenDocumentStream(anApplication, aStream, aRestored, aFilter), PCDM_RS_OK);
+  ASSERT_FALSE(aRestored.IsNull());
+
+  const int aLeafTags[] = {4, 8};
+  for (const int aLeafTag : aLeafTags)
+  {
+    occ::handle<TDataStd_TreeNode> aNode;
+    ASSERT_TRUE(aRestored->Main()
+                  .FindChild(aLeafTag, false)
+                  .FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), aNode));
+    for (size_t anOffset = 1; anOffset < 4; ++anOffset)
+    {
+      aNode = aNode->Father();
+      ASSERT_FALSE(aNode.IsNull());
+      ASSERT_FALSE(aNode->Label().IsNull());
+      EXPECT_EQ(aNode->Label().Tag(), aLeafTag - static_cast<int>(anOffset));
+    }
+    EXPECT_TRUE(aNode->Father().IsNull());
+  }
+  anApplication->Close(aRestored);
+}
+
+// bugs/caf/bug33855: XCAF shape references remain usable after partial XBF retrieval.
+TEST(TDocStd_Storage_Test, Cbf_CafBug33855_DeepShapeReferencesAfterPartialRead)
+{
+  occ::handle<TDocStd_Application> anApplication = NewApplication();
+  BinXCAFDrivers::DefineFormat(anApplication);
+  occ::handle<TDocStd_Document> aDocument = NewDocument(anApplication, "BinXCAF");
+  ASSERT_FALSE(aDocument.IsNull());
+
+  const TopoDS_Shape             aBox       = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape();
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDocument->Main());
+  ASSERT_FALSE(aShapeTool.IsNull());
+  TDF_Label aReferredLabel = aShapeTool->AddShape(aBox);
+  ASSERT_FALSE(aReferredLabel.IsNull());
+
+  TDF_Label aReferenceLabel;
+  for (size_t aDepth = 0; aDepth < 4; ++aDepth)
+  {
+    aReferenceLabel = TDF_TagSource::NewChild(aShapeTool->Label());
+    ASSERT_FALSE(aReferenceLabel.IsNull());
+    ASSERT_FALSE(XCAFDoc_Location::Set(aReferenceLabel, TopLoc_Location()).IsNull());
+    occ::handle<TDataStd_TreeNode> aMainNode =
+      TDataStd_TreeNode::Set(aReferredLabel, XCAFDoc::ShapeRefGUID());
+    occ::handle<TDataStd_TreeNode> aReferenceNode =
+      TDataStd_TreeNode::Set(aReferenceLabel, XCAFDoc::ShapeRefGUID());
+    ASSERT_FALSE(aMainNode.IsNull());
+    ASSERT_FALSE(aReferenceNode.IsNull());
+    ASSERT_TRUE(aMainNode->Append(aReferenceNode));
+    aReferredLabel = aReferenceLabel;
+  }
+
+  TCollection_AsciiString aReferenceEntry;
+  TDF_Tool::Entry(aReferenceLabel, aReferenceEntry);
+  std::stringstream aStream;
+  SaveDocumentStream(anApplication, aDocument, aStream);
+  anApplication->Close(aDocument);
+
+  occ::handle<PCDM_ReaderFilter> aFilter = new PCDM_ReaderFilter;
+  aFilter->AddPath(aReferenceEntry);
+  occ::handle<TDocStd_Document> aRestored;
+  ASSERT_EQ(OpenDocumentStream(anApplication, aStream, aRestored, aFilter), PCDM_RS_OK);
+  ASSERT_FALSE(aRestored.IsNull());
+
+  TDF_Label aRestoredReference;
+  TDF_Tool::Label(aRestored->GetData(), aReferenceEntry, aRestoredReference, false);
+  ASSERT_FALSE(aRestoredReference.IsNull());
+  TopoDS_Shape aRestoredShape;
+  ASSERT_NO_THROW(EXPECT_TRUE(XCAFDoc_ShapeTool::GetShape(aRestoredReference, aRestoredShape)));
+  ASSERT_FALSE(aRestoredShape.IsNull());
+  Bnd_Box aBounds;
+  BRepBndLib::Add(aRestoredShape, aBounds);
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBounds.Get();
+  const double aTolerance                               = 2.0 * Precision::Confusion();
+  EXPECT_NEAR(aXMin, 0.0, aTolerance);
+  EXPECT_NEAR(aYMin, 0.0, aTolerance);
+  EXPECT_NEAR(aZMin, 0.0, aTolerance);
+  EXPECT_NEAR(aXMax, 10.0, aTolerance);
+  EXPECT_NEAR(aYMax, 20.0, aTolerance);
+  EXPECT_NEAR(aZMax, 30.0, aTolerance);
+  anApplication->Close(aRestored);
 }
 
 static void RunBinaryEmptyLists()
@@ -345,7 +450,7 @@ TEST(TDocStd_Storage_Test, CafBug_31785_BackgroundXbfStreamOpen)
 
   std::stringstream      aStream;
   const PCDM_StoreStatus aStoreStatus = anApplication->SaveAs(aDocument, aStream);
-  ASSERT_TRUE(aStoreStatus == PCDM_SS_OK || aStoreStatus == PCDM_SS_No_Obj);
+  ASSERT_EQ(aStoreStatus, PCDM_SS_No_Obj);
   const std::string aData = aStream.str();
   ASSERT_FALSE(aData.empty());
   anApplication->Close(aDocument);
@@ -2760,7 +2865,7 @@ static void RunCafBug31839_2Stream()
     OpenDocumentStream(anApplication, aStream, aRestored, aSkipShapes);
   // BinOcaf reports a generic driver failure when the filter rejects every attribute;
   // DRAW ignores this status and validates the resulting document contents instead.
-  EXPECT_TRUE(aSkipStatus == PCDM_RS_OK || aSkipStatus == PCDM_RS_DriverFailure);
+  EXPECT_EQ(aSkipStatus, PCDM_RS_DriverFailure);
   ASSERT_FALSE(aRestored.IsNull());
   const TDF_Label aSkippedBoxLabel = LabelByEntry(aRestored, "0:1");
   const TDF_Label aSkippedFace1    = LabelByEntry(aRestored, "0:1:1");
@@ -3750,7 +3855,7 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_24164_1_FunctionStream)
   RunCafBug24164_1Stream();
 }
 
-// bugs/caf/bug158: saving an empty BinOcaf document reports a valid empty-store status.
+// bugs/caf/bug158: an empty BinOcaf document can be stored through the stream API.
 TEST(TDocStd_Storage_Test, Cbf_CafBug_158_EmptyDocumentStreamSave)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
@@ -3759,12 +3864,13 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_158_EmptyDocumentStreamSave)
 
   std::stringstream      aStream;
   const PCDM_StoreStatus aStatus = anApplication->SaveAs(aDocument, aStream);
-  EXPECT_TRUE(aStatus == PCDM_SS_OK || aStatus == PCDM_SS_No_Obj);
+  EXPECT_EQ(aStatus, PCDM_SS_No_Obj);
+  EXPECT_FALSE(aStream.str().empty());
   EXPECT_NO_THROW(anApplication->Close(aDocument));
 }
 
 // bugs/caf/bug267_1: an empty BinOcaf document can be stored through the
-// stream API and produces the same valid empty-store status as DRAW SaveAs.
+// stream API and produces the expected empty-document payload.
 TEST(TDocStd_Storage_Test, Cbf_CafBug_267_1_EmptyDocumentStreamSave)
 {
   occ::handle<TDocStd_Application> anApplication = NewApplication();
@@ -3773,7 +3879,7 @@ TEST(TDocStd_Storage_Test, Cbf_CafBug_267_1_EmptyDocumentStreamSave)
 
   std::stringstream      aStream;
   const PCDM_StoreStatus aStatus = anApplication->SaveAs(aDocument, aStream);
-  EXPECT_TRUE(aStatus == PCDM_SS_OK || aStatus == PCDM_SS_No_Obj);
+  EXPECT_EQ(aStatus, PCDM_SS_No_Obj);
   EXPECT_FALSE(aStream.str().empty());
   EXPECT_NO_THROW(anApplication->Close(aDocument));
 }

@@ -1,3 +1,5 @@
+puts {TODO OCC00000 All: Error :  is WRONG because number of EDGE entities in shape "result" is 16}
+puts {TODO OCC00000 All: Error :  is WRONG because number of SHELL entities in shape "result" is 4}
 puts "=============================================================="
 puts "0027913: Sharing between edges was lost after offset operation"
 puts "=============================================================="

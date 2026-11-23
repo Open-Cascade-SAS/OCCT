@@ -1,0 +1,112 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef FEmTool_LinearCriterion_HeaderFile
+#define FEmTool_LinearCriterion_HeaderFile
+
+#include <FEmTool_ElementsOfRefMatrix.hxx>
+#include <GeomAbs_Shape.hxx>
+#include <math.hxx>
+#include <math_GaussSetIntegration.hxx>
+#include <math_IntegerVector.hxx>
+#include <math_Matrix.hxx>
+#include <math_Vector.hxx>
+#include <PLib_HermitJacobi.hxx>
+#include <Standard_ConstructionError.hxx>
+
+#include <algorithm>
+
+//! Implementation helpers shared by linear finite-element criteria.
+namespace
+{
+namespace FEmTool_LinearCriterion
+{
+
+constexpr int MaxWorkDegree()
+{
+  return 14;
+}
+
+template <int TheDerivativeOrder>
+math_Vector computeReferenceElements(const GeomAbs_Shape theConstraintOrder)
+{
+  static_assert(TheDerivativeOrder > 0, "Derivative order must be positive");
+
+  PLib_HermitJacobi           aBase(MaxWorkDegree(), theConstraintOrder);
+  FEmTool_ElementsOfRefMatrix anElements(aBase, TheDerivativeOrder);
+  constexpr int               THE_MAX_DEGREE = MaxWorkDegree() + 1;
+  math_IntegerVector anOrder(1, 1, std::min(4 * (THE_MAX_DEGREE / 2 + 1), math::GaussPointsMax()));
+  math_Vector        aLower(1, 1, -1.0);
+  math_Vector        anUpper(1, 1, 1.0);
+  math_GaussSetIntegration anIntegration(anElements, aLower, anUpper, anOrder);
+  constexpr size_t         THE_ELEMENT_COUNT = ((MaxWorkDegree() + 2) * (MaxWorkDegree() + 1)) / 2;
+  math_Vector              aResult(THE_ELEMENT_COUNT);
+  aResult = anIntegration.Value();
+  return aResult;
+}
+
+template <int TheDerivativeOrder>
+const math_Vector& referenceElements(const GeomAbs_Shape theConstraintOrder)
+{
+  switch (theConstraintOrder)
+  {
+    case GeomAbs_C0: {
+      static const math_Vector THE_ELEMENTS =
+        computeReferenceElements<TheDerivativeOrder>(GeomAbs_C0);
+      return THE_ELEMENTS;
+    }
+    case GeomAbs_C1: {
+      static const math_Vector THE_ELEMENTS =
+        computeReferenceElements<TheDerivativeOrder>(GeomAbs_C1);
+      return THE_ELEMENTS;
+    }
+    case GeomAbs_C2: {
+      static const math_Vector THE_ELEMENTS =
+        computeReferenceElements<TheDerivativeOrder>(GeomAbs_C2);
+      return THE_ELEMENTS;
+    }
+    default:
+      throw Standard_ConstructionError("Invalid ConstraintOrder");
+  }
+}
+
+template <int TheDerivativeOrder>
+void initializeReferenceMatrix(const int           theWorkDegree,
+                               const GeomAbs_Shape theConstraintOrder,
+                               math_Matrix&        theReferenceMatrix)
+{
+  if (theWorkDegree > MaxWorkDegree())
+  {
+    throw Standard_ConstructionError("Degree too high");
+  }
+
+  const math_Vector& aMatrixElements = referenceElements<TheDerivativeOrder>(theConstraintOrder);
+  const size_t       aWorkDegree     = static_cast<size_t>(theWorkDegree);
+  size_t             anElementIndex  = 0;
+  for (size_t aRow = 0; aRow <= aWorkDegree; ++aRow)
+  {
+    theReferenceMatrix.ChangeAt(aRow, aRow) = aMatrixElements.At(anElementIndex);
+    size_t aColumnElementIndex              = anElementIndex + 1;
+    for (size_t aColumn = aRow + 1; aColumn <= aWorkDegree; ++aColumn, ++aColumnElementIndex)
+    {
+      theReferenceMatrix.ChangeAt(aColumn, aRow) = theReferenceMatrix.ChangeAt(aRow, aColumn) =
+        aMatrixElements.At(aColumnElementIndex);
+    }
+    anElementIndex += static_cast<size_t>(MaxWorkDegree()) + 1 - aRow;
+  }
+}
+
+} // namespace FEmTool_LinearCriterion
+} // namespace
+
+#endif // FEmTool_LinearCriterion_HeaderFile

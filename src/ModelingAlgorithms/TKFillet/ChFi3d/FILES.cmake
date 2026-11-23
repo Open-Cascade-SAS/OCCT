@@ -20,7 +20,6 @@ set(OCCT_ChFi3d_FILES
   ChFi3d_ChBuilder.hxx
   ChFi3d_ChBuilder_C2.cxx
   ChFi3d_ChBuilder_C3.cxx
-  ChFi3d_Debug.cxx
   ChFi3d_FilBuilder.cxx
   ChFi3d_FilBuilder.hxx
   ChFi3d_FilBuilder_C2.cxx

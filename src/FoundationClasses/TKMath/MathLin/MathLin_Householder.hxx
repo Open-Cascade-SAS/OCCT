@@ -17,9 +17,12 @@
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
 #include <MathUtils_Core.hxx>
+#include <MathLin_Utils.hxx>
 
 #include <cmath>
 #include <algorithm>
+#include <utility>
+#include <optional>
 
 namespace MathLin
 {
@@ -29,329 +32,300 @@ using namespace MathUtils;
 struct QRResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged;
-  std::optional<math_Matrix> Q;        //!< Orthogonal matrix Q (m x m)
-  std::optional<math_Matrix> R;        //!< Upper triangular matrix R (m x n)
-  int                        Rank = 0; //!< Numerical rank
+  std::optional<math_Matrix> Q;                 //!< Orthogonal matrix Q (m x m)
+  std::optional<math_Matrix> R;                 //!< Upper triangular matrix R (m x n)
+  size_t                     Rank = 0;          //!< Diagonal rank estimate (no pivoting)
+  std::optional<double>      ConditionEstimate; //!< Full-rank diagonal condition estimate
+  double                     DiagonalThreshold = 0.0;
 
+  //! Returns true when the computation completed successfully.
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
+  //! Returns the computation success status.
   explicit operator bool() const { return IsDone(); }
 };
 
-//! QR decomposition using Householder reflections: A = Q * R.
-//!
-//! Decomposes an m x n matrix A (m >= n) into:
-//! - Q: m x m orthogonal matrix (Q^T * Q = I)
-//! - R: m x n upper triangular matrix
-//!
-//! The Householder method applies orthogonal transformations
-//! to reduce A to upper triangular form. It is more numerically
-//! stable than Gram-Schmidt orthogonalization.
-//!
-//! Uses: Least squares problems, orthogonalization, computing
-//! determinant sign.
-//!
-//! @param theA input matrix A (m x n, m >= n)
-//! @param theTolerance for rank determination
-//! @return QR decomposition result
-inline QRResult QR(const math_Matrix& theA, double theTolerance = 1.0e-20)
+namespace HouseholderDetail
 {
-  QRResult aResult;
-
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1; // Number of rows
-  const int aN        = aColUpper - aColLower + 1; // Number of columns
-
-  if (aM < aN)
+//! Apply a reflector to a column without squaring or doubling large input values.
+inline bool ApplyHouseholder(const math_Vector& theV,
+                             const size_t       theFirst,
+                             const double       theTau,
+                             math_Matrix&       theMatrix,
+                             const size_t       theColumn)
+{
+  double aScale = 0.0;
+  for (size_t i = theFirst; i < theMatrix.RowSize(); ++i)
   {
-    aResult.Status = Status::InvalidInput;
-    return aResult;
-  }
-
-  // Working copy of A that will become R
-  math_Matrix aR(aRowLower, aRowUpper, aColLower, aColUpper);
-  for (int i = aRowLower; i <= aRowUpper; ++i)
-  {
-    for (int j = aColLower; j <= aColUpper; ++j)
+    if (theV[i] != 0.0)
     {
-      aR(i, j) = theA(i, j);
+      aScale = std::max(aScale, std::abs(theMatrix.At(i, theColumn)));
     }
   }
-
-  // Q starts as identity
-  math_Matrix aQ(aRowLower, aRowUpper, aRowLower, aRowUpper, 0.0);
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  if (aScale == 0.0)
   {
-    aQ(i, i) = 1.0;
+    return true;
   }
-
-  // Householder vector storage
-  math_Vector aV(aRowLower, aRowUpper);
-
-  aResult.Rank = 0;
-
-  // Apply Householder reflections to each column
-  for (int j = aColLower; j <= aColUpper; ++j)
+  double aProjection = 0.0;
+  for (size_t i = theFirst; i < theMatrix.RowSize(); ++i)
   {
-    const int aJOffset = j - aColLower;
-
-    // Compute norm of column below diagonal
-    double aNorm = 0.0;
-    for (int i = aRowLower + aJOffset; i <= aRowUpper; ++i)
+    if (theV[i] != 0.0)
     {
-      aNorm += MathUtils::Sqr(aR(i, j));
-    }
-    aNorm = std::sqrt(aNorm);
-
-    if (aNorm < theTolerance)
-    {
-      // Column is essentially zero, skip
-      continue;
-    }
-
-    ++aResult.Rank;
-
-    // Compute Householder vector v
-    double aAlpha = aR(aRowLower + aJOffset, j);
-    double aBeta  = (aAlpha >= 0.0) ? -aNorm : aNorm;
-
-    // v = [0,...,0, x_j - beta, x_{j+1}, ..., x_m]
-    for (int i = aRowLower; i < aRowLower + aJOffset; ++i)
-    {
-      aV(i) = 0.0;
-    }
-    aV(aRowLower + aJOffset) = aAlpha - aBeta;
-    for (int i = aRowLower + aJOffset + 1; i <= aRowUpper; ++i)
-    {
-      aV(i) = aR(i, j);
-    }
-
-    // Compute tau = 2 / (v^T v)
-    double aVNormSq = 0.0;
-    for (int i = aRowLower + aJOffset; i <= aRowUpper; ++i)
-    {
-      aVNormSq += MathUtils::Sqr(aV(i));
-    }
-
-    if (aVNormSq < MathUtils::THE_ZERO_TOL)
-    {
-      continue;
-    }
-
-    double aTau = 2.0 / aVNormSq;
-
-    // Apply H = I - tau * v * v^T to remaining columns of R
-    // R := H * R
-    for (int k = j; k <= aColUpper; ++k)
-    {
-      // Compute v^T * R(:,k)
-      double aVdotRk = 0.0;
-      for (int i = aRowLower + aJOffset; i <= aRowUpper; ++i)
-      {
-        aVdotRk += aV(i) * aR(i, k);
-      }
-
-      // R(:,k) := R(:,k) - tau * (v^T * R(:,k)) * v
-      for (int i = aRowLower + aJOffset; i <= aRowUpper; ++i)
-      {
-        aR(i, k) -= aTau * aVdotRk * aV(i);
-      }
-    }
-
-    // Apply H to Q: Q := Q * H = Q - tau * Q * v * v^T
-    for (int k = aRowLower; k <= aRowUpper; ++k)
-    {
-      // Compute Q(k,:) * v
-      double aQkV = 0.0;
-      for (int i = aRowLower + aJOffset; i <= aRowUpper; ++i)
-      {
-        aQkV += aQ(k, i) * aV(i);
-      }
-
-      // Q(k,:) := Q(k,:) - tau * (Q(k,:) * v) * v^T
-      for (int i = aRowLower + aJOffset; i <= aRowUpper; ++i)
-      {
-        aQ(k, i) -= aTau * aQkV * aV(i);
-      }
+      aProjection += theV[i] * (theMatrix.At(i, theColumn) / aScale);
     }
   }
-
-  // Zero out below-diagonal elements of R for cleanliness
-  for (int i = aRowLower; i <= aRowUpper; ++i)
+  aProjection *= theTau;
+  for (size_t i = theFirst; i < theMatrix.RowSize(); ++i)
   {
-    for (int j = aColLower; j < aColLower + (i - aRowLower) && j <= aColUpper; ++j)
+    // Keep the original entry: scaling it down and back can erase a small
+    // component. FMA also avoids overflow in a correction that cancels the entry.
+    const double aValue = std::fma(-aProjection * theV[i], aScale, theMatrix.At(i, theColumn));
+    if (!std::isfinite(aValue))
     {
-      aR(i, j) = 0.0;
+      return false;
     }
+    theMatrix.ChangeAt(i, theColumn) = aValue;
   }
-
-  aResult.Q      = aQ;
-  aResult.R      = aR;
-  aResult.Status = Status::OK;
-  return aResult;
+  return true;
 }
 
-//! Solve overdetermined system Ax = b using QR decomposition (least squares).
-//!
-//! For m x n system with m > n, finds x that minimizes ||Ax - b||_2.
-//!
-//! Algorithm:
-//! 1. Decompose A = Q * R
-//! 2. Compute c = Q^T * b
-//! 3. Solve R * x = c[1:n] (back substitution)
-//!
-//! @param theA coefficient matrix (m x n, m >= n)
-//! @param theB right-hand side vector (length m)
-//! @param theTolerance for singularity detection
-//! @return result containing least squares solution
-inline LinearResult SolveQR(const math_Matrix& theA,
-                            const math_Vector& theB,
-                            double             theTolerance = 1.0e-20)
+//! Shared QR kernel. Applies Q^T directly to the supplied matrix.
+//! Passing an identity matrix constructs Q^T; solving needs only the RHS columns.
+//! For each column j, a reflector H_j zeros the entries below the diagonal:
+//!   R <- H_j R,  transformed <- H_j transformed.
+//! The final transformed matrix is Q^T times the original RHS (or identity).
+//! Reflectors use scaled norms and normalized vectors to avoid intermediate
+//! overflow/underflow. No column pivoting or rank-deficient solution is provided.
+inline QRResult TransformQR(const math_Matrix& theA,
+                            math_Matrix&       theTransformed,
+                            const double       theTolerance)
 {
-  LinearResult aResult;
-
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-  const int aM        = aRowUpper - aRowLower + 1;
-
-  // Check dimensions
-  if (theB.Length() != aM)
+  QRResult     aResult;
+  const size_t aM      = theA.RowSize();
+  const size_t aN      = theA.ColSize();
+  const double aRelTol = Utils::RelativeTolerance(theTolerance, std::max(aM, aN));
+  if (aM < aN || aN == 0 || aRelTol < 0.0 || theTransformed.RowSize() != aM
+      || !Utils::IsFinite(theA) || !Utils::IsFinite(theTransformed))
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
-
-  // Perform QR decomposition
-  QRResult aQR = QR(theA, theTolerance);
-  if (!aQR.IsDone())
+  math_Matrix aR(aM, aN);
+  aR = theA;
+  math_Vector aV(aM);
+  for (size_t j = 0; j < aN; ++j)
   {
-    aResult.Status = aQR.Status;
-    return aResult;
-  }
-
-  const math_Matrix& aQ = *aQR.Q;
-  const math_Matrix& aR = *aQR.R;
-
-  // Compute c = Q^T * b
-  math_Vector aC(aRowLower, aRowUpper, 0.0);
-  for (int i = aRowLower; i <= aRowUpper; ++i)
-  {
-    double aSum = 0.0;
-    for (int k = aRowLower; k <= aRowUpper; ++k)
+    double aScale = 0.0;
+    double aSumSq = 1.0;
+    for (size_t i = j; i < aM; ++i)
     {
-      aSum += aQ(k, i) * theB(theB.Lower() + k - aRowLower);
-    }
-    aC(i) = aSum;
-  }
-
-  // Back substitution: R[1:n, 1:n] * x = c[1:n]
-  aResult.Solution = math_Vector(aColLower, aColUpper, 0.0);
-
-  for (int i = aColUpper; i >= aColLower; --i)
-  {
-    const int aIOffset = i - aColLower;
-    double    aDiag    = aR(aRowLower + aIOffset, i);
-
-    if (std::abs(aDiag) < theTolerance)
-    {
-      aResult.Status = Status::Singular;
-      return aResult;
-    }
-
-    double aSum = aC(aRowLower + aIOffset);
-    for (int k = i + 1; k <= aColUpper; ++k)
-    {
-      aSum -= aR(aRowLower + aIOffset, k) * (*aResult.Solution)(k);
-    }
-    (*aResult.Solution)(i) = aSum / aDiag;
-  }
-
-  aResult.Status = Status::OK;
-  return aResult;
-}
-
-//! Solve multiple right-hand sides using QR decomposition.
-//!
-//! @param theA coefficient matrix (m x n, m >= n)
-//! @param theB right-hand side matrix (m x p)
-//! @param theTolerance for singularity detection
-//! @return result containing solution matrix (n x p)
-inline LinearMultipleResult SolveQRMultiple(const math_Matrix& theA,
-                                            const math_Matrix& theB,
-                                            double             theTolerance = 1.0e-20)
-{
-  LinearMultipleResult aResult;
-
-  const int aRowLower = theA.LowerRow();
-  const int aRowUpper = theA.UpperRow();
-  const int aColLower = theA.LowerCol();
-  const int aColUpper = theA.UpperCol();
-
-  // Check dimensions
-  if (theB.RowNumber() != theA.RowNumber())
-  {
-    aResult.Status = Status::InvalidInput;
-    return aResult;
-  }
-
-  // Perform QR decomposition
-  QRResult aQR = QR(theA, theTolerance);
-  if (!aQR.IsDone())
-  {
-    aResult.Status = aQR.Status;
-    return aResult;
-  }
-
-  const math_Matrix& aQ = *aQR.Q;
-  const math_Matrix& aR = *aQR.R;
-
-  // Solve for each column of B
-  math_Matrix aX(aColLower, aColUpper, theB.LowerCol(), theB.UpperCol(), 0.0);
-
-  for (int j = theB.LowerCol(); j <= theB.UpperCol(); ++j)
-  {
-    // Compute c = Q^T * b_j
-    math_Vector aC(aRowLower, aRowUpper, 0.0);
-    for (int i = aRowLower; i <= aRowUpper; ++i)
-    {
-      double aSum = 0.0;
-      for (int k = aRowLower; k <= aRowUpper; ++k)
+      if (!Utils::AccumulateNorm(aR.At(i, j), aScale, aSumSq))
       {
-        const int aBRow = theB.LowerRow() + (k - aRowLower);
-        aSum += aQ(k, i) * theB(aBRow, j);
-      }
-      aC(i) = aSum;
-    }
-
-    // Back substitution: R[1:n,1:n] * x_j = c[1:n]
-    for (int i = aColUpper; i >= aColLower; --i)
-    {
-      const int aIOffset = i - aColLower;
-      const int aRRow    = aRowLower + aIOffset;
-      double    aDiag    = aR(aRRow, i);
-
-      if (std::abs(aDiag) < theTolerance)
-      {
-        aResult.Status = Status::Singular;
+        aResult.Status = Status::NumericalError;
         return aResult;
       }
-
-      double aSum = aC(aRRow);
-      for (int k = i + 1; k <= aColUpper; ++k)
+    }
+    const std::optional<double> aNorm = Utils::Norm(aScale, aSumSq);
+    if (!aNorm.has_value())
+    {
+      aResult.Status = Status::NumericalError;
+      return aResult;
+    }
+    if (*aNorm == 0.0)
+    {
+      continue;
+    }
+    const double aBeta = -std::copysign(*aNorm, aR.At(j, j));
+    // Normalize before subtracting beta: x_j - beta can overflow even when
+    // the matrix, its norm and the resulting factorization are all finite.
+    aV[j]           = aR.At(j, j) / *aNorm - std::copysign(1.0, aBeta);
+    double aVNormSq = aV[j] * aV[j];
+    for (size_t i = j + 1; i < aM; ++i)
+    {
+      aV[i] = aR.At(i, j) / *aNorm;
+      aVNormSq += aV[i] * aV[i];
+    }
+    const double aTau = 2.0 / aVNormSq;
+    aR.ChangeAt(j, j) = aBeta;
+    for (size_t i = j + 1; i < aM; ++i)
+    {
+      aR.ChangeAt(i, j) = 0.0;
+    }
+    for (size_t k = j + 1; k < aN; ++k)
+    {
+      if (!ApplyHouseholder(aV, j, aTau, aR, k))
       {
-        aSum -= aR(aRRow, k) * aX(k, j);
+        aResult.Status = Status::NumericalError;
+        return aResult;
       }
-      aX(i, j) = aSum / aDiag;
+    }
+    for (size_t k = 0; k < theTransformed.ColSize(); ++k)
+    {
+      if (!ApplyHouseholder(aV, j, aTau, theTransformed, k))
+      {
+        aResult.Status = Status::NumericalError;
+        return aResult;
+      }
     }
   }
 
-  aResult.Solutions = aX;
+  double aMaxDiag = 0.0;
+  for (size_t j = 0; j < aN; ++j)
+  {
+    aMaxDiag = std::max(aMaxDiag, std::abs(aR.At(j, j)));
+  }
+  double aMinDiag           = aMaxDiag;
+  aResult.DiagonalThreshold = aRelTol * aMaxDiag;
+  for (size_t j = 0; j < aN; ++j)
+  {
+    const double aDiag = std::abs(aR.At(j, j));
+    if (aDiag > aResult.DiagonalThreshold)
+    {
+      ++aResult.Rank;
+      aMinDiag = std::min(aMinDiag, aDiag);
+    }
+  }
+  if (aResult.Rank == aN)
+  {
+    const double aCondition = aMaxDiag / aMinDiag;
+    if (std::isfinite(aCondition))
+    {
+      aResult.ConditionEstimate = aCondition;
+    }
+  }
+  aResult.R      = std::move(aR);
+  aResult.Status = Status::OK;
+  return aResult;
+}
+
+//! Back substitution after a successful TransformQR, using its transformed RHS.
+inline LinearMultipleResult SolveTransformedQR(const QRResult&    theQR,
+                                               const math_Matrix& theTransformed)
+{
+  LinearMultipleResult aResult;
+  const math_Matrix&   aR = *theQR.R;
+  const size_t         aN = aR.ColSize();
+  if (theQR.Rank != aN)
+  {
+    aResult.Status = Status::Singular;
+    return aResult;
+  }
+
+  math_Matrix aX(aN, theTransformed.ColSize());
+  for (size_t j = 0; j < theTransformed.ColSize(); ++j)
+  {
+    for (size_t i = aN; i-- > 0;)
+    {
+      const double aDiag  = aR.At(i, i);
+      double       aValue = theTransformed.At(i, j);
+      for (size_t k = i + 1; k < aN; ++k)
+      {
+        aValue -= aR.At(i, k) * aX.At(k, j);
+      }
+      aX.ChangeAt(i, j) = aValue / aDiag;
+    }
+  }
+  if (!Utils::IsFinite(aX))
+  {
+    aResult.Status = Status::NumericalError;
+    return aResult;
+  }
+  aResult.Solutions = std::move(aX);
   aResult.Status    = Status::OK;
+  return aResult;
+}
+
+} // namespace HouseholderDetail
+
+//! QR decomposition A = Q * R for an m x n matrix, m >= n.
+//! Returns the full m x m orthogonal Q and m x n upper-triangular R.
+//! theTolerance is relative to the largest diagonal of R, with a machine-precision floor.
+//! SolveQR and SolveQRMultiple avoid forming the full Q when only a solution is needed.
+//! @param theA coefficient matrix with m rows and n columns, m >= n
+//! @param theTolerance relative diagonal rank threshold
+//! @return orthogonal Q, triangular R, rank estimate and computation status
+inline QRResult QR(const math_Matrix& theA, double theTolerance = 1.0e-15)
+{
+  if (theA.RowSize() < theA.ColSize() || theA.ColSize() == 0
+      || Utils::RelativeTolerance(theTolerance, theA.RowSize()) < 0.0 || !Utils::IsFinite(theA))
+  {
+    QRResult aResult;
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  const size_t aM = theA.RowSize();
+  math_Matrix  aQT(aM, aM, 0.0);
+  for (size_t i = 0; i < aM; ++i)
+  {
+    aQT.ChangeAt(i, i) = 1.0;
+  }
+  QRResult aResult = HouseholderDetail::TransformQR(theA, aQT, theTolerance);
+  if (aResult.IsDone())
+  {
+    aResult.Q = aQT.Transposed();
+  }
+  return aResult;
+}
+
+//! Solve AX = B by Householder QR, reusing each reflector for all RHS columns.
+//! A has m rows and n columns; B has m rows and p right-hand sides. For m > n,
+//! each solution minimizes the Euclidean norm of its residual independently.
+//! Invalid dimensions, non-finite inputs or an invalid tolerance return InvalidInput;
+//! deficient diagonal rank returns Singular; non-finite arithmetic returns NumericalError.
+//! Solutions are available only when IsDone() is true.
+//! Requires m >= n and full column rank. Uses O(m*(n+p)) storage, without a dense Q.
+//! Input matrix bounds may differ; output rows and columns use the math_Matrix default bounds.
+//! @param theA coefficient matrix with m rows and n columns
+//! @param theB right-hand side matrix with m rows and p columns
+//! @param theTolerance relative rank threshold, with a machine-precision floor
+//! @return solution matrix and computation status
+inline LinearMultipleResult SolveQRMultiple(const math_Matrix& theA,
+                                            const math_Matrix& theB,
+                                            double             theTolerance = 1.0e-15)
+{
+  LinearMultipleResult aResult;
+  math_Matrix          aTransformed(theB);
+  const QRResult       aQR = HouseholderDetail::TransformQR(theA, aTransformed, theTolerance);
+  if (!aQR.IsDone())
+  {
+    aResult.Status = aQR.Status;
+    return aResult;
+  }
+  return HouseholderDetail::SolveTransformedQR(aQR, aTransformed);
+}
+
+//! Solve Ax = b by QR (least squares when m > n), without constructing Q.
+//! @param theA coefficient matrix (m rows, n columns, m >= n)
+//! @param theB right-hand side vector with m entries
+//! @param theTolerance relative rank threshold, with a machine-precision floor
+//! @return solution and status; the solution is available only on success
+inline LinearResult SolveQR(const math_Matrix& theA,
+                            const math_Vector& theB,
+                            double             theTolerance = 1.0e-15)
+{
+  LinearResult aResult;
+  if (theB.Size() == 0 || theA.RowSize() != theB.Size())
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+  // The matrix view borrows an owned copy; QR may modify it without changing B.
+  math_Vector    aRhs(theB);
+  math_Matrix    aTransformed(&aRhs.ChangeAt(0), 0, aRhs.Length() - 1, 0, 0);
+  const QRResult aQR = HouseholderDetail::TransformQR(theA, aTransformed, theTolerance);
+  if (!aQR.IsDone())
+  {
+    aResult.Status = aQR.Status;
+    return aResult;
+  }
+  const LinearMultipleResult aFit = HouseholderDetail::SolveTransformedQR(aQR, aTransformed);
+  aResult.Status                  = aFit.Status;
+  if (aFit.IsDone())
+  {
+    // Copy from the column view so the returned vector owns its storage.
+    const math_Vector aSolution(&aFit.Solutions->At(0, 0), 0, theA.ColNumber() - 1);
+    aResult.Solution = aSolution;
+  }
   return aResult;
 }
 

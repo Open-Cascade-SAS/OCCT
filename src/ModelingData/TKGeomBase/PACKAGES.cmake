@@ -10,6 +10,7 @@ set(OCCT_TKGeomBase_LIST_OF_PACKAGES
   AppCont
   Extrema
   ExtremaPC
+  ExtremaPC2d
   IntAna
   IntAna2d
   GeomConvert

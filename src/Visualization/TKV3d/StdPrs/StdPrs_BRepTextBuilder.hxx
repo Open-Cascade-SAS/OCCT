@@ -1,6 +1,4 @@
-// Created on: 2015-08-10
-// Created by: Ilya SEVRIKOV
-// Copyright (c) 2013-2014 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,39 +11,47 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef StdPrs_BRepTextBuilder_Header
-#define StdPrs_BRepTextBuilder_Header
+#ifndef StdPrs_BRepTextBuilder_HeaderFile
+#define StdPrs_BRepTextBuilder_HeaderFile
 
-#include <Font_BRepFont.hxx>
+#include <StdPrs_BRepFont.hxx>
+#include <BRep_Builder.hxx>
 #include <Font_TextFormatter.hxx>
-#include <gp_Ax3.hxx>
+#include <NCollection_String.hxx>
+#include <TCollection_UtfString.hxx>
 
-//! Represents class for applying text formatting.
+//! Compatibility interface for BRep text construction.
+//! New code should call StdPrs_BRepFont::RenderText().
 class StdPrs_BRepTextBuilder
 {
 public:
-  //! Render text as BRep shape.
-  //! @param theFormatter formatter which defines aligned text
-  //! @param thePenLoc start position and orientation on the baseline
-  //! @return result shape with pen transformation applied as shape location
+  //! Build text using the positions stored in an already formatted formatter.
+  //! @param[in] theFont initialized font
+  //! @param[in] theFormatter formatter with completed layout
+  //! @param[in] thePenLoc text baseline placement
+  //! @return text compound, or a null shape on invalid input or glyph construction failure
+  Standard_DEPRECATED("Use StdPrs_BRepFont::RenderText()")
   Standard_EXPORT TopoDS_Shape Perform(StdPrs_BRepFont&                       theFont,
                                        const occ::handle<Font_TextFormatter>& theFormatter,
                                        const gp_Ax3&                          thePenLoc = gp_Ax3());
-  //! Render text as BRep shape.
-  //! @param theString text in UTF-8 encoding
-  //! @param thePenLoc start position and orientation on the baseline
-  //! @param theHAlign horizontal alignment of the text
-  //! @param theVAlign vertical alignment of the text
-  //! @return result shape with pen transformation applied as shape location
+
+  //! Build text with the requested alignment and placement.
+  //! @param[in] theFont initialized font
+  //! @param[in] theString UTF-8 text
+  //! @param[in] thePenLoc text baseline placement
+  //! @param[in] theHAlign horizontal alignment
+  //! @param[in] theVAlign vertical alignment
+  //! @return text compound, or a null shape when construction fails
+  Standard_DEPRECATED("Use StdPrs_BRepFont::RenderText()")
   Standard_EXPORT TopoDS_Shape
-    Perform(StdPrs_BRepFont&                        theFont,
-            const NCollection_String&               theString,
-            const gp_Ax3&                           thePenLoc = gp_Ax3(),
-            const Graphic3d_HorizontalTextAlignment theHAlign = Graphic3d_HTA_LEFT,
-            const Graphic3d_VerticalTextAlignment   theVAlign = Graphic3d_VTA_BOTTOM);
+    Perform(StdPrs_BRepFont&                   theFont,
+            const TCollection_UtfString<char>& theString,
+            const gp_Ax3&                      thePenLoc = gp_Ax3(),
+            Graphic3d_HorizontalTextAlignment  theHAlign = Graphic3d_HTA_LEFT,
+            Graphic3d_VerticalTextAlignment    theVAlign = Graphic3d_VTA_BOTTOM);
 
 protected:
-  BRep_Builder myBuilder;
+  BRep_Builder myBuilder; //!< Builder retained for subclasses using the compatibility interface.
 };
 
-#endif // StdPrs_BRepTextBuilder_Header
+#endif // StdPrs_BRepTextBuilder_HeaderFile

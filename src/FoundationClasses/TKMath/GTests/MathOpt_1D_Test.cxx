@@ -14,13 +14,13 @@
 #include <gtest/gtest.h>
 
 #include <MathOpt_Brent.hxx>
+#include <MathUtils_Core.hxx>
 
 #include <cmath>
 
 namespace
 {
 constexpr double THE_TOLERANCE = 1.0e-7;
-constexpr double THE_PI        = 3.14159265358979323846;
 
 //! Parabola: f(x) = (x - 3)^2 + 1
 //! Minimum at x = 3, f(3) = 1
@@ -149,7 +149,7 @@ TEST(MathOpt_1D_BrentTest, CosineMinimum)
   CosFunc               aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Brent(aFunc, 2.0, 4.0);
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR(*aResult.Root, THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(*aResult.Root, MathUtils::THE_PI, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, -1.0, THE_TOLERANCE);
 }
 
@@ -237,7 +237,7 @@ TEST(MathOpt_1D_GoldenTest, CosineMinimum)
   CosFunc               aFunc;
   MathOpt::ScalarResult aResult = MathOpt::Golden(aFunc, 2.0, 4.0);
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_NEAR(*aResult.Root, THE_PI, THE_TOLERANCE);
+  EXPECT_NEAR(*aResult.Root, MathUtils::THE_PI, THE_TOLERANCE);
   EXPECT_NEAR(*aResult.Value, -1.0, THE_TOLERANCE);
 }
 
@@ -288,6 +288,39 @@ TEST(MathOpt_1D_BrentWithBracketTest, CoshLike)
   MathOpt::ScalarResult aResult = MathOpt::BrentWithBracket(aFunc, 0.1, 0.2);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_NEAR(*aResult.Root, 0.0, THE_TOLERANCE);
+}
+
+TEST(MathOpt_1D_BrentWithBracketTest, BracketFailureStatusIsPreserved)
+{
+  struct CallbackFailure
+  {
+    bool Value(double, double&) const { return false; }
+  } aCallbackFailure;
+
+  EXPECT_EQ(MathOpt::BrentWithBracket(aCallbackFailure, 0.0, 1.0).Status,
+            MathUtils::Status::CallbackError);
+
+  struct MonotonicFunction
+  {
+    bool Value(double theX, double& theF) const
+    {
+      theF = -theX;
+      return true;
+    }
+  } aMonotonicFunction;
+
+  EXPECT_EQ(MathOpt::BrentWithBracket(aMonotonicFunction, 0.0, 1.0).Status,
+            MathUtils::Status::MaxIterations);
+}
+
+TEST(MathOpt_1D_BrentTest, CallbackFailureIsCallbackError)
+{
+  struct CallbackFailure
+  {
+    bool Value(double, double&) const { return false; }
+  } aFunc;
+
+  EXPECT_EQ(MathOpt::Brent(aFunc, 0.0, 1.0).Status, MathUtils::Status::CallbackError);
 }
 
 // ============================================================================

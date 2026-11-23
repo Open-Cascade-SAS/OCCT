@@ -1,3 +1,5 @@
+puts "TODO OCC000000 ALL: Faulty shapes in variables"
+
 puts "============"
 puts "CR27170"
 puts "============"

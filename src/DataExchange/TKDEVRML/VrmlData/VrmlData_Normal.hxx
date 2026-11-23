@@ -44,12 +44,12 @@ public:
 
   /**
    * Query one normal
-   * @param i
+   * @param theIndex
    *   index in the array of normals [0 .. N-1]
    * @return
    *   the normal value for the index. If index irrelevant, returns (0., 0., 0.)
    */
-  inline const gp_XYZ& Normal(const int i) const { return Value(i); }
+  inline const gp_XYZ& Normal(const size_t theIndex) const { return Value(theIndex); }
 
   /**
    * Create a copy of this node.

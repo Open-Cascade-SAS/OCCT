@@ -5,5 +5,12 @@ set(OCCT_TKFillet_GTests_FILES
   BRepFilletAPI_MakeChamfer_Test.cxx
   BRepFilletAPI_MakeFillet2d_Test.cxx
   BRepFilletAPI_MakeFillet_Test.cxx
+  ChFi3d_Builder_0_Test.cxx
   ChFi3d_Hatching_Test.cxx
+  BRepFilletAPI_ShallowLoft_Test.cxx
+  BlendFunc_InvTolerance_Test.cxx
+  BRepBlend_AppFunc_Test.cxx
+  BRepBlend_Line_Test.cxx
+  ChFi3d_FilBuilder_Test.cxx
+  ChFi3d_IsTangentFaces_Test.cxx
 )

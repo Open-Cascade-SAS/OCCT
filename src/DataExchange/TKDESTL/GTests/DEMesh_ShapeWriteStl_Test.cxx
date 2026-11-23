@@ -24,11 +24,6 @@
 #include <Bnd_Box.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressScope.hxx>
-#include <OSD_Directory.hxx>
-#include <OSD_File.hxx>
-#include <OSD_OpenMode.hxx>
-#include <OSD_Path.hxx>
-#include <OSD_Protection.hxx>
 #include <StlAPI_Reader.hxx>
 #include <StlAPI_Writer.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -47,6 +42,7 @@
 
 #include <cstring>
 #include <sstream>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -110,17 +106,6 @@ static TopoDS_Shape MakeRegularTriangulatedFace()
   return aFace;
 }
 
-static TCollection_AsciiString MakeTemporaryStlFile(OSD_Directory& theDirectory, OSD_Path& thePath)
-{
-  theDirectory.Path(thePath);
-  thePath.SetName("draw_shape_write_stl");
-  thePath.SetExtension(".stl");
-
-  TCollection_AsciiString aSystemName;
-  thePath.SystemName(aSystemName);
-  return aSystemName;
-}
-
 static int CountFaces(const TopoDS_Shape& theShape)
 {
   int aNbFaces = 0;
@@ -147,59 +132,31 @@ static int CountTriangles(const TopoDS_Shape& theShape)
   return aNbTriangles;
 }
 
-static TCollection_AsciiString MakeTemporaryStlFile(OSD_Directory&    theDirectory,
-                                                    const char* const theName,
-                                                    OSD_Path&         thePath)
+static std::string MakeBinaryStl(const bool theHasFacet)
 {
-  theDirectory.Path(thePath);
-  thePath.SetName(theName);
-  thePath.SetExtension(".stl");
-
-  TCollection_AsciiString aSystemName;
-  thePath.SystemName(aSystemName);
-  return aSystemName;
-}
-
-static void WriteTemporaryFile(const OSD_Path& thePath, const void* theBuffer, const int theLength)
-{
-  OSD_File aFile(thePath);
-  aFile.Build(OSD_WriteOnly, OSD_Protection());
-  if (theLength > 0)
-  {
-    aFile.Write(const_cast<void*>(theBuffer), theLength);
-  }
-  aFile.Close();
-}
-
-static void WriteTemporaryFile(const OSD_Path& thePath, const TCollection_AsciiString& theBuffer)
-{
-  WriteTemporaryFile(thePath, (void*)theBuffer.ToCString(), theBuffer.Length());
-}
-
-static void WriteBinaryStl(const OSD_Path& thePath, const bool theHasFacet)
-{
-  unsigned char aBuffer[134] = {};
-  std::memcpy(aBuffer, "stl ", 4);
+  std::string aBuffer(theHasFacet ? 134 : 84, '\0');
+  std::memcpy(aBuffer.data(), "stl ", 4);
   if (theHasFacet)
   {
-    aBuffer[80] = 1;
+    aBuffer[80] = '\1';
 
     const float aNormal[3]  = {0.0f, 0.0f, 1.0f};
     const float aVertex1[3] = {0.0f, 0.0f, 0.0f};
     const float aVertex2[3] = {1.0f, 0.0f, 0.0f};
     const float aVertex3[3] = {0.0f, 1.0f, 0.0f};
-    std::memcpy(aBuffer + 84, aNormal, sizeof(aNormal));
-    std::memcpy(aBuffer + 96, aVertex1, sizeof(aVertex1));
-    std::memcpy(aBuffer + 108, aVertex2, sizeof(aVertex2));
-    std::memcpy(aBuffer + 120, aVertex3, sizeof(aVertex3));
+    std::memcpy(aBuffer.data() + 84, aNormal, sizeof(aNormal));
+    std::memcpy(aBuffer.data() + 96, aVertex1, sizeof(aVertex1));
+    std::memcpy(aBuffer.data() + 108, aVertex2, sizeof(aVertex2));
+    std::memcpy(aBuffer.data() + 120, aVertex3, sizeof(aVertex3));
   }
-  WriteTemporaryFile(thePath, aBuffer, theHasFacet ? 134 : 84);
+  return aBuffer;
 }
 
-static bool ReadStl(const TCollection_AsciiString& theFileName, TopoDS_Shape& theShape)
+static bool ReadStl(const std::string& theData, TopoDS_Shape& theShape)
 {
-  StlAPI_Reader aReader;
-  return aReader.Read(theShape, theFileName.ToCString());
+  std::istringstream aStream(theData);
+  StlAPI_Reader      aReader;
+  return aReader.Read(theShape, aStream);
 }
 
 static TopoDS_Shape RoundTripStl(const TopoDS_Shape& theShape, const bool theAsciiMode = false)
@@ -248,20 +205,18 @@ static TopoDS_Shape RoundTripStlMesh(const TopoDS_Shape& theShape)
 } // namespace
 
 // de_mesh/shape_write_stl/B1: the DRAW writestl path reports progress and
-// produces a readable STL file from a generated triangulated shape.
+// produces a readable STL stream from a generated triangulated shape.
 TEST(DEMesh_ShapeWriteStl_Test, B1_WriteProgressAndReadBack)
 {
   const TopoDS_Shape aShape = MakeRegularTriangulatedFace();
   ASSERT_FALSE(aShape.IsNull());
 
-  OSD_Directory                 aDirectory = OSD_Directory::BuildTemporary();
-  OSD_Path                      aPath;
-  const TCollection_AsciiString aFileName = MakeTemporaryStlFile(aDirectory, aPath);
+  std::stringstream             aStream;
   occ::handle<ProgressObserver> aProgress = new ProgressObserver();
   StlAPI_Writer                 aWriter;
   aWriter.ASCIIMode() = false;
 
-  EXPECT_TRUE(aWriter.Write(aShape, aFileName.ToCString(), aProgress->Start()));
+  EXPECT_TRUE(aWriter.Write(aShape, aStream, aProgress->Start()));
   const char* const anExpected[] = {
     "Progress: 0%",
     "Progress: 5% Triangles: 1000 / 20000",
@@ -293,109 +248,66 @@ TEST(DEMesh_ShapeWriteStl_Test, B1_WriteProgressAndReadBack)
   }
   EXPECT_DOUBLE_EQ(aProgress->GetPosition(), 1.0);
 
-  OSD_File aFile(aPath);
-  ASSERT_TRUE(aFile.Exists());
+  ASSERT_FALSE(aStream.str().empty());
 
+  aStream.seekg(0);
   TopoDS_Shape  aRestored;
   StlAPI_Reader aReader;
-  EXPECT_TRUE(aReader.Read(aRestored, aFileName.ToCString()));
+  EXPECT_TRUE(aReader.Read(aRestored, aStream));
   EXPECT_FALSE(aRestored.IsNull());
   EXPECT_GT(CountFaces(aRestored), 0);
-
-  aFile.Remove();
 }
 
 // de_mesh/stl_read/D1: the DRAW reader accepts ASCII STL with both line endings,
 // a missing final EOL, and a binary STL, while rejecting empty files.
 TEST(DEMesh_StlRead_Test, D1_ReadAsciiAndBinaryBoundaryCases)
 {
-  const TCollection_AsciiString aMinimalAsciiStl("solid\n"
-                                                 "facet normal 0 0 1\n"
-                                                 "outer loop\n"
-                                                 "vertex 0 0 0\n"
-                                                 "vertex 1 0 0\n"
-                                                 "vertex 0 1 0\n"
-                                                 "endloop\n"
-                                                 "endfacet\n"
-                                                 "endsolid");
+  const std::string aMinimalAsciiStl("solid\n"
+                                     "facet normal 0 0 1\n"
+                                     "outer loop\n"
+                                     "vertex 0 0 0\n"
+                                     "vertex 1 0 0\n"
+                                     "vertex 0 1 0\n"
+                                     "endloop\n"
+                                     "endfacet\n"
+                                     "endsolid");
 
-  OSD_Directory aDirectory = OSD_Directory::BuildTemporary();
-
-  OSD_Path                      aDosPath;
-  const TCollection_AsciiString aDosName =
-    MakeTemporaryStlFile(aDirectory, "draw_stl_one_ascii_dos", aDosPath);
-  const TCollection_AsciiString aDosAscii("solid\r\n"
-                                          "facet normal 0 0 1\r\n"
-                                          "outer loop\r\n"
-                                          "vertex 0 0 0\r\n"
-                                          "vertex 1 0 0\r\n"
-                                          "vertex 0 1 0\r\n"
-                                          "endloop\r\n"
-                                          "endfacet\r\n"
-                                          "endsolid\r\n");
-  WriteTemporaryFile(aDosPath, aDosAscii);
-  TopoDS_Shape aDosShape;
-  ASSERT_TRUE(ReadStl(aDosName, aDosShape));
+  const std::string aDosAscii("solid\r\n"
+                              "facet normal 0 0 1\r\n"
+                              "outer loop\r\n"
+                              "vertex 0 0 0\r\n"
+                              "vertex 1 0 0\r\n"
+                              "vertex 0 1 0\r\n"
+                              "endloop\r\n"
+                              "endfacet\r\n"
+                              "endsolid\r\n");
+  TopoDS_Shape      aDosShape;
+  ASSERT_TRUE(ReadStl(aDosAscii, aDosShape));
   EXPECT_EQ(CountFaces(aDosShape), 1);
 
-  OSD_Path                      aUnixPath;
-  const TCollection_AsciiString aUnixName =
-    MakeTemporaryStlFile(aDirectory, "draw_stl_one_ascii_unix", aUnixPath);
-  WriteTemporaryFile(aUnixPath, aMinimalAsciiStl + "\n");
   TopoDS_Shape aUnixShape;
-  ASSERT_TRUE(ReadStl(aUnixName, aUnixShape));
+  ASSERT_TRUE(ReadStl(aMinimalAsciiStl + "\n", aUnixShape));
   EXPECT_EQ(CountFaces(aUnixShape), 1);
 
-  OSD_Path                      aNoEolPath;
-  const TCollection_AsciiString aNoEolName =
-    MakeTemporaryStlFile(aDirectory, "draw_stl_one_ascii_noeol", aNoEolPath);
-  WriteTemporaryFile(aNoEolPath, aMinimalAsciiStl);
   TopoDS_Shape aNoEolShape;
-  ASSERT_TRUE(ReadStl(aNoEolName, aNoEolShape));
+  ASSERT_TRUE(ReadStl(aMinimalAsciiStl, aNoEolShape));
   EXPECT_EQ(CountFaces(aNoEolShape), 1);
 
-  const TCollection_AsciiString aZeroAsciiStl("solid \nendsolid");
-  OSD_Path                      aZeroAsciiPath;
-  const TCollection_AsciiString aZeroAsciiName =
-    MakeTemporaryStlFile(aDirectory, "draw_stl_zero_ascii", aZeroAsciiPath);
-  WriteTemporaryFile(aZeroAsciiPath, aZeroAsciiStl);
   TopoDS_Shape aZeroAsciiShape;
-  EXPECT_FALSE(ReadStl(aZeroAsciiName, aZeroAsciiShape));
+  EXPECT_FALSE(ReadStl("solid \nendsolid", aZeroAsciiShape));
   EXPECT_TRUE(aZeroAsciiShape.IsNull());
 
-  OSD_Path                      aBinaryPath;
-  const TCollection_AsciiString aBinaryName =
-    MakeTemporaryStlFile(aDirectory, "draw_stl_one_binary", aBinaryPath);
-  WriteBinaryStl(aBinaryPath, true);
   TopoDS_Shape aBinaryShape;
-  ASSERT_TRUE(ReadStl(aBinaryName, aBinaryShape));
+  ASSERT_TRUE(ReadStl(MakeBinaryStl(true), aBinaryShape));
   EXPECT_EQ(CountFaces(aBinaryShape), 1);
 
-  OSD_Path                      aZeroBinaryPath;
-  const TCollection_AsciiString aZeroBinaryName =
-    MakeTemporaryStlFile(aDirectory, "draw_stl_zero_binary", aZeroBinaryPath);
-  WriteBinaryStl(aZeroBinaryPath, false);
   TopoDS_Shape aZeroBinaryShape;
-  EXPECT_FALSE(ReadStl(aZeroBinaryName, aZeroBinaryShape));
+  EXPECT_FALSE(ReadStl(MakeBinaryStl(false), aZeroBinaryShape));
   EXPECT_TRUE(aZeroBinaryShape.IsNull());
 
-  OSD_Path                      aEmptyPath;
-  const TCollection_AsciiString aEmptyName =
-    MakeTemporaryStlFile(aDirectory, "draw_stl_empty", aEmptyPath);
-  const char* anEmptyBuffer = "";
-  WriteTemporaryFile(aEmptyPath, anEmptyBuffer, 0);
   TopoDS_Shape anEmptyShape;
-  EXPECT_FALSE(ReadStl(aEmptyName, anEmptyShape));
+  EXPECT_FALSE(ReadStl("", anEmptyShape));
   EXPECT_TRUE(anEmptyShape.IsNull());
-
-  OSD_File aFile(aDosPath);
-  aFile.Remove();
-  OSD_File(aUnixPath).Remove();
-  OSD_File(aNoEolPath).Remove();
-  OSD_File(aZeroAsciiPath).Remove();
-  OSD_File(aBinaryPath).Remove();
-  OSD_File(aZeroBinaryPath).Remove();
-  OSD_File(aEmptyPath).Remove();
 }
 
 // bugs/modalg_7/bug30829: STL round-trips remain usable by shape proximity.

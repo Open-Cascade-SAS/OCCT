@@ -237,3 +237,51 @@ TEST(GeomPlate_BuildPlateSurface, Progress_A4_OneHundredPointContour)
   EXPECT_FALSE(aBuilder.Surface().IsNull());
   expectPlateProgress(*aProgress);
 }
+
+TEST(GeomPlate_BuildPlateSurface, PointOnlyCurveDiagnosticsAreZero)
+{
+  GeomPlate_BuildPlateSurface aBuilder;
+  EXPECT_DOUBLE_EQ(aBuilder.G0Error(), 0.0);
+  EXPECT_DOUBLE_EQ(aBuilder.G1Error(), 0.0);
+  EXPECT_DOUBLE_EQ(aBuilder.G2Error(), 0.0);
+  for (const gp_Pnt& aPoint :
+       {gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0), gp_Pnt(10, 10, 0), gp_Pnt(0, 10, 0), gp_Pnt(5, 5, 2)})
+  {
+    aBuilder.Add(new GeomPlate_PointConstraint(aPoint, 0));
+  }
+  for (int aRun = 0; aRun < 2; ++aRun)
+  {
+    aBuilder.Perform();
+    ASSERT_TRUE(aBuilder.IsDone());
+    ASSERT_FALSE(aBuilder.Surface().IsNull());
+    EXPECT_DOUBLE_EQ(aBuilder.G0Error(), 0.0);
+    EXPECT_DOUBLE_EQ(aBuilder.G1Error(), 0.0);
+    EXPECT_DOUBLE_EQ(aBuilder.G2Error(), 0.0);
+  }
+}
+
+TEST(GeomPlate_BuildPlateSurface, CurveDiagnosticsResetForPointOnlyReuse)
+{
+  GeomPlate_BuildPlateSurface aBuilder(3, 15, 2);
+  addCurveConstraint(aBuilder, createBezierEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 1), gp_Pnt(2, 0, 0)));
+  addCurveConstraint(aBuilder, createBezierEdge(gp_Pnt(0, 2, 0), gp_Pnt(1, 2, 1), gp_Pnt(2, 2, 0)));
+  aBuilder.Perform();
+  ASSERT_TRUE(aBuilder.IsDone());
+  ASSERT_FALSE(aBuilder.Surface().IsNull());
+  ASSERT_GT(aBuilder.G0Error(), 0.0);
+
+  aBuilder.Init();
+  EXPECT_DOUBLE_EQ(aBuilder.G0Error(), 0.0);
+  EXPECT_DOUBLE_EQ(aBuilder.G1Error(), 0.0);
+  EXPECT_DOUBLE_EQ(aBuilder.G2Error(), 0.0);
+  aBuilder.Add(new GeomPlate_PointConstraint(gp_Pnt(0, 0, 0), 0));
+  aBuilder.Add(new GeomPlate_PointConstraint(gp_Pnt(2, 0, 0), 0));
+  aBuilder.Add(new GeomPlate_PointConstraint(gp_Pnt(0, 2, 0), 0));
+  aBuilder.Add(new GeomPlate_PointConstraint(gp_Pnt(2, 2, 1), 0));
+  aBuilder.Perform();
+  ASSERT_TRUE(aBuilder.IsDone());
+  ASSERT_FALSE(aBuilder.Surface().IsNull());
+  EXPECT_DOUBLE_EQ(aBuilder.G0Error(), 0.0);
+  EXPECT_DOUBLE_EQ(aBuilder.G1Error(), 0.0);
+  EXPECT_DOUBLE_EQ(aBuilder.G2Error(), 0.0);
+}
