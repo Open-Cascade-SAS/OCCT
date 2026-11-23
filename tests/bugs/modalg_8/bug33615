@@ -19,4 +19,5 @@ bfillds
 bbuild result
 
 checknbshapes result -vertex 5 -edge 8 -wire 5 -face 4
+checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

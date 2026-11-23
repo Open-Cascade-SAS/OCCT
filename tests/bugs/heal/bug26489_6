@@ -9,6 +9,7 @@ puts ""
 restore [locate_data_file bug26489_r002.brep] b1
 
 unifysamedom result b1
+checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape

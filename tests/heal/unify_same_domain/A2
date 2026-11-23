@@ -16,4 +16,6 @@ checknbshapes result1 -face 3 -edge 9 -vertex 6
 unifysamedom result a
 checknbshapes result -face 1 -edge 2 -vertex 2
 
+checkshape result1
+checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

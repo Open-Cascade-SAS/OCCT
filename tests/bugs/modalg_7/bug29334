@@ -11,6 +11,7 @@ compound r_1 r_3 r_6 shape
 
 puts "Offset these faces using simple offset algo"
 offsetshapesimple result shape 1
+checkshape result
 
 puts "Verify that all faces of the result are either planes or cylinders"
 set i 1

@@ -14,6 +14,7 @@ fit
 xwd ${imagedir}/${casename}_1.png
 
 unifysamedom res s
+checkshape res
 
 set nbshapes_expected "
 Number of shapes in shape

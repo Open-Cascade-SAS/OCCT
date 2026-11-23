@@ -11,6 +11,7 @@ restore [locate_data_file bug28228_unify_with_keep.brep] a
 explode a e
 
 unifysamedom result a a_13
+checkshape result
 checknbshapes result -face 4 -edge 19 -vertex 16
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

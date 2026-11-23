@@ -75,6 +75,16 @@ checknbshapes r4_2 -ref [nbshapes r4]
 checknbshapes r4_3 -ref [nbshapes r4]
 checknbshapes r4_4 -ref [nbshapes r4]
 
+foreach shape {
+  r0 r0_1 r0_2 r0_3 r0_4
+  r1 r1_1 r1_2 r1_3 r1_4
+  r2 r2_1 r2_2 r2_3 r2_4
+  r3 r3_1 r3_2 r3_3 r3_4 r3_5 r3_6
+  r4 r4_1 r4_2 r4_3 r4_4
+} {
+  checkshape $shape
+}
+
 if {![regexp "Invalid operation type" [bbop r 5]]} {
   puts "Error: incorrect parameter is not treated"
 }

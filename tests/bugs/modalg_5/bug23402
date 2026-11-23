@@ -29,6 +29,10 @@ checkprops c1 -s 12.5
 checkprops c2 -s 12.5
 checkprops c3 -s 10
 
+checkshape c1
+checkshape c2
+checkshape c3
+
 mu4
 fit
 

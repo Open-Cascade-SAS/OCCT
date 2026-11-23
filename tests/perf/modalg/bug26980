@@ -47,6 +47,7 @@ set nbshapes_expected "
 "
 
 checknbshapes result -ref ${nbshapes_expected} -t
+checkshape result
 
 smallview
 donly result

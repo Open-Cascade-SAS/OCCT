@@ -26,6 +26,7 @@ explode result So
 tcopy result_1 result
 
 dchrono h2 stop counter blend
+checkshape result
 
 # Note: The reference values of area and tolerance are wanted theoretical values
 # Properties check

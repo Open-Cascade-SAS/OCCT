@@ -98,6 +98,7 @@ if {$ic == 0} {
   checksection result -r 0
   checkmaxtol result -min_tol 2.0e-7
   checkprops result -l [expr {6.0*acos(-1.0)}]
+  checkshape result
 }
 
 checkview -display result -2d -path ${imagedir}/${test_image}_3d.png

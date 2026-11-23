@@ -22,5 +22,6 @@ bfillds
 bbuild result
 
 dchrono h stop counter EdgeIntersection
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

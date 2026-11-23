@@ -14,3 +14,4 @@ unifysamedom res shell
 #Warning: BRepTools_ReShape::Replace: shape already recorded
 
 checknbshapes res -vertex 4 -edge 4 -wire 1 -face 1 -shell 1 -solid 0
+checkshape res

@@ -33,6 +33,7 @@ bopcheck tool
 # Do cut
 puts "Running bcut"
 bcut result face tool
+checkshape result
 
 # Evaluate result by number of faces (bcut)
 set rfaces [explode result f]

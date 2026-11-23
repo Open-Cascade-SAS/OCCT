@@ -13,5 +13,6 @@ if {![regexp "Test complete" [OCC25446 r b c 2]]} {
 }
 
 compound b bc
+checkshape r
 checknbshapes r -ref [nbshapes bc]
 checkprops r -equal bc

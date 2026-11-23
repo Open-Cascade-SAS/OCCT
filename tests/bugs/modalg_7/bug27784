@@ -13,3 +13,4 @@ depouille draft cyl 0 0 -1 cyl_1 20 0 0 0 0 0 1
 explode draft f
 
 offsetcompshape d_thick draft -5 draft_2
+checkshape d_thick

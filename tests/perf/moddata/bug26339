@@ -27,3 +27,4 @@ dchrono h restart
 fixshape r f 1e-5
 
 dchrono h stop counter fixshape
+checkshape r

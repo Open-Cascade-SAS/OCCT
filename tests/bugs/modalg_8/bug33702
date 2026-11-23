@@ -9,4 +9,5 @@ restore [locate_data_file bug33702_rev.brep] rev
 bcut result ext rev
 
 checknbshapes result -vertex 51 -edge 75 -wire 42 -face 30
+checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

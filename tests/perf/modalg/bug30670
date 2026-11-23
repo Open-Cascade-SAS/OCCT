@@ -28,5 +28,6 @@ bglue 0
 
 checknbshapes result -wire 12686 -face 12598 -shell 1 -solid 1 -t
 checkprops result -s 1.34932e+06 -v 2.60155e+07
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

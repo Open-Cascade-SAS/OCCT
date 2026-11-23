@@ -52,6 +52,7 @@ puts "Second test"
 # 1.2 topology
 bsection r12 f1 f2
 bopcheck r12
+checkshape r12
 # OK
 
 regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance r12] full toler
@@ -84,6 +85,7 @@ puts "Fourth test"
 # 2.2 topology
 bsection r13 f1 f3
 bopcheck r13
+checkshape r13
 # OK
 
 regexp {Tolerance MAX=([-0-9.+eE]+)} [tolerance r13] full toler

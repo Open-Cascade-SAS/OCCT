@@ -30,5 +30,6 @@ checkreal TolReached $Toler 3.9019558966741645e-08 0.0 0.1
 bsection result b1 b2
 
 checkprops result -l 19.1199
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

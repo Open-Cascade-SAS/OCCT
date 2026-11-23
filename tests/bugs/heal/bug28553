@@ -10,6 +10,7 @@ restore [locate_data_file bug28553_sh.brep] f
 
 #Split shape
 DT_ShapeDivide r f
+checkshape r
 
 explode r F
 mksurface s2 r_1

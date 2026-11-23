@@ -13,3 +13,4 @@ if { !([regexp "0 Deleted" $s1] && [regexp "1 Generated" $s1])} {
   puts "Error: wrong history h1"
 }
 
+checkshape r1

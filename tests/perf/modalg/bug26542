@@ -21,3 +21,5 @@ checkprops r1 -l 78.3329
 checknbshapes r1 -vertex 3 -edge 2
 checkprops r2 -equal r1
 checknbshapes r2 -ref [nbshapes r1]
+checkshape r1
+checkshape r2

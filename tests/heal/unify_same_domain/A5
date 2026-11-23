@@ -9,3 +9,4 @@ puts ""
 restore [locate_data_file bug28228_face.brep] a
 setflags a locked
 unifysamedom result a
+checkshape result

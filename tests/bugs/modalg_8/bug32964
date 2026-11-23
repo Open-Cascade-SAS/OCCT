@@ -11,4 +11,5 @@ edge e2 p2 p3
 wire w1 e1 e2
 openoffset oo w1 1 40
 checknbshapes oo_1 -vertex 3 -edge 2 -wire 1 -shape 6
+checkshape oo_1
 checkview -display oo_1 -2d -path ${imagedir}/${test_image}.png

@@ -13,6 +13,7 @@ set value_1 [lindex $bug_info 1]
 set value_1 [string trim [string range $value_1 [expr {[string first "=" $value_1] + 1}] [expr {[string length $value_1] - 1}]]]
 
 unifysamedom r i
+checkshape r
 
 set bug_info [tolerance i]
 set value_2 [lindex $bug_info 1]

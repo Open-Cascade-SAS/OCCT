@@ -62,6 +62,8 @@ puts "Tps2=${Tps2}"
 
 checknbshapes rp -vertex 23060 -edge 35880 -wire 11704 -face 11704 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 82349
 checknbshapes rs -vertex 23060 -edge 35880 -wire 11704 -face 11704 -shell 0 -solid 0 -compsolid 0 -compound 1 -shape 82349
+checkshape rp
+checkshape rs
 
 # parallel execution is expected to be at least 20% faster than serial execution
 if {${Tps1} > [dval 0.8*${Tps2}]} {

@@ -19,6 +19,7 @@ dchrono h1 stop counter BSectionNoFV
 
 checknbshapes r1 -vertex 2 -edge 1
 checkprops r1 -l 2995.33
+checkshape r1
 
 copy s1 f1
 copy s2 f2
@@ -30,6 +31,7 @@ dchrono h2 stop counter BSectionFV
 
 checknbshapes r2 -vertex 2 -edge 1
 checkprops r2 -l 2995.33
+checkshape r2
 
 smallview
 don s1 s2 r2

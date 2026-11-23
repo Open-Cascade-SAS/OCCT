@@ -20,6 +20,7 @@ if { $MaxTolerance > $expected_MaxTolerance } {
 	puts "Error : too big tolerance for the shape (should be less than $expected_MaxTolerance, now $MaxTolerance)"
 }
 
+checkshape result
 vinit
 vdisplay result
 vfit

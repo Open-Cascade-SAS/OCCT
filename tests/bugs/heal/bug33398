@@ -7,6 +7,7 @@ pload STEP
 
 testreadstep [locate_data_file bug33398.step] s 
 unifysamedom result s 
+checkshape result
 
 checknbshapes result -vertex 506 -edge 908 -wire 394 -face 382 -shell 4 -solid 4    
 checkview -display result -2d -path ${imagedir}/${test_image}.png

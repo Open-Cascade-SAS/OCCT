@@ -15,6 +15,7 @@ explode a e
 unifysamedom result a a_3 a_1_3 a_1_4
 
 savehistory usd_hist
+checkshape result
 
 set bug_info [modified res usd_hist a_9]
 if {$bug_info != "The shape has not been modified."} {

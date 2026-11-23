@@ -38,5 +38,6 @@ bsection result p1_2 p2_1
 checksection result -r 0
 checkmaxtol result -ref 4.0e-7
 checkprops result -l 1881.92
+checkshape result
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

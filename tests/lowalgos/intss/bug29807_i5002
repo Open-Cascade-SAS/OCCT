@@ -56,5 +56,6 @@ checksection result -r 0
 checkmaxtol result -min_tol 2.0e-7
 
 checknbshapes result -edge 2 -vertex 2
+checkshape result
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

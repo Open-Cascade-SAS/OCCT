@@ -9,4 +9,5 @@ ttranslate s 1 1 1
 bcut result c s 
 
 checknbshapes result -vertex 3 -edge 5 -wire 4 -face 4
+checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

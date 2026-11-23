@@ -11,4 +11,5 @@ ttranslate s2 0 4.5 14
 bcut result s1 s2 
 
 checknbshapes result -vertex 4 -edge 7 -wire 2 -face 2
+checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

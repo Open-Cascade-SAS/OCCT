@@ -30,4 +30,10 @@ checknbshapes result5 -face 2 -edge 11 -vertex 10
 unifysamedom result a a_3 a_9 +i
 checknbshapes result -face 1 -edge 12 -vertex 12
 
+checkshape result1
+checkshape result2
+checkshape result3
+checkshape result4
+checkshape result5
+checkshape result
 checkview -display result -2d -path ${imagedir}/${test_image}.png

@@ -290,5 +290,6 @@ Number of shapes in shape
  SHAPE     : 304
 "
 checknbshapes p -ref ${nbshapes_after_simplify} -t -m "result after attempt to simplify the model"
+checkshape p
 
 xwd ${imagedir}/${casename}_2.png
