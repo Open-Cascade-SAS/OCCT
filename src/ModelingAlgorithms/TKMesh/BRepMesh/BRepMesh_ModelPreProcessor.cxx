@@ -200,10 +200,10 @@ private:
     const IMeshData::IPCurveHandle& aIPC1 = theDEdge->GetPCurve(0);
     const IMeshData::IPCurveHandle& aIPC2 = theDEdge->GetPCurve(1);
 
-    // Calculate the step by parameter of the curve.
-    const gp_Pnt2d& aFPntOfIPC1 = aIPC1->GetPoint(0);
-    const gp_Pnt2d& aLPntOfIPC1 = aIPC1->GetPoint(aIPC1->ParametersNb() - 1);
-    const double    aMod        = std::abs(aFPntOfIPC1.Y() - aLPntOfIPC1.Y());
+    const int       aLastPointIndex = aIPC1->ParametersNb() - 1;
+    const gp_Pnt2d& aFirstPoint     = aIPC1->GetPoint(0);
+    const gp_Pnt2d& aLastPoint      = aIPC1->GetPoint(aLastPointIndex);
+    const double    aMod            = std::abs(aFirstPoint.Y() - aLastPoint.Y());
 
     if (aMod < gp::Resolution())
     {
@@ -217,25 +217,23 @@ private:
       return false;
     }
 
-    // Define two pcurves of the seam-edge.
-    occ::handle<Geom2d_Curve> aPC1, aPC2;
-    double                    af, al;
+    double aFirstParam, aLastParam;
 
     aE.Orientation(TopAbs_FORWARD);
-    aPC1 = BRep_Tool::CurveOnSurface(aE, aF, af, al);
+    occ::handle<Geom2d_Curve> aPC1 = BRep_Tool::CurveOnSurface(aE, aF, aFirstParam, aLastParam);
 
     aE.Orientation(TopAbs_REVERSED);
-    aPC2 = BRep_Tool::CurveOnSurface(aE, aF, af, al);
+    occ::handle<Geom2d_Curve> aPC2 = BRep_Tool::CurveOnSurface(aE, aF, aFirstParam, aLastParam);
 
     if (aPC1.IsNull() || aPC2.IsNull())
     {
       return false;
     }
 
-    // Select the correct pcurve of the seam-edge.
-    const gp_Pnt2d& aFPntOfPC1 = aPC1->Value(aPC1->FirstParameter());
+    // Match the seam side at the parameter of the stored point.
+    const gp_Pnt2d aCurvePoint = aPC1->EvalD0(aIPC1->GetParameter(aLastPointIndex));
 
-    if (std::abs(aLPntOfIPC1.X() - aFPntOfPC1.X()) > Precision::Confusion())
+    if (std::abs(aLastPoint.X() - aCurvePoint.X()) > Precision::Confusion())
     {
       std::swap(aPC1, aPC2);
     }

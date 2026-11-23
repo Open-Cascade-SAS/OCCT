@@ -308,31 +308,31 @@ void BRepTools_ShapeSet::ReadGeometry(Standard_IStream&            IS,
   Message_ProgressScope aPS(theProgress, "Geometry", 100);
 
   myCurves2d.Read(IS, aPS.Next(20));
-  if (aPS.UserBreak())
+  if (IS.fail() || aPS.UserBreak())
   {
     return;
   }
 
   myCurves.Read(IS, aPS.Next(20));
-  if (aPS.UserBreak())
+  if (IS.fail() || aPS.UserBreak())
   {
     return;
   }
 
   ReadPolygon3D(IS, aPS.Next(15));
-  if (aPS.UserBreak())
+  if (IS.fail() || aPS.UserBreak())
   {
     return;
   }
 
   ReadPolygonOnTriangulation(IS, aPS.Next(15));
-  if (aPS.UserBreak())
+  if (IS.fail() || aPS.UserBreak())
   {
     return;
   }
 
   mySurfaces.Read(IS, aPS.Next(15));
-  if (aPS.UserBreak())
+  if (IS.fail() || aPS.UserBreak())
   {
     return;
   }
@@ -865,6 +865,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
       GeomTools::GetReal(IS, X);
       GeomTools::GetReal(IS, Y);
       GeomTools::GetReal(IS, Z);
+      if (IS.fail())
+      {
+        return;
+      }
       myBuilder.MakeVertex(V, gp_Pnt(X, Y, Z), tol);
       occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(V.TShape());
 
@@ -874,6 +878,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
       do
       {
         GeomTools::GetReal(IS, p1);
+        if (IS.fail())
+        {
+          return;
+        }
         IS >> val;
 
         occ::handle<BRep_PointRepresentation> PR;
@@ -913,6 +921,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 
           case 3: {
             GeomTools::GetReal(IS, p2);
+            if (IS.fail())
+            {
+              return;
+            }
             IS >> s;
 
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:09 2002 Begin
@@ -956,6 +968,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 
         // Read the curve geometry
         GeomTools::GetReal(IS, tol);
+        if (IS.fail())
+        {
+          return;
+        }
         IS >> val;
         myBuilder.SameParameter(E, (val == 1));
         IS >> val;
@@ -977,6 +993,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
               }
               GeomTools::GetReal(IS, first);
               GeomTools::GetReal(IS, last);
+              if (IS.fail())
+              {
+                return;
+              }
               if (!myCurves.Curve(c).IsNull())
               {
                 bool Only3d = true;
@@ -1000,6 +1020,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
               // range
               GeomTools::GetReal(IS, first);
               GeomTools::GetReal(IS, last);
+              if (IS.fail())
+              {
+                return;
+              }
 
               // read UV Points // for XML Persistence higher performance
               if (FormatNb() == TopTools_FormatVersion_VERSION_2)
@@ -1008,6 +1032,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
                 GeomTools::GetReal(IS, PfY);
                 GeomTools::GetReal(IS, PlX);
                 GeomTools::GetReal(IS, PlY);
+                if (IS.fail())
+                {
+                  return;
+                }
                 aPf = gp_Pnt2d(PfX, PfY);
                 aPl = gp_Pnt2d(PlX, PlY);
               }
@@ -1164,6 +1192,10 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
       if (val == 0 || val == 1)
       {
         GeomTools::GetReal(IS, tol);
+        if (IS.fail())
+        {
+          return;
+        }
         IS >> s >> l;
         const occ::handle<Geom_Surface> aSurface = mySurfaces.Surface(s);
         if (!aSurface.IsNull())
@@ -1393,6 +1425,10 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&           
     //      if (!strcasecmp(buffer, "p")) {
     double def;
     GeomTools::GetReal(IS, def);
+    if (IS.fail())
+    {
+      return;
+    }
     IS >> hasparameters;
     if (hasparameters)
     {
@@ -1400,6 +1436,10 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&           
       for (j = 1; j <= nbnodes; j++)
       {
         GeomTools::GetReal(IS, par);
+        if (IS.fail())
+        {
+          return;
+        }
         Param1(j) = par;
       }
       Poly = new Poly_PolygonOnTriangulation(Nodes, Param1);
@@ -1551,11 +1591,19 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream&            IS,
     IS >> hasparameters;
     NCollection_Array1<gp_Pnt> Nodes(1, nbnodes);
     GeomTools::GetReal(IS, d);
+    if (IS.fail())
+    {
+      return;
+    }
     for (j = 1; j <= nbnodes; j++)
     {
       GeomTools::GetReal(IS, x);
       GeomTools::GetReal(IS, y);
       GeomTools::GetReal(IS, z);
+      if (IS.fail())
+      {
+        return;
+      }
       Nodes(j).SetCoord(x, y, z);
     }
     if (hasparameters)
@@ -1564,6 +1612,10 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream&            IS,
       for (p = 1; p <= nbnodes; p++)
       {
         GeomTools::GetReal(IS, Param(p));
+        if (IS.fail())
+        {
+          return;
+        }
       }
       P = new Poly_Polygon3D(Nodes, Param);
     }
@@ -1812,6 +1864,10 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
       IS >> hasNormals;
     }
     GeomTools::GetReal(IS, d);
+    if (IS.fail())
+    {
+      return;
+    }
 
     T = new Poly_Triangulation(nbNodes, nbTriangles, hasUV, hasNormals);
 
@@ -1820,6 +1876,10 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
       GeomTools::GetReal(IS, x);
       GeomTools::GetReal(IS, y);
       GeomTools::GetReal(IS, z);
+      if (IS.fail())
+      {
+        return;
+      }
       T->SetNode(j, gp_Pnt(x, y, z));
     }
 
@@ -1829,6 +1889,10 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
       {
         GeomTools::GetReal(IS, x);
         GeomTools::GetReal(IS, y);
+        if (IS.fail())
+        {
+          return;
+        }
         T->SetUVNode(j, gp_Pnt2d(x, y));
       }
     }
@@ -1849,6 +1913,10 @@ void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
         GeomTools::GetReal(IS, aNorm.x());
         GeomTools::GetReal(IS, aNorm.y());
         GeomTools::GetReal(IS, aNorm.z());
+        if (IS.fail())
+        {
+          return;
+        }
         T->SetNormal(j, NCollection_Vec3<float>(aNorm));
       }
     }

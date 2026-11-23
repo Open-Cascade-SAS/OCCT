@@ -858,84 +858,87 @@ static void ReconstructMissedSeam(const NCollection_Sequence<TopoDS_Shape>& theR
                                   TopoDS_Edge&                              theSeamEdge,
                                   gp_Pnt2d&                                 theNextPoint)
 {
-  occ::handle<Geom_Surface> RefSurf = BRep_Tool::Surface(theFrefFace);
-
-  // Find seam edge between removed edges
   theSeamEdge.Nullify();
-  for (int i = 1; i <= theRemovedEdges.Length(); i++)
+  for (const TopoDS_Shape& aRemovedEdge : theRemovedEdges)
   {
-    TopoDS_Edge anEdge = TopoDS::Edge(theRemovedEdges(i));
-    if (anEdge.IsSame(theCurEdge))
-    {
-      continue;
-    }
-    double                    Param1, Param2;
-    occ::handle<Geom2d_Curve> aPC = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-    if (aPC.IsNull())
+    TopoDS_Edge anEdge = TopoDS::Edge(aRemovedEdge);
+    if (anEdge.IsSame(theCurEdge) || !BRep_Tool::IsClosed(anEdge, theFrefFace))
     {
       continue;
     }
 
     TopoDS_Vertex aFirstVertex, aLastVertex;
     TopExp::Vertices(anEdge, aFirstVertex, aLastVertex, true);
-
-    if ((aFirstVertex.IsSame(theCurVertex) || aLastVertex.IsSame(theCurVertex))
-        && BRep_Tool::IsClosed(anEdge, theFrefFace))
+    if (!aFirstVertex.IsSame(theCurVertex))
     {
-      double   aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? Param1 : Param2;
-      gp_Pnt2d aPoint = aPC->Value(aParam);
-      double   aUdiff = std::abs(aPoint.X() - theCurPoint.X());
-      double   aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
-      if ((theUperiod != 0. && aUdiff > theUperiod / 2)
-          || (theVperiod != 0. && aVdiff > theVperiod / 2))
+      if (!aLastVertex.IsSame(theCurVertex))
       {
-        if (aLastVertex.IsSame(theCurVertex) || (theUperiod != 0. && theVperiod != 0.))
-        {
-          anEdge.Reverse();
-        }
-        else
-        {
-          TopAbs_Orientation anOri = anEdge.Orientation();
-          anEdge.Orientation(TopAbs_FORWARD);
-          occ::handle<Geom2d_Curve> aPC1 =
-            BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-          anEdge.Reverse();
-          occ::handle<Geom2d_Curve> aPC2 =
-            BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-          anEdge.Reverse(); // again FORWARD
-          TopLoc_Location                  aLoc;
-          BRep_Builder                     aBB;
-          double                           aTol  = BRep_Tool::Tolerance(anEdge);
-          const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFrefFace, aLoc);
-          aBB.UpdateEdge(anEdge, aPC2, aPC1, aSurf, aLoc, aTol);
-          anEdge.Orientation(anOri);
-        }
-        aPC    = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
-        aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? Param1 : Param2;
-        aPoint = aPC->Value(aParam);
-        aUdiff = std::abs(aPoint.X() - theCurPoint.X());
-        aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
+        continue;
       }
-      if ((theUperiod == 0. || aUdiff < theUperiod / 2)
-          && (theVperiod == 0. || aVdiff < theVperiod / 2))
-      {
-        aFirstVertex = TopExp::FirstVertex(anEdge, true);
-        if (aFirstVertex.IsSame(theCurVertex))
-        {
-          theSeamEdge = anEdge;
-          break;
-        }
-      }
+      // Reversing a seam also selects its other pcurve.
+      anEdge.Reverse();
     }
-  }
+    const bool isClosedAtVertex = aFirstVertex.IsSame(aLastVertex);
 
-  if (!theSeamEdge.IsNull())
-  {
-    double                    Param1, Param2;
+    double                    aFirstParam, aLastParam;
     occ::handle<Geom2d_Curve> aPC =
-      BRep_Tool::CurveOnSurface(theSeamEdge, theFrefFace, Param1, Param2);
-    double aParam = (theSeamEdge.Orientation() == TopAbs_FORWARD) ? Param2 : Param1;
-    theNextPoint  = aPC->Value(aParam);
+      BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+    if (aPC.IsNull())
+    {
+      continue;
+    }
+
+    double   aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? aFirstParam : aLastParam;
+    gp_Pnt2d aPoint = aPC->EvalD0(aParam);
+    double   aUdiff = std::abs(aPoint.X() - theCurPoint.X());
+    double   aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
+    if ((theUperiod != 0. && aUdiff > theUperiod / 2)
+        || (theVperiod != 0. && aVdiff > theVperiod / 2))
+    {
+      if (isClosedAtVertex || (theUperiod != 0. && theVperiod != 0.))
+      {
+        anEdge.Reverse();
+      }
+      else
+      {
+        const TopAbs_Orientation anOri = anEdge.Orientation();
+        anEdge.Orientation(TopAbs_FORWARD);
+        occ::handle<Geom2d_Curve> aPC1 =
+          BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+        anEdge.Reverse();
+        occ::handle<Geom2d_Curve> aPC2 =
+          BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+        if (aPC1.IsNull() || aPC2.IsNull())
+        {
+          continue;
+        }
+        anEdge.Reverse(); // again FORWARD
+        TopLoc_Location                  aLoc;
+        BRep_Builder                     aBB;
+        double                           aTol  = BRep_Tool::Tolerance(anEdge);
+        const occ::handle<Geom_Surface>& aSurf = BRep_Tool::Surface(theFrefFace, aLoc);
+        aBB.UpdateEdge(anEdge, aPC2, aPC1, aSurf, aLoc, aTol);
+        anEdge.Orientation(anOri);
+      }
+      aPC = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, aFirstParam, aLastParam);
+      if (aPC.IsNull())
+      {
+        continue;
+      }
+      aParam = (anEdge.Orientation() == TopAbs_FORWARD) ? aFirstParam : aLastParam;
+      aPoint = aPC->EvalD0(aParam);
+      aUdiff = std::abs(aPoint.X() - theCurPoint.X());
+      aVdiff = std::abs(aPoint.Y() - theCurPoint.Y());
+    }
+    if ((theUperiod == 0. || aUdiff < theUperiod / 2)
+        && (theVperiod == 0. || aVdiff < theVperiod / 2)
+        && TopExp::FirstVertex(anEdge, true).IsSame(theCurVertex))
+    {
+      const double anEndParam = anEdge.Orientation() == TopAbs_FORWARD ? aLastParam : aFirstParam;
+      theNextPoint            = aPC->EvalD0(anEndParam);
+      theSeamEdge             = anEdge;
+      return;
+    }
   }
 }
 
@@ -1087,81 +1090,46 @@ static void TransformPCurves(
     RefSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(RefSurf))->BasisSurface();
   }
 
-  occ::handle<Geom_Surface> SurfFace = BRep_Tool::Surface(theFace);
-  if (SurfFace->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+  occ::handle<Geom_Surface> CurSurf = BRep_Tool::Surface(theFace);
+  if (CurSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
-    SurfFace = (occ::down_cast<Geom_RectangularTrimmedSurface>(SurfFace))->BasisSurface();
+    CurSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(CurSurf))->BasisSurface();
   }
 
-  bool ToModify = false, ToTranslate = false, ToRotate = false, X_Reverse = false,
-       Y_Reverse = false, ToProject = false;
+  bool   isUReversed = false;
+  bool   isVReversed = false;
+  bool   toProject   = false;
+  double aUOffset    = 0.0;
+  double aVOffset    = 0.0;
 
-  double aTranslation = 0., anAngle = 0.;
+  const occ::handle<Geom_ElementarySurface> aCurSurface =
+    occ::down_cast<Geom_ElementarySurface>(CurSurf);
+  const occ::handle<Geom_ElementarySurface> aRefSurface =
+    occ::down_cast<Geom_ElementarySurface>(RefSurf);
 
-  // Get axes of surface of face and of surface of RefFace
-  occ::handle<Geom_ElementarySurface> ElemSurfFace =
-    occ::down_cast<Geom_ElementarySurface>(SurfFace);
-  occ::handle<Geom_ElementarySurface> ElemRefSurf = occ::down_cast<Geom_ElementarySurface>(RefSurf);
-
-  if (!ElemSurfFace.IsNull() && !ElemRefSurf.IsNull())
+  if (!aCurSurface.IsNull() && !aRefSurface.IsNull())
   {
-    gp_Ax3 AxisOfSurfFace = ElemSurfFace->Position();
-    gp_Ax3 AxisOfRefSurf  = ElemRefSurf->Position();
+    const gp_Ax3& aCurAxes = aCurSurface->Position();
+    const gp_Ax3& aRefAxes = aRefSurface->Position();
 
-    gp_Pnt OriginRefSurf = AxisOfRefSurf.Location();
+    // Shift the V origin in the source frame before applying any V reversal.
+    aVOffset = -ElCLib::LineParameter(aCurAxes.Axis(), aRefAxes.Location());
 
-    double aParam = ElCLib::LineParameter(AxisOfSurfFace.Axis(), OriginRefSurf);
-
-    if (std::abs(aParam) > Precision::PConfusion())
-    {
-      aTranslation = -aParam;
-    }
-
-    gp_Dir VdirSurfFace = AxisOfSurfFace.Direction();
-    gp_Dir VdirRefSurf  = AxisOfRefSurf.Direction();
-    gp_Dir XdirSurfFace = AxisOfSurfFace.XDirection();
-    gp_Dir XdirRefSurf  = AxisOfRefSurf.XDirection();
-
-    gp_Dir CrossProd1 = AxisOfRefSurf.XDirection() ^ AxisOfRefSurf.YDirection();
-    gp_Dir CrossProd2 = AxisOfSurfFace.XDirection() ^ AxisOfSurfFace.YDirection();
-    if (CrossProd1 * CrossProd2 < 0.)
-    {
-      X_Reverse = true;
-    }
-
-    double ScalProd = VdirSurfFace * VdirRefSurf;
-    if (ScalProd < 0.)
-    {
-      Y_Reverse = true;
-    }
-
-    if (!X_Reverse && !Y_Reverse)
-    {
-      gp_Dir DirRef = VdirRefSurf;
-      if (!AxisOfRefSurf.Direct())
-      {
-        DirRef.Reverse();
-      }
-      anAngle = XdirRefSurf.AngleWithRef(XdirSurfFace, DirRef);
-    }
-    else
-    {
-      anAngle = XdirRefSurf.Angle(XdirSurfFace);
-    }
-
-    ToRotate = (std::abs(anAngle) > Precision::PConfusion());
-
-    ToTranslate = (std::abs(aTranslation) > Precision::PConfusion());
-
-    ToModify = ToTranslate || ToRotate || X_Reverse || Y_Reverse;
+    // Measure the offset in the direction of increasing U on the reference surface.
+    const gp_Dir aRefXYNormal = aRefAxes.XDirection() ^ aRefAxes.YDirection();
+    const gp_Dir aCurXYNormal = aCurAxes.XDirection() ^ aCurAxes.YDirection();
+    isUReversed               = aRefXYNormal.Dot(aCurXYNormal) < 0.0;
+    isVReversed               = aRefAxes.Direction().Dot(aCurAxes.Direction()) < 0.0;
+    aUOffset = aRefAxes.XDirection().AngleWithRef(aCurAxes.XDirection(), aRefXYNormal);
   }
   else
   {
-    if (!SameSurf(RefSurf, SurfFace))
-    {
-      ToProject = true;
-    }
+    toProject = !SameSurf(RefSurf, CurSurf);
   }
+
+  const bool toShiftU      = std::abs(aUOffset) > Precision::PConfusion();
+  const bool toShiftV      = std::abs(aVOffset) > Precision::PConfusion();
+  const bool toTransformUV = toShiftU || toShiftV || isUReversed || isVReversed;
 
   BRep_Builder                                           BB;
   TopExp_Explorer                                        Explo(theFace, TopAbs_EDGE);
@@ -1169,12 +1137,12 @@ static void TransformPCurves(
   for (; Explo.More(); Explo.Next())
   {
     TopoDS_Edge anEdge = TopoDS::Edge(Explo.Current());
-    if (BRep_Tool::Degenerated(anEdge) && ToModify)
+    if (BRep_Tool::Degenerated(anEdge) && toTransformUV)
     {
       continue;
     }
 
-    if (ToProject && BRep_Tool::IsClosed(anEdge, theFace))
+    if (toProject && BRep_Tool::IsClosed(anEdge, theFace))
     {
       continue;
     }
@@ -1190,12 +1158,13 @@ static void TransformPCurves(
     occ::handle<Geom2d_Curve> PCurveOnRef =
       BRep_Tool::CurveOnSurface(anEdge, theRefFace, fpar, lpar);
     occ::handle<Geom2d_Curve> PCurve2;
-    if (!PCurveOnRef.IsNull() /* && !(ToModify || ToProject)*/)
+    if (!PCurveOnRef.IsNull())
     {
       anEdge.Reverse();
       PCurve2 = BRep_Tool::CurveOnSurface(anEdge, theRefFace, fpar, lpar);
       if (PCurve2 != PCurveOnRef)
-      { // two pcurves
+      {
+        // The edge already has both seam pcurves on the reference face.
         continue;
       }
     }
@@ -1216,7 +1185,7 @@ static void TransformPCurves(
 
     for (int ii = 0; ii < NbPcurves; ii++)
     {
-      if (ToProject)
+      if (toProject)
       {
         occ::handle<Geom_Curve> aC3d = BRep_Tool::Curve(anEdge, fpar, lpar);
         aC3d                         = new Geom_TrimmedCurve(aC3d, fpar, lpar);
@@ -1228,22 +1197,22 @@ static void TransformPCurves(
       {
         NewPCurves[ii] = occ::down_cast<Geom2d_Curve>(PCurves[ii]->Copy());
       }
-      if (ToTranslate)
+      if (toShiftV)
       {
-        NewPCurves[ii]->Translate(gp_Vec2d(0., aTranslation));
+        NewPCurves[ii]->Translate(gp_Vec2d(0., aVOffset));
       }
-      if (Y_Reverse)
+      if (isVReversed)
       {
         NewPCurves[ii]->Mirror(gp::OX2d());
       }
-      if (X_Reverse)
+      if (isUReversed)
       {
         NewPCurves[ii]->Mirror(gp::OY2d());
         NewPCurves[ii]->Translate(gp_Vec2d(2 * M_PI, 0.));
       }
-      if (ToRotate)
+      if (toShiftU)
       {
-        NewPCurves[ii]->Translate(gp_Vec2d(anAngle, 0.));
+        NewPCurves[ii]->Translate(gp_Vec2d(aUOffset, 0.));
       }
     }
 

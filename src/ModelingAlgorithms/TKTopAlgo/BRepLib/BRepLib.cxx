@@ -2151,6 +2151,22 @@ public:
     return aDeriv.Transformed(mySurfaceTrsf);
   }
 
+  // Returns the second derivative transverse to the pcurve in surface parameters.
+  gp_Vec SecondDerivative()
+  {
+    // C1 continuity requires a nonzero pcurve tangent before this method is called.
+    gp_Vec2d anOrtho(-myCurveTangent.Y(), myCurveTangent.X());
+    anOrtho.Normalize();
+    gp_Vec aDerivative;
+    aDerivative.SetLinearForm(anOrtho.X() * anOrtho.X(),
+                              mySurfaceProps.D2U(),
+                              2.0 * anOrtho.X() * anOrtho.Y(),
+                              mySurfaceProps.DUV(),
+                              anOrtho.Y() * anOrtho.Y(),
+                              mySurfaceProps.D2V());
+    return aDerivative.Transformed(mySurfaceTrsf);
+  }
+
   gp_Dir Normal()
   {
     gp_Dir aNormal = mySurfaceProps.Normal();
@@ -2379,9 +2395,8 @@ GeomAbs_Shape BRepLib::ContinuityOfFaces(const TopoDS_Edge& theEdge,
 
     // Check conditions for G2 and C2 continuity:
     // * calculate principal curvatures on each surface
-    // * continuity is C2 if directions of principal curvatures are equal on different surfaces
-    // * continuity is G2 if directions of principal curvatures are just parallel
-    //   and values of curvatures are the same
+    // * G2 requires matching principal curvatures and parallel principal directions.
+    // * C2 also requires matching first and transverse second derivatives.
     aSP1.Curvature(aCrvDir1[0], aCrvLen1[0], aCrvDir1[1], aCrvLen1[1]);
     aSP2.Curvature(aCrvDir2[0], aCrvLen2[0], aCrvDir2[1], aCrvLen2[1]);
     for (int aStep = 0; aStep <= 1; ++aStep)
@@ -2393,8 +2408,9 @@ GeomAbs_Shape BRepLib::ContinuityOfFaces(const TopoDS_Edge& theEdge,
                <= Precision::SquareConfusion()
           && std::abs(aCrvLen1[1] - aCrvLen2[1 - aStep]) < Precision::Confusion())
       {
-        if (aCurCont == GeomAbs_C1 && aCrvDir1[0].Dot(aCrvDir2[aStep]) > Precision::Confusion()
-            && aCrvDir1[1].Dot(aCrvDir2[1 - aStep]) > Precision::Confusion())
+        if (aCurCont == GeomAbs_C1
+            && (aSP1.SecondDerivative() - aSP2.SecondDerivative()).SquareMagnitude()
+                 <= Precision::SquareConfusion())
         {
           aCurCont = GeomAbs_C2;
         }

@@ -710,7 +710,7 @@ bool BRepTools::Read(TopoDS_Shape&                Sh,
   }
   BRepTools_ShapeSet SS(B);
   SS.Read(*aStream, theProgress);
-  if (!SS.NbShapes())
+  if (aStream->fail() || !SS.NbShapes())
   {
     return false;
   }
