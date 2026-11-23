@@ -1139,13 +1139,13 @@ bool StdSelect_BRepSelectionTool::GetSensitiveForCylinder(
 
         gp_Trsf aTrsf;
         gp_Ax3  aPos = aCyl.Position();
-        if (aGeomPlanes[0]->Position().IsCoplanar(aGeomPlanes[1]->Position(),
-                                                  Precision::Angular(),
-                                                  Precision::Angular()))
-        {
-          // cylinders created as a prism have an inverse vector of the cylindrical surface
-          aPos.SetDirection(aPos.Direction().Reversed());
-        }
+        gp_Pnt        p1   = aPos.Location();
+        const gp_Dir& d1   = aPos.Direction();
+        double        u1, u2, v1, v2;
+        BRepTools::UVBounds(*aFaces[aConIndex], u1, u2, v1, v2);
+        p1.Translate(gp_Vec(d1).Multiplied(v1));
+        aPos.SetLocation(p1);
+        aPos.SetDirection(d1);
         aTrsf.SetTransformation(aPos, gp::XOY());
 
         occ::handle<Select3D_SensitiveCylinder> aSensSCyl =
