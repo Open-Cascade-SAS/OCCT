@@ -111,7 +111,9 @@ public:
   Standard_EXPORT void SetNbSamplePoints(const int theSamples1 = 0, const int theSamples2 = 0);
 
   //! Performs the computation of the proximity value.
-  Standard_EXPORT void Perform(double& theTolerance);
+  //! If theBothDirections is true, computes both set1 to set2 and
+  //! set2 to set1 proximities and stores the minimum result.
+  Standard_EXPORT void Perform(double& theTolerance, const bool theBothDirections = true);
 
   //! Is proximity test completed?
   bool IsDone() const { return myIsDone; }

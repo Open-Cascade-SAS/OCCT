@@ -541,7 +541,7 @@ bool BRepExtrema_ProximityValueTool::getShapesAdditionalVertices()
 // function : Perform
 // purpose  : Performs the computation of the proximity value
 //=======================================================================
-void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
+void BRepExtrema_ProximityValueTool::Perform(double& theTolerance, const bool theBothDirections)
 {
   if (!myIsInitS1 || !myIsInitS2 || (myShapeType1 != myShapeType2))
   {
@@ -576,6 +576,19 @@ void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
     return;
   }
 
+  myDistance = aProximityDist1;
+  myPnt1.SetCoord(aP1_1.x(), aP1_1.y(), aP1_1.z());
+  myPnt2.SetCoord(aP1_2.x(), aP1_2.y(), aP1_2.z());
+  myPntStatus1 = aPointStatus1_1;
+  myPntStatus2 = aPointStatus1_2;
+
+  if (!theBothDirections)
+  {
+    myIsDone     = true;
+    theTolerance = myDistance;
+    return;
+  }
+
   // max(min) dist from the 2nd shape to t he 1st one
   BVH_Vec3d      aP2_1, aP2_2;
   ProxPnt_Status aPointStatus2_1 = ProxPnt_Status::ProxPnt_Status_UNKNOWN;
@@ -599,15 +612,7 @@ void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
   }
 
   // min dist of the two max(min) dists
-  if (aProximityDist1 < aProximityDist2)
-  {
-    myDistance = aProximityDist1;
-    myPnt1.SetCoord(aP1_1.x(), aP1_1.y(), aP1_1.z());
-    myPnt2.SetCoord(aP1_2.x(), aP1_2.y(), aP1_2.z());
-    myPntStatus1 = aPointStatus1_1;
-    myPntStatus2 = aPointStatus1_2;
-  }
-  else
+  if (aProximityDist2 < aProximityDist1)
   {
     myDistance = aProximityDist2;
     myPnt1.SetCoord(aP2_1.x(), aP2_1.y(), aP2_1.z());

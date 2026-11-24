@@ -156,3 +156,29 @@ void BRepExtrema_ShapeProximity::Perform()
     myOverlapTool.Perform(myTolerance);
   }
 }
+
+//=======================================================================
+// function : Perform
+// purpose  : Calculates proximity from Shape1 to Shape2
+//=======================================================================
+void BRepExtrema_ShapeProximity::PerformShape1ToShape2()
+{
+  if (myTolerance != Precision::Infinite())
+  {
+    return;
+  }
+
+  if (!myIsInitS1 || !myIsInitS2 || myProxValTool.IsDone())
+  {
+    return;
+  }
+
+  myProxValTool.LoadTriangleSets(myElementSet1, myElementSet2);
+  myProxValTool.LoadShapeLists(myShapeList1, myShapeList2);
+  myProxValTool.SetNbSamplePoints(myNbSamples1, myNbSamples2);
+
+  bool isBothDirections = false;
+  myProxValTool.Perform(myTolerance, isBothDirections);
+  myProxValTool.ProximityPoints(myProxPoint1, myProxPoint2);
+  myProxValTool.ProximityPointsStatus(myProxPntStatus1, myProxPntStatus2);
+}

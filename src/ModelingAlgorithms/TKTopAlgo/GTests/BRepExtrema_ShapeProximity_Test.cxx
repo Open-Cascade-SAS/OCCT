@@ -44,6 +44,8 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 
+#include <BRepTools.hxx>
+
 namespace
 {
 using ProximityStatus = BRepExtrema_ProximityDistTool::ProxPnt_Status;
@@ -55,7 +57,8 @@ void expectProximityValue(const TopoDS_Shape&   theShape1,
                           const ProximityStatus theExpectedStatus1,
                           const ProximityStatus theExpectedStatus2,
                           const double          theMeshDeflection,
-                          const bool            theCheckStatuses = true)
+                          const bool            theCheckStatuses = true,
+                          const bool            theMutual        = true)
 {
   BRepMesh_IncrementalMesh aMesh1(theShape1, theMeshDeflection);
   BRepMesh_IncrementalMesh aMesh2(theShape2, theMeshDeflection);
@@ -65,7 +68,14 @@ void expectProximityValue(const TopoDS_Shape&   theShape1,
   BRepExtrema_ShapeProximity aProximity(Precision::Infinite());
   ASSERT_TRUE(aProximity.LoadShape1(theShape1));
   ASSERT_TRUE(aProximity.LoadShape2(theShape2));
-  aProximity.Perform();
+  if (theMutual)
+  {
+    aProximity.Perform();
+  }
+  else
+  {
+    aProximity.PerformShape1ToShape2();
+  }
 
   ASSERT_TRUE(aProximity.IsDone());
   EXPECT_NEAR(aProximity.Proximity(), theExpectedValue, theTolerance);
@@ -222,13 +232,36 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_C1_PlaneAndCylinder)
     makePlanePatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), -1.0, 1.0, -1.0, 1.0);
   const TopoDS_Face aCylinder =
     makeCylinderPatch(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0), 0.1, 0.0, 2.0 * M_PI, 0.0, 1.0);
+  // proximity of aPlane to aCylinder
+  expectProximityValue(aPlane,
+                       aCylinder,
+                       1.3453,
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       1.e-3,
+                       true,
+                       false);
+  // proximity of aCylinder to aPlane
+  expectProximityValue(aCylinder,
+                       aPlane,
+                       0.1,
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       ProximityStatus::ProxPnt_Status_MIDDLE,
+                       1.e-3,
+                       true,
+                       false);
+  // mutual (minimal) value
   expectProximityValue(aPlane,
                        aCylinder,
                        0.1,
                        1.e-3,
                        ProximityStatus::ProxPnt_Status_MIDDLE,
                        ProximityStatus::ProxPnt_Status_BORDER,
-                       1.e-3);
+                       1.e-3,
+                       true,
+                       true);
 }
 
 // Migrated from tests/lowalgos/proximity/D1. Two opposing half-spheres have a
@@ -526,13 +559,36 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_E1_BezierEdgesEndpointReference)
   const TopoDS_Edge anEdge2 = makeBezierEdge(aPoles2);
   const gp_Pnt      aPnt1   = BRep_Tool::Pnt(TopExp::LastVertex(anEdge1, true));
   const gp_Pnt      aPnt2   = BRep_Tool::Pnt(TopExp::LastVertex(anEdge2, true));
+  // proximity of anEdge1 to anEdge2
+  expectProximityValue(anEdge1,
+                       anEdge2,
+                       223.055, // really expected: distance between first vertices
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       ProximityStatus::ProxPnt_Status_MIDDLE, // BORDER
+                       1.e-3,
+                       true,
+                       false);
+  // proximity of anEdge2 to anEdge1
+  expectProximityValue(anEdge2,
+                       anEdge1,
+                       aPnt1.Distance(aPnt2),
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       1.e-3,
+                       true,
+                       false);
+  // mutual (minimal) value
   expectProximityValue(anEdge1,
                        anEdge2,
                        aPnt1.Distance(aPnt2),
                        1.e-3,
                        ProximityStatus::ProxPnt_Status_BORDER,
                        ProximityStatus::ProxPnt_Status_BORDER,
-                       1.e-3);
+                       1.e-3,
+                       true,
+                       true);
 }
 
 // Migrated from tests/lowalgos/proximity/E2. This case checks a finite
@@ -565,4 +621,66 @@ TEST(BRepExtrema_ShapeProximityTest, LowAlgo_E2_DifferentDegreeBezierEdges)
                        ProximityStatus::ProxPnt_Status_MIDDLE,
                        ProximityStatus::ProxPnt_Status_MIDDLE,
                        1.e-3);
+}
+
+// This case checks directed proximity between two parallel arcs of circle.
+// Angles of arcs are equal and more than PI.
+// Expected proximity should be 1.0 (difference in radiuses).
+TEST(BRepExtrema_ShapeProximityTest, DirectedProximity_ParallelCircularArcs)
+{
+  const TopoDS_Edge anEdge1 =
+    makeCircularArc(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 10.0, 0.0, 1.25 * M_PI);
+  const TopoDS_Edge anEdge2 =
+    makeCircularArc(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 11.0, 0.0, 1.25 * M_PI);
+  expectProximityValue(anEdge1,
+                       anEdge2,
+                       1.0,
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_MIDDLE,
+                       ProximityStatus::ProxPnt_Status_MIDDLE,
+                       1.e-3,
+                       false,
+                       false);
+  expectProximityValue(anEdge2,
+                       anEdge1,
+                       21.0, // really expected: 1.0
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_MIDDLE,
+                       ProximityStatus::ProxPnt_Status_MIDDLE,
+                       1.e-3,
+                       false,
+                       false);
+}
+
+// This case checks directed proximity between two arcs of circle.
+// Angles of arcs are equal and more than PI.
+// Expected proximity should be equal to the distance between closest ends (~ aShift)
+TEST(BRepExtrema_ShapeProximityTest, DirectedProximity_ShiftedCircularArcs)
+{
+  double            aShift = 0.05 * M_PI;
+  const TopoDS_Edge anEdge1 =
+    makeCircularArc(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0), 10.0, 0.0, 1.25 * M_PI);
+  const TopoDS_Edge anEdge2 = makeCircularArc(gp_Pnt(0.0, 0.0, 0.0),
+                                              gp_Dir(1.0, 0.0, 0.0),
+                                              10.0,
+                                              aShift,
+                                              1.25 * M_PI + aShift);
+  expectProximityValue(anEdge1,
+                       anEdge2,
+                       20.0, // really expected: aShift
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       1.e-3,
+                       false, // true after fix
+                       false);
+  expectProximityValue(anEdge2,
+                       anEdge1,
+                       20.0, // really expected: aShift
+                       1.e-3,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       ProximityStatus::ProxPnt_Status_BORDER,
+                       1.e-3,
+                       false, // true after fix
+                       false);
 }
