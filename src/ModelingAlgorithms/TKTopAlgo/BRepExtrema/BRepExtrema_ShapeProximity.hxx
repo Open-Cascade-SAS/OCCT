@@ -84,6 +84,9 @@ public:
   //! Performs search of overlapped faces.
   Standard_EXPORT void Perform();
 
+  //! Calculates proximity from Shape1 to Shape2.
+  Standard_EXPORT void PerformShape1ToShape2();
+
   //! True if the search is completed.
   bool IsDone() const { return myOverlapTool.IsDone() || myProxValTool.IsDone(); }
 

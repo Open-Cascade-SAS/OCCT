@@ -1,0 +1,30 @@
+puts "============"
+puts "Modeling Algorithms - Proximity is expected to be directed"
+puts "==========="
+puts "" 
+
+set R 10.0
+circle c1 0 0 0 $R
+
+mkedge e1 c1 0.0 0.6*pi
+mkedge e2 c1 0.0 0.5*pi
+
+incmesh e1 1e-3
+incmesh e2 1e-3
+
+set log [proximity e1 e2 -s1s2 -profile]
+regexp {Proximity value: ([0-9+-.eE]*)} $log full val;
+
+# chord of the arc 0.1*pi (extra length of e1)
+set PI [expr {acos(-1.0)}]
+set expected [expr {2.0*$R*sin(0.1*$PI/2.0)}]
+
+set tol 1.e-3
+
+regexp {Status of ProxPnt1 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status1 ${val2}
+set expected_status1 Border
+
+regexp {Status of ProxPnt2 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status2 ${val2}
+set expected_status2 Border

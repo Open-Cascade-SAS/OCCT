@@ -191,7 +191,7 @@ static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** t
   if (theNbArgs < 3 || theNbArgs > 6)
   {
     Message::SendFail() << "Usage: " << theArgs[0]
-                        << " Shape1 Shape2 [-tol <value> | -value] [-profile]";
+                        << " Shape1 Shape2 [-tol <value> | -value [-direct]] [-profile]";
     return 1;
   }
 
@@ -209,6 +209,7 @@ static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** t
   bool aProfile    = false;
   bool isTolerance = false;
   bool isValue     = false;
+  bool isS1ToS2    = false;
 
   for (int anArgIdx = 3; anArgIdx < theNbArgs; ++anArgIdx)
   {
@@ -240,13 +241,19 @@ static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** t
       isValue = true;
       aTool.SetTolerance(Precision::Infinite());
     }
+    else if (aFlag == "-s1s2")
+    {
+      isS1ToS2 = true;
+      isValue  = true;
+      aTool.SetTolerance(Precision::Infinite());
+    }
     else if (aFlag == "-profile")
     {
       aProfile = true;
     }
   }
 
-  if (isTolerance && isValue)
+  if ((isTolerance && isValue) || (isTolerance && isS1ToS2))
   {
     Message::SendFail() << "Error: Proximity value could not be computed if the tolerance is set";
     return 1;
@@ -273,7 +280,14 @@ static int ShapeProximity(Draw_Interpretor& theDI, int theNbArgs, const char** t
   }
 
   // Perform shape proximity test
-  aTool.Perform();
+  if (isS1ToS2)
+  {
+    aTool.PerformShape1ToShape2();
+  }
+  else
+  {
+    aTool.Perform();
+  }
 
   if (aProfile)
   {
@@ -520,19 +534,22 @@ void BRepTest::ExtremaCommands(Draw_Interpretor& theCommands)
                   distmini,
                   aGroup);
 
-  theCommands.Add("proximity",
-                  "proximity Shape1 Shape2 [-tol <value> | -value] [-profile]"
-                  "\n\t\t: Searches for pairs of overlapping faces of the given shapes."
-                  "\n\t\t: The options are:"
-                  "\n\t\t:   -tol     : non-negative tolerance value used for overlapping"
-                  "\n\t\t:              test (for zero tolerance, the strict intersection"
-                  "\n\t\t:              test will be performed)"
-                  "\n\t\t:   -value   : compute the proximity value (minimal value which"
-                  "\n\t\t:              shows both shapes fully overlapped)"
-                  "\n\t\t:   -profile : outputs execution time for main algorithm stages",
-                  __FILE__,
-                  ShapeProximity,
-                  aGroup);
+  theCommands.Add(
+    "proximity",
+    "proximity Shape1 Shape2 [-tol <value> | -value [-s1s2]] [-profile]"
+    "\n\t\t: Searches for pairs of overlapping faces of the given shapes."
+    "\n\t\t: The options are:"
+    "\n\t\t:   -tol     : non-negative tolerance value used for overlapping"
+    "\n\t\t:              test (for zero tolerance, the strict intersection"
+    "\n\t\t:              test will be performed)"
+    "\n\t\t:   -value   : compute the proximity value (minimal value which"
+    "\n\t\t:              shows both shapes fully overlapped)"
+    "\n\t\t:   -s1s2    : compute the value of proximity of s1 to s2"
+    "\n\t\t:              (without this option computes minimum of (s1 to s2) and (s2 to s1)"
+    "\n\t\t:   -profile : outputs execution time for main algorithm stages",
+    __FILE__,
+    ShapeProximity,
+    aGroup);
 
   theCommands.Add("selfintersect",
                   "selfintersect Shape [-tol <value>] [-profile]"
