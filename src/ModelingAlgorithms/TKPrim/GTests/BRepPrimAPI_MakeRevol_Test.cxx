@@ -13,6 +13,8 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepCheck_Analyzer.hxx>
@@ -22,10 +24,12 @@
 #include <Geom_Surface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <Precision.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -117,4 +121,77 @@ TEST(BRepPrimAPI_MakeRevolTest, ModalgBug_25578_PartialSphereRevolutions)
   BRepPrimAPI_MakeRevol aRevolX(aFace, anAxisX, M_PI / 2.0);
   ASSERT_TRUE(aRevolX.IsDone());
   ASSERT_FALSE(aRevolX.Shape().IsNull());
+}
+
+namespace
+{
+// Revolves the planar rectangle with corners (theX0, 0, 0) and (theX1, theHeight, 0) around the
+// Y axis by theAngle, and checks that every edge off the axis reports, through Generated(), the
+// one face it sweeps, and that this face is in the result.
+void CheckEdgesGenerateTheirFaces(const double theX0, const double theX1, const double theAngle)
+{
+  const double               aHeight = 5.0;
+  BRepBuilderAPI_MakePolygon aPolygon(gp_Pnt(theX0, 0.0, 0.0),
+                                      gp_Pnt(theX1, 0.0, 0.0),
+                                      gp_Pnt(theX1, aHeight, 0.0),
+                                      gp_Pnt(theX0, aHeight, 0.0),
+                                      true);
+  const TopoDS_Face          aProfile = BRepBuilderAPI_MakeFace(aPolygon.Wire(), true);
+  BRepPrimAPI_MakeRevol      aMakeRevol(aProfile,
+                                        gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0)),
+                                        theAngle);
+  ASSERT_TRUE(aMakeRevol.IsDone());
+  const TopoDS_Shape aResult = aMakeRevol.Shape();
+  EXPECT_TRUE(BRepCheck_Analyzer(aResult).IsValid());
+
+  for (TopExp_Explorer anEdgeExp(aProfile, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+  {
+    const TopoDS_Edge anEdge = TopoDS::Edge(anEdgeExp.Current());
+    TopoDS_Vertex     aFirst, aLast;
+    TopExp::Vertices(anEdge, aFirst, aLast);
+    if (std::abs(BRep_Tool::Pnt(aFirst).X()) < Precision::Confusion()
+        && std::abs(BRep_Tool::Pnt(aLast).X()) < Precision::Confusion())
+    {
+      continue; // On the axis: it sweeps no face.
+    }
+
+    int aNbFaces = 0;
+    for (const TopoDS_Shape& aGenerated : aMakeRevol.Generated(anEdge))
+    {
+      if (aGenerated.ShapeType() != TopAbs_FACE)
+      {
+        continue;
+      }
+      ++aNbFaces;
+      bool isInResult = false;
+      for (TopExp_Explorer aFaceExp(aResult, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+      {
+        isInResult = isInResult || aFaceExp.Current().IsSame(aGenerated);
+      }
+      EXPECT_TRUE(isInResult);
+    }
+    EXPECT_EQ(aNbFaces, 1) << "edge from (" << BRep_Tool::Pnt(aFirst).X() << ", "
+                           << BRep_Tool::Pnt(aFirst).Y() << ") to (" << BRep_Tool::Pnt(aLast).X()
+                           << ", " << BRep_Tool::Pnt(aLast).Y() << ")";
+  }
+}
+} // namespace
+
+// In a full turn, an edge square to the axis sweeps a planar ring. The ring has no seam, so the
+// copy of the edge at the sweep's ends is unused, yet Generated() must still return the ring.
+TEST(BRepPrimAPI_MakeRevolTest, FullTurnRingsAreGenerated)
+{
+  CheckEdgesGenerateTheirFaces(2.0, 4.0, 2.0 * M_PI);
+}
+
+// The same with a profile edge on the axis: the edges square to it sweep discs.
+TEST(BRepPrimAPI_MakeRevolTest, FullTurnDiscsAreGenerated)
+{
+  CheckEdgesGenerateTheirFaces(0.0, 4.0, 2.0 * M_PI);
+}
+
+// A partial turn already reported them; it must keep doing so.
+TEST(BRepPrimAPI_MakeRevolTest, PartialTurnSectorsAreGenerated)
+{
+  CheckEdgesGenerateTheirFaces(2.0, 4.0, M_PI);
 }

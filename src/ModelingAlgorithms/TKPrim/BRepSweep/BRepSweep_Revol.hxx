@@ -78,6 +78,10 @@ public:
   //! Returns true if the aGenS is used in resulting Shape
   Standard_EXPORT bool IsUsed(const TopoDS_Shape& aGenS) const;
 
+  //! Returns true if the shape, generated from theS
+  //! is used in result shape
+  Standard_EXPORT bool GenIsUsed(const TopoDS_Shape& theS) const;
+
 private:
   //! builds the NumShape.
   Standard_EXPORT Sweep_NumShape NumShape(const double D) const;
