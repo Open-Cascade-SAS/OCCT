@@ -2958,6 +2958,33 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const int Index)
     }
     else
     {
+      // A reduced face chain can lose its endpoint edge. Recover the current
+      // endpoint only when it is still an edge of the face being intersected.
+      if (E2.IsNull())
+      {
+        if (CV2.IsOnArc() && !CV2.Arc().IsNull())
+        {
+          const TopoDS_Edge& aCandidate = CV2.Arc();
+          bool               isOnFace   = false;
+          for (TopExp_Explorer anEdge(Face[nbface - 1], TopAbs_EDGE); anEdge.More(); anEdge.Next())
+          {
+            if (aCandidate.IsSame(anEdge.Current()))
+            {
+              isOnFace = true;
+              break;
+            }
+          }
+          if (isOnFace)
+          {
+            E2           = aCandidate;
+            Edge[nbface] = aCandidate;
+          }
+        }
+        if (E2.IsNull())
+        {
+          throw Standard_ConstructionError("IntersectionAtEnd: endpoint edge not found");
+        }
+      }
       Hc2 = BRep_Tool::CurveOnSurface(E2, Face[nbface - 1], Ubid, Ubid);
       if (Hc2.IsNull())
       {
