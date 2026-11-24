@@ -148,6 +148,31 @@ public:
     myIsoOnPlane       = false;
   }
 
+  //! Enables isolines on faces with infinite UV bounds, no wires and no usable triangulation.
+  //! These isolines are disabled by default. Finite faces, faces with wires and faces with usable
+  //! triangulation are not affected. When enabled, MaximalParameterValue() limits infinite curves.
+  //! Set this option on the context default drawer to apply it to shape highlights as well.
+  //! Recompute existing presentations after changing this option.
+  //! @param[in] theIsEnabled  whether to draw isolines on unbounded faces
+  Standard_EXPORT void SetIsoOnUnboundedFace(const bool theIsEnabled);
+
+  //! Returns whether isolines on unbounded faces are enabled, including the linked drawer setting.
+  bool IsoOnUnboundedFace() const
+  {
+    return myHasOwnIsoOnUnboundedFace || myLink.IsNull() ? myIsoOnUnboundedFace
+                                                         : myLink->IsoOnUnboundedFace();
+  }
+
+  //! Returns whether this drawer overrides the linked IsoOnUnboundedFace() setting.
+  bool HasOwnIsoOnUnboundedFace() const { return myHasOwnIsoOnUnboundedFace; }
+
+  //! Restores inheritance of IsoOnUnboundedFace(), or its default value when no drawer is linked.
+  void UnsetOwnIsoOnUnboundedFace()
+  {
+    myHasOwnIsoOnUnboundedFace = false;
+    myIsoOnUnboundedFace       = false;
+  }
+
   //! Returns True if the drawing of isos on triangulation is enabled.
   bool IsoOnTriangulation() const
   {
@@ -918,6 +943,8 @@ protected:
   double                  myPreviousDeviationAngle;
   bool                    myIsoOnPlane;
   bool                    myHasOwnIsoOnPlane;
+  bool                    myIsoOnUnboundedFace;       //!< Draw isolines on unbounded faces.
+  bool                    myHasOwnIsoOnUnboundedFace; //!< Override the linked drawer setting.
   bool                    myIsoOnTriangulation;
   bool                    myHasOwnIsoOnTriangulation;
   bool                    myIsAutoTriangulated;
