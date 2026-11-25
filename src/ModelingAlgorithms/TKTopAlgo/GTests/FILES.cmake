@@ -12,6 +12,7 @@ set(OCCT_TKTopAlgo_GTests_FILES
   BRepBuilderAPI_Transform_Test.cxx
   BRepCheck_Face_Test.cxx
   BRepCheck_Test.cxx
+  BRepCheck_Wire_Test.cxx
   BRepLib_CheckCurveOnSurface_Test.cxx
   BRepClass3d_SolidClassifier_Test.cxx
   BRepClass_FaceExplorer_Test.cxx

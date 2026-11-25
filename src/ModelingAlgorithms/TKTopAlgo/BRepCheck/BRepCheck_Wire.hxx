@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <BRepCheck_Status.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
@@ -28,11 +29,22 @@
 #include <BRepCheck_Result.hxx>
 class TopoDS_Wire;
 class TopoDS_Shape;
-class TopoDS_Face;
 class TopoDS_Edge;
 
 class BRepCheck_Wire : public BRepCheck_Result
 {
+
+public:
+  //! Seam edges of a face, listed by Closed2d() on first need and reused by
+  //! the following calls for the same face (compared with IsEqual()).
+  //! The list is not updated if the face is modified, so an instance
+  //! must not outlive one check pass over one face.
+  struct FaceSeamEdges
+  {
+    TopoDS_Face                    Face;
+    NCollection_List<TopoDS_Shape> Edges;
+    bool                           IsDone = false;
+  };
 
 public:
   Standard_EXPORT BRepCheck_Wire(const TopoDS_Wire& W);
@@ -41,6 +53,10 @@ public:
   //! SelfIntersect(), Closed(), Orientation() and
   //! Closed2d until faulty is found
   Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape) override;
+
+  //! Same as InContext(ContextShape), sharing the seam edges of the
+  //! face <ContextShape> with other wires of that face through <theSeamEdges>.
+  Standard_EXPORT void InContext(const TopoDS_Shape& ContextShape, FaceSeamEdges& theSeamEdges);
 
   //! checks that the wire is not empty and "connex".
   //! Called by constructor
@@ -70,6 +86,12 @@ public:
   //! If <Update> is set to true, registers the
   //! status in the list.
   Standard_EXPORT BRepCheck_Status Closed2d(const TopoDS_Face& F, const bool Update = false);
+
+  //! Same as Closed2d(F, Update), taking the seam edges of <F> from
+  //! <theSeamEdges> and filling it when it holds no list for <F>.
+  Standard_EXPORT BRepCheck_Status Closed2d(const TopoDS_Face& F,
+                                            FaceSeamEdges&     theSeamEdges,
+                                            const bool         Update = false);
 
   //! Checks if the oriented edges of the wire are
   //! correctly oriented. An internal call is made to

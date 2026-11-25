@@ -112,10 +112,13 @@ static void CurveDirForParameter(const Geom2dAdaptor_Curve& aC2d,
                                  gp_Vec2d&                  aVec2d);
 
 //  Modified by Sergey KHROMOV - Thu Jun 20 11:21:51 2002 OCC325 Begin
-static bool IsClosed2dForPeriodicFace(const TopoDS_Face&   theFace,
-                                      const gp_Pnt2d&      theP1,
-                                      const gp_Pnt2d&      theP2,
-                                      const TopoDS_Vertex& theVertex);
+static void FillSeamEdges(const TopoDS_Face& theFace, NCollection_List<TopoDS_Shape>& theSeamEdges);
+
+static bool IsClosed2dForPeriodicFace(const TopoDS_Face&                    theFace,
+                                      const NCollection_List<TopoDS_Shape>& theSeamEdges,
+                                      const gp_Pnt2d&                       theP1,
+                                      const gp_Pnt2d&                       theP2,
+                                      const TopoDS_Vertex&                  theVertex);
 
 static bool GetPnt2d(const TopoDS_Vertex& theVertex,
                      const TopoDS_Edge&   theEdge,
@@ -200,6 +203,14 @@ void BRepCheck_Wire::Minimum()
 
 void BRepCheck_Wire::InContext(const TopoDS_Shape& S)
 {
+  FaceSeamEdges aSeamEdges;
+  InContext(S, aSeamEdges);
+}
+
+//=================================================================================================
+
+void BRepCheck_Wire::InContext(const TopoDS_Shape& S, FaceSeamEdges& theSeamEdges)
+{
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
@@ -257,7 +268,7 @@ void BRepCheck_Wire::InContext(const TopoDS_Shape& S)
       {
         break;
       }
-      st = Closed2d(TopoDS::Face(S));
+      st = Closed2d(TopoDS::Face(S), theSeamEdges);
       break;
     }
     default: {
@@ -531,6 +542,16 @@ static bool IsDistanceIn2DTolerance(const BRepAdaptor_Surface& aFaceSurface,
 
 BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace, const bool Update)
 {
+  FaceSeamEdges aSeamEdges;
+  return Closed2d(theFace, aSeamEdges, Update);
+}
+
+//=================================================================================================
+
+BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace,
+                                          FaceSeamEdges&     theSeamEdges,
+                                          const bool         Update)
+{
   occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aHList;
   {
     std::unique_lock<std::mutex> aLock(myMutex, std::defer_lock);
@@ -683,7 +704,15 @@ BRepCheck_Status BRepCheck_Wire::Closed2d(const TopoDS_Face& theFace, const bool
 
   //  Modified by Sergey KHROMOV - Thu Jun 20 10:55:42 2002 OCC325 Begin
   // Check 2d distance for periodic faces with seam edge
-  if (!IsClosed2dForPeriodicFace(theFace, aP_first, aP_last, aFirstVertex))
+  if (!theSeamEdges.IsDone || !theSeamEdges.Face.IsEqual(theFace))
+  {
+    theSeamEdges.IsDone = false;
+    theSeamEdges.Edges.Clear();
+    FillSeamEdges(theFace, theSeamEdges.Edges);
+    theSeamEdges.Face   = theFace;
+    theSeamEdges.IsDone = true;
+  }
+  if (!IsClosed2dForPeriodicFace(theFace, theSeamEdges.Edges, aP_first, aP_last, aFirstVertex))
   {
     aClosedStat = BRepCheck_NotClosed;
     if (Update)
@@ -2069,18 +2098,11 @@ static bool GetPnt2d(const TopoDS_Vertex& theVertex,
 }
 
 //=======================================================================
-// function : Closed2dForPeriodicFace
-// purpose  : Checks the distance between first point of the first edge
-//           and last point of the last edge in 2d for periodic face.
+// function : FillSeamEdges
+// purpose  : Appends the seam edges of theFace to theSeamEdges.
 //=======================================================================
-static bool IsClosed2dForPeriodicFace(const TopoDS_Face&   theFace,
-                                      const gp_Pnt2d&      theP1,
-                                      const gp_Pnt2d&      theP2,
-                                      const TopoDS_Vertex& theVertex)
+static void FillSeamEdges(const TopoDS_Face& theFace, NCollection_List<TopoDS_Shape>& theSeamEdges)
 {
-  // Check 2d distance for periodic faces with seam edge.
-  // Searching for seam edges
-  NCollection_List<TopoDS_Shape>                         aSeamEdges;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> NotSeams;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> ClosedEdges;
   TopExp_Explorer                                        anExp(theFace, TopAbs_EDGE);
@@ -2102,11 +2124,24 @@ static bool IsClosed2dForPeriodicFace(const TopoDS_Face&   theFace,
 
     if (!ClosedEdges.Add(anEdge))
     {
-      aSeamEdges.Append(anEdge);
+      theSeamEdges.Append(anEdge);
     }
   }
+}
 
-  if (aSeamEdges.Extent() == 0)
+//=======================================================================
+// function : Closed2dForPeriodicFace
+// purpose  : Checks the distance between first point of the first edge
+//           and last point of the last edge in 2d for periodic face.
+//=======================================================================
+static bool IsClosed2dForPeriodicFace(const TopoDS_Face&                    theFace,
+                                      const NCollection_List<TopoDS_Shape>& theSeamEdges,
+                                      const gp_Pnt2d&                       theP1,
+                                      const gp_Pnt2d&                       theP2,
+                                      const TopoDS_Vertex&                  theVertex)
+{
+  // Check 2d distance for periodic faces with seam edge.
+  if (theSeamEdges.Extent() == 0)
   {
     return true;
   }
@@ -2119,13 +2154,13 @@ static bool IsClosed2dForPeriodicFace(const TopoDS_Face&   theFace,
   double              aVicinity = std::sqrt(aUResol * aUResol + aVResol * aVResol);
   double              aDistP1P2 = theP1.Distance(theP2);
 
-  NCollection_List<TopoDS_Shape>::Iterator anIter(aSeamEdges);
+  NCollection_List<TopoDS_Shape>::Iterator anIter(theSeamEdges);
 
   for (; anIter.More(); anIter.Next())
   {
     TopoDS_Edge aSeamEdge = TopoDS::Edge(anIter.Value());
 
-    anExp.Init(aSeamEdge, TopAbs_VERTEX);
+    TopExp_Explorer anExp(aSeamEdge, TopAbs_VERTEX);
     for (; anExp.More(); anExp.Next())
     {
       const TopoDS_Shape& aVtx = anExp.Current();
