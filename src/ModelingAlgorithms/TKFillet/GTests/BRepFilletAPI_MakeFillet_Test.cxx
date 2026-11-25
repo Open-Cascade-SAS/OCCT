@@ -17,12 +17,14 @@
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
 #include <ChFi3d_FilletShape.hxx>
@@ -913,4 +915,64 @@ TEST(BRepFilletAPI_MakeFilletTest, CollapsedFreeBoundarySectionSharesEndpoint)
     BRepGProp::SurfaceProperties(aFillet.Shape(), aProperties);
     EXPECT_NEAR(aProperties.Mass(), 803799.0, 803799.0 * 1.e-4) << aShift;
   }
+}
+
+//=================================================================================================
+
+// Two fillets whose stripes share no vertex and hold a different number of surface data.
+// Bug: PerformMoreSurfdata indexed the first stripe with the vertex stripe's index and crashed.
+TEST(BRepFilletAPI_MakeFilletTest, DisjointStripesWithDifferentSurfDataCounts)
+{
+  const gp_Pnt aP0(0.0, 0.0, 0.0), aP1(22.5, 0.0, 0.0), aP2(22.5, 22.5, 0.0), aP3(0.0, 22.5, 0.0);
+  BRepBuilderAPI_MakeWire aWire;
+  aWire.Add(BRepBuilderAPI_MakeEdge(aP0, aP1).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(aP1, aP2).Edge());
+  aWire.Add(BRepBuilderAPI_MakeEdge(aP2, aP3).Edge());
+  aWire.Add(
+    BRepBuilderAPI_MakeEdge(GC_MakeArcOfCircle(aP3, gp_Pnt(-7.5, 11.25, 0.0), aP0).Value()).Edge());
+  const TopoDS_Face  aFace  = BRepBuilderAPI_MakeFace(aWire.Wire()).Face();
+  const TopoDS_Shape aPrism = BRepPrimAPI_MakePrism(aFace, gp_Vec(0.0, 0.0, 5.0)).Shape();
+
+  const auto aNearestEdge = [&aPrism](const gp_Pnt& thePoint) {
+    TopoDS_Edge        aBest;
+    double             aBestDist = 1.e100;
+    const TopoDS_Shape aVertex   = BRepBuilderAPI_MakeVertex(thePoint).Shape();
+    for (TopExp_Explorer anExp(aPrism, TopAbs_EDGE); anExp.More(); anExp.Next())
+    {
+      BRepExtrema_DistShapeShape aDist(aVertex, anExp.Current());
+      if (aDist.IsDone() && aDist.Value() < aBestDist)
+      {
+        aBestDist = aDist.Value();
+        aBest     = TopoDS::Edge(anExp.Current());
+      }
+    }
+    return aBest;
+  };
+  const auto aVolume = [](const TopoDS_Shape& theShape) {
+    GProp_GProps aProps;
+    BRepGProp::VolumeProperties(theShape, aProps);
+    return aProps.Mass();
+  };
+  const TopoDS_Edge aStraight = aNearestEdge(gp_Pnt(22.5, 11.25, 0.0));
+  const TopoDS_Edge anArc     = aNearestEdge(gp_Pnt(-7.5, 11.25, 5.0));
+
+  // Each edge alone fillets fine; remember what each removes.
+  BRepFilletAPI_MakeFillet aStraightOnly(aPrism);
+  aStraightOnly.Add(2.5, aStraight);
+  aStraightOnly.Build();
+  ASSERT_TRUE(aStraightOnly.IsDone());
+  BRepFilletAPI_MakeFillet anArcOnly(aPrism);
+  anArcOnly.Add(2.5, anArc);
+  anArcOnly.Build();
+  ASSERT_TRUE(anArcOnly.IsDone());
+  const double aRemoved =
+    2.0 * aVolume(aPrism) - aVolume(aStraightOnly.Shape()) - aVolume(anArcOnly.Shape());
+
+  BRepFilletAPI_MakeFillet aFillet(aPrism);
+  aFillet.Add(2.5, aStraight);
+  aFillet.Add(2.5, anArc);
+  ASSERT_NO_THROW(aFillet.Build());
+  ASSERT_TRUE(aFillet.IsDone());
+  EXPECT_TRUE(BRepCheck_Analyzer(aFillet.Shape()).IsValid());
+  EXPECT_NEAR(aVolume(aFillet.Shape()), aVolume(aPrism) - aRemoved, 1.e-3);
 }
