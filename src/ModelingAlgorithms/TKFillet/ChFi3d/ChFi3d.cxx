@@ -332,7 +332,7 @@ bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
     return false;
   }
 
-  int aNbNotDone = 0;
+  int        aNbNotDone       = 0;
   const auto isSampleAccepted = [&](const double theParameter) {
     LocalAnalysis_SurfaceContinuity aCont(aCurves.Curve1,
                                           aCurves.Curve2,
