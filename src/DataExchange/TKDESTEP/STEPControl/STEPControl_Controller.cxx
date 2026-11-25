@@ -200,6 +200,14 @@ STEPControl_Controller::STEPControl_Controller()
     Interface_Static::Init("step", "write.step.vertex.mode", '&', "eval Single Vertex");
     Interface_Static::SetIVal("write.step.vertex.mode", 0);
 
+    // Parameter to write characters outside ASCII in strings as raw UTF-8 (default), or with the
+    // control directives \X2\ and \X4\ (ISO 10303-21, 6.4.3.3) that older readers understand.
+    Interface_Static::Init("step", "write.step.string.encoding", 'e', "");
+    Interface_Static::Init("step", "write.step.string.encoding", '&', "enum 0");
+    Interface_Static::Init("step", "write.step.string.encoding", '&', "eval UTF8");
+    Interface_Static::Init("step", "write.step.string.encoding", '&', "eval Escape");
+    Interface_Static::SetIVal("write.step.string.encoding", 0);
+
     // abv 15.11.00: ShapeProcessing
     Interface_Static::Init("XSTEP", "write.step.resource.name", 't', "STEP");
     Interface_Static::Init("XSTEP", "read.step.resource.name", 't', "STEP");

@@ -1965,3 +1965,14 @@ Outlines with the FreeType overlap flag produce separate faces without a Boolean
 `Font_FTFont::GlyphImage()` returns tightly packed, top-down alpha coverage for bitmap glyphs.
 For custom conversion, pass a `Font_GlyphOutline` through `BRepFont_Regularizer`, then use
 `BRepFont_Builder`.
+
+@subsection upgrade_810_step_strings STEP strings with characters outside ASCII
+
+A STEP file whose strings have raw UTF-8 characters is now written with the implementation
+level `'4;1'` in `FILE_DESCRIPTION` instead of `'2;1'`, as ISO 10303-21:2016 requires.
+Files with only ASCII characters are not changed.
+
+To write a file for applications that do not read raw UTF-8, set the new parameter
+`write.step.string.encoding` (`DESTEP_Parameters::WriteStringEncoding`) to `Escape`. The
+characters are then written with the control directives `\X2\` and `\X4\`, and the file keeps
+the level `'2;1'`. The default value `UTF8` writes the strings as before.

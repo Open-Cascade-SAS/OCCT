@@ -13,7 +13,10 @@
 
 #include <DESTEP_Provider.hxx>
 #include <DESTEP_ConfigurationNode.hxx>
+#include <DE_ConfigurationContext.hxx>
 #include <DE_Wrapper.hxx>
+#include <Interface_Static.hxx>
+#include <STEPControl_Controller.hxx>
 
 #include <BOPAlgo_BOP.hxx>
 #include <BOPAlgo_CheckerSI.hxx>
@@ -1058,4 +1061,27 @@ TEST_F(DESTEP_ProviderTest, StepBug_29830_LargeCompoundWriteAndDestruction)
   const std::string aStepContent = aWriteStream.str();
   ASSERT_TRUE(IsValidSTEPContent(aStepContent));
   EXPECT_GT(aStepContent.size(), static_cast<std::size_t>(aShapeCount));
+}
+
+// Test the parameter that chooses how characters outside ASCII are written in strings
+TEST(DESTEP_ParametersTest, WriteStringEncoding_DefaultResourceAndStatic)
+{
+  occ::handle<DESTEP_ConfigurationNode> aNode = new DESTEP_ConfigurationNode();
+  EXPECT_EQ(aNode->InternalParameters.WriteStringEncoding,
+            DESTEP_Parameters::WriteMode_StringEncoding_UTF8);
+  EXPECT_NE(aNode->Save().Search("provider.STEP.OCC.write.string.encoding :\t 0"), -1);
+
+  occ::handle<DE_ConfigurationContext> aContext = new DE_ConfigurationContext();
+  ASSERT_TRUE(aContext->LoadStr("provider.STEP.OCC.write.string.encoding : 1\n"));
+  ASSERT_TRUE(aNode->Load(aContext));
+  EXPECT_EQ(aNode->InternalParameters.WriteStringEncoding,
+            DESTEP_Parameters::WriteMode_StringEncoding_Escape);
+
+  STEPControl_Controller::Init();
+  EXPECT_EQ(Interface_Static::IVal("write.step.string.encoding"), 0);
+  ASSERT_TRUE(Interface_Static::SetCVal("write.step.string.encoding", "Escape"));
+  DESTEP_Parameters aParameters;
+  aParameters.InitFromStatic();
+  EXPECT_EQ(aParameters.WriteStringEncoding, DESTEP_Parameters::WriteMode_StringEncoding_Escape);
+  Interface_Static::SetIVal("write.step.string.encoding", 0);
 }

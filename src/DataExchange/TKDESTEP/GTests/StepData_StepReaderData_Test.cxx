@@ -15,6 +15,7 @@
 #include <Standard_ArrayStreamBuffer.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_Direction.hxx>
+#include <StepVisual_ColourRgb.hxx>
 #include <StepVisual_StyledItem.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -73,5 +74,98 @@ TEST(StepData_StepReaderDataTest, ReadEntity_UnresolvedReferenceDoesNotBindRecor
       }
     }
     EXPECT_EQ(aStyledItems, 1);
+  }
+}
+
+//==================================================================================================
+
+// Line breaks inside a string are not part of its value (ISO 10303-21, 5.2 and 5.6).
+// They must be ignored even when they cut a UTF-8 character, a control directive or a doubled
+// apostrophe or backslash.
+TEST(StepData_StepReaderDataTest, ReadString_LineBreaksInsideStringAreIgnored)
+{
+  // the expected value is a two-character Korean word (U+C544 U+C8FC), written in UTF-8
+  const char* const aCases[][2] = {
+    {"'\xEC\x95\n\x84\xEC\xA3\xBC'", "\xEC\x95\x84\xEC\xA3\xBC"},   // inside a UTF-8 character
+    {"'\xEC\x95\x84\r\n\xEC\xA3\xBC'", "\xEC\x95\x84\xEC\xA3\xBC"}, // between characters, CR LF
+    {"'\\X2\\C544\nC8FC\\X0\\'", "\xEC\x95\x84\xEC\xA3\xBC"},       // between two hex groups
+    {"'\\X2\\C5\n44C8FC\\X0\\'", "\xEC\x95\x84\xEC\xA3\xBC"},       // inside one hex group
+    {"'\\\nX2\\C544C8FC\\X0\\'", "\xEC\x95\x84\xEC\xA3\xBC"},       // after the first backslash
+    {"'\\X2\\C544C8FC\\X\r\n0\\'", "\xEC\x95\x84\xEC\xA3\xBC"},     // inside the closing directive
+    {"'It'\n's'", "It's"},                                          // between doubled apostrophes
+    {"'C:\\\n\\temp'", "C:\\temp"},                                 // between doubled backslashes
+    {"'\n'", ""}};
+  TCollection_AsciiString aText("ISO-10303-21;\nHEADER;\n"
+                                "FILE_DESCRIPTION(('Line breaks'),'2;1');\n"
+                                "FILE_NAME('breaks.stp','',(''),(''),'','','');\n"
+                                "FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));\nENDSEC;\nDATA;\n");
+  for (int anIndex = 0; anIndex < int(sizeof(aCases) / sizeof(aCases[0])); ++anIndex)
+  {
+    aText += "#";
+    aText += anIndex + 1;
+    aText += "=COLOUR_RGB(";
+    aText += aCases[anIndex][0];
+    aText += ",1.,0.,0.);\n";
+  }
+  aText += "ENDSEC;\nEND-ISO-10303-21;\n";
+
+  Standard_ArrayStreamBuffer aBuffer(aText.ToCString(), aText.Length());
+  std::istream               aStream(&aBuffer);
+  STEPControl_Reader         aReader;
+  ASSERT_EQ(aReader.ReadStream("breaks.stp", aStream), IFSelect_RetDone);
+  const occ::handle<StepData_StepModel> aModel = aReader.StepModel();
+  ASSERT_EQ(aModel->NbEntities(), int(sizeof(aCases) / sizeof(aCases[0])));
+  for (int anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
+  {
+    SCOPED_TRACE(anIndex);
+    const occ::handle<StepVisual_ColourRgb> aColour =
+      occ::down_cast<StepVisual_ColourRgb>(aModel->Value(anIndex));
+    ASSERT_FALSE(aColour.IsNull());
+    EXPECT_STREQ(aColour->Name()->ToCString(), aCases[anIndex - 1][1]);
+  }
+}
+
+//==================================================================================================
+
+// A doubled apostrophe followed by a comma or a closing parenthesis is still inside the string.
+// Before, the string ended there, so the name was cut and the next entities were read wrongly.
+TEST(StepData_StepReaderDataTest, ReadString_DoubledApostropheBeforeCommaOrParenthesis)
+{
+  const char* const       aCases[][2] = {{"'Part ''A'', rev 2'", "Part 'A', rev 2"},
+                                         {"'Bolt (size ''M8'')'", "Bolt (size 'M8')"},
+                                         {"'x''),y'", "x'),y"},
+                                         {"''''", "'"},
+                                         {"''", ""},
+                                         {"'a'''", "a'"},
+                                         {"'It''s'", "It's"},
+                                         {"'A''\n,b'", "A',b"},
+                                         {"'last'", "last"}};
+  TCollection_AsciiString aText("ISO-10303-21;\nHEADER;\n"
+                                "FILE_DESCRIPTION(('Apostrophes'),'2;1');\n"
+                                "FILE_NAME('apostrophes.stp','',(''),(''),'','','');\n"
+                                "FILE_SCHEMA(('AUTOMOTIVE_DESIGN'));\nENDSEC;\nDATA;\n");
+  for (int anIndex = 0; anIndex < int(sizeof(aCases) / sizeof(aCases[0])); ++anIndex)
+  {
+    aText += "#";
+    aText += anIndex + 1;
+    aText += "=COLOUR_RGB(";
+    aText += aCases[anIndex][0];
+    aText += ",1.,0.,0.);\n";
+  }
+  aText += "ENDSEC;\nEND-ISO-10303-21;\n";
+
+  Standard_ArrayStreamBuffer aBuffer(aText.ToCString(), aText.Length());
+  std::istream               aStream(&aBuffer);
+  STEPControl_Reader         aReader;
+  ASSERT_EQ(aReader.ReadStream("apostrophes.stp", aStream), IFSelect_RetDone);
+  const occ::handle<StepData_StepModel> aModel = aReader.StepModel();
+  ASSERT_EQ(aModel->NbEntities(), int(sizeof(aCases) / sizeof(aCases[0])));
+  for (int anIndex = 1; anIndex <= aModel->NbEntities(); ++anIndex)
+  {
+    SCOPED_TRACE(anIndex);
+    const occ::handle<StepVisual_ColourRgb> aColour =
+      occ::down_cast<StepVisual_ColourRgb>(aModel->Value(anIndex));
+    ASSERT_FALSE(aColour.IsNull());
+    EXPECT_STREQ(aColour->Name()->ToCString(), aCases[anIndex - 1][1]);
   }
 }

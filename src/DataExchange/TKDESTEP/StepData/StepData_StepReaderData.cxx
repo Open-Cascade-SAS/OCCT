@@ -124,6 +124,11 @@ static int convertCharacterTo16bit(const char16_t theCharacter)
 
 void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiString>& theVal) const
 {
+  // Line breaks are not part of the string (ISO 10303-21, 5.2 and 5.6) and may be anywhere in it,
+  // even between the bytes of one UTF-8 character or inside a control directive.
+  // Remove them first, before the text is converted and the directives are decoded.
+  theVal->RemoveAll('\n');
+  theVal->RemoveAll('\r');
   if (theVal->Length() == 2)
   {
     theVal->Clear();
@@ -336,13 +341,6 @@ void StepData_StepReaderData::cleanText(const occ::handle<TCollection_HAsciiStri
           }
         }
       }
-    }
-    if (aChar == '\n' || aChar == '\r')
-    {
-      aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd);
-      aResStringSize--;
-      aResString.Trunc(aResStringSize);
-      aStringInd--;
     }
   }
   theVal->Clear();
