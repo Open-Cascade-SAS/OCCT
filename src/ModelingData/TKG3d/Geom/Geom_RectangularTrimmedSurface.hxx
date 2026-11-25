@@ -67,6 +67,7 @@ public:
   //! S is not periodic in the VDirection and V1 or V2 are out of the
   //! bounds of S.
   //! U1 = U2 or V1 = V2
+  //! U1, U2, V1 or V2 is not finite
   Standard_EXPORT Geom_RectangularTrimmedSurface(const occ::handle<Geom_Surface>& S,
                                                  const double                     U1,
                                                  const double                     U2,
@@ -96,6 +97,7 @@ public:
   //! S is not periodic in the considered parametric direction and
   //! Param1 or Param2 are out of the bounds of S.
   //! Param1 = Param2
+  //! Param1 or Param2 is not finite
   Standard_EXPORT Geom_RectangularTrimmedSurface(const occ::handle<Geom_Surface>& S,
                                                  const double                     Param1,
                                                  const double                     Param2,
@@ -119,6 +121,7 @@ public:
   //! The BasisSurface is not periodic in the VDirection and V1 or V2
   //! are out of the bounds of the BasisSurface.
   //! U1 = U2 or V1 = V2
+  //! U1, U2, V1 or V2 is not finite
   Standard_EXPORT void SetTrim(const double U1,
                                const double U2,
                                const double V1,
@@ -145,6 +148,7 @@ public:
   //! The BasisSurface is not periodic in the considered direction and
   //! Param1 or Param2 are out of the bounds of the BasisSurface.
   //! Param1 = Param2
+  //! Param1 or Param2 is not finite
   Standard_EXPORT void SetTrim(const double Param1,
                                const double Param2,
                                const bool   UTrim,
