@@ -332,24 +332,11 @@ bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
     return false;
   }
 
-  const int aNbSamples1 = surfaceSampleCount(theFace1);
-  const int aNbSamples2 = theFace1.IsSame(theFace2) ? aNbSamples1 : surfaceSampleCount(theFace2);
-  const int aNbSamples  = std::max(aNbSamples1, aNbSamples2);
-
-  const double aDelta     = (aLast - aFirst) / (aNbSamples - 1);
-  double       aPar       = aFirst;
-  int          aNbNotDone = 0;
-
-  for (int aSample = 1; aSample <= aNbSamples; ++aSample, aPar += aDelta)
-  {
-    if (aSample == aNbSamples)
-    {
-      aPar = aLast;
-    }
-
+  int        aNbNotDone       = 0;
+  const auto isSampleAccepted = [&](const double theParameter) {
     LocalAnalysis_SurfaceContinuity aCont(aCurves.Curve1,
                                           aCurves.Curve2,
-                                          aPar,
+                                          theParameter,
                                           aSurf1,
                                           aSurf2,
                                           theOrder,
@@ -360,16 +347,31 @@ bool ChFi3d::IsTangentFaces(const TopoDS_Edge&  theEdge,
                                           0.1);
     if (!aCont.IsDone())
     {
-      if (theOrder == GeomAbs_C2 && aCont.StatusError() == LocalAnalysis_NullSecondDerivative)
+      if (theOrder != GeomAbs_C2 || aCont.StatusError() != LocalAnalysis_NullSecondDerivative)
       {
-        continue;
+        ++aNbNotDone;
       }
-
-      aNbNotDone++;
-      continue;
+      return true;
     }
+    return theOrder == GeomAbs_G1 ? aCont.IsG1() : aCont.IsG2();
+  };
 
-    if (!(theOrder == GeomAbs_G1 ? aCont.IsG1() : aCont.IsG2()))
+  // The first sample does not depend on the sample count. Reject sharp edges before
+  // constructing the topology tools, which scan the boundaries of both faces.
+  if (!isSampleAccepted(aFirst))
+  {
+    return false;
+  }
+
+  const int aNbSamples1 = surfaceSampleCount(theFace1);
+  const int aNbSamples2 = theFace1.IsSame(theFace2) ? aNbSamples1 : surfaceSampleCount(theFace2);
+  const int aNbSamples  = std::max(aNbSamples1, aNbSamples2);
+
+  const double aDelta = (aLast - aFirst) / (aNbSamples - 1);
+  double       aPar   = aFirst + aDelta;
+  for (int aSample = 2; aSample <= aNbSamples; ++aSample, aPar += aDelta)
+  {
+    if (!isSampleAccepted(aSample == aNbSamples ? aLast : aPar))
     {
       return false;
     }

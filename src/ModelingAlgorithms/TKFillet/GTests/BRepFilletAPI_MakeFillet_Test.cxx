@@ -25,6 +25,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
+#include <ChFi3d.hxx>
 #include <ChFi3d_FilletShape.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -40,11 +41,16 @@
 #include <TopExp.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Ax1.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GProp_GProps.hxx>
+#include <gp.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
 #include <ShapeFix_Shape.hxx>
@@ -60,6 +66,7 @@
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Dir2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>
@@ -407,6 +414,36 @@ TEST(BRepFilletAPI_MakeFilletTest, Issue1177_FilletAllEdgesFlatBox_SucceedsWitho
   }
   EXPECT_LE(aMaxTolerance, 1.01 * Precision::Confusion())
     << "Fillet construction must not hide inconsistent edge parameterization with tolerance";
+}
+
+TEST(ChFi3dTest, TangencyAtBothEndsDoesNotHideInteriorDiscontinuity)
+{
+  const occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp::XOY());
+  const TopoDS_Face aPlaneFace = BRepBuilderAPI_MakeFace(aPlane, 0.0, 1.0, 0.0, 1.0, 1.0e-7);
+  const TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(1.0, 0.0, 0.0));
+  const occ::handle<Geom2d_Line> aPCurve = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  BRep_Builder                   aBuilder;
+  aBuilder.UpdateEdge(anEdge, aPCurve, aPlaneFace, 1.0e-7);
+  aBuilder.Range(anEdge, aPlaneFace, 0.0, 1.0);
+
+  for (double aHeight : {0.0, 1.0})
+  {
+    NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 2);
+    for (int aRow = 1; aRow <= 3; ++aRow)
+    {
+      const double aX = (aRow - 1) * 0.5;
+      aPoles.SetValue(aRow, 1, gp_Pnt(aX, 0.0, 0.0));
+      aPoles.SetValue(aRow, 2, gp_Pnt(aX, 1.0, aRow == 2 ? aHeight : 0.0));
+    }
+    // Along v = 0 this surface meets the plane tangentially at u = 0 and 1.
+    // A raised middle pole makes the surfaces meet at an angle in between.
+    const occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles);
+    const TopoDS_Face                     aFace    = BRepBuilderAPI_MakeFace(aSurface, 1.0e-7);
+    aBuilder.UpdateEdge(anEdge, aPCurve, aFace, 1.0e-7);
+    aBuilder.Range(anEdge, aFace, 0.0, 1.0);
+    ASSERT_EQ(BRep_Tool::Continuity(anEdge, aPlaneFace, aFace), GeomAbs_C0);
+    EXPECT_EQ(ChFi3d::IsTangentFaces(anEdge, aPlaneFace, aFace), aHeight == 0.0);
+  }
 }
 
 TEST(BRepFilletAPI_MakeFilletTest, FilletOneEdge)
