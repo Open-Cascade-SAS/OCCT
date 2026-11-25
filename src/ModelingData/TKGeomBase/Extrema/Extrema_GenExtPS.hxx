@@ -173,9 +173,9 @@ private:
   occ::handle<NCollection_HArray1<double>>                myUParams;
   occ::handle<NCollection_HArray1<double>>                myVParams;
   NCollection_Array2<Extrema_POnSurfParams>               myFacePntParams;
-  NCollection_Array2<Extrema_POnSurfParams>               myUEdgePntParams;
-  NCollection_Array2<Extrema_POnSurfParams>               myVEdgePntParams;
-  Extrema_POnSurfParams                                   myGridParam;
+  NCollection_Array1<Extrema_POnSurfParams> myUEdgeRow;  //!< UEdges of a row of the grid
+  NCollection_Array2<Extrema_POnSurfParams> myVEdgeRows; //!< VEdges of two rows of the grid
+  Extrema_POnSurfParams                     myGridParam;
 };
 
 #endif // _Extrema_GenExtPS_HeaderFile

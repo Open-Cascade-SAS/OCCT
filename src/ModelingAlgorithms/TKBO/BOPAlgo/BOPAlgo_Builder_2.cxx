@@ -77,7 +77,8 @@ public:
 
   BOPAlgo_PairOfShapeBoolean()
       : BOPAlgo_ParallelAlgo(),
-        myFlag(false)
+        myFlag(false),
+        myGroup(-1)
   {
   }
 
@@ -92,6 +93,12 @@ public:
 
   //
   bool& Flag() { return myFlag; }
+
+  //! Sets the index of the group of faces the shapes belong to
+  void SetGroup(const int theGroup) { myGroup = theGroup; }
+
+  //! Returns the index of the group of faces the shapes belong to
+  int Group() const { return myGroup; }
 
   //
   void SetContext(const occ::handle<IntTools_Context>& aContext) { myContext = aContext; }
@@ -116,6 +123,7 @@ public:
   //
 protected:
   bool                          myFlag;
+  int                           myGroup;
   TopoDS_Shape                  myShape1;
   TopoDS_Shape                  myShape2;
   occ::handle<IntTools_Context> myContext;
@@ -797,6 +805,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
         aPSB.Shape1()                    = aF1;
         aPSB.Shape2()                    = aF2;
         aPSB.SetFuzzyValue(myFuzzyValue);
+        aPSB.SetGroup(i);
       }
     }
   }
@@ -810,8 +819,19 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
     aVPSB.ChangeValue(iPSB).SetProgressRange(aPSParallel.Next());
   }
   //================================================================
-  // Perform analysis
-  BOPTools_Parallel::Perform(myRunParallel, aVPSB, myContext);
+  // Perform analysis, grouping the pairs by their set of faces, so that the data
+  // of the faces is cached in one thread context only, and released once the set is done.
+  BOPTools_Parallel::PerformGroupedByKey(
+    myRunParallel,
+    aVPSB,
+    [&aVPSB](const int theIndex) { return aVPSB(theIndex).Group(); },
+    [&anESetFaces](const occ::handle<IntTools_Context>& theCtx, const int theSet) {
+      for (const TopoDS_Shape& aF : anESetFaces.FindFromIndex(theSet))
+      {
+        theCtx->ClearFaceCache(TopoDS::Face(aF));
+      }
+    },
+    myContext);
   //================================================================
   if (UserBreak(aPSOuter))
   {

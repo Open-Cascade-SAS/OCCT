@@ -142,6 +142,12 @@ public:
     {
       AddError(new BOPAlgo_AlertIntersectionFailed);
     }
+    if (hasTrsf && !myContext.IsNull())
+    {
+      // The moved face has its own location, which no other intersection uses:
+      // release the data cached for it, as it cannot be used again.
+      myContext->ClearFaceCache(myFace);
+    }
     myFace = aFace;
     myEdge = anEdge;
 
@@ -168,6 +174,31 @@ protected:
 //
 //=======================================================================
 typedef NCollection_DynamicArray<BOPAlgo_EdgeFace> BOPAlgo_VectorOfEdgeFace;
+
+namespace
+{
+//! Performs the Edge/Face intersections grouped by face, so that the data of each face
+//! (projector, classifier, localization data) is cached in one thread context only,
+//! and released once the face is done (see BOPTools_Parallel::PerformGroupedByKey()).
+void performEdgeFaceByFace(const bool                     theRunParallel,
+                           BOPAlgo_VectorOfEdgeFace&      theVEdgeFace,
+                           const BOPDS_DS&                theDS,
+                           occ::handle<IntTools_Context>& theContext)
+{
+  BOPTools_Parallel::PerformGroupedByKey(
+    theRunParallel,
+    theVEdgeFace,
+    [&theVEdgeFace](const int theIndex) {
+      int nE, nF;
+      theVEdgeFace(theIndex).Indices(nE, nF);
+      return nF;
+    },
+    [&theDS](const occ::handle<IntTools_Context>& theCtx, const int theFace) {
+      theCtx->ClearFaceCache(TopoDS::Face(theDS.Shape(theFace)));
+    },
+    theContext);
+}
+} // namespace
 
 //=================================================================================================
 
@@ -323,7 +354,7 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
     aEdgeFace.SetProgressRange(aPS.Next());
   }
   //=================================================================
-  BOPTools_Parallel::Perform(myRunParallel, aVEdgeFace, myContext);
+  performEdgeFaceByFace(myRunParallel, aVEdgeFace, *myDS, myContext);
   //=================================================================
   if (UserBreak(aPSOuter))
   {
@@ -336,6 +367,8 @@ void BOPAlgo_PaveFiller::PerformEF(const Message_ProgressRange& theRange)
     {
       return;
     }
+    // The faces come in no particular order: keep their projectors in a bounded number
+    BOPAlgo_Tools::LimitCachedProjectors(myContext);
     BOPAlgo_EdgeFace& aEdgeFace = aVEdgeFace(k);
     if (!aEdgeFace.IsDone() || aEdgeFace.HasErrors())
     {
@@ -918,6 +951,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
       continue;
     }
 
+    BOPAlgo_Tools::LimitCachedProjectors(myContext);
     const TopoDS_Face&    aF  = TopoDS::Face(aSI.Shape());
     const BOPDS_FaceInfo& aFI = myDS->FaceInfo(nF);
     // Vertices of the face
@@ -1135,7 +1169,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(
     aEdgeFace.SetProgressRange(aPS.Next());
   }
   // Perform intersection of the found pairs
-  BOPTools_Parallel::Perform(myRunParallel, aVEdgeFace, myContext);
+  performEdgeFaceByFace(myRunParallel, aVEdgeFace, *myDS, myContext);
   if (UserBreak(aPSOuter))
   {
     return;

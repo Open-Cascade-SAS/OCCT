@@ -598,8 +598,8 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     }
 
     myFacePntParams.Resize(0, myusample, 0, myvsample, false);
-    myUEdgePntParams.Resize(1, myusample - 1, 1, myvsample, false);
-    myVEdgePntParams.Resize(1, myusample, 1, myvsample - 1, false);
+    myUEdgeRow.Resize(1, myvsample, false);
+    myVEdgeRows.Resize(0, 1, 1, myvsample - 1, false);
 
     // Fill boundary with negative square distance.
     // It is used for computation of Maximum.
@@ -640,33 +640,22 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     // Step 2. Compute distances to edges.
     // Assume UEdge(i, j) = { Point(i, j); Point(i + 1, j    ) }
     // Assume VEdge(i, j) = { Point(i, j); Point(i,     j + 1) }
-    for (int NoU = 1; NoU <= myusample; NoU++)
-    {
-      for (int NoV = 1; NoV <= myvsample; NoV++)
+    // The faces of the row i of the grid (step 3) need only the edges UEdge(i, *),
+    // VEdge(i, *) and VEdge(i + 1, *), so the edges are computed row by row, keeping
+    // one row of UEdges and two rows of VEdges instead of the whole grid of them.
+    const auto computeVEdges = [&](const int theNoU) {
+      for (int NoV = 1; NoV < myvsample; NoV++)
       {
-        const Extrema_POnSurfParams& aParam0 = myPoints.Value(NoU, NoV);
-
-        if (NoU < myusample)
-        {
-          // Compute parameters to UEdge.
-          const Extrema_POnSurfParams& aParam1 = myPoints.Value(NoU + 1, NoV);
-          const Extrema_POnSurfParams& anEdgeParam =
-            ComputeEdgeParameters(true, aParam0, aParam1, thePoint, aDiffTol);
-
-          myUEdgePntParams.SetValue(NoU, NoV, anEdgeParam);
-        }
-
-        if (NoV < myvsample)
-        {
-          // Compute parameters to VEdge.
-          const Extrema_POnSurfParams& aParam1 = myPoints.Value(NoU, NoV + 1);
-          const Extrema_POnSurfParams& anEdgeParam =
-            ComputeEdgeParameters(false, aParam0, aParam1, thePoint, aDiffTol);
-
-          myVEdgePntParams.SetValue(NoU, NoV, anEdgeParam);
-        }
+        myVEdgeRows.SetValue(theNoU % 2,
+                             NoV,
+                             ComputeEdgeParameters(false,
+                                                   myPoints.Value(theNoU, NoV),
+                                                   myPoints.Value(theNoU, NoV + 1),
+                                                   thePoint,
+                                                   aDiffTol));
       }
-    }
+    };
+    computeVEdges(1);
 
     // Step 3. Compute distances to faces.
     // Assume myFacePntParams(i, j) =
@@ -679,12 +668,23 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
 
     for (int NoU = 1; NoU < myusample; NoU++)
     {
+      for (int NoV = 1; NoV <= myvsample; NoV++)
+      {
+        myUEdgeRow.SetValue(NoV,
+                            ComputeEdgeParameters(true,
+                                                  myPoints.Value(NoU, NoV),
+                                                  myPoints.Value(NoU + 1, NoV),
+                                                  thePoint,
+                                                  aDiffTol));
+      }
+      computeVEdges(NoU + 1);
+
       for (int NoV = 1; NoV < myvsample; NoV++)
       {
-        const Extrema_POnSurfParams& aUE0 = myUEdgePntParams.Value(NoU, NoV);
-        const Extrema_POnSurfParams& aUE1 = myUEdgePntParams.Value(NoU, NoV + 1);
-        const Extrema_POnSurfParams& aVE0 = myVEdgePntParams.Value(NoU, NoV);
-        const Extrema_POnSurfParams& aVE1 = myVEdgePntParams.Value(NoU + 1, NoV);
+        const Extrema_POnSurfParams& aUE0 = myUEdgeRow.Value(NoV);
+        const Extrema_POnSurfParams& aUE1 = myUEdgeRow.Value(NoV + 1);
+        const Extrema_POnSurfParams& aVE0 = myVEdgeRows.Value(NoU % 2, NoV);
+        const Extrema_POnSurfParams& aVE1 = myVEdgeRows.Value((NoU + 1) % 2, NoV);
 
         aSqrDist01 = aUE0.Value().SquareDistance(aUE1.Value());
         aDiffDist  = std::abs(aUE0.GetSqrDistance() - aUE1.GetSqrDistance());

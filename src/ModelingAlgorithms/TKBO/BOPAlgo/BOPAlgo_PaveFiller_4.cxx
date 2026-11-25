@@ -38,8 +38,103 @@
 #include <IntTools_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Integer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
+
+namespace
+{
+//! Answers, for many vertex/face pairs, whether the vertex is a sub-shape of the face and whether
+//! it already interferes with a sub-shape of the face, as BOPDS_DS::IsSubShape() and
+//! BOPDS_DS::HasInterfShapeSubShapes() do, but without scanning the sub-shapes of the face for
+//! each pair: a face with many edges (e.g. imprinted by many solids) has a box overlapping many
+//! vertices, which made these scans quadratic in the number of vertices.
+class VertexFaceFilter
+{
+public:
+  VertexFaceFilter(BOPDS_DS& theDS)
+      : myDS(theDS)
+  {
+    // Interferences of the vertices with any shape
+    for (NCollection_Map<BOPDS_Pair>::Iterator anIt(theDS.Interferences()); anIt.More();
+         anIt.Next())
+    {
+      int n1, n2;
+      anIt.Value().Indices(n1, n2);
+      addPartner(n1, n2);
+      addPartner(n2, n1);
+    }
+  }
+
+  //! Returns true if the vertex is a sub-shape of the face
+  bool IsSubShape(const int theV, const int theF)
+  {
+    const NCollection_Map<int>* aSubShapes = faceSubShapes(theF);
+    return aSubShapes ? aSubShapes->Contains(theV) : myDS.IsSubShape(theV, theF);
+  }
+
+  //! Returns true if the vertex interferes with a sub-shape of the face
+  bool HasInterfWithSubShapes(const int theV, const int theF)
+  {
+    const NCollection_Map<int>* aSubShapes = faceSubShapes(theF);
+    if (!aSubShapes)
+    {
+      return myDS.HasInterfShapeSubShapes(theV, theF);
+    }
+    const NCollection_List<int>* aPartners = myVPartners.Seek(theV);
+    if (aPartners)
+    {
+      for (const int aPartner : *aPartners)
+      {
+        if (aSubShapes->Contains(aPartner))
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+private:
+  void addPartner(const int theV, const int thePartner)
+  {
+    if (myDS.ShapeInfo(theV).ShapeType() != TopAbs_VERTEX)
+    {
+      return;
+    }
+    NCollection_List<int>* aPartners = myVPartners.ChangeSeek(theV);
+    if (!aPartners)
+    {
+      aPartners = myVPartners.Bound(theV, NCollection_List<int>());
+    }
+    aPartners->Append(thePartner);
+  }
+
+  //! Returns the sub-shapes of the face as a map, or null for a face with few sub-shapes
+  const NCollection_Map<int>* faceSubShapes(const int theF)
+  {
+    const NCollection_List<int>& aList = myDS.ShapeInfo(theF).SubShapes();
+    if (aList.Extent() < 64)
+    {
+      return nullptr;
+    }
+    NCollection_Map<int>* aMap = myFSubShapes.ChangeSeek(theF);
+    if (!aMap)
+    {
+      aMap = myFSubShapes.Bound(theF, NCollection_Map<int>(aList.Extent()));
+      for (const int aSubShape : aList)
+      {
+        aMap->Add(aSubShape);
+      }
+    }
+    return aMap;
+  }
+
+  BOPDS_DS&                                       myDS;
+  NCollection_DataMap<int, NCollection_List<int>> myVPartners;
+  NCollection_DataMap<int, NCollection_Map<int>>  myFSubShapes;
+};
+} // namespace
 
 //=================================================================================================
 
@@ -187,6 +282,8 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
   // Avoid repeated intersection of the same vertex with face in case
   // the group of vertices formed a single SD vertex
   NCollection_DataMap<BOPDS_Pair, NCollection_Map<int>> aMVFPairs;
+  // No interference is added in the loop below, so the filter can index them before it
+  VertexFaceFilter aFilter(*myDS);
   for (; myIterator->More(); myIterator->Next())
   {
     if (UserBreak(aPSOuter))
@@ -195,7 +292,7 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     }
     myIterator->Value(nV, nF);
     //
-    if (myDS->IsSubShape(nV, nF))
+    if (aFilter.IsSubShape(nV, nF))
     {
       continue;
     }
@@ -206,7 +303,7 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     }
     //
     myDS->ChangeFaceInfo(nF);
-    if (myDS->HasInterfShapeSubShapes(nV, nF))
+    if (aFilter.HasInterfWithSubShapes(nV, nF))
     {
       continue;
     }
@@ -248,7 +345,20 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
     aVertexFace.SetProgressRange(aPS.Next());
   }
   //================================================================
-  BOPTools_Parallel::Perform(myRunParallel, aVVF, myContext);
+  // Group the intersections by face, so that the data of each face (projector, classifier)
+  // is cached in one thread context only, and released once the face is done.
+  BOPTools_Parallel::PerformGroupedByKey(
+    myRunParallel,
+    aVVF,
+    [&aVVF](const int theIndex) {
+      int nVx, nFx;
+      aVVF(theIndex).Indices(nVx, nFx);
+      return nFx;
+    },
+    [this](const occ::handle<IntTools_Context>& theCtx, const int theFace) {
+      theCtx->ClearFaceCache(TopoDS::Face(myDS->Shape(theFace)));
+    },
+    myContext);
   //================================================================
   if (UserBreak(aPSOuter))
   {

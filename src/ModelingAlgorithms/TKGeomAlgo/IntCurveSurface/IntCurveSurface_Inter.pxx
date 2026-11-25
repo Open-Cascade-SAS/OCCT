@@ -43,6 +43,9 @@
 
 #include "IntCurveSurface_InterUtils.pxx"
 
+#include <cstddef>
+#include <type_traits>
+
 namespace IntCurveSurface_InterImpl
 {
 
@@ -528,7 +531,8 @@ template <typename CurveType,
           typename PolyhedronType,
           typename AppendIntAnaFunc,
           typename InternalPerformPolyFunc,
-          typename AppendFunc>
+          typename AppendFunc,
+          typename PolyhedronProviderFunc = std::nullptr_t>
 void PerformConicSurfLine(const gp_Lin&           theLine,
                           const CurveType&        theCurve,
                           const SurfaceType&      theSurface,
@@ -538,7 +542,8 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
                           const double            theV2,
                           AppendIntAnaFunc        theAppendIntAna,
                           InternalPerformPolyFunc theInternalPerformPoly,
-                          AppendFunc              theAppend)
+                          AppendFunc              theAppend,
+                          PolyhedronProviderFunc  theProvidePolyhedron = nullptr)
 {
   GeomAbs_SurfaceType aSurfaceType   = SurfaceTool::GetType(theSurface);
   bool                isAnaProcessed = true;
@@ -687,22 +692,47 @@ void PerformConicSurfLine(const gp_Lin&           theLine,
       nbsv = 20;
     }
 
-    PolyhedronType polyhedron(theSurface, nbsu, nbsv, U1new, V1new, U2new, V2new);
-    Intf_Tool      bndTool;
-    Bnd_Box        boxLine;
-    bndTool.LinBox(theLine, polyhedron.Bounding(), boxLine);
+    auto aPerformPolyhedron = [&](const PolyhedronType& polyhedron) {
+      Intf_Tool bndTool;
+      Bnd_Box   boxLine;
+      bndTool.LinBox(theLine, polyhedron.Bounding(), boxLine);
 
-    for (int nbseg = 1; nbseg <= bndTool.NbSegments(); nbseg++)
-    {
-      double pinf = bndTool.BeginParam(nbseg);
-      double psup = bndTool.EndParam(nbseg);
-      if ((psup - pinf) < 1e-10)
+      for (int nbseg = 1; nbseg <= bndTool.NbSegments(); nbseg++)
       {
-        pinf -= 1e-10;
-        psup += 1e-10;
+        double pinf = bndTool.BeginParam(nbseg);
+        double psup = bndTool.EndParam(nbseg);
+        if ((psup - pinf) < 1e-10)
+        {
+          pinf -= 1e-10;
+          psup += 1e-10;
+        }
+        PolygonType polygon(theCurve, pinf, psup, 2);
+        theInternalPerformPoly(theCurve,
+                               polygon,
+                               theSurface,
+                               polyhedron,
+                               U1new,
+                               V1new,
+                               U2new,
+                               V2new);
       }
-      PolygonType polygon(theCurve, pinf, psup, 2);
-      theInternalPerformPoly(theCurve, polygon, theSurface, polyhedron, U1new, V1new, U2new, V2new);
+    };
+
+    // The polyhedron depends only on the surface, its discretization and bounds:
+    // it may be provided by a cache shared by the intersections of many lines with the surface
+    const PolyhedronType* aCachedPolyhedron = nullptr;
+    if constexpr (!std::is_same_v<PolyhedronProviderFunc, std::nullptr_t>)
+    {
+      aCachedPolyhedron = theProvidePolyhedron(nbsu, nbsv, U1new, V1new, U2new, V2new);
+    }
+    if (aCachedPolyhedron != nullptr)
+    {
+      aPerformPolyhedron(*aCachedPolyhedron);
+    }
+    else
+    {
+      PolyhedronType polyhedron(theSurface, nbsu, nbsv, U1new, V1new, U2new, V2new);
+      aPerformPolyhedron(polyhedron);
     }
   }
 }

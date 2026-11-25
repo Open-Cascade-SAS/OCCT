@@ -28,6 +28,7 @@ set(OCCT_TKGeomAlgo_GTests_FILES
   GeomPlate_BuildPlateSurface_Test.cxx
   Plate_Plate_Test.cxx
   IntCurveSurface_IntersectionPoint_Test.cxx
+  IntCurveSurface_PolyhedronCache_Test.cxx
   IntCurveSurface_InterUtils_Test.cxx
   IntCurveSurface_ThePolyhedronOfHInter_Test.cxx
   IntCurveSurface_ThePolygonOfHInter_Test.cxx

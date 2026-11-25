@@ -25,6 +25,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   Extrema_ExtCS_Test.cxx
   Extrema_ExtPC_Test.cxx
   Extrema_GlobOptFuncCC_Test.cxx
+  Extrema_GenExtPS_Test.cxx
   Extrema_GenLocateExtPS_Test.cxx
   Extrema_ExtSS_Test.cxx
   ExtremaPC_BezierCurve_Test.cxx

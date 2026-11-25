@@ -43,6 +43,7 @@ class gp_Parab;
 class gp_Hypr;
 class IntAna_IntConicQuad;
 class Bnd_Box;
+class IntCurveSurface_PolyhedronCache;
 
 class IntCurveSurface_HInter : public IntCurveSurface_Intersection
 {
@@ -51,6 +52,15 @@ public:
 
   //! Empty Constructor
   Standard_EXPORT IntCurveSurface_HInter();
+
+  //! Sets the cache of the polyhedra of the surface used for the intersections of lines
+  //! with a surface that is not analytic (no cache by default). The intersections of many
+  //! lines with ONE surface may share the cache to build each polyhedron once, with the same
+  //! results. The cache is not owned and must be used with one surface only.
+  void SetPolyhedronCache(IntCurveSurface_PolyhedronCache* theCache)
+  {
+    myPolyhedronCache = theCache;
+  }
 
   //! Compute the Intersection between the curve and the
   //! surface
@@ -205,6 +215,8 @@ private:
                                    const NCollection_Array1<double>&     Y,
                                    const NCollection_Array1<double>&     Z,
                                    NCollection_Array1<double>&           Bounds);
+
+  IntCurveSurface_PolyhedronCache* myPolyhedronCache = nullptr;
 };
 
 #endif // _IntCurveSurface_HInter_HeaderFile
