@@ -219,13 +219,24 @@ public:
           }
 
           bool orientofwires = performwire;
+          // the seam edges of the face are listed once for all its wires
+          BRepCheck_Wire::FaceSeamEdges aSeamEdges;
           for (exp.Init(aShape, TopAbs_WIRE); exp.More(); exp.Next())
           {
             const occ::handle<BRepCheck_Result>& aFaceWireRes = myMap.FindFromKey(exp.Current());
             try
             {
               OCC_CATCH_SIGNALS
-              aFaceWireRes->InContext(aShape);
+              const occ::handle<BRepCheck_Wire> aWireRes =
+                occ::down_cast<BRepCheck_Wire>(aFaceWireRes);
+              if (aWireRes.IsNull())
+              {
+                aFaceWireRes->InContext(aShape);
+              }
+              else
+              {
+                aWireRes->InContext(aShape, aSeamEdges);
+              }
 
               if (orientofwires)
               {
