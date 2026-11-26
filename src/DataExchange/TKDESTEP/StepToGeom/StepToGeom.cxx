@@ -1740,10 +1740,6 @@ occ::handle<Geom_Line> StepToGeom::MakeLine(const occ::handle<StepGeom_Line>& SC
     occ::handle<Geom_VectorWithMagnitude> D = MakeVectorWithMagnitude(SC->Dir(), theLocalFactors);
     if (!D.IsNull())
     {
-      if (D->Vec().SquareMagnitude() < Precision::Confusion() * Precision::Confusion())
-      {
-        return nullptr;
-      }
       const gp_Dir V(D->Vec());
       return new Geom_Line(P->Pnt(), V);
     }
