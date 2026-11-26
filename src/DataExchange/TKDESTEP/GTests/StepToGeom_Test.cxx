@@ -17,7 +17,12 @@
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_Direction.hxx>
+#include <StepGeom_Line.hxx>
+#include <StepGeom_Vector.hxx>
 #include <StepToGeom.hxx>
+#include <gp_Lin.hxx>
+#include <Geom_Line.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <gtest/gtest.h>
@@ -240,4 +245,28 @@ TEST(StepToGeomTest, ValidatesRationalWeights)
 TEST(StepToGeomTest, ConvertsValidBSplineCurve)
 {
   EXPECT_FALSE(StepToGeom::MakeBSplineCurve(createLinearCurve(0.0)).IsNull());
+}
+
+TEST(StepToGeomTest, MakeLine_SmallMagnitudeOfVector_IsAllowed)
+{
+  const occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("curve");
+
+  occ::handle<StepGeom_CartesianPoint> aPoint = new StepGeom_CartesianPoint();
+  aPoint->Init3D(aName, 0.0, 0.0, 0.0);
+
+  occ::handle<StepGeom_Direction> aDir = new StepGeom_Direction();
+  aDir->Init3D(aName, 1.0, 0.0, 0.0);
+
+  occ::handle<StepGeom_Vector> aVector = new StepGeom_Vector();
+  // Magnitude < Precision::Confusion() should be allowed
+  aVector->Init(aName, aDir, 1e-8);
+
+  occ::handle<StepGeom_Line> aLine = new StepGeom_Line();
+  aLine->Init(aName, aPoint, aVector);
+
+  occ::handle<Geom_Line> aGeomLine = StepToGeom::MakeLine(aLine);
+  ASSERT_FALSE(aGeomLine.IsNull());
+
+  gp_Lin aLin = aGeomLine->Lin();
+  EXPECT_NEAR(aLin.Direction().X(), 1.0, 1e-07);
 }
