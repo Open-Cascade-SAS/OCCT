@@ -10,6 +10,7 @@ set(OCCT_TKShHealing_GTests_FILES
   ShapeFix_EdgeConnect_Test.cxx
   ShapeFix_Face_Test.cxx
   ShapeFix_FaceConnect_Test.cxx
+  ShapeFix_IntersectionTool_Test.cxx
   ShapeFix_Shape_Test.cxx
   ShapeFix_Test.cxx
   ShapeUpgrade_FaceDivide_Test.cxx

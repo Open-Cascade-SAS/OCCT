@@ -1073,6 +1073,9 @@ bool ShapeFix_IntersectionTool::FixSelfIntersectWire(occ::handle<ShapeExtend_Wir
   bool isDone     = false;
   for (int num1 = 1; num1 < sewd->NbEdges() && NbSplit < 30; num1++)
   {
+    // Keep indexed accesses to the linked edge sequence monotonic between edits.
+    TopoDS_Edge edge1        = sewd->Edge(num1);
+    bool        refreshEdge1 = false;
     // for each edge from first wire
     for (int num2 = num1 + 2; num2 <= sewd->NbEdges() && NbSplit < 30; num2++)
     {
@@ -1081,7 +1084,11 @@ bool ShapeFix_IntersectionTool::FixSelfIntersectWire(occ::handle<ShapeExtend_Wir
       {
         continue;
       }
-      TopoDS_Edge edge1 = sewd->Edge(num1);
+      if (refreshEdge1)
+      {
+        edge1        = sewd->Edge(num1);
+        refreshEdge1 = false;
+      }
       TopoDS_Edge edge2 = sewd->Edge(num2);
       if (edge1.IsSame(edge2))
       {
@@ -1099,6 +1106,10 @@ bool ShapeFix_IntersectionTool::FixSelfIntersectWire(occ::handle<ShapeExtend_Wir
       Bnd_Box2d B2 = boxes.Find(edge2);
       if (!B1.IsOut(B2))
       {
+        // Every wire edit (including helper calls, cuts, Set and Remove) is below.
+        // Refresh on the next pair even when an edit exits via continue. A break
+        // starts a new outer iteration, which fetches its own first edge.
+        refreshEdge1 = true;
         // intersection is possible...
         double                    a1, b1, a2, b2;
         occ::handle<Geom2d_Curve> Crv1, Crv2;
