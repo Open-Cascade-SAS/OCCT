@@ -2,6 +2,7 @@
 set(OCCT_TKPrim_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKPrim_GTests_FILES
+  BRepCheck_Solid_Test.cxx
   BRepPrimAPI_MakeBox_Test.cxx
   BRepPrimAPI_MakeCone_Test.cxx
   BRepPrimAPI_MakeCylinder_Test.cxx

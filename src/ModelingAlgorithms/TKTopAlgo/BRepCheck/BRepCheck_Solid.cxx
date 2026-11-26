@@ -297,11 +297,10 @@ void BRepCheck_Solid::Minimum()
     if (!bIsHole)
     {
       ++aNbVTS1;
-      if (aNbVTS1 > 1)
+      if (aNbVTS1 == 2)
       {
         // Too many growths
         BRepCheck::Add(aLST, BRepCheck_EnclosedRegion);
-        break;
       }
     }
   }
