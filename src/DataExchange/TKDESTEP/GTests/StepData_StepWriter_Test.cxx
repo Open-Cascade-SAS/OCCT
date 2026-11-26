@@ -21,6 +21,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdio>
+
 namespace
 {
 //=================================================================================================
@@ -96,6 +98,35 @@ TEST(StepData_StepWriterTest, SendSelect_NullRealArrayWritesUndefined)
   StepData_Field aField;
   aField.SetSelectMember(aSelect);
   EXPECT_STREQ(writeField(aField).ToCString(), "TEST($);");
+}
+
+// Send(double) must write reals produced by user formats longer than its local buffer.
+TEST(StepData_StepWriterTest, SendReal_LongUserFormatIsWrittenCompletely)
+{
+  const double aValue = -1.2345678901234567e-123;
+  for (const char* aFormat : {"%.17E", "%.60E"})
+  {
+    char anExpected[128] = {};
+    std::snprintf(anExpected, sizeof(anExpected), aFormat, aValue);
+
+    occ::handle<StepData_StepModel> aModel = new StepData_StepModel;
+    StepData_StepWriter             aWriter(aModel);
+    aWriter.FloatWriter().SetFormat(aFormat);
+    aWriter.StartEntity("TEST");
+    aWriter.Send(aValue);
+    aWriter.EndEntity();
+
+    // The writer may wrap a long entity over several lines.
+    TCollection_AsciiString aText;
+    for (int aLineIter = 1; aLineIter <= aWriter.NbLines(); ++aLineIter)
+    {
+      aText += aWriter.Line(aLineIter)->String();
+    }
+    aText.RemoveAll(' ');
+    EXPECT_STREQ(aText.ToCString(),
+                 (TCollection_AsciiString("TEST(") + anExpected + ");").ToCString())
+      << "format " << aFormat;
+  }
 }
 
 // Test CleanTextForSend with basic character escaping

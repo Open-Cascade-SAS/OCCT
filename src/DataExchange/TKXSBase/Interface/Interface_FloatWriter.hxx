@@ -86,9 +86,14 @@ public:
   //! Writes a Real value <val> to a string <text> by using the
   //! options. Returns the useful Length of produced string.
   //! It calls the class method Convert.
-  //! Warning : <text> is assumed to be wide enough (20-30 is correct)
+  //! Warning : <text> must be wide enough for the complete configured format.
+  //! Use the bounded overload for fixed-size buffers.
   //! And, even if declared in, its content will be modified
   Standard_EXPORT int Write(const double val, const char* const text) const;
+
+  //! Bounded variant of Write. If the result is not less than textSize,
+  //! the buffer is too small; retry with result + 1 bytes.
+  Standard_EXPORT int Write(const double val, char* const text, const size_t textSize) const;
 
   //! This class method converts a Real Value to a string, given
   //! options given as arguments. It can be called independently.
@@ -101,7 +106,27 @@ public:
                                      const char* const mainform,
                                      const char* const rangeform);
 
+  //! Bounded variant of Convert, with the same sizing convention as Write.
+  Standard_EXPORT static int Convert(const double      val,
+                                     char* const       text,
+                                     const size_t      textSize,
+                                     const bool        zerosup,
+                                     const double      Range1,
+                                     const double      Range2,
+                                     const char* const mainform,
+                                     const char* const rangeform);
+
 private:
+  static int convert(const double      val,
+                     char* const       text,
+                     const size_t      textSize,
+                     const bool        bounded,
+                     const bool        zerosup,
+                     const double      Range1,
+                     const double      Range2,
+                     const char* const mainform,
+                     const char* const rangeform);
+
   char   themainform[12];
   double therange1;
   double therange2;
