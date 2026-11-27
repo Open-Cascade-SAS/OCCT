@@ -1965,3 +1965,10 @@ Outlines with the FreeType overlap flag produce separate faces without a Boolean
 `Font_FTFont::GlyphImage()` returns tightly packed, top-down alpha coverage for bitmap glyphs.
 For custom conversion, pass a `Font_GlyphOutline` through `BRepFont_Regularizer`, then use
 `BRepFont_Builder`.
+
+@subsection upgrade_810_worksession_file_names IFSelect_WorkSession file names
+
+`IFSelect_WorkSession::GiveFileRoot()` and `IFSelect_WorkSession::GiveFileComplete()` return
+`TCollection_AsciiString` by value instead of `const char*`. The previous result pointed into
+a buffer shared by all work sessions and was overwritten by the next call from any thread.
+Store the result in a `TCollection_AsciiString` and use `ToCString()` where a C string is required.

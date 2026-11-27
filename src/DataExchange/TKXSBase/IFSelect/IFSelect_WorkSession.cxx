@@ -84,8 +84,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_WorkSession, Standard_Transient)
 #define Flag_Incorrect 2
 //  (Bit Map n0 2)
 
-static bool                    errhand; // pb : only one at a time, but it goes so fast
-static TCollection_AsciiString bufstr;
+static bool errhand; // pb : only one at a time, but it goes so fast
 
 //  #################################################################
 
@@ -2144,25 +2143,23 @@ bool IFSelect_WorkSession::SetFileRoot(const occ::handle<IFSelect_Dispatch>& dis
 
 //=================================================================================================
 
-const char* IFSelect_WorkSession::GiveFileRoot(const char* const file) const
+TCollection_AsciiString IFSelect_WorkSession::GiveFileRoot(const char* const file) const
 {
   OSD_Path path(file);
   if (!OSD_Path::IsValid(TCollection_AsciiString(file)))
   {
-    return file; // tant pis ..
+    return TCollection_AsciiString(file); // tant pis ..
   }
-  bufstr = path.Name();
-  return bufstr.ToCString();
+  return path.Name();
 }
 
 //=================================================================================================
 
-const char* IFSelect_WorkSession::GiveFileComplete(const char* const file) const
+TCollection_AsciiString IFSelect_WorkSession::GiveFileComplete(const char* const file) const
 {
   //  add if needed: Prefix; Extension
-  bufstr.Clear();
-  bufstr.AssignCat(file);
-  int                                   i, j = 0, nb = bufstr.Length();
+  TCollection_AsciiString               aName(file);
+  int                                   i, j = 0, nb = aName.Length();
   occ::handle<TCollection_HAsciiString> ext = FileExtension();
   if (!ext.IsNull())
   {
@@ -2173,7 +2170,7 @@ const char* IFSelect_WorkSession::GiveFileComplete(const char* const file) const
     }
     for (i = nb; i > 0; i--)
     {
-      if (bufstr.Value(i) == val0)
+      if (aName.Value(i) == val0)
       {
         j = 1;
         break;
@@ -2181,7 +2178,7 @@ const char* IFSelect_WorkSession::GiveFileComplete(const char* const file) const
     }
     if (j == 0)
     {
-      bufstr.AssignCat(ext->ToCString());
+      aName.AssignCat(ext->ToCString());
     }
   }
   occ::handle<TCollection_HAsciiString> pre = FilePrefix();
@@ -2195,7 +2192,7 @@ const char* IFSelect_WorkSession::GiveFileComplete(const char* const file) const
     j = 0;
     for (i = nb; i > 0; i--)
     {
-      if (bufstr.Value(i) == val1)
+      if (aName.Value(i) == val1)
       {
         j = 1;
         break;
@@ -2203,11 +2200,11 @@ const char* IFSelect_WorkSession::GiveFileComplete(const char* const file) const
     }
     if (j == 0)
     {
-      bufstr.Insert(1, pre->ToCString());
+      aName.Insert(1, pre->ToCString());
     }
   }
 
-  return bufstr.ToCString();
+  return aName;
 }
 
 //=================================================================================================
