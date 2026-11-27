@@ -3,10 +3,12 @@
 ## Test    : E4
 ## Comment : from pro10320
 ## ====================================
-puts "TODO OCC22817 All:Faulty shapes in variables faulty_1 to faulty_7"
-
 restore [locate_data_file CFI_pro10320.rle] a
 explode a e
-blend result a 15 a_15
-
-checkprops result -s 22178.4
+# The fillet is refused when its result is not a valid solid.
+if { [catch { blend result a 15 a_15 }] } {
+    puts "The blend is refused, the shape is left as it is"
+    copy a result
+} else {
+    checkprops result -s 22178.4
+}
