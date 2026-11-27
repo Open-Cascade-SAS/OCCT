@@ -204,11 +204,13 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
 
     double CMin = CoordMin[k];
     double CMax = CoordMax[k];
+    // A sample whose gap to the extremum equals the deflection must still be
+    // refined; the tolerance keeps rounding from deciding that tie.
     for (int i = 1; i <= Nu; ++i)
     {
       for (int j = 1; j <= Nv; ++j)
       {
-        if (aPnts(i, j).Coord(k + 1) - CMin < d)
+        if (aPnts(i, j).Coord(k + 1) - CMin < d + eps)
         {
           double umin = theUMin + std::max(0, i - 2) * du;
           double umax = theUMin + std::min(Nu - 1, i) * du;
@@ -228,7 +230,7 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
             CMin = cmin;
           }
         }
-        else if (CMax - aPnts(i, j).Coord(k + 1) < d)
+        else if (CMax - aPnts(i, j).Coord(k + 1) < d + eps)
         {
           double umin = theUMin + std::max(0, i - 2) * du;
           double umax = theUMin + std::min(Nu - 1, i) * du;

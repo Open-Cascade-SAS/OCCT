@@ -14,10 +14,15 @@
 #include <gtest/gtest.h>
 
 #include <BRepBndLib.hxx>
+#include <BRepBuilderAPI_GTransform.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRep_Builder.hxx>
 #include <Bnd_Box.hxx>
 #include <Geom_Circle.hxx>
@@ -29,11 +34,17 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
+#include <gp_GTrsf.hxx>
+#include <gp_Mat.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Trsf.hxx>
+
+#include <cmath>
 
 namespace
 {
@@ -230,4 +241,64 @@ TEST(BRepBndLibTest, OCC6503_InfinitePlaneBounds)
   EXPECT_EQ(aLimits.Ymax, Precision::Infinite() / 2.0);
   EXPECT_NEAR(aLimits.Zmin, -1.e-7, 1.e-12);
   EXPECT_NEAR(aLimits.Zmax, 1.e-7, 1.e-12);
+}
+
+// Issue #1604. The optimal box of a sphere scaled to an ellipsoid with semi-axes
+// 20, 10 and 5 must reach the ellipsoid's extremes; it stopped at x = -19.826.
+TEST(BRepBndLibTest, Issue1604_ScaledSphereOptimalBox)
+{
+  gp_GTrsf aScale;
+  aScale.SetVectorialPart(gp_Mat(20.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 5.0));
+  const TopoDS_Shape anEllipsoid =
+    BRepBuilderAPI_GTransform(BRepPrimAPI_MakeSphere(1.0).Shape(), aScale, true).Shape();
+
+  Bnd_Box aBox;
+  BRepBndLib::AddOptimal(anEllipsoid, aBox, false, false);
+  ASSERT_FALSE(aBox.IsVoid());
+
+  const Bnd_Box::Limits aLimits = aBox.Get();
+  EXPECT_NEAR(aLimits.Xmin, -20.0, 1.e-6);
+  EXPECT_NEAR(aLimits.Xmax, 20.0, 1.e-6);
+  EXPECT_NEAR(aLimits.Ymin, -10.0, 1.e-6);
+  EXPECT_NEAR(aLimits.Ymax, 10.0, 1.e-6);
+  EXPECT_NEAR(aLimits.Zmin, -5.0, 1.e-6);
+  EXPECT_NEAR(aLimits.Zmax, 5.0, 1.e-6);
+}
+
+// Issue #1679. A smooth loft through circles of radius 10, 30 and 10 reaches 30
+// from its axis whichever way it is turned. Turned by 1 to 3 degrees, the
+// x-extreme lies beside the seam of the lateral face, whose two sides are
+// evaluated separately and round differently.
+TEST(BRepBndLibTest, Issue1679_RotatedLoftOptimalBox)
+{
+  BRepOffsetAPI_ThruSections aLoft(true, false);
+  const double               aSections[3][2] = {{0.0, 10.0}, {20.0, 30.0}, {40.0, 10.0}};
+  for (const auto& aSection : aSections)
+  {
+    const gp_Circ aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, aSection[0]), gp_Dir(0.0, 0.0, 1.0)),
+                          aSection[1]);
+    aLoft.AddWire(BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(aCircle).Edge()).Wire());
+  }
+  aLoft.Build();
+  ASSERT_TRUE(aLoft.IsDone());
+
+  for (int aDeg = 0; aDeg <= 3; ++aDeg)
+  {
+    gp_Trsf aRotation;
+    aRotation.SetRotation(gp_Ax1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)),
+                          aDeg * M_PI / 180.0);
+    const TopoDS_Shape aShape = BRepBuilderAPI_Transform(aLoft.Shape(), aRotation, true).Shape();
+
+    Bnd_Box aBox;
+    BRepBndLib::AddOptimal(aShape, aBox, false, false);
+    ASSERT_FALSE(aBox.IsVoid());
+
+    const Bnd_Box::Limits aLimits = aBox.Get();
+    EXPECT_NEAR(aLimits.Xmin, -30.0, 1.e-6) << "rotated by " << aDeg << " degrees";
+    EXPECT_NEAR(aLimits.Xmax, 30.0, 1.e-6) << "rotated by " << aDeg << " degrees";
+    EXPECT_NEAR(aLimits.Ymin, -30.0, 1.e-6) << "rotated by " << aDeg << " degrees";
+    EXPECT_NEAR(aLimits.Ymax, 30.0, 1.e-6) << "rotated by " << aDeg << " degrees";
+    EXPECT_NEAR(aLimits.Zmin, 0.0, 1.e-6) << "rotated by " << aDeg << " degrees";
+    EXPECT_NEAR(aLimits.Zmax, 40.0, 1.e-6) << "rotated by " << aDeg << " degrees";
+  }
 }
