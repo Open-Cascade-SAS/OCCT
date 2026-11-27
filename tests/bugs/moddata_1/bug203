@@ -32,7 +32,7 @@ if { $mistake != 0} {
     puts "OK OCC203"
     puts "Filet can not be created"
 } else {
-    puts "Faulty OCC203: function FILLET works wrongly"
+    puts "OCC203: the fillet is built, the shape is checked"
     checkshape result
 }
 
