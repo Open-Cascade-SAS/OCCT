@@ -560,6 +560,10 @@ TopoDS_Shape ChFi3d_Builder::BadShape() const
 
 ChFiDS_ErrorStatus ChFi3d_Builder::StripeStatus(const int IC) const
 {
+  if (IC < 1 || IC > NbElements())
+  {
+    throw Standard_OutOfRange("ChFi3d_Builder::StripeStatus: contour index out of range");
+  }
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
   int                                                    k = 0;
   occ::handle<ChFiDS_Stripe>                             st;
@@ -1229,6 +1233,11 @@ void ChFi3d_Builder::Remove(const TopoDS_Edge& E)
 
 occ::handle<ChFiDS_Spine> ChFi3d_Builder::Value(const int I) const
 {
+  // The stripe list also holds corner stripes, which have no spine, so it is not the bound.
+  if (I < 1 || I > NbElements())
+  {
+    throw Standard_OutOfRange("ChFi3d_Builder::Value: contour index out of range");
+  }
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(myListStripe);
   for (int ic = 1; ic < I; ic++)
   {

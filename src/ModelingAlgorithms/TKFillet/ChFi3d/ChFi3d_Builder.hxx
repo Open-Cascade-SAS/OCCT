@@ -96,8 +96,8 @@ public:
   //! the fillets are calculated
   Standard_EXPORT int NbElements() const;
 
-  //! gives the n'th set of edges (contour)
-  //! if I >NbElements()
+  //! gives the n'th set of edges (contour).
+  //! Raises Standard_OutOfRange if I < 1 or I > NbElements().
   Standard_EXPORT occ::handle<ChFiDS_Spine> Value(const int I) const;
 
   //! returns the length of the contour of index IC.
@@ -169,7 +169,8 @@ public:
   Standard_EXPORT TopoDS_Shape BadShape() const;
 
   //! for the stripe IC ,indication on the cause
-  //! of failure WalkingFailure,TwistedSurface,Error, Ok
+  //! of failure WalkingFailure,TwistedSurface,Error, Ok.
+  //! Raises Standard_OutOfRange if IC < 1 or IC > NbElements().
   Standard_EXPORT ChFiDS_ErrorStatus StripeStatus(const int IC) const;
 
   //! Reset all results of compute and returns the algorithm
